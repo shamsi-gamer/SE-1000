@@ -249,7 +249,7 @@ namespace IngameScript
 
 
         void DrawDelaySetting(List<MySprite> sprites, Delay del, float x, float y, ref float yo, bool active, ref bool children)
-        { 
+        {
             if (del.Count.HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, del.Count, x, y + yo, ref yo, active); children = true; }
             if (del.Time .HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, del.Time,  x, y + yo, ref yo, active); children = true; }
             if (del.Level.HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, del.Level, x, y + yo, ref yo, active); children = true; }

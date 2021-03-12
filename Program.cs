@@ -10,7 +10,7 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        // keys aren't properly edited
+        // envelope doesn't work (at least for harmonics and long notes)
         
         // click & crunch oscillators
 

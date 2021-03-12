@@ -107,9 +107,9 @@ namespace IngameScript
 
                 switch (path[1])
                 {
-                    case "Off":  return src.Offset;
-                    case "Vol":  return src.Volume;
-                    case "Tune": return src.Tune;
+                    case "Off":  return src.Offset    != null ? GetSettingFromParam    (src.Offset,    rest) : null;
+                    case "Vol":  return GetSettingFromParam(inst.Volume, rest);
+                    case "Tune": return src.Tune      != null ? GetSettingFromParam    (src.Tune,      rest) : null;
                     case "Hrm":  return src.Harmonics != null ? GetSettingFromHarmonics(src.Harmonics, rest) : null;
                     case "Flt":  return src.Filter    != null ? GetSettingFromFilter   (src.Filter,    rest) : null;
                     case "Del":  return src.Delay     != null ? GetSettingFromDelay    (src.Delay,     rest) : null;
@@ -121,8 +121,8 @@ namespace IngameScript
 
                 switch (path[0])
                 {
-                    case "Vol":  return inst.Volume;
-                    case "Tune": return inst.Tune;
+                    case "Vol":  return GetSettingFromParam(inst.Volume, rest);
+                    case "Tune": return inst.Tune     != null ? GetSettingFromParam   (inst.Tune,     rest) : null;
                     case "Del":  return inst.Delay    != null ? GetSettingFromDelay   (inst.Delay,    rest) : null;
                     case "Arp":  return inst.Arpeggio != null ? GetSettingFromArpeggio(inst.Arpeggio, rest) : null;
                 }
@@ -138,7 +138,7 @@ namespace IngameScript
             var rest = path.Subarray(1, path.Length-1);
 
             if (IsDigit(path[0][0]))
-                return GetSettingFromParameter(hrm.Tones[int.Parse(path[0])-1], rest);
+                return GetSettingFromParam(hrm.Tones[int.Parse(path[0])-1], rest);
 
             return null;
         }
@@ -151,8 +151,8 @@ namespace IngameScript
 
             switch (path[0])
             {
-                case "Cut": return GetSettingFromParameter(flt.Cutoff,    rest);
-                case "Res": return GetSettingFromParameter(flt.Resonance, rest);
+                case "Cut": return GetSettingFromParam(flt.Cutoff,    rest);
+                case "Res": return GetSettingFromParam(flt.Resonance, rest);
             }
 
             return null;
@@ -166,17 +166,17 @@ namespace IngameScript
 
             switch (path[0])
             {
-                case "Cnt":  return GetSettingFromParameter(del.Count, rest);
-                case "Time": return GetSettingFromParameter(del.Time,  rest);
-                case "Lvl":  return GetSettingFromParameter(del.Level, rest);
-                case "Pow":  return GetSettingFromParameter(del.Power, rest);
+                case "Cnt":  return GetSettingFromParam(del.Count, rest);
+                case "Time": return GetSettingFromParam(del.Time,  rest);
+                case "Lvl":  return GetSettingFromParam(del.Level, rest);
+                case "Pow":  return GetSettingFromParam(del.Power, rest);
             }
 
             return null;
         }
 
 
-        Setting GetSettingFromParameter(Parameter param, string[] path)
+        Setting GetSettingFromParam(Parameter param, string[] path)
         {
             if (path.Length == 0) return param;
             var rest = path.Subarray(1, path.Length-1);
@@ -198,10 +198,10 @@ namespace IngameScript
 
             switch (path[0])
             {
-                case "Att": return GetSettingFromParameter(env.Attack,  rest);
-                case "Dec": return GetSettingFromParameter(env.Decay,   rest);
-                case "Sus": return GetSettingFromParameter(env.Sustain, rest);
-                case "Rel": return GetSettingFromParameter(env.Release, rest);
+                case "Att": return GetSettingFromParam(env.Attack,  rest);
+                case "Dec": return GetSettingFromParam(env.Decay,   rest);
+                case "Sus": return GetSettingFromParam(env.Sustain, rest);
+                case "Rel": return GetSettingFromParam(env.Release, rest);
             }
 
             return null;
@@ -215,9 +215,9 @@ namespace IngameScript
 
             switch (path[0])
             {
-                case "Att": return GetSettingFromParameter(lfo.Amplitude, rest);
-                case "Dec": return GetSettingFromParameter(lfo.Frequency, rest);
-                case "Sus": return GetSettingFromParameter(lfo.Offset,    rest);
+                case "Att": return GetSettingFromParam(lfo.Amplitude, rest);
+                case "Dec": return GetSettingFromParam(lfo.Frequency, rest);
+                case "Sus": return GetSettingFromParam(lfo.Offset,    rest);
             }
 
             return null;
@@ -232,8 +232,8 @@ namespace IngameScript
 
             switch (path[0])
             {
-                case "Len": return GetSettingFromParameter(arp.Length, rest);
-                case "Scl": return GetSettingFromParameter(arp.Scale,  rest);
+                case "Len": return GetSettingFromParam(arp.Length, rest);
+                case "Scl": return GetSettingFromParam(arp.Scale,  rest);
             }
 
             return null;

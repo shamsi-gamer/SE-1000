@@ -290,13 +290,11 @@ namespace IngameScript
             foreach (var lbl in lightsPressed_)
                 UpdateLight(lbl, false);
 
-            //Log("219");
 
             mixerPressed_.Clear();
             infoPressed_  .Clear();
             lightsPressed_.Clear();
 
-            //Log("220");
 
             // mark for next cycle and clear pressed list
 
@@ -837,20 +835,15 @@ namespace IngameScript
         {
             for (int step = 0; step < nSteps; step++)
             {
-                //Log("401");
                 var light = lblLow[step];
-                //Log("402");
 
                 var _step = step + CurSong.CurPat * nSteps;
-                //Log("403");
 
                 var on = CurrentChannel(CurSong).Notes.Find(n => 
                        n.PatStepTime >= step
                     && n.PatStepTime <  step+1) != null;
-                //Log("404");
 
                 Color c;
-                //Log("405");
 
                 if (   OK(CurSong.PlayStep)
                     && _step == (int)CurSong.PlayStep
@@ -858,10 +851,8 @@ namespace IngameScript
                 else if (on)                              c = color6;
                 else if (CurSong.EditPos == _step)        c = color3;
                 else                                      c = step % 4 == 0 ? color2 : color0;
-                //Log("406");
 
                 light.BackgroundColor = c;
-                //Log("407");
             }
         }
 

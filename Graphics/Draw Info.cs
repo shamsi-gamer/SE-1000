@@ -343,7 +343,6 @@ namespace IngameScript
                 //    : 3;
 
                 //dsp.Add(ref frame, DrawString(dance[iMan], x + 30, y + 330 - oy[iMan], 1.8f, color6));
-                //Log("315");
             }
 
 

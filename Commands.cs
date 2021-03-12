@@ -768,28 +768,20 @@ namespace IngameScript
             {
                 var chan = SelectedChannel(g_song);
                 var path = g_settings.Last().GetPath(g_song.CurSrc);
-                Log("path = " + path);
 
                 if (g_paramKeys)
                 { 
                     var notes = GetEditNotes(song);
-                    Log("notes.Count = " + notes.Count);
 
                     foreach (var note in notes)
                     { 
                         var iKey = note.Keys.FindIndex(k => k.Path == path);
-                        Log("iKey = " + iKey);
 
                         if (iKey > -1)
-                        { 
-                            Log("exists");
                             AdjustKey(note.Keys[iKey], delta);
-                        }
                         else
                         {
-                            Log("doesn't exist");
                             var param = (Parameter)GetSettingFromPath(chan.Instrument, path);
-                            Log("param = " + param);
                             note.Keys.Add(new Key(g_song.CurSrc, param, param.Value, song.GetStep(note)));
                             AdjustKey(note.Keys.Last(), delta);
                         }
