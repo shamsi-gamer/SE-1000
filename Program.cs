@@ -380,63 +380,10 @@ namespace IngameScript
                 instCount = 0;
 
 
-                // by this point they have been visually marked on previous cycle
-
-                var be = CurSong.EditNotes.Count > 0;
-
-                if (lightsPressed_.Contains(lblLeft))      UnmarkLight(lblLeft,  false, be);
-                if (lightsPressed_.Contains(lblRight))     UnmarkLight(lblRight, false, be);
-
-                if (lightsPressed_.Contains(lblUp))        UnmarkLight(lblUp,   g_shift);
-                if (lightsPressed_.Contains(lblDown))      UnmarkLight(lblDown, g_shift);
-
-                if (lightsPressed_.Contains(lblNextPat))   UnmarkLight(lblNextPat, movePat);
-                if (lightsPressed_.Contains(lblPrevPat))   UnmarkLight(lblPrevPat, movePat);
-
-                if (lightsPressed_.Contains(lblNext))      UnmarkLight(lblNext, g_move || g_song.CurSrc > -1, g_song.SelChan > -1);
-                if (lightsPressed_.Contains(lblPrev))      UnmarkLight(lblPrev, g_move || g_song.CurSrc > -1, g_song.SelChan > -1);
-
-                if (lightsPressed_.Contains(lblEnter))     UnmarkLight(lblEnter, g_song.CurSrc > -1 && curSet < 0, g_song.SelChan > -1 && curSet < 0);
-                if (lightsPressed_.Contains(lblBack))      UnmarkLight(lblBack,  g_song.CurSrc > -1, g_song.SelChan > -1);
-
-                if (lightsPressed_.Contains(lblNew))       UnmarkLight(lblNew,       g_song.CurSrc > -1, g_song.SelChan > -1);
-                if (lightsPressed_.Contains(lblDuplicate)) UnmarkLight(lblDuplicate, g_song.CurSrc > -1, g_song.SelChan > -1);
-                if (lightsPressed_.Contains(lblDelete))    UnmarkLight(lblDelete,    g_song.CurSrc > -1, g_song.SelChan > -1);
-
-                if (lightsPressed_.Contains(lblChord1))    UnmarkLight(lblChord1, g_chordEdit && g_chord == 0, g_chords[0].Count > 0);
-                if (lightsPressed_.Contains(lblChord2))    UnmarkLight(lblChord2, g_chordEdit && g_chord == 1, g_chords[1].Count > 0);
-                if (lightsPressed_.Contains(lblChord3))    UnmarkLight(lblChord3, g_chordEdit && g_chord == 2, g_chords[2].Count > 0);
-                if (lightsPressed_.Contains(lblChord4))    UnmarkLight(lblChord4, g_chordEdit && g_chord == 3, g_chords[3].Count > 0);
-
-                if (lightsPressed_.Contains(lblCmd2))      UnmarkLight(lblCmd2, false, copyChan != null);
-
-                foreach (var lbl in lightsPressed_)
-                    UpdateLight(lbl, false);
-
-                //Log("219");
-
-                mixerPressed_.Clear();
-                infoPressed_  .Clear();
-                lightsPressed_.Clear();
-
-                //Log("220");
-
-                // mark for next cycle and clear pressed list
-
-                mixerPressed_.AddRange(mixerPressed);
-                mixerPressed.Clear();
-
-                infoPressed_.AddRange(infoPressed);
-                infoPressed.Clear();
-
-                songPressed.Clear();
-                mainPressed.Clear();
-
-                lightsPressed_.AddRange(lightsPressed);
-                lightsPressed.Clear();
+                UnmarkAllLights(); // by this point they have been visually marked on previous cycle
 
 
-                warningLight.Enabled = g_sm.UsedRatio > 0.95f;
+                warningLight.Enabled = g_sm.UsedRatio > 0.9f;
             }
 
 
