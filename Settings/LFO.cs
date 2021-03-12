@@ -118,11 +118,10 @@ namespace IngameScript
 
             public override void AdjustFromController(Song song, Program prog)
             {
-                if (g_remote.RotationIndicator.X != 0) 
-                    prog.AdjustFromController(song, Amplitude, g_remote.RotationIndicator.X);
+                if (g_remote.MoveIndicator.X != 0) prog.AdjustFromController(song, Offset, g_remote.MoveIndicator.X/ControlSensitivity);
 
-                if (g_remote.RotationIndicator.Y != 0) 
-                    prog.AdjustFromController(song, Frequency, g_remote.RotationIndicator.Y);
+                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(song, Amplitude, g_remote.RotationIndicator.X/ControlSensitivity);
+                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(song, Frequency, g_remote.RotationIndicator.Y/ControlSensitivity);
             }
         }
     }

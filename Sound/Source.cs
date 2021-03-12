@@ -127,9 +127,9 @@ namespace IngameScript
                      if (Oscillator == Oscillator.Sine)      w = (float)Math.Sin(f * Tau);
                 else if (Oscillator == Oscillator.Triangle)
                 {
-                         if (f <  0.25f)                     w =  f / 0.25f;
-                    else if (f >= 0.25f && f < 0.75f)        w =  1 - 4 * (f - 0.25f);
-                    else                                     w =  (f - 0.75f) / 0.25f - 1;
+                         if (f <  0.25f)                     w = f / 0.25f;
+                    else if (f >= 0.25f && f < 0.75f)        w = 1 - 4 * (f - 0.25f);
+                    else                                     w = (f - 0.75f) / 0.25f - 1;
                 }                                                 
                 else if (Oscillator == Oscillator.Saw      ) w =  2*f - 1;
                 else if (Oscillator == Oscillator.Square   ) w =  f < 0.5f ? 1 : -1;
@@ -169,10 +169,11 @@ namespace IngameScript
                     && noteNum >= 24 + 103 - 84)
                     return;
 
-                var vol = 
-                      note.Volume
-                    * inst.Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, -1,           triggerValues)
-                    * src .Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, src.Index, triggerValues);
+                var vol = note.Volume;
+                
+                // calling GetValue() populates triggerValues, the return values are ignored
+                inst.Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, -1,        triggerValues);
+                src .Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, src.Index, triggerValues);
 
 
                 var iSrc = Instrument.Sources.IndexOf(this);

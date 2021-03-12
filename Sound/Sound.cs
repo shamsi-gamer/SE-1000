@@ -79,7 +79,7 @@ namespace IngameScript
                 EchoSource       = echoSource;
                 EchoVolume       = echoVol;
 
-                Cache            = IsEcho ? null : new float[FrameLength];
+                Cache            = IsEcho ? null : new float[FrameLength + ReleaseLength];
             }
 
 

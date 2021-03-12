@@ -82,14 +82,14 @@ namespace IngameScript
             }
 
 
-            public void Draw(ref MySpriteDrawFrame frame, List<MySprite> sprites, Program prog = null)
+            public void Draw(ref MySpriteDrawFrame frame, List<MySprite> sprites = null)
             {
                 foreach (var sprite in sprites)
-                    Draw(ref frame, sprite, prog);
+                    Draw(ref frame, sprite);
             }
 
 
-            public void Draw(ref MySpriteDrawFrame frame, MySprite sprite, Program prog = null)
+            public void Draw(ref MySpriteDrawFrame frame, MySprite sprite)
             {
                      if (sprite.Type == SpriteType.TEXT   ) sprite.RotationOrScale *= UserScale;
                 else if (sprite.Type == SpriteType.TEXTURE) sprite.Size            *= UserScale;

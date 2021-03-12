@@ -27,11 +27,7 @@ namespace IngameScript
             GetPatterns(g_song, g_song.CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
-            { 
-                     if (g_paramKeys) RandomParamKeys(p, ch);
-                else if (g_paramAuto) RandomParamAuto(p, ch);
-                else                  RandomNotes(p, ch);
-            }
+                RandomNotes(p, ch);
         }
 
 

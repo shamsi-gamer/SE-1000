@@ -645,17 +645,44 @@ namespace IngameScript
             if (g_song.SelChan < 0)
                 return;
 
-            if (curSet > -1)
-                g_settings[curSet].Randomize();
-            else if (g_song.CurSrc > -1)
+            if (   g_paramKeys
+                || g_paramAuto)
             {
-                var used = new List<Oscillator>();
-                SelectedSource(g_song).Randomize(used);
+                if (allChan)
+                {
+                    for (int ch = 0; ch < nChans; ch++)
+                        RandomValues(ch);
+                }
+                else
+                    RandomValues(g_song.CurChan);
             }
-            else if (g_song.SelChan > -1)
-                SelectedInstrument(g_song).Randomize();
+            else
+            { 
+                if (curSet > -1)
+                    g_settings[curSet].Randomize();
+                else if (g_song.CurSrc > -1)
+                {
+                    var used = new List<Oscillator>();
+                    SelectedSource(g_song).Randomize(used);
+                }
+                else if (g_song.SelChan > -1)
+                    SelectedInstrument(g_song).Randomize();
+            }
 
             MarkLight(lblRandom);
+        }
+
+
+        void RandomValues(int ch)
+        {
+            int first, last;
+            GetPatterns(g_song, g_song.CurPat, out first, out last);
+
+            for (int p = first; p <= last; p++)
+            { 
+                     if (g_paramKeys) RandomParamKeys(p, ch);
+                else if (g_paramAuto) RandomParamAuto(p, ch);
+            }
         }
     }
 }
