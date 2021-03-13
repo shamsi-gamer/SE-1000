@@ -28,8 +28,6 @@ namespace IngameScript
                 Sources  = new List<Source>();
                          
                 Volume   = new Parameter("Volume", "Vol", 0, 2, 0.5f, 1, 0.01f, 0.1f, 1);
-                Volume.Envelope = new Envelope();
-                Volume.Envelope.Parent = Volume;
 
                 Tune     = null;
                 Filter   = null;

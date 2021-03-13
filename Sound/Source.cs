@@ -37,6 +37,9 @@ namespace IngameScript
                 Offset     = null;
 
                 Volume     = new Parameter("Volume", "Vol", 0, 2, 0.01f, 1, 0.01f, 0.1f, 1);
+                Volume.Envelope = new Envelope();
+                Volume.Envelope.Parent = Volume;
+
                 Tune       = null;
 
                 Harmonics  = null;
@@ -155,10 +158,10 @@ namespace IngameScript
 
                 var iSrc = Instrument.Sources.IndexOf(this);
 
-                var relPath = 
-                    src.Volume.Envelope != null 
-                    ? src .Volume.Envelope.Release.GetPath(iSrc)
-                    : inst.Volume.Envelope.Release.GetPath(-1);
+                string relPath = "";
+                
+                     if (src .Volume.Envelope != null) relPath = src .Volume.Envelope.Release.GetPath(iSrc);
+                else if (inst.Volume.Envelope != null) relPath = inst.Volume.Envelope.Release.GetPath(-1);
 
                 var _relLen = triggerValues.Find(v => v.Path == relPath);
                 var relLen = (int)((_relLen?.Value ?? 0) * FPS);
