@@ -213,7 +213,7 @@ namespace IngameScript
 
             uint osc;
             if (!uint.TryParse(_src[1], out osc)) return null;
-            src.Oscillator = (Oscillator)osc;
+            src.Oscillator = OscillatorFromType((OscType)osc);
 
             //if (!int.TryParse(_src[2], out src.Transpose)) return null;
 
@@ -518,8 +518,8 @@ namespace IngameScript
             WriteByte(ref f, src.On,       i++);
 
             str +=
-                  f                    .ToString() + s
-                + ((int)src.Oscillator).ToString() + s
+                  f                         .ToString() + s
+                + ((int)src.Oscillator.Type).ToString() + s
                 //+ src.Transpose        .ToString() + s
                 + SaveParam(src.Volume ) + s
                 //+ SaveParam(src.Attack ) + s

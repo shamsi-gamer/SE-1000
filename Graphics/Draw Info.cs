@@ -1,21 +1,8 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
 using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
+
 
 namespace IngameScript
 {
@@ -72,16 +59,18 @@ namespace IngameScript
 
             var nameLines = g_song.Name.Split('\n');
 
-            if (nameLines.Length > 0) DrawString(sprites, nameLines[0], x + w/2, y + 145, 1.6f, color6, TextAlignment.CENTER);
+            if (nameLines.Length > 0) 
+                DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TextAlignment.CENTER);
 
             if (nameLines.Length > 1) 
             {
                 for (var i = 1; i < Math.Min(nameLines.Length, 4); i++)
-                    DrawString(sprites, nameLines[i], x + w/2, y + 171 + i * 30, 1, color6, TextAlignment.CENTER);
+                    DrawString(sprites, nameLines[i], x + w/2, y + 211 + i * 30, 1, color6, TextAlignment.CENTER);
             }
 
 
             var cx = x + 137;
+
 
             DrawString(sprites, "CMP", x + 20,  y + 56, 1.2f, color6);
                                                 
@@ -91,12 +80,40 @@ namespace IngameScript
             FillRect  (sprites,        cx,      y + 62, 353 * dspCount / Runtime.MaxInstructionCount, 26, color6);
 
 
-            DrawString(sprites, "POLY", x + 20, y + 96, 1.2f, color6);
-
+            DrawString(sprites, "RUN", x + 20,  y + 96, 1.2f, color6);
+                                                
             FillRect  (sprites,        cx - 2,  y + 100, 357, 30, color6);
             FillRect  (sprites,        cx,      y + 102, 353, 26, color0);
+
+
+            var avg = 0f;
+
+            foreach (var ms in g_runtimeMs)
+                avg += ms;
+
+            avg /= g_runtimeMs.Length;
+
+            FillRect  (sprites,        cx,      y + 102, 353 * Math.Min(avg, 1), 26, color4);
+
+
+            for (int i = 0; i < g_runtimeMs.Length; i++)
+                FillRect(sprites, cx + 2, y + 104 + i*4, 40 * g_runtimeMs[i] / g_maxRuntimeMs, 2, color5);
+
+            Array.Sort(g_runtimeMs);
+            var med = (g_runtimeMs[2] + g_runtimeMs[3])/2;
+            
+            var strMed = printValue(med,            -3, true, 0);
+            var strMax = printValue(g_maxRuntimeMs, -3, true, 0);
+
+            DrawString(sprites, "med " + strMed + ", max " + strMax, cx + 55, y + 107, 0.5f, color6);
+
+
+            DrawString(sprites, "POLY", x + 20, y + 136, 1.2f, color6);
+
+            FillRect  (sprites,        cx - 2,  y + 140, 357, 30, color6);
+            FillRect  (sprites,        cx,      y + 142, 353, 26, color0);
                                                 
-            FillRect  (sprites,        cx,      y + 102, 353 * Math.Min(g_sm.UsedRatio, 1), 26, color6);
+            FillRect  (sprites,        cx,      y + 142, 353 * Math.Min(g_sm.UsedRatio, 1), 26, color6);
 
 
             if (true)

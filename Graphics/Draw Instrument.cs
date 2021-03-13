@@ -172,30 +172,14 @@ namespace IngameScript
                 var col_0 = src.On && g_song.CurSrc > -1 ? color6 : color3;
                 var col_1 = src.On && g_song.CurSrc > -1 ? color0 : color5;
 
-                if (   src.Oscillator == Oscillator.Samples1
-                    || src.Oscillator == Oscillator.Samples2)
+                if (src.Oscillator == OscSample)
                 {
-                    var strSamples = "Samples " + (1 + src.Oscillator - Oscillator.Samples1).ToString();
-                    DrawString(sprites, strSamples, x + sw + 10, iy + sh/2 - 10, 0.7f, i == g_song.CurSrc ? col_1 : col_0, TextAlignment.CENTER);
+                    DrawString(sprites, src.Oscillator.ShortName, x + sw + 10, iy + sh/2 - 10, 0.7f, i == g_song.CurSrc ? col_1 : col_0, TextAlignment.CENTER);
                 }
                 else
                 { 
                     DrawSrcSample(sprites, x + sw + 10, iy + sh/2 - 10, 50, 20, src, active, g_song.CurSrc > -1);
-
-                    var srcName = "";
-
-                    switch (src.Oscillator)
-                    {
-                    case Oscillator.Sine:      srcName = "Sine";  break;
-                    case Oscillator.Triangle:  srcName = "Tri";   break;
-                    case Oscillator.Saw:       srcName = "Saw";   break;
-                    case Oscillator.Square:    srcName = "Sqr";   break;
-                    case Oscillator.LowNoise:  srcName = "Lo #";  break;
-                    case Oscillator.HighNoise: srcName = "Hi #";  break;
-                    case Oscillator.BandNoise: srcName = "Bnd #"; break;
-                    }
-
-                    DrawString(sprites, srcName, x + sw + 100, iy + sh/2 - 10, 0.6f, active ? col_1 : col_0, TextAlignment.CENTER);
+                    DrawString(sprites, src.Oscillator.ShortName, x + sw + 100, iy + sh/2 - 10, 0.6f, active ? col_1 : col_0, TextAlignment.CENTER);
                 }
 
 

@@ -485,7 +485,7 @@ namespace IngameScript
 
                 UpdateNewLights();
                 UpdateAdjustLights(g_song);
-                
+
                 UpdateInstName(false);
 
                 g_sampleValid = false;
@@ -589,9 +589,10 @@ namespace IngameScript
             {
                 var src = SelectedSource(g_song);
 
-                var newOsc = (int)src.Oscillator + 1;
-                if (newOsc > (int)Oscillator.BandNoise) newOsc = 0;
-                src.Oscillator = (Oscillator)newOsc;
+                var newOsc = (int)src.Oscillator.Type + 1;
+                //if (newOsc > (int)OscType.Sample) newOsc = 0;
+                if (newOsc > (int)OscType.Crunch) newOsc = 0;
+                src.Oscillator = OscillatorFromType((OscType)newOsc);
                 MarkLight(lblCmd2);
             }
             else

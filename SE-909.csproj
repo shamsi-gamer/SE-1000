@@ -83,7 +83,7 @@
     <Compile Include="Mixer.cs" />
     <Compile Include="Sound\Key.cs" />
     <Compile Include="Sound\Note.cs" />
-    <Compile Include="Sound\Oscillators.cs" />
+    <Compile Include="Sound\Oscillator.cs" />
     <Compile Include="Settings\Parameter.cs" />
     <Compile Include="Sound\Pattern.cs" />
     <Compile Include="Piano.cs" />

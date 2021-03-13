@@ -71,7 +71,7 @@ namespace IngameScript
                 var lTime = g_time - snd.FrameTime;
 
                 if (   lTime >= 0
-                    && lTime < snd.FrameLength + snd.ReleaseLength) //+ (snd.Instrument.Volume.Envelope?.Release.GetKeyValue(snd.Note, snd.Source.Index) ?? 0)*FPS
+                    && lTime < snd.FrameLength + snd.ReleaseLength)
                     UpdateSound(snd);
             }
         }
@@ -156,7 +156,7 @@ namespace IngameScript
                     if (spk != null)
                     { 
                         spk.Block.SelectedSound = snd.Sample;
-                        spk.Block.LoopPeriod = 10;
+                        spk.Block.LoopPeriod = 60;
                         spk.Block.Play();
 
                         snd.Speakers.Add(spk);
@@ -170,7 +170,7 @@ namespace IngameScript
                 spk.Block.Volume = Math.Min(vol--, 1);
 
                 // if sample is ending, restart it //TODO make this smooth
-                if (snd.ElapsedFrameTime >= MaxSampleLength)
+                if (snd.ElapsedFrameTime >= (snd.Source.Oscillator.Length - 0.1f) * FPS)
                 {
                     spk.Block.Stop();
                     spk.Block.Play();
@@ -187,7 +187,7 @@ namespace IngameScript
             {
                 var snd = g_sounds[i];
 
-                if (g_time > snd.FrameTime + snd.FrameLength + snd.ReleaseLength)// + (snd.Instrument.Volume.Envelope?.Release.GetKeyValue(snd.Note, snd.Source.Index) ?? 0) * FPS)
+                if (g_time > snd.FrameTime + snd.FrameLength + snd.ReleaseLength)
                 {
                     snd.Stop();
                     delete.Add(i);

@@ -10,7 +10,7 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        // click & crunch oscillators
+        // volume not shown for harmonics & filters
 
         // move patterns
         // blocks
@@ -25,6 +25,7 @@ namespace IngameScript
 
         // lfo song start (maybe sync value)
 
+        // add third bar to info display, Runtime.LastRunTimeMs
 
         // ARPEGGIATOR
         // show playback in arp relative to arp
@@ -108,8 +109,9 @@ namespace IngameScript
 
         static IMyRemoteControl g_remote;
                                 
-        static List<string>     g_smp    = new List<string>();
-        static List<Instrument> g_inst   = new List<Instrument>();
+        static List<string>     g_samples = new List<string>();
+
+        static List<Instrument> g_inst    = new List<Instrument>();
 
         List<Note>              g_notes  = new List<Note>();
         List<Sound>             g_sounds = new List<Sound>();
@@ -127,6 +129,10 @@ namespace IngameScript
         
         static bool             g_started = false;
         static bool             g_init    = false;
+
+        static int              g_curRuntimeTick = 0;
+        static float[]          g_runtimeMs      = new float[6];
+        static float            g_maxRuntimeMs   = 0;
                                               
         static long             g_time    = -1; // in ticks
 
@@ -195,8 +201,6 @@ namespace IngameScript
 
         //int copyTr, copyOff;
 
-        bool TooComplex { get { return Runtime.CurrentInstructionCount / Runtime.MaxInstructionCount > 0.8; } }
-
 
         int g_iCol;
 
@@ -218,14 +222,15 @@ namespace IngameScript
 
         public Program()
         {
+            pnlInfoLog = Get("Info Display") as IMyTextPanel;
+            pnlInfoLog.CustomData = ""; // init log storage
+
+
             dspMain = new Display(Dsp("Main"));
 
 
             InitSpeakers();
-            g_sm.Speakers[0].Block.GetSounds(g_smp);
-
-
-            MakeOscillators();
+            g_sm.Speakers[0].Block.GetSounds(g_samples);
 
 
             if (!IsModPresent())
@@ -270,10 +275,6 @@ namespace IngameScript
             InitFuncButtons(); 
 
 
-            pnlInfoLog = Get("Info Display") as IMyTextPanel;
-            pnlInfoLog.CustomData = ""; // init log storage
-
-
             for (int i = 0; i < nChans; i++)
                 g_vol[i] = 0;
 
@@ -299,14 +300,26 @@ namespace IngameScript
 
             g_remote      = Get("Remote Control") as IMyRemoteControl;
 
-            InitSong();
-            
-            SetTranspose(g_song, g_song.CurChan, 0);
+
+            //SetTranspose(g_song, g_song.CurChan, 0);
 
 
             g_init = true;
         }
 
+
+        void FinishStartup()
+        {
+            // load oscillators one by one to avoid complexity hang
+            if (_nextToLoad < 10)
+                LoadOscillatorSamples(_nextToLoad++);
+
+            if (_nextToLoad == 10)
+            { 
+                InitSong();
+                _nextToLoad++;
+            }
+        }
 
 
         void InitDisplays()
@@ -323,19 +336,22 @@ namespace IngameScript
         }
 
 
-
         public void Main(string arg, UpdateType update)
         {
             if (!g_init)
                 return;
 
-
             pnlInfoLog.CustomData = "";
+            
+
+            FinishStartup();
+
 
             if (arg.Length > 0)
                 ProcessArg(arg);
 
             _triggerDummy.Clear();
+
 
             if ((update & UpdateType.Update1) != 0)
             {
@@ -352,7 +368,7 @@ namespace IngameScript
             if ((update & UpdateType.Update10) != 0)
             {
                 if (   !OK(g_song.PlayStep)
-                    && !TooComplex)
+                    && _nextToLoad > 10)
                     UpdateKeyLights();
 
 
@@ -365,13 +381,19 @@ namespace IngameScript
                     g_started = true;
 
 
-                if (!TooComplex) DrawMain();
-                if (!TooComplex) DrawInfo();
-                if (!TooComplex) DrawSongDsp();
-                if (!TooComplex) DrawMixer();
-                if (!TooComplex) DrawIO();
+                if (_nextToLoad > 10)
+                { 
+                    DrawMain();
+                    DrawInfo();
+                    DrawSongDsp();
+                    DrawMixer();
+                    DrawIO();
 
-                DampenVolumes();
+                    DampenVolumes();
+                }
+
+
+                ResetRuntimeInfo();
 
 
                 dspCount = instCount;
@@ -385,14 +407,39 @@ namespace IngameScript
             }
 
 
-            if ((update & UpdateType.Update1) != 0)
+            if (_nextToLoad > 10)
                 FinalizePlayback(g_song);
 
 
             instCount = Math.Max(instCount, Runtime.CurrentInstructionCount);
 
-
             pnlInfoLog.CustomData = "";
+
+
+            if ((update & UpdateType.Update1) != 0)
+                UpdateRuntimeInfo();
+        }
+
+
+        void UpdateRuntimeInfo()
+        {
+            if (g_curRuntimeTick >= g_runtimeMs.Length)
+                return;
+
+            var runMs = (float)Runtime.LastRunTimeMs;
+
+            g_runtimeMs[g_curRuntimeTick++] = runMs;
+            g_maxRuntimeMs = Math.Max(g_maxRuntimeMs, runMs);
+        }
+
+
+        void ResetRuntimeInfo()
+        {
+            for (int i = 0; i < g_runtimeMs.Length; i++)
+                g_runtimeMs[i] = 0;
+
+            g_curRuntimeTick = 0;
+            g_maxRuntimeMs = 0;
         }
 
 

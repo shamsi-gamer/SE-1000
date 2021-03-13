@@ -14,8 +14,7 @@ namespace IngameScript
                 g_song.PlayPat = (int)(g_song.PlayStep / nSteps);
                 if (g_follow) SetCurrentPattern(g_song.PlayPat);
 
-                if (!TooComplex)
-                    AddPlaybackNotes();
+                AddPlaybackNotes();
 
                 UpdateOctaveLight();
             }
@@ -26,10 +25,9 @@ namespace IngameScript
             var delete = StopSounds();
             DeleteSounds(delete);
 
-            if (!TooComplex) PlaySounds();
+            PlaySounds();
 
-            if (!TooComplex)
-                UpdateVolumes();
+            UpdateVolumes();
         }
 
 

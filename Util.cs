@@ -316,22 +316,23 @@ namespace IngameScript
 
         bool IsModPresent()
         {
-            return
-                   g_sine     .Count > 0
-                && g_triangle .Count > 0
-                && g_saw      .Count > 0
-                && g_square   .Count > 0
-                && g_lowNoise .Count > 0
-                && g_highNoise.Count > 0
-                && g_bandNoise.Count > 0;
+            return _nextToLoad < 10
+                ||    (OscSine     ?.Samples.Count ?? 0) > 0
+                   && (OscTriangle ?.Samples.Count ?? 0) > 0
+                   && (OscSaw      ?.Samples.Count ?? 0) > 0
+                   && (OscSquare   ?.Samples.Count ?? 0) > 0
+                   && (OscLowNoise ?.Samples.Count ?? 0) > 0
+                   && (OscHighNoise?.Samples.Count ?? 0) > 0
+                   && (OscBandNoise?.Samples.Count ?? 0) > 0
+                   && (OscClick    ?.Samples.Count ?? 0) > 0
+                   && (OscCrunch   ?.Samples.Count ?? 0) > 0;
         }
 
 
         string GetNewName(string name, Func<string, bool> exists)
         {
             var numLength = GetNumLength(name);
-
-            numLength = GetNumLength(name);
+            //numLength = GetNumLength(name);
 
             if (numLength > 0)
             {

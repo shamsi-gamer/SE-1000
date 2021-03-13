@@ -1,21 +1,6 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
+
 
 namespace IngameScript
 {
@@ -47,7 +32,7 @@ namespace IngameScript
                 Instrument = inst;
                 On         = true;
                            
-                Oscillator = Oscillator.Sine;
+                Oscillator = OscSine;
 
                 Offset     = null;
 
@@ -82,31 +67,22 @@ namespace IngameScript
 
             public string GetSample(int note)
             {
-                     if (Oscillator == Oscillator.Sine     ) return g_smp[g_sine     [note-12*NoteScale]];
-                else if (Oscillator == Oscillator.Triangle ) return g_smp[g_triangle [note-12*NoteScale]];
-                else if (Oscillator == Oscillator.Saw      ) return g_smp[g_saw      [note-12*NoteScale]];
-                else if (Oscillator == Oscillator.Square   ) return g_smp[g_square   [note-12*NoteScale]];
-                else if (Oscillator == Oscillator.LowNoise ) return g_smp[g_lowNoise [note-12*NoteScale]];
-                else if (Oscillator == Oscillator.HighNoise) return g_smp[g_highNoise[note-12*NoteScale]];
-                else if (Oscillator == Oscillator.BandNoise) return g_smp[g_bandNoise[note-12*NoteScale]];
-                else if (Oscillator == Oscillator.Samples1 ) return g_smp[g_samples1 [note-12*NoteScale]];
-                else if (Oscillator == Oscillator.Samples2 ) return g_smp[g_samples2 [note-12*NoteScale]];
-
-                return "";
+                return g_samples[Oscillator.Samples[note - 12*NoteScale]];
             }
 
 
             public float OscMult { get  
             {
-                     if (Oscillator == Oscillator.Sine     ) return 1;
-                else if (Oscillator == Oscillator.Triangle ) return 0.8f;
-                else if (Oscillator == Oscillator.Saw      ) return 0.35f;
-                else if (Oscillator == Oscillator.Square   ) return 0.35f;
-                else if (Oscillator == Oscillator.LowNoise ) return 1;
-                else if (Oscillator == Oscillator.HighNoise) return 1;
-                else if (Oscillator == Oscillator.BandNoise) return 1;
-                else if (Oscillator == Oscillator.Samples1 ) return 1;
-                else if (Oscillator == Oscillator.Samples2 ) return 1;
+                     if (Oscillator == OscSine     ) return 1;
+                else if (Oscillator == OscTriangle ) return 0.8f;
+                else if (Oscillator == OscSaw      ) return 0.4f;
+                else if (Oscillator == OscSquare   ) return 0.35f;
+                else if (Oscillator == OscLowNoise ) return 0.5f;
+                else if (Oscillator == OscHighNoise) return 0.5f;
+                else if (Oscillator == OscBandNoise) return 0.5f;
+                else if (Oscillator == OscClick    ) return 1;
+                else if (Oscillator == OscCrunch   ) return 1;
+                else if (Oscillator == OscSample   ) return 1;
 
                 return float.NaN;
             } }
@@ -114,8 +90,8 @@ namespace IngameScript
 
             public float GetWaveform(float f)
             {
-                     if (Oscillator == Oscillator.LowNoise ) f /= 24;
-                else if (Oscillator == Oscillator.BandNoise) f /= 12;
+                     if (Oscillator == OscLowNoise ) f /= 24;
+                else if (Oscillator == OscBandNoise) f /= 12;
 
                 f *= 6;
                 f -= (float)Math.Floor(f);
@@ -124,18 +100,18 @@ namespace IngameScript
 
                 float w = 0;
 
-                     if (Oscillator == Oscillator.Sine)      w = (float)Math.Sin(f * Tau);
-                else if (Oscillator == Oscillator.Triangle)
+                     if (Oscillator == OscSine)      w = (float)Math.Sin(f * Tau);
+                else if (Oscillator == OscTriangle)
                 {
-                         if (f <  0.25f)                     w = f / 0.25f;
-                    else if (f >= 0.25f && f < 0.75f)        w = 1 - 4 * (f - 0.25f);
-                    else                                     w = (f - 0.75f) / 0.25f - 1;
+                         if (f <  0.25f)              w = f / 0.25f;
+                    else if (f >= 0.25f && f < 0.75f) w = 1 - 4 * (f - 0.25f);
+                    else                              w = (f - 0.75f) / 0.25f - 1;
                 }                                                 
-                else if (Oscillator == Oscillator.Saw      ) w =  2*f - 1;
-                else if (Oscillator == Oscillator.Square   ) w =  f < 0.5f ? 1 : -1;
-                else if (Oscillator == Oscillator.LowNoise ) w = -1 + g_random[(int)(f * 100)] * 2;
-                else if (Oscillator == Oscillator.HighNoise) w = -1 + g_random[(int)(f * 100)] * 2;
-                else if (Oscillator == Oscillator.BandNoise) w = -1 + g_random[(int)(f * 100)] * 2;
+                else if (Oscillator == OscSaw      ) w =  2*f - 1;
+                else if (Oscillator == OscSquare   ) w =  f < 0.5f ? 1 : -1;
+                else if (Oscillator == OscLowNoise ) w = -1 + g_random[(int)(f * 100)] * 2;
+                else if (Oscillator == OscHighNoise) w = -1 + g_random[(int)(f * 100)] * 2;
+                else if (Oscillator == OscBandNoise) w = -1 + g_random[(int)(f * 100)] * 2;
 
                 w *= Volume.Value;
 
@@ -165,8 +141,9 @@ namespace IngameScript
 
                 var noteNum = AdjustNoteNumber(note, src, note.FrameLength);
 
-                if (   src.Oscillator == Oscillator.Samples2
-                    && noteNum >= 24 + 103 - 84)
+                if (   src.Oscillator == OscSample
+                    && (   noteNum % NoteScale > 0
+                        || noteNum >= (12 + OscSample.Samples.Count) * NoteScale))
                     return;
 
                 var vol = note.Volume;
@@ -255,7 +232,7 @@ namespace IngameScript
 
             public void Randomize(List<Oscillator> used)
             {
-                Oscillator = (Oscillator)(int)(Math.Pow(g_rnd.NextDouble(), 1.5) * 7); //9);
+                Oscillator = OscillatorFromType((OscType)(int)(Math.Pow(g_rnd.NextDouble(), 1.5) * 7)); //9));
 
 
                 if (   g_rnd.NextDouble() > 0.7f
@@ -285,8 +262,8 @@ namespace IngameScript
                     Tune = null;
 
 
-                if (   (   Oscillator == Oscillator.Sine
-                        || Oscillator == Oscillator.BandNoise)
+                if (   (   Oscillator == OscSine
+                        || Oscillator == OscBandNoise)
                     && g_rnd.NextDouble() > 0.7f
                     && !used.Contains(Oscillator))
                 {
