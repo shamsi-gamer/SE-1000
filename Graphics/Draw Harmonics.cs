@@ -25,28 +25,17 @@ namespace IngameScript
 
             float yo = 0;
 
-            DrawSourceSettings(
-                sprites,
-                x + 5, 
-                y + 10, 
-                SelectedSource(g_song),
-                false,
-                ref yo);
+            DrawSourceSettings(sprites, x + 5, y + 10, SelectedSource, false, ref yo);
 
             DrawHarmonicsSample(sprites, x + 100, y + 150, 100, 60, song, hrm);
 
 
-            var songStart = song.StartTime;
             var sndLen    = (int)(EditLength * g_ticksPerStep);
 
             for (int i = 0; i < hrm.Tones.Length; i++)
             {
-                var val = hrm.Tones[i].CurValue;
-
+                var val     = hrm.Tones[i].CurValue;
                 var toneVal = hrm.Tones[i].Value;
-
-                //val     = (float)Math.Pow(val,     0.5f);
-                //toneVal = (float)Math.Pow(toneVal, 0.5f);
 
                 var xh = xt + i*wc;
 

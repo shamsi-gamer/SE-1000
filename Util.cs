@@ -116,12 +116,12 @@ namespace IngameScript
             }
         }
 
-        Pattern    CurrentPattern    (Song song) { return song.Patterns[song.CurPat]; }
-        Channel    CurrentChannel    (Song song) { return CurrentPattern(song).Channels[song.CurChan]; }
-        Instrument CurrentInstrument (Song song) { return CurrentChannel(song).Instrument; }
-        Channel    SelectedChannel   (Song song) { return song.SelChan > -1 ? CurrentPattern(song).Channels[song.SelChan] : null; }
-        Instrument SelectedInstrument(Song song) { return SelectedChannel(g_song)?.Instrument ?? null; }
-        Source     SelectedSource    (Song song) { return g_song.CurSrc > -1 ? SelectedInstrument(song).Sources[g_song.CurSrc] : null; }
+        Pattern    CurrentPattern     { get { return g_song.Patterns[CurPat]; } }
+        Channel    CurrentChannel     { get { return CurrentPattern.Channels[CurChan]; } }
+        Instrument CurrentInstrument  { get { return CurrentChannel.Instrument; } }
+        Channel    SelectedChannel    { get { return SelChan > -1 ? CurrentPattern.Channels[SelChan] : null; } }
+        Instrument SelectedInstrument { get { return SelectedChannel?.Instrument ?? null; } }
+        Source     SelectedSource     { get { return CurSrc > -1 ? SelectedInstrument.Sources[CurSrc] : null; } }
 
 
         static bool IsParam(Setting setting) 
@@ -255,20 +255,20 @@ namespace IngameScript
 
         void UpdateSongOff()
         {
-            UpdateDspOffset(ref songOff, g_song.CurPat, g_song.Patterns.Count, maxDspPats, 1, 1);
+            UpdateDspOffset(ref songOff, CurPat, g_song.Patterns.Count, maxDspPats, 1, 1);
         }
 
 
         void UpdateInstOff(int ch)
         {
-            var curInst = g_inst.IndexOf(CurrentPattern(g_song).Channels[ch].Instrument);
+            var curInst = g_inst.IndexOf(CurrentPattern.Channels[ch].Instrument);
             UpdateDspOffset(ref instOff, curInst, g_inst.Count, maxDspInst, 0, 1);
         }
 
 
         void UpdateSrcOff()
         {
-            UpdateDspOffset(ref srcOff, g_song.CurSrc, CurrentInstrument(g_song).Sources.Count, maxDspSrc, 0, 0);
+            UpdateDspOffset(ref srcOff, CurSrc, CurrentInstrument.Sources.Count, maxDspSrc, 0, 0);
         }
 
 
@@ -307,10 +307,10 @@ namespace IngameScript
         void SetCurInst(Instrument inst)
         {
             int first, last;
-            GetPatterns(g_song, g_song.CurPat, out first, out last);
+            GetPatterns(g_song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
-                g_song.Patterns[p].Channels[g_song.CurChan].Instrument = inst;
+                g_song.Patterns[p].Channels[CurChan].Instrument = inst;
         }
 
 
@@ -358,8 +358,8 @@ namespace IngameScript
 
         bool ShowPiano { get 
         {
-            var tune = SelectedSource    (g_song)?.Tune
-                    ?? SelectedInstrument(g_song)?.Tune;
+            var tune = SelectedSource    ?.Tune
+                    ?? SelectedInstrument?.Tune;
 
             return
                    g_piano
@@ -376,7 +376,7 @@ namespace IngameScript
         {
             num /= NoteScale;
             num -= 60;
-            num -= CurrentChannel(g_song).Transpose * 12;
+            num -= CurrentChannel.Transpose * 12;
 
             switch (num)
             {
@@ -426,11 +426,11 @@ namespace IngameScript
 
         void SetVolume(Song song, int ch, float dv)
         {
-            var vol = CurrentPattern(song).Channels[ch].Volume;
+            var vol = CurrentPattern.Channels[ch].Volume;
             var mod = (g_mixerShift ? 10 : 1) * dv;
 
             int first, last;
-            GetPatterns(song, song.CurPat, out first, out last);
+            GetPatterns(song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
             {
@@ -444,9 +444,9 @@ namespace IngameScript
 
         void UpdateInstName(bool add = true)
         {
-            if (   g_song.CurPat  > -1
-                && g_song.SelChan > -1)
-                dspMain.Surface.WriteText(add ? SelectedChannel(g_song).Instrument.Name : "", false);
+            if (   CurPat  > -1
+                && SelChan > -1)
+                dspMain.Surface.WriteText(add ? SelectedChannel.Instrument.Name : "", false);
         }
 
 
@@ -470,13 +470,13 @@ namespace IngameScript
         void LimitRecPosition(Song song)
         {
             int st, nx;
-            GetPosLimits(song, song.CurPat, out st, out nx);
+            GetPosLimits(song, CurPat, out st, out nx);
 
                  if (song.EditPos >= nx) song.EditPos -= nx - st;
             else if (song.EditPos <  st) song.EditPos += nx - st;
 
             var cp = (int)(song.EditPos / nSteps);
-            if (cp != song.CurPat) SetCurrentPattern(cp);
+            if (cp != CurPat) SetCurrentPattern(cp);
         }
 
 

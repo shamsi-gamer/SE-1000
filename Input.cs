@@ -27,13 +27,13 @@ namespace IngameScript
         void UpdateInst()
         {
             if (   inputValid
-                && g_song.SelChan > -1
-                && g_song.CurSrc < 0)
+                && SelChan > -1
+                && CurSrc < 0)
             {
                 var sb = new StringBuilder();
                 dspMain.Surface.ReadText(sb, false);
 
-                CurrentInstrument(g_song).Name = sb.ToString().Trim();
+                CurrentInstrument.Name = sb.ToString().Trim();
             }
 
             inputValid = true;

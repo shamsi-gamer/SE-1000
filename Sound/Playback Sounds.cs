@@ -6,19 +6,12 @@ namespace IngameScript
 {
     partial class Program
     {
-        void AddSourceSounds(List<Sound> sounds, Source src, Note note)
-        {
-            if (!src.On) return;
-            src.CreateSounds(sounds, src, note, this);
-        }
-
-
         void AddSoundEchos(List<Sound> sounds, Sound snd, Delay del, int iSrc)
         {
             if (del == null) return;
 
             var lTime = g_time - snd.Note.PatTime;
-            var sTime = g_time - g_song.StartTime;
+            var sTime = g_time - StartTime;
 
             var dc = del.Count.GetValue(g_time, lTime, sTime, snd.FrameLength, snd.Note, snd.SourceIndex, snd.TriggerValues);
             var dt = del.Time .GetValue(g_time, lTime, sTime, snd.FrameLength, snd.Note, snd.SourceIndex, snd.TriggerValues);
@@ -82,7 +75,7 @@ namespace IngameScript
             var song = snd.Note.Channel.Pattern.Song;
 
             var lTime = g_time - snd.FrameTime;
-            var sTime = g_time - song.StartTime;
+            var sTime = g_time - StartTime;
 
 
             float vol = 0;
@@ -90,8 +83,8 @@ namespace IngameScript
             if (snd.Cache != null) // not echo
             {
                 var updateVol = 
-                    song.PlayTime < snd.FrameTime + snd.FrameLength + snd.ReleaseLength
-                    ? snd.GetVolume(g_time, song.StartTime)
+                    PlayTime < snd.FrameTime + snd.FrameLength + snd.ReleaseLength
+                    ? snd.GetVolume(g_time, StartTime)
                     : 1;
 
                 vol = snd.TriggerVolume

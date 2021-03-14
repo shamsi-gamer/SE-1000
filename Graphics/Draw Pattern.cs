@@ -20,11 +20,11 @@ namespace IngameScript
             var xt = 340;
             var wt = (w - xt) / nSteps;
 
-            DrawGrid(sprites, x + xt, y, w - xt, rh, song.CurPat);
+            DrawGrid(sprites, x + xt, y, w - xt, rh, CurPat);
 
 
             var ch = rh / nChans;
-            var cy = y + rh - (song.CurChan + 1) * ch;
+            var cy = y + rh - (CurChan + 1) * ch;
 
             FillRect(sprites, xt, cy, w - xt, ch, color3);
 
@@ -33,8 +33,8 @@ namespace IngameScript
 
 
             // edit position
-            if (   song.EditPos >= song.CurPat      * nSteps
-                && song.EditPos < (song.CurPat + 1) * nSteps)
+            if (   song.EditPos >= CurPat      * nSteps
+                && song.EditPos < (CurPat + 1) * nSteps)
             {
                 FillRect(
                     sprites, 
@@ -48,11 +48,11 @@ namespace IngameScript
 
             DrawPattern(sprites, x + xt, y, w - xt, rh, song, pat, 2, isolated);
 
-            if (   OK(song.PlayStep)
-                && song.PlayPat == pat)
+            if (   PlayTime > -1
+                && PlayPat == pat)
             {
-                FillRect(sprites, x + xt + wt * ((int)song.PlayStep % nSteps), y, wt, rh, color6);
-                DrawPatNeg(sprites, x + xt, y, w - xt, rh, song, pat, (int)song.PlayStep, isolated);
+                FillRect(sprites, x + xt + wt * ((int)PlayStep % nSteps), y, wt, rh, color6);
+                DrawPatNeg(sprites, x + xt, y, w - xt, rh, song, pat, (int)PlayStep, isolated);
             }
 
 
@@ -61,7 +61,7 @@ namespace IngameScript
             if (IsCurParam())
                 DrawParamValues(sprites, CurParam, x, y, w, h, xt, rh, song, pat);
 
-            if (song.SelChan < 0)
+            if (SelChan < 0)
                 DrawFuncButtons(sprites, w, h, song);
         }
 
@@ -70,13 +70,13 @@ namespace IngameScript
         {
             var ch = h / nChans;
 
-            FillRect(sprites, x, y + h - song.CurChan * ch - 35, w, ch, color6);
+            FillRect(sprites, x, y + h - CurChan * ch - 35, w, ch, color6);
 
             for (int c = 0; c < nChans; c++)
             {
                 var yLine = y + h - c * ch - 40;
 
-                var pat  = CurrentPattern(song);
+                var pat  = CurrentPattern;
                 var chan = pat.Channels[c];
 
                 DrawString(sprites, 
@@ -86,7 +86,7 @@ namespace IngameScript
                     6,
                     yLine + 6,
                     1,
-                    c == song.CurChan ? color0 : (g_piano ? color2 : (chan.Notes.Count > 0 ? color6 : color2)));
+                    c == CurChan ? color0 : (g_piano ? color2 : (chan.Notes.Count > 0 ? color6 : color2)));
             }
         }
 

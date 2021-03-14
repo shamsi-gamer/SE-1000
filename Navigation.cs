@@ -15,32 +15,33 @@ namespace IngameScript
 
         void Play()
         {
-            if (OK(g_song.PlayStep))
+            if (PlayTime > -1)
                 return;
 
             if (g_cue > -1)
             {
-                g_song.PlayStep = g_cue * nSteps;
+                PlayTime = GetPatTime(g_cue);
                 g_cue = -1;
             }
             else
-                g_song.PlayStep = g_song.CurPat * nSteps;
+                PlayTime = GetPatTime(CurPat);
 
-            g_song.StartTime = g_time;
+            StartTime = g_time;
+
             UpdatePlayStopLights();
         }
 
 
         void Stop()
         {
-            if (!OK(g_song.PlayStep))
+            if (PlayTime < 0)
             {
-                var b = g_song.GetBlock(g_song.CurPat);
+                var b = g_song.GetBlock(CurPat);
 
                 var _block =
                        g_block
                     && b != null
-                    && g_song.CurPat > b.First;
+                    && CurPat > b.First;
 
                 SetCurrentPattern(_block ? b.First : 0);
 
@@ -51,7 +52,7 @@ namespace IngameScript
             StopCurrentNotes(g_song);
 
 
-            g_song.PlayStep = float.NaN;
+            PlayTime = -1;
             //CurSong.StartTime = float.NaN; // don't clear start time here
 
             lastNotes.Clear();
@@ -62,7 +63,7 @@ namespace IngameScript
 
         void Cue()
         {
-            g_cue = g_cue == g_song.CurPat ? -1 : g_song.CurPat;
+            g_cue = g_cue == CurPat ? -1 : CurPat;
             UpdateLight(lblCue, g_cue > -1);
         }
 
@@ -71,14 +72,14 @@ namespace IngameScript
         {
             if (setMem)
             {
-                g_mem[m] = g_mem[m] < 0 || g_mem[m] != g_song.CurPat ? g_song.CurPat : -1;
+                g_mem[m] = g_mem[m] < 0 || g_mem[m] != CurPat ? CurPat : -1;
                 setMem = false;
 
                 UpdateMemoryLights();
             }
             else if (g_mem[m] > -1)
             {
-                if (OK(g_song.PlayStep))
+                if (PlayTime > -1)
                 {
                     g_cue = g_mem[m];
                     UpdateLight(lblCue, g_cue > -1);
@@ -116,8 +117,8 @@ namespace IngameScript
 
         public void PrevPattern(bool movePat)
         {
-            if (movePat) MovePatterns(g_song.CurPat - 1);
-            else SetCurrentPattern(g_song.CurPat - 1);
+            if (movePat) MovePatterns(CurPat - 1);
+            else SetCurrentPattern(CurPat - 1);
             
             MarkLight(lblPrevPat, !movePat);
             songPressed.Add(5);
@@ -126,19 +127,17 @@ namespace IngameScript
 
         public void NextPattern(bool movePat)
         {
-            if (movePat) MovePatterns(g_song.CurPat + 1);
-            else SetCurrentPattern(g_song.CurPat + 1);
+            if (movePat) MovePatterns(CurPat + 1);
+            else SetCurrentPattern(CurPat + 1);
 
             MarkLight(lblNextPat, !movePat);
             songPressed.Add(6);
         }
 
 
-        public void MovePatterns(int p)
+        public void MovePatterns(int destPat)
         {
-            var cp = g_song.CurPat;
-
-            var block = g_song.GetBlock(g_song.CurPat);
+            var block = g_song.GetBlock(CurPat);
             if (block != null)
             {
                 var pats = new List<Pattern>();
@@ -150,7 +149,7 @@ namespace IngameScript
                 g_song.Blocks.Remove(block);
 
                 var newFirst = block.First;
-                if (p > g_song.CurPat)
+                if (destPat > CurPat)
                 {
                     var b = g_song.GetBlock(block.Last + 1);
                     if (b != null)
@@ -159,12 +158,12 @@ namespace IngameScript
                         b.Last  -= block.Len;
 
                         newFirst = block.First + b.Len;
-                        g_song.CurPat += b.Len;
+                        CurPat += b.Len;
                     }
                     else
                     {
                         newFirst++;
-                        g_song.CurPat++;
+                        CurPat++;
                     }
                 }
                 else
@@ -177,14 +176,14 @@ namespace IngameScript
                         newFirst = b.First;
 
                         b.First += block.Len;
-                        b.Last += block.Len;
+                        b.Last  += block.Len;
 
-                        g_song.CurPat -= b.Len;
+                        CurPat -= b.Len;
                     }
                     else
                     {
                         newFirst--;
-                        g_song.CurPat--;
+                        CurPat--;
                     }
                 }
 
@@ -194,42 +193,42 @@ namespace IngameScript
 
                 g_song.Blocks.Add(new Block(newFirst, newFirst + block.Len - 1));
 
-                g_song.CurPat = MinMax(cp - block.First, g_song.CurPat, g_song.Patterns.Count - 1 - (block.Last - cp));
+                CurPat = MinMax(destPat - block.First, CurPat, g_song.Patterns.Count - 1 - (block.Last - destPat));
             }
             else
             {
-                var pat = CurrentPattern(g_song);
-                g_song.Patterns.RemoveAt(g_song.CurPat);
+                var pat = CurrentPattern;
+                g_song.Patterns.RemoveAt(CurPat);
 
-                var b = g_song.GetBlock(p);
+                var b = g_song.GetBlock(destPat);
                 if (b != null)
                 {
-                    var frw = p > g_song.CurPat ? 1 : -1;
+                    var frw = destPat > CurPat ? 1 : -1;
 
-                    p = MinMax(0, g_song.CurPat + b.Len * frw, g_song.Patterns.Count);
+                    destPat = MinMax(0, CurPat + b.Len * frw, g_song.Patterns.Count);
 
                     b.First -= frw;
-                    b.Last -= frw;
+                    b.Last  -= frw;
 
-                    g_song.CurPat = MinMax(0, g_song.CurPat + b.Len * frw, g_song.Patterns.Count);
+                    CurPat = MinMax(0, CurPat + b.Len * frw, g_song.Patterns.Count);
                 }
                 else
                 {
-                    p = MinMax(0, p, g_song.Patterns.Count);
-                    g_song.CurPat = MinMax(0, p, g_song.Patterns.Count);
+                    destPat = MinMax(0, destPat, g_song.Patterns.Count);
+                    CurPat  = MinMax(0, destPat, g_song.Patterns.Count);
                 }
 
-                g_song.Patterns.Insert(p, pat);
+                g_song.Patterns.Insert(destPat, pat);
             }
 
-            if (OK(g_song.PlayStep))
+            if (PlayTime > -1)
             {
-                g_song.PlayStep += (g_song.CurPat - cp) * nSteps;
-                g_song.PlayPat   = (int)(g_song.PlayStep / nSteps);
+                PlayTime += GetPatTime(CurPat - destPat);
+                PlayPat   = (int)(PlayStep / nSteps);
             }
 
             if (OK(g_song.EditPos))
-                g_song.EditPos = g_song.CurPat * nSteps + g_song.EditPos % nSteps;
+                g_song.EditPos = CurPat * nSteps + g_song.EditPos % nSteps;
 
 
             g_song.UpdateAutoKeys();
@@ -247,33 +246,33 @@ namespace IngameScript
 
             //StopEdit();
 
-            var b = g_song.GetBlock(g_song.CurPat);
+            var b = g_song.GetBlock(CurPat);
 
             if (    b != null
                 && (g_in || g_out))
             {
-                var off = p > g_song.CurPat ? 1 : -1;
+                var off = p > CurPat ? 1 : -1;
 
-                     if (g_in ) b.First = MinMax(0, b.First + off, Math.Min(g_song.CurPat, b.Last));
-                else if (g_out) b.Last  = MinMax(Math.Max(b.First, g_song.CurPat), b.Last + off, g_song.Patterns.Count - 1);
+                     if (g_in ) b.First = MinMax(0, b.First + off, Math.Min(CurPat, b.Last));
+                else if (g_out) b.Last  = MinMax(Math.Max(b.First, CurPat), b.Last + off, g_song.Patterns.Count - 1);
             }
             else
             {
-                g_song.CurPat = p;
+                CurPat = p;
 
-                     if (g_song.CurPat < 0)                      g_song.CurPat = g_song.Patterns.Count - 1;
-                else if (g_song.CurPat >= g_song.Patterns.Count) g_song.CurPat = 0;
+                     if (CurPat < 0)                      CurPat = g_song.Patterns.Count - 1;
+                else if (CurPat >= g_song.Patterns.Count) CurPat = 0;
 
 
                 if (g_autoCue)
                 {
-                    g_cue = g_song.CurPat;
+                    g_cue = CurPat;
                     UpdateLight(lblCue, g_cue > -1);
                 }
             }
 
             if (OK(g_song.EditPos))
-                g_song.EditPos = g_song.CurPat * nSteps + g_song.EditPos % nSteps;
+                g_song.EditPos = CurPat * nSteps + g_song.EditPos % nSteps;
 
             UpdateOctaveLight();
             UpdateSongOff();//g_song.CurPat);
@@ -284,11 +283,11 @@ namespace IngameScript
 
         void NewPattern()
         { 
-            var pat = new Pattern(CurrentPattern(g_song));
+            var pat = new Pattern(CurrentPattern);
             pat.Clear();
 
-            g_song.Patterns.Insert(g_song.CurPat + 1, pat);
-            SetCurrentPattern(g_song.CurPat + 1);
+            g_song.Patterns.Insert(CurPat + 1, pat);
+            SetCurrentPattern(CurPat + 1);
 
             MovePatternOff();
             DisableBlock();
@@ -306,7 +305,7 @@ namespace IngameScript
 
         void DeletePattern()
         {
-            var block = g_song.GetBlock(g_song.CurPat);
+            var block = g_song.GetBlock(CurPat);
 
             if (   g_block
                 && block != null)
@@ -331,14 +330,14 @@ namespace IngameScript
                     g_song.Patterns.Add(first);
                 }
 
-                if (g_song.CurPat >= g_song.Patterns.Count)
+                if (CurPat >= g_song.Patterns.Count)
                     SetCurrentPattern(g_song.Patterns.Count - 1);
             }
             else
             {
-                var b = g_song.GetBlock(g_song.CurPat);
+                var b = g_song.GetBlock(CurPat);
 
-                if (g_song.Patterns.Count > 1) g_song.Patterns.RemoveAt(g_song.CurPat);
+                if (g_song.Patterns.Count > 1) g_song.Patterns.RemoveAt(CurPat);
                 else g_song.Patterns[0].Clear();
 
                 if (b != null)
@@ -347,12 +346,12 @@ namespace IngameScript
                     else b.Last--;
                 }
 
-                if (g_song.CurPat >= g_song.Patterns.Count)
+                if (CurPat >= g_song.Patterns.Count)
                     SetCurrentPattern(g_song.Patterns.Count - 1);
             }
 
-            if (g_song.PlayPat >= g_song.Patterns.Count)
-                g_song.PlayPat  = g_song.Patterns.Count - 1;
+            if (PlayPat >= g_song.Patterns.Count)
+                PlayPat  = g_song.Patterns.Count - 1;
 
 
             if (OK(g_song.EditPos))
@@ -373,7 +372,7 @@ namespace IngameScript
 
         void DuplicatePattern()
         {
-            var block = g_song.GetBlock(g_song.CurPat);
+            var block = g_song.GetBlock(CurPat);
 
             if (g_block
             && block != null)
@@ -385,12 +384,12 @@ namespace IngameScript
                 block.Last + 1,
                 block.Last + block.Len));
 
-                SetCurrentPattern(g_song.CurPat + block.Len);
+                SetCurrentPattern(CurPat + block.Len);
             }
             else
             {
-                g_song.Patterns.Insert(g_song.CurPat + 1, new Pattern(CurrentPattern(g_song)));
-                SetCurrentPattern(g_song.CurPat + 1);
+                g_song.Patterns.Insert(CurPat + 1, new Pattern(CurrentPattern));
+                SetCurrentPattern(CurPat + 1);
             }
 
             MovePatternOff();

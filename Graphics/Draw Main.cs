@@ -22,30 +22,30 @@ namespace IngameScript
             var sprites = new List<MySprite>();
 
 
-            if (   g_song.SelChan > -1
+            if (   SelChan > -1
                 && IsCurParam()
                 && (   g_paramKeys
                     || g_paramAuto))
             {
-                if (g_piano)  DrawPianoDisplay  (sprites, x, y, w, h, g_song, g_song.CurPat, true, null);
-                else          DrawPatternDisplay(sprites, x, y, w, h, g_song, g_song.CurPat, true);
+                if (g_piano)  DrawPianoDisplay  (sprites, x, y, w, h, g_song, CurPat, true, null);
+                else          DrawPatternDisplay(sprites, x, y, w, h, g_song, CurPat, true);
             }
-            else if (g_song.SelChan > -1)
+            else if (SelChan > -1)
             {
                 if (IsCurSetting(typeof(Harmonics)))
                 {
                               var hrm = CurOrParentHarmonics;
-                              DrawHarmonicsDisplay(sprites, x, y, w, h, g_song, CurrentChannel(g_song), hrm);
+                              DrawHarmonicsDisplay(sprites, x, y, w, h, g_song, CurrentChannel, hrm);
                 }
                 else if (IsCurOrParent(typeof(Arpeggio)))
                 {
                               var arp = CurOrParentArpeggio;
-                              DrawPianoDisplay  (sprites, x, y, w, h, arp.Song, arp.Song.CurPat, true, arp);
+                              DrawPianoDisplay  (sprites, x, y, w, h, arp.Song, CurPat, true, arp);
                 }
                 else          DrawInstrument    (sprites, x, y, w, h);
             }
-            else if (g_piano) DrawPianoDisplay  (sprites, x, y, w, h, g_song, g_song.CurPat, true, null);
-            else              DrawPatternDisplay(sprites, x, y, w, h, g_song, g_song.CurPat, true);
+            else if (g_piano) DrawPianoDisplay  (sprites, x, y, w, h, g_song, CurPat, true, null);
+            else              DrawPatternDisplay(sprites, x, y, w, h, g_song, CurPat, true);
 
 
             dsp.Draw(sprites);
@@ -57,10 +57,10 @@ namespace IngameScript
             var bw = w/6;
             var x0 = bw/2;
 
-            if (song.SelChan > -1)
+            if (SelChan > -1)
             {
-                if (g_song.CurSrc < 0) DrawInstFuncLabels(sprites, w, h, song);
-                else                   DrawSrcFuncLabels (sprites, w, h, song);
+                if (CurSrc < 0) DrawInstFuncLabels(sprites, w, h, song);
+                else            DrawSrcFuncLabels (sprites, w, h, song);
             }
             else
             {
@@ -74,7 +74,7 @@ namespace IngameScript
 
         void DrawInstFuncLabels(List<MySprite> sprites, float w, float h, Song song)
         {
-            var chan = SelectedChannel(g_song);
+            var chan = SelectedChannel;
 
             if (curSet > -1)
             { 
@@ -89,7 +89,7 @@ namespace IngameScript
             }
             else
             {
-                var inst = CurrentInstrument(song);
+                var inst = CurrentInstrument;
 
                 DrawFuncButton(sprites, "Vol",  1, w, h, true, inst.Volume.HasDeepParams(chan, -1));
                 DrawFuncButton(sprites, "Tune", 2, w, h, true, inst.Tune     != null);
@@ -102,7 +102,7 @@ namespace IngameScript
 
         void DrawSrcFuncLabels(List<MySprite> sprites, float w, float h, Song song)
         {
-            var chan = SelectedChannel(g_song);
+            var chan = SelectedChannel;
 
             if (curSet > -1)
             { 
@@ -117,10 +117,10 @@ namespace IngameScript
             }
             else
             {
-                var src = SelectedSource(song);
+                var src = SelectedSource;
 
                 DrawFuncButton(sprites, "Off",  0, w, h, true, src.Offset    != null);
-                DrawFuncButton(sprites, "Vol",  1, w, h, true, src.Volume.HasDeepParams(chan, g_song.CurSrc));
+                DrawFuncButton(sprites, "Vol",  1, w, h, true, src.Volume.HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, "Tune", 2, w, h, true, src.Tune      != null);
                 DrawFuncButton(sprites, "Hrm",  3, w, h, true, src.Harmonics != null);
                 DrawFuncButton(sprites, "Flt",  4, w, h, true, src.Filter    != null);
@@ -202,8 +202,8 @@ namespace IngameScript
 
             DrawFuncButton(sprites, "LFO",  2, w, h, true, param.Lfo != null);
 
-            DrawFuncButton(sprites, "Key",  3, w, h, true, chan.HasNoteKeys(param.GetPath(g_song.CurSrc)));
-            DrawFuncButton(sprites, "Auto", 4, w, h, true, chan.HasAutoKeys(param.GetPath(g_song.CurSrc)));
+            DrawFuncButton(sprites, "Key",  3, w, h, true, chan.HasNoteKeys(param.GetPath(CurSrc)));
+            DrawFuncButton(sprites, "Auto", 4, w, h, true, chan.HasAutoKeys(param.GetPath(CurSrc)));
         }
 
 

@@ -8,8 +8,8 @@ namespace IngameScript
     {
         void High(int h)
         {
-            var tune = SelectedSource    (g_song)?.Tune
-                    ?? SelectedInstrument(g_song)?.Tune;
+            var tune = SelectedSource    ?.Tune
+                    ?? SelectedInstrument?.Tune;
 
 
             if (h == 10)
@@ -60,7 +60,7 @@ namespace IngameScript
 
                     var oldLength = g_editLength;
                     g_editLength = Math.Min(g_editLength, g_steps.Length-2);
-                    PlayNote(g_song, chord[0], chord, g_song.CurChan);
+                    PlayNote(g_song, chord[0], chord, CurChan);
                     g_editLength = oldLength;
                 }
             }
@@ -70,7 +70,7 @@ namespace IngameScript
                     CurSong,
                     HighToNote(h), 
                     g_chord > -1 && g_chordMode ? g_chords[g_chord] : null,
-                    g_song.CurChan);
+                    CurChan);
             }
             else
             {
@@ -98,8 +98,8 @@ namespace IngameScript
 
         void Low(int l)
         {
-            var tune = SelectedSource    (g_song)?.Tune
-                    ?? SelectedInstrument(g_song)?.Tune;
+            var tune = SelectedSource    ?.Tune
+                    ?? SelectedInstrument?.Tune;
 
             if (   IsCurParam("Tune")
                 && (tune?.UseChord ?? false))
@@ -127,7 +127,7 @@ namespace IngameScript
 
                     var oldLength = g_editLength;
                     g_editLength = Math.Min(g_editLength, g_steps.Length-2);
-                    PlayNote(g_song, chord[0], chord, g_song.CurChan);
+                    PlayNote(g_song, chord[0], chord, CurChan);
                     g_editLength = oldLength;
                 }
 
@@ -146,18 +146,18 @@ namespace IngameScript
                         CurSong,
                         LowToNote(l),
                         g_chord > -1 && g_chordMode ? g_chords[g_chord] : null,
-                        CurSong.CurChan);
+                        CurChan);
                 }
             }
             else
-                Tick(CurSong.CurChan, l);
+                Tick(CurChan, l);
         }
 
 
         void Tick(int ch, int step)
         {
             int first, last;
-            GetPatterns(CurSong, CurSong.CurPat, out first, out last);
+            GetPatterns(CurSong, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
                 Tick(p, ch, step);
@@ -170,8 +170,8 @@ namespace IngameScript
             var  chan = CurSong.Patterns[pat].Channels[ch];
 
             var found = chan.Notes.Where(n => 
-                   n.PatStepTime >= step
-                && n.PatStepTime <  step+1).ToArray();
+                   n.PatStep >= step
+                && n.PatStep <  step+1).ToArray();
 
             if (found.Length == 0)
             {
@@ -180,7 +180,7 @@ namespace IngameScript
                     var notes = GetChordNotes(g_curNote);
 
                     foreach (var note in notes)
-                        chan.AddNote(new Note(chan, ch, 1, note, _chan.Instrument, step, EditLength));
+                        chan.AddNote(new Note(chan, ch, 1, note, step, EditLength));
                 }
             }
             else if (g_pick)
@@ -214,7 +214,7 @@ namespace IngameScript
                     Shift(i, fwd);
             }
             else
-                Shift(CurSong.CurChan, fwd);
+                Shift(CurChan, fwd);
         }
 
 
@@ -225,7 +225,7 @@ namespace IngameScript
             var spill = new List<Note>();
 
             int first, last;
-            GetPatterns(CurSong, CurSong.CurPat, out first, out last);
+            GetPatterns(CurSong, CurPat, out first, out last);
 
             if (fwd)
             {
@@ -237,12 +237,12 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.PatStepTime += EditStep;
+                        note.PatStep += EditStep;
 
-                        if (note.PatStepTime >= nSteps)
+                        if (note.PatStep >= nSteps)
                         {
                             chan.Notes.RemoveAt(n);
-                            note.PatStepTime -= nSteps;
+                            note.PatStep -= nSteps;
 
                             if (p == last) spill.Add(note);
                             else pats[p + 1].Channels[ch].Notes.Add(note);
@@ -262,12 +262,12 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.PatStepTime -= EditStep;
+                        note.PatStep -= EditStep;
 
-                        if (note.PatStepTime < 0)
+                        if (note.PatStep < 0)
                         {
                             chan.Notes.RemoveAt(n);
-                            note.PatStepTime += nSteps;
+                            note.PatStep += nSteps;
 
                             if (p == first) spill.Add(note);
                             else pats[p-1].Channels[ch].Notes.Add(note);
@@ -283,21 +283,21 @@ namespace IngameScript
         void RandomInstrument()
         {
             rndInst = !rndInst;
-            UpdateHighLights(CurrentPattern(CurSong), CurrentChannel(CurSong));
+            UpdateHighLights(CurrentPattern, CurrentChannel);
         }
 
 
         void ToggleAllChannels()
         {
             allChan = !allChan;
-            UpdateHighLights(CurrentPattern(CurSong), CurrentChannel(CurSong));
+            UpdateHighLights(CurrentPattern, CurrentChannel);
         }
 
 
         void Flip(int frac)
         {
             for (int step = 0; step < nSteps; step += nSteps / frac)
-                Tick(CurSong.CurChan, step);
+                Tick(CurChan, step);
         }
 
 
@@ -309,14 +309,14 @@ namespace IngameScript
                     ClearNotes(i);
             }
             else
-                ClearNotes(CurSong.CurChan);
+                ClearNotes(CurChan);
         }
 
 
         void ClearNotes(int ch)
         {
             int first, last;
-            GetPatterns(CurSong, CurSong.CurPat, out first, out last);
+            GetPatterns(CurSong, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
             { 
@@ -329,7 +329,7 @@ namespace IngameScript
                         var param = GetCurrentParam(note.Instrument);
 
                         var index = 0;
-                        while ((index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSong.CurSrc))) > -1)
+                        while ((index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSrc))) > -1)
                             note.Keys.RemoveAt(index);
                     }
                 }
@@ -338,7 +338,7 @@ namespace IngameScript
                     var param = GetCurrentParam(chan.Instrument);
                     var index = 0;
                         
-                    while ((index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(CurSong.CurSrc))) > -1)
+                    while ((index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(CurSrc))) > -1)
                         chan.AutoKeys.RemoveAt(index);
                 }
                 else
@@ -368,7 +368,7 @@ namespace IngameScript
             if (high > 6) h++;
 
             return 
-                  (60 + CurrentChannel(g_song).Transpose * 12 + h) * NoteScale 
+                  (60 + CurrentChannel.Transpose * 12 + h) * NoteScale 
                 + (g_halfSharp ? 1 : 0);
         }
 
@@ -383,7 +383,7 @@ namespace IngameScript
             if (low > 13) l--;
 
             return 
-                  (60 + CurrentChannel(g_song).Transpose * 12 + l) * NoteScale
+                  (60 + CurrentChannel.Transpose * 12 + l) * NoteScale
                 + (g_halfSharp ? 1 : 0);
         }
 

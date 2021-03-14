@@ -51,13 +51,13 @@ namespace IngameScript
             var pw = wt * nSteps;
             var ph = ht * nChans;
 
-            var pxCur = x - (nDsp*4 + songOff) * pw + CurSong.CurPat * pw;
+            var pxCur = x - (nDsp*4 + songOff) * pw + CurPat * pw;
             var py = y + h/2 - ph/2;
 
             var first = nDsp * 4 + songOff;
             var next = Math.Min((nDsp + 1) * 4 + songOff, CurSong.Patterns.Count);
 
-            var curBlock = CurSong.GetBlock(CurSong.CurPat);
+            var curBlock = CurSong.GetBlock(CurPat);
 
             var _f = first - songOff;
 
@@ -94,7 +94,7 @@ namespace IngameScript
                 {
                     var px = x - (nDsp * 4 + songOff) * pw + p * pw;
                     var ch = ph / nChans;
-                    var cy = py + ph - (CurSong.CurChan + 1) * ch;
+                    var cy = py + ph - (CurChan + 1) * ch;
 
                     FillRect(sprites, px, cy, pw, ch, color3);
                 }
@@ -104,7 +104,7 @@ namespace IngameScript
             if (   CurSong.EditPos >= first * nSteps
                 && CurSong.EditPos <  next  * nSteps)
             {
-                var pl    = x - pw * (nDsp * 4 * pw + CurSong.CurPat + songOff);
+                var pl    = x - pw * (nDsp * 4 * pw + CurPat + songOff);
                 var xTick = wt * CurSong.EditPos;
 
                 FillRect(
@@ -128,7 +128,7 @@ namespace IngameScript
                 if (g_paramKeys)
                 {
                     FillRect     (sprites, px, py+ph+ph/5, pw, 1,    color3);
-                    DrawParamKeys(sprites, px, py + ph,    pw, ph/5, CurSong, p, CurSong.CurChan);
+                    DrawParamKeys(sprites, px, py + ph,    pw, ph/5, CurSong, p, CurChan);
                 }
                 else if (g_paramAuto)
                 {
@@ -141,22 +141,22 @@ namespace IngameScript
                 var fx   = x - _f * pw;
                 var wMax = Math.Min(CurSong.Patterns.Count * pw, w * 2);
 
-                DrawParamAuto(sprites, fx, py + ph, pw, ph/5, wMax, CurSong, 0, CurSong.CurChan);
+                DrawParamAuto(sprites, fx, py + ph, pw, ph/5, wMax, CurSong, 0, CurChan);
             }
 
 
             DrawRect(sprites, pxCur + 1, py, wt * nSteps - 2, ph, color6, 2);
 
 
-            if (OK(CurSong.PlayStep))
+            if (OK(PlayStep))
             {
                 var pl    = x  - pw * (nDsp * 4 + songOff);
-                var xTick = pl + wt * (int)CurSong.PlayStep;
+                var xTick = pl + wt * (int)PlayStep;
 
                 FillRect(sprites, xTick, py, wt, ph, color6);
 
-                if (g_piano) DrawPianoNeg(sprites, pl, py, pw, ph, CurSong, CurSong.PlayPat, (int)g_song.PlayStep, false);
-                else         DrawPatNeg  (sprites, pl, py, pw, ph, CurSong, CurSong.PlayPat, (int)g_song.PlayStep, false);
+                if (g_piano) DrawPianoNeg(sprites, pl, py, pw, ph, CurSong, PlayPat, (int)PlayStep, false);
+                else         DrawPatNeg  (sprites, pl, py, pw, ph, CurSong, PlayPat, (int)PlayStep, false);
             }
 
 
@@ -190,10 +190,10 @@ namespace IngameScript
                     DrawRightBracket(sprites, bx + sw, by, 16, sh, 1);
                 }
 
-                FillRect(sprites, px + bw * CurSong.CurPat, by, bw, sh, color4);
+                FillRect(sprites, px + bw * CurPat, by, bw, sh, color4);
 
-                if (OK(CurSong.PlayStep))
-                    FillRect(sprites, px + bw / nSteps * CurSong.PlayStep, by, 4, sh, color6);
+                if (OK(PlayStep))
+                    FillRect(sprites, px + bw / nSteps * PlayStep, by, 4, sh, color6);
             }
 
 

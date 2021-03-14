@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Chords.cs" />
     <Compile Include="Graphics\Draw Harmonics.cs" />
+    <Compile Include="Save.cs" />
     <Compile Include="Settings\Filter.cs" />
     <Compile Include="Settings\Harmonics.cs" />
     <Compile Include="Settings\Modulate.cs" />
@@ -66,7 +67,7 @@
     <Compile Include="Input.cs" />
     <Compile Include="Sound\Playback.cs" />
     <Compile Include="Sound\Instrument.cs" />
-    <Compile Include="IO.cs" />
+    <Compile Include="Load.cs" />
     <Compile Include="Settings\LFO.cs" />
     <Compile Include="Lib.cs" />
     <Compile Include="Display.cs" />

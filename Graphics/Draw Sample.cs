@@ -1,18 +1,6 @@
-﻿using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
 using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
 using VRageMath;
 
 
@@ -20,46 +8,46 @@ namespace IngameScript
 {
     partial class Program
     {
-        float[] g_sample      = null;
+        //float[] g_sample      = null;
         bool    g_sampleValid = false;
 
 
-        void UpdateSample(Instrument inst, float w, float timeScale)
-        {
-            var iw = (int)Math.Ceiling(w);
+        //void UpdateSample(Instrument inst, float w, float timeScale)
+        //{
+        //    var iw = (int)Math.Ceiling(w);
 
-            if (   g_sample == null
-                || g_sample.Length != iw)
-                g_sample = new float[iw];
-
-
-            float prev = float.NaN;
-
-            for (int t = 0; t < w; t += 2)
-            {
-                float val = 0;
-
-                for (int i = 0; i < inst.Sources.Count; i++)
-                {
-                    var src = inst.Sources[i];
-                    if (!src.On) continue;
-
-                    var freq = (float)(Math.Pow(2, (showNote-69)/12f) / 8);
-
-                    val += src.GetWaveform(t/w * freq);
-                }
+        //    if (   g_sample == null
+        //        || g_sample.Length != iw)
+        //        g_sample = new float[iw];
 
 
-                g_sample[t] = MinMax(-2, val * inst.Volume.CurValue, 2);
+        //    float prev = float.NaN;
 
-                if (t > 0)
-                    g_sample[t-1] = (g_sample[t] + prev)/2;
+        //    for (int t = 0; t < w; t += 2)
+        //    {
+        //        float val = 0;
 
-                prev = g_sample[t];
-            }
+        //        for (int i = 0; i < inst.Sources.Count; i++)
+        //        {
+        //            var src = inst.Sources[i];
+        //            if (!src.On) continue;
 
-            g_sampleValid = true;
-        }
+        //            var freq = (float)(Math.Pow(2, (showNote-69)/12f) / 8);
+
+        //            val += src.GetWaveform(t/w * freq);
+        //        }
+
+
+        //        g_sample[t] = MinMax(-2, val * inst.Volume.CurValue, 2);
+
+        //        if (t > 0)
+        //            g_sample[t-1] = (g_sample[t] + prev)/2;
+
+        //        prev = g_sample[t];
+        //    }
+
+        //    g_sampleValid = true;
+        //}
 
 
         //void DrawInstSample(List<MySprite> sprites, float x, float y, float w, float h, Instrument inst, bool active, float timeScale)

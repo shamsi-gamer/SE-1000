@@ -20,7 +20,7 @@ namespace IngameScript
 
         void SetFunc(int func)
         {
-            if (g_song.SelChan > -1)
+            if (SelChan > -1)
             {
                 if (curSet > -1)
                 {
@@ -36,8 +36,8 @@ namespace IngameScript
                 }
                 else 
                 {
-                    if (g_song.CurSrc < 0) SetInstFunc(SelectedInstrument(g_song), func);
-                    else                   SetSrcFunc(SelectedSource(g_song), func);
+                    if (CurSrc < 0) SetInstFunc(SelectedInstrument, func);
+                    else            SetSrcFunc(SelectedSource,      func);
                 }
 
                 g_sampleValid = false;
@@ -92,11 +92,12 @@ namespace IngameScript
                 g_settings[curSet-1].Remove(setting);
             else 
             {
-                var inst = SelectedInstrument(g_song);
-                var src  = g_song.CurSrc > -1 ? inst.Sources[g_song.CurSrc] : null;
+                var inst = SelectedInstrument;
+                var src  = CurSrc > -1 ? inst.Sources[CurSrc] : null;
 
                 switch (setting.Tag)
                 {
+                    case "Off":  if (src != null) src.Offset    = null;                            break;
                     case "Del":  if (src != null) src.Delay     = null; else inst.Delay    = null; break;
                     case "Tune": if (src != null) src.Tune      = null; else inst.Tune     = null; break;
                     case "Hrm":  if (src != null) src.Harmonics = null;                            break;
@@ -159,8 +160,8 @@ namespace IngameScript
 
                     || param.Tag == "Amp"
                     || param.Tag == "Freq"
-                    ||    /*param.Parent != null*/
-                       /*&&*/ param.Tag == "Off"
+                    ||    param.Parent != null
+                       && param.Tag == "Off"
                        
                     || param.Tag.Substring(0, 3) == "Hrm"
 

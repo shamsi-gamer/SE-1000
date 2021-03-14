@@ -153,7 +153,7 @@ namespace IngameScript
                     if (i == 0) snd0 = snd;
 
                     var lTime = g_time - sndTime;
-                    var sTime = g_song.StartTime > -1 ? g_time - note.Channel.Pattern.Song.StartTime : lTime;
+                    var sTime = StartTime > -1 ? g_time - StartTime : lTime;
 
                     Tones[i].CurValue = Tones[i].GetValue(g_time, lTime, sTime, sndLen, note, iSrc, snd.TriggerValues) * vol;
                     Tones[i].CurValue = ApplyFilter(Tones[i].CurValue, src, hrmPos, g_time, lTime, sTime, sndLen, note, iSrc, snd.TriggerValues); 

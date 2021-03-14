@@ -15,6 +15,7 @@ namespace IngameScript
             public Parameter    Volume;
 
             public Tune         Tune;
+
             public Filter       Filter;
 
             public Delay        Delay;

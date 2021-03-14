@@ -35,9 +35,7 @@ namespace IngameScript
                 Song = new Song("");
                 Song.Arpeggio = this;
                 Song.Patterns.Add(new Pattern(Song));
-                Song.CurChan = 0;
-                Song.SelChan = 0;
-
+                
                 SetInstrument(inst);
 
                 Length = new Parameter("Length", "Len", 1, 256, 2, 6, 0.01f, 0.1f, 8);

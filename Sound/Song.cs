@@ -1,21 +1,5 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
+﻿using System.Collections.Generic;
+
 
 namespace IngameScript
 {
@@ -32,26 +16,14 @@ namespace IngameScript
 
             public List<Key>[]   ChannelAutoKeys = new List<Key>[nChans];
 
-            public long          StartTime; // in ticks
 
-            public int           Length,
+            public int           Length;
 
-                                 CurChan,
-                                 SelChan,
-                                 CurSrc,
-                                 
-                                 PlayPat,
-                                 CurPat;
-
-            public float         PlayStep,
-                                 EditPos,
+            public float         EditPos,
                                  LastEditPos;
             
             public List<Note>    EditNotes;
             public Note          Inter;
-
-
-            public long PlayTime { get { return (int)(PlayStep * g_ticksPerStep); } }
 
 
             public Song(string name = "Song 1")
@@ -151,16 +123,6 @@ namespace IngameScript
 
             void ResetState()
             {
-                CurChan     =  0;
-                SelChan     = -1;
-                CurSrc      = -1;
-                            
-                PlayStep    =  float.NaN;
-                PlayPat     =  0;
-                CurPat      =  0;
-
-                StartTime   = -1;
-
                 EditPos     = float.NaN;
                 LastEditPos = float.NaN;
 
@@ -170,7 +132,7 @@ namespace IngameScript
 
 
             public int   GetNotePat(Note note) { return Patterns.FindIndex(p => p.Channels.Contains(note.Channel)); }
-            public float GetStep   (Note note) { return GetNotePat(note) * nSteps + note.PatStepTime; }
+            public float GetStep   (Note note) { return GetNotePat(note) * nSteps + note.PatStep; }
 
             public int   GetKeyPat (Key key)   { return Patterns.FindIndex(p => p.Channels.Find(c => c.AutoKeys.Contains(key)) != null); }
             public float GetStep   (Key key)   { return GetKeyPat(key) * nSteps + key.StepTime; }
@@ -222,27 +184,39 @@ namespace IngameScript
             g_curNote     = 69 * NoteScale;
             showNote      = g_curNote;
                          
-            loopPat       = false;
-            g_block       = false;
-            g_in          = false;
-            g_out         = false;
-            movePat       = false;
-            allPats       = false;
-            g_autoCue     = false;
-            g_halfSharp   = false;
-            g_follow      = false;
-            allChan       = false;
-            g_piano       = false;
-            g_move        = false;
-            g_shift       = false;
-            g_mixerShift  = false;
-            g_hold        = false;
-            g_chordMode   = false;
-            g_chordAll    = false;
-            g_pick        = false;
-            rndInst       = false;
-            g_paramKeys   = false;
+            loopPat       = 
+            g_block       = 
+            g_in          = 
+            g_out         = 
+            movePat       = 
+            allPats       = 
+            g_autoCue     = 
+            g_halfSharp   = 
+            g_follow      = 
+            allChan       = 
+            g_piano       = 
+            g_move        = 
+            g_shift       = 
+            g_mixerShift  = 
+            g_hold        = 
+            g_chordMode   = 
+            g_chordAll    = 
+            g_pick        = 
+            rndInst       = 
+            g_paramKeys   = 
             g_paramAuto   = false;
+
+
+            PlayTime    = -1;
+            PlayPat     = -1;
+
+            CurPat      =  0;
+
+            CurChan     =  0;
+            SelChan     = -1;
+            CurSrc      = -1;
+                            
+            StartTime   = -1;
 
 
             g_chords = new List<int>[4];

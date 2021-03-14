@@ -88,7 +88,7 @@ namespace IngameScript
         {
             return (Parameter)GetSettingFromPath(
                 inst, 
-                g_settings.Last().GetPath(g_song.CurSrc));
+                g_settings.Last().GetPath(CurSrc));
         }
 
 

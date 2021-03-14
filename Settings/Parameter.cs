@@ -160,7 +160,7 @@ namespace IngameScript
 
             public float GetAutoValue(Song song, Note note, string path)
             {
-                return GetAutoValue(note.PatStepTime, song.GetNotePat(note), note.iChan, path);
+                return GetAutoValue(note.PatStep, song.GetNotePat(note), note.iChan, path);
             }
 
 

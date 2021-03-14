@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using VRage.Game.GUI.TextPanel;
 
 
@@ -27,9 +28,9 @@ namespace IngameScript
 
             FillRect(sprites, x, y, w, h, color0);
 
-            if (OK(g_song.PlayStep))
+            if (PlayTime > -1)
             {
-                var sec = (int)(g_song.PlayStep * g_ticksPerStep / FPS);
+                var sec = (int)(PlayStep * g_ticksPerStep / FPS);
                 var min = sec / 60;
                 sec %= 60;
 
@@ -86,14 +87,10 @@ namespace IngameScript
             FillRect  (sprites,        cx,      y + 102, 353, 26, color0);
 
 
-            var avg = 0f;
+            var avg = g_runtimeMs.Sum() / g_runtimeMs.Length;
 
-            foreach (var ms in g_runtimeMs)
-                avg += ms;
 
-            avg /= g_runtimeMs.Length;
-
-            FillRect  (sprites,        cx,      y + 102, 353 * Math.Min(avg, 1), 26, color4);
+            FillRect  (sprites,        cx,      y + 102, 353 * Math.Min(avg, 1), 26, color3);
 
 
             for (int i = 0; i < g_runtimeMs.Length; i++)
@@ -355,7 +352,7 @@ namespace IngameScript
 
 
                 //var iMan =
-                //    OK(g_song.PlayStep)
+                //    g_song.PlayTime > -1
                 //    ? (int)(g_song.PlayStep / 2) % dance.Length
                 //    : 3;
 

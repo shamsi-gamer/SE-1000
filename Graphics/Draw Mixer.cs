@@ -46,7 +46,7 @@ namespace IngameScript
 
             for (int ch = first; ch < first + 6; ch++)
             {
-                var chan = CurrentPattern(g_song).Channels[ch];
+                var chan = CurrentPattern.Channels[ch];
 
                 var xc = x + bb/2 + (ch - first) * (bw + bb);
 
@@ -167,7 +167,7 @@ namespace IngameScript
                 y + h + hk, 
                 wb,
                 -h * Math.Min((float)Math.Pow(level / extra, pow), 1), 
-                g_song.SelChan > -1 && LastSetting == SelectedInstrument(g_song).Volume || scale != 1 ? color6 : color4);
+                SelChan > -1 && LastSetting == SelectedInstrument.Volume || scale != 1 ? color6 : color4);
         }
     }
 }

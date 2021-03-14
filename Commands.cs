@@ -24,22 +24,22 @@ namespace IngameScript
     {
         void New()
         {
-            if (g_song.CurSrc > -1)
+            if (CurSrc > -1)
             {
                 curSet = -1;
                 g_settings.Clear();
 
 
-                var inst = CurrentInstrument(g_song);
+                var inst = CurrentInstrument;
 
                 if (inst.Sources.Count < maxDspSrc)
                 { 
                     //for (int i = g_song.CurSrc+1; i < inst.Sources.Count; i++)
                     //    inst.Sources[i].Index++;
 
-                    inst.Sources.Insert(g_song.CurSrc+1, new Source(inst));
+                    inst.Sources.Insert(CurSrc+1, new Source(inst));
 
-                    g_song.CurSrc++;
+                    CurSrc++;
                 }
 
                 //UpdateDspOffset(ref srcOff, g_song.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
@@ -50,7 +50,7 @@ namespace IngameScript
 
                 MarkLight(lblNew, false);
             }
-            else if (g_song.SelChan > -1)
+            else if (SelChan > -1)
             {
                 curSet = -1;
                 g_settings.Clear();
@@ -61,12 +61,12 @@ namespace IngameScript
 
                 inst.Name = GetNewName(inst.Name, str => g_inst.Exists(_s => _s.Name == str));
 
-                g_inst.Insert(g_inst.IndexOf(CurrentInstrument(g_song)) + 1, inst);
+                g_inst.Insert(g_inst.IndexOf(CurrentInstrument) + 1, inst);
                 SetCurInst(inst);
 
                 UpdateOctaveLight();
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_inst.Count, maxDspSrc, 0, 1);
-                UpdateInstOff(g_song.CurChan);
+                UpdateInstOff(CurChan);
 
                 UpdateInstName();
                 inputValid = false;
@@ -79,23 +79,23 @@ namespace IngameScript
 
         void Duplicate()
         {
-            if (g_song.CurSrc > -1)
+            if (CurSrc > -1)
             {
                 curSet = -1;
                 g_settings.Clear();
 
 
-                var inst = CurrentInstrument(g_song);
+                var inst = CurrentInstrument;
 
                 if (inst.Sources.Count < 8)
                 {
                     //for (int i = g_song.CurSrc+1; i < inst.Sources.Count; i++)
                     //    inst.Sources[i].Index++;
 
-                    var src = new Source(inst.Sources[g_song.CurSrc], inst);
-                    inst.Sources.Insert(g_song.CurSrc+1, src);
+                    var src = new Source(inst.Sources[CurSrc], inst);
+                    inst.Sources.Insert(CurSrc+1, src);
 
-                    g_song.CurSrc++;
+                    CurSrc++;
                 }
 
                 //UpdateDspOffset(ref srcOff, g_song.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
@@ -106,16 +106,16 @@ namespace IngameScript
                 
                 MarkLight(lblDuplicate, false);
             }
-            else if (g_song.SelChan > -1)
+            else if (SelChan > -1)
             {
                 curSet = -1;
                 g_settings.Clear();
 
 
-                var inst = new Instrument(CurrentInstrument(g_song));
+                var inst = new Instrument(CurrentInstrument);
                 inst.Name = GetNewName(inst.Name, newName => g_inst.Exists(s => s.Name == newName));
 
-                g_inst.Insert(g_inst.IndexOf(CurrentInstrument(g_song)) + 1, inst);
+                g_inst.Insert(g_inst.IndexOf(CurrentInstrument) + 1, inst);
                 SetCurInst(inst);
                 srcOff = 0;
 
@@ -123,7 +123,7 @@ namespace IngameScript
                 UpdateInstName();
 
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_inst.Count, maxDspSrc, 0, 1);
-                UpdateInstOff(g_song.CurChan);
+                UpdateInstOff(CurChan);
 
                 g_sampleValid = false; 
                 
@@ -134,15 +134,15 @@ namespace IngameScript
 
         void Delete()
         {
-            if (g_song.CurSrc > -1)
+            if (CurSrc > -1)
             {
                 curSet = -1;
                 g_settings.Clear();
 
 
-                var inst = CurrentInstrument(g_song);
+                var inst = CurrentInstrument;
 
-                inst.Sources.RemoveAt(g_song.CurSrc);
+                inst.Sources.RemoveAt(CurSrc);
 
                 //for (int i = g_song.CurSrc; i < inst.Sources.Count; i++)
                 //    inst.Sources[i].Index--;
@@ -150,11 +150,11 @@ namespace IngameScript
                 if (inst.Sources.Count == 0)
                 {
                     inst.Sources.Add(new Source(inst));
-                    g_song.CurSrc = 0;
+                    CurSrc = 0;
                 }
 
-                if (g_song.CurSrc >= inst.Sources.Count)
-                    g_song.CurSrc = inst.Sources.Count - 1;
+                if (CurSrc >= inst.Sources.Count)
+                    CurSrc = inst.Sources.Count - 1;
 
                 //UpdateDspOffset(ref srcOff, g_song.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
                 //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurSrc);
@@ -164,16 +164,16 @@ namespace IngameScript
                 
                 MarkLight(lblDelete, false);
             }
-            else if (g_song.SelChan > -1)
+            else if (SelChan > -1)
             {
                 curSet = -1;
                 g_settings.Clear();
 
 
-                var i = g_inst.IndexOf(CurrentInstrument(g_song));
-                var inst = CurrentInstrument(g_song);
+                var i = g_inst.IndexOf(CurrentInstrument);
+                var inst = CurrentInstrument;
 
-                g_inst.Remove(CurrentInstrument(g_song));
+                g_inst.Remove(CurrentInstrument);
 
                 if (g_inst.Count == 0)
                 {
@@ -190,7 +190,7 @@ namespace IngameScript
                 srcOff = 0;
 
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_inst.Count, maxDspSrc, 0, 1);
-                UpdateInstOff(g_song.CurChan);
+                UpdateInstOff(CurChan);
 
                 UpdateOctaveLight();
                 UpdateInstName();
@@ -213,13 +213,13 @@ namespace IngameScript
             //    && g_set <= Set.LfoFixed;
 
 
-            if (g_song.SelChan < 0)
+            if (SelChan < 0)
             {
                 SetChan(-move);
             }
-            else if (g_song.CurSrc < 0) // inst
+            else if (CurSrc < 0) // inst
             {
-                var i = g_inst.IndexOf(CurrentInstrument(g_song));
+                var i = g_inst.IndexOf(CurrentInstrument);
                 var n = i + move;
 
                 if (n >= g_inst.Count) n = 0;
@@ -235,10 +235,10 @@ namespace IngameScript
                 else
                 {
                     int first, last;
-                    GetPatterns(g_song, g_song.CurPat, out first, out last);
+                    GetPatterns(g_song, CurPat, out first, out last);
 
                     for (int p = first; p <= last; p++)
-                        g_song.Patterns[p].Channels[g_song.CurChan].Instrument = g_inst[n];
+                        g_song.Patterns[p].Channels[CurChan].Instrument = g_inst[n];
 
                     UpdateOctaveLight();
                 }
@@ -250,7 +250,7 @@ namespace IngameScript
                 g_sampleValid = false;
 
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_inst.Count, maxDspInst, 0, 1);
-                UpdateInstOff(g_song.CurChan);
+                UpdateInstOff(CurChan);
                 
                 srcOff = 0;
 
@@ -259,20 +259,20 @@ namespace IngameScript
             }
             else // src
             {
-                var inst = CurrentInstrument(g_song);
-                var next = g_song.CurSrc + move;
+                var inst = CurrentInstrument;
+                var next = CurSrc + move;
 
                 if (next >= inst.Sources.Count) next = 0;
                 if (next < 0) next = inst.Sources.Count - 1;
 
                 if (g_move)
                 {
-                    var src = inst.Sources[g_song.CurSrc];
-                    inst.Sources.RemoveAt(g_song.CurSrc);
+                    var src = inst.Sources[CurSrc];
+                    inst.Sources.RemoveAt(CurSrc);
                     inst.Sources.Insert(next, src);
                 }
 
-                g_song.CurSrc = next;
+                CurSrc = next;
 
                 dspMain.Surface.WriteText("", false);
 
@@ -289,7 +289,7 @@ namespace IngameScript
 
             MarkLight(
                 move >= 0 ? lblNext : lblPrev, 
-                !g_move && g_song.CurSrc < 0);
+                !g_move && CurSrc < 0);
         }
 
 
@@ -321,12 +321,12 @@ namespace IngameScript
                 }
 
                 UpdateEnterLight();
-                MarkLight(lblBackOut, g_song.CurSrc < 0);
+                MarkLight(lblBackOut, CurSrc < 0);
             }
 
-            if (g_song.CurSrc > -1)
+            if (CurSrc > -1)
             {
-                g_song.CurSrc = -1;
+                CurSrc = -1;
                 srcOff =  0;
 
                 g_shift = false;
@@ -337,12 +337,12 @@ namespace IngameScript
                 UpdateInstName(true);
                 inputValid = false;
 
-                MarkLight(lblBackOut, g_song.CurSrc < 0);
+                MarkLight(lblBackOut, CurSrc < 0);
             }
 
-            if (g_song.SelChan > -1)
+            if (SelChan > -1)
             {
-                g_song.SelChan = -1;
+                SelChan = -1;
 
                 g_shift = false;
 
@@ -353,7 +353,7 @@ namespace IngameScript
                 UpdateAdjustLights(g_song);
 
                 UpdateInstName(false);
-                MarkLight(lblBackOut, g_song.CurSrc < 0);
+                MarkLight(lblBackOut, CurSrc < 0);
             }
         }
 
@@ -404,12 +404,12 @@ namespace IngameScript
                     }
                 }
 
-                MarkLight(lblBack, g_song.CurSrc < 0);
+                MarkLight(lblBack, CurSrc < 0);
                 UpdateEnterLight();
             }
-            else if (g_song.CurSrc > -1)
+            else if (CurSrc > -1)
             {
-                g_song.CurSrc = -1;
+                CurSrc = -1;
                 srcOff =  0;
 
                 g_shift = false;
@@ -420,12 +420,12 @@ namespace IngameScript
                 UpdateInstName(true);
                 inputValid = false;
 
-                MarkLight(lblBack, g_song.CurSrc < 0);
+                MarkLight(lblBack, CurSrc < 0);
                 g_sampleValid = false;
             }
-            else if (g_song.SelChan > -1)
+            else if (SelChan > -1)
             {
-                g_song.SelChan = -1;
+                SelChan = -1;
 
                 g_shift = false;
                 g_move  = false;
@@ -444,7 +444,7 @@ namespace IngameScript
                 g_paramKeys = false;
                 g_paramAuto = false;
 
-                MarkLight(lblBack, g_song.CurSrc < 0);
+                MarkLight(lblBack, CurSrc < 0);
                 //foreach (var btn in funcButtons)
                 //    ((IMyFunctionalBlock)btn).Enabled = false;
             }
@@ -458,28 +458,28 @@ namespace IngameScript
 
             g_move = false;
 
-            if (g_song.SelChan < 0)
+            if (SelChan < 0)
             {
                 g_song.EditPos = float.NaN;
                 UpdateEditLight(lblEdit, false);
 
-                g_song.SelChan = g_song.CurChan;
+                SelChan = CurChan;
 
                 UpdateNewLights();
                 UpdateAdjustLights(g_song);
 
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_inst.Count, maxDspInst, 0, 1);
-                UpdateInstOff(g_song.SelChan);
+                UpdateInstOff(SelChan);
 
                 UpdateInstName(true);
                 inputValid = false;
                 
                 g_sampleValid = false;
-                MarkLight(lblEnter, g_song.CurSrc < 0);
+                MarkLight(lblEnter, CurSrc < 0);
             }
-            else if (g_song.CurSrc < 0)
+            else if (CurSrc < 0)
             {
-                g_song.CurSrc = 0;
+                CurSrc = 0;
 
                 g_shift = false;
 
@@ -489,7 +489,7 @@ namespace IngameScript
                 UpdateInstName(false);
 
                 g_sampleValid = false;
-                MarkLight(lblEnter, g_song.CurSrc < 0);
+                MarkLight(lblEnter, CurSrc < 0);
             }
         }
 
@@ -511,19 +511,19 @@ namespace IngameScript
             }
             else
             {
-                if (g_song.CurSrc > -1)
+                if (CurSrc > -1)
                 {
-                    var src = SelectedSource(g_song);
+                    var src = SelectedSource;
                     src.On = !src.On;
                     UpdateLight(lblCmd1, src.On);
                 }
                 else
                 { 
-                    var inst = CurrentInstrument(g_song);
+                    var inst = CurrentInstrument;
 
                     var src =
-                        g_song.CurSrc > -1
-                        ? inst.Sources[g_song.CurSrc]
+                        CurSrc > -1
+                        ? inst.Sources[CurSrc]
                         : null;
 
                     //if (   src != null
@@ -571,9 +571,9 @@ namespace IngameScript
                     //    MarkLight(lblCopy);
                     //}
                     //else 
-                    if (g_song.SelChan < 0)
+                    if (SelChan < 0)
                     { 
-                        CopyChan(g_song, g_song.CurPat, g_song.CurChan);
+                        CopyChan(g_song, CurPat, CurChan);
                         MarkLight(lblCmd1);
                     }
 
@@ -585,9 +585,9 @@ namespace IngameScript
 
         void Command2()
         {
-            if (g_song.CurSrc > -1)
+            if (CurSrc > -1)
             {
-                var src = SelectedSource(g_song);
+                var src = SelectedSource;
 
                 var newOsc = (int)src.Oscillator.Type + 1;
                 //if (newOsc > (int)OscType.Sample) newOsc = 0;
@@ -597,11 +597,11 @@ namespace IngameScript
             }
             else
             { 
-                var inst = CurrentInstrument(g_song);
+                var inst = CurrentInstrument;
 
                 var src =
-                    g_song.CurSrc > -1
-                    ? inst.Sources[g_song.CurSrc]
+                    CurSrc > -1
+                    ? inst.Sources[CurSrc]
                     : null;
 
                 //if (   src != null
@@ -650,13 +650,13 @@ namespace IngameScript
                 //    MarkLight(lblPaste);
                 //}
                 //else 
-                if (g_song.SelChan < 0)
+                if (SelChan < 0)
                 {
                     int f, l;
-                    GetPatterns(g_song, g_song.CurPat, out f, out l);
+                    GetPatterns(g_song, CurPat, out f, out l);
 
                     for (int p = f; p <= l; p++)
-                        PasteChan(g_song, p, g_song.CurChan);
+                        PasteChan(g_song, p, CurChan);
 
                     copyChan = null;
 
@@ -672,7 +672,7 @@ namespace IngameScript
                 && OK(g_song.EditPos))
             {
                 var param = CurParam;
-                var path  = g_settings.Last().GetPath(g_song.CurSrc);
+                var path  = g_settings.Last().GetPath(CurSrc);
 
                 
                 if (g_paramKeys)
@@ -687,7 +687,7 @@ namespace IngameScript
                 }
                 else if (g_paramAuto)
                 {
-                    var chan = SelectedChannel(g_song);
+                    var chan = SelectedChannel;
 
                     var key = chan.AutoKeys.Find(k =>
                            k.Path == path
@@ -696,14 +696,14 @@ namespace IngameScript
 
                     if (key == null) // create
                     {
-                        var val = Parameter.GetAutoValue(g_song.EditPos, g_song.CurPat, g_song.SelChan, path);
+                        var val = Parameter.GetAutoValue(g_song.EditPos, CurPat, SelChan, path);
 
                         var newKey = new Key(
-                            g_song.CurSrc,
+                            CurSrc,
                             param,
                             OK(val) ? val : param.Value,
                             g_song.EditPos % nSteps,
-                            SelectedChannel(g_song));
+                            SelectedChannel);
 
                         chan.AutoKeys.Add(newKey);
                         g_song.UpdateAutoKeys();
@@ -718,7 +718,7 @@ namespace IngameScript
                 UpdateAdjustLights(g_song);
                 MarkLight(lblCmd3);
             }
-            else if (g_song.SelChan < 0)
+            else if (SelChan < 0)
             { 
                 g_transpose = !g_transpose;
                 UpdateAdjustLights(g_song);
@@ -767,8 +767,8 @@ namespace IngameScript
                      && (   g_paramKeys 
                          || g_paramAuto))
             {
-                var chan = SelectedChannel(g_song);
-                var path = g_settings.Last().GetPath(g_song.CurSrc);
+                var chan = SelectedChannel;
+                var path = g_settings.Last().GetPath(CurSrc);
 
                 if (g_paramKeys)
                 { 
@@ -783,7 +783,7 @@ namespace IngameScript
                         else
                         {
                             var param = (Parameter)GetSettingFromPath(chan.Instrument, path);
-                            note.Keys.Add(new Key(g_song.CurSrc, param, param.Value, song.GetStep(note)));
+                            note.Keys.Add(new Key(CurSrc, param, param.Value, song.GetStep(note)));
                             AdjustKey(note.Keys.Last(), delta);
                         }
                     }
@@ -814,7 +814,7 @@ namespace IngameScript
                 UpdateAdjustLights(song);
                 MarkLight(delta >= 0 ? lblUp : lblDown, !g_shift);
             }
-            else if (g_song.SelChan > -1)
+            else if (SelChan > -1)
             {
                 if (IsParam(setting))
                 {
@@ -826,7 +826,7 @@ namespace IngameScript
             else
             {
                 if (g_transpose) 
-                    Transpose(song, song.CurChan, delta);
+                    Transpose(song, CurChan, delta);
             }
         }
 
@@ -850,7 +850,7 @@ namespace IngameScript
                     param.AdjustValue(param.Value, delta, g_shift),
                     param.Max),
                 null,
-                g_song.CurSrc);
+                CurSrc);
         }
 
 
@@ -912,33 +912,33 @@ namespace IngameScript
 
         void SetChan(int ch)
         {
-            ch += g_song.CurChan;
+            ch += CurChan;
 
             if (ch >= nChans) ch = 0;
             if (ch < 0) ch = nChans - 1;
 
             if (g_move)
             {
-                CurrentPattern(g_song).Channels.RemoveAt(g_song.CurChan);
-                CurrentPattern(g_song).Channels.Insert(ch, CurrentChannel(g_song));
+                CurrentPattern.Channels.RemoveAt(CurChan);
+                CurrentPattern.Channels.Insert(ch, CurrentChannel);
             }
 
-            g_song.CurChan = ch;
+            CurChan = ch;
 
-            if (g_song.CurSrc > -1)
-                g_song.CurSrc = 0;
+            if (CurSrc > -1)
+                CurSrc = 0;
 
             UpdateOctaveLight();
-            UpdateInstOff(g_song.CurChan);
+            UpdateInstOff(CurChan);
         }
 
 
         void SetShuffle(int ch, int sh)
         {
-            sh += CurrentPattern(g_song).Channels[ch].Shuffle;
+            sh += CurrentPattern.Channels[ch].Shuffle;
 
             int first, last;
-            GetPatterns(g_song, g_song.CurPat, out first, out last);
+            GetPatterns(g_song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
             {

@@ -43,7 +43,7 @@ namespace IngameScript
         void EnableChannel(int ch, bool on)
         {
             int first, last;
-            GetPatterns(g_song, g_song.CurPat, out first, out last);
+            GetPatterns(g_song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
                 g_song.Patterns[p].Channels[ch].On = on;
@@ -52,10 +52,10 @@ namespace IngameScript
 
         void Mute(int ch)
         {
-            var on = !CurrentPattern(g_song).Channels[ch].On;
+            var on = !CurrentPattern.Channels[ch].On;
 
             int first, last;
-            GetPatterns(g_song, g_song.CurPat, out first, out last);
+            GetPatterns(g_song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
                 g_song.Patterns[p].Channels[ch].On = on;
@@ -79,7 +79,7 @@ namespace IngameScript
             if (g_solo >= 0)
             {
                 int _first, _last;
-                GetPatterns(g_song, g_song.CurPat, out _first, out _last);
+                GetPatterns(g_song, CurPat, out _first, out _last);
 
                 for (int p = _first; p <= _last; p++)
                     UnsoloChannel(p, ch);
@@ -93,11 +93,11 @@ namespace IngameScript
 
 
             for (int _ch = 0; _ch < nChans; _ch++)
-                g_on[_ch] = CurrentPattern(g_song).Channels[_ch].On;
+                g_on[_ch] = CurrentPattern.Channels[_ch].On;
 
 
             int first, last;
-            GetPatterns(g_song, g_song.CurPat, out first, out last);
+            GetPatterns(g_song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
                 SoloChannel(p, ch);

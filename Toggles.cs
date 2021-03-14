@@ -41,9 +41,9 @@ namespace IngameScript
 
             g_move = !g_move;
 
-            UpdateLight(lblMove, g_move ^ (g_song.CurSrc > -1), g_song.SelChan > -1 && !g_move);
-            UpdateLight(lblPrev, g_move || g_song.CurSrc > -1,  g_song.SelChan > -1);
-            UpdateLight(lblNext, g_move || g_song.CurSrc > -1,  g_song.SelChan > -1);
+            UpdateLight(lblMove, g_move ^ (CurSrc > -1), SelChan > -1 && !g_move);
+            UpdateLight(lblPrev, g_move || CurSrc > -1,  SelChan > -1);
+            UpdateLight(lblNext, g_move || CurSrc > -1,  SelChan > -1);
         }
 
 

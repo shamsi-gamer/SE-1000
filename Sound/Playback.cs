@@ -7,12 +7,12 @@ namespace IngameScript
     {
         void UpdatePlayback()
         {
-            if (OK(g_song.PlayStep))
+            if (PlayTime > -1)
             {
                 CueNextPattern();
 
-                g_song.PlayPat = (int)(g_song.PlayStep / nSteps);
-                if (g_follow) SetCurrentPattern(g_song.PlayPat);
+                if (g_follow) 
+                    SetCurrentPattern(PlayPat);
 
                 AddPlaybackNotes();
 
@@ -20,7 +20,7 @@ namespace IngameScript
             }
 
 
-            StopNotes(g_song.PlayStep);
+            StopNotes(PlayStep);
 
             var delete = StopSounds();
             DeleteSounds(delete);
@@ -33,7 +33,7 @@ namespace IngameScript
 
         void CueNextPattern()
         {
-            var noteLen = (int)(EditLength * g_ticksPerStep);
+            //var noteLen = (int)(EditLength * g_ticksPerStep);
             
             g_song.Length =
             //    g_song.Arpeggio != null
@@ -43,17 +43,17 @@ namespace IngameScript
 
             if (g_cue > -1)
             {
-                var b = g_song.GetBlock(g_song.PlayPat);
+                var b = g_song.GetBlock(PlayPat);
 
                 if (g_block && b != null)
-                    g_song.PlayPat = b.Last;
+                    PlayPat = b.Last;
             }
 
 
-            if (g_song.PlayStep >= (g_song.PlayPat + 1) * nSteps)
+            if (PlayStep >= (PlayPat + 1) * nSteps)
             { 
                 int start, end;
-                GetPosLimits(g_song, g_song.PlayPat, out start, out end);
+                GetPosLimits(g_song, PlayPat, out start, out end);
                 end = start + Math.Min(end - start, g_song.Length);
 
                 if (g_cue > -1)
@@ -62,20 +62,25 @@ namespace IngameScript
                     if (g_block && b != null)
                         g_cue = b.First;
 
-                         if (g_cue >= g_song.PlayPat && g_time != 0) g_song.PlayStep += (g_cue - g_song.PlayPat - 1) * nSteps;
-                    else if (g_cue <  g_song.PlayPat)                g_song.PlayStep -= (g_song.PlayPat + 1 - g_cue) * nSteps;
+                         if (g_cue >= PlayPat && g_time != 0) PlayTime += GetPatTime(g_cue - PlayPat - 1);
+                    else if (g_cue <  PlayPat)                PlayTime -= GetPatTime(PlayPat + 1 - g_cue);
 
                     g_cue = -1;
                     UpdateLight(lblCue, g_cue > -1);
                 }
-                else if (g_song.PlayStep >= end)
+                else if (PlayStep >= end)
                 {
                     StopCurrentNotes(g_song);
 
-                    g_song.PlayStep  -=  end - start;
-                    g_song.StartTime += (end - start) * g_ticksPerStep;
+                    PlayTime  -= (end - start) * g_ticksPerStep;
+                    StartTime += (end - start) * g_ticksPerStep;
+
+                    PlayPat = (int)(PlayStep / nSteps);
                 }
             }
+
+
+            PlayPat = (int)(PlayStep / nSteps);
         }
 
 
@@ -143,8 +148,8 @@ namespace IngameScript
 
             g_time++;
 
-            if (OK(song.PlayStep))
-                song.PlayStep += 1f / g_ticksPerStep;
+            if (PlayTime > -1)
+                PlayTime++;
         }
 
 

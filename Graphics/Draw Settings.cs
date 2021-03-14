@@ -219,48 +219,48 @@ namespace IngameScript
 
         void DrawEnvelopeSetting(List<MySprite> sprites, Envelope env, float x, float y, ref float yo, bool active, ref bool children)
         { 
-            if (env.Attack .HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, env.Attack,  x, y + yo, ref yo, active); children = true; }
-            if (env.Decay  .HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, env.Decay,   x, y + yo, ref yo, active); children = true; }
-            if (env.Sustain.HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, env.Sustain, x, y + yo, ref yo, active); children = true; }
-            if (env.Release.HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, env.Release, x, y + yo, ref yo, active); children = true; }
+            if (env.Attack .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Attack,  x, y + yo, ref yo, active); children = true; }
+            if (env.Decay  .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Decay,   x, y + yo, ref yo, active); children = true; }
+            if (env.Sustain.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Sustain, x, y + yo, ref yo, active); children = true; }
+            if (env.Release.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Release, x, y + yo, ref yo, active); children = true; }
         }
 
 
         void DrawLfoSetting(List<MySprite> sprites, LFO lfo, float x, float y, ref float yo, bool active, ref bool children)
         { 
-            if (lfo.Frequency.HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, lfo.Frequency, x, y + yo, ref yo, active); children = true; }                
-            if (lfo.Amplitude.HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, lfo.Amplitude, x, y + yo, ref yo, active); children = true; }
-            if (lfo.Offset   .HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, lfo.Offset,    x, y + yo, ref yo, active); children = true; }
+            if (lfo.Frequency.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, lfo.Frequency, x, y + yo, ref yo, active); children = true; }                
+            if (lfo.Amplitude.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, lfo.Amplitude, x, y + yo, ref yo, active); children = true; }
+            if (lfo.Offset   .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, lfo.Offset,    x, y + yo, ref yo, active); children = true; }
         }
 
 
         void DrawHarmonicsSetting(List<MySprite> sprites, Harmonics hrm, float x, float y, ref float yo, bool active, ref bool children)
         { 
             for (int i = 0; i < hrm.Tones.Length; i++)
-                if (hrm.Tones[i].HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, hrm.Tones[i], x, y + yo, ref yo, active); children = true; }
+                if (hrm.Tones[i].HasDeepParams(null, CurSrc)) { DrawSetting(sprites, hrm.Tones[i], x, y + yo, ref yo, active); children = true; }
         }
 
 
         void DrawFilterSetting(List<MySprite> sprites, Filter flt, float x, float y, ref float yo, bool active, ref bool children)
         { 
-            if (flt.Cutoff   .HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, flt.Cutoff,    x, y + yo, ref yo, active); children = true; }
-            if (flt.Resonance.HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, flt.Resonance, x, y + yo, ref yo, active); children = true; }
+            if (flt.Cutoff   .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, flt.Cutoff,    x, y + yo, ref yo, active); children = true; }
+            if (flt.Resonance.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, flt.Resonance, x, y + yo, ref yo, active); children = true; }
         }
 
 
         void DrawDelaySetting(List<MySprite> sprites, Delay del, float x, float y, ref float yo, bool active, ref bool children)
         {
-            if (del.Count.HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, del.Count, x, y + yo, ref yo, active); children = true; }
-            if (del.Time .HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, del.Time,  x, y + yo, ref yo, active); children = true; }
-            if (del.Level.HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, del.Level, x, y + yo, ref yo, active); children = true; }
-            if (del.Power.HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, del.Power, x, y + yo, ref yo, active); children = true; }
+            if (del.Count.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Count, x, y + yo, ref yo, active); children = true; }
+            if (del.Time .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Time,  x, y + yo, ref yo, active); children = true; }
+            if (del.Level.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Level, x, y + yo, ref yo, active); children = true; }
+            if (del.Power.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Power, x, y + yo, ref yo, active); children = true; }
         }
 
 
         void DrawArpeggioSetting(List<MySprite> sprites, Arpeggio arp, float x, float y, ref float yo, bool active, ref bool children)
         { 
-            if (arp.Length.HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, arp.Length, x, y + yo, ref yo, active); children = true; }
-            if (arp.Scale .HasDeepParams(null, g_song.CurSrc)) { DrawSetting(sprites, arp.Scale,  x, y + yo, ref yo, active); children = true; }
+            if (arp.Length.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, arp.Length, x, y + yo, ref yo, active); children = true; }
+            if (arp.Scale .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, arp.Scale,  x, y + yo, ref yo, active); children = true; }
         }
 
 
@@ -405,8 +405,8 @@ namespace IngameScript
 
 
             // draw current value
-            var startTime = OK(g_song.PlayStep) ? g_song.StartTime : 0;
-            var lTime     = OK(g_song.PlayStep) ? g_time - startTime : 0;
+            var startTime = PlayTime > -1 ? StartTime : 0;
+            var lTime     = PlayTime > -1 ? g_time - startTime : 0;
 
             var val  = lfo.CurValue;
             var blur = lfo.Type == LFO.LfoType.Noise ? Math.Pow(freq, 4) : 1;
@@ -484,8 +484,8 @@ namespace IngameScript
         void DrawEnvelope(List<MySprite> sprites, Envelope env, float x, float y, float w, float h, float vol)
         {
             var sTime = 
-                g_song.StartTime > -1
-                ? g_time - g_song.StartTime
+                StartTime > -1
+                ? g_time - StartTime
                 : 0;
 
             var len = (int)(EditLength * g_ticksPerStep);
@@ -594,7 +594,7 @@ namespace IngameScript
                     x + dx, 
                     y + h - b, 
                     4, 
-                    -(h - b*2) * del.GetVolume(i, g_time, 0, 0, (int)(EditLength * g_ticksPerStep), null, g_song.CurSrc, _triggerDummy),
+                    -(h - b*2) * del.GetVolume(i, g_time, 0, 0, (int)(EditLength * g_ticksPerStep), null, CurSrc, _triggerDummy),
                     color4);
             }
 
@@ -639,7 +639,7 @@ namespace IngameScript
                 var px  = x + MinMax(70, dt*dc/2, w);
                 var dim = dc > 1 && Math.Abs(px - lx) > 20 ? color6 : color3;
 
-                var vol = del.GetVolume(Math.Max(0, (int)dc/2 - 1), 0, 0, 0, (int)(EditLength * g_ticksPerStep), null, g_song.CurSrc, _triggerDummy);
+                var vol = del.GetVolume(Math.Max(0, (int)dc/2 - 1), 0, 0, 0, (int)(EditLength * g_ticksPerStep), null, CurSrc, _triggerDummy);
 
                 DrawString(
                     sprites, 
@@ -683,7 +683,7 @@ namespace IngameScript
 
         void DrawParamValues(List<MySprite> sprites, Parameter param, float x, float y, float w, float h, float xt, float rh, Song song, int pat)
         {
-            var path  = param.GetPath(g_song.CurSrc);
+            var path  = param.GetPath(CurSrc);
 
             var lf    = w/3000;
             var vf    = w/800;
@@ -699,7 +699,7 @@ namespace IngameScript
                 { 
                     for (float f = 0; f <= 1; f += 0.1f)
                     { 
-                        var y0 = KeyPos(x, y + rh, w, h - rh, 0, new Key(g_song.CurSrc, param, (float)Math.Pow(f, pow) * 2, float.NaN), song).Y;
+                        var y0 = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, (float)Math.Pow(f, pow) * 2, float.NaN), song).Y;
                         var db = printValue(Math.Abs(100 * (float)Math.Log10(f * extra)), 0, true, 2);
 
                         DrawLine(sprites, x + xt, y0, x+w, y0, color2);
@@ -712,7 +712,7 @@ namespace IngameScript
                 {
                     for (int i = 0; i <= 20; i += 5)
                     { 
-                        var y0  = KeyPos(x, y + rh, w, h - rh, 0, new Key(g_song.CurSrc, param, i, float.NaN), song).Y;
+                        var y0  = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, i, float.NaN), song).Y;
                         var val = printValue(i, 0, false, 0);
 
                         DrawLine(sprites, x+xt, y0, x+w, y0, color2);
@@ -727,7 +727,7 @@ namespace IngameScript
                     { 
                         var val = param.Min + i * (param.Max - param.Min)/4;
                         var f   = (val - param.Min) / (param.Max - param.Min);
-                        var key = new Key(g_song.CurSrc, param, f, float.NaN);
+                        var key = new Key(CurSrc, param, f, float.NaN);
                         var y0  = KeyPos(x, y + rh, w, h - rh, 0, key, song).Y;
                         var str = printValue(val, -2, param.Max - param.Min > 1, 0);
 
@@ -742,8 +742,8 @@ namespace IngameScript
 
 
             // draw values
-                 if (g_paramKeys) DrawParamKeys(sprites, x + xt, y + rh, w-xt, h-rh,       song, pat, song.CurChan);
-            else if (g_paramAuto) DrawParamAuto(sprites, x + xt, y + rh, w-xt, h-rh, w-xt, song, pat, song.CurChan);
+                 if (g_paramKeys) DrawParamKeys(sprites, x + xt, y + rh, w-xt, h-rh,       song, pat, CurChan);
+            else if (g_paramAuto) DrawParamAuto(sprites, x + xt, y + rh, w-xt, h-rh, w-xt, song, pat, CurChan);
 
 
             if (   g_paramKeys
@@ -758,7 +758,7 @@ namespace IngameScript
             }
             else if (g_paramAuto)
             {
-                var key = SelectedChannel(g_song).AutoKeys.Find(
+                var key = SelectedChannel.AutoKeys.Find(
                        k => k.Path == path
                     && k.StepTime >= (song.EditPos % nSteps) 
                     && k.StepTime <  (song.EditPos % nSteps) + 1);
@@ -771,9 +771,9 @@ namespace IngameScript
                 }
                 else
                 {
-                    var src = g_song.CurSrc > -1 ? SelectedSource(g_song) : null;
+                    var src = CurSrc > -1 ? SelectedSource : null;
 
-                    var _param = (Parameter)GetSettingFromPath(SelectedChannel(g_song).Instrument, path);
+                    var _param = (Parameter)GetSettingFromPath(SelectedChannel.Instrument, path);
                     var val    = _param.CurValue;
 
                     strVal = GetParamValueString(val, path.Split('/').Last());
@@ -804,7 +804,7 @@ namespace IngameScript
             var pat  = song.Patterns[p];
             var chan = pat.Channels[ch];
 
-            var path = g_settings.Last().GetPath(g_song.CurSrc);
+            var path = g_settings.Last().GetPath(CurSrc);
 
             foreach (var note in chan.Notes)
             {
@@ -812,10 +812,10 @@ namespace IngameScript
                 var key   = note.Keys.Find(k => k.Path == path);
 
                 var pt = new Vector2(
-                    x + wt * (note.PatStepTime + note.ShOffset) + wt/2,
+                    x + wt * (note.PatStep + note.ShOffset) + wt/2,
                     y + h);
 
-                var p0 = KeyPos(x, y, w, h, p, AltChanKey(key ?? new Key(g_song.CurSrc, param, param.GetKeyValue(note, g_song.CurSrc), note.PatStepTime)), song);
+                var p0 = KeyPos(x, y, w, h, p, AltChanKey(key ?? new Key(CurSrc, param, param.GetKeyValue(note, CurSrc), note.PatStep)), song);
 
 
                 // draw interpolation circle
@@ -876,7 +876,7 @@ namespace IngameScript
             var chan  = pat.Channels[ch];
             
             var param = CurParam;
-            var path  = param.GetPath(g_song.CurSrc);
+            var path  = param.GetPath(CurSrc);
 
             var songKeys = song.ChannelAutoKeys[ch].Where(k => k.Path == path).ToList();
 
@@ -926,7 +926,7 @@ namespace IngameScript
             }
             else
             {
-                var key = AltChanKey(new Key(g_song.CurSrc, param, param.Value, float.NaN));
+                var key = AltChanKey(new Key(CurSrc, param, param.Value, float.NaN));
                 var pk  = KeyPos(x, y, w, h, p, key, song);
 
                 var p0 = new Vector2(x,        pk.Y);
@@ -955,7 +955,7 @@ namespace IngameScript
         Vector2 ValuePos(float x, float y, float w, float h, int p, Note note, string path, Song song)
         {
             var param = (Parameter)GetSettingFromPath(note.Instrument, path);
-            var val   = param.GetKeyValue(note, g_song.CurSrc);
+            var val   = param.GetKeyValue(note, CurSrc);
 
             var wt    = w/nSteps;
             var cd    = w/65; // circle diameter
@@ -968,14 +968,14 @@ namespace IngameScript
             }
 
             return new Vector2(
-                x + wt * (note.PatStepTime + (song.GetNotePat(note) - p)*nSteps + note.ShOffset) + wt/2, 
+                x + wt * (note.PatStep + (song.GetNotePat(note) - p)*nSteps + note.ShOffset) + wt/2, 
                 y + h - h/2 * val - cd/2);
         }
 
 
         Vector2 KeyPos(float x, float y, float w, float h, int p, Key key, Song song)
         {
-            var chan    = SelectedChannel(g_song);
+            var chan    = SelectedChannel;
             var inst    = chan.Instrument;
             var setting = GetSettingFromPath(inst, key.Path);
             var val     = key.Value;

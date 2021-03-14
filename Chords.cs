@@ -151,8 +151,8 @@ namespace IngameScript
 
             if (IsCurParam("Tune"))
             {
-                var tune = SelectedSource    (g_song)?.Tune
-                        ?? SelectedInstrument(g_song)?.Tune;
+                var tune = SelectedSource    ?.Tune
+                        ?? SelectedInstrument?.Tune;
 
                 tune.UseChord = !tune.UseChord;
             }
@@ -179,8 +179,8 @@ namespace IngameScript
 
         void Chord(int chord)
         {
-            var tune = SelectedSource    (g_song)?.Tune
-                    ?? SelectedInstrument(g_song)?.Tune;
+            var tune = SelectedSource    ?.Tune
+                    ?? SelectedInstrument?.Tune;
 
 
             if (   IsCurParam("Tune")
@@ -211,8 +211,8 @@ namespace IngameScript
                         if (tc.Contains(n)) tc.Remove(n);
                 }
 
-                var inst = SelectedInstrument(g_song);
-                var src  = g_song.CurSrc > -1 ? inst.Sources[g_song.CurSrc] : null;
+                var inst = SelectedInstrument;
+                var src  = CurSrc > -1 ? inst.Sources[CurSrc] : null;
 
                 tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
 
@@ -246,7 +246,7 @@ namespace IngameScript
                 if (_chord.Count > 0)
                 {
                     _chord.Sort();
-                    PlayNote(g_song, _chord[0], _chord, g_song.CurChan);
+                    PlayNote(g_song, _chord[0], _chord, CurChan);
                 }
 
                 MarkChordLight(chord);            
@@ -263,11 +263,11 @@ namespace IngameScript
         {
             if (IsCurParam("Tune"))
             {
-                var inst = SelectedInstrument(g_song);
-                var src  = SelectedSource    (g_song);
+                var inst = SelectedInstrument;
+                var src  = SelectedSource;
 
-                var tune = SelectedSource    (g_song)?.Tune
-                        ?? SelectedInstrument(g_song)?.Tune;
+                var tune = SelectedSource    ?.Tune
+                        ?? SelectedInstrument?.Tune;
 
                 if (tune.UseChord)
                 { 

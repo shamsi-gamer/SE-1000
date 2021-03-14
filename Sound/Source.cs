@@ -16,6 +16,7 @@ namespace IngameScript
             public Parameter  Offset;
 
             public Parameter  Volume;
+
             public Tune       Tune;
 
             public Harmonics  Harmonics;
@@ -37,9 +38,6 @@ namespace IngameScript
                 Offset     = null;
 
                 Volume     = new Parameter("Volume", "Vol", 0, 2, 0.01f, 1, 0.01f, 0.1f, 1);
-                Volume.Envelope = new Envelope();
-                Volume.Envelope.Parent = Volume;
-
                 Tune       = null;
 
                 Harmonics  = null;
@@ -129,11 +127,10 @@ namespace IngameScript
 
                 var triggerValues = new List<TriggerValue>();
 
-                var startTime = OK(g_song.PlayStep) ? g_song.StartTime : 0;//g_time;
-                var sndTime   = startTime + note.SongTime + 1;
+                var sndTime = StartTime + note.SongTime + 1;
 
-                var lTime = g_time - g_song.StartTime - note.SongTime;
-                var sTime = g_song.StartTime > -1 ? g_time - g_song.StartTime : lTime;
+                var lTime = g_time - StartTime - note.SongTime;
+                var sTime = StartTime > -1 ? g_time - StartTime : lTime;
 
                 if (src.Offset != null)
                 { 
@@ -141,6 +138,7 @@ namespace IngameScript
                           src.Offset.GetValue(g_time, lTime, sTime, note.FrameLength, note, src.Index, triggerValues)
                         * FPS);
                 }
+
 
                 var noteNum = AdjustNoteNumber(note, src, note.FrameLength);
 
@@ -179,7 +177,6 @@ namespace IngameScript
                     if (   noteNum <  12*NoteScale
                         || noteNum > 150*NoteScale)
                         return;
-
 
                     vol *= OscMult;
 

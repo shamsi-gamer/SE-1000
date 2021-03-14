@@ -270,15 +270,15 @@ namespace IngameScript
             if (lightsPressed_.Contains(lblNextPat))   UnmarkLight(lblNextPat, movePat);
             if (lightsPressed_.Contains(lblPrevPat))   UnmarkLight(lblPrevPat, movePat);
 
-            if (lightsPressed_.Contains(lblNext))      UnmarkLight(lblNext, g_move || g_song.CurSrc > -1, g_song.SelChan > -1);
-            if (lightsPressed_.Contains(lblPrev))      UnmarkLight(lblPrev, g_move || g_song.CurSrc > -1, g_song.SelChan > -1);
+            if (lightsPressed_.Contains(lblNext))      UnmarkLight(lblNext, g_move || CurSrc > -1, SelChan > -1);
+            if (lightsPressed_.Contains(lblPrev))      UnmarkLight(lblPrev, g_move || CurSrc > -1, SelChan > -1);
 
-            if (lightsPressed_.Contains(lblEnter))     UnmarkLight(lblEnter, g_song.CurSrc > -1 && curSet < 0, g_song.SelChan > -1 && curSet < 0);
-            if (lightsPressed_.Contains(lblBack))      UnmarkLight(lblBack,  g_song.CurSrc > -1, g_song.SelChan > -1);
+            if (lightsPressed_.Contains(lblEnter))     UnmarkLight(lblEnter, CurSrc > -1 && curSet < 0, SelChan > -1 && curSet < 0);
+            if (lightsPressed_.Contains(lblBack))      UnmarkLight(lblBack,  CurSrc > -1, SelChan > -1);
 
-            if (lightsPressed_.Contains(lblNew))       UnmarkLight(lblNew,       g_song.CurSrc > -1, g_song.SelChan > -1);
-            if (lightsPressed_.Contains(lblDuplicate)) UnmarkLight(lblDuplicate, g_song.CurSrc > -1, g_song.SelChan > -1);
-            if (lightsPressed_.Contains(lblDelete))    UnmarkLight(lblDelete,    g_song.CurSrc > -1, g_song.SelChan > -1);
+            if (lightsPressed_.Contains(lblNew))       UnmarkLight(lblNew,       CurSrc > -1, SelChan > -1);
+            if (lightsPressed_.Contains(lblDuplicate)) UnmarkLight(lblDuplicate, CurSrc > -1, SelChan > -1);
+            if (lightsPressed_.Contains(lblDelete))    UnmarkLight(lblDelete,    CurSrc > -1, SelChan > -1);
 
             if (lightsPressed_.Contains(lblChord1))    UnmarkLight(lblChord1, g_chordEdit && g_chord == 0, g_chords[0].Count > 0);
             if (lightsPressed_.Contains(lblChord2))    UnmarkLight(lblChord2, g_chordEdit && g_chord == 1, g_chords[1].Count > 0);
@@ -347,7 +347,7 @@ namespace IngameScript
             if (   IsCurParam("Tune")
                 && !(g_paramKeys || g_paramAuto))
             {
-                var inst = SelectedInstrument(g_song);
+                var inst = SelectedInstrument;
                 //var src  = g_song.CurSrc > -1 ? inst.Sources[g_song.CurSrc] : null;
                 var tune = (Tune)GetCurrentParam(inst);
 
@@ -368,7 +368,7 @@ namespace IngameScript
             if (   IsCurParam("Tune")
                 && !(g_paramKeys || g_paramAuto))
             {
-                var inst = SelectedInstrument(g_song);
+                var inst = SelectedInstrument;
                 //var src  = g_song.CurSrc > -1 ? inst.Sources[g_song.CurSrc] : null;
                 var tune = (Tune)GetCurrentParam(inst);
 
@@ -450,8 +450,8 @@ namespace IngameScript
 
                 //if (g_chordMode) 
                  if (g_spread)  val = g_chordSpread;
-            else if (ShowPiano) val = CurrentChannel(g_song).Transpose;
-            else                val = CurrentChannel(g_song).Shuffle;
+            else if (ShowPiano) val = CurrentChannel.Transpose;
+            else                val = CurrentChannel.Shuffle;
 
             lblOctave.WriteText((val > 0 ? "+" : "") + val.ToString(), false);
         }
@@ -459,8 +459,8 @@ namespace IngameScript
 
         void UpdatePlayStopLights()
         {
-            UpdateLight(lblPlay, OK(g_song.PlayStep));
-            UpdateLight(lblStop, OK(g_song.PlayStep));
+            UpdateLight(lblPlay, PlayTime > -1);
+            UpdateLight(lblStop, PlayTime > -1);
         }
 
 
@@ -508,20 +508,20 @@ namespace IngameScript
             UpdateLabelColor(lblDuplicate);
             UpdateLabelColor(lblDelete);
 
-            UpdateLight(lblMove, g_move ^ (g_song.CurSrc > -1), g_song.SelChan > -1 && !g_move);
+            UpdateLight(lblMove, g_move ^ (CurSrc > -1), SelChan > -1 && !g_move);
         }
 
 
         void UpdateLabelColor(IMyTextPanel lbl) 
         {
-            UpdateLight(lbl, g_song.CurSrc > -1, g_song.SelChan > -1); 
+            UpdateLight(lbl, CurSrc > -1, SelChan > -1); 
         }
 
 
         void UpdateEnterLight()
         {
-            UpdateLight(lblEnter, curSet < 0 && g_song.CurSrc < 0 ? "└►" : " ", 10, 10);
-            UpdateLight(lblEnter, curSet < 0 && g_song.CurSrc > -1, g_song.SelChan > -1 && curSet < 0);
+            UpdateLight(lblEnter, curSet < 0 && CurSrc < 0 ? "└►" : " ", 10, 10);
+            UpdateLight(lblEnter, curSet < 0 && CurSrc > -1, SelChan > -1 && curSet < 0);
         }
 
 
@@ -529,7 +529,7 @@ namespace IngameScript
         {
             if (curSet > -1)
             {
-                var path = g_settings.Last().GetPath(g_song.CurSrc);
+                var path = g_settings.Last().GetPath(CurSrc);
 
                 if (g_paramKeys)
                 {
@@ -537,7 +537,7 @@ namespace IngameScript
 
                     UpdateLight(
                         lblCmd3,
-                        SelectedChannel(g_song).Notes.Find(n =>
+                        SelectedChannel.Notes.Find(n =>
                                song.GetStep(n) >= song.EditPos
                             && song.GetStep(n) <  song.EditPos+1
                             && n.Keys.Find(k => k.Path == path) != null) != null
@@ -550,7 +550,7 @@ namespace IngameScript
                 {
                     if (OK(song.EditPos))
                     { 
-                        if (SelectedChannel(g_song).AutoKeys.Find(k =>
+                        if (SelectedChannel.AutoKeys.Find(k =>
                                 k.Path == path
                                 && k.StepTime >= (song.EditPos % nSteps)
                                 && k.StepTime <  (song.EditPos % nSteps) + 1) != null)
@@ -575,26 +575,26 @@ namespace IngameScript
             }
             else
             {
-                if (g_song.CurSrc > -1)
+                if (CurSrc > -1)
                 {
                     UpdateLight(lblCmd1, "On",    10, 10);
-                    UpdateLight(lblCmd1, SelectedSource(g_song).On);
+                    UpdateLight(lblCmd1, SelectedSource.On);
                     UpdateLight(lblCmd2, "Osc ↕", 10, 10);
                     UpdateLight(lblCmd3, " ",     10, 10);
                 }
                 else
                 { 
-                    UpdateLight(lblCmd1, g_song.SelChan < 0 ? "Copy" : " ", 10, 10);
+                    UpdateLight(lblCmd1, SelChan < 0 ? "Copy" : " ", 10, 10);
                     UpdateLight(lblCmd1, false);
 
-                    UpdateLight(lblCmd2, g_song.SelChan < 0 ? "Paste" : " ", 10, 10);
+                    UpdateLight(lblCmd2, SelChan < 0 ? "Paste" : " ", 10, 10);
                     UpdatePasteLight();
 
                     UpdateLight(lblCmd3, g_transpose, g_song.EditNotes.Count > 0);
 
                     UpdateLight(
                         lblCmd3,     
-                        g_song.SelChan < 0 
+                        SelChan < 0 
                         ? " ▄█   █ █ ██ █ █ █   █▄ \n" +
                          " ▀██   █▄█▄██▄█▄█▄█   ██▀ \n" +  
                            " ▀   ▀▀▀▀▀▀▀▀▀▀▀▀   ▀ " 
@@ -610,7 +610,7 @@ namespace IngameScript
                    IsCurParam()
                 || IsCurSetting(typeof(Harmonics))
                 ||    g_transpose 
-                   && g_song.SelChan < 0;
+                   && SelChan < 0;
 
 
             var strDown = "◄";
@@ -735,8 +735,8 @@ namespace IngameScript
 
         void UpdatePianoLights()
         {
-            UpdateHighLights(CurrentPattern(g_song), CurrentChannel(g_song));
-            UpdateLowLights (CurrentPattern(g_song), CurrentChannel(g_song));
+            UpdateHighLights(CurrentPattern, CurrentChannel);
+            UpdateLowLights (CurrentPattern, CurrentChannel);
         }
 
 
@@ -761,7 +761,7 @@ namespace IngameScript
 
         void UpdateLight(Pattern pat, Channel chan, IMyTextPanel light, int num)
         {
-            var step = CurSong.PlayStep % nSteps;
+            var step = PlayStep % nSteps;
 
             var p = CurSong.Patterns.IndexOf(pat);
 
@@ -769,9 +769,9 @@ namespace IngameScript
             if (IsCurParam("Tune"))
             {
                 var tune =
-                    CurSong.CurSrc > -1
-                    ? SelectedSource    (CurSong).Tune
-                    : SelectedInstrument(CurSong).Tune;
+                    CurSrc > -1
+                    ? SelectedSource    .Tune
+                    : SelectedInstrument.Tune;
 
                 if (tune.UseChord)
                 { 
@@ -791,15 +791,15 @@ namespace IngameScript
                 var thisChan =
                        chan.Notes.FindIndex(n =>
                               num == n.Number
-                           && (      CurSong.PlayStep >= p * nSteps + n.PatStepTime + n.ShOffset
-                                  && CurSong.PlayStep <  p * nSteps + n.PatStepTime + n.ShOffset + n.StepLength
-                               ||    p * nSteps + n.PatStepTime >= CurSong.EditPos 
-                                  && p * nSteps + n.PatStepTime <  CurSong.EditPos + EditStep)) > -1
+                           && (      PlayStep >= p * nSteps + n.PatStep + n.ShOffset
+                                  && PlayStep <  p * nSteps + n.PatStep + n.ShOffset + n.StepLength
+                               ||    p * nSteps + n.PatStep >= CurSong.EditPos 
+                                  && p * nSteps + n.PatStep <  CurSong.EditPos + EditStep)) > -1
                     ||    g_hold
                        && g_notes.FindIndex(n =>
                                  num == n.Number
-                              && CurSong.PlayStep >= n.PatStepTime
-                              && CurSong.PlayStep <  n.PatStepTime + n.StepLength) > -1;
+                              && PlayStep >= n.PatStep
+                              && PlayStep <  n.PatStep + n.StepLength) > -1;
 
 
                 var otherChans = false;
@@ -813,10 +813,10 @@ namespace IngameScript
                         otherChans |= _chan.Notes.FindIndex(n =>
                                   num == n.Number
                                && ch  == n.iChan
-                               && (   CurSong.PlayStep >= p * nSteps + n.PatStepTime + n.ShOffset
-                                   && CurSong.PlayStep <  p * nSteps + n.PatStepTime + n.ShOffset + n.StepLength
-                            ||    p * nSteps + n.PatStepTime >= CurSong.EditPos 
-                               && p * nSteps + n.PatStepTime <  CurSong.EditPos + EditStep)) > -1;
+                               && (   PlayStep >= p * nSteps + n.PatStep + n.ShOffset
+                                   && PlayStep <  p * nSteps + n.PatStep + n.ShOffset + n.StepLength
+                            ||    p * nSteps + n.PatStep >= CurSong.EditPos 
+                               && p * nSteps + n.PatStep <  CurSong.EditPos + EditStep)) > -1;
                     }
                 }
 
@@ -837,17 +837,17 @@ namespace IngameScript
             {
                 var light = lblLow[step];
 
-                var _step = step + CurSong.CurPat * nSteps;
+                var _step = step + CurPat * nSteps;
 
-                var on = CurrentChannel(CurSong).Notes.Find(n => 
-                       n.PatStepTime >= step
-                    && n.PatStepTime <  step+1) != null;
+                var on = CurrentChannel.Notes.Find(n => 
+                       n.PatStep >= step
+                    && n.PatStep <  step+1) != null;
 
                 Color c;
 
-                if (   OK(CurSong.PlayStep)
-                    && _step == (int)CurSong.PlayStep
-                    && CurSong.CurPat == CurSong.PlayPat) c = on ? color0 : color6;
+                if (   OK(PlayStep)
+                    && _step == (int)PlayStep
+                    && CurPat == PlayPat) c = on ? color0 : color6;
                 else if (on)                              c = color6;
                 else if (CurSong.EditPos == _step)        c = color3;
                 else                                      c = step % 4 == 0 ? color2 : color0;

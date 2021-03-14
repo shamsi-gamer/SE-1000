@@ -55,13 +55,13 @@ namespace IngameScript
         bool g_in, g_out;
 
 
-        void StartBlock(Song song)
+        void StartBlock()
         {
-            var b = song.GetBlock(song.CurPat);
+            var b = g_song.GetBlock(CurPat);
 
             if (b == null)
             {
-                song.Blocks.Add(new Block(song.CurPat));
+                g_song.Blocks.Add(new Block(CurPat));
 
                 g_in     = true;
                 g_follow = false;
@@ -85,13 +85,13 @@ namespace IngameScript
         }
 
 
-        void EndBlock(Song song)
+        void EndBlock()
         {
-            var b = song.GetBlock(song.CurPat);
+            var b = g_song.GetBlock(CurPat);
 
             if (b == null)
             {
-                song.Blocks.Add(new Block(song.CurPat));
+                g_song.Blocks.Add(new Block(CurPat));
 
                 g_out    = true;
                 g_follow = false;
@@ -120,9 +120,9 @@ namespace IngameScript
         }
         
 
-        void ClearBlock(Song song)
+        void ClearBlock()
         {
-            song.Blocks.Remove(song.GetBlock(song.CurPat));
+            g_song.Blocks.Remove(g_song.GetBlock(CurPat));
 
             DisableBlock();
             MovePatternOff();

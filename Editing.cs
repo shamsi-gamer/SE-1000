@@ -33,7 +33,7 @@ namespace IngameScript
             for (int i = f; i <= l; i++)
                 song.Patterns[i].Channels[ch] = new Channel(copyChan);
 
-            UpdateInstOff(song.CurChan);
+            UpdateInstOff(CurChan);
         }
 
 
@@ -44,12 +44,12 @@ namespace IngameScript
                 if (   !g_chordMode 
                     || g_chord > -1)
                 {
-                    var chan = CurrentPattern(song).Channels[ch];
+                    var chan = CurrentPattern.Channels[ch];
 
                     int found;
                     while ((found = chan.Notes.FindIndex(n => 
-                               song.CurPat * nSteps + n.PatStepTime >= song.EditPos 
-                            && song.CurPat * nSteps + n.PatStepTime <  song.EditPos + 1)) > -1)
+                               CurPat * nSteps + n.PatStep >= song.EditPos 
+                            && CurPat * nSteps + n.PatStep <  song.EditPos + 1)) > -1)
                         chan.Notes.RemoveAt(found);
 
                     lastNotes.Clear();
@@ -83,7 +83,7 @@ namespace IngameScript
                             if (pat < 0) return;
 
                             lastNote.StepLength = Math.Min(
-                                song.EditPos - (pat * nSteps + lastNote.PatStepTime) + EditStep + ChordSpread(i),
+                                song.EditPos - (pat * nSteps + lastNote.PatStep) + EditStep + ChordSpread(i),
                                 10f * FPS / g_ticksPerStep);
 
                             TriggerNote(lastNote.Number, lastNote.iChan, EditStep, ChordSpread(i));
@@ -119,13 +119,13 @@ namespace IngameScript
             {
                 StopEdit(song);
 
-                song.Inter = CurrentChannel(song).Notes.Find(n =>
+                song.Inter = CurrentChannel.Notes.Find(n =>
                        song.GetStep(n) >= song.EditPos
                     && song.GetStep(n) <  song.EditPos + EditStep);
             }
             else
             {
-                var note = CurrentChannel(song).Notes.Find(n =>
+                var note = CurrentChannel.Notes.Find(n =>
                        song.GetStep(n) >= song.EditPos
                     && song.GetStep(n) <  song.EditPos + EditStep);
 
@@ -134,11 +134,11 @@ namespace IngameScript
                     var si = song.GetStep(song.Inter);
                     var sn = song.GetStep(note);
 
-                    var path  = g_settings.Last().GetPath(g_song.CurSrc);
+                    var path  = g_settings.Last().GetPath(CurSrc);
                     var param = (Parameter)GetSettingFromPath(note.Instrument, path);
 
-                    var start = param.GetKeyValue(song.Inter, g_song.CurSrc);
-                    var end   = param.GetKeyValue(note,    g_song.CurSrc);
+                    var start = param.GetKeyValue(song.Inter, CurSrc);
+                    var end   = param.GetKeyValue(note,       CurSrc);
 
                     int f = (int)(si / nSteps);
                     int l = (int)(sn / nSteps);
@@ -146,7 +146,7 @@ namespace IngameScript
 
                     for (int p = f; f < l ? (p <= l) : (p >= l); p += d)
                     {
-                        foreach (var n in song.Patterns[p].Channels[song.CurChan].Notes)
+                        foreach (var n in song.Patterns[p].Channels[CurChan].Notes)
                         {
                             if (   song.GetStep(n) <  Math.Min(si, sn)
                                 || song.GetStep(n) >= Math.Max(si, sn))
@@ -161,7 +161,7 @@ namespace IngameScript
                                 SetKeyValue(key, val);
                             else
                             {
-                                n.Keys.Add(new Key(g_song.CurSrc, param, nParam.Value, song.GetStep(n)));
+                                n.Keys.Add(new Key(CurSrc, param, nParam.Value, song.GetStep(n)));
                                 SetKeyValue(n.Keys.Last(), val);
                             }
                         }
@@ -182,7 +182,7 @@ namespace IngameScript
                 && OK(song.EditPos)
                 && g_paramAuto)
             {
-                var key = SelectedChannel(g_song).AutoKeys.Find(k => 
+                var key = SelectedChannel.AutoKeys.Find(k => 
                          k.StepTime >= (song.EditPos % nSteps)
                       && k.StepTime <  (song.EditPos % nSteps) + 1);
 
@@ -224,14 +224,14 @@ namespace IngameScript
             CurSong.EditPos =
                 OK(CurSong.EditPos)
                 ? float.NaN
-                : (OK(CurSong.LastEditPos) ? CurSong.LastEditPos : CurSong.CurPat * nSteps);
+                : (OK(CurSong.LastEditPos) ? CurSong.LastEditPos : CurPat * nSteps);
 
             StopEdit(CurSong);
 
             UpdateAdjustLights(g_song);
 
             if (g_hold)
-                StopCurrentNotes(CurSong, CurSong.CurChan);
+                StopCurrentNotes(CurSong, CurChan);
 
             g_hold = false;
             UpdateLight(lblHold, false);
@@ -308,13 +308,13 @@ namespace IngameScript
 
         void CutNotes(Song song)
         {
-            for (int p = 0; p <= song.CurPat; p++)
+            for (int p = 0; p <= CurPat; p++)
             {
-                var patStart =  song.CurPat   *nSteps;
-                var patEnd   = (song.CurPat+1)*nSteps;
+                var patStart =  CurPat   *nSteps;
+                var patEnd   = (CurPat+1)*nSteps;
 
                 var pat  = song.Patterns[p];
-                var chan = pat.Channels[song.CurChan];
+                var chan = pat.Channels[CurChan];
 
                 var min  = (60 + chan.Transpose*12) * NoteScale;
                 var max  = (84 + chan.Transpose*12) * NoteScale;
@@ -333,7 +333,7 @@ namespace IngameScript
 
         List<Note> GetEditNotes(Song song, bool onlyEdit = false)
         {
-            var chan = CurrentChannel(song);
+            var chan = CurrentChannel;
 
             if (OK(song.EditPos))
             { 
@@ -361,13 +361,13 @@ namespace IngameScript
             {
                 var notes = new List<Note>();
 
-                for (int p = 0; p <= song.CurPat; p++)
+                for (int p = 0; p <= CurPat; p++)
                 {
-                    var patStart =  song.CurPat   *nSteps;
-                    var patEnd   = (song.CurPat+1)*nSteps;
+                    var patStart =  CurPat   *nSteps;
+                    var patEnd   = (CurPat+1)*nSteps;
 
                     var pat  = song.Patterns[p];
-                    var chan = pat.Channels[song.CurChan];
+                    var chan = pat.Channels[CurChan];
 
                     var min  = (60 + chan.Transpose*12) * NoteScale;
                     var max  = (84 + chan.Transpose*12) * NoteScale;
@@ -392,10 +392,10 @@ namespace IngameScript
             var notes = new List<Note>();
 
             int first, last;
-            GetPatterns(song, song.CurPat, out first, out last);
+            GetPatterns(song, CurPat, out first, out last);
 
             for (int pat = first; pat <= last; pat++)
-                notes.AddRange(song.Patterns[pat].Channels[song.CurChan].Notes);
+                notes.AddRange(song.Patterns[pat].Channels[CurChan].Notes);
 
             return notes;
         }
@@ -465,7 +465,7 @@ namespace IngameScript
 
         void MoveEdit(Song song, int move, bool create = false)
         {
-            var chan = SelectedChannel(g_song);
+            var chan = SelectedChannel;
 
             if (IsCurSetting(typeof(Harmonics)))
             {
@@ -489,7 +489,7 @@ namespace IngameScript
                 }
                 else
                 {
-                    var oldCur = song.CurPat;
+                    var oldCur = CurPat;
 
                     song.EditPos += move * EditStep;
 
@@ -497,13 +497,13 @@ namespace IngameScript
 
                     foreach (var n in song.EditNotes)
                     {
-                        n.PatStepTime += move * EditStep;
+                        n.PatStep += move * EditStep;
 
-                        if (   n.PatStepTime < 0
-                            || n.PatStepTime >= nSteps)
+                        if (   n.PatStep < 0
+                            || n.PatStep >= nSteps)
                         {
                             n.Channel.Notes.Remove(n);
-                            n.PatStepTime -= move * nSteps;
+                            n.PatStep -= move * nSteps;
 
                             chan.Notes.Add(n);
                             n.Channel = chan;
@@ -536,16 +536,16 @@ namespace IngameScript
 
                 if (g_follow)
                 {
-                    if (song.EditPos >= (song.CurPat + 1) * nSteps) // TODO blocks
+                    if (song.EditPos >= (CurPat + 1) * nSteps) // TODO blocks
                     {
                         if (song.EditPos >= song.Patterns.Count * nSteps)
                         {
                             if (create)
                             {
-                                var pat = new Pattern(CurrentPattern(song));
-                                pat.Channels[song.CurChan].Notes.Clear();
+                                var pat = new Pattern(CurrentPattern);
+                                pat.Channels[CurChan].Notes.Clear();
 
-                                song.Patterns.Insert(song.CurPat + 1, pat);
+                                song.Patterns.Insert(CurPat + 1, pat);
                             }
                             else
                                 song.EditPos -= song.Patterns.Count * nSteps;
@@ -571,7 +571,7 @@ namespace IngameScript
             else
             {
                 int first, last;
-                GetPatterns(song, song.CurPat, out first, out last);
+                GetPatterns(song, CurPat, out first, out last);
 
                 for (int pat = first; pat <= last; pat++)
                     Transpose(song, pat, ch, tr);
@@ -596,14 +596,14 @@ namespace IngameScript
 
         void SetTranspose(Song song, int d)
         {
-            var tune = SelectedSource    (song)?.Tune
-                    ?? SelectedInstrument(song)?.Tune;
+            var tune = SelectedSource    ?.Tune
+                    ?? SelectedInstrument?.Tune;
 
             if (g_spread)
                 g_chordSpread = MinMax(0, g_chordSpread + d, 16);
             
-            else if (ShowPiano) SetTranspose(song, song.CurChan, d);
-            else                SetShuffle(song.CurChan, d);
+            else if (ShowPiano) SetTranspose(song, CurChan, d);
+            else                SetShuffle(CurChan, d);
 
             MarkLight(
                 d > 0
@@ -616,10 +616,10 @@ namespace IngameScript
 
         void SetTranspose(Song song, int ch, int tr)
         {
-            tr += CurrentPattern(song).Channels[ch].Transpose;
+            tr += CurrentPattern.Channels[ch].Transpose;
 
             int first, last;
-            GetPatterns(song, song.CurPat, out first, out last);
+            GetPatterns(song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
             {
@@ -642,7 +642,7 @@ namespace IngameScript
 
         void Random()
         {
-            if (g_song.SelChan < 0)
+            if (SelChan < 0)
                 return;
 
             if (   g_paramKeys
@@ -654,19 +654,19 @@ namespace IngameScript
                         RandomValues(ch);
                 }
                 else
-                    RandomValues(g_song.CurChan);
+                    RandomValues(CurChan);
             }
             else
             { 
                 if (curSet > -1)
                     g_settings[curSet].Randomize();
-                else if (g_song.CurSrc > -1)
+                else if (CurSrc > -1)
                 {
                     var used = new List<Oscillator>();
-                    SelectedSource(g_song).Randomize(used);
+                    SelectedSource.Randomize(used);
                 }
-                else if (g_song.SelChan > -1)
-                    SelectedInstrument(g_song).Randomize();
+                else if (SelChan > -1)
+                    SelectedInstrument.Randomize();
             }
 
             MarkLight(lblRandom);
@@ -676,7 +676,7 @@ namespace IngameScript
         void RandomValues(int ch)
         {
             int first, last;
-            GetPatterns(g_song, g_song.CurPat, out first, out last);
+            GetPatterns(g_song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
             { 

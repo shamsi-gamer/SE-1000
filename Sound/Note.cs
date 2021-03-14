@@ -12,17 +12,17 @@ namespace IngameScript
                                
             public int         Number;
                                
-            public Instrument  Instrument;
+            public Instrument  Instrument  { get { return Channel.Instrument; } }
 
-            public float       PatStepTime,
+            public float       PatStep,
                                StepLength;
                                
-            public int         PatIndex     { get { return Channel.Pattern.Song.Patterns.IndexOf(Channel.Pattern); } }
+            public int         PatIndex    { get { return Channel.Pattern.Song.Patterns.IndexOf(Channel.Pattern); } }
 
-            public long        PatTime      { get { return (long)(PatStepTime * g_ticksPerStep); } }
-            public long        SongTime     { get { return PatIndex * nSteps + PatTime; } }
+            public long        PatTime     { get { return (long)(PatStep * g_ticksPerStep); } }
+            public long        SongTime    { get { return GetPatTime(PatIndex) + PatTime; } }
 
-            public int         FrameLength  { get { return (int) (StepLength  * g_ticksPerStep); } }
+            public int         FrameLength { get { return (int)(StepLength * g_ticksPerStep); } }
 
             public float       Volume;
 
@@ -38,14 +38,14 @@ namespace IngameScript
 
             public Note()
             {
-                Channel  = null;
-                iChan    = -1;
+                Channel = null;
+                iChan   = -1;
 
-                PatStepTime = -1;
+                PatStep = -1;
 
-                Sounds   = new List<Sound>();
+                Sounds  = new List<Sound>();
 
-                Keys     = new List<Key>();
+                Keys    = new List<Key>();
 
                 Reset();
             }
@@ -56,8 +56,7 @@ namespace IngameScript
                 Channel    = note.Channel;
                 iChan      = note.iChan;
                 Number     = note.Number;
-                Instrument = note.Instrument;
-                PatStepTime   = note.PatStepTime;
+                PatStep    = note.PatStep;
                 StepLength = note.StepLength;
                 Volume     = note.Volume;
 
@@ -69,21 +68,20 @@ namespace IngameScript
             }
 
 
-            public Note(Channel chan, int ch, float vol, int num, Instrument inst, float time, float len)
+            public Note(Channel chan, int ch, float vol, int num, float time, float len)
             {
-                Channel    = chan;
-                iChan      = ch;
-                Number     = num;
-                Instrument = inst;
-                PatStepTime   = time;
-                StepLength = len;
-                Volume     = vol;
+                Channel     = chan;
+                iChan       = ch;
+                Number      = num;
+                PatStep     = time;
+                StepLength  = len;
+                Volume      = vol;
 
-                ArpPlayTime   = float.NaN;
+                ArpPlayTime = float.NaN;
 
-                Sounds     = new List<Sound>();
-
-                Keys       = new List<Key>();
+                Sounds      = new List<Sound>();
+                            
+                Keys        = new List<Key>();
             }
 
 
@@ -103,8 +101,8 @@ namespace IngameScript
             {
                 get
                 {
-                         if (PatStepTime % 2 == 1   ) return (float)Channel.Shuffle / g_ticksPerStep;
-                    else if (PatStepTime % 2 == 1.5f) return (float)Channel.Shuffle / g_ticksPerStep;
+                         if (PatStep % 2 == 1   ) return (float)Channel.Shuffle / g_ticksPerStep;
+                    else if (PatStep % 2 == 1.5f) return (float)Channel.Shuffle / g_ticksPerStep;
                     else return 0;
                 }
             }

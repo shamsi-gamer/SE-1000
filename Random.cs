@@ -17,14 +17,14 @@ namespace IngameScript
                     RandomNotes(ch);
             }
             else
-                RandomNotes(g_song.CurChan);
+                RandomNotes(CurChan);
         }
 
 
         void RandomNotes(int ch)
         {
             int first, last;
-            GetPatterns(g_song, g_song.CurPat, out first, out last);
+            GetPatterns(g_song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
                 RandomNotes(p, ch);
@@ -60,7 +60,7 @@ namespace IngameScript
             {
                 if (g_rnd.NextDouble() >= 0.5)
                 {
-                    var found = chan.Notes.Find(n => n.PatStepTime == step);
+                    var found = chan.Notes.Find(n => n.PatStep == step);
 
                     if (found != null) chan.Notes.Remove(found);
                     else
@@ -70,7 +70,7 @@ namespace IngameScript
                         if (note < 0)
                         { 
                             note = ((minNote + (int)(Math.Pow(g_rnd.NextDouble(), 0.25) * (maxNote - minNote))) / NoteScale) * NoteScale;
-                            chan.AddNote(new Note(chan, ch, 1, note, chan.Instrument, step, editLength));
+                            chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
                         }
                         else
                         {
@@ -90,13 +90,13 @@ namespace IngameScript
                                         chord = UpdateFinalTuneChord(chord, true);
                                     
                                     note = chord[g_rnd.Next(0, chord.Count)];
-                                    chan.AddNote(new Note(chan, ch, 1, note, chan.Instrument, step, editLength));
+                                    chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
                                 }
                                 else if (g_chordAll)
                                 {
                                     var chord = chords[curChord];
                                     note = chord[g_rnd.Next(0, chord.Count)];
-                                    chan.AddNote(new Note(chan, ch, 1, note, chan.Instrument, step, editLength));                               
+                                    chan.AddNote(new Note(chan, ch, 1, note, step, editLength));                               
                                 }
                                 else
                                 {
@@ -116,14 +116,14 @@ namespace IngameScript
                                     { 
                                         var _note = note + off;
                                         if (!g_halfSharp) _note = (_note / NoteScale) * NoteScale;
-                                        chan.AddNote(new Note(chan, ch, 1, _note, chan.Instrument, step, editLength));                               
+                                        chan.AddNote(new Note(chan, ch, 1, _note, step, editLength));                               
                                     }
                                 }
                             }
                             else
                             { 
                                 note = rndNote;
-                                chan.AddNote(new Note(chan, ch, 1, note, chan.Instrument, step, editLength));
+                                chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
                             }
                         }
                     }
@@ -142,14 +142,14 @@ namespace IngameScript
             foreach (var note in chan.Notes)
             {
                 var param = GetCurrentParam(note.Instrument);
-                var index = note.Keys.FindIndex(k => k.Path == param.GetPath(g_song.CurSrc));
+                var index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSrc));
 
                 var rndValue = (float)(param.NormalMin + g_rnd.NextDouble() * (param.NormalMax - param.NormalMin));
 
                 if (index > -1)
                     note.Keys[index].Value = rndValue;
                 else
-                    note.Keys.Add(new Key(g_song.CurSrc, param, rndValue, note.PatStepTime, chan));
+                    note.Keys.Add(new Key(CurSrc, param, rndValue, note.PatStep, chan));
             }
         }
 
@@ -167,13 +167,13 @@ namespace IngameScript
                 var rndValue = (float)(param.NormalMin + g_rnd.NextDouble() * (param.NormalMax - param.NormalMin));
 
                 var index = chan.AutoKeys.FindIndex(k => 
-                       k.Path == param.GetPath(g_song.CurSrc) 
+                       k.Path == param.GetPath(CurSrc) 
                     && k.StepTime == step);
 
                 if (index > -1)
                     chan.AutoKeys[index].Value = rndValue;
                 else
-                    chan.AutoKeys.Add(new Key(g_song.CurSrc, param, rndValue, step, chan));
+                    chan.AutoKeys.Add(new Key(CurSrc, param, rndValue, step, chan));
             }
 
             g_song.UpdateAutoKeys();

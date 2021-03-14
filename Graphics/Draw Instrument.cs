@@ -13,7 +13,7 @@ namespace IngameScript
 
             var rh = h - 50;
 
-            var inst = SelectedInstrument(g_song);
+            var inst = SelectedInstrument;
 
             var lw = 196;
 
@@ -26,7 +26,7 @@ namespace IngameScript
             FillRect(sprites, x + lw, y, w-lw, rh, color2);
 
 
-            DrawInstrumentList(sprites, x, y, lw, rh, SelectedChannel(g_song));
+            DrawInstrumentList(sprites, x, y, lw, rh, SelectedChannel);
 
 
             FillRect(sprites, x + lw,      0,    w2, rh/4, color3);
@@ -80,7 +80,7 @@ namespace IngameScript
                 sprites,
                 x + lw + w2 + 21, 
                 y + 5, 
-                SelectedInstrument(g_song));
+                SelectedInstrument);
 
 
             DrawSourceList(sprites, x + lw + (w-lw)/3, y + rh/4, (w-lw)*2/3f, rh - rh/4, inst);
@@ -120,7 +120,7 @@ namespace IngameScript
             var iInst = g_inst.IndexOf(chan.Instrument);
             var step  = 28.5f;
 
-            if (g_song.SelChan > -1 && g_song.CurSrc < 0)
+            if (SelChan > -1 && CurSrc < 0)
                 FillRect(sprites, x + sw, y + (iInst - instOff) * step, w - sw, step, color6);
 
             for (int i = instOff; i < Math.Min(instOff + maxDspInst, g_inst.Count); i++)
@@ -134,13 +134,13 @@ namespace IngameScript
                     y + (i - instOff) * step,
                     0.7f,
                     inst == chan.Instrument 
-                    ? (g_song.CurSrc > -1 ? color6 : color0) 
-                    : (g_song.CurSrc > -1 ? color3 : color6));
+                    ? (CurSrc > -1 ? color6 : color0) 
+                    : (CurSrc > -1 ? color3 : color6));
             }
 
             FillRect(sprites, x + w - 4, y, 4, h, color6);
 
-            if (g_song.SelChan > -1 && g_inst.Count > maxDspInst)
+            if (SelChan > -1 && g_inst.Count > maxDspInst)
             {
                 var bh = h / (float)g_inst.Count;
                 FillRect(sprites, x, y + bh * iInst, sw, bh, color6);
@@ -159,26 +159,26 @@ namespace IngameScript
             for (int i = srcOff; i < Math.Min(srcOff + maxDspSrc, nSrc); i++)
             {
                 var src    = inst.Sources[i];
-                var active = i == g_song.CurSrc;
+                var active = i == CurSrc;
 
                 var ssh = 0f;
                 DrawSourceSettings(null, 0, 0, inst.Sources[i], active, ref ssh);
                 var sh = ssh + 20;
 
-                if (g_song.CurSrc == i)
+                if (CurSrc == i)
                     FillRect(sprites, x + sw, iy, w - sw, sh, color6);
 
 
-                var col_0 = src.On && g_song.CurSrc > -1 ? color6 : color3;
-                var col_1 = src.On && g_song.CurSrc > -1 ? color0 : color5;
+                var col_0 = src.On && CurSrc > -1 ? color6 : color3;
+                var col_1 = src.On && CurSrc > -1 ? color0 : color5;
 
                 if (src.Oscillator == OscSample)
                 {
-                    DrawString(sprites, src.Oscillator.ShortName, x + sw + 10, iy + sh/2 - 10, 0.7f, i == g_song.CurSrc ? col_1 : col_0, TextAlignment.CENTER);
+                    DrawString(sprites, src.Oscillator.ShortName, x + sw + 10, iy + sh/2 - 10, 0.7f, i == CurSrc ? col_1 : col_0, TextAlignment.CENTER);
                 }
                 else
                 { 
-                    DrawSrcSample(sprites, x + sw + 10, iy + sh/2 - 10, 50, 20, src, active, g_song.CurSrc > -1);
+                    DrawSrcSample(sprites, x + sw + 10, iy + sh/2 - 10, 50, 20, src, active, CurSrc > -1);
                     DrawString(sprites, src.Oscillator.ShortName, x + sw + 100, iy + sh/2 - 10, 0.6f, active ? col_1 : col_0, TextAlignment.CENTER);
                 }
 
@@ -192,10 +192,10 @@ namespace IngameScript
             }
 
 
-            if (g_song.CurSrc > -1 && nSrc > 8)
+            if (CurSrc > -1 && nSrc > 8)
             {
                 var bh = h / (float)nSrc;
-                FillRect(sprites, x, y + bh * g_song.CurSrc, sw, bh, color6);
+                FillRect(sprites, x, y + bh * CurSrc, sw, bh, color6);
             }
         }
     }

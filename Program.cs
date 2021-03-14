@@ -10,10 +10,10 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        // volume not shown for harmonics & filters
-
         // move patterns
         // blocks
+
+        // update current notes when changing/randomizing instrument
 
         // creating new pattern (maybe duplicating/deleting too) doesn't adjust playback position internally,
         // so when you press play, it visually plays from the right place, but the sound is wrong
@@ -21,6 +21,10 @@ namespace IngameScript
 
         // machine side instruments
         // save (song saves modified copies of instruments)
+
+        // minify true->T and false->F, TextAlignment.CENTER, etc.
+        // use as much Linq instead of loops as possible
+        // refactor .GetValue(.......) into passing a single time/note object
 
 
         // lfo song start (maybe sync value)
@@ -34,7 +38,9 @@ namespace IngameScript
         // make it so arpeggio length can't be deleted
 
 
-        // refactor .GetValue(.......) into passing a single time/note object
+        // fix filter
+        // volume not shown correctly for harmonics & filters
+
 
 
         // note button
@@ -104,8 +110,7 @@ namespace IngameScript
         List<IMyTimerBlock>     g_timers = new List<IMyTimerBlock>();
 
         IMyPistonBase           g_lightPiston;
-        IMyMotorBase            g_lightHinge1;
-        IMyMotorBase            g_lightHinge2;
+        IMyMotorBase            g_lightHinge1, g_lightHinge2;
 
         static IMyRemoteControl g_remote;
                                 
@@ -137,8 +142,30 @@ namespace IngameScript
         static long             g_time    = -1; // in ticks
 
         static int              g_ticksPerStep = 7;
+
+        static long             GetPatTime(int pat) { return pat * nSteps * g_ticksPerStep; } 
         
         float                   TimeStep { get { return (float)g_time / g_ticksPerStep; } }
+
+
+        public static long      StartTime = -1, // in ticks
+                                PlayTime  = -1;
+
+        public static int       CurChan,
+                                SelChan,
+                                CurSrc,
+                                 
+                                PlayPat,
+                                CurPat;
+
+
+        public float PlayStep { get 
+        { 
+            return 
+                PlayTime > -1 
+                ? PlayTime / (float)g_ticksPerStep
+                : float.NaN; 
+        } }
 
                                 
         static Song             g_song = new Song();
@@ -338,17 +365,22 @@ namespace IngameScript
 
         public void Main(string arg, UpdateType update)
         {
+            if (arg.Length > 0)
+            { 
+                ProcessArg(arg);
+                return;
+            }
+
+
             if (!g_init)
                 return;
 
+            
             pnlInfoLog.CustomData = "";
             
 
             FinishStartup();
 
-
-            if (arg.Length > 0)
-                ProcessArg(arg);
 
             _triggerDummy.Clear();
 
@@ -360,14 +392,14 @@ namespace IngameScript
 
                 UpdatePlayback();
              
-                if (OK(g_song.PlayStep))
+                if (PlayTime > -1)
                     UpdateKeyLights();
             }
 
 
             if ((update & UpdateType.Update10) != 0)
             {
-                if (   !OK(g_song.PlayStep)
+                if (    PlayTime < 0
                     && _nextToLoad > 10)
                     UpdateKeyLights();
 
@@ -413,6 +445,7 @@ namespace IngameScript
 
             instCount = Math.Max(instCount, Runtime.CurrentInstructionCount);
 
+            
             pnlInfoLog.CustomData = "";
 
 
@@ -503,7 +536,7 @@ namespace IngameScript
                                        
                 case "spread":     Spread();                 break;
 
-                case "rnd snd":    RandomSound(g_inst.IndexOf(CurrentInstrument(g_song))); break;
+                case "rnd snd":    RandomSound(g_inst.IndexOf(CurrentInstrument)); break;
                                        
                 case "up all":     SetVolumeAll( 1);      break;
                 case "down all":   SetVolumeAll(-1);      break;
@@ -524,7 +557,7 @@ namespace IngameScript
                 case "edit step":  ChangeEditStep();      break;
                 case "edit len":   ChangeEditLength();    break;
                                    
-                case "step":       Step(CurSong, CurSong.CurChan); break;
+                case "step":       Step(CurSong, CurChan); break;
                 case "hold":       Hold(CurSong);         break;
                                                           
                 case "left":       Left(CurSong);         break;
@@ -538,9 +571,9 @@ namespace IngameScript
                 case "gyro":       Gyro();                break;
                 case "noise":      NoiseEmitters();       break;
                                                           
-                case "sb":         StartBlock(g_song);    break;
-                case "eb":         EndBlock(g_song);      break;
-                case "cb":         ClearBlock(g_song);    break;
+                case "sb":         StartBlock();    break;
+                case "eb":         EndBlock();      break;
+                case "cb":         ClearBlock();    break;
                                                               
                 case "rl":         SetLightColor(0);      break;
                 case "ol":         SetLightColor(1);      break;
