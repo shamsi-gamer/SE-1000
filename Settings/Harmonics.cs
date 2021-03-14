@@ -19,7 +19,7 @@ namespace IngameScript
             {
                 for (int i = 0; i < Tones.Length; i++)
                 {
-                    Tones[i] = new Parameter("Harmonic " + (i+1), (i+1).ToString(), 0, 1, 0.1f, 0.9f, 0.01f, 0.1f, i == 0 ? 1 : 0);
+                    Tones[i] = new Parameter("Harmonic " + (i+1), S(i+1), 0, 1, 0.1f, 0.9f, 0.01f, 0.1f, i == 0 ? 1 : 0);
                     Tones[i].Parent = this;
                 }
 

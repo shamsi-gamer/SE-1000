@@ -51,10 +51,6 @@ namespace IngameScript
         //////////////////////////////////////////////////////////////////////////////////////
 
 
-        bool g_block;
-        bool g_in, g_out;
-
-
         void StartBlock()
         {
             var b = g_song.GetBlock(CurPat);

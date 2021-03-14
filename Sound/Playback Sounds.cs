@@ -130,9 +130,7 @@ namespace IngameScript
 
 
             snd.ElapsedFrameTime = g_time - snd.FrameTime;
-
-            while (snd.ElapsedFrameTime >= MaxSampleLength)
-                   snd.ElapsedFrameTime -= MaxSampleLength;
+            //snd.ElapsedFrameTime %= MaxSampleLength;
         }
 
 

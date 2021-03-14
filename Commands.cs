@@ -117,7 +117,7 @@ namespace IngameScript
 
                 g_inst.Insert(g_inst.IndexOf(CurrentInstrument) + 1, inst);
                 SetCurInst(inst);
-                srcOff = 0;
+                g_srcOff = 0;
 
                 UpdateOctaveLight();
                 UpdateInstName();
@@ -187,7 +187,7 @@ namespace IngameScript
                     foreach (var c in p.Channels)
                         if (c.Instrument == inst) c.Instrument = g_inst[i];
 
-                srcOff = 0;
+                g_srcOff = 0;
 
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_inst.Count, maxDspSrc, 0, 1);
                 UpdateInstOff(CurChan);
@@ -252,7 +252,7 @@ namespace IngameScript
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_inst.Count, maxDspInst, 0, 1);
                 UpdateInstOff(CurChan);
                 
-                srcOff = 0;
+                g_srcOff = 0;
 
                 //UpdateLight(lblOn,       false);
                 //UpdateLight(lblLfoFixed, false, bl);
@@ -327,7 +327,7 @@ namespace IngameScript
             if (CurSrc > -1)
             {
                 CurSrc = -1;
-                srcOff =  0;
+                g_srcOff =  0;
 
                 g_shift = false;
 
@@ -410,7 +410,7 @@ namespace IngameScript
             else if (CurSrc > -1)
             {
                 CurSrc = -1;
-                srcOff =  0;
+                g_srcOff =  0;
 
                 g_shift = false;
 

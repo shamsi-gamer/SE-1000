@@ -35,7 +35,7 @@ namespace IngameScript
                 sec %= 60;
 
                 FillRect(sprites, x + 220, y + h - 192, 250, 64, color6);
-                DrawString(sprites, min.ToString() + ":" + sec.ToString("00"), x + 345, y + h - 191, 2f, color0, TextAlignment.CENTER);
+                DrawString(sprites, S(min) + ":" + sec.ToString("00"), x + 345, y + h - 191, 2f, color0, TextAlignment.CENTER);
             }
 
 
@@ -122,7 +122,7 @@ namespace IngameScript
                 { 
                     DrawString(
                         sprites,
-                        g_logTime[i].ToString() + ": " + g_log[i], 
+                        S(g_logTime[i]) + ": " + g_log[i], 
                         x + 6, 
                         y + 306 + (i-min) * 25*0.5f, 
                         0.4f, 

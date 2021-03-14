@@ -98,7 +98,7 @@ namespace IngameScript
 
         void GetPlayPatterns(Song song, int p, out int f, out int l)
         {
-            if (loopPat)
+            if (g_loop)
             {
                 f = p;
                 l = p;

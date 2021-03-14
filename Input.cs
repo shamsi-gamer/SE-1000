@@ -33,7 +33,7 @@ namespace IngameScript
                 var sb = new StringBuilder();
                 dspMain.Surface.ReadText(sb, false);
 
-                CurrentInstrument.Name = sb.ToString().Trim();
+                CurrentInstrument.Name = S(sb).Trim();
             }
 
             inputValid = true;
@@ -44,7 +44,7 @@ namespace IngameScript
             var sb = new StringBuilder();
             dspInfo.Surface.ReadText(sb, false);
 
-            g_song.Name = sb.ToString().Trim();
+            g_song.Name = S(sb).Trim();
         }
 
         void UpdateSongDsp()

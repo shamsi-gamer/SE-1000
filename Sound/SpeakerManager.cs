@@ -92,7 +92,7 @@ namespace IngameScript
                 g_sm.Speakers .Add(spk);
                 g_sm.Available.Add(spk);
 
-                s.CustomName = "Speaker " + (i + 1).ToString();
+                s.CustomName = "Speaker " + S(i + 1);
                 s.Stop();
             }
         }

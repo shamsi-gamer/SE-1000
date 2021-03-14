@@ -54,7 +54,7 @@ namespace IngameScript
                 FillRect(sprites, xc, y + h + 6, bw, 76, chan.On ^ mixerPressed_.Contains(ch) ? color6 : color0);
 
                 DrawString(sprites, chan.Instrument.Name, xc + bw/2 + 3, y + h + 14, 0.5f, chan.On ? color0 : color6, TextAlignment.CENTER);
-                DrawString(sprites, (ch + 1).ToString(),  xc + bw/2 + 3, y + h + 35, 1.2f, chan.On ? color0 : color6, TextAlignment.CENTER);
+                DrawString(sprites, S(ch + 1),  xc + bw/2 + 3, y + h + 35, 1.2f, chan.On ? color0 : color6, TextAlignment.CENTER);
             }
 
             dsp.Draw(sprites);

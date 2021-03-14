@@ -186,7 +186,7 @@ namespace IngameScript
             else if (g_pick)
             {
                 g_curNote = found[0].Number;
-                showNote  = g_curNote;
+                //g_showNote  = g_curNote;
 
                 g_pick = false;
 
@@ -208,7 +208,7 @@ namespace IngameScript
 
         void Shift(bool fwd)
         {
-            if (allChan)
+            if (g_allChan)
             {
                 for (int i = 0; i < nChans; i++)
                     Shift(i, fwd);
@@ -282,14 +282,14 @@ namespace IngameScript
 
         void RandomInstrument()
         {
-            rndInst = !rndInst;
+            g_rndInst = !g_rndInst;
             UpdateHighLights(CurrentPattern, CurrentChannel);
         }
 
 
         void ToggleAllChannels()
         {
-            allChan = !allChan;
+            g_allChan = !g_allChan;
             UpdateHighLights(CurrentPattern, CurrentChannel);
         }
 
@@ -303,7 +303,7 @@ namespace IngameScript
 
         void ClearNotes()
         {
-            if (allChan)
+            if (g_allChan)
             {
                 for (int i = 0; i < nChans; i++)
                     ClearNotes(i);
@@ -411,7 +411,7 @@ namespace IngameScript
         string LowNoteName(int low, bool halfSharp)
         {
             return
-                  ((char)(65 + (low+2) % 7)).ToString() 
+                  S((char)(65 + (low+2) % 7)) 
                 + (g_halfSharp ? "‡" : "");
         }
     }

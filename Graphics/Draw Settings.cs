@@ -602,7 +602,7 @@ namespace IngameScript
             // count
             DrawString(
                 sprites, 
-                Math.Round(dc).ToString(), 
+                S(Math.Round(dc)), 
                 x, // + Math.Min(dt * dc, w), 
                 y + h - b + 8, 
                 fs, 

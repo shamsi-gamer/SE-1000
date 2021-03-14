@@ -9,7 +9,7 @@ namespace IngameScript
     partial class Program
     {
         //float[] g_sample      = null;
-        bool    g_sampleValid = false;
+        bool g_sampleValid = false;
 
 
         //void UpdateSample(Instrument inst, float w, float timeScale)

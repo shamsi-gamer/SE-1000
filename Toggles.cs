@@ -23,15 +23,15 @@ namespace IngameScript
     {
         void MovePatternOff()
         {
-            movePat = false;
+            g_movePat = false;
             UpdateLight(lblMovePat, false);
         }
 
 
         void ToogleLoop()
         {
-            loopPat = !loopPat;
-            UpdateLight(lblLoop, loopPat);
+            g_loop = !g_loop;
+            UpdateLight(lblLoop, g_loop);
         }
 
 
@@ -56,8 +56,8 @@ namespace IngameScript
 
         void ToggleAllPatterns()
         {
-            allPats = !allPats;
-            UpdateLight(lblAllPatterns, allPats);
+            g_allPats = !g_allPats;
+            UpdateLight(lblAllPatterns, g_allPats);
         }
 
 

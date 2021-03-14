@@ -7,9 +7,6 @@ namespace IngameScript
 {
     partial class Program
     {
-        int[] g_mem = new int[nMems];
-        bool setMem = false;
-
         IMyTextPanel[] lMems = new IMyTextPanel[nMems];
 
 
@@ -70,10 +67,10 @@ namespace IngameScript
 
         void Mem(int m)
         {
-            if (setMem)
+            if (g_setMem)
             {
                 g_mem[m] = g_mem[m] < 0 || g_mem[m] != CurPat ? CurPat : -1;
-                setMem = false;
+                g_setMem = false;
 
                 UpdateMemoryLights();
             }
@@ -92,17 +89,10 @@ namespace IngameScript
         }
 
 
-        void ClearAllMem()
-        {
-            for (int m = 0; m < nMems; m++)
-                g_mem[m] = -1;
-        }
-
-
         void Mem()
         {
-            setMem = !setMem;
-            UpdateLight(lblMemory, setMem);
+            g_setMem = !g_setMem;
+            UpdateLight(lblMemory, g_setMem);
         }
 
 

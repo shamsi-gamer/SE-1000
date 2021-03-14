@@ -7,15 +7,6 @@ namespace IngameScript
 {
     partial class Program
     {
-        float[]    g_steps = { 0.25f, 0.5f, 1, 2, 4, 8, 16, 65536f };
-
-        int        g_editStep   = 2;
-        int        g_editLength = 2;
-
-        float      EditStep   { get { return g_steps[g_editStep  ]; } }
-        float      EditLength { get { return g_steps[g_editLength]; } }
-
-
         void CopyChan(Song song, int p, int ch)
         {
             copyChan = new Channel(song.Patterns[p].Channels[ch]);
@@ -648,7 +639,7 @@ namespace IngameScript
             if (   g_paramKeys
                 || g_paramAuto)
             {
-                if (allChan)
+                if (g_allChan)
                 {
                     for (int ch = 0; ch < nChans; ch++)
                         RandomValues(ch);

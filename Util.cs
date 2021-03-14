@@ -255,20 +255,20 @@ namespace IngameScript
 
         void UpdateSongOff()
         {
-            UpdateDspOffset(ref songOff, CurPat, g_song.Patterns.Count, maxDspPats, 1, 1);
+            UpdateDspOffset(ref g_songOff, CurPat, g_song.Patterns.Count, maxDspPats, 1, 1);
         }
 
 
         void UpdateInstOff(int ch)
         {
             var curInst = g_inst.IndexOf(CurrentPattern.Channels[ch].Instrument);
-            UpdateDspOffset(ref instOff, curInst, g_inst.Count, maxDspInst, 0, 1);
+            UpdateDspOffset(ref g_instOff, curInst, g_inst.Count, maxDspInst, 0, 1);
         }
 
 
         void UpdateSrcOff()
         {
-            UpdateDspOffset(ref srcOff, CurSrc, CurrentInstrument.Sources.Count, maxDspSrc, 0, 0);
+            UpdateDspOffset(ref g_srcOff, CurSrc, CurrentInstrument.Sources.Count, maxDspSrc, 0, 0);
         }
 
 
@@ -341,7 +341,7 @@ namespace IngameScript
 
                 string newName = "";
                 while (newName == "" || exists(newName))
-                    newName = name.Substring(0, len) + (++num).ToString();
+                    newName = name.Substring(0, len) + S(++num);
 
                 return newName;
             }
@@ -485,7 +485,7 @@ namespace IngameScript
             f = p;
             l = p;
 
-            if (allPats)
+            if (g_allPats)
             {
                 var b = song.GetBlock(p);
 
@@ -593,6 +593,12 @@ namespace IngameScript
         }
 
 
+        static long GetPatTime(int pat) 
+        {
+            return pat * nSteps * g_ticksPerStep; 
+        } 
+
+
         static float note2freq(int note)
         {
             return 440 * (float)Math.Pow(2, (note/(float)NoteScale - 69) / 12f);
@@ -603,5 +609,8 @@ namespace IngameScript
         {
             return (int)Math.Round((12 * Math.Log(freq / 440, 2) + 69) * NoteScale);
         }
+
+
+        static string S<T>(T val) { return val.ToString(); }
     }
 }

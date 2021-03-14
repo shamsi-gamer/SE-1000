@@ -115,13 +115,10 @@ namespace IngameScript
         List<Note>              g_notes  = new List<Note>();
         List<Sound>             g_sounds = new List<Sound>();
 
-        bool []                 g_on  = new bool [nChans];
         float[]                 g_vol = new float[nChans];
 
         const float             ControlSensitivity = 8;                                
-        const int               NoteScale = 2;
-
-        const int               MaxSampleLength = (int)(9.9 * FPS);
+        const int               NoteScale          = 2;
 
 
         static List<TriggerValue> _triggerDummy = new List<TriggerValue>();
@@ -133,82 +130,16 @@ namespace IngameScript
         static float[]          g_runtimeMs      = new float[6];
         static float            g_maxRuntimeMs   = 0;
                                               
-        static long             g_time    = -1; // in ticks
-
-        static int              g_ticksPerStep = 7;
-
-        static long             GetPatTime(int pat) { return pat * nSteps * g_ticksPerStep; } 
-        
-        float                   TimeStep { get { return (float)g_time / g_ticksPerStep; } }
-
-
-        public static long      StartTime = -1, // in ticks
-                                PlayTime  = -1;
-
-        public static int       CurChan,
-                                SelChan,
-                                CurSrc,
-                                 
-                                PlayPat,
-                                CurPat;
-
-
-        public float PlayStep { get 
-        { 
-            return 
-                PlayTime > -1 
-                ? PlayTime / (float)g_ticksPerStep
-                : float.NaN; 
-        } }
 
                                 
         static Song             g_song = new Song();
                                 
                                 
-        bool                    g_halfSharp;
-                               
-        bool                    g_follow;
-                                
-        bool                    g_hold;
-                                
-        bool                    g_chordEdit;
-        int                     g_chordSpread;
-                                
-        List<int>[]             g_chords; // = new List<int>[4];
-        int                     g_chord;
-                                
-        bool                    g_chordMode;
-        bool                    g_chordAll;
-                                
-
-        bool                    g_paramKeys;
-        bool                    g_paramAuto;
         
         Key                     g_editKey = null;
                                 
-        bool                    g_pick;
-                                
-        float                   g_volume;
-                                
-        bool                    g_piano;
-                                
-        int                     g_curNote;
-        int                     showNote;
-                                
         List<Note>              lastNotes    = new List<Note>();
                                              
-        int                     g_cue        = -1;
-        int                     g_solo       = -1;
-                                
-                                
-        bool                    g_move       = false;
-        bool                    g_transpose  = false;
-        bool                    g_spread     = false;
-                                             
-        bool                    g_shift      = false;
-        bool                    g_mixerShift = false;
-                                
-                                
                                 
         Channel                 copyChan = null;
                                 
@@ -223,9 +154,6 @@ namespace IngameScript
         //int copyTr, copyOff;
 
 
-        int g_iCol;
-
-
         float
             instCount = 0,
             dspCount  = 0;
@@ -237,7 +165,7 @@ namespace IngameScript
         IMyTerminalBlock Get   (string s)             { return GridTerminalSystem.GetBlockWithName(s); }
         IMyTextPanel     GetLcd(string s)             { return Get(s) as IMyTextPanel; }
         IMyTextPanel     Lbl   (string s)             { return GetLcd("Label " + s); }
-        IMyTextPanel     Dsp   (string s, int i = -1) { return GetLcd(s + " Display" + (i > -1 ? " " + i.ToString() : "")); }
+        IMyTextPanel     Dsp   (string s, int i = -1) { return GetLcd(s + " Display" + (i > -1 ? " " + S(i) : "")); }
 
 
 
@@ -292,7 +220,6 @@ namespace IngameScript
             InitLights();
             
             
-
             InitFuncButtons(); 
 
 
@@ -336,8 +263,10 @@ namespace IngameScript
                 LoadOscillatorSamples(_nextToLoad++);
 
             if (_nextToLoad == 10)
-            { 
-                InitSong();
+            {
+                if (!LoadMachineState(Me.CustomData))
+                    SetDefaultMachineState();
+
                 _nextToLoad++;
             }
         }
@@ -491,8 +420,8 @@ namespace IngameScript
                 case "dup pat":    DuplicatePattern();       break;
                 case "new pat":    NewPattern();             break;
                 case "move pat":   ToggleMovePattern();      break;
-                case "prev pat":   PrevPattern(movePat);     break;
-                case "next pat":   NextPattern(movePat);     break;
+                case "prev pat":   PrevPattern(g_movePat);     break;
+                case "next pat":   NextPattern(g_movePat);     break;
                                                              
                 case "loop":       ToogleLoop();             break;
                 case "block":      ToggleBlock();            break;
@@ -603,7 +532,7 @@ namespace IngameScript
 
         public void Save()
         {
-            Me.CustomData = SaveSong();
+            Me.CustomData = SaveMachineState();
         }
     }
 }

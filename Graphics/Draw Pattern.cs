@@ -80,7 +80,7 @@ namespace IngameScript
                 var chan = pat.Channels[c];
 
                 DrawString(sprites, 
-                     (c + 1).ToString().PadLeft(2)
+                     S(c + 1).PadLeft(2)
                     + " "
                     + chan.Instrument.Name,
                     6,

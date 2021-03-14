@@ -6,9 +6,113 @@ namespace IngameScript
 {
     partial class Program
     {
-        void SaveMachine()
+        string SaveMachineState()
         {
+            var state = "";
 
+            uint f = 0;
+            var  i = 0;
+
+            WriteByte(ref f, g_movePat,    i++);
+
+            WriteByte(ref f, g_in,         i++);
+            WriteByte(ref f, g_out,        i++);
+
+            WriteByte(ref f, g_loop,       i++);
+            WriteByte(ref f, g_block,      i++);
+            WriteByte(ref f, g_allPats,    i++);
+            WriteByte(ref f, g_follow,     i++);
+            WriteByte(ref f, g_autoCue,    i++);
+
+            WriteByte(ref f, g_allChan,    i++);
+            WriteByte(ref f, g_rndInst,    i++);
+
+            WriteByte(ref f, g_piano,      i++);
+            WriteByte(ref f, g_move,       i++);
+
+            WriteByte(ref f, g_transpose,  i++);
+            WriteByte(ref f, g_spread,     i++);
+
+            WriteByte(ref f, g_shift,      i++);
+            WriteByte(ref f, g_mixerShift, i++);
+
+            WriteByte(ref f, g_hold,       i++);
+            WriteByte(ref f, g_pick,       i++);
+
+            WriteByte(ref f, g_chordMode,  i++);
+            WriteByte(ref f, g_chordEdit,  i++);
+            WriteByte(ref f, g_chordAll,   i++);
+
+            WriteByte(ref f, g_halfSharp,  i++);
+
+            WriteByte(ref f, g_paramKeys,  i++);
+            WriteByte(ref f, g_paramAuto,  i++);
+
+            WriteByte(ref f, g_setMem,     i++);
+
+
+            var cfg =
+                
+                  W(f)              
+
+                + W(g_ticksPerStep) 
+                
+                + W(CurPat)         
+                + W(CurChan)        
+                + W(SelChan)        
+                + W(CurSrc)    
+                
+                + W(PlayTime)       
+
+                + W(g_editStep)
+                + W(g_editLength)     
+
+                + W(g_curNote)      
+
+                + W(g_chord)        
+                + W(g_chordSpread)
+                
+                + W(g_songOff)        
+                + W(g_instOff)        
+                + W(g_srcOff)
+
+                + W(g_cue)
+                + W(g_solo)
+
+                + W(g_volume)
+
+                + W(g_iCol, false);
+
+
+
+            var mems = "";
+
+            for (int m = 0; m < nMems; m++)
+                mems += S(g_mem[m]) + (m < nMems-1 ? ";" : "");
+
+
+            var chords = "";
+
+            for (int c = 0; c < g_chords.Length; c++)
+            {
+                var chord = g_chords[c];
+
+                for (int k = 0; k < chord.Count; k++)
+                    chords += chord[k] + (k < chord.Count-1 ? "," : "");
+
+                if (c < g_chords.Length-1)
+                    chords += ";";
+            }
+
+
+            state +=
+                 "SE-909 mk2" + "\n"
+                + cfg         + "\n"
+                + mems        + "\n"
+                + chords;
+                //+ SaveInstruments();
+
+            return state;
         }
 
 
@@ -21,62 +125,16 @@ namespace IngameScript
 
         string SaveSong()
         {
-            const string s = ";";
-
             var song = "";
 
-            uint f = 0;
-            var  i = 0;
-
-            WriteByte(ref f, loopPat,      i++);
-            WriteByte(ref f, g_block,      i++);
-            WriteByte(ref f, g_in,         i++);
-            WriteByte(ref f, g_out,        i++);
-            WriteByte(ref f, movePat,      i++);
-            WriteByte(ref f, allPats,      i++);
-            WriteByte(ref f, g_autoCue,    i++);
-            WriteByte(ref f, g_follow,     i++);
-            WriteByte(ref f, allChan,      i++);
-            WriteByte(ref f, g_piano,      i++);
-            WriteByte(ref f, g_move,       i++);
-            WriteByte(ref f, g_shift,      i++);
-            WriteByte(ref f, g_hold,       i++);
-            WriteByte(ref f, g_chordMode,  i++);
-            WriteByte(ref f, rndInst,      i++);
-            WriteByte(ref f, g_pick,       i++);
-            WriteByte(ref f, g_mixerShift, i++);
-
-            var cfg = // 26 int total with mems
-                      g_volume      .ToString()
-                + s + g_ticksPerStep.ToString()
-                + s + CurPat        .ToString()
-                + s + PlayStep      .ToString()
-                + s + CurChan       .ToString()
-                + s + SelChan       .ToString()
-                + s + CurSrc        .ToString()
-                //+ s + ((int)g_set)  .ToString()
-                + s + g_chord       .ToString()
-                + s + EditStep      .ToString()
-                + s + EditLength    .ToString()
-                //+ s + editPos       .ToString()
-                + s + g_curNote       .ToString()
-                + s + songOff       .ToString()
-                + s + instOff       .ToString()
-                + s + srcOff        .ToString()
-                + s + f             .ToString()
-                + s + g_iCol        .ToString();
-
-            for (int m = 0; m < nMems; m++)
-                cfg += s + g_mem[m].ToString();
-
-            song +=
-                 "SE-909" + "\n"
-                + g_song.Name.Replace("\n", "\u0085") + "\n"
-                + cfg + "\n"
-                + SaveInstruments()
-                + SavePats()
-                + SaveBlocks()
-                + SaveEdit();
+            //song +=
+            //     "SE-909" + "\n"
+            //    + g_song.Name.Replace("\n", "\u0085") + "\n"
+            //    + cfg + "\n"
+            //    + SaveInstruments()
+            //    + SavePats()
+            //    + SaveBlocks()
+            //    + SaveEdit();
 
             return song;
         }
@@ -85,7 +143,7 @@ namespace IngameScript
 
         string SaveInstruments()
         {
-            var str = g_inst.Count.ToString() + "\n";
+            var str = S(g_inst.Count) + "\n";
 
             foreach (var inst in g_inst)
                 str += SaveInstrument(inst);
@@ -106,7 +164,7 @@ namespace IngameScript
             //    + SaveParam(inst.DelayLevel) + s
             //    + SaveParam(inst.DelayPower) + "\n";
 
-            str += inst.Sources.Count.ToString() + "\n";
+            str += S(inst.Sources.Count) + "\n";
 
             foreach (var src in inst.Sources)
                 str += SaveSource(src);
@@ -126,9 +184,9 @@ namespace IngameScript
             WriteByte(ref f, src.On,       i++);
 
             str +=
-                  f                         .ToString() + s
-                + ((int)src.Oscillator.Type).ToString() + s
-                //+ src.Transpose        .ToString() + s
+                  S(f) + s
+                + S((int)src.Oscillator.Type) + s
+                //+ S(src.Transpose) + s
                 + SaveParam(src.Volume ) + s
                 //+ SaveParam(src.Attack ) + s
                 //+ SaveParam(src.Decay  ) + s
@@ -146,7 +204,7 @@ namespace IngameScript
             var s = "&";
 
             return
-                  param.Value.ToString() + s
+                  S(param.Value) + s
                 + SaveLfo(param.Lfo);
         }
 
@@ -156,16 +214,16 @@ namespace IngameScript
             var s = "&";
 
             return
-                  ((int)lfo.Type).ToString() + s
-                + lfo.Amplitude  .ToString() + s
-                + lfo.Frequency  .ToString() + s
-                + lfo.Offset     .ToString();
+                  S((int)lfo.Type) + s
+                + S(lfo.Amplitude) + s
+                + S(lfo.Frequency) + s
+                + S(lfo.Offset   );
         }
 
 
         string SavePats()
         {
-            var str = g_song.Patterns.Count.ToString() + "\n";
+            var str = S(g_song.Patterns.Count) + "\n";
 
             foreach (var pat in g_song.Patterns)
                 str += Convert.ToBase64String(SavePat(pat).ToArray()) + "\n";
@@ -229,13 +287,13 @@ namespace IngameScript
             var str = "";
             var s   = ";";
 
-            str += g_song.Blocks.Count.ToString();
+            str += S(g_song.Blocks.Count);
 
             foreach (var b in g_song.Blocks)
             {
                 str +=
-                  s + b.First.ToString()
-                + s + b.Last .ToString();
+                  s + S(b.First)
+                + s + S(b.Last );
             }
 
             str += "\n";
@@ -249,14 +307,14 @@ namespace IngameScript
             var str = "";
             var s   = ";";
 
-            str += g_song.EditNotes.Count.ToString();
+            str += S(g_song.EditNotes.Count);
 
             foreach (var n in g_song.EditNotes)
             {
                 str +=
-                  s + g_song.Patterns.FindIndex(p => p.Channels.Contains(n.Channel)).ToString()
-                + s + n.iChan.ToString()
-                + s + n.Channel.Notes.IndexOf(n).ToString();
+                  s + S(g_song.Patterns.FindIndex(p => p.Channels.Contains(n.Channel)))
+                + s + S(n.iChan)
+                + s + S(n.Channel.Notes.IndexOf(n));
             }
 
             str += "\n";
@@ -268,5 +326,8 @@ namespace IngameScript
         void add(List<byte> b, short s) { b.AddArray(BitConverter.GetBytes(s)); }
         void add(List<byte> b, float f) { b.AddArray(BitConverter.GetBytes(f)); }
         void add(List<byte> b, int   i) { b.AddArray(BitConverter.GetBytes(i)); }
+
+
+        static string W<T>(T val, bool semi = true) { return S(val) + (semi ? ";" : ""); }
     }
 }

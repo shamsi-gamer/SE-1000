@@ -150,86 +150,84 @@ namespace IngameScript
         /////////////////////////////////////////////////////////////////////////////
 
 
-        void InitSong()
-        {
-            //if (!LoadSong(Me.CustomData))
-                NewSong();
-        }
+        //void InitSong()
+        //{
+
+        //        //NewSong();
+        //}
 
 
-        void NewSong()
-        {
-            ClearSong();
+        //void NewSong()
+        //{
+        //    ClearSong();
 
-            g_volume = 1;
+        //    g_volume = 1;
 
-            g_ticksPerStep = 7;
+        //    g_ticksPerStep = 7;
 
-            g_inst.Clear();
+        //    g_inst.Clear();
 
-            g_inst.Add(new Instrument());
-            g_inst[0].Sources.Add(new Source(g_inst[0]));
-            g_song.Patterns.Add(new Pattern(g_song, g_inst[0]));
+        //    g_inst.Add(new Instrument());
+        //    g_inst[0].Sources.Add(new Source(g_inst[0]));
+        //    g_song.Patterns.Add(new Pattern(g_song, g_inst[0]));
 
-            g_song.Name = "New Song";
+        //    g_song.Name = "New Song";
 
-            UpdateSongDsp();
+        //    UpdateSongDsp();
 
-            g_volume      = 1;
-            g_chord       = -1;
-            g_chordEdit   = false;
-            g_chordSpread = 0;
-            g_editStep    = 2;
-            g_editLength  = 2;
-            g_curNote     = 69 * NoteScale;
-            showNote      = g_curNote;
+        //    g_volume      = 1;
+        //    g_chord       = -1;
+        //    g_chordEdit   = false;
+        //    g_chordSpread = 0;
+        //    g_editStep    = 2;
+        //    g_editLength  = 2;
+        //    g_curNote     = 69 * NoteScale;
+        //    //g_showNote      = g_curNote;
                          
-            loopPat       = 
-            g_block       = 
-            g_in          = 
-            g_out         = 
-            movePat       = 
-            allPats       = 
-            g_autoCue     = 
-            g_halfSharp   = 
-            g_follow      = 
-            allChan       = 
-            g_piano       = 
-            g_move        = 
-            g_shift       = 
-            g_mixerShift  = 
-            g_hold        = 
-            g_chordMode   = 
-            g_chordAll    = 
-            g_pick        = 
-            rndInst       = 
-            g_paramKeys   = 
-            g_paramAuto   = false;
+        //    g_loop       = 
+        //    g_block       = 
+        //    g_in          = 
+        //    g_out         = 
+        //    g_movePat       = 
+        //    g_allPats       = 
+        //    g_autoCue     = 
+        //    g_halfSharp   = 
+        //    g_follow      = 
+        //    g_allChan       = 
+        //    g_piano       = 
+        //    g_move        = 
+        //    g_shift       = 
+        //    g_mixerShift  = 
+        //    g_hold        = 
+        //    g_chordMode   = 
+        //    g_chordAll    = 
+        //    g_pick        = 
+        //    g_rndInst       = 
+        //    g_paramKeys   = 
+        //    g_paramAuto   = false;
 
 
-            PlayTime    = -1;
-            PlayPat     = -1;
+        //    PlayTime    = -1;
+        //    PlayPat     = -1;
 
-            CurPat      =  0;
+        //    CurPat      =  0;
 
-            CurChan     =  0;
-            SelChan     = -1;
-            CurSrc      = -1;
+        //    CurChan     =  0;
+        //    SelChan     = -1;
+        //    CurSrc      = -1;
                             
-            StartTime   = -1;
+        //    StartTime   = -1;
 
 
-            g_chords = new List<int>[4];
+        //    g_chords = new List<int>[4];
 
-            for (int i = 0; i < g_chords.Length; i++)
-                g_chords[i] = new List<int>();
+        //    for (int i = 0; i < g_chords.Length; i++)
+        //        g_chords[i] = new List<int>();
             
 
-            ClearAllMem();
-
-            SetLightColor(4);
-            UpdateLights();
-        }
+        //    SetLightColor(4);
+        //    UpdateLights();
+        //}
 
 
         void ClearSong()
@@ -245,13 +243,13 @@ namespace IngameScript
 
         void ToggleMovePattern()
         {
-            movePat = !movePat;
+            g_movePat = !g_movePat;
 
-            UpdateLight(lblPrevPat, movePat);
-            UpdateLight(lblNextPat, movePat);
-            UpdateLight(lblMovePat, movePat);
+            UpdateLight(lblPrevPat, g_movePat);
+            UpdateLight(lblNextPat, g_movePat);
+            UpdateLight(lblMovePat, g_movePat);
 
-            if (movePat)
+            if (g_movePat)
                 DisableBlock();
         }
     }

@@ -68,7 +68,7 @@ namespace IngameScript
                 if (src > -1)
                     path.Insert(0, src + "/");
 
-                return path.ToString();
+                return S(path);
             }
 
 

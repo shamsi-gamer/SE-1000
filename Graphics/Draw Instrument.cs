@@ -121,9 +121,9 @@ namespace IngameScript
             var step  = 28.5f;
 
             if (SelChan > -1 && CurSrc < 0)
-                FillRect(sprites, x + sw, y + (iInst - instOff) * step, w - sw, step, color6);
+                FillRect(sprites, x + sw, y + (iInst - g_instOff) * step, w - sw, step, color6);
 
-            for (int i = instOff; i < Math.Min(instOff + maxDspInst, g_inst.Count); i++)
+            for (int i = g_instOff; i < Math.Min(g_instOff + maxDspInst, g_inst.Count); i++)
             {
                 var inst = g_inst[i];
 
@@ -131,7 +131,7 @@ namespace IngameScript
                     sprites, 
                     inst.Name.Substring(0, Math.Min(inst.Name.Length, maxNameLength)),
                     x + sw + 5,
-                    y + (i - instOff) * step,
+                    y + (i - g_instOff) * step,
                     0.7f,
                     inst == chan.Instrument 
                     ? (CurSrc > -1 ? color6 : color0) 
@@ -154,9 +154,9 @@ namespace IngameScript
             var sw   = 20;
 
 
-            var iy = y - srcOff;
+            var iy = y - g_srcOff;
 
-            for (int i = srcOff; i < Math.Min(srcOff + maxDspSrc, nSrc); i++)
+            for (int i = g_srcOff; i < Math.Min(g_srcOff + maxDspSrc, nSrc); i++)
             {
                 var src    = inst.Sources[i];
                 var active = i == CurSrc;

@@ -154,7 +154,7 @@ namespace IngameScript
 
 
             for (int m = 0; m < nMems; m++)
-                lMems[m] = Lbl("Mem " + m.ToString());
+                lMems[m] = Lbl("Mem " + S(m));
 
 
             lblHigh = new List<IMyTextPanel>();
@@ -267,8 +267,8 @@ namespace IngameScript
             if (lightsPressed_.Contains(lblUp))        UnmarkLight(lblUp,   g_shift);
             if (lightsPressed_.Contains(lblDown))      UnmarkLight(lblDown, g_shift);
 
-            if (lightsPressed_.Contains(lblNextPat))   UnmarkLight(lblNextPat, movePat);
-            if (lightsPressed_.Contains(lblPrevPat))   UnmarkLight(lblPrevPat, movePat);
+            if (lightsPressed_.Contains(lblNextPat))   UnmarkLight(lblNextPat, g_movePat);
+            if (lightsPressed_.Contains(lblPrevPat))   UnmarkLight(lblPrevPat, g_movePat);
 
             if (lightsPressed_.Contains(lblNext))      UnmarkLight(lblNext, g_move || CurSrc > -1, SelChan > -1);
             if (lightsPressed_.Contains(lblPrev))      UnmarkLight(lblPrev, g_move || CurSrc > -1, SelChan > -1);
@@ -315,10 +315,10 @@ namespace IngameScript
         void UpdateLights()
         {
             UpdateLight(lblFollow,      g_follow);
-            UpdateLight(lblLoop,        loopPat);
+            UpdateLight(lblLoop,        g_loop);
             UpdateLight(lblBlock,       g_block);
-            UpdateLight(lblAllPatterns, allPats);
-            UpdateLight(lblMovePat,     movePat);
+            UpdateLight(lblAllPatterns, g_allPats);
+            UpdateLight(lblMovePat,     g_movePat);
             UpdateLight(lblCue,         g_cue > -1);
             UpdateLight(lblAutoCue,     g_autoCue);
 
@@ -395,7 +395,7 @@ namespace IngameScript
         {
             var c = g_chords[chord-1];
 
-            string chordName = GetChordName(c, chord.ToString());
+            string chordName = GetChordName(c, S(chord));
 
             lbl.WriteText(chordName);
 
@@ -453,7 +453,7 @@ namespace IngameScript
             else if (ShowPiano) val = CurrentChannel.Transpose;
             else                val = CurrentChannel.Shuffle;
 
-            lblOctave.WriteText((val > 0 ? "+" : "") + val.ToString(), false);
+            lblOctave.WriteText((val > 0 ? "+" : "") + S(val), false);
         }
 
 
@@ -466,13 +466,13 @@ namespace IngameScript
 
         void UpdateMemoryLights()
         {
-            UpdateLight(lblMemory, setMem);
+            UpdateLight(lblMemory, g_setMem);
 
             for (int m = 0; m < nMems; m++)
             {
                 lMems[m].WriteText(
-                      ((char)(65 + m)).ToString() + " "
-                    + (g_mem[m] > -1 ? (g_mem[m] + 1).ToString().PadLeft(3) : " "));
+                      S((char)(65 + m)) + " "
+                    + (g_mem[m] > -1 ? S(g_mem[m] + 1).PadLeft(3) : " "));
             }
         }
 
@@ -714,9 +714,9 @@ namespace IngameScript
                 lblHigh[2].WriteText("Pick");
                 UpdateLight(lblHigh[2], g_pick);
                 UpdateLight(lblHigh[3], "All Ch", 7.6f, 19.5f);
-                UpdateLight(lblHigh[3], allChan);
+                UpdateLight(lblHigh[3], g_allChan);
                 lblHigh[4].WriteText("Inst");
-                UpdateLight(lblHigh[4], rndInst);
+                UpdateLight(lblHigh[4], g_rndInst);
 
                 lblHigh[5].WriteText("Rnd");
                 lblHigh[6].WriteText("Clr");

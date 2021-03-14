@@ -11,7 +11,7 @@ namespace IngameScript
 
         void RandomNotes()
         {
-            if (allChan)
+            if (g_allChan)
             {
                 for (int ch = 0; ch < nChans; ch++)
                     RandomNotes(ch);
