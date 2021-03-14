@@ -2,8 +2,6 @@
 using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
-using VRage.Game.GUI.TextPanel;
-using VRageMath;
 
 
 namespace IngameScript
@@ -184,25 +182,7 @@ namespace IngameScript
 
             if (!IsModPresent())
             {
-                var dsp = new List<IMyTextPanel>();
-                GridTerminalSystem.GetBlocksOfType(dsp);
-
-                foreach (var d in dsp)
-                {
-                    d.ContentType = ContentType.TEXT_AND_IMAGE;
-                    d.BackgroundColor = color0;
-                    d.FontColor = color0;
-                }
-
-                var s = dspMain.Surface;
-
-                s.Alignment   = TextAlignment.CENTER;
-                s.Font        = "Monospace";
-                s.FontSize    = 1.7f;
-                s.TextPadding = 20;
-                s.FontColor   = new Color(0, 41, 224);
-
-                s.WriteText("Install SE-909 mk2 Sounds mod\n\n\nsteamcommunity.com/\nsharedfiles/filedetails/\n?id=2401745979");
+                DrawMissingMod();
                 return;
             }
 
@@ -299,7 +279,7 @@ namespace IngameScript
                 return;
 
             
-            pnlInfoLog.CustomData = "";
+            //pnlInfoLog.CustomData = "";
             
 
             FinishStartup();
@@ -369,7 +349,7 @@ namespace IngameScript
             instCount = Math.Max(instCount, Runtime.CurrentInstructionCount);
 
             
-            pnlInfoLog.CustomData = "";
+            //pnlInfoLog.CustomData = "";
 
 
             if ((update & UpdateType.Update1) != 0)

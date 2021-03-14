@@ -159,14 +159,6 @@ namespace IngameScript
             g_ticksPerStep = 7;
 
 
-            g_inst.Clear();
-
-            g_inst.Add(new Instrument());
-            g_inst[0].Sources.Add(new Source(g_inst[0]));
-            g_song.Patterns.Add(new Pattern(g_song, g_inst[0]));
-            g_song.Name = "New Song";
-
-
             CurPat        =  0;
             CurChan       =  0;
             SelChan       = -1;
@@ -188,8 +180,8 @@ namespace IngameScript
             g_instOff     =  0;
             g_srcOff      =  0;
 
-            g_cue         =  0;
-            g_solo        =  0;
+            g_cue         = -1;
+            g_solo        = -1;
                             
             g_volume      =  1;
                             
@@ -204,7 +196,14 @@ namespace IngameScript
 
             for (int i = 0; i < g_chords.Length; i++)
                 g_chords[i] = new List<int>();
-            
+
+
+            g_inst.Clear();
+            g_inst.Add(new Instrument());
+            g_inst[0].Sources.Add(new Source(g_inst[0]));
+            g_song.Patterns.Add(new Pattern(g_song, g_inst[0]));
+            g_song.Name = "New Song";
+
 
             UpdateSongDsp();
 

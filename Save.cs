@@ -8,8 +8,17 @@ namespace IngameScript
     {
         string SaveMachineState()
         {
-            var state = "";
+            return
+                 "SE-909 mk2"                 + "\n"
+                + SaveSettings(SaveToggles()) + "\n"
+                + SaveMems()                  + "\n"
+                + SaveChords();
+                //+ SaveInstruments();
+        }
 
+
+        uint SaveToggles()
+        {
             uint f = 0;
             var  i = 0;
 
@@ -50,9 +59,13 @@ namespace IngameScript
 
             WriteByte(ref f, g_setMem,     i++);
 
+            return f;
+        }
 
-            var cfg =
-                
+
+        string SaveSettings(uint f)
+        {
+            return
                   W(f)              
 
                 + W(g_ticksPerStep) 
@@ -82,15 +95,22 @@ namespace IngameScript
                 + W(g_volume)
 
                 + W(g_iCol, false);
+        }
 
 
-
+        string SaveMems()
+        {
             var mems = "";
 
             for (int m = 0; m < nMems; m++)
                 mems += S(g_mem[m]) + (m < nMems-1 ? ";" : "");
 
+            return mems;
+        }
 
+
+        string SaveChords()
+        {
             var chords = "";
 
             for (int c = 0; c < g_chords.Length; c++)
@@ -98,21 +118,13 @@ namespace IngameScript
                 var chord = g_chords[c];
 
                 for (int k = 0; k < chord.Count; k++)
-                    chords += chord[k] + (k < chord.Count-1 ? "," : "");
+                    chords += chord[k] + (k < chord.Count - 1 ? "," : "");
 
-                if (c < g_chords.Length-1)
+                if (c < g_chords.Length - 1)
                     chords += ";";
             }
 
-
-            state +=
-                 "SE-909 mk2" + "\n"
-                + cfg         + "\n"
-                + mems        + "\n"
-                + chords;
-                //+ SaveInstruments();
-
-            return state;
+            return chords;
         }
 
 
@@ -326,8 +338,5 @@ namespace IngameScript
         void add(List<byte> b, short s) { b.AddArray(BitConverter.GetBytes(s)); }
         void add(List<byte> b, float f) { b.AddArray(BitConverter.GetBytes(f)); }
         void add(List<byte> b, int   i) { b.AddArray(BitConverter.GetBytes(i)); }
-
-
-        static string W<T>(T val, bool semi = true) { return S(val) + (semi ? ";" : ""); }
     }
 }

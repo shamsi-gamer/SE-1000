@@ -609,8 +609,5 @@ namespace IngameScript
         {
             return (int)Math.Round((12 * Math.Log(freq / 440, 2) + 69) * NoteScale);
         }
-
-
-        static string S<T>(T val) { return val.ToString(); }
     }
 }

@@ -22,11 +22,50 @@ namespace IngameScript
             var cfg = lines[line++].Split(';');
 
 
-            var c = 0;
+            if (!LoadToggles (cfg[0]))      return false;
+            if (!LoadSettings(cfg))         return false;
+
+            if (!LoadMems(lines[line++]))   return false;
+            if (!LoadChords(lines[line++])) return false;
 
 
+
+            g_inst.Clear();
+            g_inst.Add(new Instrument());
+            g_inst[0].Sources.Add(new Source(g_inst[0]));
+            g_song.Patterns.Add(new Pattern(g_song, g_inst[0]));
+            g_song.Name = "New Song";
+
+
+            SetCurrentPattern(CurPat);
+
+            PlayPat =
+                PlayTime > -1
+                ? (int)(PlayStep / nSteps)
+                : 0;
+
+            if (g_autoCue)
+                Cue();
+
+            CueNextPattern();
+
+
+            //var insts = LoadInstruments(lines, ref line);
+            //if (insts == null) return false;
+
+
+            UpdateLights();
+            SetLightColor(g_iCol);
+
+
+            return true;
+        }
+
+
+        bool LoadToggles(string toggles)
+        {
             uint f;
-            if (!uint.TryParse(cfg[c++], out f)) return false;
+            if (!uint.TryParse(toggles, out f)) return false;
 
             var i = 0;
 
@@ -67,6 +106,13 @@ namespace IngameScript
                          
             g_setMem     = ReadBytes(f, i++);
 
+            return true;
+        }
+
+
+        bool LoadSettings(string[] cfg)
+        {
+            int c = 1; // 0 holds the toggles, loaded in LoadToggles()
 
             if (!int  .TryParse(cfg[c++], out g_ticksPerStep)) return false;
 
@@ -98,24 +144,34 @@ namespace IngameScript
 
             if (!int  .TryParse(cfg[c++], out g_iCol        )) return false;
 
+            return true;
+        }
 
-            var mems = lines[line++].Split(';');
+
+        bool LoadMems(string line)
+        {
+            var mems = line.Split(';');
 
             for (int m = 0; m < nMems; m++)
                 if (!int.TryParse(mems[m], out g_mem[m])) return false;
 
+            return true;
+        }
 
+
+        bool LoadChords(string strChords)
+        {
             g_chords = new List<int>[4];
 
             for (int _c = 0; _c < g_chords.Length; _c++)
                 g_chords[_c] = new List<int>();
 
 
-            var chords = lines[line++].Split(';');
+            var chords = strChords.Split(';');
 
             for (int _c = 0; _c < chords.Length; _c++)
             { 
-                var _keys = chords[_c].Split(',');
+                var _keys = chords[_c].Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
 
                 g_chords[_c] = new List<int>();
 
@@ -126,35 +182,6 @@ namespace IngameScript
                     g_chords[_c].Add(key);
                 }
             }
-
-
-            //g_inter = null;
-
-
-            //if (   g_set == Set.Volume
-            //    && (   g_song.SelChan > -1
-            //        || g_edit.Count == 0))
-            //    g_set = Set.None;
-
-            SetCurrentPattern(CurPat);
-
-            PlayPat =
-                PlayTime > -1
-                ? (int)(PlayStep / nSteps)
-                : 0;
-
-            if (g_autoCue)
-                Cue();
-
-            //CueNextPattern();
-
-
-            //var insts = LoadInstruments(lines, ref line);
-            //if (insts == null) return false;
-
-
-            UpdateLights();
-            SetLightColor(g_iCol);
 
 
             return true;
@@ -201,88 +228,6 @@ namespace IngameScript
 
             //if (!LoadBlocks(lines, ref line)) return false;
             //if (!LoadEdit(lines, ref line)) return false;
-
-
-            //var c = 0;
-
-            //if (!float.TryParse(cfg[c++], out g_volume       )) return false;
-            //if (!int  .TryParse(cfg[c++], out g_ticksPerStep )) return false;
-            //if (!int  .TryParse(cfg[c++], out CurPat  )) return false;
-
-            //if (!long .TryParse(cfg[c++], out PlayTime)) return false;
-
-
-            //if (!int.TryParse(cfg[c++], out CurChan)) return false;
-            //if (!int.TryParse(cfg[c++], out SelChan)) return false;
-            //if (!int.TryParse(cfg[c++], out CurSrc )) return false;
-
-            ////int _set;
-            ////if (!int.TryParse(cfg[c++], out _set)) return false; g_set = (Set)_set;
-
-            //if (!int.TryParse(cfg[c++], out g_chord)) return false;
-
-            //if (!int  .TryParse(cfg[c++], out g_editStep))   return false;
-            //if (!int  .TryParse(cfg[c++], out g_editLength)) return false;
-            ////if (!float.TryParse(cfg[c++], out editPos)) return false;
-            //if (!int  .TryParse(cfg[c++], out g_curNote))         return false;
-            //if (!int  .TryParse(cfg[c++], out g_songOff)) return false;
-            //if (!int  .TryParse(cfg[c++], out g_instOff)) return false;
-            //if (!int  .TryParse(cfg[c++], out g_srcOff))  return false;
-
-            //uint f;
-            //if (!uint.TryParse(cfg[c++], out f)) return false;
-
-            //var i = 0;
-
-            //g_loop      = ReadBytes(f, i++);
-            //g_block      = ReadBytes(f, i++);
-            //g_in         = ReadBytes(f, i++);
-            //g_out        = ReadBytes(f, i++);
-            //g_movePat      = ReadBytes(f, i++);
-            //g_allPats      = ReadBytes(f, i++);
-            //g_autoCue    = ReadBytes(f, i++);
-            //g_follow     = ReadBytes(f, i++);
-            //g_allChan      = ReadBytes(f, i++);
-            //g_piano      = ReadBytes(f, i++);
-            //g_move       = ReadBytes(f, i++);
-            //g_shift      = ReadBytes(f, i++);
-            //g_hold       = ReadBytes(f, i++);
-            //g_chordMode    = ReadBytes(f, i++);
-            ////g_seventh    = ReadBytes(f, i++);
-            //g_rndInst      = ReadBytes(f, i++);
-            //g_pick       = ReadBytes(f, i++);
-            //g_mixerShift = ReadBytes(f, i++);
-
-            //if (!int.TryParse(cfg[c++], out g_iCol)) return false;
-
-            //for (int m = 0; m < nMems; m++)
-            //    if (!int.TryParse(cfg[c++], out g_mem[m])) return false;
-
-
-            ////g_inter = null;
-
-
-            //if (g_autoCue)
-            //    Cue();
-
-            ////if (   g_set == Set.Volume
-            ////    && (   g_song.SelChan > -1
-            ////        || g_edit.Count == 0))
-            ////    g_set = Set.None;
-
-            //UpdateLights();
-            //SetLightColor(g_iCol);
-
-            //SetCurrentPattern(CurPat);
-
-            //PlayPat =
-            //    PlayTime > -1
-            //    ? (int)(PlayStep / nSteps)
-            //    : 0;
-
-            //CueNextPattern();
-
-            //return true;
         }
 
 

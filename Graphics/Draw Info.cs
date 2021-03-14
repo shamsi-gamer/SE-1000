@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using VRage.Game.GUI.TextPanel;
-
+using Sandbox.ModAPI.Ingame;
+using VRageMath;
 
 namespace IngameScript
 {
@@ -385,6 +386,30 @@ namespace IngameScript
             DrawString(sprites, "Copy\nPaste\nSong\nHere", cx, cy - 220, 3.5f, color6, TextAlignment.CENTER);
 
             dsp.Draw(sprites);
+        }
+
+
+        void DrawMissingMod()
+        {
+            var dsp = new List<IMyTextPanel>();
+            GridTerminalSystem.GetBlocksOfType(dsp);
+
+            foreach (var d in dsp)
+            {
+                d.ContentType     = ContentType.TEXT_AND_IMAGE;
+                d.BackgroundColor = color0;
+                d.FontColor       = color0;
+            }
+
+            var s = dspMain.Surface;
+
+            s.Alignment   = TextAlignment.CENTER;
+            s.Font        = "Monospace";
+            s.FontSize    = 1.7f;
+            s.TextPadding = 20;
+            s.FontColor   = new Color(0, 41, 224);
+
+            s.WriteText("Install SE-909 mk2 Sounds mod\n\n\nsteamcommunity.com/\nsharedfiles/filedetails/\n?id=2401745979");
         }
     }
 }
