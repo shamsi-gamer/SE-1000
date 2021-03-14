@@ -62,8 +62,10 @@ namespace IngameScript
                     if (g_block && b != null)
                         g_cue = b.First;
 
-                         if (g_cue >= PlayPat && g_time != 0) PlayTime += GetPatTime(g_cue - PlayPat - 1);
-                    else if (g_cue <  PlayPat)                PlayTime -= GetPatTime(PlayPat + 1 - g_cue);
+                    //     if (g_cue >= PlayPat && g_time != 0) PlayTime += GetPatTime(g_cue - PlayPat - 1);
+                    //else if (g_cue <  PlayPat)                PlayTime -= GetPatTime(PlayPat + 1 - g_cue);
+                    PlayTime  = GetPatTime(g_cue);
+                    StartTime = g_time - PlayTime;
 
                     g_cue = -1;
                     UpdateLight(lblCue, g_cue > -1);

@@ -26,7 +26,7 @@ namespace IngameScript
             else
                 PlayTime = GetPatTime(CurPat);
 
-            StartTime = g_time;
+            StartTime = g_time - PlayTime;
 
             UpdatePlayStopLights();
         }
@@ -347,11 +347,11 @@ namespace IngameScript
                 }
 
                 if (CurPat >= g_song.Patterns.Count)
-                    SetCurrentPattern(g_song.Patterns.Count - 1);
+                    SetCurrentPattern(g_song.Patterns.Count-1);
             }
 
             if (PlayPat >= g_song.Patterns.Count)
-                PlayPat  = g_song.Patterns.Count - 1;
+                PlayPat  = g_song.Patterns.Count-1;
 
 
             if (OK(g_song.EditPos))

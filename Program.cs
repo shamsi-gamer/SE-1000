@@ -10,21 +10,15 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        // move patterns
-        // blocks
-
-        // update current notes when changing/randomizing instrument
-
-        // creating new pattern (maybe duplicating/deleting too) doesn't adjust playback position internally,
-        // so when you press play, it visually plays from the right place, but the sound is wrong
-        // to reproduce, create empty song, fill with notes, create new pattern, press play
-
         // machine side instruments
         // save (song saves modified copies of instruments)
 
         // minify true->T and false->F, TextAlignment.CENTER, etc.
         // use as much Linq instead of loops as possible
         // refactor .GetValue(.......) into passing a single time/note object
+
+
+        // blocks
 
 
         // lfo song start (maybe sync value)
