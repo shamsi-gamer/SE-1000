@@ -17,39 +17,36 @@ namespace IngameScript
                              TrigDecay,
                              TrigRelease;
 
-            public Envelope() : base("Envelope", "Env")
-            {
-                Attack  = new Parameter("Attack",  "Att", 0, 10, 0,     1, 0.01f, 0.1f, 0   );
-                Decay   = new Parameter("Decay",   "Dec", 0, 10, 0,     1, 0.01f, 0.1f, 0.2f);
-                Sustain = new Parameter("Sustain", "Sus", 0,  1, 0.01f, 1, 0.01f, 0.1f, 0.1f);
-                Release = new Parameter("Release", "Rel", 0, 10, 0,     2, 0.01f, 0.1f, 0.2f);
 
-                Attack .Parent = 
-                Decay  .Parent = 
-                Sustain.Parent = 
-                Release.Parent = this;
+            public Envelope(Setting parent) : base("Envelope", "Env", parent)
+            {
+                Attack      = new Parameter("Attack",  "Att", 0, 10, 0,     1, 0.01f, 0.1f, 0,    this);
+                Decay       = new Parameter("Decay",   "Dec", 0, 10, 0,     1, 0.01f, 0.1f, 0.2f, this);
+                Sustain     = new Parameter("Sustain", "Sus", 0,  1, 0.01f, 1, 0.01f, 0.1f, 0.1f, this);
+                Release     = new Parameter("Release", "Rel", 0, 10, 0,     2, 0.01f, 0.1f, 0.2f, this);
 
                 TrigAttack  = 
                 TrigDecay   = 
-                TrigRelease = float.NaN;
+                TrigRelease = fN;
             }
 
 
-            public Envelope(Envelope env) : base(env.Name, env.Tag, env)
+            public Envelope(Envelope env, Setting parent) : base(env.Name, env.Tag, parent, env)
             {
-                Attack  = new Parameter(env.Attack);
-                Decay   = new Parameter(env.Decay);
-                Sustain = new Parameter(env.Sustain);
-                Release = new Parameter(env.Release);
-
-                Attack .Parent = 
-                Decay  .Parent = 
-                Sustain.Parent = 
-                Release.Parent = this;
+                Attack      = new Parameter(env.Attack,  this);
+                Decay       = new Parameter(env.Decay,   this);
+                Sustain     = new Parameter(env.Sustain, this);
+                Release     = new Parameter(env.Release, this);
 
                 TrigAttack  = env.TrigAttack;
                 TrigDecay   = env.TrigDecay;
                 TrigRelease = env.TrigRelease;
+            }
+
+
+            public Envelope Copy(Setting parent)
+            {
+                return new Envelope(this, parent);
             }
 
 
@@ -175,6 +172,20 @@ namespace IngameScript
 
                 if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(song, Sustain, -g_remote.RotationIndicator.X/ControlSensitivity);
                 if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(song, Release,  g_remote.RotationIndicator.Y/ControlSensitivity);
+            }
+
+
+            public override string Save()
+            {
+                return
+                      W(Attack .Save())
+                    + W(Decay  .Save())
+                    + W(Sustain.Save())
+                    + W(Release.Save())
+
+                    + W(TrigAttack)
+                    + W(TrigDecay)
+                    +   TrigRelease;
             }
         }
     }

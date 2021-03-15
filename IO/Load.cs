@@ -17,16 +17,16 @@ namespace IngameScript
 
             if (   lines.Length < 1
                 || lines[line++] != "SE-909 mk2")
-                return false;
+                return F;
 
             var cfg = lines[line++].Split(';');
 
 
-            if (!LoadToggles (cfg[0]))      return false;
-            if (!LoadSettings(cfg))         return false;
+            if (!LoadToggles (cfg[0]))      return F;
+            if (!LoadSettings(cfg))         return F;
 
-            if (!LoadMems(lines[line++]))   return false;
-            if (!LoadChords(lines[line++])) return false;
+            if (!LoadMems(lines[line++]))   return F;
+            if (!LoadChords(lines[line++])) return F;
 
 
 
@@ -51,21 +51,21 @@ namespace IngameScript
 
 
             //var insts = LoadInstruments(lines, ref line);
-            //if (insts == null) return false;
+            //if (insts == null) return F;
 
 
             UpdateLights();
             SetLightColor(g_iCol);
 
 
-            return true;
+            return T;
         }
 
 
         bool LoadToggles(string toggles)
         {
             uint f;
-            if (!uint.TryParse(toggles, out f)) return false;
+            if (!uint.TryParse(toggles, out f)) return F;
 
             var i = 0;
 
@@ -106,7 +106,7 @@ namespace IngameScript
                          
             g_setMem     = ReadBytes(f, i++);
 
-            return true;
+            return T;
         }
 
 
@@ -114,37 +114,37 @@ namespace IngameScript
         {
             int c = 1; // 0 holds the toggles, loaded in LoadToggles()
 
-            if (!int  .TryParse(cfg[c++], out g_ticksPerStep)) return false;
+            if (!int  .TryParse(cfg[c++], out g_ticksPerStep)) return F;
 
-            if (!int  .TryParse(cfg[c++], out CurPat        )) return false;
-            if (!int  .TryParse(cfg[c++], out CurChan       )) return false;
-            if (!int  .TryParse(cfg[c++], out SelChan       )) return false;
-            if (!int  .TryParse(cfg[c++], out CurSrc        )) return false;
+            if (!int  .TryParse(cfg[c++], out CurPat        )) return F;
+            if (!int  .TryParse(cfg[c++], out CurChan       )) return F;
+            if (!int  .TryParse(cfg[c++], out SelChan       )) return F;
+            if (!int  .TryParse(cfg[c++], out CurSrc        )) return F;
 
-            if (!long .TryParse(cfg[c++], out PlayTime      )) return false;
+            if (!long .TryParse(cfg[c++], out PlayTime      )) return F;
             StartTime = -1;
             PlayPat   = -1;
 
-            if (!int  .TryParse(cfg[c++], out g_editStep    )) return false;
-            if (!int  .TryParse(cfg[c++], out g_editLength  )) return false;
+            if (!int  .TryParse(cfg[c++], out g_editStep    )) return F;
+            if (!int  .TryParse(cfg[c++], out g_editLength  )) return F;
 
-            if (!int  .TryParse(cfg[c++], out g_curNote     )) return false;
+            if (!int  .TryParse(cfg[c++], out g_curNote     )) return F;
                                                             
-            if (!int  .TryParse(cfg[c++], out g_chord       )) return false;
-            if (!int  .TryParse(cfg[c++], out g_chordSpread )) return false;
+            if (!int  .TryParse(cfg[c++], out g_chord       )) return F;
+            if (!int  .TryParse(cfg[c++], out g_chordSpread )) return F;
 
-            if (!int  .TryParse(cfg[c++], out g_songOff     )) return false;
-            if (!int  .TryParse(cfg[c++], out g_instOff     )) return false;
-            if (!int  .TryParse(cfg[c++], out g_srcOff      )) return false;
+            if (!int  .TryParse(cfg[c++], out g_songOff     )) return F;
+            if (!int  .TryParse(cfg[c++], out g_instOff     )) return F;
+            if (!int  .TryParse(cfg[c++], out g_srcOff      )) return F;
                                                             
-            if (!int  .TryParse(cfg[c++], out g_cue         )) return false;
-            if (!int  .TryParse(cfg[c++], out g_solo        )) return false;
+            if (!int  .TryParse(cfg[c++], out g_cue         )) return F;
+            if (!int  .TryParse(cfg[c++], out g_solo        )) return F;
 
-            if (!float.TryParse(cfg[c++], out g_volume      )) return false;
+            if (!float.TryParse(cfg[c++], out g_volume      )) return F;
 
-            if (!int  .TryParse(cfg[c++], out g_iCol        )) return false;
+            if (!int  .TryParse(cfg[c++], out g_iCol        )) return F;
 
-            return true;
+            return T;
         }
 
 
@@ -153,9 +153,9 @@ namespace IngameScript
             var mems = line.Split(';');
 
             for (int m = 0; m < nMems; m++)
-                if (!int.TryParse(mems[m], out g_mem[m])) return false;
+                if (!int.TryParse(mems[m], out g_mem[m])) return F;
 
-            return true;
+            return T;
         }
 
 
@@ -178,20 +178,20 @@ namespace IngameScript
                 int key;
                 foreach (var k in _keys)
                 {
-                    if (!int.TryParse(k, out key)) return false;
+                    if (!int.TryParse(k, out key)) return F;
                     g_chords[_c].Add(key);
                 }
             }
 
 
-            return true;
+            return T;
         }
 
 
         void LoadSongExt()
         {
             //var song = new StringBuilder();
-            //dspIO.Surface.ReadText(song, false);
+            //dspIO.Surface.ReadText(song, F);
 
             //if (!LoadSong(S(song)))
             //    NewSong();
@@ -202,7 +202,7 @@ namespace IngameScript
 
         bool LoadSong(string song)
         {
-            return false;
+            return F;
             //Stop();
             //ClearSong();
 
@@ -211,23 +211,23 @@ namespace IngameScript
 
             //if (   lines.Length < 1
             //    || lines[line++] != "SE-909")
-            //    return false;
+            //    return F;
 
             //g_song.Name = lines[line++];
             //UpdateSongDsp();
 
             //var cfg = lines[line++].Split(';');
-            //if (cfg.Length != 26) return false;
+            //if (cfg.Length != 26) return F;
 
             //var insts = LoadInstruments(lines, ref line);
-            //if (insts == null) return false;
+            //if (insts == null) return F;
 
-            //if (!LoadPats(lines, ref line, insts)) return false;
+            //if (!LoadPats(lines, ref line, insts)) return F;
 
-            //if (!Finalize(insts)) return false;
+            //if (!Finalize(insts)) return F;
 
-            //if (!LoadBlocks(lines, ref line)) return false;
-            //if (!LoadEdit(lines, ref line)) return false;
+            //if (!LoadBlocks(lines, ref line)) return F;
+            //if (!LoadEdit(lines, ref line)) return F;
         }
 
 
@@ -269,18 +269,18 @@ namespace IngameScript
         bool LoadSources(string[] lines, ref int line, Instrument inst)
         {
             int nSrc = 0;
-            if (!int.TryParse(lines[line++], out nSrc)) return false;
+            if (!int.TryParse(lines[line++], out nSrc)) return F;
 
             for (int i = 0; i < nSrc; i++)
             {
                 var src = LoadSource(lines, ref line);
-                if (src == null) return false;
+                if (src == null) return F;
 
                 inst.Sources.Add(src);
                 src.Instrument = inst;
             }
 
-            return true;
+            return T;
         }
 
         Source LoadSource(string[] lines, ref int line)
@@ -317,10 +317,10 @@ namespace IngameScript
         bool LoadParam(ref Parameter param, string line)
         {
             var _param = line.Split('&');
-            if (_param.Length != 6) return false;
+            if (_param.Length != 6) return F;
 
             float val;
-            if (!float.TryParse(_param[0], out val)) return false;
+            if (!float.TryParse(_param[0], out val)) return F;
             param.SetValue(val, null, -1);
 
             return LoadLfo(ref param.Lfo, line.Substring(_param[0].Length + 1));
@@ -330,17 +330,17 @@ namespace IngameScript
         bool LoadLfo(ref LFO lfo, string line)
         {
             var _lfo = line.Split('&');
-            if (_lfo.Length != 5) return false;
+            if (_lfo.Length != 5) return F;
 
             uint type;
-            if (!uint.TryParse(_lfo[0], out type)) return false;
+            if (!uint.TryParse(_lfo[0], out type)) return F;
             lfo.Type = (LFO.LfoType)type;
 
-            //if (!float.TryParse(_lfo[2], out lfo.Offset   )) return false;
-            //if (!float.TryParse(_lfo[3], out lfo.Amplitude)) return false;
-            //if (!float.TryParse(_lfo[4], out lfo.Frequency)) return false;
+            //if (!float.TryParse(_lfo[2], out lfo.Offset   )) return F;
+            //if (!float.TryParse(_lfo[3], out lfo.Amplitude)) return F;
+            //if (!float.TryParse(_lfo[4], out lfo.Frequency)) return F;
 
-            return true;
+            return T;
         }
 
 
@@ -354,7 +354,7 @@ namespace IngameScript
                 else g_inst.Add(l);
             }
 
-            return true;
+            return T;
         }
 
 
@@ -362,16 +362,16 @@ namespace IngameScript
         bool LoadPats(string[] lines, ref int line, List<Instrument> loaded)
         {
             int nPat = 0;
-            if (!int.TryParse(lines[line++], out nPat)) return false;
+            if (!int.TryParse(lines[line++], out nPat)) return F;
 
             for (int i = 0; i < nPat; i++)
             {
                 var pat = LoadPattern(lines[line++], loaded);
-                if (pat == null) return false;
+                if (pat == null) return F;
                 g_song.Patterns.Add(pat);
             }
 
-            return true;
+            return T;
         }
 
         Pattern LoadPattern(string str, List<Instrument> loaded)
@@ -400,9 +400,9 @@ namespace IngameScript
             chan.Shuffle   = BitConverter.ToInt32(b, index); index += 4;
             chan.Transpose = BitConverter.ToInt32(b, index); index += 4;
 
-            if (!LoadNotes(chan, b, ref index)) return false;
+            if (!LoadNotes(chan, b, ref index)) return F;
 
-            return true;
+            return T;
         }
 
         bool LoadNotes(Channel chan, byte[] b, ref int index)
@@ -427,10 +427,10 @@ namespace IngameScript
             }
             catch (Exception)
             {
-                return false;
+                return F;
             }
 
-            return true;
+            return T;
         }
 
 
@@ -439,23 +439,23 @@ namespace IngameScript
             g_song.Blocks.Clear();
 
             var cfg = lines[line++].Split(';');
-            if (cfg.Length == 0) return false;
+            if (cfg.Length == 0) return F;
 
             var c = 0;
 
             int nBlocks;
-            if (!int.TryParse(cfg[c++], out nBlocks)) return false;
+            if (!int.TryParse(cfg[c++], out nBlocks)) return F;
 
             for (int i = 0; i < nBlocks; i++)
             {
                 int first, last;
-                if (!int.TryParse(cfg[c++], out first)) return false;
-                if (!int.TryParse(cfg[c++], out last)) return false;
+                if (!int.TryParse(cfg[c++], out first)) return F;
+                if (!int.TryParse(cfg[c++], out last)) return F;
 
                 g_song.Blocks.Add(new Block(first, last));
             }
 
-            return true;
+            return T;
         }
 
         bool LoadEdit(string[] lines, ref int line)
@@ -463,24 +463,24 @@ namespace IngameScript
             g_song.EditNotes.Clear();
 
             var cfg = lines[line++].Split(';');
-            if (cfg.Length == 0) return false;
+            if (cfg.Length == 0) return F;
 
             var c = 0;
 
             int nNotes;
-            if (!int.TryParse(cfg[c++], out nNotes)) return false;
+            if (!int.TryParse(cfg[c++], out nNotes)) return F;
 
             for (int i = 0; i < nNotes; i++)
             {
                 int p, ch, n;
-                if (!int.TryParse(cfg[c++], out p )) return false;
-                if (!int.TryParse(cfg[c++], out ch)) return false;
-                if (!int.TryParse(cfg[c++], out n )) return false;
+                if (!int.TryParse(cfg[c++], out p )) return F;
+                if (!int.TryParse(cfg[c++], out ch)) return F;
+                if (!int.TryParse(cfg[c++], out n )) return F;
 
                 g_song.EditNotes.Add(g_song.Patterns[p].Channels[ch].Notes[n]);
             }
 
-            return true;
+            return T;
         }
     }
 }

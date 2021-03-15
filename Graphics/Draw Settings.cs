@@ -38,19 +38,19 @@ namespace IngameScript
                           ||    param.Parent != null // LFO offset has a parent
                              && param.Tag == "Off")
                     {
-                        DrawLfo(sprites, (LFO)g_settings[curSet-1], x + bx, y + by + 90, w - bx * 2, 110, true, true);
+                        DrawLfo(sprites, (LFO)g_settings[curSet-1], x + bx, y + by + 90, w - bx * 2, 110, T, T);
                     }
                     else if (param.Tag == "Cnt"
                           || param.Tag == "Time"
                           || param.Tag == "Lvl"
                           || param.Tag == "Pow")
                     {
-                        DrawDelay(sprites, (Delay)g_settings[curSet-1], x + 15, y + 140, w - 30, 110, true);
+                        DrawDelay(sprites, (Delay)g_settings[curSet-1], x + 15, y + 140, w - 30, 110, T);
                     }
                     else if (param.Tag == "Cut"
                           || param.Tag == "Res")
                     {
-                        DrawFilter(sprites, (Filter)g_settings[curSet-1], x + 15, y + 140, w - 30, 110, true);
+                        DrawFilter(sprites, (Filter)g_settings[curSet-1], x + 15, y + 140, w - 30, 110, T);
                     }
                     else if (param.Tag == "Vol")
                     {
@@ -59,7 +59,7 @@ namespace IngameScript
                             param.CurValue);
 
                         var db = 100 * Math.Log10(param.Value);
-                        var strDb = printValue(db, 0, true, 0) + " dB";
+                        var strDb = printValue(db, 0, T, 0) + " dB";
 
                         // draw value 
                         DrawString(sprites, strDb, x + bx + 100, y + by + 180, 1f, color6);
@@ -78,7 +78,7 @@ namespace IngameScript
                             param.Value,
                             param.CurValue,
                             param.Tag,
-                            false);
+                            F);
                     }
                 }
                 else if (setting.GetType() == typeof(Envelope))
@@ -87,15 +87,15 @@ namespace IngameScript
                 }
                 else if (setting.GetType() == typeof(Delay))
                 {
-                    DrawDelay(sprites, (Delay)setting, x + 15, y + 120, w - 30, 110, true);
+                    DrawDelay(sprites, (Delay)setting, x + 15, y + 120, w - 30, 110, T);
                 }
                 else if (setting.GetType() == typeof(Filter))
                 {
-                    DrawFilter(sprites, (Filter)setting, x + 15, y + 120, w - 30, 110, true);
+                    DrawFilter(sprites, (Filter)setting, x + 15, y + 120, w - 30, 110, T);
                 }
                 else if (setting.GetType() == typeof(LFO)) 
                 {
-                    DrawLfo(sprites, (LFO)setting, x + bx, y + by + 90, w - bx*2, 110, true, true);
+                    DrawLfo(sprites, (LFO)setting, x + bx, y + by + 90, w - bx*2, 110, T, T);
                 }
             }
         }
@@ -174,10 +174,10 @@ namespace IngameScript
                     if (param.Tag == "Vol")
                     {
                         var db = 100 * Math.Log10(param.Value);
-                        str = printValue(db, 0, true, 0).PadLeft(4);
+                        str = printValue(db, 0, T, 0).PadLeft(4);
                     }
                     else
-                        str = printValue(param.Value, 2, true, 1).PadLeft(6);
+                        str = printValue(param.Value, 2, T, 1).PadLeft(6);
 
                     DrawString(sprites, str, x + 40, y + 1, 0.36f, textCol);
                 }
@@ -192,7 +192,7 @@ namespace IngameScript
             }
 
 
-            bool children = false;
+            bool children = F;
 
                  if (setting.GetType() == typeof(Parameter)) DrawParamSetting    (sprites, (Parameter)setting, x, y, ref _yo, active, ref children);
             else if (setting.GetType() == typeof(Envelope )) DrawEnvelopeSetting (sprites, (Envelope )setting, x, y, ref _yo, active, ref children);
@@ -212,59 +212,59 @@ namespace IngameScript
 
         void DrawParamSetting(List<MySprite> sprites, Parameter param, float x, float y, ref float yo, bool active, ref bool children)
         { 
-            if (param.Envelope != null) { DrawSetting(sprites, param.Envelope, x, y + yo, ref yo, active); children = true; }
-            if (param.Lfo      != null) { DrawSetting(sprites, param.Lfo,      x, y + yo, ref yo, active); children = true; }
+            if (param.Envelope != null) { DrawSetting(sprites, param.Envelope, x, y + yo, ref yo, active); children = T; }
+            if (param.Lfo      != null) { DrawSetting(sprites, param.Lfo,      x, y + yo, ref yo, active); children = T; }
         }
 
 
         void DrawEnvelopeSetting(List<MySprite> sprites, Envelope env, float x, float y, ref float yo, bool active, ref bool children)
         { 
-            if (env.Attack .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Attack,  x, y + yo, ref yo, active); children = true; }
-            if (env.Decay  .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Decay,   x, y + yo, ref yo, active); children = true; }
-            if (env.Sustain.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Sustain, x, y + yo, ref yo, active); children = true; }
-            if (env.Release.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Release, x, y + yo, ref yo, active); children = true; }
+            if (env.Attack .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Attack,  x, y + yo, ref yo, active); children = T; }
+            if (env.Decay  .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Decay,   x, y + yo, ref yo, active); children = T; }
+            if (env.Sustain.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Sustain, x, y + yo, ref yo, active); children = T; }
+            if (env.Release.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Release, x, y + yo, ref yo, active); children = T; }
         }
 
 
         void DrawLfoSetting(List<MySprite> sprites, LFO lfo, float x, float y, ref float yo, bool active, ref bool children)
         { 
-            if (lfo.Frequency.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, lfo.Frequency, x, y + yo, ref yo, active); children = true; }                
-            if (lfo.Amplitude.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, lfo.Amplitude, x, y + yo, ref yo, active); children = true; }
-            if (lfo.Offset   .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, lfo.Offset,    x, y + yo, ref yo, active); children = true; }
+            if (lfo.Frequency.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, lfo.Frequency, x, y + yo, ref yo, active); children = T; }                
+            if (lfo.Amplitude.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, lfo.Amplitude, x, y + yo, ref yo, active); children = T; }
+            if (lfo.Offset   .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, lfo.Offset,    x, y + yo, ref yo, active); children = T; }
         }
 
 
         void DrawHarmonicsSetting(List<MySprite> sprites, Harmonics hrm, float x, float y, ref float yo, bool active, ref bool children)
         { 
             for (int i = 0; i < hrm.Tones.Length; i++)
-                if (hrm.Tones[i].HasDeepParams(null, CurSrc)) { DrawSetting(sprites, hrm.Tones[i], x, y + yo, ref yo, active); children = true; }
+                if (hrm.Tones[i].HasDeepParams(null, CurSrc)) { DrawSetting(sprites, hrm.Tones[i], x, y + yo, ref yo, active); children = T; }
         }
 
 
         void DrawFilterSetting(List<MySprite> sprites, Filter flt, float x, float y, ref float yo, bool active, ref bool children)
         { 
-            if (flt.Cutoff   .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, flt.Cutoff,    x, y + yo, ref yo, active); children = true; }
-            if (flt.Resonance.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, flt.Resonance, x, y + yo, ref yo, active); children = true; }
+            if (flt.Cutoff   .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, flt.Cutoff,    x, y + yo, ref yo, active); children = T; }
+            if (flt.Resonance.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, flt.Resonance, x, y + yo, ref yo, active); children = T; }
         }
 
 
         void DrawDelaySetting(List<MySprite> sprites, Delay del, float x, float y, ref float yo, bool active, ref bool children)
         {
-            if (del.Count.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Count, x, y + yo, ref yo, active); children = true; }
-            if (del.Time .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Time,  x, y + yo, ref yo, active); children = true; }
-            if (del.Level.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Level, x, y + yo, ref yo, active); children = true; }
-            if (del.Power.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Power, x, y + yo, ref yo, active); children = true; }
+            if (del.Count.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Count, x, y + yo, ref yo, active); children = T; }
+            if (del.Time .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Time,  x, y + yo, ref yo, active); children = T; }
+            if (del.Level.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Level, x, y + yo, ref yo, active); children = T; }
+            if (del.Power.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Power, x, y + yo, ref yo, active); children = T; }
         }
 
 
         void DrawArpeggioSetting(List<MySprite> sprites, Arpeggio arp, float x, float y, ref float yo, bool active, ref bool children)
         { 
-            if (arp.Length.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, arp.Length, x, y + yo, ref yo, active); children = true; }
-            if (arp.Scale .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, arp.Scale,  x, y + yo, ref yo, active); children = true; }
+            if (arp.Length.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, arp.Length, x, y + yo, ref yo, active); children = T; }
+            if (arp.Scale .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, arp.Scale,  x, y + yo, ref yo, active); children = T; }
         }
 
 
-        void DrawValueVertical(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag, bool mixer = true)
+        void DrawValueVertical(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag, bool mixer = T)
         {
             var wb = w/10;
             var wg = w/20;
@@ -315,7 +315,7 @@ namespace IngameScript
             // set value number
             DrawString(
                 sprites, 
-                printValue(v, 2, true, 0), 
+                printValue(v, 2, T, 0), 
                 x + wl + 30, 
                 zy - sy - 10, 
                 1f, 
@@ -374,7 +374,7 @@ namespace IngameScript
             // set value number
             DrawString(
                 sprites, 
-                printValue(v, 2, true, 0), 
+                printValue(v, 2, T, 0), 
                 zx - sx - 10, 
                 y + hl + 30, 
                 1f, 
@@ -384,7 +384,7 @@ namespace IngameScript
 
         void DrawLfo(List<MySprite> sprites, LFO lfo, float x, float y, float w, float h, bool active, bool on)
         {
-            var pPrev = new Vector2(float.NaN, float.NaN);
+            var pPrev = new Vector2(fN, fN);
 
             var fs = 0.5f;
 
@@ -673,11 +673,11 @@ namespace IngameScript
 
             // cutoff
             DrawString(sprites, "Cutoff",                    x, y - 40, fs, IsCurParam("Cut") ? color6 : color3);
-            DrawString(sprites, printValue(cut, 2, true, 0), x, y - 25, fs, IsCurParam("Cut") ? color6 : color3);
+            DrawString(sprites, printValue(cut, 2, T, 0), x, y - 25, fs, IsCurParam("Cut") ? color6 : color3);
 
             // resonance
             DrawString(sprites, "Resonance",                 x + 100, y - 40, fs, IsCurParam("Res") ? color6 : color3);
-            DrawString(sprites, printValue(res, 2, true, 0), x + 100, y - 25, fs, IsCurParam("Res") ? color6 : color3);
+            DrawString(sprites, printValue(res, 2, T, 0), x + 100, y - 25, fs, IsCurParam("Res") ? color6 : color3);
         }
 
 
@@ -699,8 +699,8 @@ namespace IngameScript
                 { 
                     for (float f = 0; f <= 1; f += 0.1f)
                     { 
-                        var y0 = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, (float)Math.Pow(f, pow) * 2, float.NaN), song).Y;
-                        var db = printValue(Math.Abs(100 * (float)Math.Log10(f * extra)), 0, true, 2);
+                        var y0 = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, (float)Math.Pow(f, pow) * 2, fN), song).Y;
+                        var db = printValue(Math.Abs(100 * (float)Math.Log10(f * extra)), 0, T, 2);
 
                         DrawLine(sprites, x + xt, y0, x+w, y0, color2);
                         DrawString(sprites, db, x + xt + 3, y0 + lf*2, lf, color2);
@@ -712,8 +712,8 @@ namespace IngameScript
                 {
                     for (int i = 0; i <= 20; i += 5)
                     { 
-                        var y0  = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, i, float.NaN), song).Y;
-                        var val = printValue(i, 0, false, 0);
+                        var y0  = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, i, fN), song).Y;
+                        var val = printValue(i, 0, F, 0);
 
                         DrawLine(sprites, x+xt, y0, x+w, y0, color2);
                         DrawString(sprites, val, x + xt + 3, y0 + lf*2, lf, color2);
@@ -727,7 +727,7 @@ namespace IngameScript
                     { 
                         var val = param.Min + i * (param.Max - param.Min)/4;
                         var f   = (val - param.Min) / (param.Max - param.Min);
-                        var key = new Key(CurSrc, param, f, float.NaN);
+                        var key = new Key(CurSrc, param, f, fN);
                         var y0  = KeyPos(x, y + rh, w, h - rh, 0, key, song).Y;
                         var str = printValue(val, -2, param.Max - param.Min > 1, 0);
 
@@ -788,9 +788,9 @@ namespace IngameScript
         {
             switch (paramTag)
             { 
-            case "Vol": return printValue(100 * Math.Log10(val), 0, true, 0) + " dB";
-            case "Cnt": return printValue(val, 0, true, 0);
-            default:    return printValue(val, 2, true, 0);
+            case "Vol": return printValue(100 * Math.Log10(val), 0, T, 0) + " dB";
+            case "Cnt": return printValue(val, 0, T, 0);
+            default:    return printValue(val, 2, T, 0);
             }
         }
 
@@ -926,7 +926,7 @@ namespace IngameScript
             }
             else
             {
-                var key = AltChanKey(new Key(CurSrc, param, param.Value, float.NaN));
+                var key = AltChanKey(new Key(CurSrc, param, param.Value, fN));
                 var pk  = KeyPos(x, y, w, h, p, key, song);
 
                 var p0 = new Vector2(x,        pk.Y);

@@ -29,31 +29,27 @@ namespace IngameScript
                              Power; // convert to int when applying
 
 
-            public Delay() : base("Delay", "Del")
+            public Delay() : base("Delay", "Del", null)
             {
-                Count = new Parameter("Count", "Cnt",  0,         100, 1,    16, 1,     10,    4   );
-                Time  = new Parameter("Time",  "Time", 0.000001f,  10, 0.01f, 1, 0.01f,  0.1f, 0.2f);
-                Level = new Parameter("Level", "Lvl",  0,           1, 0.01f, 1, 0.01f,  0.1f, 0.5f);
-                Power = new Parameter("Power", "Pow",  0.000001f,   1, 0.01f, 1, 0.01f,  0.1f, 1);
-
-                Count.Parent = 
-                Time .Parent = 
-                Level.Parent = 
-                Power.Parent = this;
+                Count = new Parameter("Count", "Cnt",  0,         100, 1,    16, 1,     10,    4,    this);
+                Time  = new Parameter("Time",  "Time", 0.000001f,  10, 0.01f, 1, 0.01f,  0.1f, 0.2f, this);
+                Level = new Parameter("Level", "Lvl",  0,           1, 0.01f, 1, 0.01f,  0.1f, 0.5f, this);
+                Power = new Parameter("Power", "Pow",  0.000001f,   1, 0.01f, 1, 0.01f,  0.1f, 1,    this);
             }
 
 
-            public Delay(Delay del) : base(del.Name, del.Tag, del)
+            public Delay(Delay del) : base(del.Name, del.Tag, null, del)
             {
-                Count = new Parameter(del.Count);
-                Time  = new Parameter(del.Time);
-                Level = new Parameter(del.Level);
-                Power = new Parameter(del.Power);
+                Count = new Parameter(del.Count, this);
+                Time  = new Parameter(del.Time,  this);
+                Level = new Parameter(del.Level, this);
+                Power = new Parameter(del.Power, this);
+            }
 
-                Count.Parent = 
-                Time .Parent = 
-                Level.Parent = 
-                Power.Parent = this;
+
+            public Delay Copy()
+            {
+                return new Delay(this);
             }
 
 
@@ -114,6 +110,16 @@ namespace IngameScript
 
                 if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(song, Level, -g_remote.RotationIndicator.X/ControlSensitivity);
                 if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(song, Power,  g_remote.RotationIndicator.Y/ControlSensitivity);
+            }
+
+
+            public override string Save()
+            {
+                return
+                      W(Count.Save())
+                    + W(Time .Save())
+                    + W(Level.Save())
+                    +   Power.Save();
             }
         }
     }

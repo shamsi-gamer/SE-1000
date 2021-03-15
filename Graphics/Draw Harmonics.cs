@@ -25,7 +25,7 @@ namespace IngameScript
 
             float yo = 0;
 
-            DrawSourceSettings(sprites, x + 5, y + 10, SelectedSource, false, ref yo);
+            DrawSourceSettings(sprites, x + 5, y + 10, SelectedSource, F, ref yo);
 
             DrawHarmonicsSample(sprites, x + 100, y + 150, 100, 60, song, hrm);
 

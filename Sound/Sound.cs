@@ -42,7 +42,7 @@ namespace IngameScript
             public bool               IsEcho;
 
 
-            public Sound(string sample, Channel chan, int ch, long frameTime, int frameLen, int releaseLen, float vol, Instrument inst, int iSrc, Note note, List<TriggerValue> triggerValues, bool isEcho, Sound echoSource, float echoVol, Parameter harmonic = null, Sound hrmSound = null, float hrmPos = float.NaN)
+            public Sound(string sample, Channel chan, int ch, long frameTime, int frameLen, int releaseLen, float vol, Instrument inst, int iSrc, Note note, List<TriggerValue> triggerValues, bool isEcho, Sound echoSource, float echoVol, Parameter harmonic = null, Sound hrmSound = null, float hrmPos = fN)
             {
                 Speakers         = new List<Speaker>();
                 Sample           = sample;

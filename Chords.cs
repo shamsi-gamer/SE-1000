@@ -68,7 +68,7 @@ namespace IngameScript
                 while (c[i] >= 12*NoteScale) c[i] %= 12*NoteScale;
                 
             c = c.Select(n => n).Distinct().ToList();
-            if (c.Count != 3) return false;
+            if (c.Count != 3) return F;
             c.Sort();
 
             if (      c[1]-c[0] ==  n2          * NoteScale
@@ -77,9 +77,9 @@ namespace IngameScript
                    && c[2]-c[0] == (12-n2)      * NoteScale
                 ||    c[1]-c[0] == (12-n3)      * NoteScale
                    && c[2]-c[0] == (12-(n3-n2)) * NoteScale)
-                return true;
+                return T;
          
-            return false;
+            return F;
         }
 
 
@@ -91,7 +91,7 @@ namespace IngameScript
                 while (c[i] >= 12*NoteScale) c[i] %= 12*NoteScale;
                 
             c = c.Select(n => n).Distinct().ToList();
-            if (c.Count != 4) return false;
+            if (c.Count != 4) return F;
             c.Sort();
 
             if (      c[1]-c[0] ==  n2        * NoteScale
@@ -106,9 +106,9 @@ namespace IngameScript
                 ||    c[1]-c[0] == (12-n4)    * NoteScale
                    && c[2]-c[0] == (12-n4+n2) * NoteScale
                    && c[3]-c[0] == (12-n4+n3) * NoteScale)
-                return true;
+                return T;
          
-            return false;
+            return F;
         }
 
 
@@ -190,12 +190,12 @@ namespace IngameScript
 
                 var tc = tune.Chord;
 
-                bool add = false;
+                bool add = F;
                 foreach (var _note in _chord)
                 {
                     if (tc.FindIndex(n => n == _note) < 0)
                     {
-                        add = true;
+                        add = T;
                         break;
                     }
                 }
@@ -232,7 +232,7 @@ namespace IngameScript
                     if (g_chords[chord-1].Count > 0)
                     { 
                         g_chord    = chord-1;
-                        g_chordAll = false;
+                        g_chordAll = F;
                     }
                 }
                 else

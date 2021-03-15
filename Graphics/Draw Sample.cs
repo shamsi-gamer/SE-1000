@@ -9,7 +9,7 @@ namespace IngameScript
     partial class Program
     {
         //float[] g_sample      = null;
-        bool g_sampleValid = false;
+        //bool g_sampleValid = F;
 
 
         //void UpdateSample(Instrument inst, float w, float timeScale)
@@ -21,7 +21,7 @@ namespace IngameScript
         //        g_sample = new float[iw];
 
 
-        //    float prev = float.NaN;
+        //    float prev = fN;
 
         //    for (int t = 0; t < w; t += 2)
         //    {
@@ -46,7 +46,7 @@ namespace IngameScript
         //        prev = g_sample[t];
         //    }
 
-        //    g_sampleValid = true;
+        //    g_sampleValid = T;
         //}
 
 
@@ -56,7 +56,7 @@ namespace IngameScript
         //        UpdateSample(inst, w, timeScale);
 
 
-        //    var pPrev = new Vector2(float.NaN, float.NaN);
+        //    var pPrev = new Vector2(fN, fN);
         //    var iw    = (int)w; // not ceiling like in UpdateSample() because this is for drawing
 
         //    for (int t = 0; t < iw; t++)
@@ -79,7 +79,7 @@ namespace IngameScript
             var col_0 = src.On && bright ? color6 : color3;
             var col_1 = src.On && bright ? color0 : color5;
 
-            var pPrev = new Vector2(float.NaN, float.NaN);
+            var pPrev = new Vector2(fN, fN);
 
 
             var df = 1/24f;
@@ -124,7 +124,7 @@ namespace IngameScript
 
         void DrawHarmonicsSample(List<MySprite> sprites, float x, float y, float w, float h, Song song, Harmonics hrm)
         {
-            var pPrev = new Vector2(float.NaN, float.NaN);
+            var pPrev = new Vector2(fN, fN);
 
 
             var df = 1/48f;

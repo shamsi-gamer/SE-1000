@@ -9,11 +9,14 @@ namespace IngameScript
         string SaveMachineState()
         {
             return
-                 "SE-909 mk2"                 + "\n"
-                + SaveSettings(SaveToggles()) + "\n"
-                + SaveMems()                  + "\n"
-                + SaveChords();
-                //+ SaveInstruments();
+                  N("SE-909 mk2")
+                + N(SaveSettings(SaveToggles()))
+                + N(SaveMems())
+                + N(SaveChords())
+                + "\n"
+                + N("Instruments")
+                + "\n"
+                +   SaveInstruments();
         }
 
 
@@ -94,7 +97,16 @@ namespace IngameScript
 
                 + W(g_volume)
 
-                + W(g_iCol, false);
+                + W(g_iCol, F);
+        }
+
+
+        static string Save(Setting setting)
+        {
+            return W(
+                setting != null 
+                ? setting.Save() 
+                : "_");
         }
 
 
@@ -128,6 +140,65 @@ namespace IngameScript
         }
 
 
+        string SaveInstruments()
+        {
+            var str = "";
+
+            foreach (var inst in g_inst)
+                str += N(inst.Save());
+
+            return str;
+        }
+
+
+        //string SaveSource(Source src)
+        //{
+        //    var str = "";
+        //    var s   = "$";
+
+        //    uint f = 0;
+        //    var  i = 0;
+
+        //    WriteByte(ref f, src.On,       i++);
+
+        //    str +=
+        //          S(f) + s
+        //        + S((int)src.Oscillator.Type) + s
+        //        //+ S(src.Transpose) + s
+        //        + SaveParam(src.Volume ) + s
+        //        //+ SaveParam(src.Attack ) + s
+        //        //+ SaveParam(src.Decay  ) + s
+        //        //+ SaveParam(src.Sustain) + s
+        //        //+ SaveParam(src.Release) + s
+        //        //+ SaveParam(src.Offset ) 
+        //        + "\n";
+
+        //    return str;
+        //}
+
+
+        //string SaveParam(Parameter param)
+        //{
+        //    var s = "&";
+
+        //    return
+        //          S(param.Value) + s
+        //        + SaveLfo(param.Lfo);
+        //}
+
+
+        //string SaveLfo(LFO lfo)
+        //{
+        //    var s = "&";
+
+        //    return
+        //          S((int)lfo.Type) + s
+        //        + S(lfo.Amplitude) + s
+        //        + S(lfo.Frequency) + s
+        //        + S(lfo.Offset   );
+        //}
+
+
         void SaveSongExt()
         {
             dspIO.Surface.WriteText(SaveSong());
@@ -149,87 +220,6 @@ namespace IngameScript
             //    + SaveEdit();
 
             return song;
-        }
-
-
-
-        string SaveInstruments()
-        {
-            var str = S(g_inst.Count) + "\n";
-
-            foreach (var inst in g_inst)
-                str += SaveInstrument(inst);
-
-            return str;
-        }
-
-        string SaveInstrument(Instrument inst)
-        {
-            var str = "";
-            //var s   = ";";
-
-            str += inst.Name + "\n";
-
-            //str +=
-            //      SaveParam(inst.DelayCount) + s
-            //    + SaveParam(inst.DelayTime)  + s
-            //    + SaveParam(inst.DelayLevel) + s
-            //    + SaveParam(inst.DelayPower) + "\n";
-
-            str += S(inst.Sources.Count) + "\n";
-
-            foreach (var src in inst.Sources)
-                str += SaveSource(src);
-
-            return str;
-        }
-
-
-        string SaveSource(Source src)
-        {
-            var str = "";
-            var s   = "$";
-
-            uint f = 0;
-            var  i = 0;
-
-            WriteByte(ref f, src.On,       i++);
-
-            str +=
-                  S(f) + s
-                + S((int)src.Oscillator.Type) + s
-                //+ S(src.Transpose) + s
-                + SaveParam(src.Volume ) + s
-                //+ SaveParam(src.Attack ) + s
-                //+ SaveParam(src.Decay  ) + s
-                //+ SaveParam(src.Sustain) + s
-                //+ SaveParam(src.Release) + s
-                //+ SaveParam(src.Offset ) 
-                + "\n";
-
-            return str;
-        }
-
-
-        string SaveParam(Parameter param)
-        {
-            var s = "&";
-
-            return
-                  S(param.Value) + s
-                + SaveLfo(param.Lfo);
-        }
-
-
-        string SaveLfo(LFO lfo)
-        {
-            var s = "&";
-
-            return
-                  S((int)lfo.Type) + s
-                + S(lfo.Amplitude) + s
-                + S(lfo.Frequency) + s
-                + S(lfo.Offset   );
         }
 
 

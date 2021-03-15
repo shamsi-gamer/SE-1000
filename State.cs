@@ -39,13 +39,13 @@ namespace IngameScript
                            g_rndInst,
             
                            g_piano,
-                           g_move       = false,
+                           g_move       = F,
             
-                           g_transpose  = false,
-                           g_spread     = false,
+                           g_transpose  = F,
+                           g_spread     = F,
                                         
-                           g_shift      = false,
-                           g_mixerShift = false,
+                           g_shift      = F,
+                           g_mixerShift = F,
             
                            g_hold,
                            g_pick,
@@ -58,7 +58,7 @@ namespace IngameScript
                            g_paramKeys,
                            g_paramAuto,
                            
-                           g_setMem = false;
+                           g_setMem = F;
         
 
         int                g_chordSpread;
@@ -82,7 +82,7 @@ namespace IngameScript
         public static long StartTime = -1, // in ticks
                            PlayTime  = -1;
 
-        public float       PlayStep { get { return PlayTime > -1 ? PlayTime / (float)g_ticksPerStep : float.NaN; } }
+        public float       PlayStep { get { return PlayTime > -1 ? PlayTime / (float)g_ticksPerStep : fN; } }
 
 
         float[]            g_steps = { 0.25f, 0.5f, 1, 2, 4, 8, 16, 65536f };
@@ -153,7 +153,7 @@ namespace IngameScript
             g_paramKeys  = 
             g_paramAuto  =
             
-            g_setMem     = false;
+            g_setMem     = F;
 
 
             g_ticksPerStep = 7;

@@ -30,17 +30,17 @@ namespace IngameScript
                              FinalChord;
 
 
-            public Tune() : base("Tune", "Tune", -240, 240, -12, 12, 0.5f, 24, 0)
+            public Tune() : base("Tune", "Tune", -240, 240, -12, 12, 0.5f, 24, 0, null)
             {
-                UseChord   = false;
-                AllOctaves = false;
+                UseChord   = F;
+                AllOctaves = F;
 
                 Chord      = new List<int>();
                 FinalChord = new List<int>();
             }
 
 
-            public Tune(Tune tune) : base(tune)
+            public Tune(Tune tune) : base(tune, null)
             {
                 UseChord   = tune.UseChord;
                 AllOctaves = tune.AllOctaves;
@@ -52,6 +52,12 @@ namespace IngameScript
                 FinalChord = new List<int>();
                 foreach (var note in tune.FinalChord)
                     FinalChord.Add(note);
+            }
+
+
+            public Tune Copy()
+            {
+                return new Tune(this);
             }
         }
     }

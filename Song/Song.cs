@@ -123,8 +123,8 @@ namespace IngameScript
 
             void ResetState()
             {
-                EditPos     = float.NaN;
-                LastEditPos = float.NaN;
+                EditPos     = fN;
+                LastEditPos = fN;
 
                 Inter       = null;
                 EditNotes.Clear();
@@ -177,7 +177,7 @@ namespace IngameScript
 
         //    g_volume      = 1;
         //    g_chord       = -1;
-        //    g_chordEdit   = false;
+        //    g_chordEdit   = F;
         //    g_chordSpread = 0;
         //    g_editStep    = 2;
         //    g_editLength  = 2;
@@ -204,7 +204,7 @@ namespace IngameScript
         //    g_pick        = 
         //    g_rndInst       = 
         //    g_paramKeys   = 
-        //    g_paramAuto   = false;
+        //    g_paramAuto   = F;
 
 
         //    PlayTime    = -1;

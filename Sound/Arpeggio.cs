@@ -30,7 +30,7 @@ namespace IngameScript
                              Scale;
 
 
-            public Arpeggio(Instrument inst) : base("Arpeggio", "Arp")
+            public Arpeggio(Instrument inst) : base("Arpeggio", "Arp", null)
             {
                 Song = new Song("");
                 Song.Arpeggio = this;
@@ -38,23 +38,17 @@ namespace IngameScript
                 
                 SetInstrument(inst);
 
-                Length = new Parameter("Length", "Len", 1, 256, 2, 6, 0.01f, 0.1f, 8);
-                Length.Parent = this;
-
-                Scale = new Parameter("Scale", "Scl", 0.01f, 16, 0.25f, 4, 0.01f, 0.1f, 1);
-                Scale.Parent = this;
+                Length = new Parameter("Length", "Len", 1,    256, 2,     6, 0.01f, 0.1f, 8, this);
+                Scale  = new Parameter("Scale",  "Scl", 0.01f, 16, 0.25f, 4, 0.01f, 0.1f, 1, this);
             }
 
 
-            public Arpeggio(Arpeggio arp) : base(arp.Name, arp.Tag, arp.Prototype)
+            public Arpeggio(Arpeggio arp) : base(arp.Name, arp.Tag, null, arp.Prototype)
             {
-                Song = new Song(arp.Song);
+                Song   = new Song(arp.Song);
 
-                Length = new Parameter(arp.Length);
-                Length.Parent = this;
-
-                Scale = new Parameter(arp.Scale);
-                Scale.Parent = this;
+                Length = new Parameter(arp.Length, this);
+                Scale  = new Parameter(arp.Scale,  this);
 
                 //if (arp.Song != null)
                 //{ 
@@ -80,6 +74,12 @@ namespace IngameScript
                 //    Length = -Math.Abs(Length); // turn off but keep current value
                 //    Scale  =  null;
                 //}
+            }
+
+
+            public Arpeggio Copy()
+            {
+                return new Arpeggio(this);
             }
 
 
@@ -112,6 +112,19 @@ namespace IngameScript
             {
                 Length.Randomize();
                 Scale .Randomize();
+            }
+
+
+            public override string Save()
+            {
+                var arp = "";
+
+                // save song here
+
+                arp += W(Length.Save());
+                arp +=   Scale .Save();
+
+                return arp;
             }
         }
     }

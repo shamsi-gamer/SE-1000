@@ -87,7 +87,7 @@ namespace IngameScript
                                     var chord = g_chords[g_chord];
 
                                     if (g_chordAll)
-                                        chord = UpdateFinalTuneChord(chord, true);
+                                        chord = UpdateFinalTuneChord(chord, T);
                                     
                                     note = chord[g_rnd.Next(0, chord.Count)];
                                     chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
@@ -180,7 +180,7 @@ namespace IngameScript
         }
 
 
-        //void RandomChannel(int pat, int ch, bool vol = false)
+        //void RandomChannel(int pat, int ch, bool vol = F)
         //{
         //    if (rndInst) RandomInstrument(pat, ch);
         //    if (vol)     RndVol(pat, ch);

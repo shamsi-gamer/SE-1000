@@ -243,14 +243,14 @@ namespace IngameScript
 
 
 
-        void MarkLight(IMyTextPanel light, bool on = true)
+        void MarkLight(IMyTextPanel light, bool on = T)
         {
             lightsPressed.Add(light);
             UpdateLight(light, on);
         }
 
 
-        void UnmarkLight(IMyTextPanel light, bool on = false, bool half = false)
+        void UnmarkLight(IMyTextPanel light, bool on = F, bool half = F)
         {
             UpdateLight(light, on, half);
             lightsPressed_.Remove(light);
@@ -261,8 +261,8 @@ namespace IngameScript
         {
             var be = CurSong.EditNotes.Count > 0;
 
-            if (lightsPressed_.Contains(lblLeft))      UnmarkLight(lblLeft,  false, be);
-            if (lightsPressed_.Contains(lblRight))     UnmarkLight(lblRight, false, be);
+            if (lightsPressed_.Contains(lblLeft))      UnmarkLight(lblLeft,  F, be);
+            if (lightsPressed_.Contains(lblRight))     UnmarkLight(lblRight, F, be);
 
             if (lightsPressed_.Contains(lblUp))        UnmarkLight(lblUp,   g_shift);
             if (lightsPressed_.Contains(lblDown))      UnmarkLight(lblDown, g_shift);
@@ -285,10 +285,10 @@ namespace IngameScript
             if (lightsPressed_.Contains(lblChord3))    UnmarkLight(lblChord3, g_chordEdit && g_chord == 2, g_chords[2].Count > 0);
             if (lightsPressed_.Contains(lblChord4))    UnmarkLight(lblChord4, g_chordEdit && g_chord == 3, g_chords[3].Count > 0);
 
-            if (lightsPressed_.Contains(lblCmd2))      UnmarkLight(lblCmd2, false, copyChan != null);
+            if (lightsPressed_.Contains(lblCmd2))      UnmarkLight(lblCmd2, F, copyChan != null);
 
             foreach (var lbl in lightsPressed_)
-                UpdateLight(lbl, false);
+                UpdateLight(lbl, F);
 
 
             mixerPressed_.Clear();
@@ -453,7 +453,7 @@ namespace IngameScript
             else if (ShowPiano) val = CurrentChannel.Transpose;
             else                val = CurrentChannel.Shuffle;
 
-            lblOctave.WriteText((val > 0 ? "+" : "") + S(val), false);
+            lblOctave.WriteText((val > 0 ? "+" : "") + S(val), F);
         }
 
 
@@ -585,7 +585,7 @@ namespace IngameScript
                 else
                 { 
                     UpdateLight(lblCmd1, SelChan < 0 ? "Copy" : " ", 10, 10);
-                    UpdateLight(lblCmd1, false);
+                    UpdateLight(lblCmd1, F);
 
                     UpdateLight(lblCmd2, SelChan < 0 ? "Paste" : " ", 10, 10);
                     UpdatePasteLight();
@@ -802,7 +802,7 @@ namespace IngameScript
                               && PlayStep <  n.PatStep + n.StepLength) > -1;
 
 
-                var otherChans = false;
+                var otherChans = F;
 
                 if (!thisChan)
                 {
@@ -821,10 +821,10 @@ namespace IngameScript
                 }
 
 
-                var down = false;
+                var down = F;
 
                 if (lightsPressed.Contains(light))
-                    down = true;
+                    down = T;
 
                 UpdateLight(light, thisChan || down, otherChans);
             }
@@ -867,7 +867,7 @@ namespace IngameScript
         }
 
 
-        void UpdateLight(IMyTextPanel light, bool b, bool b2 = false)
+        void UpdateLight(IMyTextPanel light, bool b, bool b2 = F)
         {
             if (light == null) return;
 

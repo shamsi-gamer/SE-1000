@@ -13,7 +13,7 @@ namespace IngameScript
             g_log.Add(str);
             g_logTime.Add(g_time);
 
-            pnlInfoLog.CustomData += S(g_time) + ": " + str + "\n";
+            pnlInfoLog.CustomData += N(S(g_time) + ": " + str);
         }
     }
 }

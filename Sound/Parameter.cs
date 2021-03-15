@@ -25,10 +25,10 @@ namespace IngameScript
 
             public Envelope Envelope;
             public LFO      Lfo;
-            //public Modulate Modulate;
+            public Modulate Modulate;
 
 
-            public Parameter(string name, string tag, float min, float max, float normalMin, float normalMax, float delta, float bigDelta, float defVal = 0) : base(name, tag)
+            public Parameter(string name, string tag, float min, float max, float normalMin, float normalMax, float delta, float bigDelta, float defVal, Setting parent) : base(name, tag, parent)
             {
                 Tag       = tag;
 
@@ -46,10 +46,11 @@ namespace IngameScript
 
                 Envelope  = null;
                 Lfo       = null;
+                Modulate  = null;
             }
 
 
-            public Parameter(Parameter param) : base(param.Name, param.Tag, param.Prototype)
+            public Parameter(Parameter param, Setting parent) : base(param.Name, param.Tag, parent, param.Prototype)
             {
                 Tag       = param.Tag;
                           
@@ -64,8 +65,15 @@ namespace IngameScript
                 Delta     = param.Delta;
                 BigDelta  = param.BigDelta;
 
-                Envelope  = param.Envelope != null ? new Envelope(param.Envelope) : null;
-                Lfo       = param.Lfo      != null ? new LFO     (param.Lfo     ) : null;
+                Envelope  = param.Envelope?.Copy(this);
+                Lfo       = param.Lfo     ?.Copy(this);
+                Modulate  = param.Modulate?.Copy(this);
+            }
+
+
+            public Parameter Copy(Setting parent)
+            {
+                return new Parameter(this, parent);
             }
 
 
@@ -171,7 +179,7 @@ namespace IngameScript
                 var prevKey = PrevSongAutoKey(songStep, pat, ch, path);
                 var nextKey = NextSongAutoKey(songStep, pat, ch, path);
 
-                     if (prevKey == null && nextKey == null) return float.NaN;
+                     if (prevKey == null && nextKey == null) return fN;
                 else if (prevKey != null && nextKey == null) return prevKey.Value;
                 else if (prevKey == null && nextKey != null) return nextKey.Value;
                 else
@@ -181,9 +189,9 @@ namespace IngameScript
 
             public float AdjustValue(float value, float delta, bool shift)
             {
-                     if (Tag == "Att") ((Envelope)Parent).TrigAttack  = float.NaN;
-                else if (Tag == "Dec") ((Envelope)Parent).TrigDecay   = float.NaN;
-                else if (Tag == "Rel") ((Envelope)Parent).TrigRelease = float.NaN;
+                     if (Tag == "Att") ((Envelope)Parent).TrigAttack  = fN;
+                else if (Tag == "Dec") ((Envelope)Parent).TrigDecay   = fN;
+                else if (Tag == "Rel") ((Envelope)Parent).TrigRelease = fN;
 
                 return value + delta * (shift ? BigDelta : Delta);
             }
@@ -194,7 +202,7 @@ namespace IngameScript
                 return
                        Envelope != null
                     || Lfo      != null
-                    || (chan?.HasKeys(GetPath(src)) ?? false)
+                    || (chan?.HasKeys(GetPath(src)) ?? F)
                     || _IsCurrent;
             }
 
@@ -228,8 +236,7 @@ namespace IngameScript
                     && Tag != "Rel"
                     && g_rnd.NextDouble() > 0.9f)
                 {
-                    Envelope = new Envelope();
-                    Envelope.Parent = this;
+                    Envelope = new Envelope(this);
                     Envelope.Randomize();
                 }
                 else 
@@ -241,8 +248,7 @@ namespace IngameScript
                     && !SettingOrParentHasTag(this, "Rel")
                     && g_rnd.NextDouble() > 0.9f)
                 {
-                    Lfo = new LFO();
-                    Lfo.Parent = this;
+                    Lfo = new LFO(this);
                     Lfo.Randomize();
                 }
                 else
@@ -254,6 +260,23 @@ namespace IngameScript
             {
                 if (g_remote.RotationIndicator.X != 0) 
                     prog.AdjustFromController(song, this, -g_remote.RotationIndicator.X/ControlSensitivity);
+            }
+
+
+            public override string Save()
+            {
+                return
+                      W(m_value)
+                    + W(Default)
+                    + W(Min)
+                    + W(Max)
+                    + W(NormalMin)
+                    + W(NormalMax)
+                    + W(Delta)
+                    + W(BigDelta)
+                    + W(Envelope.Save())
+                    + W(Lfo     .Save())
+                    +   Modulate.Save();
             }
         }
     }

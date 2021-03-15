@@ -1,21 +1,4 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
+﻿using System.Text;
 
 
 namespace IngameScript
@@ -34,24 +17,24 @@ namespace IngameScript
             public bool   _IsCurrent;
 
 
-            public Setting(string name, string tag, Setting proto = null)
+            public Setting(string name, string tag, Setting parent, Setting proto = null)
             {
-                Parent    = null;
+                Parent    = parent;
                 Name      = name;
                 Tag       = tag;
                 Prototype = proto;
-               _IsCurrent = false;
+               _IsCurrent = F;
             }
 
-            public Setting(Setting setting) : this(setting.Name, setting.Tag, setting) { }
+
+            public Setting(Setting setting, Setting parent) : this(setting.Name, setting.Tag, parent, setting) { }
 
 
-            public virtual bool HasDeepParams(Channel chan, int src) { return false; }
+            public virtual bool HasDeepParams(Channel chan, int src) { return F; }
             public virtual void Remove(Setting setting) { }
 
             public virtual void Clear() { }
 
-            //public string Path { get { return GetPath(); } }
 
             public string GetPath(int src = -1)
             {
@@ -72,9 +55,12 @@ namespace IngameScript
             }
 
 
-            public virtual void Randomize() { }
+            public virtual void   Randomize() { }
+            public virtual void   AdjustFromController(Song song, Program prog) { }
 
-            public virtual void AdjustFromController(Song song, Program prog) { }
+            public virtual string Save() { return ""; }
+
+            protected string      Save(Setting setting) { return Program.Save(setting); }
         }
 
 

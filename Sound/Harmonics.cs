@@ -15,29 +15,30 @@ namespace IngameScript
             public Preset CurPreset;
             public int    CurTone;
 
-            public Harmonics() : base("Harmonics", "Hrm")
+
+            public Harmonics() : base("Harmonics", "Hrm", null)
             {
                 for (int i = 0; i < Tones.Length; i++)
-                {
-                    Tones[i] = new Parameter("Harmonic " + (i+1), S(i+1), 0, 1, 0.1f, 0.9f, 0.01f, 0.1f, i == 0 ? 1 : 0);
-                    Tones[i].Parent = this;
-                }
+                    Tones[i] = new Parameter("Harmonic " + (i+1), S(i+1), 0, 1, 0.1f, 0.9f, 0.01f, 0.1f, i == 0 ? 1 : 0, this);
 
                 CurPreset = Preset.Sine;
                 CurTone   = 0;
             }
 
 
-            public Harmonics(Harmonics hrm) : base(hrm.Name, hrm.Tag)
+            public Harmonics(Harmonics hrm) : base(hrm.Name, hrm.Tag, null, hrm)
             {
                 for (int i = 0; i < hrm.Tones.Length; i++)
-                {
-                    Tones[i] = new Parameter(hrm.Tones[i]);
-                    Tones[i].Parent = this;
-                }
+                    Tones[i] = new Parameter(hrm.Tones[i], this);
 
                 CurPreset = hrm.CurPreset;
                 CurTone   = hrm.CurTone;
+            }
+
+
+            public Harmonics Copy()
+            {
+                return new Harmonics(this);
             }
 
 
@@ -143,7 +144,7 @@ namespace IngameScript
                         iSrc,
                         note,
                         triggerValues,
-                        false,
+                        F,
                         null,
                         0,
                         Tones[i],
@@ -202,6 +203,20 @@ namespace IngameScript
 
                 for (var i = 0; i < values.Length; i++)
                     Tones[i].SetValue(values[i], null, -1);
+            }
+
+
+            public override string Save()
+            {
+                var hrm = "";
+
+                for (int i = 0; i < Tones.Length; i++)
+                    hrm += W(Tones[i].Save());
+
+                hrm += W(S((int)CurPreset));
+                hrm +=   S(CurTone);
+                
+                return hrm;
             }
         }
     }

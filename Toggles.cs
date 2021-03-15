@@ -23,8 +23,8 @@ namespace IngameScript
     {
         void MovePatternOff()
         {
-            g_movePat = false;
-            UpdateLight(lblMovePat, false);
+            g_movePat = F;
+            UpdateLight(lblMovePat, F);
         }
 
 
@@ -68,8 +68,8 @@ namespace IngameScript
 
             if (g_follow)
             {
-                g_autoCue = false;
-                UpdateLight(lblAutoCue, false);
+                g_autoCue = F;
+                UpdateLight(lblAutoCue, F);
             }
         }
 
@@ -83,8 +83,8 @@ namespace IngameScript
             {
                 Cue();
 
-                g_follow = false;
-                UpdateLight(lblFollow, false);
+                g_follow = F;
+                UpdateLight(lblFollow, F);
             }
         }
     }

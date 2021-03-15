@@ -19,30 +19,29 @@ namespace IngameScript
             public float     CurValue = 0;
 
 
-            public LFO() : base("LFO", "LFO") 
+            public LFO(Setting parent) : base("LFO", "LFO", parent) 
             {
                 Type      = LfoType.Sine;
 
-                Amplitude = new Parameter("Amplitude", "Amp",     0,           1,   0,     1, 0.01f, 0.1f, 0   );
-                Frequency = new Parameter("Frequency", "Freq",    0.000001f,  30,   0.01f, 4, 0.01f, 0.1f, 0.5f);
-                Offset    = new Parameter("Offset",    "Off",  -100,         100, -10,    10, 0.01f, 0.1f, 0);
-
-                Amplitude.Parent = 
-                Frequency.Parent = 
-                Offset   .Parent = this;
+                Amplitude = new Parameter("Amplitude", "Amp",     0,           1,   0,     1, 0.01f, 0.1f, 0,    this);
+                Frequency = new Parameter("Frequency", "Freq",    0.000001f,  30,   0.01f, 4, 0.01f, 0.1f, 0.5f, this);
+                Offset    = new Parameter("Offset",    "Off",  -100,         100, -10,    10, 0.01f, 0.1f, 0,    this);
             }
 
 
-            public LFO(LFO lfo) : base(lfo.Name, lfo.Tag, lfo.Prototype)
+            public LFO(LFO lfo, Setting parent) : base(lfo.Name, lfo.Tag, parent, lfo.Prototype)
             {
                 Type      = lfo.Type;
-                Amplitude = new Parameter(lfo.Amplitude);
-                Frequency = new Parameter(lfo.Frequency);
-                Offset    = new Parameter(lfo.Offset);
 
-                Amplitude.Parent = 
-                Frequency.Parent = 
-                Offset   .Parent = this;
+                Amplitude = new Parameter(lfo.Amplitude, this);
+                Frequency = new Parameter(lfo.Frequency, this);
+                Offset    = new Parameter(lfo.Offset,    this);
+            }
+
+
+            public LFO Copy(Setting parent)
+            {
+                return new LFO(this, parent);
             }
 
 
@@ -122,6 +121,16 @@ namespace IngameScript
 
                 if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(song, Amplitude, g_remote.RotationIndicator.X/ControlSensitivity);
                 if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(song, Frequency, g_remote.RotationIndicator.Y/ControlSensitivity);
+            }
+
+
+            public override string Save()
+            {
+                return
+                      W(S((int)Type))
+                    + W(Amplitude.Save())
+                    + W(Frequency.Save())
+                    +   Offset   .Save();
             }
         }
     }

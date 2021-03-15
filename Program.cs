@@ -11,7 +11,7 @@ namespace IngameScript
         // machine side instruments
         // save (song saves modified copies of instruments)
 
-        // minify true->T and false->F, TextAlignment.CENTER, etc.
+        // minify T->T and F->F, TextAlignment.CENTER, etc.
         // use as much Linq instead of loops as possible
         // refactor .GetValue(.......) into passing a single time/note object
 
@@ -121,8 +121,8 @@ namespace IngameScript
 
         static List<TriggerValue> _triggerDummy = new List<TriggerValue>();
         
-        static bool             g_started = false;
-        static bool             g_init    = false;
+        static bool             g_started = F;
+        static bool             g_init    = F;
 
         static int              g_curRuntimeTick = 0;
         static float[]          g_runtimeMs      = new float[6];
@@ -211,7 +211,7 @@ namespace IngameScript
             //copyA.Value =
             //copyD.Value =
             //copyS.Value =
-            //copyR.Value = float.NaN;
+            //copyR.Value = fN;
 
             //copyTr  =
             //copyOff = 0;
@@ -232,7 +232,7 @@ namespace IngameScript
             //SetTranspose(g_song, g_song.CurChan, 0);
 
 
-            g_init = true;
+            g_init = T;
         }
 
 
@@ -313,7 +313,7 @@ namespace IngameScript
                     UpdateSongName();
                 }
                 else
-                    g_started = true;
+                    g_started = T;
 
 
                 if (_nextToLoad > 10)
@@ -444,8 +444,8 @@ namespace IngameScript
                 case "up all":     SetVolumeAll( 1);      break;
                 case "down all":   SetVolumeAll(-1);      break;
                                                           
-                case "solo all":   EnableChannels(true);  break;
-                case "mute all":   EnableChannels(false); break;
+                case "solo all":   EnableChannels(T);  break;
+                case "mute all":   EnableChannels(F); break;
                 case "m shift":    MixerShift();          break;
                                                           
                 case "edit":       Edit();                break;

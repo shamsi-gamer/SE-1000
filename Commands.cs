@@ -46,9 +46,9 @@ namespace IngameScript
                 //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurSrc);
                 UpdateSrcOff();
 
-                g_sampleValid = false;
+                //g_sampleValid = F;
 
-                MarkLight(lblNew, false);
+                MarkLight(lblNew, F);
             }
             else if (SelChan > -1)
             {
@@ -69,9 +69,9 @@ namespace IngameScript
                 UpdateInstOff(CurChan);
 
                 UpdateInstName();
-                inputValid = false;
+                inputValid = F;
 
-                g_sampleValid = false;
+                //g_sampleValid = F;
 
                 MarkLight(lblNew);
             }
@@ -102,9 +102,9 @@ namespace IngameScript
                 //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurSrc);
                 UpdateSrcOff();
 
-                g_sampleValid = false; 
+                //g_sampleValid = F; 
                 
-                MarkLight(lblDuplicate, false);
+                MarkLight(lblDuplicate, F);
             }
             else if (SelChan > -1)
             {
@@ -125,7 +125,7 @@ namespace IngameScript
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_inst.Count, maxDspSrc, 0, 1);
                 UpdateInstOff(CurChan);
 
-                g_sampleValid = false; 
+                //g_sampleValid = F; 
                 
                 MarkLight(lblDuplicate);
             }
@@ -160,9 +160,9 @@ namespace IngameScript
                 //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurSrc);
                 UpdateSrcOff();
 
-                g_sampleValid = false; 
+                //g_sampleValid = F; 
                 
-                MarkLight(lblDelete, false);
+                MarkLight(lblDelete, F);
             }
             else if (SelChan > -1)
             {
@@ -195,7 +195,7 @@ namespace IngameScript
                 UpdateOctaveLight();
                 UpdateInstName();
 
-                g_sampleValid = false; 
+                //g_sampleValid = F; 
                 
                 MarkLight(lblDelete);
             }
@@ -245,17 +245,17 @@ namespace IngameScript
 
 
                 UpdateInstName();
-                inputValid = false;
+                inputValid = F;
 
-                g_sampleValid = false;
+                //g_sampleValid = F;
 
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_inst.Count, maxDspInst, 0, 1);
                 UpdateInstOff(CurChan);
                 
                 g_srcOff = 0;
 
-                //UpdateLight(lblOn,       false);
-                //UpdateLight(lblLfoFixed, false, bl);
+                //UpdateLight(lblOn,       F);
+                //UpdateLight(lblLfoFixed, F, bl);
             }
             else // src
             {
@@ -274,13 +274,13 @@ namespace IngameScript
 
                 CurSrc = next;
 
-                dspMain.Surface.WriteText("", false);
+                dspMain.Surface.WriteText("", F);
 
                 //UpdateDspOffset(ref srcOff, g_song.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
                 //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurSrc);
                 UpdateSrcOff();
 
-                g_sampleValid = false; 
+                //g_sampleValid = F; 
                 
                 //UpdateLight(lblOn,       CurrentSource.On);
                 //UpdateLight(lblLfoFixed, CurrentSource.Lfo.Fixed, bl);
@@ -295,19 +295,19 @@ namespace IngameScript
 
         void BackOut()
         {
-            g_move = false;
+            g_move = F;
 
-            g_paramKeys = false;
-            g_paramAuto = false;
+            g_paramKeys = F;
+            g_paramAuto = F;
 
             if (curSet > -1)
             {
-                bool ucl = false;
+                bool ucl = F;
 
                 if (IsCurParam())
                 { 
-                    g_settings[curSet]._IsCurrent = false;
-                    if (IsCurParam("Tune")) ucl = true;
+                    g_settings[curSet]._IsCurrent = F;
+                    if (IsCurParam("Tune")) ucl = T;
                 }
 
                 curSet = -1;
@@ -329,13 +329,13 @@ namespace IngameScript
                 CurSrc = -1;
                 g_srcOff =  0;
 
-                g_shift = false;
+                g_shift = F;
 
                 UpdateNewLights();
                 UpdateAdjustLights(g_song);
 
-                UpdateInstName(true);
-                inputValid = false;
+                UpdateInstName(T);
+                inputValid = F;
 
                 MarkLight(lblBackOut, CurSrc < 0);
             }
@@ -344,15 +344,15 @@ namespace IngameScript
             {
                 SelChan = -1;
 
-                g_shift = false;
+                g_shift = F;
 
-                g_move = false;
+                g_move = F;
                 //UpdateLight(lblMove, g_move ^ (g_song.CurSrc > -1), g_song.SelChan > -1 && !g_move);
 
                 UpdateNewLights();
                 UpdateAdjustLights(g_song);
 
-                UpdateInstName(false);
+                UpdateInstName(F);
                 MarkLight(lblBackOut, CurSrc < 0);
             }
         }
@@ -360,37 +360,37 @@ namespace IngameScript
 
         void Back()
         {
-            g_move = false;
+            g_move = F;
 
             if (curSet > -1)
             {
                 if (g_paramKeys)
                 {
-                    g_paramKeys    = false;
-                    g_song.EditPos = float.NaN;
-                    UpdateEditLight(lblEdit, false);
+                    g_paramKeys    = F;
+                    g_song.EditPos = fN;
+                    UpdateEditLight(lblEdit, F);
                 }
                 else if (g_paramAuto)
                 {
-                    g_paramAuto    = false;
-                    g_song.EditPos = float.NaN;
-                    UpdateEditLight(lblEdit, false);
+                    g_paramAuto    = F;
+                    g_song.EditPos = fN;
+                    UpdateEditLight(lblEdit, F);
                 }
                 else
                 {
-                    bool ucl = false;
+                    bool ucl = F;
 
                     if (IsCurSetting(typeof(Arpeggio)))
                     {
                         //Stop();
 
                         CurArpeggio.Song.EditPos = -Math.Abs(CurArpeggio.Song.EditPos); // turn off but keep value
-                        UpdateEditLight(lblEdit, false);
+                        UpdateEditLight(lblEdit, F);
                     }
                     else if (IsCurParam())
                     { 
-                        g_settings[curSet]._IsCurrent = false;
-                        if (IsCurParam("Tune")) ucl = true;
+                        g_settings[curSet]._IsCurrent = F;
+                        if (IsCurParam("Tune")) ucl = T;
                     }
 
                     curSet--;
@@ -412,41 +412,41 @@ namespace IngameScript
                 CurSrc = -1;
                 g_srcOff =  0;
 
-                g_shift = false;
+                g_shift = F;
 
                 UpdateNewLights();
                 UpdateAdjustLights(g_song);
 
-                UpdateInstName(true);
-                inputValid = false;
+                UpdateInstName(T);
+                inputValid = F;
 
                 MarkLight(lblBack, CurSrc < 0);
-                g_sampleValid = false;
+                //g_sampleValid = F;
             }
             else if (SelChan > -1)
             {
                 SelChan = -1;
 
-                g_shift = false;
-                g_move  = false;
+                g_shift = F;
+                g_move  = F;
                 //UpdateLight(lblMove, g_move ^ (g_song.CurSrc > -1), g_song.SelChan > -1 && !g_move);
 
-                g_song.EditPos = float.NaN;
-                UpdateEditLight(lblEdit, false);
+                g_song.EditPos = fN;
+                UpdateEditLight(lblEdit, F);
 
                 UpdateNewLights();
                 UpdateAdjustLights(g_song);
 
-                UpdateInstName(false);
+                UpdateInstName(F);
 
-                g_sampleValid = false;
+                //g_sampleValid = F;
 
-                g_paramKeys = false;
-                g_paramAuto = false;
+                g_paramKeys = F;
+                g_paramAuto = F;
 
                 MarkLight(lblBack, CurSrc < 0);
                 //foreach (var btn in funcButtons)
-                //    ((IMyFunctionalBlock)btn).Enabled = false;
+                //    ((IMyFunctionalBlock)btn).Enabled = F;
             }
         }
 
@@ -456,12 +456,12 @@ namespace IngameScript
             if (curSet > -1)
                 return;
 
-            g_move = false;
+            g_move = F;
 
             if (SelChan < 0)
             {
-                g_song.EditPos = float.NaN;
-                UpdateEditLight(lblEdit, false);
+                g_song.EditPos = fN;
+                UpdateEditLight(lblEdit, F);
 
                 SelChan = CurChan;
 
@@ -471,24 +471,24 @@ namespace IngameScript
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_inst.Count, maxDspInst, 0, 1);
                 UpdateInstOff(SelChan);
 
-                UpdateInstName(true);
-                inputValid = false;
+                UpdateInstName(T);
+                inputValid = F;
                 
-                g_sampleValid = false;
+                //g_sampleValid = F;
                 MarkLight(lblEnter, CurSrc < 0);
             }
             else if (CurSrc < 0)
             {
                 CurSrc = 0;
 
-                g_shift = false;
+                g_shift = F;
 
                 UpdateNewLights();
                 UpdateAdjustLights(g_song);
 
-                UpdateInstName(false);
+                UpdateInstName(F);
 
-                g_sampleValid = false;
+                //g_sampleValid = F;
                 MarkLight(lblEnter, CurSrc < 0);
             }
         }
@@ -820,7 +820,7 @@ namespace IngameScript
                 {
                     AdjustParam(g_song, (Parameter)setting, delta);
                     MarkLight(delta >= 0 ? lblUp : lblDown, !g_shift);
-                    g_sampleValid = false;
+                    // = F;
                 }
             }  
             else
@@ -837,7 +837,7 @@ namespace IngameScript
             {
                 AdjustParam(g_song, (Parameter)setting, delta);
                 MarkLight(delta >= 0 ? lblUp : lblDown, !g_shift);
-                g_sampleValid = false;
+                //g_sampleValid = F;
             }
         }
 
@@ -906,7 +906,7 @@ namespace IngameScript
         //        }
         //    }
 
-        //    return float.NaN;
+        //    return fN;
         //}
 
 

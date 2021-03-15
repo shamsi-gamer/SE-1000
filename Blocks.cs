@@ -59,10 +59,10 @@ namespace IngameScript
             {
                 g_song.Blocks.Add(new Block(CurPat));
 
-                g_in     = true;
-                g_follow = false;
+                g_in     = T;
+                g_follow = F;
 
-                UpdateLight(lblFollow, false);
+                UpdateLight(lblFollow, F);
             }
             else
             {
@@ -70,10 +70,10 @@ namespace IngameScript
 
                 if (g_in)
                 {
-                    g_out    = false;
-                    g_follow = false;
+                    g_out    = F;
+                    g_follow = F;
 
-                    UpdateLight(lblFollow, false);
+                    UpdateLight(lblFollow, F);
                 }
             }
 
@@ -89,10 +89,10 @@ namespace IngameScript
             {
                 g_song.Blocks.Add(new Block(CurPat));
 
-                g_out    = true;
-                g_follow = false;
+                g_out    = T;
+                g_follow = F;
 
-                UpdateLight(lblFollow, false);
+                UpdateLight(lblFollow, F);
             }
             else
             {
@@ -100,10 +100,10 @@ namespace IngameScript
 
                 if (g_out)
                 {
-                    g_in     = false;
-                    g_follow = false;
+                    g_in     = F;
+                    g_follow = F;
 
-                    UpdateLight(lblFollow, false);
+                    UpdateLight(lblFollow, F);
                 }
 
                 //g_blocks[b].Next = currentPattern + 1;
@@ -129,8 +129,8 @@ namespace IngameScript
 
         void DisableBlock()
         {
-            g_in  = false;
-            g_out = false;
+            g_in  = F;
+            g_out = F;
         }
     }
 }

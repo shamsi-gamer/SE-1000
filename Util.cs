@@ -126,7 +126,7 @@ namespace IngameScript
 
         static bool IsParam(Setting setting) 
         {
-            if (setting == null) return false;
+            if (setting == null) return F;
 
             return setting.GetType() == typeof(Tune)
                 || setting.GetType() == typeof(Parameter); 
@@ -162,12 +162,12 @@ namespace IngameScript
             while (setting != null)
             {
                 if (setting.Tag == tag)
-                    return true;
+                    return T;
 
                 setting = setting.Parent;
             }
 
-            return false;
+            return F;
         }
 
 
@@ -207,19 +207,19 @@ namespace IngameScript
 
         bool IsCurOrAnyParent(Type type)
         {
-            if (curSet < 0) return false;
+            if (curSet < 0) return F;
 
             var setting = CurSetting;
 
             while (setting != null)
             {
                 if (setting.GetType() == typeof(Arpeggio))
-                    return true;
+                    return T;
 
                 setting = setting.Parent;
             }
 
-            return false;
+            return F;
         }
 
 
@@ -366,7 +366,7 @@ namespace IngameScript
                 ||    g_chordEdit 
                    && g_chord > -1
                 ||    IsCurParam("Tune")
-                   && (tune?.UseChord ?? false)
+                   && (tune?.UseChord ?? F)
                    && !(g_paramKeys || g_paramAuto)
                 || IsCurOrParent(typeof(Arpeggio));
         }}
@@ -442,11 +442,11 @@ namespace IngameScript
         }
 
 
-        void UpdateInstName(bool add = true)
+        void UpdateInstName(bool add = T)
         {
             if (   CurPat  > -1
                 && SelChan > -1)
-                dspMain.Surface.WriteText(add ? SelectedChannel.Instrument.Name : "", false);
+                dspMain.Surface.WriteText(add ? SelectedChannel.Instrument.Name : "", F);
         }
 
 
@@ -459,7 +459,7 @@ namespace IngameScript
         void StopEdit(Song song)
         {
             if (song.EditNotes.Count > 0)
-                g_hold = false;
+                g_hold = F;
 
             song.EditNotes.Clear();
 
@@ -545,7 +545,7 @@ namespace IngameScript
 
         void AutoLock()
         {
-            var auto = false;
+            var auto = F;
 
             foreach (var l in g_locks) auto |= l.AutoLock;
             foreach (var l in g_locks) l.AutoLock = !auto;
@@ -567,7 +567,7 @@ namespace IngameScript
                 return;
 
 
-            NoiseEmitters(true);
+            NoiseEmitters(T);
 
 
             if (p.CurrentPosition <= (p.MinLimit + p.MaxLimit) / 2) open .Trigger();

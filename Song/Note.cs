@@ -77,7 +77,7 @@ namespace IngameScript
                 StepLength  = len;
                 Volume      = vol;
 
-                ArpPlayTime = float.NaN;
+                ArpPlayTime = fN;
 
                 Sounds      = new List<Sound>();
                             
@@ -91,7 +91,7 @@ namespace IngameScript
                 StepLength = 0;
                 Volume     = 0;
 
-                ArpPlayTime   = float.NaN;
+                ArpPlayTime   = fN;
 
                 Sounds.Clear();
             }

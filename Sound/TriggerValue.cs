@@ -45,7 +45,7 @@ namespace IngameScript
             public override bool Equals(object obj)
             {
                 if (obj.GetType() != typeof(TriggerValue))
-                    return false;
+                    return F;
 
                 var trig = (TriggerValue)obj;
 

@@ -100,8 +100,8 @@ namespace IngameScript
             Array.Sort(g_runtimeMs);
             var med = (g_runtimeMs[2] + g_runtimeMs[3])/2;
             
-            var strMed = printValue(med,            -3, true, 0);
-            var strMax = printValue(g_maxRuntimeMs, -3, true, 0);
+            var strMed = printValue(med,            -3, T, 0);
+            var strMax = printValue(g_maxRuntimeMs, -3, T, 0);
 
             DrawString(sprites, "med " + strMed + ", max " + strMax, cx + 55, y + 107, 0.5f, color6);
 
@@ -114,7 +114,7 @@ namespace IngameScript
             FillRect  (sprites,        cx,      y + 142, 353 * Math.Min(g_sm.UsedRatio, 1), 26, color6);
 
 
-            if (true)
+            if (T)
             {
                 var min = Math.Max(0, g_log.Count - 15);
                 var sb  = new StringBuilder();

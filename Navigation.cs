@@ -50,7 +50,7 @@ namespace IngameScript
 
 
             PlayTime = -1;
-            //CurSong.StartTime = float.NaN; // don't clear start time here
+            //CurSong.StartTime = fN; // don't clear start time here
 
             lastNotes.Clear();
 
@@ -70,7 +70,7 @@ namespace IngameScript
             if (g_setMem)
             {
                 g_mem[m] = g_mem[m] < 0 || g_mem[m] != CurPat ? CurPat : -1;
-                g_setMem = false;
+                g_setMem = F;
 
                 UpdateMemoryLights();
             }

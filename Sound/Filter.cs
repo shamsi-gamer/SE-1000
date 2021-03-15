@@ -14,23 +14,23 @@ namespace IngameScript
                              Resonance;
 
 
-            public Filter() : base("Filter", "Flt")
+            public Filter() : base("Filter", "Flt", null)
             {
-                Cutoff           = new Parameter("Cutoff", "Cut", -1, 1, -1, 1, 0.01f, 0.1f, 0);
-                Cutoff.Parent    = this;
-
-                Resonance        = new Parameter("Resonance", "Res", 0.01f, 1, 0.01f, 1, 0.01f, 0.1f, 0);
-                Resonance.Parent = this;
+                Cutoff    = new Parameter("Cutoff",    "Cut", -1,     1, -1,     1, 0.01f, 0.1f, 0, this);
+                Resonance = new Parameter("Resonance", "Res",  0.01f, 1,  0.01f, 1, 0.01f, 0.1f, 0, this);
             }
 
 
-            public Filter(Filter flt) : base(flt.Name, flt.Tag)
+            public Filter(Filter flt) : base(flt.Name, flt.Tag, null, flt)
             {
-                Cutoff = new Parameter(flt.Cutoff);
-                Cutoff.Parent = this;
+                Cutoff    = new Parameter(flt.Cutoff,    this);
+                Resonance = new Parameter(flt.Resonance, this);
+            }
 
-                Resonance = new Parameter(flt.Resonance);
-                Resonance.Parent = this;
+
+            public Filter Copy()
+            {
+                return new Filter(this);
             }
 
 
@@ -55,6 +55,14 @@ namespace IngameScript
             {
                 if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(song, Cutoff,     g_remote.RotationIndicator.Y/ControlSensitivity);
                 if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(song, Resonance, -g_remote.RotationIndicator.X/ControlSensitivity);
+            }
+
+
+            public override string Save()
+            {
+                return
+                      W(Cutoff.Save())
+                    +   Resonance.Save();
             }
         }
 
@@ -112,7 +120,7 @@ namespace IngameScript
         static void DrawFilter(List<MySprite> sprites, float x, float y, float w, float h, Color color, float width, float cut, float res)
         {
             var step = 1/64f;
-            var prev = float.NaN;
+            var prev = fN;
 
             for (var f = 0f; f <= 1; f += step)
             {

@@ -40,7 +40,7 @@ namespace IngameScript
                     else            SetSrcFunc(SelectedSource,      func);
                 }
 
-                g_sampleValid = false;
+                //g_sampleValid = F;
             }
             else
             {
@@ -67,12 +67,12 @@ namespace IngameScript
         void AddNextSetting(Setting setting)
         {
             if (curSet > -1)
-                g_settings[curSet]._IsCurrent = false;
+                g_settings[curSet]._IsCurrent = F;
 
             g_settings.Add(setting);
 
             if (IsParam(setting))                  
-                setting._IsCurrent = true;
+                setting._IsCurrent = T;
 
             curSet++;
         }
@@ -124,31 +124,25 @@ namespace IngameScript
                     break;
 
                 if (param.Envelope == null)
-                { 
-                    param.Envelope = new Envelope();
-                    param.Envelope.Parent = param;
-                }
+                    param.Envelope = new Envelope(param);
 
                 AddNextSetting(param.Envelope);
                 break;
 
             case 2:
                 if (param.Lfo == null)
-                { 
-                    param.Lfo = new LFO();
-                    param.Lfo.Parent = param;
-                }
+                    param.Lfo = new LFO(param);
 
                 AddNextSetting(param.Lfo);
                 break;
 
             case 3:
-                g_paramKeys = true;
+                g_paramKeys = T;
                 UpdateChordLights();
                 break;
 
             case 4:
-                g_paramAuto = true;
+                g_paramAuto = T;
                 UpdateChordLights();
                 break;
 
@@ -274,14 +268,14 @@ namespace IngameScript
             { 
             case 1:
                 arp.Song.EditPos = -1;
-                UpdateEditLight(lblEdit, false);
+                UpdateEditLight(lblEdit, F);
 
                 AddNextSetting(arp.Length);
                 break;
 
             case 2:
                 arp.Song.EditPos = -1;
-                UpdateEditLight(lblEdit, false);
+                UpdateEditLight(lblEdit, F);
 
                 AddNextSetting(arp.Scale);
                 break;
@@ -340,7 +334,7 @@ namespace IngameScript
             {
             case 0:
                 if (src.Offset == null)
-                    src.Offset = new Parameter("Offset", "Off", -1, 1, 0, 0.3f, 0.01f, 0.1f, 0);
+                    src.Offset = new Parameter("Offset", "Off", -1, 1, 0, 0.3f, 0.01f, 0.1f, 0, null);
 
                 AddNextSetting(src.Offset);
                 break;

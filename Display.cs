@@ -11,8 +11,6 @@ namespace IngameScript
     {
         public class Display
         {
-            bool g_useSurfaceSize;
-
             public IMyTextSurface Surface;
             public RectangleF     Viewport;
 
@@ -22,10 +20,9 @@ namespace IngameScript
                                   ContentHeight;
 
 
-            public Display(IMyTextSurface surface, bool useSurfaceSize = true)
+            public Display(IMyTextSurface surface)
             {
-                Surface          = surface;
-                g_useSurfaceSize = useSurfaceSize;
+                Surface = surface;
 
                 Init();
             }

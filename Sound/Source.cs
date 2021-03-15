@@ -31,13 +31,13 @@ namespace IngameScript
             public Source(Instrument inst)
             {
                 Instrument = inst;
-                On         = true;
+                On         = T;
                            
                 Oscillator = OscSine;
 
                 Offset     = null;
 
-                Volume     = new Parameter("Volume", "Vol", 0, 2, 0.01f, 1, 0.01f, 0.1f, 1);
+                Volume     = new Parameter("Volume", "Vol", 0, 2, 0.01f, 1, 0.01f, 0.1f, 1, null);
                 Tune       = null;
 
                 Harmonics  = null;
@@ -54,15 +54,15 @@ namespace IngameScript
 
                 Oscillator = src.Oscillator;
                 
-                Offset     = src.Offset    != null ? new Parameter(src.Offset)    : null;
+                Offset     = src.Offset   ?.Copy(null);
                                                                                   
-                Volume     = new Parameter(src.Volume);                               
-                Tune       = src.Tune      != null ? new Tune     (src.Tune)      : null;
+                Volume     = new Parameter(src.Volume, null);                               
+                Tune       = src.Tune     ?.Copy();
                            
-                Harmonics  = src.Harmonics != null ? new Harmonics(src.Harmonics) : null;
-                Filter     = src.Filter    != null ? new Filter   (src.Filter   ) : null;
+                Harmonics  = src.Harmonics?.Copy();
+                Filter     = src.Filter   ?.Copy();
                            
-                Delay      = src.Delay     != null ? new Delay    (src.Delay)     : null;
+                Delay      = src.Delay    ?.Copy();
             }
 
 
@@ -85,7 +85,7 @@ namespace IngameScript
                 else if (Oscillator == OscCrunch   ) return 1;
                 else if (Oscillator == OscSample   ) return 1;
 
-                return float.NaN;
+                return fN;
             } }
 
 
@@ -174,8 +174,8 @@ namespace IngameScript
                 }
                 else
                 {
-                    if (   noteNum <  12*NoteScale
-                        || noteNum > 150*NoteScale)
+                    if (   noteNum <  12 * NoteScale
+                        || noteNum > 150 * NoteScale)
                         return;
 
                     vol *= OscMult;
@@ -205,7 +205,7 @@ namespace IngameScript
                         iSrc,
                         note,
                         triggerValues,
-                        false,
+                        F,
                         null,
                         0));
                 }
@@ -238,7 +238,7 @@ namespace IngameScript
                 if (   g_rnd.NextDouble() > 0.7f
                     && !used.Contains(Oscillator))
                 {
-                    Offset = new Parameter("Offset", "Off", -1, 1, 0, 0.3f, 0.01f, 0.1f, 0);
+                    Offset = new Parameter("Offset", "Off", -1, 1, 0, 0.3f, 0.01f, 0.1f, 0, null);
                     Offset.Randomize();
                 }
                 else
@@ -295,6 +295,23 @@ namespace IngameScript
 
                 used.Add(Oscillator);
             }
+
+
+            public string Save()
+            {
+                return
+                      W(B(On))
+                    + W(S((int)Oscillator.Type))
+                    + W(Save(Offset))
+                    + W(Volume.Save())
+                    + W(Save(Tune))
+                    + W(Save(Harmonics))
+                    + W(Save(Filter))
+                    + W(Save(Delay));
+            }
+
+
+            string Save(Setting setting) { return Program.Save(setting); }
         }
     }
 }

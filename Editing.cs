@@ -46,7 +46,7 @@ namespace IngameScript
                     lastNotes.Clear();
                 }
 
-                MoveEdit(song, 1, true);
+                MoveEdit(song, 1, T);
 
                 MarkLight(lblStep);
             }
@@ -224,13 +224,13 @@ namespace IngameScript
             if (g_hold)
                 StopCurrentNotes(CurSong, CurChan);
 
-            g_hold = false;
-            UpdateLight(lblHold, false);
+            g_hold = F;
+            UpdateLight(lblHold, F);
 
             if (!OK(CurSong.EditPos))
             {
                 CurSong.Inter = null;
-                UpdateLight(lblCmd1, false);
+                UpdateLight(lblCmd1, F);
             }
 
             UpdateEditLight(lblEdit, OK(CurSong.EditPos));
@@ -274,7 +274,7 @@ namespace IngameScript
             if (OK(song.EditPos))
             { 
                 song.Inter = null;
-                UpdateLight(lblCmd1, false);
+                UpdateLight(lblCmd1, F);
 
                 if (song.EditNotes.Count > 0) song.EditNotes.Clear();
                 else                          song.EditNotes.AddRange(GetEditNotes(song));
@@ -322,7 +322,7 @@ namespace IngameScript
         }
 
 
-        List<Note> GetEditNotes(Song song, bool onlyEdit = false)
+        List<Note> GetEditNotes(Song song, bool onlyEdit = F)
         {
             var chan = CurrentChannel;
 
@@ -431,7 +431,7 @@ namespace IngameScript
             MarkLight(lblEditLength);
             UpdateEditLights();
 
-            g_sampleValid = false;
+            //g_sampleValid = F;
         }
 
 
@@ -454,7 +454,7 @@ namespace IngameScript
         }
 
 
-        void MoveEdit(Song song, int move, bool create = false)
+        void MoveEdit(Song song, int move, bool create = F)
         {
             var chan = SelectedChannel;
 
