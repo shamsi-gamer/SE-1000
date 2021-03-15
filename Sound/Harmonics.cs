@@ -16,17 +16,17 @@ namespace IngameScript
             public int    CurTone;
 
 
-            public Harmonics() : base("Harmonics", "Hrm", null)
+            public Harmonics() : base("Hrm", null)
             {
                 for (int i = 0; i < Tones.Length; i++)
-                    Tones[i] = new Parameter("Harmonic " + (i+1), S(i+1), 0, 1, 0.1f, 0.9f, 0.01f, 0.1f, i == 0 ? 1 : 0, this);
+                    Tones[i] = NewHarmonicParam(i, this);
 
                 CurPreset = Preset.Sine;
                 CurTone   = 0;
             }
 
 
-            public Harmonics(Harmonics hrm) : base(hrm.Name, hrm.Tag, null, hrm)
+            public Harmonics(Harmonics hrm) : base(hrm.Tag, null, hrm)
             {
                 for (int i = 0; i < hrm.Tones.Length; i++)
                     Tones[i] = new Parameter(hrm.Tones[i], this);
@@ -213,9 +213,25 @@ namespace IngameScript
                 for (int i = 0; i < Tones.Length; i++)
                     hrm += W(Tones[i].Save());
 
-                hrm += W(S((int)CurPreset));
-                hrm +=   S(CurTone);
+                hrm += WS((int)CurPreset);
+                hrm +=  S(CurTone);
                 
+                return hrm;
+            }
+
+
+            public static Harmonics Load(string[] data, ref int i)
+            {
+                var tag = data[i++];
+
+                var hrm = new Harmonics();
+
+                for (int j = 0; j < hrm.Tones.Length; j++)
+                    hrm.Tones[j] = Parameter.Load(data, ref i, hrm);
+                
+                hrm.CurPreset = (Preset)int.Parse(data[i++]);
+                hrm.CurTone   = int.Parse(data[i++]);
+
                 return hrm;
             }
         }

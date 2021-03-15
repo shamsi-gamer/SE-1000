@@ -17,7 +17,7 @@ namespace IngameScript
             { 
                 setting = g_settings[curSet];
 
-                DrawString(sprites, setting.Name, x + 15, y + 30, 1f, color5);
+                DrawString(sprites, FullNameFromTag(setting.Tag), x + 15, y + 30, 1f, color5);
 
                 var bx = 40;
                 var by = 55;

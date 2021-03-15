@@ -9,25 +9,23 @@ namespace IngameScript
         {
             public Setting Parent;
 
-            public string  Name,
-                           Tag;
+            public string  Tag;
 
             public Setting Prototype;
 
             public bool   _IsCurrent;
 
 
-            public Setting(string name, string tag, Setting parent, Setting proto = null)
+            public Setting(string tag, Setting parent, Setting proto = null)
             {
                 Parent    = parent;
-                Name      = name;
                 Tag       = tag;
                 Prototype = proto;
                _IsCurrent = F;
             }
 
 
-            public Setting(Setting setting, Setting parent) : this(setting.Name, setting.Tag, parent, setting) { }
+            public Setting(Setting setting, Setting parent) : this(setting.Tag, parent, setting) { }
 
 
             public virtual bool HasDeepParams(Channel chan, int src) { return F; }
@@ -60,7 +58,7 @@ namespace IngameScript
 
             public virtual string Save() { return ""; }
 
-            protected string      Save(Setting setting) { return Program.Save(setting); }
+            protected string      Save(Setting setting) { return Program.SaveSetting(setting); }
         }
 
 

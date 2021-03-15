@@ -334,7 +334,7 @@ namespace IngameScript
             {
             case 0:
                 if (src.Offset == null)
-                    src.Offset = new Parameter("Offset", "Off", -1, 1, 0, 0.3f, 0.01f, 0.1f, 0, null);
+                    src.Offset = NewParamFromTag("Off", null);
 
                 AddNextSetting(src.Offset);
                 break;

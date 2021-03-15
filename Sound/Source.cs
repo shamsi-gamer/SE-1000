@@ -37,7 +37,7 @@ namespace IngameScript
 
                 Offset     = null;
 
-                Volume     = new Parameter("Volume", "Vol", 0, 2, 0.01f, 1, 0.01f, 0.1f, 1, null);
+                Volume     = NewParamFromTag("Vol", null);
                 Tune       = null;
 
                 Harmonics  = null;
@@ -238,7 +238,7 @@ namespace IngameScript
                 if (   g_rnd.NextDouble() > 0.7f
                     && !used.Contains(Oscillator))
                 {
-                    Offset = new Parameter("Offset", "Off", -1, 1, 0, 0.3f, 0.01f, 0.1f, 0, null);
+                    Offset = NewParamFromTag("Off", null);
                     Offset.Randomize();
                 }
                 else
@@ -297,21 +297,54 @@ namespace IngameScript
             }
 
 
+            string Save(Setting setting) { return Program.SaveSetting(setting); }
+
+
             public string Save()
             {
                 return
-                      W(B(On))
-                    + W(S((int)Oscillator.Type))
-                    + W(Save(Offset))
-                    + W(Volume.Save())
-                    + W(Save(Tune))
-                    + W(Save(Harmonics))
-                    + W(Save(Filter))
-                    + W(Save(Delay));
+                      WS((int)Oscillator.Type)
+                    + W (B(On))
+
+                    + W (Volume.Save())
+                    
+                    + W (Save(Offset))
+                    + W (Save(Tune))
+
+                    + W (Save(Harmonics))
+                    + W (Save(Filter))
+
+                    +    Save(Delay);
             }
 
 
-            string Save(Setting setting) { return Program.Save(setting); }
+            public static Source Load(string[] lines, ref int line, Instrument inst)
+            {
+                var data = lines[line++].Split(';');
+                var i    = 0;
+
+                var src = new Source(inst);
+
+                src.Oscillator = OscillatorFromType((OscType)int.Parse(data[i++]));
+                src.On         = data[i++] == "1";
+
+                src.Volume = Parameter.Load(data, ref i, null);
+
+                while (i < data.Length
+                    && data[i] != "_")
+                { 
+                    switch (data[i])
+                    { 
+                        case "Off":  src.Offset    = Parameter.Load(data, ref i, null); break;
+                        case "Tune": src.Tune      = Tune     .Load(data, ref i);       break;
+                        case "Hrm":  src.Harmonics = Harmonics.Load(data, ref i);       break;
+                        case "Flt":  src.Filter    = Filter   .Load(data, ref i);       break;
+                        case "Del":  src.Delay     = Delay    .Load(data, ref i);       break;
+                    }
+                }
+
+                return src;
+            }
         }
     }
 }

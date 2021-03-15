@@ -1,24 +1,4 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
-
-
-namespace IngameScript
+﻿namespace IngameScript
 {
     partial class Program
     {
@@ -30,7 +10,7 @@ namespace IngameScript
                              Scale;
 
 
-            public Arpeggio(Instrument inst) : base("Arpeggio", "Arp", null)
+            public Arpeggio(Instrument inst) : base("Arp", null)
             {
                 Song = new Song("");
                 Song.Arpeggio = this;
@@ -38,12 +18,12 @@ namespace IngameScript
                 
                 SetInstrument(inst);
 
-                Length = new Parameter("Length", "Len", 1,    256, 2,     6, 0.01f, 0.1f, 8, this);
-                Scale  = new Parameter("Scale",  "Scl", 0.01f, 16, 0.25f, 4, 0.01f, 0.1f, 1, this);
+                Length = NewParamFromTag("Len", this);
+                Scale  = NewParamFromTag("Scl", this);
             }
 
 
-            public Arpeggio(Arpeggio arp) : base(arp.Name, arp.Tag, null, arp.Prototype)
+            public Arpeggio(Arpeggio arp) : base(arp.Tag, null, arp.Prototype)
             {
                 Song   = new Song(arp.Song);
 
@@ -102,12 +82,6 @@ namespace IngameScript
             }
 
 
-            //public List<Note> GetNotes(long gTime, long sTime)
-            //{
-
-            //}
-
-
             public override void Randomize()
             {
                 Length.Randomize();
@@ -123,6 +97,19 @@ namespace IngameScript
 
                 arp += W(Length.Save());
                 arp +=   Scale .Save();
+
+                return arp;
+            }
+
+
+            public static Arpeggio Load(string[] data, ref int i, Instrument inst)
+            {
+                var tag = data[i++];
+ 
+                var arp = new Arpeggio(inst);
+
+                arp.Length = Parameter.Load(data, ref i, arp);
+                arp.Scale  = Parameter.Load(data, ref i, arp);
 
                 return arp;
             }

@@ -11,6 +11,7 @@ namespace IngameScript
         {
             Stop();
             ClearSong();
+            g_inst.Clear();
 
             var lines = state.Split('\n');
             var line = 0;
@@ -29,14 +30,35 @@ namespace IngameScript
             if (!LoadChords(lines[line++])) return F;
 
 
+            while (line < lines.Length 
+                && lines[line].Trim() == "") line++; // white space
 
-            g_inst.Clear();
-            g_inst.Add(new Instrument());
-            g_inst[0].Sources.Add(new Source(g_inst[0]));
+
+            // load instruments
+            Instrument inst;
+            while ( line < lines.Length 
+                && (inst = Instrument.Load(lines, ref line)) != null)
+            {
+                g_inst.Add(inst);
+
+                while (line < lines.Length 
+                    && lines[line].Trim() == "") line++; // white space
+            }
+
+
+            // default instrument
+            if (g_inst.Count == 0)
+            { 
+                g_inst.Add(new Instrument());
+                g_inst[0].Sources.Add(new Source(g_inst[0]));
+            }
+
+
+            // temp empty song
             g_song.Patterns.Add(new Pattern(g_song, g_inst[0]));
             g_song.Name = "New Song";
-
-
+            
+            
             SetCurrentPattern(CurPat);
 
             PlayPat =
@@ -48,10 +70,6 @@ namespace IngameScript
                 Cue();
 
             CueNextPattern();
-
-
-            //var insts = LoadInstruments(lines, ref line);
-            //if (insts == null) return F;
 
 
             UpdateLights();
@@ -185,6 +203,41 @@ namespace IngameScript
 
 
             return T;
+        }
+
+
+        string LoadSetting(string[] data, ref int i)
+        {
+            //if (IsDigit(lines[i].Trim()[0])) // harmonic tone
+                return "";
+
+            //switch (lines[i].Trim())
+            //{
+            //    case "Vol":
+
+            //    case "Att":
+            //    case "Dec":
+            //    case "Sus":
+            //    case "Rel":
+
+            //    case "Amp":
+            //    case "Freq":
+            //    case "Off":
+
+            //    case "Cut":
+            //    case "Res":
+
+            //    case "Amt":
+
+            //    case "Cnt":
+            //    case "Time":
+            //    case "Lvl":
+            //    case "Pow":
+
+            //    case "Len":
+            //    case "Scl":
+            //}
+
         }
 
 
@@ -418,7 +471,7 @@ namespace IngameScript
                     note.Channel    = chan;
                     note.iChan      = b[index++];
                     note.Number     = b[index++];
-                    note.PatStep   = BitConverter.ToSingle(b, index); index += 4;
+                    note.PatStep    = BitConverter.ToSingle(b, index); index += 4;
                     note.StepLength = BitConverter.ToSingle(b, index); index += 4;
                     note.Volume     = BitConverter.ToSingle(b, index); index += 4;
 

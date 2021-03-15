@@ -8,15 +8,17 @@ namespace IngameScript
     {
         string SaveMachineState()
         {
-            return
+            var state = 
                   N("SE-909 mk2")
                 + N(SaveSettings(SaveToggles()))
                 + N(SaveMems())
                 + N(SaveChords())
-                + "\n"
-                + N("Instruments")
-                + "\n"
-                +   SaveInstruments();
+                + "\n";
+
+            foreach (var inst in g_inst)
+                state += N(N(inst.Save()));
+
+            return state;
         }
 
 
@@ -69,44 +71,44 @@ namespace IngameScript
         string SaveSettings(uint f)
         {
             return
-                  W(f)              
+                  WS(f)              
 
-                + W(g_ticksPerStep) 
+                + WS(g_ticksPerStep) 
                 
-                + W(CurPat)         
-                + W(CurChan)        
-                + W(SelChan)        
-                + W(CurSrc)    
+                + WS(CurPat)         
+                + WS(CurChan)        
+                + WS(SelChan)        
+                + WS(CurSrc)    
                 
-                + W(PlayTime)       
+                + WS(PlayTime)       
 
-                + W(g_editStep)
-                + W(g_editLength)     
+                + WS(g_editStep)
+                + WS(g_editLength)     
 
-                + W(g_curNote)      
+                + WS(g_curNote)      
 
-                + W(g_chord)        
-                + W(g_chordSpread)
+                + WS(g_chord)        
+                + WS(g_chordSpread)
                 
-                + W(g_songOff)        
-                + W(g_instOff)        
-                + W(g_srcOff)
+                + WS(g_songOff)        
+                + WS(g_instOff)        
+                + WS(g_srcOff)
 
-                + W(g_cue)
-                + W(g_solo)
+                + WS(g_cue)
+                + WS(g_solo)
 
-                + W(g_volume)
+                + WS(g_volume)
 
-                + W(g_iCol, F);
+                + WS(g_iCol, F);
         }
 
 
-        static string Save(Setting setting)
+        static string SaveSetting(Setting setting)
         {
-            return W(
+            return 
                 setting != null 
                 ? setting.Save() 
-                : "_");
+                : "_";
         }
 
 
@@ -137,17 +139,6 @@ namespace IngameScript
             }
 
             return chords;
-        }
-
-
-        string SaveInstruments()
-        {
-            var str = "";
-
-            foreach (var inst in g_inst)
-                str += N(inst.Save());
-
-            return str;
         }
 
 

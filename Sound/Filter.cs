@@ -14,14 +14,14 @@ namespace IngameScript
                              Resonance;
 
 
-            public Filter() : base("Filter", "Flt", null)
+            public Filter() : base("Flt", null)
             {
-                Cutoff    = new Parameter("Cutoff",    "Cut", -1,     1, -1,     1, 0.01f, 0.1f, 0, this);
-                Resonance = new Parameter("Resonance", "Res",  0.01f, 1,  0.01f, 1, 0.01f, 0.1f, 0, this);
+                Cutoff    = NewParamFromTag("Cut", this);
+                Resonance = NewParamFromTag("Res", this);
             }
 
 
-            public Filter(Filter flt) : base(flt.Name, flt.Tag, null, flt)
+            public Filter(Filter flt) : base(flt.Tag, null, flt)
             {
                 Cutoff    = new Parameter(flt.Cutoff,    this);
                 Resonance = new Parameter(flt.Resonance, this);
@@ -61,8 +61,22 @@ namespace IngameScript
             public override string Save()
             {
                 return
-                      W(Cutoff.Save())
+                      W(Tag)
+                    + W(Cutoff   .Save())
                     +   Resonance.Save();
+            }
+
+
+            public static Filter Load(string[] data, ref int i)
+            {
+                var tag = data[i++];
+ 
+                var flt = new Filter();
+
+                flt.Cutoff    = Parameter.Load(data, ref i, flt);
+                flt.Resonance = Parameter.Load(data, ref i, flt);
+
+                return flt;
             }
         }
 

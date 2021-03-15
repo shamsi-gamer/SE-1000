@@ -26,7 +26,7 @@ namespace IngameScript
             {
                 Name     = "New Sound";
                          
-                Volume   = new Parameter("Volume", "Vol", 0, 2, 0.5f, 1, 0.01f, 0.1f, 1, null);
+                Volume   = NewParamFromTag("Vol", null);
 
                 Tune     = null;
                 Filter   = null;
@@ -120,26 +120,64 @@ namespace IngameScript
             }
 
 
+            string Save(Setting setting) { return Program.SaveSetting(setting); }
+
+
             public string Save()
             {
-                var inst = N(
-                      W(Name)
-                    + W(Volume.Save())
-                    + W(Save(Tune))
-                    + W(Save(Filter))
-                    + W(Save(Delay))
-                    +   Save(Arpeggio));
+                var inst = N("Instrument");
+                
+                inst += N(
+                      W (Name)
+                    + WS(Sources.Count)
+                    + W (Volume.Save()
+                    + W (Save(Tune))
+                    + W (Save(Filter))
+                    + W (Save(Delay))
+                    +    Save(Arpeggio)));
 
                 for (int i = 0; i < Sources.Count; i++)
-                    inst += N(N(Sources[i].Save()));
-
-                inst += "\n";
+                    inst += N(Sources[i].Save());
 
                 return inst;
             }
 
 
-            string Save(Setting setting) { return Program.Save(setting); }
+            public static Instrument Load(string[] lines, ref int line)
+            {
+                if (lines[line].Trim() != "Instrument")
+                    return null;
+
+                line++;
+
+                var data = lines[line++].Split(';');
+                var i    = 0;
+
+                var inst = new Instrument();
+
+                inst.Name = data[i++];
+
+                var nSources = int.Parse(data[i++]);
+
+                inst.Volume = Parameter.Load(data, ref i, null);
+
+                while (i < data.Length
+                    && data[i] != "_")
+                { 
+                    switch (data[i])
+                    { 
+                        case "Tune": inst.Tune     = Tune    .Load(data, ref i);       break;
+                        case "Flt":  inst.Filter   = Filter  .Load(data, ref i);       break;
+                        case "Del":  inst.Delay    = Delay   .Load(data, ref i);       break;
+                        case "Arp":  inst.Arpeggio = Arpeggio.Load(data, ref i, inst); break;
+                    }
+                }
+
+                for (int j = 0; j < nSources; j++)
+                    inst.Sources.Add(Source.Load(lines, ref line, inst));
+
+                return inst;
+            }
         }
     }
 }

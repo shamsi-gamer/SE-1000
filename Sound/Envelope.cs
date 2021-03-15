@@ -18,12 +18,12 @@ namespace IngameScript
                              TrigRelease;
 
 
-            public Envelope(Setting parent) : base("Envelope", "Env", parent)
+            public Envelope(Setting parent) : base("Env", parent)
             {
-                Attack      = new Parameter("Attack",  "Att", 0, 10, 0,     1, 0.01f, 0.1f, 0,    this);
-                Decay       = new Parameter("Decay",   "Dec", 0, 10, 0,     1, 0.01f, 0.1f, 0.2f, this);
-                Sustain     = new Parameter("Sustain", "Sus", 0,  1, 0.01f, 1, 0.01f, 0.1f, 0.1f, this);
-                Release     = new Parameter("Release", "Rel", 0, 10, 0,     2, 0.01f, 0.1f, 0.2f, this);
+                Attack      = NewParamFromTag("Att", this);
+                Decay       = NewParamFromTag("Dec", this);
+                Sustain     = NewParamFromTag("Sus", this);
+                Release     = NewParamFromTag("Rel", this);
 
                 TrigAttack  = 
                 TrigDecay   = 
@@ -31,7 +31,7 @@ namespace IngameScript
             }
 
 
-            public Envelope(Envelope env, Setting parent) : base(env.Name, env.Tag, parent, env)
+            public Envelope(Envelope env, Setting parent) : base(env.Tag, parent, env)
             {
                 Attack      = new Parameter(env.Attack,  this);
                 Decay       = new Parameter(env.Decay,   this);
@@ -178,14 +178,35 @@ namespace IngameScript
             public override string Save()
             {
                 return
-                      W(Attack .Save())
-                    + W(Decay  .Save())
-                    + W(Sustain.Save())
-                    + W(Release.Save())
+                      W (Tag)
 
-                    + W(TrigAttack)
-                    + W(TrigDecay)
-                    +   TrigRelease;
+                    + W (Attack .Save())
+                    + W (Decay  .Save())
+                    + W (Sustain.Save())
+                    + W (Release.Save())
+
+                    + WS(TrigAttack)
+                    + WS(TrigDecay)
+                    +  S(TrigRelease);
+            }
+
+
+            public static Envelope Load(string[] data, ref int i, Setting parent)
+            {
+                var tag = data[i++];
+ 
+                var env = new Envelope(parent);
+
+                env.Attack  = Parameter.Load(data, ref i, env);
+                env.Decay   = Parameter.Load(data, ref i, env);
+                env.Sustain = Parameter.Load(data, ref i, env);
+                env.Release = Parameter.Load(data, ref i, env);
+
+                env.TrigAttack  = float.Parse(data[i++]);
+                env.TrigDecay   = float.Parse(data[i++]);
+                env.TrigRelease = float.Parse(data[i++]);
+
+                return env;
             }
         }
     }

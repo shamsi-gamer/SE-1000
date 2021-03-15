@@ -11,7 +11,22 @@ namespace IngameScript
         // machine side instruments
         // save (song saves modified copies of instruments)
 
-        // minify T->T and F->F, TextAlignment.CENTER, etc.
+        // BUG adding random notes (maybe any notes) while clean machine is already playing
+        // play them with a delay
+
+        // mixer channel volumes aren't saved
+        // save machine state after instrument editing is done
+        // add power to envelope decay and release to have a more gentle slope at the end
+        // add Modulate to param (Level, Attack, Release)
+        // plug any param into any param (connect button)
+        // side chain compression (Modulate on all params, with delay and +/-)
+        // keys should affect trigger, auto should affect volume
+        // timing issues with playing
+        // harmony - across selected patterns, copy existing notes and shift them up or down
+        // record keys/chords and mouse control of parameters as automation
+
+
+        // minify TextAlignment.CENTER, etc.
         // use as much Linq instead of loops as possible
         // refactor .GetValue(.......) into passing a single time/note object
 
@@ -39,17 +54,13 @@ namespace IngameScript
         // fin button (finalize notes to octave)
 
 
-        // record mouse control of parameters as automation
         // need to reduce code complexity
+        // move playback engine into separate PB
 
 
-        // plug any param into any param (connect button)
-        // add Modulate to param (Level, Attack, Release)
-        // side chain compression (Modulate on all params, with delay and +/-)
 
         // copy/paste
 
-        // harmony - across selected patterns, copy existing notes and shift them up or down
 
         // hold doesn't seem to work properly when entering long notes
         // when editLength is long, editing the chord doesn't play the current chord properly when a note is added/deleted
@@ -108,7 +119,7 @@ namespace IngameScript
                                 
         static List<string>     g_samples = new List<string>();
 
-        static List<Instrument> g_inst    = new List<Instrument>();
+        static List<Instrument> g_inst   = new List<Instrument>();
 
         List<Note>              g_notes  = new List<Note>();
         List<Sound>             g_sounds = new List<Sound>();

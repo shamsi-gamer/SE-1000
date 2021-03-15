@@ -12,15 +12,15 @@ namespace IngameScript
                              Release;
 
 
-            public Modulate(Setting parent) : base("Modulate", "Mod", parent)
+            public Modulate(Setting parent) : base("Mod", parent)
             {
-                Amount  = new Parameter("Amount",  "Att", -10, 10, -1, 1, 0.01f, 0.1f, 0,    this);
-                Attack  = new Parameter("Attack",  "Att",   0, 10,  0, 1, 0.01f, 0.1f, 0,    this);
-                Release = new Parameter("Release", "Rel",   0, 10,  0, 2, 0.01f, 0.1f, 0.2f, this);
+                Amount  = NewParamFromTag("Amt", this);
+                Attack  = NewParamFromTag("Att", this);
+                Release = NewParamFromTag("Rel", this);
             }
 
 
-            public Modulate(Modulate mod, Setting parent) : base(mod.Name, mod.Tag, parent, mod.Prototype)
+            public Modulate(Modulate mod, Setting parent) : base(mod.Tag, parent, mod.Prototype)
             {
                 Amount  = new Parameter(mod.Amount,  this);
                 Attack  = new Parameter(mod.Attack,  this);
@@ -55,9 +55,24 @@ namespace IngameScript
             public override string Save()
             {
                 return
-                      W(Amount .Save())
+                      W(Tag)
+                    + W(Amount .Save())
                     + W(Attack .Save())
                     +   Release.Save();
+            }
+
+
+            public static Modulate Load(string[] data, ref int i, Setting parent)
+            {
+                var tag = data[i++];
+
+                var mod = new Modulate(parent);
+
+                mod.Amount  = Parameter.Load(data, ref i, mod);
+                mod.Attack  = Parameter.Load(data, ref i, mod);
+                mod.Release = Parameter.Load(data, ref i, mod);
+
+                return mod;
             }
         }
     }

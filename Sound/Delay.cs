@@ -29,16 +29,16 @@ namespace IngameScript
                              Power; // convert to int when applying
 
 
-            public Delay() : base("Delay", "Del", null)
+            public Delay() : base("Del", null)
             {
-                Count = new Parameter("Count", "Cnt",  0,         100, 1,    16, 1,     10,    4,    this);
-                Time  = new Parameter("Time",  "Time", 0.000001f,  10, 0.01f, 1, 0.01f,  0.1f, 0.2f, this);
-                Level = new Parameter("Level", "Lvl",  0,           1, 0.01f, 1, 0.01f,  0.1f, 0.5f, this);
-                Power = new Parameter("Power", "Pow",  0.000001f,   1, 0.01f, 1, 0.01f,  0.1f, 1,    this);
+                Count = NewParamFromTag("Cnt",  this);
+                Time  = NewParamFromTag("Time", this);
+                Level = NewParamFromTag("Lvl",  this);
+                Power = NewParamFromTag("Pow",  this);
             }
 
 
-            public Delay(Delay del) : base(del.Name, del.Tag, null, del)
+            public Delay(Delay del) : base(del.Tag, null, del)
             {
                 Count = new Parameter(del.Count, this);
                 Time  = new Parameter(del.Time,  this);
@@ -120,6 +120,21 @@ namespace IngameScript
                     + W(Time .Save())
                     + W(Level.Save())
                     +   Power.Save();
+            }
+
+
+            public static Delay Load(string[] data, ref int i)
+            {
+                var tag = data[i++];
+ 
+                var del = new Delay();
+
+                del.Count = Parameter.Load(data, ref i, del);
+                del.Time  = Parameter.Load(data, ref i, del);
+                del.Level = Parameter.Load(data, ref i, del);
+                del.Power = Parameter.Load(data, ref i, del);
+
+                return del;
             }
         }
     }
