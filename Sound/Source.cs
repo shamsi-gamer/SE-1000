@@ -31,13 +31,13 @@ namespace IngameScript
             public Source(Instrument inst)
             {
                 Instrument = inst;
-                On         = T;
+                On         = true;
                            
                 Oscillator = OscSine;
 
                 Offset     = null;
 
-                Volume     = NewParamFromTag("Vol", null);
+                Volume     = (Parameter)NewSettingFromTag("Vol", null);
                 Tune       = null;
 
                 Harmonics  = null;
@@ -205,7 +205,7 @@ namespace IngameScript
                         iSrc,
                         note,
                         triggerValues,
-                        F,
+                        false,
                         null,
                         0));
                 }
@@ -238,7 +238,7 @@ namespace IngameScript
                 if (   g_rnd.NextDouble() > 0.7f
                     && !used.Contains(Oscillator))
                 {
-                    Offset = NewParamFromTag("Off", null);
+                    Offset = (Parameter)NewSettingFromTag("Off", null);
                     Offset.Randomize();
                 }
                 else
@@ -297,7 +297,20 @@ namespace IngameScript
             }
 
 
-            string Save(Setting setting) { return Program.SaveSetting(setting); }
+            //public Setting NewSetting(string tag)
+            //{
+            //    switch (tag)
+            //    {
+            //        case "Off":  return Offset;
+            //        case "Vol":  return Volume;
+            //        case "Tune": return Tune;
+            //        case "Hrm":  return Harmonics;
+            //        case "Flt":  return Filter;
+            //        case "Del":  return Delay;
+            //    }
+
+            //    return null;
+            //}
 
 
             public string Save()
@@ -306,15 +319,15 @@ namespace IngameScript
                       WS((int)Oscillator.Type)
                     + W (B(On))
 
-                    + W (Volume.Save())
+                    + Volume.Save()
                     
-                    + W (Save(Offset))
-                    + W (Save(Tune))
+                    + Program.Save(Offset)
+                    + Program.Save(Tune)
 
-                    + W (Save(Harmonics))
-                    + W (Save(Filter))
+                    + Program.Save(Harmonics)
+                    + Program.Save(Filter)
 
-                    +    Save(Delay);
+                    + Program.Save(Delay);
             }
 
 
@@ -331,7 +344,11 @@ namespace IngameScript
                 src.Volume = Parameter.Load(data, ref i, null);
 
                 while (i < data.Length
-                    && data[i] != "_")
+                    && (   data[i] == "Off" 
+                        || data[i] == "Tune"
+                        || data[i] == "Hrm" 
+                        || data[i] == "Flt" 
+                        || data[i] == "Del"))
                 { 
                     switch (data[i])
                     { 

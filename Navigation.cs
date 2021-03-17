@@ -70,7 +70,7 @@ namespace IngameScript
             if (g_setMem)
             {
                 g_mem[m] = g_mem[m] < 0 || g_mem[m] != CurPat ? CurPat : -1;
-                g_setMem = F;
+                g_setMem = false;
 
                 UpdateMemoryLights();
             }

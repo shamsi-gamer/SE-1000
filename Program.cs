@@ -9,34 +9,49 @@ namespace IngameScript
     partial class Program : MyGridProgram
     {
         // machine side instruments
-        // save (song saves modified copies of instruments)
 
-        // BUG adding random notes (maybe any notes) while clean machine is already playing
-        // play them with a delay
+        // timing issues when moving blocks etc.
+        // timing issues with playing
+        // when editLength is long, editing the chord doesn't play the current chord properly when a note is added/deleted
 
         // mixer channel volumes aren't saved
         // save machine state after instrument editing is done
         // add power to envelope decay and release to have a more gentle slope at the end
+        // keys should affect trigger, auto should affect volume
         // add Modulate to param (Level, Attack, Release)
+        // hold doesn't seem to work properly when entering long notes
+        // fix filter
+        // volume not shown correctly for harmonics & filters
+        // fix Note-mode moving of notes with block/allpat enabled
+        // when shuffle is too strong, notes in other channels become too long
+        // BUG: holding a chord and then pressing another chord with some of the same keys will disable
+        //   those keys until the second press
         // plug any param into any param (connect button)
         // side chain compression (Modulate on all params, with delay and +/-)
-        // keys should affect trigger, auto should affect volume
-        // timing issues with playing
         // harmony - across selected patterns, copy existing notes and shift them up or down
         // record keys/chords and mouse control of parameters as automation
+        // bring back default samples
+        // improve randomizer
 
-
-        // minify TextAlignment.CENTER, etc.
-        // use as much Linq instead of loops as possible
-        // refactor .GetValue(.......) into passing a single time/note object
+        // save (song saves modified copies of instruments)
 
 
         // blocks
 
 
+        // add delay pitch (every next tap goes +-1 or whatever, +-5 should give thirds which sound nice)
+        // add delay dampiing
+
+
+        // need to reduce code complexity
+        // move playback engine into separate PB
+        // minify TextAlignment.CENTER, etc.
+        // use as much Linq instead of loops as possible
+        // refactor .GetValue(.......) into passing a single time/note object
+
+
         // lfo song start (maybe sync value)
 
-        // add third bar to info display, Runtime.LastRunTimeMs
 
         // ARPEGGIATOR
         // show playback in arp relative to arp
@@ -45,33 +60,15 @@ namespace IngameScript
         // make it so arpeggio length can't be deleted
 
 
-        // fix filter
-        // volume not shown correctly for harmonics & filters
-
-
-
         // note button
         // fin button (finalize notes to octave)
-
-
-        // need to reduce code complexity
-        // move playback engine into separate PB
-
 
 
         // copy/paste
 
 
-        // hold doesn't seem to work properly when entering long notes
-        // when editLength is long, editing the chord doesn't play the current chord properly when a note is added/deleted
-
         // BUG volume display doesn't work for harmonics
 
-        // fix Note-mode moving of notes with block/allpat enabled
-        // when shuffle is too strong, notes in other channels become too long
-        // BUG: holding a chord and then pressing another chord with some of the same keys will disable
-        // those keys until the second press
-        // check that samples can be used and samples2 doesn't go outside the bounds
 
         // source offset before note time (add playback notes before)
 
@@ -80,7 +77,6 @@ namespace IngameScript
 
         // deal with loops properly
         // when randoming with random instrument, the new instrument's name is set to the old one
-        // crash when selecting sample outside of available, also transposing outside of available shouldn't be possible
 
         // allow loading without mod
 
@@ -89,7 +85,6 @@ namespace IngameScript
 
         // pattern length
 
-        // add delay pitch (every next tap goes +-1 or whatever, +-5 should give thirds which sound nice)
 
 
 
@@ -132,8 +127,8 @@ namespace IngameScript
 
         static List<TriggerValue> _triggerDummy = new List<TriggerValue>();
         
-        static bool             g_started = F;
-        static bool             g_init    = F;
+        static bool             g_started = false;
+        static bool             g_init    = false;
 
         static int              g_curRuntimeTick = 0;
         static float[]          g_runtimeMs      = new float[6];
@@ -243,7 +238,7 @@ namespace IngameScript
             //SetTranspose(g_song, g_song.CurChan, 0);
 
 
-            g_init = T;
+            g_init = true;
         }
 
 
@@ -292,7 +287,6 @@ namespace IngameScript
             
             //pnlInfoLog.CustomData = "";
             
-
             FinishStartup();
 
 
@@ -301,11 +295,11 @@ namespace IngameScript
 
             if ((update & UpdateType.Update1) != 0)
             {
-                if (curSet > -1)
-                    g_settings[curSet].AdjustFromController(g_song, this);
+                if (CurSet > -1)
+                    g_settings[CurSet].AdjustFromController(g_song, this);
 
                 UpdatePlayback();
-             
+
                 if (PlayTime > -1)
                     UpdateKeyLights();
             }
@@ -324,7 +318,7 @@ namespace IngameScript
                     UpdateSongName();
                 }
                 else
-                    g_started = T;
+                    g_started = true;
 
 
                 if (_nextToLoad > 10)
@@ -455,8 +449,8 @@ namespace IngameScript
                 case "up all":     SetVolumeAll( 1);      break;
                 case "down all":   SetVolumeAll(-1);      break;
                                                           
-                case "solo all":   EnableChannels(T);  break;
-                case "mute all":   EnableChannels(F); break;
+                case "solo all":   EnableChannels(true);  break;
+                case "mute all":   EnableChannels(false); break;
                 case "m shift":    MixerShift();          break;
                                                           
                 case "edit":       Edit();                break;

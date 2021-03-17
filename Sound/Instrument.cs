@@ -19,6 +19,7 @@ namespace IngameScript
             public Delay        Delay;
             public Arpeggio     Arpeggio;
 
+
             public List<Source> Sources;
 
 
@@ -26,7 +27,7 @@ namespace IngameScript
             {
                 Name     = "New Sound";
                          
-                Volume   = NewParamFromTag("Vol", null);
+                Volume   = (Parameter)NewSettingFromTag("Vol", null);
 
                 Tune     = null;
                 Filter   = null;
@@ -120,21 +121,33 @@ namespace IngameScript
             }
 
 
-            string Save(Setting setting) { return Program.SaveSetting(setting); }
+            //public Setting NewSetting(string tag)
+            //{
+            //    switch (tag)
+            //    {
+            //        case "Vol":  return Volume;
+            //        case "Tune": return Tune;
+            //        case "Flt":  return Filter;
+            //        case "Del":  return Delay;
+            //        case "Arp":  return Arpeggio;
+            //    }
+
+            //    return null;
+            //}
 
 
             public string Save()
             {
-                var inst = N("Instrument");
-                
-                inst += N(
+                var inst = N(
                       W (Name)
                     + WS(Sources.Count)
-                    + W (Volume.Save()
-                    + W (Save(Tune))
-                    + W (Save(Filter))
-                    + W (Save(Delay))
-                    +    Save(Arpeggio)));
+
+                    + Volume.Save()
+
+                    + Program.Save(Tune)
+                    + Program.Save(Filter)
+                    + Program.Save(Delay)
+                    + Program.Save(Arpeggio));
 
                 for (int i = 0; i < Sources.Count; i++)
                     inst += N(Sources[i].Save());
@@ -145,11 +158,6 @@ namespace IngameScript
 
             public static Instrument Load(string[] lines, ref int line)
             {
-                if (lines[line].Trim() != "Instrument")
-                    return null;
-
-                line++;
-
                 var data = lines[line++].Split(';');
                 var i    = 0;
 
@@ -162,8 +170,12 @@ namespace IngameScript
                 inst.Volume = Parameter.Load(data, ref i, null);
 
                 while (i < data.Length
-                    && data[i] != "_")
-                { 
+                    && (   data[i] == "Tune" 
+                        || data[i] == "Flt" 
+                        || data[i] == "Del" 
+                        || data[i] == "Arp"))
+                {
+                    Log("data[" + i + "] = " + data[i]);
                     switch (data[i])
                     { 
                         case "Tune": inst.Tune     = Tune    .Load(data, ref i);       break;

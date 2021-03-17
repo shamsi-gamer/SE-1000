@@ -2,9 +2,6 @@
 {
     partial class Program
     {
-        const bool  T  = true;
-        const bool  F  = false;
-
         const float fN = float.NaN;
 
         static string S<T>(T val) { return val.ToString(); }

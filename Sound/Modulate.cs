@@ -14,9 +14,9 @@ namespace IngameScript
 
             public Modulate(Setting parent) : base("Mod", parent)
             {
-                Amount  = NewParamFromTag("Amt", this);
-                Attack  = NewParamFromTag("Att", this);
-                Release = NewParamFromTag("Rel", this);
+                Amount  = (Parameter)NewSettingFromTag("Amt", this);
+                Attack  = (Parameter)NewSettingFromTag("Att", this);
+                Release = (Parameter)NewSettingFromTag("Rel", this);
             }
 
 
@@ -48,14 +48,28 @@ namespace IngameScript
 
             public override bool HasDeepParams(Channel chan, int src)
             {
-                return F;
+                return false;
             }
+
+
+            //public override Setting NewSetting(string tag)
+            //{
+            //    switch (tag)
+            //    {
+            //        case "Amt": return Amount;
+            //        case "Att": return Attack;
+            //        case "Rel": return Release;
+            //    }
+
+            //    return null;
+            //}
 
 
             public override string Save()
             {
                 return
                       W(Tag)
+
                     + W(Amount .Save())
                     + W(Attack .Save())
                     +   Release.Save();

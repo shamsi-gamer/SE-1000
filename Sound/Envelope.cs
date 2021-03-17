@@ -20,10 +20,10 @@ namespace IngameScript
 
             public Envelope(Setting parent) : base("Env", parent)
             {
-                Attack      = NewParamFromTag("Att", this);
-                Decay       = NewParamFromTag("Dec", this);
-                Sustain     = NewParamFromTag("Sus", this);
-                Release     = NewParamFromTag("Rel", this);
+                Attack      = (Parameter)NewSettingFromTag("Att", this);
+                Decay       = (Parameter)NewSettingFromTag("Dec", this);
+                Sustain     = (Parameter)NewSettingFromTag("Sus", this);
+                Release     = (Parameter)NewSettingFromTag("Rel", this);
 
                 TrigAttack  = 
                 TrigDecay   = 
@@ -175,6 +175,20 @@ namespace IngameScript
             }
 
 
+            //public override Setting NewSetting(string tag)
+            //{
+            //    switch (tag)
+            //    {
+            //        case "Att": return Attack;
+            //        case "Dec": return Decay;
+            //        case "Sus": return Sustain;
+            //        case "Rel": return Release;
+            //    }
+
+            //    return null;
+            //}
+
+
             public override string Save()
             {
                 return
@@ -183,11 +197,11 @@ namespace IngameScript
                     + W (Attack .Save())
                     + W (Decay  .Save())
                     + W (Sustain.Save())
-                    + W (Release.Save())
+                    +    Release.Save();
 
-                    + WS(TrigAttack)
-                    + WS(TrigDecay)
-                    +  S(TrigRelease);
+                    //+ WS(TrigAttack)
+                    //+ WS(TrigDecay)
+                    //+  S(TrigRelease);
             }
 
 
@@ -202,9 +216,9 @@ namespace IngameScript
                 env.Sustain = Parameter.Load(data, ref i, env);
                 env.Release = Parameter.Load(data, ref i, env);
 
-                env.TrigAttack  = float.Parse(data[i++]);
-                env.TrigDecay   = float.Parse(data[i++]);
-                env.TrigRelease = float.Parse(data[i++]);
+                //env.TrigAttack  = float.Parse(data[i++]);
+                //env.TrigDecay   = float.Parse(data[i++]);
+                //env.TrigRelease = float.Parse(data[i++]);
 
                 return env;
             }

@@ -26,7 +26,7 @@ namespace IngameScript
             {
                 Pattern    = pat;
 
-                On         = T;
+                On         = true;
                 Instrument = null;
                 Volume     = 1;
                 Shuffle    = 0;

@@ -46,7 +46,7 @@ namespace IngameScript
                     lastNotes.Clear();
                 }
 
-                MoveEdit(song, 1, T);
+                MoveEdit(song, 1, true);
 
                 MarkLight(lblStep);
             }
@@ -100,7 +100,7 @@ namespace IngameScript
             if (!OK(song.EditPos))
                 return;
 
-            if (   curSet < 0
+            if (   CurSet < 0
                 || !(   g_paramKeys 
                      || g_paramAuto))
                 return;
@@ -224,13 +224,13 @@ namespace IngameScript
             if (g_hold)
                 StopCurrentNotes(CurSong, CurChan);
 
-            g_hold = F;
-            UpdateLight(lblHold, F);
+            g_hold = false;
+            UpdateLight(lblHold, false);
 
             if (!OK(CurSong.EditPos))
             {
                 CurSong.Inter = null;
-                UpdateLight(lblCmd1, F);
+                UpdateLight(lblCmd1, false);
             }
 
             UpdateEditLight(lblEdit, OK(CurSong.EditPos));
@@ -274,7 +274,7 @@ namespace IngameScript
             if (OK(song.EditPos))
             { 
                 song.Inter = null;
-                UpdateLight(lblCmd1, F);
+                UpdateLight(lblCmd1, false);
 
                 if (song.EditNotes.Count > 0) song.EditNotes.Clear();
                 else                          song.EditNotes.AddRange(GetEditNotes(song));
@@ -322,7 +322,7 @@ namespace IngameScript
         }
 
 
-        List<Note> GetEditNotes(Song song, bool onlyEdit = F)
+        List<Note> GetEditNotes(Song song, bool onlyEdit = false)
         {
             var chan = CurrentChannel;
 
@@ -454,7 +454,7 @@ namespace IngameScript
         }
 
 
-        void MoveEdit(Song song, int move, bool create = F)
+        void MoveEdit(Song song, int move, bool create = false)
         {
             var chan = SelectedChannel;
 
@@ -649,8 +649,8 @@ namespace IngameScript
             }
             else
             { 
-                if (curSet > -1)
-                    g_settings[curSet].Randomize();
+                if (CurSet > -1)
+                    g_settings[CurSet].Randomize();
                 else if (CurSrc > -1)
                 {
                     var used = new List<Oscillator>();

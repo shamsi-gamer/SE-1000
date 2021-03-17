@@ -76,13 +76,14 @@ namespace IngameScript
 
                     PlayTime  -= (end - start) * g_ticksPerStep;
                     StartTime += (end - start) * g_ticksPerStep;
-
-                    PlayPat = (int)(PlayStep / nSteps);
                 }
             }
 
 
-            PlayPat = (int)(PlayStep / nSteps);
+            PlayPat = 
+                PlayTime > -1 
+                ? (int)(PlayStep / nSteps) 
+                : -1;
         }
 
 

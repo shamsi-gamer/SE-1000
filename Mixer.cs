@@ -117,11 +117,11 @@ namespace IngameScript
             for (int i = 0; i < nChans; i++)
             {
                 if (i == ch) continue;
-                EnableChannel(pat, i, F);
+                EnableChannel(pat, i, false);
                 StopCurrentNotes(g_song, i);
             }
 
-            EnableChannel(pat, ch, T);
+            EnableChannel(pat, ch, true);
         }
 
 

@@ -12,11 +12,10 @@ namespace IngameScript
                   N("SE-909 mk2")
                 + N(SaveSettings(SaveToggles()))
                 + N(SaveMems())
-                + N(SaveChords())
-                + "\n";
+                + N(SaveChords());
 
             foreach (var inst in g_inst)
-                state += N(N(inst.Save()));
+                state += "\n" + inst.Save();
 
             return state;
         }
@@ -77,9 +76,13 @@ namespace IngameScript
                 
                 + WS(CurPat)         
                 + WS(CurChan)        
+
                 + WS(SelChan)        
-                + WS(CurSrc)    
-                
+                + WS(CurSrc)
+
+                + WS(CurSet)
+                + (CurSet > -1 ? W(g_settings[CurSet].GetPath(CurSrc)) : "")
+
                 + WS(PlayTime)       
 
                 + WS(g_editStep)
@@ -99,16 +102,16 @@ namespace IngameScript
 
                 + WS(g_volume)
 
-                + WS(g_iCol, F);
+                +  S(g_iCol);
         }
 
 
-        static string SaveSetting(Setting setting)
+        static string Save(Setting setting)
         {
             return 
                 setting != null 
-                ? setting.Save() 
-                : "_";
+                ? ";" + setting.Save()
+                : "";
         }
 
 

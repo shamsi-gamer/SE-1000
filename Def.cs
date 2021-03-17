@@ -8,10 +8,13 @@ namespace IngameScript
     {
         const float Tau = (float)Math.PI * 2;
 
-        const int FPS = 60;
+        const int   FPS = 60;
 
-        const int nChans = 12;
-        const int nSteps = 16;
+        const int   nChans = 12;
+        const int   nSteps = 16;
+
+
+        const float dVol = 0.01f;
 
 
         static Random  g_rnd    = new Random(DateTime.Now.Millisecond);

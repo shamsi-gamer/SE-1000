@@ -243,14 +243,14 @@ namespace IngameScript
 
 
 
-        void MarkLight(IMyTextPanel light, bool on = T)
+        void MarkLight(IMyTextPanel light, bool on = true)
         {
             lightsPressed.Add(light);
             UpdateLight(light, on);
         }
 
 
-        void UnmarkLight(IMyTextPanel light, bool on = F, bool half = F)
+        void UnmarkLight(IMyTextPanel light, bool on = false, bool half = false)
         {
             UpdateLight(light, on, half);
             lightsPressed_.Remove(light);
@@ -261,8 +261,8 @@ namespace IngameScript
         {
             var be = CurSong.EditNotes.Count > 0;
 
-            if (lightsPressed_.Contains(lblLeft))      UnmarkLight(lblLeft,  F, be);
-            if (lightsPressed_.Contains(lblRight))     UnmarkLight(lblRight, F, be);
+            if (lightsPressed_.Contains(lblLeft))      UnmarkLight(lblLeft,  false, be);
+            if (lightsPressed_.Contains(lblRight))     UnmarkLight(lblRight, false, be);
 
             if (lightsPressed_.Contains(lblUp))        UnmarkLight(lblUp,   g_shift);
             if (lightsPressed_.Contains(lblDown))      UnmarkLight(lblDown, g_shift);
@@ -273,7 +273,7 @@ namespace IngameScript
             if (lightsPressed_.Contains(lblNext))      UnmarkLight(lblNext, g_move || CurSrc > -1, SelChan > -1);
             if (lightsPressed_.Contains(lblPrev))      UnmarkLight(lblPrev, g_move || CurSrc > -1, SelChan > -1);
 
-            if (lightsPressed_.Contains(lblEnter))     UnmarkLight(lblEnter, CurSrc > -1 && curSet < 0, SelChan > -1 && curSet < 0);
+            if (lightsPressed_.Contains(lblEnter))     UnmarkLight(lblEnter, CurSrc > -1 && CurSet < 0, SelChan > -1 && CurSet < 0);
             if (lightsPressed_.Contains(lblBack))      UnmarkLight(lblBack,  CurSrc > -1, SelChan > -1);
 
             if (lightsPressed_.Contains(lblNew))       UnmarkLight(lblNew,       CurSrc > -1, SelChan > -1);
@@ -285,10 +285,10 @@ namespace IngameScript
             if (lightsPressed_.Contains(lblChord3))    UnmarkLight(lblChord3, g_chordEdit && g_chord == 2, g_chords[2].Count > 0);
             if (lightsPressed_.Contains(lblChord4))    UnmarkLight(lblChord4, g_chordEdit && g_chord == 3, g_chords[3].Count > 0);
 
-            if (lightsPressed_.Contains(lblCmd2))      UnmarkLight(lblCmd2, F, copyChan != null);
+            if (lightsPressed_.Contains(lblCmd2))      UnmarkLight(lblCmd2, false, copyChan != null);
 
             foreach (var lbl in lightsPressed_)
-                UpdateLight(lbl, F);
+                UpdateLight(lbl, false);
 
 
             mixerPressed_.Clear();
@@ -349,36 +349,24 @@ namespace IngameScript
             {
                 var inst = SelectedInstrument;
                 //var src  = g_song.CurSrc > -1 ? inst.Sources[g_song.CurSrc] : null;
+                Log("CurSrc = " + CurSrc);
+                Log("g_settings[CurSet].GetPath(CurSrc) = " + g_settings[CurSet].GetPath(CurSrc));
                 var tune = (Tune)GetCurrentParam(inst);
+                Log("tune = " + tune);
 
                 UpdateLight(lblChord, tune.UseChord);
+
+                UpdateLight(lblChordEdit, tune.UseChord ? "All" : " ", 10, 10);
+                UpdateLight(lblChordEdit, tune.AllOctaves);
                 // TODO same for source or anything else that needs Tune
             }
             else
             {
                 UpdateLight(lblChord, g_chordEdit ? " " : "Chord", 9, 12);
                 UpdateLight(lblChord, g_chordMode);
-            }
 
-            UpdateChordLight(lblChord1, 1);
-            UpdateChordLight(lblChord2, 2);
-            UpdateChordLight(lblChord3, 3);
-            UpdateChordLight(lblChord4, 4);
-
-            if (   IsCurParam("Tune")
-                && !(g_paramKeys || g_paramAuto))
-            {
-                var inst = SelectedInstrument;
-                //var src  = g_song.CurSrc > -1 ? inst.Sources[g_song.CurSrc] : null;
-                var tune = (Tune)GetCurrentParam(inst);
-
-                UpdateLight(lblChordEdit, tune.UseChord ? "All" : " ", 10, 10);
-                UpdateLight(lblChordEdit, tune.AllOctaves);
-            }
-            else
-            {
                 if (g_chordMode)
-                { 
+                {
                     UpdateLight(lblChordEdit, "All", 10, 10);
                     UpdateLight(lblChordEdit, g_chordAll);
                 }
@@ -388,6 +376,11 @@ namespace IngameScript
                     UpdateLight(lblChordEdit, g_chordEdit);
                 }
             }
+
+            UpdateChordLight(lblChord1, 1);
+            UpdateChordLight(lblChord2, 2);
+            UpdateChordLight(lblChord3, 3);
+            UpdateChordLight(lblChord4, 4);
         }
 
 
@@ -453,7 +446,7 @@ namespace IngameScript
             else if (ShowPiano) val = CurrentChannel.Transpose;
             else                val = CurrentChannel.Shuffle;
 
-            lblOctave.WriteText((val > 0 ? "+" : "") + S(val), F);
+            lblOctave.WriteText((val > 0 ? "+" : "") + S(val), false);
         }
 
 
@@ -520,14 +513,14 @@ namespace IngameScript
 
         void UpdateEnterLight()
         {
-            UpdateLight(lblEnter, curSet < 0 && CurSrc < 0 ? "└►" : " ", 10, 10);
-            UpdateLight(lblEnter, curSet < 0 && CurSrc > -1, SelChan > -1 && curSet < 0);
+            UpdateLight(lblEnter, CurSet < 0 && CurSrc < 0 ? "└►" : " ", 10, 10);
+            UpdateLight(lblEnter, CurSet < 0 && CurSrc > -1, SelChan > -1 && CurSet < 0);
         }
 
 
         void UpdateAdjustLights(Song song)
         {
-            if (curSet > -1)
+            if (CurSet > -1)
             {
                 var path = g_settings.Last().GetPath(CurSrc);
 
@@ -585,7 +578,7 @@ namespace IngameScript
                 else
                 { 
                     UpdateLight(lblCmd1, SelChan < 0 ? "Copy" : " ", 10, 10);
-                    UpdateLight(lblCmd1, F);
+                    UpdateLight(lblCmd1, false);
 
                     UpdateLight(lblCmd2, SelChan < 0 ? "Paste" : " ", 10, 10);
                     UpdatePasteLight();
@@ -802,7 +795,7 @@ namespace IngameScript
                               && PlayStep <  n.PatStep + n.StepLength) > -1;
 
 
-                var otherChans = F;
+                var otherChans = false;
 
                 if (!thisChan)
                 {
@@ -821,10 +814,10 @@ namespace IngameScript
                 }
 
 
-                var down = F;
+                var down = false;
 
                 if (lightsPressed.Contains(light))
-                    down = T;
+                    down = true;
 
                 UpdateLight(light, thisChan || down, otherChans);
             }
@@ -867,7 +860,7 @@ namespace IngameScript
         }
 
 
-        void UpdateLight(IMyTextPanel light, bool b, bool b2 = F)
+        void UpdateLight(IMyTextPanel light, bool b, bool b2 = false)
         {
             if (light == null) return;
 

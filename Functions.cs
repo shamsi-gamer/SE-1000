@@ -22,9 +22,9 @@ namespace IngameScript
         {
             if (SelChan > -1)
             {
-                if (curSet > -1)
+                if (CurSet > -1)
                 {
-                    var setting = g_settings[curSet];
+                    var setting = g_settings[CurSet];
 
                          if (setting.GetType() == typeof(Envelope )) SetEnvelopeFunc ((Envelope) setting, func);
                     else if (setting.GetType() == typeof(LFO      )) SetLfoFunc      ((LFO)      setting, func);
@@ -37,7 +37,7 @@ namespace IngameScript
                 else 
                 {
                     if (CurSrc < 0) SetInstFunc(SelectedInstrument, func);
-                    else            SetSrcFunc(SelectedSource,      func);
+                    else            SetSrcFunc (SelectedSource,     func);
                 }
 
                 //g_sampleValid = F;
@@ -64,23 +64,39 @@ namespace IngameScript
         }
 
 
-        void AddNextSetting(Setting setting)
+        void SwitchToSetting(string path)
         {
-            if (curSet > -1)
-                g_settings[curSet]._IsCurrent = F;
+            g_settings.Clear();
+            CurSet = -1;
+
+            var tags = path.Split('/');
+
+            foreach (var tag in tags)
+                AddNextSetting(tag);
+
+            CurSet = tags.Length-1;
+        }
+
+
+        void AddNextSetting(string tag)
+        {
+            if (CurSet > -1)
+                g_settings[CurSet]._IsCurrent = false;
+
+            var setting = NewSettingFromTag(tag, CurSet > -1 ? g_settings[CurSet] : null);
 
             g_settings.Add(setting);
 
-            if (IsParam(setting))                  
-                setting._IsCurrent = T;
-
-            curSet++;
+            CurSet++;// = g_settings.Count-1;
+            Log("g_settings[CurSet] = " + g_settings[CurSet]);
+            if (IsParam(g_settings[CurSet]))
+                g_settings[CurSet]._IsCurrent = true;
         }
 
 
         void RemoveSetting(Setting setting)
         {
-            int set = curSet;
+            int set = CurSet;
 
             if (   HasTag(setting, "Att")
                 || HasTag(setting, "Dec")
@@ -88,8 +104,8 @@ namespace IngameScript
                 || HasTag(setting, "Rel"))
                 set--;
 
-            if (curSet > 0)
-                g_settings[curSet-1].Remove(setting);
+            if (CurSet > 0)
+                g_settings[CurSet-1].Remove(setting);
             else 
             {
                 var inst = SelectedInstrument;
@@ -108,7 +124,7 @@ namespace IngameScript
 
             g_settings.RemoveAt(set);
 
-            curSet -= curSet - set + 1;
+            CurSet -= CurSet - set + 1;
         }
 
 
@@ -123,26 +139,20 @@ namespace IngameScript
                     || SettingOrAnyParentHasTag(param, "Rel"))
                     break;
 
-                if (param.Envelope == null)
-                    param.Envelope = new Envelope(param);
-
-                AddNextSetting(param.Envelope);
+                AddNextSetting("Env");
                 break;
 
             case 2:
-                if (param.Lfo == null)
-                    param.Lfo = new LFO(param);
-
-                AddNextSetting(param.Lfo);
+                AddNextSetting("LFO");
                 break;
 
             case 3:
-                g_paramKeys = T;
+                g_paramKeys = true;
                 UpdateChordLights();
                 break;
 
             case 4:
-                g_paramAuto = T;
+                g_paramAuto = true;
                 UpdateChordLights();
                 break;
 
@@ -176,11 +186,11 @@ namespace IngameScript
         {
             switch (func)
             {
-                case 1: AddNextSetting(env.Attack);  break;
-                case 2: AddNextSetting(env.Decay);   break;
-                case 3: AddNextSetting(env.Sustain); break;
-                case 4: AddNextSetting(env.Release); break;
-                case 5: RemoveSetting(env);          break;
+                case 1: AddNextSetting("Att"); break;
+                case 2: AddNextSetting("Dec"); break;
+                case 3: AddNextSetting("Sus"); break;
+                case 4: AddNextSetting("Rel"); break;
+                case 5: RemoveSetting(env);    break;
             }
         }
 
@@ -189,17 +199,17 @@ namespace IngameScript
         {
             switch (func)
             {
-                case 1: AddNextSetting(lfo.Amplitude); break;
-                case 2: AddNextSetting(lfo.Frequency); break;
-                case 3: AddNextSetting(lfo.Offset);    break;
+                case 1: AddNextSetting("Amp");  break;
+                case 2: AddNextSetting("Freq"); break;
+                case 3: AddNextSetting("Off");  break;
                 case 4:
-                    {
-                        var newOsc = (int)lfo.Type + 1;
-                        if (newOsc > (int)LFO.LfoType.Noise) newOsc = 0;
-                        lfo.Type = (LFO.LfoType)newOsc;
-                        mainPressed.Add(func);
-                        break;
-                    }
+                {
+                    var newOsc = (int)lfo.Type + 1;
+                    if (newOsc > (int)LFO.LfoType.Noise) newOsc = 0;
+                    lfo.Type = (LFO.LfoType)newOsc;
+                    mainPressed.Add(func);
+                    break;
+                }
                 case 5: RemoveSetting(lfo); break;
             }
         }
@@ -232,7 +242,7 @@ namespace IngameScript
                     hrm.SetPreset(hrm.CurPreset);
                     break;
                 }
-                case 4: AddNextSetting(hrm.Tones[hrm.CurTone]); break;
+                case 4: AddNextSetting(S(hrm.CurTone)); break;
                 case 5: RemoveSetting(hrm); break;
             }
         }
@@ -242,9 +252,9 @@ namespace IngameScript
         {
             switch (func)
             {
-                case 1: AddNextSetting(flt.Cutoff);    break;
-                case 2: AddNextSetting(flt.Resonance); break;
-                case 5: RemoveSetting(flt);            break;
+                case 1: AddNextSetting("Cut"); break;
+                case 2: AddNextSetting("Res"); break;
+                case 5: RemoveSetting(flt);    break;
             }
         }
 
@@ -253,11 +263,11 @@ namespace IngameScript
         {
             switch (func)
             {
-                case 1: AddNextSetting(del.Count); break;
-                case 2: AddNextSetting(del.Time);  break;
-                case 3: AddNextSetting(del.Level); break;
-                case 4: AddNextSetting(del.Power); break;
-                case 5: RemoveSetting(del);        break;
+                case 1: AddNextSetting("Cnt");  break;
+                case 2: AddNextSetting("Time"); break;
+                case 3: AddNextSetting("Lvl");  break;
+                case 4: AddNextSetting("Pow");  break;
+                case 5: RemoveSetting(del);     break;
             }
         }
 
@@ -268,16 +278,16 @@ namespace IngameScript
             { 
             case 1:
                 arp.Song.EditPos = -1;
-                UpdateEditLight(lblEdit, F);
+                UpdateEditLight(lblEdit, false);
 
-                AddNextSetting(arp.Length);
+                AddNextSetting("Len");
                 break;
 
             case 2:
                 arp.Song.EditPos = -1;
-                UpdateEditLight(lblEdit, F);
+                UpdateEditLight(lblEdit, false);
 
-                AddNextSetting(arp.Scale);
+                AddNextSetting("Scl");
                 break;
 
             case 5: RemoveSetting(arp); break;
@@ -289,41 +299,17 @@ namespace IngameScript
         {
             switch (func)
             {
-            case 1:
-                AddNextSetting(inst.Volume); 
-                break;
-
-            case 2:
-                if (inst.Tune == null)
-                    inst.Tune = new Tune();
-
-                AddNextSetting(inst.Tune);
-
+            case 1: AddNextSetting("Vol"); break;
+            case 2: 
+                AddNextSetting("Tune");
                 UpdateKeyLights();
                 UpdateChordLights();
                 UpdateShuffleLight();
                 break;
 
-            case 3:
-                if (inst.Filter == null)
-                    inst.Filter = new Filter();
-
-                AddNextSetting(inst.Filter);
-                break;
-
-            case 4:
-                if (inst.Delay == null)
-                    inst.Delay = new Delay();
-
-                AddNextSetting(inst.Delay);
-                break;
-
-            case 5:
-                if (inst.Arpeggio == null)
-                    inst.Arpeggio = new Arpeggio(inst);
-
-                AddNextSetting(inst.Arpeggio);
-                break;
+            case 3: AddNextSetting("Flt"); break;
+            case 4: AddNextSetting("Del"); break;
+            case 5: AddNextSetting("Arp"); break;
             }
         }
 
@@ -332,48 +318,18 @@ namespace IngameScript
         {
             switch (func)
             {
-            case 0:
-                if (src.Offset == null)
-                    src.Offset = NewParamFromTag("Off", null);
-
-                AddNextSetting(src.Offset);
-                break;
-
-            case 1:
-                AddNextSetting(src.Volume); 
-                break;
-
-            case 2:
-                if (src.Tune == null)
-                    src.Tune = new Tune();
-
-                AddNextSetting(src.Tune);
-
+            case 0: AddNextSetting("Off"); break; 
+            case 1: AddNextSetting("Vol"); break;
+            case 2: 
+                AddNextSetting("Tune");
                 UpdateKeyLights();
                 UpdateChordLights();
                 UpdateShuffleLight();
                 break;
 
-            case 3:
-                if (src.Harmonics == null)
-                    src.Harmonics = new Harmonics();
-
-                AddNextSetting(src.Harmonics);
-                break;
-
-            case 4:
-                if (src.Filter == null)
-                    src.Filter = new Filter();
-
-                AddNextSetting(src.Filter);
-                break;
-
-            case 5:
-                if (src.Delay == null)
-                    src.Delay = new Delay();
-
-                AddNextSetting(src.Delay);
-                break;
+            case 3: AddNextSetting("Hrm"); break;
+            case 4: AddNextSetting("Flt"); break;
+            case 5: AddNextSetting("Del"); break;
             }
         }
     }

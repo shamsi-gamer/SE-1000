@@ -42,7 +42,7 @@ namespace IngameScript
                     snd.SourceIndex,
                     snd.Note,
                     snd.TriggerValues,
-                    T,
+                    true,
                     snd,
                     echoVol,
                     snd.Harmonic,

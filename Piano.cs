@@ -15,24 +15,24 @@ namespace IngameScript
             if (h == 10)
             {
                 if (   IsCurParam("Tune")
-                    && (tune?.UseChord ?? F))
+                    && (tune?.UseChord ?? false))
                 { 
                     g_settings.RemoveLast();
-                    curSet--;
-                    g_piano = F;
+                    CurSet--;
+                    g_piano = false;
                     UpdateChordLights();
                 }
                 else
                     g_piano = !g_piano;
 
                 if (g_piano)
-                    g_pick = F;
+                    g_pick = false;
 
                 UpdateShuffleLight();
                 UpdateOctaveLight();
             }
             else if (IsCurParam("Tune")
-                  && (tune?.UseChord ?? F)
+                  && (tune?.UseChord ?? false)
                   && !(g_paramKeys || g_paramAuto))
             {
                 var chord = tune.Chord;
@@ -74,8 +74,8 @@ namespace IngameScript
             }
             else
             {
-                     if (h == 0) Shift(F);
-                else if (h == 1) Shift(T); 
+                     if (h == 0) Shift(false);
+                else if (h == 1) Shift(true); 
 
                 else if (h == 2) PickNote();  
                 else if (h == 3) ToggleAllChannels();
@@ -102,7 +102,7 @@ namespace IngameScript
                     ?? SelectedInstrument?.Tune;
 
             if (   IsCurParam("Tune")
-                && (tune?.UseChord ?? F))
+                && (tune?.UseChord ?? false))
             {
                 var chord = tune.Chord;
                 var note  = LowToNote(l);
@@ -188,7 +188,7 @@ namespace IngameScript
                 g_curNote = found[0].Number;
                 //g_showNote  = g_curNote;
 
-                g_pick = F;
+                g_pick = false;
 
                 TriggerNote(
                     found[0].Number, 
@@ -198,7 +198,7 @@ namespace IngameScript
             }
             else
             {
-                g_pick = F;
+                g_pick = false;
                 
                 foreach (var n in found)
                     chan.Notes.Remove(n);

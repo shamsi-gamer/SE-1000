@@ -93,11 +93,11 @@ namespace IngameScript
         void DrawInstrumentSettings(List<MySprite> sprites, float x, float y, Instrument inst)
         {
             float yo = 0;
-                                       DrawSetting(sprites, inst.Volume,   x, y + yo, ref yo, F);
-            if (inst.Tune     != null) DrawSetting(sprites, inst.Tune,     x, y + yo, ref yo, F);
-            if (inst.Filter   != null) DrawSetting(sprites, inst.Filter,   x, y + yo, ref yo, F);
-            if (inst.Delay    != null) DrawSetting(sprites, inst.Delay,    x, y + yo, ref yo, F);
-            if (inst.Arpeggio != null) DrawSetting(sprites, inst.Arpeggio, x, y + yo, ref yo, F);
+                                       DrawSetting(sprites, inst.Volume,   x, y + yo, ref yo, false);
+            if (inst.Tune     != null) DrawSetting(sprites, inst.Tune,     x, y + yo, ref yo, false);
+            if (inst.Filter   != null) DrawSetting(sprites, inst.Filter,   x, y + yo, ref yo, false);
+            if (inst.Delay    != null) DrawSetting(sprites, inst.Delay,    x, y + yo, ref yo, false);
+            if (inst.Arpeggio != null) DrawSetting(sprites, inst.Arpeggio, x, y + yo, ref yo, false);
         }
 
 

@@ -31,10 +31,10 @@ namespace IngameScript
 
             public Delay() : base("Del", null)
             {
-                Count = NewParamFromTag("Cnt",  this);
-                Time  = NewParamFromTag("Time", this);
-                Level = NewParamFromTag("Lvl",  this);
-                Power = NewParamFromTag("Pow",  this);
+                Count = (Parameter)NewSettingFromTag("Cnt",  this);
+                Time  = (Parameter)NewSettingFromTag("Time", this);
+                Level = (Parameter)NewSettingFromTag("Lvl",  this);
+                Power = (Parameter)NewSettingFromTag("Pow",  this);
             }
 
 
@@ -113,10 +113,26 @@ namespace IngameScript
             }
 
 
+            //public override Setting NewSetting(string tag)
+            //{
+            //    switch (tag)
+            //    {
+            //        case "Cnt":  return Count;
+            //        case "Time": return Time;
+            //        case "Lvl":  return Level;
+            //        case "Pow":  return Power;
+            //    }
+
+            //    return null;
+            //}
+
+
             public override string Save()
             {
                 return
-                      W(Count.Save())
+                      W(Tag)
+
+                    + W(Count.Save())
                     + W(Time .Save())
                     + W(Level.Save())
                     +   Power.Save();

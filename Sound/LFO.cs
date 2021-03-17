@@ -23,9 +23,9 @@ namespace IngameScript
             {
                 Type      = LfoType.Sine;
 
-                Amplitude = NewParamFromTag("Amp",  this);
-                Frequency = NewParamFromTag("Freq", this);
-                Offset    = NewParamFromTag("Off",  this);
+                Amplitude = (Parameter)NewSettingFromTag("Amp",  this);
+                Frequency = (Parameter)NewSettingFromTag("Freq", this);
+                Offset    = (Parameter)NewSettingFromTag("Off",  this);
             }
 
 
@@ -124,11 +124,26 @@ namespace IngameScript
             }
 
 
+            //public override Setting NewSetting(string tag)
+            //{
+            //    switch (tag)
+            //    {
+            //        case "Amp":  return Amplitude;
+            //        case "Freq": return Frequency;
+            //        case "Off":  return Offset;
+            //    }
+
+            //    return null;
+            //}
+
+
             public override string Save()
             {
                 return
                       W (Tag)
+
                     + WS((int)Type)
+
                     + W (Amplitude.Save())
                     + W (Frequency.Save())
                     +    Offset   .Save();

@@ -108,8 +108,8 @@ namespace IngameScript
                 var _p = p - g_songOff;
                 var px = x - _f * pw + _p * pw;
 
-                if (g_piano) DrawPianoRoll(sprites, px, py, pw, ph, CurSong, p, 1, F, nSteps);
-                else         DrawPattern  (sprites, px, py, pw, ph, CurSong, p, 1, F);
+                if (g_piano) DrawPianoRoll(sprites, px, py, pw, ph, CurSong, p, 1, false, nSteps);
+                else         DrawPattern  (sprites, px, py, pw, ph, CurSong, p, 1, false);
 
                 if (g_paramKeys)
                 {
@@ -141,8 +141,8 @@ namespace IngameScript
 
                 FillRect(sprites, xTick, py, wt, ph, color6);
 
-                if (g_piano) DrawPianoNeg(sprites, pl, py, pw, ph, CurSong, PlayPat, (int)PlayStep, F);
-                else         DrawPatNeg  (sprites, pl, py, pw, ph, CurSong, PlayPat, (int)PlayStep, F);
+                if (g_piano) DrawPianoNeg(sprites, pl, py, pw, ph, CurSong, PlayPat, (int)PlayStep, false);
+                else         DrawPatNeg  (sprites, pl, py, pw, ph, CurSong, PlayPat, (int)PlayStep, false);
             }
 
 
@@ -213,18 +213,18 @@ namespace IngameScript
 
             if (nDsp == 0)
             {
-                DrawFuncButton(sprites, "Del",  0, w, h, F, F, songPressed.Contains(0));
-                DrawFuncButton(sprites, "Dup",  1, w, h, F, F, songPressed.Contains(1));
-                DrawFuncButton(sprites, "New",  2, w, h, F, F, songPressed.Contains(2));
-                DrawFuncButton(sprites, "◄",    5, w, h, F, F, songPressed.Contains(5) ^ g_movePat);
+                DrawFuncButton(sprites, "Del",  0, w, h, false, false, songPressed.Contains(0));
+                DrawFuncButton(sprites, "Dup",  1, w, h, false, false, songPressed.Contains(1));
+                DrawFuncButton(sprites, "New",  2, w, h, false, false, songPressed.Contains(2));
+                DrawFuncButton(sprites, "◄",    5, w, h, false, false, songPressed.Contains(5) ^ g_movePat);
             }
             else
             {
-                DrawFuncButton(sprites, "►",  0, w, h, F, F, songPressed.Contains( 6) ^ g_movePat);
-                DrawFuncButton(sprites, "◄►", 1, w, h, F, F, g_movePat);
-                DrawFuncButton(sprites, "[",  3, w, h, F, F, g_in);
-                DrawFuncButton(sprites, "]",  4, w, h, F, F, g_out);
-                DrawFuncButton(sprites, "X",  5, w, h, F, F, songPressed.Contains(11));
+                DrawFuncButton(sprites, "►",  0, w, h, false, false, songPressed.Contains( 6) ^ g_movePat);
+                DrawFuncButton(sprites, "◄►", 1, w, h, false, false, g_movePat);
+                DrawFuncButton(sprites, "[",  3, w, h, false, false, g_in);
+                DrawFuncButton(sprites, "]",  4, w, h, false, false, g_out);
+                DrawFuncButton(sprites, "X",  5, w, h, false, false, songPressed.Contains(11));
             }
         }
 

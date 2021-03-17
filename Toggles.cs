@@ -23,8 +23,8 @@ namespace IngameScript
     {
         void MovePatternOff()
         {
-            g_movePat = F;
-            UpdateLight(lblMovePat, F);
+            g_movePat = false;
+            UpdateLight(lblMovePat, false);
         }
 
 
@@ -37,7 +37,7 @@ namespace IngameScript
 
         void ToggleMove()
         {
-            if (curSet > -1) return;
+            if (CurSet > -1) return;
 
             g_move = !g_move;
 
@@ -68,8 +68,8 @@ namespace IngameScript
 
             if (g_follow)
             {
-                g_autoCue = F;
-                UpdateLight(lblAutoCue, F);
+                g_autoCue = false;
+                UpdateLight(lblAutoCue, false);
             }
         }
 
@@ -83,8 +83,8 @@ namespace IngameScript
             {
                 Cue();
 
-                g_follow = F;
-                UpdateLight(lblFollow, F);
+                g_follow = false;
+                UpdateLight(lblFollow, false);
             }
         }
     }

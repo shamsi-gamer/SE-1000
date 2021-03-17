@@ -16,8 +16,8 @@ namespace IngameScript
 
             public Filter() : base("Flt", null)
             {
-                Cutoff    = NewParamFromTag("Cut", this);
-                Resonance = NewParamFromTag("Res", this);
+                Cutoff    = (Parameter)NewSettingFromTag("Cut", this);
+                Resonance = (Parameter)NewSettingFromTag("Res", this);
             }
 
 
@@ -58,10 +58,23 @@ namespace IngameScript
             }
 
 
+            //public override Setting NewSetting(string tag)
+            //{
+            //    switch (tag)
+            //    {
+            //        case "Cut": return Cutoff;
+            //        case "Res": return Resonance;
+            //    }
+
+            //    return null;
+            //}
+
+
             public override string Save()
             {
                 return
                       W(Tag)
+
                     + W(Cutoff   .Save())
                     +   Resonance.Save();
             }

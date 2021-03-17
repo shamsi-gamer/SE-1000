@@ -18,8 +18,8 @@
                 
                 SetInstrument(inst);
 
-                Length = NewParamFromTag("Len", this);
-                Scale  = NewParamFromTag("Scl", this);
+                Length = (Parameter)NewSettingFromTag("Len", this);
+                Scale  = (Parameter)NewSettingFromTag("Scl", this);
             }
 
 
@@ -89,9 +89,21 @@
             }
 
 
+            //public override Setting NewSetting(string tag)
+            //{
+            //    switch (tag)
+            //    {
+            //        case "Len": return Length;
+            //        case "Scl": return Scale;
+            //    }
+
+            //    return null;
+            //}
+
+
             public override string Save()
             {
-                var arp = "";
+                var arp = W(Tag);
 
                 // save song here
 

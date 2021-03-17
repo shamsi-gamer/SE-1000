@@ -49,16 +49,12 @@ namespace IngameScript
     partial class Program
     {                                                                              
         List<Setting> g_settings = new List<Setting>();
-        int           curSet     = -1;
 
                       
-        const float   dVol       = 0.01f;
-
-
         Setting   LastSetting  { get { return g_settings.Count > 0 ? g_settings.Last() : null; } }
 
 
-        Setting   CurSetting   { get { return curSet > -1 ? g_settings[curSet] : null; } }
+        Setting   CurSetting   { get { return CurSet > -1 ? g_settings[CurSet] : null; } }
         Parameter CurParam     { get { return (Parameter)CurSetting; } }
 
 
@@ -116,17 +112,17 @@ namespace IngameScript
             }
         }
 
-        Pattern    CurrentPattern     { get { return g_song.Patterns[CurPat]; } }
-        Channel    CurrentChannel     { get { return CurrentPattern.Channels[CurChan]; } }
-        Instrument CurrentInstrument  { get { return CurrentChannel.Instrument; } }
-        Channel    SelectedChannel    { get { return SelChan > -1 ? CurrentPattern.Channels[SelChan] : null; } }
-        Instrument SelectedInstrument { get { return SelectedChannel?.Instrument ?? null; } }
-        Source     SelectedSource     { get { return CurSrc > -1 ? SelectedInstrument.Sources[CurSrc] : null; } }
+        static Pattern    CurrentPattern     { get { return g_song.Patterns[CurPat]; } }
+        static Channel    CurrentChannel     { get { return CurrentPattern.Channels[CurChan]; } }
+        static Instrument CurrentInstrument  { get { return CurrentChannel.Instrument; } }
+        static Channel    SelectedChannel    { get { return SelChan > -1 ? CurrentPattern.Channels[SelChan] : null; } }
+        static Instrument SelectedInstrument { get { return SelectedChannel?.Instrument ?? null; } }
+        static Source     SelectedSource     { get { return CurSrc > -1 ? SelectedInstrument.Sources[CurSrc] : null; } }
 
 
         static bool IsParam(Setting setting) 
         {
-            if (setting == null) return F;
+            if (setting == null) return false;
 
             return setting.GetType() == typeof(Tune)
                 || setting.GetType() == typeof(Parameter); 
@@ -162,43 +158,43 @@ namespace IngameScript
             while (setting != null)
             {
                 if (setting.Tag == tag)
-                    return T;
+                    return true;
 
                 setting = setting.Parent;
             }
 
-            return F;
+            return false;
         }
 
 
         bool IsCurParam()
         {
             return
-                   curSet > -1
-                && IsParam(g_settings[curSet]);
+                   CurSet > -1
+                && IsParam(g_settings[CurSet]);
         }
 
 
         bool IsCurParam(string tag)
         {
             return 
-                   curSet > -1
-                && HasTag(g_settings[curSet], tag);
+                   CurSet > -1
+                && HasTag(g_settings[CurSet], tag);
         }
 
 
         bool IsCurSetting(Type type)
         {
             return
-                   curSet > -1
-                && g_settings[curSet].GetType() == type;
+                   CurSet > -1
+                && g_settings[CurSet].GetType() == type;
         }
 
 
         bool IsCurOrParent(Type type)
         {
             return
-                   curSet > -1
+                   CurSet > -1
                 && (   IsCurSetting(type)
                     ||    CurSetting.Parent != null
                        && CurSetting.Parent.GetType() == type);
@@ -207,19 +203,19 @@ namespace IngameScript
 
         bool IsCurOrAnyParent(Type type)
         {
-            if (curSet < 0) return F;
+            if (CurSet < 0) return false;
 
             var setting = CurSetting;
 
             while (setting != null)
             {
                 if (setting.GetType() == typeof(Arpeggio))
-                    return T;
+                    return true;
 
                 setting = setting.Parent;
             }
 
-            return F;
+            return false;
         }
 
 
@@ -366,7 +362,7 @@ namespace IngameScript
                 ||    g_chordEdit 
                    && g_chord > -1
                 ||    IsCurParam("Tune")
-                   && (tune?.UseChord ?? F)
+                   && (tune?.UseChord ?? false)
                    && !(g_paramKeys || g_paramAuto)
                 || IsCurOrParent(typeof(Arpeggio));
         }}
@@ -442,11 +438,11 @@ namespace IngameScript
         }
 
 
-        void UpdateInstName(bool add = T)
+        void UpdateInstName(bool add = true)
         {
             if (   CurPat  > -1
                 && SelChan > -1)
-                dspMain.Surface.WriteText(add ? SelectedChannel.Instrument.Name : "", F);
+                dspMain.Surface.WriteText(add ? SelectedChannel.Instrument.Name : "", false);
         }
 
 
@@ -459,7 +455,7 @@ namespace IngameScript
         void StopEdit(Song song)
         {
             if (song.EditNotes.Count > 0)
-                g_hold = F;
+                g_hold = false;
 
             song.EditNotes.Clear();
 
@@ -545,7 +541,7 @@ namespace IngameScript
 
         void AutoLock()
         {
-            var auto = F;
+            var auto = false;
 
             foreach (var l in g_locks) auto |= l.AutoLock;
             foreach (var l in g_locks) l.AutoLock = !auto;
@@ -567,7 +563,7 @@ namespace IngameScript
                 return;
 
 
-            NoiseEmitters(T);
+            NoiseEmitters(true);
 
 
             if (p.CurrentPosition <= (p.MinLimit + p.MaxLimit) / 2) open .Trigger();

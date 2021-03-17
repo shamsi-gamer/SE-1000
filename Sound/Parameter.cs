@@ -199,7 +199,7 @@ namespace IngameScript
                 return
                        Envelope != null
                     || Lfo      != null
-                    || (chan?.HasKeys(GetPath(src)) ?? F)
+                    || (chan?.HasKeys(GetPath(src)) ?? false)
                     || _IsCurrent;
             }
 
@@ -260,54 +260,49 @@ namespace IngameScript
             }
 
 
+            //public override Setting NewSetting(string tag)
+            //{
+            //    switch (tag)
+            //    {
+            //        case "Env": return Envelope;
+            //        case "LFO": return Lfo;
+            //        case "Mod": return Modulate;
+            //    }
+
+            //    return null;
+            //}
+
+
             public override string Save()
             {
                 return
-                      W (Tag)
+                      W(Tag)
 
-                    + WS(m_value)
-                    //+ WS(Default)
+                    + S(m_value)
 
-                    //+ WS(Min)
-                    //+ WS(Max)
-
-                    //+ WS(NormalMin)
-                    //+ WS(NormalMax)
-
-                    //+ WS(Delta)
-                    //+ WS(BigDelta)
-
-                    + W (SaveSetting(Envelope))
-                    + W (SaveSetting(Lfo     ))
-                    +    SaveSetting(Modulate);
+                    + Program.Save(Envelope)
+                    + Program.Save(Lfo)
+                    + Program.Save(Modulate);
             }
 
 
             public static Parameter Load(string[] data, ref int i, Setting parent, Parameter proto = null)
             {
-                var tag      = data[i++];
+                var tag = data[i++];
  
-                var value    = float.Parse(data[i++]);
-                //var def      = float.Parse(data[i++]);
+                var param = proto ?? (Parameter)NewSettingFromTag(tag, parent);
 
-                //var min      = float.Parse(data[i++]);
-                //var max      = float.Parse(data[i++]);
+                param.m_value = float.Parse(data[i++]);
 
-                //var nMin     = float.Parse(data[i++]);
-                //var nMax     = float.Parse(data[i++]);
-
-                //var delta    = float.Parse(data[i++]);
-                //var bigDelta = float.Parse(data[i++]);
-
-                var param = proto ?? NewParamFromTag(tag, parent);
-
-                while (i < data.Length 
-                    && data[i] != "_")
+                while (i < data.Length
+                    && (   data[i] == "Env" 
+                        || data[i] == "LFO" 
+                        || data[i] == "Mod"))
                 { 
                     switch (data[i])
                     { 
                         case "Env": param.Envelope = Envelope.Load(data, ref i, param); break;
-                        case "Lfo": param.Lfo      = LFO     .Load(data, ref i, param); break;
+                        case "LFO": param.Lfo      = LFO     .Load(data, ref i, param); break;
                         case "Mod": param.Modulate = Modulate.Load(data, ref i, param); break;
                     }
                 }
@@ -317,86 +312,9 @@ namespace IngameScript
         }
 
 
-
-        static string FullNameFromTag(string tag)
-        {
-            if (IsDigit(tag[0])) return "Harmonic " + tag;
-
-            switch (tag)
-            { 
-            case "Vol":  return "Volume";
-
-            case "Env":  return "Envelope";
-            case "Att":  return "Attack";
-            case "Dec":  return "Decay";
-            case "Sus":  return "Sustain";
-            case "Rel":  return "Release";
-
-            case "LFO":  return "LFO";
-            case "Amp":  return "Amplitude";
-            case "Freq": return "Frequency";
-            case "Off":  return "Offset";
-
-            case "Flt":  return "Filter";
-            case "Cut":  return "Cutoff";
-            case "Res":  return "Resonance";
-
-            case "Mod":  return "Modulate";
-            case "Amt":  return "Amount";
-
-            case "Del":  return "Delay";
-            case "Cnt":  return "Count";
-            case "Time": return "Time";
-            case "Lvl":  return "Level";
-            case "Pow":  return "Power";
-                         
-            case "Arp":  return "Arpeggio";
-            case "Len":  return "Length";
-            case "Scl":  return "Scale";
-
-            case "Tune": return "Tune";
-            }
-
-            return "";
-        }
-
-
         static Parameter NewHarmonicParam(int i, Setting parent)
         {
             return new Parameter(S(i+1), 0, 1, 0.1f, 0.9f, 0.01f, 0.1f, i == 0 ? 1 : 0, parent);
-        }
-
-
-        static Parameter NewParamFromTag(string tag, Setting parent)
-        {
-            switch (tag)
-            { 
-            case "Vol":  return new Parameter("Vol",     0,          2,   0.5f,  1, 0.01f,  0.1f, 1,    parent);
-                                                                                            
-            case "Att":  return new Parameter("Att",     0,         10,   0,     1, 0.01f,  0.1f, 0,    parent);
-            case "Dec":  return new Parameter("Dec",     0,         10,   0,     1, 0.01f,  0.1f, 0.2f, parent);
-            case "Sus":  return new Parameter("Sus",     0,          1,   0.01f, 1, 0.01f,  0.1f, 0.1f, parent);
-            case "Rel":  return new Parameter("Rel",     0,         10,   0,     2, 0.01f,  0.1f, 0.2f, parent);
-                                                                                            
-            case "Amp":  return new Parameter("Amp",     0,          1,   0,     1, 0.01f,  0.1f, 0,    parent);
-            case "Freq": return new Parameter("Freq",    0.000001f, 30,   0.01f, 4, 0.01f,  0.1f, 0.5f, parent);
-            case "Off":  return new Parameter("Off",  -100,        100, -10,    10, 0.01f,  0.1f, 0,    parent);
-                                                                                            
-            case "Cut":  return new Parameter("Cut",    -1,          1,  -1,     1, 0.01f,  0.1f, 0,    parent);
-            case "Res":  return new Parameter("Res",     0.01f,      1,   0.01f, 1, 0.01f,  0.1f, 0,    parent);
-                                                                                                        
-            case "Amt":  return new Parameter("Amt",   -10,         10,  -1,     1, 0.01f,  0.1f, 0,    parent);
-                                                       
-            case "Cnt":  return new Parameter("Cnt",    0,         100,   1,    16, 1,     10,    4,    parent);
-            case "Time": return new Parameter("Time",   0.000001f,  10,   0.01f, 1, 0.01f,  0.1f, 0.2f, parent);
-            case "Lvl":  return new Parameter("Lvl",    0,           1,   0.01f, 1, 0.01f,  0.1f, 0.5f, parent);
-            case "Pow":  return new Parameter("Pow",    0.000001f,   1,   0.01f, 1, 0.01f,  0.1f, 1,    parent);
-                                                                          
-            case "Len":  return new Parameter("Len",    1,         256,   2,     6, 0.01f,  0.1f, 8,    parent);
-            case "Scl":  return new Parameter("Scl",    0.01f,      16,   0.25f, 4, 0.01f,  0.1f, 1,    parent);
-            }
-
-            return null;
         }
     }
 }

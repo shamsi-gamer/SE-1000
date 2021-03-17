@@ -21,7 +21,7 @@ namespace IngameScript
                 if (   g_chordMode
                     && g_chord < 0)
                 {
-                    var _found = F;
+                    var _found = false;
 
                     for (int i = 0; i < notes.Count; i++)
                     {
@@ -37,7 +37,7 @@ namespace IngameScript
                             if (found > -1) 
                             {
                                 chan.Notes.RemoveAt(found);
-                                _found = T;
+                                _found = true;
                             }
                         } 
                         while (found > -1);
@@ -106,7 +106,7 @@ namespace IngameScript
                          || g_chord > -1)
                     && !(   g_chordEdit 
                          && g_chord > -1))
-                    MoveEdit(song, 1, T);
+                    MoveEdit(song, 1, true);
             }
             else
             {

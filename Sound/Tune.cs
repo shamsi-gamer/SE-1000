@@ -32,8 +32,8 @@ namespace IngameScript
 
             public Tune() : base("Tune", -240, 240, -12, 12, 0.5f, 12, 0, null)
             {
-                UseChord   = F;
-                AllOctaves = F;
+                UseChord   = false;
+                AllOctaves = false;
 
                 Chord      = new List<int>();
                 FinalChord = new List<int>();
@@ -64,15 +64,15 @@ namespace IngameScript
             public override string Save()
             {
                 var tune =
-                      W (Tag)
-                    + W(base.Save())
+                      W(base.Save())
+
                     + W(B(UseChord))
                     + W(B(AllOctaves));
 
-                tune += WS(Chord.Count);
+                tune += S(Chord.Count);
 
                 for (int i = 0; i < Chord.Count; i++)
-                    tune += S(Chord[i]) + (i < Chord.Count-1 ? ";" : "");
+                    tune += ";" + S(Chord[i]);
 
                 return tune;
             }
@@ -87,7 +87,7 @@ namespace IngameScript
                 tune.UseChord   = data[i++] == "1";
                 tune.AllOctaves = data[i++] == "1";
 
-                var nChords = int.Parse(data[i]);
+                var nChords = int.Parse(data[i++]);
 
                 for (int j = 0; j < nChords; j++)
                     tune.Chord.Add(int.Parse(data[i++]));

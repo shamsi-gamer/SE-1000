@@ -39,13 +39,13 @@ namespace IngameScript
                            g_rndInst,
             
                            g_piano,
-                           g_move       = F,
+                           g_move       = false,
             
-                           g_transpose  = F,
-                           g_spread     = F,
+                           g_transpose  = false,
+                           g_spread     = false,
                                         
-                           g_shift      = F,
-                           g_mixerShift = F,
+                           g_shift      = false,
+                           g_mixerShift = false,
             
                            g_hold,
                            g_pick,
@@ -58,7 +58,7 @@ namespace IngameScript
                            g_paramKeys,
                            g_paramAuto,
                            
-                           g_setMem = F;
+                           g_setMem = false;
         
 
         int                g_chordSpread;
@@ -68,8 +68,9 @@ namespace IngameScript
 
         public static int  CurPat,
                            CurChan,
-                           SelChan,
-                           CurSrc,
+                           SelChan = -1,
+                           CurSrc  = -1,
+                           CurSet  = -1,
                             
                            PlayPat;
 
@@ -153,7 +154,7 @@ namespace IngameScript
             g_paramKeys  = 
             g_paramAuto  =
             
-            g_setMem     = F;
+            g_setMem     = false;
 
 
             g_ticksPerStep = 7;
@@ -163,6 +164,7 @@ namespace IngameScript
             CurChan       =  0;
             SelChan       = -1;
             CurSrc        = -1;
+            CurSet        = -1;
                           
             PlayTime      = -1;
             StartTime     = -1;

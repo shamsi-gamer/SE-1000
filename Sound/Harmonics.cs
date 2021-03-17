@@ -144,7 +144,7 @@ namespace IngameScript
                         iSrc,
                         note,
                         triggerValues,
-                        F,
+                        false,
                         null,
                         0,
                         Tones[i],
@@ -206,9 +206,18 @@ namespace IngameScript
             }
 
 
+            //public override Setting NewSetting(string tag)
+            //{
+            //    if (IsDigit(tag[0]))
+            //        return Tones[int.Parse(tag)];
+
+            //    return null;
+            //}
+
+
             public override string Save()
             {
-                var hrm = "";
+                var hrm = W(Tag);
 
                 for (int i = 0; i < Tones.Length; i++)
                     hrm += W(Tones[i].Save());
