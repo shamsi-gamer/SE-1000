@@ -1,21 +1,5 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
+﻿using System.Collections.Generic;
+
 
 namespace IngameScript
 {
@@ -78,11 +62,11 @@ namespace IngameScript
             }
 
 
-            public static Tune Load(string[] data, ref int i)
+            public static Tune Load(string[] data, ref int i, Instrument inst, int iSrc)
             {
                 var tune = new Tune();
 
-                Parameter.Load(data, ref i, null, tune);
+                Parameter.Load(data, ref i, inst, iSrc, tune);
 
                 tune.UseChord   = data[i++] == "1";
                 tune.AllOctaves = data[i++] == "1";

@@ -206,13 +206,10 @@ namespace IngameScript
             }
 
 
-            //public override Setting NewSetting(string tag)
-            //{
-            //    if (IsDigit(tag[0]))
-            //        return Tones[int.Parse(tag)];
-
-            //    return null;
-            //}
+            public override Setting GetOrAddSettingFromTag(string tag)
+            {
+                return Tones[int.Parse(tag)];
+            }
 
 
             public override string Save()
@@ -229,14 +226,14 @@ namespace IngameScript
             }
 
 
-            public static Harmonics Load(string[] data, ref int i)
+            public static Harmonics Load(string[] data, ref int i, Instrument inst, int iSrc)
             {
                 var tag = data[i++];
 
                 var hrm = new Harmonics();
 
                 for (int j = 0; j < hrm.Tones.Length; j++)
-                    hrm.Tones[j] = Parameter.Load(data, ref i, hrm);
+                    hrm.Tones[j] = Parameter.Load(data, ref i, inst, iSrc, hrm);
                 
                 hrm.CurPreset = (Preset)int.Parse(data[i++]);
                 hrm.CurTone   = int.Parse(data[i++]);

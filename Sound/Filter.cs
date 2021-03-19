@@ -58,16 +58,16 @@ namespace IngameScript
             }
 
 
-            //public override Setting NewSetting(string tag)
-            //{
-            //    switch (tag)
-            //    {
-            //        case "Cut": return Cutoff;
-            //        case "Res": return Resonance;
-            //    }
+            public override Setting GetOrAddSettingFromTag(string tag)
+            {
+                switch (tag)
+                {
+                    case "Cut": return Cutoff    ?? (Cutoff    = new Parameter("Cut", -1,     1, -1,     1, 0.01f,  0.1f, 0, this));
+                    case "Res": return Resonance ?? (Resonance = new Parameter("Res",  0.01f, 1,  0.01f, 1, 0.01f,  0.1f, 0, this));
+                }
 
-            //    return null;
-            //}
+                return null;
+            }
 
 
             public override string Save()
@@ -80,14 +80,14 @@ namespace IngameScript
             }
 
 
-            public static Filter Load(string[] data, ref int i)
+            public static Filter Load(string[] data, ref int i, Instrument inst, int iSrc)
             {
                 var tag = data[i++];
  
                 var flt = new Filter();
 
-                flt.Cutoff    = Parameter.Load(data, ref i, flt);
-                flt.Resonance = Parameter.Load(data, ref i, flt);
+                flt.Cutoff    = Parameter.Load(data, ref i, inst, iSrc, flt);
+                flt.Resonance = Parameter.Load(data, ref i, inst, iSrc, flt);
 
                 return flt;
             }

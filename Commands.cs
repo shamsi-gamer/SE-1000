@@ -473,7 +473,7 @@ namespace IngameScript
 
                 UpdateInstName(true);
                 inputValid = false;
-                
+
                 //g_sampleValid = F;
                 MarkLight(lblEnter, CurSrc < 0);
             }

@@ -297,20 +297,20 @@ namespace IngameScript
             }
 
 
-            //public Setting NewSetting(string tag)
-            //{
-            //    switch (tag)
-            //    {
-            //        case "Off":  return Offset;
-            //        case "Vol":  return Volume;
-            //        case "Tune": return Tune;
-            //        case "Hrm":  return Harmonics;
-            //        case "Flt":  return Filter;
-            //        case "Del":  return Delay;
-            //    }
+            public Setting GetOrAddSettingFromTag(string tag)
+            {
+                switch (tag)
+                {
+                    case "Vol":  return Volume;
+                    case "Off":  return Offset    ?? (Offset    = new Parameter("Off", -100, 100, -10, 10, 0.01f, 0.1f, 0, null));
+                    case "Tune": return Tune      ?? (Tune      = new Tune());
+                    case "Hrm":  return Harmonics ?? (Harmonics = new Harmonics());
+                    case "Flt":  return Filter    ?? (Filter    = new Filter());
+                    case "Del":  return Delay     ?? (Delay     = new Delay());
+                }
 
-            //    return null;
-            //}
+                return null;
+            }
 
 
             public string Save()
@@ -331,36 +331,35 @@ namespace IngameScript
             }
 
 
-            public static Source Load(string[] lines, ref int line, Instrument inst)
+            public static void Load(string[] lines, ref int line, Instrument inst, int iSrc)
             {
                 var data = lines[line++].Split(';');
                 var i    = 0;
 
                 var src = new Source(inst);
+                inst.Sources.Add(src);
 
                 src.Oscillator = OscillatorFromType((OscType)int.Parse(data[i++]));
                 src.On         = data[i++] == "1";
 
-                src.Volume = Parameter.Load(data, ref i, null);
+                src.Volume = Parameter.Load(data, ref i, inst, iSrc, null);
 
                 while (i < data.Length
-                    && (   data[i] == "Off" 
+                    && (   data[i] == "Off"
                         || data[i] == "Tune"
-                        || data[i] == "Hrm" 
-                        || data[i] == "Flt" 
+                        || data[i] == "Hrm"
+                        || data[i] == "Flt"
                         || data[i] == "Del"))
                 { 
                     switch (data[i])
                     { 
-                        case "Off":  src.Offset    = Parameter.Load(data, ref i, null); break;
-                        case "Tune": src.Tune      = Tune     .Load(data, ref i);       break;
-                        case "Hrm":  src.Harmonics = Harmonics.Load(data, ref i);       break;
-                        case "Flt":  src.Filter    = Filter   .Load(data, ref i);       break;
-                        case "Del":  src.Delay     = Delay    .Load(data, ref i);       break;
+                        case "Off":  src.Offset    = Parameter.Load(data, ref i, inst, iSrc, null); break;
+                        case "Tune": src.Tune      = Tune     .Load(data, ref i, inst, iSrc);       break;
+                        case "Hrm":  src.Harmonics = Harmonics.Load(data, ref i, inst, iSrc);       break;
+                        case "Flt":  src.Filter    = Filter   .Load(data, ref i, inst, iSrc);       break;
+                        case "Del":  src.Delay     = Delay    .Load(data, ref i, inst, iSrc);       break;
                     }
                 }
-
-                return src;
             }
         }
     }

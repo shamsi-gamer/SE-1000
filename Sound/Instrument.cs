@@ -121,19 +121,19 @@ namespace IngameScript
             }
 
 
-            //public Setting NewSetting(string tag)
-            //{
-            //    switch (tag)
-            //    {
-            //        case "Vol":  return Volume;
-            //        case "Tune": return Tune;
-            //        case "Flt":  return Filter;
-            //        case "Del":  return Delay;
-            //        case "Arp":  return Arpeggio;
-            //    }
+            public Setting GetOrAddSettingFromTag(string tag)
+            {
+                switch (tag)
+                {
+                    case "Vol":  return Volume;
+                    case "Tune": return Tune     ?? (Tune     = new Tune());
+                    case "Flt":  return Filter   ?? (Filter   = new Filter());
+                    case "Del":  return Delay    ?? (Delay    = new Delay());
+                    case "Arp":  return Arpeggio ?? (Arpeggio = new Arpeggio((Instrument)null));
+                }
 
-            //    return null;
-            //}
+                return null;
+            }
 
 
             public string Save()
@@ -167,7 +167,7 @@ namespace IngameScript
 
                 var nSources = int.Parse(data[i++]);
 
-                inst.Volume = Parameter.Load(data, ref i, null);
+                inst.Volume = Parameter.Load(data, ref i, inst, -1, null);
 
                 while (i < data.Length
                     && (   data[i] == "Tune" 
@@ -175,18 +175,17 @@ namespace IngameScript
                         || data[i] == "Del" 
                         || data[i] == "Arp"))
                 {
-                    Log("data[" + i + "] = " + data[i]);
                     switch (data[i])
                     { 
-                        case "Tune": inst.Tune     = Tune    .Load(data, ref i);       break;
-                        case "Flt":  inst.Filter   = Filter  .Load(data, ref i);       break;
-                        case "Del":  inst.Delay    = Delay   .Load(data, ref i);       break;
-                        case "Arp":  inst.Arpeggio = Arpeggio.Load(data, ref i, inst); break;
+                        case "Tune": inst.Tune     = Tune    .Load(data, ref i, inst, -1); break;
+                        case "Flt":  inst.Filter   = Filter  .Load(data, ref i, inst, -1); break;
+                        case "Del":  inst.Delay    = Delay   .Load(data, ref i, inst, -1); break;
+                        case "Arp":  inst.Arpeggio = Arpeggio.Load(data, ref i, inst, -1); break;
                     }
                 }
 
                 for (int j = 0; j < nSources; j++)
-                    inst.Sources.Add(Source.Load(lines, ref line, inst));
+                    Source.Load(lines, ref line, inst, j);
 
                 return inst;
             }

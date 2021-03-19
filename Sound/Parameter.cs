@@ -260,17 +260,17 @@ namespace IngameScript
             }
 
 
-            //public override Setting NewSetting(string tag)
-            //{
-            //    switch (tag)
-            //    {
-            //        case "Env": return Envelope;
-            //        case "LFO": return Lfo;
-            //        case "Mod": return Modulate;
-            //    }
+            public override Setting GetOrAddSettingFromTag(string tag)
+            {
+                switch (tag)
+                {
+                    case "Env": return Envelope ?? (Envelope = new Envelope(this));
+                    case "LFO": return Lfo      ?? (Lfo      = new LFO     (this));
+                    case "Mod": return Modulate ?? (Modulate = new Modulate(this));
+                }
 
-            //    return null;
-            //}
+                return null;
+            }
 
 
             public override string Save()
@@ -286,11 +286,16 @@ namespace IngameScript
             }
 
 
-            public static Parameter Load(string[] data, ref int i, Setting parent, Parameter proto = null)
+            public static Parameter Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent, Parameter proto = null)
             {
                 var tag = data[i++];
- 
-                var param = proto ?? (Parameter)NewSettingFromTag(tag, parent);
+
+                Parameter param = null;
+
+                     if (proto  != null) param = proto;
+                else if (parent != null) param = (Parameter)parent.GetOrAddSettingFromTag(tag);
+                else if (iSrc > -1)      param = (Parameter)inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
+                else                     param = (Parameter)inst.GetOrAddSettingFromTag(tag);
 
                 param.m_value = float.Parse(data[i++]);
 
@@ -298,12 +303,12 @@ namespace IngameScript
                     && (   data[i] == "Env" 
                         || data[i] == "LFO" 
                         || data[i] == "Mod"))
-                { 
+                {
                     switch (data[i])
                     { 
-                        case "Env": param.Envelope = Envelope.Load(data, ref i, param); break;
-                        case "LFO": param.Lfo      = LFO     .Load(data, ref i, param); break;
-                        case "Mod": param.Modulate = Modulate.Load(data, ref i, param); break;
+                        case "Env": param.Envelope = Envelope.Load(data, ref i, inst, iSrc, param); break;
+                        case "LFO": param.Lfo      = LFO     .Load(data, ref i, inst, iSrc, param); break;
+                        case "Mod": param.Modulate = Modulate.Load(data, ref i, inst, iSrc, param); break;
                     }
                 }
 
@@ -314,7 +319,7 @@ namespace IngameScript
 
         static Parameter NewHarmonicParam(int i, Setting parent)
         {
-            return new Parameter(S(i+1), 0, 1, 0.1f, 0.9f, 0.01f, 0.1f, i == 0 ? 1 : 0, parent);
+            return new Parameter(S(i), 0, 1, 0.1f, 0.9f, 0.01f, 0.1f, i == 0 ? 1 : 0, parent);
         }
     }
 }

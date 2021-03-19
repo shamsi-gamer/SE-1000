@@ -73,8 +73,6 @@ namespace IngameScript
 
             foreach (var tag in tags)
                 AddNextSetting(tag);
-
-            CurSet = tags.Length-1;
         }
 
 
@@ -83,12 +81,16 @@ namespace IngameScript
             if (CurSet > -1)
                 g_settings[CurSet]._IsCurrent = false;
 
-            var setting = NewSettingFromTag(tag, CurSet > -1 ? g_settings[CurSet] : null);
+            Setting setting;
+
+                 if (CurSet > -1) setting = g_settings[CurSet].GetOrAddSettingFromTag(tag);
+            else if (CurSrc <  0) setting = SelectedInstrument.GetOrAddSettingFromTag(tag);
+            else                  setting = SelectedSource    .GetOrAddSettingFromTag(tag);
 
             g_settings.Add(setting);
 
-            CurSet++;// = g_settings.Count-1;
-            Log("g_settings[CurSet] = " + g_settings[CurSet]);
+            CurSet++;
+
             if (IsParam(g_settings[CurSet]))
                 g_settings[CurSet]._IsCurrent = true;
         }

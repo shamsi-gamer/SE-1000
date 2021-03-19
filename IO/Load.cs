@@ -21,9 +21,7 @@ namespace IngameScript
                 return false;
 
             var cfg = lines[line++].Split(';');
-
-
-            if (!LoadToggles (cfg[0]))      return false;
+            if (!LoadToggles(cfg[0])) return false;
 
             string curSetPath;
             if (!LoadSettings(cfg, out curSetPath)) return false;
@@ -148,7 +146,6 @@ namespace IngameScript
             if (!int  .TryParse(cfg[c++], out CurSrc        )) return false;
 
             if (!int  .TryParse(cfg[c++], out CurSet        )) return false;
-
             if (CurSet > -1) curSetPath = cfg[c++];
 
             if (!long .TryParse(cfg[c++], out PlayTime      )) return false;
@@ -213,41 +210,6 @@ namespace IngameScript
 
 
             return true;
-        }
-
-
-        string LoadSetting(string[] data, ref int i)
-        {
-            //if (IsDigit(lines[i].Trim()[0])) // harmonic tone
-                return "";
-
-            //switch (lines[i].Trim())
-            //{
-            //    case "Vol":
-
-            //    case "Att":
-            //    case "Dec":
-            //    case "Sus":
-            //    case "Rel":
-
-            //    case "Amp":
-            //    case "Freq":
-            //    case "Off":
-
-            //    case "Cut":
-            //    case "Res":
-
-            //    case "Amt":
-
-            //    case "Cnt":
-            //    case "Time":
-            //    case "Lvl":
-            //    case "Pow":
-
-            //    case "Len":
-            //    case "Scl":
-            //}
-
         }
 
 

@@ -52,17 +52,17 @@ namespace IngameScript
             }
 
 
-            //public override Setting NewSetting(string tag)
-            //{
-            //    switch (tag)
-            //    {
-            //        case "Amt": return Amount;
-            //        case "Att": return Attack;
-            //        case "Rel": return Release;
-            //    }
+            public override Setting GetOrAddSettingFromTag(string tag)
+            {
+                switch (tag)
+                {
+                    case "Amt": return Amount  ?? (Amount  = new Parameter("Amt", -10, 10, -1, 1, 0.01f, 0.1f, 0,    this));
+                    case "Att": return Attack  ?? (Attack  = new Parameter("Att",   0, 10,  0, 1, 0.01f, 0.1f, 0,    this));
+                    case "Rel": return Release ?? (Release = new Parameter("Rel",   0, 10,  0, 2, 0.01f, 0.1f, 0.2f, this));
+                }
 
-            //    return null;
-            //}
+                return null;
+            }
 
 
             public override string Save()
@@ -76,15 +76,15 @@ namespace IngameScript
             }
 
 
-            public static Modulate Load(string[] data, ref int i, Setting parent)
+            public static Modulate Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent)
             {
                 var tag = data[i++];
 
                 var mod = new Modulate(parent);
 
-                mod.Amount  = Parameter.Load(data, ref i, mod);
-                mod.Attack  = Parameter.Load(data, ref i, mod);
-                mod.Release = Parameter.Load(data, ref i, mod);
+                mod.Amount  = Parameter.Load(data, ref i, inst, iSrc, mod);
+                mod.Attack  = Parameter.Load(data, ref i, inst, iSrc, mod);
+                mod.Release = Parameter.Load(data, ref i, inst, iSrc, mod);
 
                 return mod;
             }

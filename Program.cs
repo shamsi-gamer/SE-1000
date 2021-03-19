@@ -274,43 +274,57 @@ namespace IngameScript
 
         public void Main(string arg, UpdateType update)
         {
+            Log("1");
             if (arg.Length > 0)
             { 
                 ProcessArg(arg);
                 return;
             }
+            Log("2");
 
 
             if (!g_init)
                 return;
 
-            
+            Log("3");
+
             //pnlInfoLog.CustomData = "";
-            
+
             FinishStartup();
+            Log("4");
 
 
             _triggerDummy.Clear();
 
+            Log("5");
 
             if ((update & UpdateType.Update1) != 0)
             {
+                Log("6");
+                Log("g_settings.Count = " + g_settings.Count);
+                Log("CurSet = " + CurSet);
                 if (CurSet > -1)
                     g_settings[CurSet].AdjustFromController(g_song, this);
+                Log("7");
 
                 UpdatePlayback();
+                Log("8");
 
                 if (PlayTime > -1)
                     UpdateKeyLights();
+                Log("9");
             }
 
+            Log("10");
 
             if ((update & UpdateType.Update10) != 0)
             {
+                Log("11");
                 if (    PlayTime < 0
                     && _nextToLoad > 10)
                     UpdateKeyLights();
 
+                Log("12");
 
                 if (g_started)
                 {
@@ -320,6 +334,7 @@ namespace IngameScript
                 else
                     g_started = true;
 
+                Log("13");
 
                 if (_nextToLoad > 10)
                 { 
@@ -332,6 +347,7 @@ namespace IngameScript
                     DampenVolumes();
                 }
 
+                Log("14");
 
                 ResetRuntimeInfo();
 

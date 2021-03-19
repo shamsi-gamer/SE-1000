@@ -349,10 +349,7 @@ namespace IngameScript
             {
                 var inst = SelectedInstrument;
                 //var src  = g_song.CurSrc > -1 ? inst.Sources[g_song.CurSrc] : null;
-                Log("CurSrc = " + CurSrc);
-                Log("g_settings[CurSet].GetPath(CurSrc) = " + g_settings[CurSet].GetPath(CurSrc));
                 var tune = (Tune)GetCurrentParam(inst);
-                Log("tune = " + tune);
 
                 UpdateLight(lblChord, tune.UseChord);
 

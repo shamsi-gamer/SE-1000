@@ -124,17 +124,17 @@ namespace IngameScript
             }
 
 
-            //public override Setting NewSetting(string tag)
-            //{
-            //    switch (tag)
-            //    {
-            //        case "Amp":  return Amplitude;
-            //        case "Freq": return Frequency;
-            //        case "Off":  return Offset;
-            //    }
+            public override Setting GetOrAddSettingFromTag(string tag)
+            {
+                switch (tag)
+                {
+                    case "Amp":  return Amplitude ?? (Amplitude = new Parameter("Amp",     0,          1,   0,     1, 0.01f,  0.1f, 0,    this));
+                    case "Freq": return Frequency ?? (Frequency = new Parameter("Freq",    0.000001f, 30,   0.01f, 4, 0.01f,  0.1f, 0.5f, this));
+                    case "Off":  return Offset    ?? (Offset    = new Parameter("Off",  -100,        100, -10,    10, 0.01f,  0.1f, 0,    this));
+                }
 
-            //    return null;
-            //}
+                return null;
+            }
 
 
             public override string Save()
@@ -150,7 +150,7 @@ namespace IngameScript
             }
 
 
-            public static LFO Load(string[] data, ref int i, Setting parent)
+            public static LFO Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent)
             {
                 var tag = data[i++];
  
@@ -158,9 +158,9 @@ namespace IngameScript
 
                 lfo.Type = (LfoType)int.Parse(data[i++]);
 
-                lfo.Amplitude = Parameter.Load(data, ref i, lfo);
-                lfo.Frequency = Parameter.Load(data, ref i, lfo);
-                lfo.Offset    = Parameter.Load(data, ref i, lfo);
+                lfo.Amplitude = Parameter.Load(data, ref i, inst, iSrc, lfo);
+                lfo.Frequency = Parameter.Load(data, ref i, inst, iSrc, lfo);
+                lfo.Offset    = Parameter.Load(data, ref i, inst, iSrc, lfo);
 
                 return lfo;
             }

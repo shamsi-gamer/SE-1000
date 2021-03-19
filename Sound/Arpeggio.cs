@@ -89,16 +89,16 @@
             }
 
 
-            //public override Setting NewSetting(string tag)
-            //{
-            //    switch (tag)
-            //    {
-            //        case "Len": return Length;
-            //        case "Scl": return Scale;
-            //    }
+            public override Setting GetOrAddSettingFromTag(string tag)
+            {
+                switch (tag)
+                {
+                    case "Len": return Length ?? (Length = new Parameter("Len", 1,     256, 2,     6, 0.01f,  0.1f, 8, this));
+                    case "Scl": return Scale  ?? (Scale  = new Parameter("Scl", 0.01f,  16, 0.25f, 4, 0.01f,  0.1f, 1, this));
+                }
 
-            //    return null;
-            //}
+                return null;
+            }
 
 
             public override string Save()
@@ -114,14 +114,14 @@
             }
 
 
-            public static Arpeggio Load(string[] data, ref int i, Instrument inst)
+            public static Arpeggio Load(string[] data, ref int i, Instrument inst, int iSrc)
             {
                 var tag = data[i++];
  
                 var arp = new Arpeggio(inst);
 
-                arp.Length = Parameter.Load(data, ref i, arp);
-                arp.Scale  = Parameter.Load(data, ref i, arp);
+                arp.Length = Parameter.Load(data, ref i, inst, iSrc, arp);
+                arp.Scale  = Parameter.Load(data, ref i, inst, iSrc, arp);
 
                 return arp;
             }

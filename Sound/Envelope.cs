@@ -175,18 +175,18 @@ namespace IngameScript
             }
 
 
-            //public override Setting NewSetting(string tag)
-            //{
-            //    switch (tag)
-            //    {
-            //        case "Att": return Attack;
-            //        case "Dec": return Decay;
-            //        case "Sus": return Sustain;
-            //        case "Rel": return Release;
-            //    }
+            public override Setting GetOrAddSettingFromTag(string tag)
+            {
+                switch (tag)
+                {
+                    case "Att": return Attack  ?? (Attack  = new Parameter("Att", 0, 10, 0,     1, 0.01f, 0.1f, 0,    this));
+                    case "Dec": return Decay   ?? (Decay   = new Parameter("Dec", 0, 10, 0,     1, 0.01f, 0.1f, 0.2f, this));
+                    case "Sus": return Sustain ?? (Sustain = new Parameter("Sus", 0,  1, 0.01f, 1, 0.01f, 0.1f, 0.1f, this));
+                    case "Rel": return Release ?? (Release = new Parameter("Rel", 0, 10, 0,     2, 0.01f, 0.1f, 0.2f, this));
+                }
 
-            //    return null;
-            //}
+                return null;
+            }
 
 
             public override string Save()
@@ -205,16 +205,16 @@ namespace IngameScript
             }
 
 
-            public static Envelope Load(string[] data, ref int i, Setting parent)
+            public static Envelope Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent)
             {
                 var tag = data[i++];
  
                 var env = new Envelope(parent);
 
-                env.Attack  = Parameter.Load(data, ref i, env);
-                env.Decay   = Parameter.Load(data, ref i, env);
-                env.Sustain = Parameter.Load(data, ref i, env);
-                env.Release = Parameter.Load(data, ref i, env);
+                env.Attack  = Parameter.Load(data, ref i, inst, iSrc, env);
+                env.Decay   = Parameter.Load(data, ref i, inst, iSrc, env);
+                env.Sustain = Parameter.Load(data, ref i, inst, iSrc, env);
+                env.Release = Parameter.Load(data, ref i, inst, iSrc, env);
 
                 //env.TrigAttack  = float.Parse(data[i++]);
                 //env.TrigDecay   = float.Parse(data[i++]);

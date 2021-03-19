@@ -113,18 +113,18 @@ namespace IngameScript
             }
 
 
-            //public override Setting NewSetting(string tag)
-            //{
-            //    switch (tag)
-            //    {
-            //        case "Cnt":  return Count;
-            //        case "Time": return Time;
-            //        case "Lvl":  return Level;
-            //        case "Pow":  return Power;
-            //    }
+            public override Setting GetOrAddSettingFromTag(string tag)
+            {
+                switch (tag)
+                {
+                    case "Cnt":  return Count ?? (Count = new Parameter("Cnt",  0,        100, 1,    16, 1,    10,    4,    this));
+                    case "Time": return Time  ?? (Time  = new Parameter("Time", 0.000001f, 10, 0.01f, 1, 0.01f, 0.1f, 0.2f, this));
+                    case "Lvl":  return Level ?? (Level = new Parameter("Lvl",  0,          1, 0.01f, 1, 0.01f, 0.1f, 0.5f, this));
+                    case "Pow":  return Power ?? (Power = new Parameter("Pow",  0.000001f,  1, 0.01f, 1, 0.01f, 0.1f, 1,    this));
+                }
 
-            //    return null;
-            //}
+                return null;
+            }
 
 
             public override string Save()
@@ -139,16 +139,16 @@ namespace IngameScript
             }
 
 
-            public static Delay Load(string[] data, ref int i)
+            public static Delay Load(string[] data, ref int i, Instrument inst, int iSrc)
             {
                 var tag = data[i++];
  
                 var del = new Delay();
 
-                del.Count = Parameter.Load(data, ref i, del);
-                del.Time  = Parameter.Load(data, ref i, del);
-                del.Level = Parameter.Load(data, ref i, del);
-                del.Power = Parameter.Load(data, ref i, del);
+                del.Count = Parameter.Load(data, ref i, inst, iSrc, del);
+                del.Time  = Parameter.Load(data, ref i, inst, iSrc, del);
+                del.Level = Parameter.Load(data, ref i, inst, iSrc, del);
+                del.Power = Parameter.Load(data, ref i, inst, iSrc, del);
 
                 return del;
             }

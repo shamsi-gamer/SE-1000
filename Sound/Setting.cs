@@ -47,6 +47,10 @@ namespace IngameScript
             }
 
 
+            public virtual Setting GetOrAddSettingFromTag(string tag) => null;
+
+
+
             public virtual bool    HasDeepParams(Channel chan, int src) { return false; }
             public virtual void    Remove(Setting setting) { }
                                    
@@ -60,12 +64,6 @@ namespace IngameScript
         }
 
 
-        static string LastTag(string path)
-        {
-            return path.Split('/').Last();
-        }
-
-
         Parameter GetCurrentParam(Instrument inst)
         {
             return (Parameter)GetSettingFromPath(
@@ -76,167 +74,180 @@ namespace IngameScript
 
         static Setting GetSettingFromPath(Instrument inst, string path)
         {
-            return GetSettingFromInstrument(inst, path.Split('/'));
+            var tags = path.Split('/');
+
+            Setting setting = null;
+
+            foreach (var tag in tags)
+            {
+                setting = 
+                    setting == null
+                    ? inst   .GetOrAddSettingFromTag(tag)
+                    : setting.GetOrAddSettingFromTag(tag);
+            }
+
+            return setting;
+//            return GetSettingFromInstrument(inst, path.Split('/'));
         }
         
 
-        static Setting GetSettingFromInstrument(Instrument inst, string[] path)
-        {
-            if (IsDigit(path[0][0])) // source
-            {
-                var rest = path.Subarray(2, path.Length - 2);
-                var src  = inst.Sources[int.Parse(path[0])];
+        //static Setting GetSettingFromInstrument(Instrument inst, string[] path)
+        //{
+        //    if (IsDigit(path[0][0])) // source
+        //    {
+        //        var rest = path.Subarray(2, path.Length - 2);
+        //        var src  = inst.Sources[int.Parse(path[0])];
 
-                switch (path[1])
-                {
-                    case "Off":  return src.Offset    != null ? GetSettingFromParam    (src.Offset,    rest) : null;
-                    case "Vol":  return GetSettingFromParam(inst.Volume, rest);
-                    case "Tune": return src.Tune      != null ? GetSettingFromParam    (src.Tune,      rest) : null;
-                    case "Hrm":  return src.Harmonics != null ? GetSettingFromHarmonics(src.Harmonics, rest) : null;
-                    case "Flt":  return src.Filter    != null ? GetSettingFromFilter   (src.Filter,    rest) : null;
-                    case "Del":  return src.Delay     != null ? GetSettingFromDelay    (src.Delay,     rest) : null;
-                }
-            }
-            else // instrument
-            {
-                var rest = path.Subarray(1, path.Length-1);
+        //        switch (path[1])
+        //        {
+        //            case "Off":  return src.Offset    != null ? GetSettingFromParam    (src.Offset,    rest) : null;
+        //            case "Vol":  return GetSettingFromParam(inst.Volume, rest);
+        //            case "Tune": return src.Tune      != null ? GetSettingFromParam    (src.Tune,      rest) : null;
+        //            case "Hrm":  return src.Harmonics != null ? GetSettingFromHarmonics(src.Harmonics, rest) : null;
+        //            case "Flt":  return src.Filter    != null ? GetSettingFromFilter   (src.Filter,    rest) : null;
+        //            case "Del":  return src.Delay     != null ? GetSettingFromDelay    (src.Delay,     rest) : null;
+        //        }
+        //    }
+        //    else // instrument
+        //    {
+        //        var rest = path.Subarray(1, path.Length-1);
 
-                switch (path[0])
-                {
-                    case "Vol":  return GetSettingFromParam(inst.Volume, rest);
-                    case "Tune": Log("inst.Tune = " + inst.Tune);return inst.Tune     != null ? GetSettingFromParam   (inst.Tune,     rest) : null;
-                    case "Del":  return inst.Delay    != null ? GetSettingFromDelay   (inst.Delay,    rest) : null;
-                    case "Arp":  return inst.Arpeggio != null ? GetSettingFromArpeggio(inst.Arpeggio, rest) : null;
-                }
-            }
+        //        switch (path[0])
+        //        {
+        //            case "Vol":  return GetSettingFromParam(inst.Volume, rest);
+        //            case "Tune": Log("inst.Tune = " + inst.Tune);return inst.Tune     != null ? GetSettingFromParam   (inst.Tune,     rest) : null;
+        //            case "Del":  return inst.Delay    != null ? GetSettingFromDelay   (inst.Delay,    rest) : null;
+        //            case "Arp":  return inst.Arpeggio != null ? GetSettingFromArpeggio(inst.Arpeggio, rest) : null;
+        //        }
+        //    }
 
-            return null;
-        }
-
-
-        Setting GetSettingFromHarmonics(Harmonics hrm, string[] path)
-        {
-            if (path.Length == 0) return hrm;
-            var rest = path.Subarray(1, path.Length-1);
-
-            if (IsDigit(path[0][0]))
-                return GetSettingFromParam(hrm.Tones[int.Parse(path[0])-1], rest);
-
-            return null;
-        }
+        //    return null;
+        //}
 
 
-        Setting GetSettingFromFilter(Filter flt, string[] path)
-        {
-            if (path.Length == 0) return flt;
-            var rest = path.Subarray(1, path.Length-1);
+        //Setting GetSettingFromHarmonics(Harmonics hrm, string[] path)
+        //{
+        //    if (path.Length == 0) return hrm;
+        //    var rest = path.Subarray(1, path.Length-1);
 
-            switch (path[0])
-            {
-                case "Cut": return GetSettingFromParam(flt.Cutoff,    rest);
-                case "Res": return GetSettingFromParam(flt.Resonance, rest);
-            }
+        //    if (IsDigit(path[0][0]))
+        //        return GetSettingFromParam(hrm.Tones[int.Parse(path[0])-1], rest);
 
-            return null;
-        }
+        //    return null;
+        //}
 
 
-        static Setting GetSettingFromDelay(Delay del, string[] path)
-        {
-            if (path.Length == 0) return del;
-            var rest = path.Subarray(1, path.Length-1);
+        //Setting GetSettingFromFilter(Filter flt, string[] path)
+        //{
+        //    if (path.Length == 0) return flt;
+        //    var rest = path.Subarray(1, path.Length-1);
 
-            switch (path[0])
-            {
-                case "Cnt":  return GetSettingFromParam(del.Count, rest);
-                case "Time": return GetSettingFromParam(del.Time,  rest);
-                case "Lvl":  return GetSettingFromParam(del.Level, rest);
-                case "Pow":  return GetSettingFromParam(del.Power, rest);
-            }
+        //    switch (path[0])
+        //    {
+        //        case "Cut": return GetSettingFromParam(flt.Cutoff,    rest);
+        //        case "Res": return GetSettingFromParam(flt.Resonance, rest);
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
 
-        static Setting GetSettingFromParam(Parameter param, string[] path)
-        {
-            if (path.Length == 0) return param;
-            var rest = path.Subarray(1, path.Length-1);
+        //static Setting GetSettingFromDelay(Delay del, string[] path)
+        //{
+        //    if (path.Length == 0) return del;
+        //    var rest = path.Subarray(1, path.Length-1);
 
-            switch (path[0])
-            {
-                case "Env": return GetSettingFromEnvelope(param.Envelope, rest);
-                case "LFO": return GetSettingFromLfo     (param.Lfo,      rest);
-                case "Mod": return GetSettingFromModulate(param.Modulate, rest);
-            }
+        //    switch (path[0])
+        //    {
+        //        case "Cnt":  return GetSettingFromParam(del.Count, rest);
+        //        case "Time": return GetSettingFromParam(del.Time,  rest);
+        //        case "Lvl":  return GetSettingFromParam(del.Level, rest);
+        //        case "Pow":  return GetSettingFromParam(del.Power, rest);
+        //    }
 
-            return null;
-        }
-
-
-        static Setting GetSettingFromEnvelope(Envelope env, string[] path)
-        {
-            if (path.Length == 0) return env;
-            var rest = path.Subarray(1, path.Length-1);
-
-            switch (path[0])
-            {
-                case "Att": return GetSettingFromParam(env.Attack,  rest);
-                case "Dec": return GetSettingFromParam(env.Decay,   rest);
-                case "Sus": return GetSettingFromParam(env.Sustain, rest);
-                case "Rel": return GetSettingFromParam(env.Release, rest);
-            }
-
-            return null;
-        }
+        //    return null;
+        //}
 
 
-        static Setting GetSettingFromLfo(LFO lfo, string[] path)
-        {
-            if (path.Length == 0) return lfo;
-            var rest = path.Subarray(1, path.Length-1);
+        //static Setting GetSettingFromParam(Parameter param, string[] path)
+        //{
+        //    if (path.Length == 0) return param;
+        //    var rest = path.Subarray(1, path.Length-1);
 
-            switch (path[0])
-            {
-                case "Att": return GetSettingFromParam(lfo.Amplitude, rest);
-                case "Dec": return GetSettingFromParam(lfo.Frequency, rest);
-                case "Sus": return GetSettingFromParam(lfo.Offset,    rest);
-            }
+        //    switch (path[0])
+        //    {
+        //        case "Env": return GetSettingFromEnvelope(param.Envelope, rest);
+        //        case "LFO": return GetSettingFromLfo     (param.Lfo,      rest);
+        //        case "Mod": return GetSettingFromModulate(param.Modulate, rest);
+        //    }
 
-            return null;
-        }
-
-
-        static Setting GetSettingFromModulate(Modulate mod, string[] path)
-        {
-            if (path.Length == 0) return mod;
-            var rest = path.Subarray(1, path.Length-1);
-
-            switch (path[0])
-            {
-                case "Amt": return GetSettingFromParam(mod.Amount,  rest);
-                case "Att": return GetSettingFromParam(mod.Attack,  rest);
-                case "Rel": return GetSettingFromParam(mod.Release, rest);
-            }
-
-            return null;
-        }
+        //    return null;
+        //}
 
 
-        Setting GetSettingFromArpeggio(Arpeggio arp, string[] path)
-        {
-            if (path.Length == 0) return arp;
-            var rest = path.Subarray(1, path.Length-1);
+        //static Setting GetSettingFromEnvelope(Envelope env, string[] path)
+        //{
+        //    if (path.Length == 0) return env;
+        //    var rest = path.Subarray(1, path.Length-1);
+
+        //    switch (path[0])
+        //    {
+        //        case "Att": return GetSettingFromParam(env.Attack,  rest);
+        //        case "Dec": return GetSettingFromParam(env.Decay,   rest);
+        //        case "Sus": return GetSettingFromParam(env.Sustain, rest);
+        //        case "Rel": return GetSettingFromParam(env.Release, rest);
+        //    }
+
+        //    return null;
+        //}
 
 
-            switch (path[0])
-            {
-                case "Len": return GetSettingFromParam(arp.Length, rest);
-                case "Scl": return GetSettingFromParam(arp.Scale,  rest);
-            }
+        //static Setting GetSettingFromLfo(LFO lfo, string[] path)
+        //{
+        //    if (path.Length == 0) return lfo;
+        //    var rest = path.Subarray(1, path.Length-1);
 
-            return null;
-        }
+        //    switch (path[0])
+        //    {
+        //        case "Att": return GetSettingFromParam(lfo.Amplitude, rest);
+        //        case "Dec": return GetSettingFromParam(lfo.Frequency, rest);
+        //        case "Sus": return GetSettingFromParam(lfo.Offset,    rest);
+        //    }
+
+        //    return null;
+        //}
+
+
+        //static Setting GetSettingFromModulate(Modulate mod, string[] path)
+        //{
+        //    if (path.Length == 0) return mod;
+        //    var rest = path.Subarray(1, path.Length-1);
+
+        //    switch (path[0])
+        //    {
+        //        case "Amt": return GetSettingFromParam(mod.Amount,  rest);
+        //        case "Att": return GetSettingFromParam(mod.Attack,  rest);
+        //        case "Rel": return GetSettingFromParam(mod.Release, rest);
+        //    }
+
+        //    return null;
+        //}
+
+
+        //Setting GetSettingFromArpeggio(Arpeggio arp, string[] path)
+        //{
+        //    if (path.Length == 0) return arp;
+        //    var rest = path.Subarray(1, path.Length-1);
+
+
+        //    switch (path[0])
+        //    {
+        //        case "Len": return GetSettingFromParam(arp.Length, rest);
+        //        case "Scl": return GetSettingFromParam(arp.Scale,  rest);
+        //    }
+
+        //    return null;
+        //}
 
 
         static string FullNameFromTag(string tag)
@@ -284,7 +295,7 @@ namespace IngameScript
 
         static Setting NewSettingFromTag(string tag, Setting parent)
         {
-            var setting = GetSettingFromPath(SelectedInstrument, parent.GetPath(CurSrc));
+            //var setting = GetSettingFromPath(SelectedInstrument, parent.GetPath(CurSrc));
 
             switch (tag)
             { 
