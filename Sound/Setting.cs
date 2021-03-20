@@ -115,7 +115,7 @@ namespace IngameScript
         //        switch (path[0])
         //        {
         //            case "Vol":  return GetSettingFromParam(inst.Volume, rest);
-        //            case "Tune": Log("inst.Tune = " + inst.Tune);return inst.Tune     != null ? GetSettingFromParam   (inst.Tune,     rest) : null;
+        //            case "Tune": return inst.Tune     != null ? GetSettingFromParam   (inst.Tune,     rest) : null;
         //            case "Del":  return inst.Delay    != null ? GetSettingFromDelay   (inst.Delay,    rest) : null;
         //            case "Arp":  return inst.Arpeggio != null ? GetSettingFromArpeggio(inst.Arpeggio, rest) : null;
         //        }

@@ -290,12 +290,12 @@ namespace IngameScript
             {
                 var tag = data[i++];
 
-                Parameter param = null;
+                Parameter param;
 
-                     if (proto  != null) param = proto;
-                else if (parent != null) param = (Parameter)parent.GetOrAddSettingFromTag(tag);
+                     if (proto  != null) param = proto;                                                    
+                else if (parent != null) param = (Parameter)parent.GetOrAddSettingFromTag(tag);            
                 else if (iSrc > -1)      param = (Parameter)inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
-                else                     param = (Parameter)inst.GetOrAddSettingFromTag(tag);
+                else                     param = (Parameter)inst.GetOrAddSettingFromTag(tag);              
 
                 param.m_value = float.Parse(data[i++]);
 

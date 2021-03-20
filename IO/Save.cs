@@ -9,8 +9,7 @@ namespace IngameScript
         string SaveMachineState()
         {
             var state = 
-                  N("SE-909 mk2")
-                + N(SaveSettings(SaveToggles()))
+                  N(SaveSettings(SaveToggles()))
                 + N(SaveMems())
                 + N(SaveChords());
 
@@ -80,8 +79,8 @@ namespace IngameScript
                 + WS(SelChan)        
                 + WS(CurSrc)
 
-                + WS(CurSet)
-                + (CurSet > -1 ? W(g_settings[CurSet].GetPath(CurSrc)) : "")
+                //+ WS(CurSet)
+                + (CurSet > -1 ? W(g_settings[CurSet].GetPath(CurSrc)) : W(""))
 
                 + WS(PlayTime)       
 

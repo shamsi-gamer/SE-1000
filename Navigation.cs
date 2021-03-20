@@ -264,7 +264,7 @@ namespace IngameScript
             if (OK(g_song.EditPos))
                 g_song.EditPos = CurPat * nSteps + g_song.EditPos % nSteps;
 
-            UpdateOctaveLight();
+            //UpdateOctaveLight();
             UpdateSongOff();//g_song.CurPat);
             
             UpdateInstName();

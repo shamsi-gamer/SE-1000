@@ -191,7 +191,7 @@ namespace IngameScript
         }
 
 
-        bool IsCurOrParent(Type type)
+        bool IsCurOrParentSetting(Type type)
         {
             return
                    CurSet > -1
@@ -364,7 +364,7 @@ namespace IngameScript
                 ||    IsCurParam("Tune")
                    && (tune?.UseChord ?? false)
                    && !(g_paramKeys || g_paramAuto)
-                || IsCurOrParent(typeof(Arpeggio));
+                ||    IsCurOrParentSetting(typeof(Arpeggio));
         }}
 
 

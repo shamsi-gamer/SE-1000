@@ -80,7 +80,7 @@ namespace IngameScript
             if (   PlayTime > -1
                 && PlayPat == pat)
             {
-                if (IsCurOrParent(typeof(Arpeggio)))
+                if (IsCurOrParentSetting(typeof(Arpeggio)))
                 { 
                     var arpNotes = new List<Note>();
 

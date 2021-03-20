@@ -37,7 +37,7 @@ namespace IngameScript
                               var hrm = CurOrParentHarmonics;
                               DrawHarmonicsDisplay(sprites, x, y, w, h, g_song, CurrentChannel, hrm);
                 }
-                else if (IsCurOrParent(typeof(Arpeggio)))
+                else if (IsCurOrParentSetting(typeof(Arpeggio)))
                 {
                               var arp = CurOrParentArpeggio;
                               DrawPianoDisplay  (sprites, x, y, w, h, arp.Song, CurPat, true, arp);

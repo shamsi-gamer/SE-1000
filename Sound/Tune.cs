@@ -66,7 +66,7 @@ namespace IngameScript
             {
                 var tune = new Tune();
 
-                Parameter.Load(data, ref i, inst, iSrc, tune);
+                Parameter.Load(data, ref i, inst, iSrc, null, tune);
 
                 tune.UseChord   = data[i++] == "1";
                 tune.AllOctaves = data[i++] == "1";

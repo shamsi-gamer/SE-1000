@@ -7,7 +7,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        bool LoadMachineState(string state)
+        bool Load(string state)
         {
             Stop();
             ClearSong();
@@ -16,57 +16,14 @@ namespace IngameScript
             var lines = state.Split('\n');
             var line = 0;
 
-            if (   lines.Length < 1
-                || lines[line++] != "SE-909 mk2")
-                return false;
+            //int    curSet;
+            string curPath;
 
-            var cfg = lines[line++].Split(';');
-            if (!LoadToggles(cfg[0])) return false;
-
-            string curSetPath;
-            if (!LoadSettings(cfg, out curSetPath)) return false;
-
-            if (!LoadMems(lines[line++]))   return false;
-            if (!LoadChords(lines[line++])) return false;
-
-
-            // load instruments
-            while (line < lines.Length)
-            {
-                while (line < lines.Length
-                    && lines[line].Trim() == "") line++; // white space
-
-                if (line < lines.Length)
-                    g_inst.Add(Instrument.Load(lines, ref line));
-            }
-
-
-            // default instrument
-            if (g_inst.Count == 0)
-            { 
-                g_inst.Add(new Instrument());
-                g_inst[0].Sources.Add(new Source(g_inst[0]));
-            }
-
-
-            if (CurSet > -1)
-            {
-                CurSet = -1; // set automatically again by the following function
-                SwitchToSetting(curSetPath);
-            }
-
-
-            // temp empty song
-            g_song.Patterns.Add(new Pattern(g_song, g_inst[0]));
-            g_song.Name = "New Song";
+            if (!LoadMachine    (lines, ref line, /*out curSet,*/ out curPath)) return false;
+            if (!LoadInstruments(lines, ref line)) return false;
+            if (!LoadSong       (lines, ref line)) return false;
             
             
-            StartTime = 
-                PlayTime > -1 
-                ? g_time - PlayTime        
-                : -1;
-
-
             SetCurrentPattern(CurPat);
 
             if (g_autoCue)
@@ -75,9 +32,36 @@ namespace IngameScript
             CueNextPattern();
 
 
+            if (curPath != "")
+                SwitchToSetting(curPath, g_inst[CurChan]);
+
+
+            StartTime = 
+                PlayTime > -1 
+                ? g_time - PlayTime        
+                : -1;
+
+
             UpdateLights();
             SetLightColor(g_iCol);
 
+
+            return true;
+        }
+
+
+        bool LoadMachine(string[] lines, ref int line,/* out int curSet,*/ out string curPath)
+        {
+            //curSet  = -1;
+            curPath = "";
+
+            var cfg = lines[line++].Split(';');
+            if (!LoadToggles(cfg[0])) return false;
+
+            if (!LoadSettings(cfg, /*out curSet,*/ out curPath)) return false;
+
+            if (!LoadMems  (lines[line++])) return false;
+            if (!LoadChords(lines[line++])) return false;
 
             return true;
         }
@@ -131,9 +115,10 @@ namespace IngameScript
         }
 
 
-        bool LoadSettings(string[] cfg, out string curSetPath)
+        bool LoadSettings(string[] cfg, /*out int curSet, */out string curPath)
         {
-            curSetPath = "";
+            //curSet  = -1;
+            curPath = "";
 
             int c = 1; // 0 holds the toggles, loaded in LoadToggles()
 
@@ -145,8 +130,8 @@ namespace IngameScript
             if (!int  .TryParse(cfg[c++], out SelChan       )) return false;
             if (!int  .TryParse(cfg[c++], out CurSrc        )) return false;
 
-            if (!int  .TryParse(cfg[c++], out CurSet        )) return false;
-            if (CurSet > -1) curSetPath = cfg[c++];
+            //if (!int  .TryParse(cfg[c++], out curSet        )) return false;
+            /*if (curSet > -1)*/ curPath = cfg[c++];
 
             if (!long .TryParse(cfg[c++], out PlayTime      )) return false;
 
@@ -168,6 +153,39 @@ namespace IngameScript
             if (!float.TryParse(cfg[c++], out g_volume      )) return false;
 
             if (!int  .TryParse(cfg[c++], out g_iCol        )) return false;
+
+            return true;
+        }
+
+
+        bool LoadInstruments(string[] lines, ref int line)
+        {
+            // load instruments
+            while (line < lines.Length)
+            {
+                while (line < lines.Length
+                    && lines[line].Trim() == "") line++; // white space
+
+                if (line < lines.Length)
+                    g_inst.Add(Instrument.Load(lines, ref line));
+            }
+
+
+            // default instrument
+            if (g_inst.Count == 0)
+            { 
+                g_inst.Add(new Instrument());
+                g_inst[0].Sources.Add(new Source(g_inst[0]));
+            }
+
+            return true;
+        }
+
+
+        bool LoadSong(string[] lines, ref int line)
+        {
+            g_song.Patterns.Add(new Pattern(g_song, g_inst[0]));
+            g_song.Name = "New Song";
 
             return true;
         }
@@ -256,131 +274,131 @@ namespace IngameScript
         }
 
 
-        List<Instrument> LoadInstruments(string[] lines, ref int line)
-        {
-            var insts = new List<Instrument>();
+        //List<Instrument> LoadInstruments(string[] lines, ref int line)
+        //{
+        //    var insts = new List<Instrument>();
 
-            int nInst = 0;
-            if (!int.TryParse(lines[line++], out nInst)) return null;
+        //    int nInst = 0;
+        //    if (!int.TryParse(lines[line++], out nInst)) return null;
 
-            for (int i = 0; i < nInst; i++)
-            {
-                var inst = LoadInstrument(lines, ref line);
-                if (inst == null) return null;
-                insts.Add(inst);
-            }
+        //    for (int i = 0; i < nInst; i++)
+        //    {
+        //        var inst = LoadInstrument(lines, ref line);
+        //        if (inst == null) return null;
+        //        insts.Add(inst);
+        //    }
 
-            return insts;
-        }
+        //    return insts;
+        //}
 
-        Instrument LoadInstrument(string[] lines, ref int line)
-        {
-            var inst = new Instrument();
+        //Instrument LoadInstrument(string[] lines, ref int line)
+        //{
+        //    var inst = new Instrument();
 
-            inst.Name = lines[line++];
+        //    inst.Name = lines[line++];
 
-            var parts = lines[line++].Split(';');
+        //    var parts = lines[line++].Split(';');
 
-            //LoadParam(ref inst.DelayCount, parts[0]);
-            //LoadParam(ref inst.DelayTime,  parts[1]);
-            //LoadParam(ref inst.DelayLevel, parts[2]);
-            //LoadParam(ref inst.DelayPower, parts[3]);
+        //    //LoadParam(ref inst.DelayCount, parts[0]);
+        //    //LoadParam(ref inst.DelayTime,  parts[1]);
+        //    //LoadParam(ref inst.DelayLevel, parts[2]);
+        //    //LoadParam(ref inst.DelayPower, parts[3]);
 
-            if (!LoadSources(lines, ref line, inst)) return null;
+        //    if (!LoadSources(lines, ref line, inst)) return null;
 
-            return inst;
-        }
+        //    return inst;
+        //}
 
-        bool LoadSources(string[] lines, ref int line, Instrument inst)
-        {
-            int nSrc = 0;
-            if (!int.TryParse(lines[line++], out nSrc)) return false;
+        //bool LoadSources(string[] lines, ref int line, Instrument inst)
+        //{
+        //    int nSrc = 0;
+        //    if (!int.TryParse(lines[line++], out nSrc)) return false;
 
-            for (int i = 0; i < nSrc; i++)
-            {
-                var src = LoadSource(lines, ref line);
-                if (src == null) return false;
+        //    for (int i = 0; i < nSrc; i++)
+        //    {
+        //        var src = LoadSource(lines, ref line);
+        //        if (src == null) return false;
 
-                inst.Sources.Add(src);
-                src.Instrument = inst;
-            }
+        //        inst.Sources.Add(src);
+        //        src.Instrument = inst;
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
-        Source LoadSource(string[] lines, ref int line)
-        {
-            var _src = lines[line++].Split('$');
-            if (_src.Length != 9) return null;
+        //Source LoadSource(string[] lines, ref int line)
+        //{
+        //    var _src = lines[line++].Split('$');
+        //    if (_src.Length != 9) return null;
 
-            var src = new Source(null); // TODO figure out index
+        //    var src = new Source(null); // TODO figure out index
 
-            uint f;
-            if (!uint.TryParse(_src[0], out f)) return null;
+        //    uint f;
+        //    if (!uint.TryParse(_src[0], out f)) return null;
 
-            var i = 0;
+        //    var i = 0;
 
-            src.On = ReadBytes(f, i++);
+        //    src.On = ReadBytes(f, i++);
 
-            uint osc;
-            if (!uint.TryParse(_src[1], out osc)) return null;
-            src.Oscillator = OscillatorFromType((OscType)osc);
+        //    uint osc;
+        //    if (!uint.TryParse(_src[1], out osc)) return null;
+        //    src.Oscillator = OscillatorFromType((OscType)osc);
 
-            //if (!int.TryParse(_src[2], out src.Transpose)) return null;
+        //    //if (!int.TryParse(_src[2], out src.Transpose)) return null;
 
-            if (!LoadParam(ref src.Volume,  _src[3])) return null;
-            //if (!LoadParam(ref src.Attack,  _src[4])) return null;
-            //if (!LoadParam(ref src.Decay,   _src[5])) return null;
-            //if (!LoadParam(ref src.Sustain, _src[6])) return null;
-            //if (!LoadParam(ref src.Release, _src[7])) return null;
-            //if (!LoadParam(ref src.Offset,  _src[8])) return null;
+        //    if (!LoadParam(ref src.Volume,  _src[3])) return null;
+        //    //if (!LoadParam(ref src.Attack,  _src[4])) return null;
+        //    //if (!LoadParam(ref src.Decay,   _src[5])) return null;
+        //    //if (!LoadParam(ref src.Sustain, _src[6])) return null;
+        //    //if (!LoadParam(ref src.Release, _src[7])) return null;
+        //    //if (!LoadParam(ref src.Offset,  _src[8])) return null;
 
-            return src;
-        }
-
-
-        bool LoadParam(ref Parameter param, string line)
-        {
-            var _param = line.Split('&');
-            if (_param.Length != 6) return false;
-
-            float val;
-            if (!float.TryParse(_param[0], out val)) return false;
-            param.SetValue(val, null, -1);
-
-            return LoadLfo(ref param.Lfo, line.Substring(_param[0].Length + 1));
-        }
+        //    return src;
+        //}
 
 
-        bool LoadLfo(ref LFO lfo, string line)
-        {
-            var _lfo = line.Split('&');
-            if (_lfo.Length != 5) return false;
+        //bool LoadParam(ref Parameter param, string line)
+        //{
+        //    var _param = line.Split('&');
+        //    if (_param.Length != 6) return false;
 
-            uint type;
-            if (!uint.TryParse(_lfo[0], out type)) return false;
-            lfo.Type = (LFO.LfoType)type;
+        //    float val;
+        //    if (!float.TryParse(_param[0], out val)) return false;
+        //    param.SetValue(val, null, -1);
 
-            //if (!float.TryParse(_lfo[2], out lfo.Offset   )) return F;
-            //if (!float.TryParse(_lfo[3], out lfo.Amplitude)) return F;
-            //if (!float.TryParse(_lfo[4], out lfo.Frequency)) return F;
-
-            return true;
-        }
+        //    return LoadLfo(ref param.Lfo, line.Substring(_param[0].Length + 1));
+        //}
 
 
-        bool Finalize(List<Instrument> loaded)
-        {
-            foreach (var l in loaded)
-            {
-                var f = g_inst.FindIndex(i => i.Name == l.Name);
+        //bool LoadLfo(ref LFO lfo, string line)
+        //{
+        //    var _lfo = line.Split('&');
+        //    if (_lfo.Length != 5) return false;
 
-                if (f > -1) g_inst[f] = l;
-                else g_inst.Add(l);
-            }
+        //    uint type;
+        //    if (!uint.TryParse(_lfo[0], out type)) return false;
+        //    lfo.Type = (LFO.LfoType)type;
 
-            return true;
-        }
+        //    //if (!float.TryParse(_lfo[2], out lfo.Offset   )) return F;
+        //    //if (!float.TryParse(_lfo[3], out lfo.Amplitude)) return F;
+        //    //if (!float.TryParse(_lfo[4], out lfo.Frequency)) return F;
+
+        //    return true;
+        //}
+
+
+        //bool Finalize(List<Instrument> loaded)
+        //{
+        //    foreach (var l in loaded)
+        //    {
+        //        var f = g_inst.FindIndex(i => i.Name == l.Name);
+
+        //        if (f > -1) g_inst[f] = l;
+        //        else g_inst.Add(l);
+        //    }
+
+        //    return true;
+        //}
 
 
 

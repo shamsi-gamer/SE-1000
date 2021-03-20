@@ -64,19 +64,32 @@ namespace IngameScript
         }
 
 
-        void SwitchToSetting(string path)
+        void SwitchToSetting(string path, Instrument inst)
         {
             g_settings.Clear();
             CurSet = -1;
 
             var tags = path.Split('/');
 
-            foreach (var tag in tags)
-                AddNextSetting(tag);
+            var iSrc = -1;
+
+            for (int i = 0; i < tags.Length; i++)
+            { 
+                var tag = tags[i];
+
+                if (   i == 0
+                    && IsDigit(tag[0]))
+                { 
+                    iSrc = int.Parse(tag);
+                    continue;
+                }
+
+                AddNextSetting(tag, inst, iSrc);
+            }
         }
 
 
-        void AddNextSetting(string tag)
+        void AddNextSetting(string tag, Instrument inst, int iSrc)
         {
             if (CurSet > -1)
                 g_settings[CurSet]._IsCurrent = false;
@@ -84,8 +97,8 @@ namespace IngameScript
             Setting setting;
 
                  if (CurSet > -1) setting = g_settings[CurSet].GetOrAddSettingFromTag(tag);
-            else if (CurSrc <  0) setting = SelectedInstrument.GetOrAddSettingFromTag(tag);
-            else                  setting = SelectedSource    .GetOrAddSettingFromTag(tag);
+            else if (iSrc   > -1) setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
+            else                  setting = inst.GetOrAddSettingFromTag(tag);              
 
             g_settings.Add(setting);
 
@@ -141,11 +154,11 @@ namespace IngameScript
                     || SettingOrAnyParentHasTag(param, "Rel"))
                     break;
 
-                AddNextSetting("Env");
+                AddNextSetting("Env", SelectedInstrument, CurSrc);
                 break;
 
             case 2:
-                AddNextSetting("LFO");
+                AddNextSetting("LFO", SelectedInstrument, CurSrc);
                 break;
 
             case 3:
@@ -188,10 +201,10 @@ namespace IngameScript
         {
             switch (func)
             {
-                case 1: AddNextSetting("Att"); break;
-                case 2: AddNextSetting("Dec"); break;
-                case 3: AddNextSetting("Sus"); break;
-                case 4: AddNextSetting("Rel"); break;
+                case 1: AddNextSetting("Att", SelectedInstrument, CurSrc); break;
+                case 2: AddNextSetting("Dec", SelectedInstrument, CurSrc); break;
+                case 3: AddNextSetting("Sus", SelectedInstrument, CurSrc); break;
+                case 4: AddNextSetting("Rel", SelectedInstrument, CurSrc); break;
                 case 5: RemoveSetting(env);    break;
             }
         }
@@ -201,9 +214,9 @@ namespace IngameScript
         {
             switch (func)
             {
-                case 1: AddNextSetting("Amp");  break;
-                case 2: AddNextSetting("Freq"); break;
-                case 3: AddNextSetting("Off");  break;
+                case 1: AddNextSetting("Amp",  SelectedInstrument, CurSrc); break;
+                case 2: AddNextSetting("Freq", SelectedInstrument, CurSrc); break;
+                case 3: AddNextSetting("Off",  SelectedInstrument, CurSrc); break;
                 case 4:
                 {
                     var newOsc = (int)lfo.Type + 1;
@@ -244,7 +257,7 @@ namespace IngameScript
                     hrm.SetPreset(hrm.CurPreset);
                     break;
                 }
-                case 4: AddNextSetting(S(hrm.CurTone)); break;
+                case 4: AddNextSetting(S(hrm.CurTone), SelectedInstrument, CurSrc); break;
                 case 5: RemoveSetting(hrm); break;
             }
         }
@@ -254,8 +267,8 @@ namespace IngameScript
         {
             switch (func)
             {
-                case 1: AddNextSetting("Cut"); break;
-                case 2: AddNextSetting("Res"); break;
+                case 1: AddNextSetting("Cut", SelectedInstrument, CurSrc); break;
+                case 2: AddNextSetting("Res", SelectedInstrument, CurSrc); break;
                 case 5: RemoveSetting(flt);    break;
             }
         }
@@ -265,10 +278,10 @@ namespace IngameScript
         {
             switch (func)
             {
-                case 1: AddNextSetting("Cnt");  break;
-                case 2: AddNextSetting("Time"); break;
-                case 3: AddNextSetting("Lvl");  break;
-                case 4: AddNextSetting("Pow");  break;
+                case 1: AddNextSetting("Cnt",  SelectedInstrument, CurSrc);  break;
+                case 2: AddNextSetting("Time", SelectedInstrument, CurSrc); break;
+                case 3: AddNextSetting("Lvl",  SelectedInstrument, CurSrc);  break;
+                case 4: AddNextSetting("Pow",  SelectedInstrument, CurSrc);  break;
                 case 5: RemoveSetting(del);     break;
             }
         }
@@ -282,14 +295,14 @@ namespace IngameScript
                 arp.Song.EditPos = -1;
                 UpdateEditLight(lblEdit, false);
 
-                AddNextSetting("Len");
+                AddNextSetting("Len", SelectedInstrument, CurSrc);
                 break;
 
             case 2:
                 arp.Song.EditPos = -1;
                 UpdateEditLight(lblEdit, false);
 
-                AddNextSetting("Scl");
+                AddNextSetting("Scl", SelectedInstrument, CurSrc);
                 break;
 
             case 5: RemoveSetting(arp); break;
@@ -301,17 +314,17 @@ namespace IngameScript
         {
             switch (func)
             {
-            case 1: AddNextSetting("Vol"); break;
+            case 1: AddNextSetting("Vol", inst, -1); break;
             case 2: 
-                AddNextSetting("Tune");
+                AddNextSetting("Tune", inst, -1);
                 UpdateKeyLights();
                 UpdateChordLights();
                 UpdateShuffleLight();
                 break;
 
-            case 3: AddNextSetting("Flt"); break;
-            case 4: AddNextSetting("Del"); break;
-            case 5: AddNextSetting("Arp"); break;
+            case 3: AddNextSetting("Flt", inst, -1); break;
+            case 4: AddNextSetting("Del", inst, -1); break;
+            case 5: AddNextSetting("Arp", inst, -1); break;
             }
         }
 
@@ -320,18 +333,18 @@ namespace IngameScript
         {
             switch (func)
             {
-            case 0: AddNextSetting("Off"); break; 
-            case 1: AddNextSetting("Vol"); break;
+            case 0: AddNextSetting("Off", src.Instrument, src.Index); break; 
+            case 1: AddNextSetting("Vol", src.Instrument, src.Index); break;
             case 2: 
-                AddNextSetting("Tune");
+                AddNextSetting("Tune", src.Instrument, src.Index);
                 UpdateKeyLights();
                 UpdateChordLights();
                 UpdateShuffleLight();
                 break;
 
-            case 3: AddNextSetting("Hrm"); break;
-            case 4: AddNextSetting("Flt"); break;
-            case 5: AddNextSetting("Del"); break;
+            case 3: AddNextSetting("Hrm", src.Instrument, src.Index); break;
+            case 4: AddNextSetting("Flt", src.Instrument, src.Index); break;
+            case 5: AddNextSetting("Del", src.Instrument, src.Index); break;
             }
         }
     }
