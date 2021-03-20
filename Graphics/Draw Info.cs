@@ -409,7 +409,7 @@ namespace IngameScript
             s.TextPadding = 20;
             s.FontColor   = new Color(0, 41, 224);
 
-            s.WriteText("Install SE-909 mk2 Sounds mod\n\n\nsteamcommunity.com/\nsharedfiles/filedetails/\n?id=2401745979");
+            s.WriteText("Install SE-909 mk2 Sounds mod\n\n\nsteamcommunity.com/\nsharedfiles/filedetails/\n?id=2430813153");
         }
     }
 }

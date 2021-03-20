@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Chords.cs" />
     <Compile Include="Graphics\Draw Harmonics.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="Minify.cs" />
     <Compile Include="IO\Save.cs" />
     <Compile Include="Sound\Filter.cs" />

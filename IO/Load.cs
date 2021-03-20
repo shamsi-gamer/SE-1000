@@ -16,10 +16,10 @@ namespace IngameScript
             var lines = state.Split('\n');
             var line = 0;
 
-            //int    curSet;
+            long   playTime;
             string curPath;
 
-            if (!LoadMachine    (lines, ref line, /*out curSet,*/ out curPath)) return false;
+            if (!LoadMachine    (lines, ref line, out playTime, out curPath)) return false;
             if (!LoadInstruments(lines, ref line)) return false;
             if (!LoadSong       (lines, ref line)) return false;
             
@@ -36,6 +36,8 @@ namespace IngameScript
                 SwitchToSetting(curPath, g_inst[CurChan]);
 
 
+            PlayTime = playTime % (g_song.Patterns.Count * nSteps * g_ticksPerStep);
+
             StartTime = 
                 PlayTime > -1 
                 ? g_time - PlayTime        
@@ -50,15 +52,15 @@ namespace IngameScript
         }
 
 
-        bool LoadMachine(string[] lines, ref int line,/* out int curSet,*/ out string curPath)
+        bool LoadMachine(string[] lines, ref int line, out long playTime, out string curPath)
         {
-            //curSet  = -1;
-            curPath = "";
+            playTime = -1;
+            curPath  = "";
 
             var cfg = lines[line++].Split(';');
             if (!LoadToggles(cfg[0])) return false;
-
-            if (!LoadSettings(cfg, /*out curSet,*/ out curPath)) return false;
+            
+            if (!LoadSettings(cfg, out playTime, out curPath)) return false;
 
             if (!LoadMems  (lines[line++])) return false;
             if (!LoadChords(lines[line++])) return false;
@@ -115,10 +117,10 @@ namespace IngameScript
         }
 
 
-        bool LoadSettings(string[] cfg, /*out int curSet, */out string curPath)
+        bool LoadSettings(string[] cfg, out long playTime, out string curPath)
         {
-            //curSet  = -1;
-            curPath = "";
+            playTime = -1;
+            curPath  = "";
 
             int c = 1; // 0 holds the toggles, loaded in LoadToggles()
 
@@ -130,10 +132,9 @@ namespace IngameScript
             if (!int  .TryParse(cfg[c++], out SelChan       )) return false;
             if (!int  .TryParse(cfg[c++], out CurSrc        )) return false;
 
-            //if (!int  .TryParse(cfg[c++], out curSet        )) return false;
-            /*if (curSet > -1)*/ curPath = cfg[c++];
+            curPath = cfg[c++];
 
-            if (!long .TryParse(cfg[c++], out PlayTime      )) return false;
+            if (!long .TryParse(cfg[c++], out playTime      )) return false;
 
             if (!int  .TryParse(cfg[c++], out g_editStep    )) return false;
             if (!int  .TryParse(cfg[c++], out g_editLength  )) return false;
