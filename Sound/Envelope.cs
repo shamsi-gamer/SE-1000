@@ -109,7 +109,7 @@ namespace IngameScript
                          if (a   >= nl) s  = nl/a;
                     else if (a+d >= nl) s += (1 - (nl-a)/d) * (1-s);
 
-                    return s * (1 - MinMax(0, (lt-nl)/r, 1));
+                    return s * (1 - MinMax(0, (float)Math.Pow((lt-nl)/r, 2), 1));
                 }
                 else if (lt >= a + d) // sustain
                 {
@@ -117,7 +117,7 @@ namespace IngameScript
                 }
                 else if (lt >= a) // decay
                 {
-                    return s + (1 - (lt-a)/d) * (1-s);
+                    return s + (1 - (float)Math.Pow((lt-a)/d, 2)) * (1-s);
                 }
                 else if (lt >= 0) // attack 
                 {

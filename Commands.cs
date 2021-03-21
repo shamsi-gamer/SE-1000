@@ -448,6 +448,9 @@ namespace IngameScript
                 //foreach (var btn in funcButtons)
                 //    ((IMyFunctionalBlock)btn).Enabled = F;
             }
+
+
+            SaveInstruments();
         }
 
 

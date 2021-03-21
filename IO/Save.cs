@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 
 
@@ -6,17 +7,38 @@ namespace IngameScript
 {
     partial class Program
     {
-        string SaveMachineState()
+        public void Save()
         {
-            var state = 
-                  N(SaveSettings(SaveToggles()))
-                + N(SaveMems())
-                + N(SaveChords());
+            SaveMachineState();
+            SaveInstruments();
+        }
 
-            foreach (var inst in g_inst)
-                state += "\n" + inst.Save();
 
-            return state;
+        void SaveMachineState()
+        {
+            var sbMachine = new StringBuilder();
+
+            sbMachine.Append(N(SaveSettings(SaveToggles())));
+            sbMachine.Append(N(SaveMems()));
+            sbMachine.Append(  SaveChords());
+
+            lblMove.CustomData = sbMachine.ToString();
+        }
+
+
+        void SaveInstruments()
+        {
+            var sbInst = new StringBuilder();
+
+            for (int i = 0; i < g_inst.Count; i++)
+            { 
+                sbInst.Append(g_inst[i].Save());
+
+                if (i < g_inst.Count-1)
+                    sbInst.Append("\n");
+            }
+
+            lblPrev.CustomData = sbInst.ToString();
         }
 
 

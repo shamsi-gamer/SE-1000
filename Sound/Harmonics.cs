@@ -177,15 +177,15 @@ namespace IngameScript
             {
                 SetPreset((Preset)g_rnd.Next(0, 17));
 
-                if (g_rnd.NextDouble() > 0.5)
+                if (RND > 0.5)
                     Smooth();
 
                 for (int i = 0; i < Tones.Length; i++)
                 {
                     var tone = Tones[i];
 
-                    if (g_rnd.NextDouble() > 0.9f) tone.Randomize();
-                    else                           tone.Clear();
+                    if (RND > 0.9f) tone.Randomize();
+                    else            tone.Clear();
                 }
             }
 

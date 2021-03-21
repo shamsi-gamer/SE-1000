@@ -81,7 +81,7 @@ namespace IngameScript
                 else if (h == 3) ToggleAllChannels();
                 else if (h == 4) RandomInstrument();
 
-                else if (h == 5) RandomNotes();
+                else if (h == 5) RandomChannelNotes();
                 else if (h == 6) ClearNotes();
                                    
                 else if (h == 7) Flip(4); 

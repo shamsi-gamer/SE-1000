@@ -6,34 +6,90 @@ namespace IngameScript
 {
     partial class Program
     {
-        float Rnd { get { return (float)g_rnd.NextDouble(); } }
+        static float RND { get { return (float)g_rnd.NextDouble(); } }
 
 
-        void RandomNotes()
+        void Random()
         {
-            if (g_allChan)
-            {
-                for (int ch = 0; ch < nChans; ch++)
-                    RandomNotes(ch);
-            }
-            else
-                RandomNotes(CurChan);
+                 if (SelChan < 0)  RandomPatternNotes();
+            else if (g_paramKeys
+                  || g_paramAuto)  RandomValues(CurChan);
+            else if (CurSet  > -1) g_settings[CurSet].Randomize();
+            else if (CurSrc  > -1) SelectedSource.Randomize(new List<Oscillator>());
+            else if (SelChan > -1) SelectedInstrument.Randomize();
+
+            MarkLight(lblRandom);
         }
 
 
-        void RandomNotes(int ch)
+        void RandomValues(int ch)
         {
             int first, last;
             GetPatterns(g_song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
-                RandomNotes(p, ch);
+            { 
+                     if (g_paramKeys) RandomParamKeys(p, ch);
+                else if (g_paramAuto) RandomParamAuto(p, ch);
+            }
         }
 
 
-        void RandomNotes(int pat, int ch)
+        void RandomPatternNotes()
+        {
+            var nChannels = g_rnd.Next(1, nChans/2);
+
+            var rndInst = new List<Instrument>();
+
+            for (int i = 0; i < nChannels; i++)
+            {
+                var ch = g_rnd.Next(0, nChans);
+                RandomNotes(ch, rndInst);
+            }
+        }
+
+
+        void RandomChannelNotes()
+        {
+            if (g_allChan)
+            {
+                for (int ch = 0; ch < nChans; ch++)
+                    RandomNotes(ch, null);
+            }
+            else
+                RandomNotes(CurChan, null);
+        }
+
+
+        void RandomNotes(int ch, List<Instrument> rndInst)
+        {
+            int first, last;
+            GetPatterns(g_song, CurPat, out first, out last);
+
+            for (int p = first; p <= last; p++)
+                RandomNotes(p, ch, rndInst);
+        }
+
+
+        void RandomNotes(int pat, int ch, List<Instrument> rndInst)
         {
             var chan = g_song.Patterns[pat].Channels[ch];
+            var inst = g_inst[g_rnd.Next(0, g_inst.Count)];
+
+
+            if (rndInst != null)
+            { 
+                if (rndInst.Contains(inst))
+                    return;
+
+                rndInst.Add(inst);
+            }
+
+
+            if (   rndInst != null
+                || g_rndInst)
+                chan.Instrument = inst;
+
 
             const int minNote   = 54 * NoteScale;
             const int maxNote   = 78 * NoteScale;
@@ -58,7 +114,7 @@ namespace IngameScript
 
             while (step < nSteps)
             {
-                if (g_rnd.NextDouble() >= 0.5)
+                if (RND >= 0.5)
                 {
                     var found = chan.Notes.Find(n => n.PatStep == step);
 
@@ -69,13 +125,13 @@ namespace IngameScript
 
                         if (note < 0)
                         { 
-                            note = ((minNote + (int)(Math.Pow(g_rnd.NextDouble(), 0.25) * (maxNote - minNote))) / NoteScale) * NoteScale;
+                            note = ((minNote + (int)(Math.Pow(RND, 0.25) * (maxNote - minNote))) / NoteScale) * NoteScale;
                             chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
                         }
                         else
                         {
-                            var dNoteMax = dStep * _noteScale;// * Math.Pow(g_rnd.NextDouble(), 0.7);
-                            var dNote    = dNoteMax * g_rnd.NextDouble();
+                            var dNoteMax = dStep * _noteScale;// * Math.Pow(RND, 0.7);
+                            var dNote    = dNoteMax * RND;
 
                             var rndNote = (int)MinMax(minNote, note - dNoteMax/2 + dNote, maxNote);
                             if (!g_halfSharp) rndNote = (rndNote / NoteScale) * NoteScale;
@@ -103,7 +159,7 @@ namespace IngameScript
                                     note = rndNote;
 
                                     var chord  = new List<int>{0};
-                                    var nNotes = 1 + Math.Pow(g_rnd.NextDouble(), 2) * (3 - 1);
+                                    var nNotes = 1 + Math.Pow(RND, 2) * (3 - 1);
 
                                     var dist = 0;
                                     for (int i = 0; i < nNotes; i++)
@@ -129,7 +185,7 @@ namespace IngameScript
                     }
                 }
 
-                dStep = 1 + (int)Math.Round(Math.Pow(g_rnd.NextDouble(), 0.8f) * Math.Max(0, (g_steps[g_editStep] - 1)));
+                dStep = 1 + (int)Math.Round(Math.Pow(RND, 0.8f) * Math.Max(0, (g_steps[g_editStep] - 1)));
                 step += dStep;
             }
         }
@@ -144,7 +200,7 @@ namespace IngameScript
                 var param = GetCurrentParam(note.Instrument);
                 var index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSrc));
 
-                var rndValue = (float)(param.NormalMin + g_rnd.NextDouble() * (param.NormalMax - param.NormalMin));
+                var rndValue = (float)(param.NormalMin + RND * (param.NormalMax - param.NormalMin));
 
                 if (index > -1)
                     note.Keys[index].Value = rndValue;
@@ -161,10 +217,10 @@ namespace IngameScript
 
             for (int step = 0; step < nSteps; step++)
             { 
-                if (g_rnd.NextDouble() < 0.5)
+                if (RND < 0.5)
                     continue;
 
-                var rndValue = (float)(param.NormalMin + g_rnd.NextDouble() * (param.NormalMax - param.NormalMin));
+                var rndValue = (float)(param.NormalMin + RND * (param.NormalMax - param.NormalMin));
 
                 var index = chan.AutoKeys.FindIndex(k => 
                        k.Path == param.GetPath(CurSrc) 
@@ -200,7 +256,7 @@ namespace IngameScript
         void RndVol(int pat, int ch)
         {
             var chan = g_song.Patterns[pat].Channels[ch];
-            chan.Volume = (float)g_rnd.NextDouble();
+            chan.Volume = RND;
         }
 
 

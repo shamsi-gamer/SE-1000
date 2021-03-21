@@ -72,7 +72,7 @@ namespace IngameScript
             public void Randomize()
             {
                 Sources.Clear();
-                var nSrc = Math.Max(1, (int)Math.Round(Math.Pow(g_rnd.NextDouble(), 1.5) * MaxSources/2));
+                var nSrc = Math.Max(1, (int)Math.Round(Math.Pow(RND, 1.5) * MaxSources/2));
 
                 var used = new List<Oscillator>();
 
@@ -86,7 +86,7 @@ namespace IngameScript
 
                 Volume.SetValue(1, null, -1);//.Randomize();
 
-                //if (g_rnd.NextDouble() > 0.7f)
+                //if (RND > 0.7f)
                 //{
                 //    Tune = new Tune();
                 //    Tune.Randomize();
@@ -94,7 +94,7 @@ namespace IngameScript
                 //else
                     Tune = null;
                 
-                if (   g_rnd.NextDouble() > 0.7f
+                if (   RND > 0.7f
                     && Sources.Find(s => s.Harmonics != null) != null)
                 {
                     Filter = new Filter();
@@ -103,7 +103,7 @@ namespace IngameScript
                 else
                     Filter = null;
 
-                if (g_rnd.NextDouble() > 0.7f)
+                if (RND > 0.7f)
                 {
                     Delay = new Delay();
                     Delay.Randomize();
@@ -111,7 +111,7 @@ namespace IngameScript
                 else
                     Delay = null;
 
-                //if (g_rnd.NextDouble() > 0.7f)
+                //if (RND > 0.7f)
                 //{
                 //    Arpeggio = new Arpeggio(this);
                 //    Arpeggio.Randomize();

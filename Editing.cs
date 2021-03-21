@@ -629,51 +629,5 @@ namespace IngameScript
             UpdateOctaveLight();
             UpdateShuffleLight();
         }
-
-
-        void Random()
-        {
-            if (SelChan < 0)
-                return;
-
-            if (   g_paramKeys
-                || g_paramAuto)
-            {
-                if (g_allChan)
-                {
-                    for (int ch = 0; ch < nChans; ch++)
-                        RandomValues(ch);
-                }
-                else
-                    RandomValues(CurChan);
-            }
-            else
-            { 
-                if (CurSet > -1)
-                    g_settings[CurSet].Randomize();
-                else if (CurSrc > -1)
-                {
-                    var used = new List<Oscillator>();
-                    SelectedSource.Randomize(used);
-                }
-                else if (SelChan > -1)
-                    SelectedInstrument.Randomize();
-            }
-
-            MarkLight(lblRandom);
-        }
-
-
-        void RandomValues(int ch)
-        {
-            int first, last;
-            GetPatterns(g_song, CurPat, out first, out last);
-
-            for (int p = first; p <= last; p++)
-            { 
-                     if (g_paramKeys) RandomParamKeys(p, ch);
-                else if (g_paramAuto) RandomParamAuto(p, ch);
-            }
-        }
     }
 }

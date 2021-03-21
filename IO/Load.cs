@@ -7,65 +7,29 @@ namespace IngameScript
 {
     partial class Program
     {
-        bool Load(string state)
+        void LoadMachineState(out long playTime, out string curPath)
         {
-            Stop();
-            ClearSong();
-            g_inst.Clear();
+            var state = lblMove.CustomData;
 
             var lines = state.Split('\n');
-            var line = 0;
+            var line  = 0;
 
-            long   playTime;
-            string curPath;
-
-            if (!LoadMachine    (lines, ref line, out playTime, out curPath)) return false;
-            if (!LoadInstruments(lines, ref line)) return false;
-            if (!LoadSong       (lines, ref line)) return false;
-            
-            
-            SetCurrentPattern(CurPat);
-
-            if (g_autoCue)
-                Cue();
-
-            CueNextPattern();
-
-
-            if (curPath != "")
-                SwitchToSetting(curPath, g_inst[CurChan]);
-
-
-            PlayTime = playTime % (g_song.Patterns.Count * nSteps * g_ticksPerStep);
-
-            StartTime = 
-                PlayTime > -1 
-                ? g_time - PlayTime        
-                : -1;
-
-
-            UpdateLights();
-            SetLightColor(g_iCol);
-
-
-            return true;
-        }
-
-
-        bool LoadMachine(string[] lines, ref int line, out long playTime, out string curPath)
-        {
             playTime = -1;
             curPath  = "";
 
             var cfg = lines[line++].Split(';');
-            if (!LoadToggles(cfg[0])) return false;
+            if (!LoadToggles(cfg[0])) goto NothingLoaded;
             
-            if (!LoadSettings(cfg, out playTime, out curPath)) return false;
+            if (!LoadSettings(cfg, out playTime, out curPath)) goto NothingLoaded;
 
-            if (!LoadMems  (lines[line++])) return false;
-            if (!LoadChords(lines[line++])) return false;
+            if (!LoadMems  (lines[line++])) goto NothingLoaded;
+            if (!LoadChords(lines[line++])) goto NothingLoaded;
 
-            return true;
+            return;
+
+
+        NothingLoaded:
+            SetDefaultMachineState();
         }
 
 
@@ -159,9 +123,13 @@ namespace IngameScript
         }
 
 
-        bool LoadInstruments(string[] lines, ref int line)
+        void LoadInstruments()
         {
-            // load instruments
+            var lines = lblPrev.CustomData.Split('\n');
+            var line = 0;
+
+            g_inst.Clear();
+
             while (line < lines.Length)
             {
                 while (line < lines.Length
@@ -171,24 +139,37 @@ namespace IngameScript
                     g_inst.Add(Instrument.Load(lines, ref line));
             }
 
-
-            // default instrument
-            if (g_inst.Count == 0)
-            { 
-                g_inst.Add(new Instrument());
-                g_inst[0].Sources.Add(new Source(g_inst[0]));
-            }
-
-            return true;
+            
+            if (g_inst.Count == 0) // nothing was loaded
+                CreateDefaultInstruments();
         }
 
 
-        bool LoadSong(string[] lines, ref int line)
+        void ImportInstruments()
         {
-            g_song.Patterns.Add(new Pattern(g_song, g_inst[0]));
-            g_song.Name = "New Song";
+            LoadInstruments();
 
-            return true;
+
+            // set all instruments to first
+            
+            int first, last;
+            GetPatterns(g_song, CurPat, out first, out last);
+
+            for (int p = first; p <= last; p++)
+            { 
+                for (int ch = 0; ch < nChans; ch++)
+                    g_song.Patterns[p].Channels[ch].Instrument = g_inst[0]; 
+            }
+        }
+
+
+        void CreateDefaultInstruments()
+        {
+            if (g_inst.Count == 0)
+            {
+                g_inst.Add(new Instrument());
+                g_inst[0].Sources.Add(new Source(g_inst[0]));
+            }
         }
 
 
@@ -244,11 +225,16 @@ namespace IngameScript
         }
 
 
-        bool LoadSong(string song)
+        void LoadSong()
         {
-            return false;
-            //Stop();
-            //ClearSong();
+            Stop();
+            ClearSong();
+
+
+
+            // nothing loaded
+            CreateDefaultSong();
+
 
             //var lines = song.Split('\n');
             //var line = 0;
@@ -272,6 +258,13 @@ namespace IngameScript
 
             //if (!LoadBlocks(lines, ref line)) return F;
             //if (!LoadEdit(lines, ref line)) return F;
+        }
+
+
+        void CreateDefaultSong()
+        {
+            g_song.Patterns.Add(new Pattern(g_song, g_inst[0]));
+            g_song.Name = "New Song";
         }
 
 

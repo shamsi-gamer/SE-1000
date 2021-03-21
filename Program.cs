@@ -8,15 +8,13 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        // pattern random
+        // notes don't play when pressing
         // timing issues when moving blocks etc.
         // timing issues with playing
         // when editLength is long, editing the chord doesn't play the current chord properly when a note is added/deleted
         // fix volume display
 
         // mixer channel volumes aren't saved
-        // save machine state after instrument editing is done
-        // add power to envelope decay and release to have a more gentle slope at the end
         // keys should affect trigger, auto should affect volume
         // add Modulate to param (Level, Attack, Release)
         // side chain compression (Modulate on all params, with delay and +/-)
@@ -199,7 +197,7 @@ namespace IngameScript
 
 
             for (int i = 0; i < g_random.Length; i++)
-                g_random[i] = (float)g_rnd.NextDouble();
+                g_random[i] = RND;
 
 
             InitDisplays();
@@ -250,11 +248,44 @@ namespace IngameScript
 
             if (_nextToLoad == 10)
             {
-                if (!Load(Me.CustomData))
-                    SetDefaultMachineState();
+                long playTime;
+                string curPath;
+
+                LoadMachineState(out playTime, out curPath);
+                LoadInstruments();
+                LoadSong();
+                
+
+                InitPlaybackAfterLoad(playTime);
+
+
+                if (curPath != "")
+                    SwitchToSetting(curPath, g_inst[CurChan]);
+
+
+                UpdateLights();
+                SetLightColor(g_iCol);
 
                 _nextToLoad++;
             }
+        }
+
+
+        void InitPlaybackAfterLoad(long playTime)
+        {
+            SetCurrentPattern(CurPat);
+
+            if (g_autoCue)
+                Cue();
+
+            CueNextPattern();
+
+            PlayTime = playTime % (g_song.Patterns.Count * nSteps * g_ticksPerStep);
+
+            StartTime = 
+                PlayTime > -1 
+                ? g_time - PlayTime        
+                : -1;
         }
 
 
@@ -282,7 +313,9 @@ namespace IngameScript
             {
                 case "load":       LoadSongExt();            break;
                 case "save":       SaveSongExt();            break;
-                                                                
+             
+                case "import":     ImportInstruments();      break;
+
                 case "play":       Play();                   break;
                 case "stop":       Stop();                   break;
                                                                  
@@ -293,8 +326,8 @@ namespace IngameScript
                 case "dup pat":    DuplicatePattern();       break;
                 case "new pat":    NewPattern();             break;
                 case "move pat":   ToggleMovePattern();      break;
-                case "prev pat":   PrevPattern(g_movePat);     break;
-                case "next pat":   NextPattern(g_movePat);     break;
+                case "prev pat":   PrevPattern(g_movePat);   break;
+                case "next pat":   NextPattern(g_movePat);   break;
                                                              
                 case "loop":       ToogleLoop();             break;
                 case "block":      ToggleBlock();            break;
@@ -334,56 +367,56 @@ namespace IngameScript
 
                 case "rnd snd":    RandomSound(g_inst.IndexOf(CurrentInstrument)); break;
                                        
-                case "up all":     SetVolumeAll( 1);      break;
-                case "down all":   SetVolumeAll(-1);      break;
-                                                          
-                case "solo all":   EnableChannels(true);  break;
-                case "mute all":   EnableChannels(false); break;
-                case "m shift":    MixerShift();          break;
-                                                          
-                case "edit":       Edit();                break;
-                                                          
-                case "chord":      ToggleChordMode();     break;
-                case "chord 1":    Chord(1);              break;
-                case "chord 2":    Chord(2);              break;
-                case "chord 3":    Chord(3);              break;
-                case "chord 4":    Chord(4);              break;
-                case "chord edit": ToggleChordEdit();     break;
-                                                          
-                case "edit step":  ChangeEditStep();      break;
-                case "edit len":   ChangeEditLength();    break;
-                                   
-                case "step":       Step(CurSong, CurChan); break;
-                case "hold":       Hold(CurSong);         break;
-                                                          
-                case "left":       Left(CurSong);         break;
-                case "right":      Right(CurSong);        break;
-
-                case "random":     Random();              break;
-                    
-                case "lock":       Lock();                break;
-                case "auto lock":  AutoLock();            break;
-                                                              
-                case "gyro":       Gyro();                break;
-                case "noise":      NoiseEmitters();       break;
-                                                          
-                case "sb":         StartBlock();    break;
-                case "eb":         EndBlock();      break;
-                case "cb":         ClearBlock();    break;
-                                                              
-                case "rl":         SetLightColor(0);      break;
-                case "ol":         SetLightColor(1);      break;
-                case "yl":         SetLightColor(2);      break;
-                case "gl":         SetLightColor(3);      break;
-                case "bl":         SetLightColor(4);      break;
-                case "ml":         SetLightColor(5);      break;
-                case "wl":         SetLightColor(6);      break;
-                                                          
-                case "light":      ToggleLight();         break;
-                case "fold":       ToggleFold();          break;
-                                                          
-                case "cue":        Cue();                 break;
-                case "mem":        Mem();                 break;
+                case "up all":     SetVolumeAll( 1);         break;
+                case "down all":   SetVolumeAll(-1);         break;
+                                                             
+                case "solo all":   EnableChannels(true);     break;
+                case "mute all":   EnableChannels(false);    break;
+                case "m shift":    MixerShift();             break;
+                                                             
+                case "edit":       Edit();                   break;
+                                                             
+                case "chord":      ToggleChordMode();        break;
+                case "chord 1":    Chord(1);                 break;
+                case "chord 2":    Chord(2);                 break;
+                case "chord 3":    Chord(3);                 break;
+                case "chord 4":    Chord(4);                 break;
+                case "chord edit": ToggleChordEdit();        break;
+                                                             
+                case "edit step":  ChangeEditStep();         break;
+                case "edit len":   ChangeEditLength();       break;
+                                                             
+                case "step":       Step(CurSong, CurChan);   break;
+                case "hold":       Hold(CurSong);            break;
+                                                             
+                case "left":       Left(CurSong);            break;
+                case "right":      Right(CurSong);           break;
+                                                             
+                case "random":     Random();                 break;
+                                                             
+                case "lock":       Lock();                   break;
+                case "auto lock":  AutoLock();               break;
+                                                                 
+                case "gyro":       Gyro();                   break;
+                case "noise":      NoiseEmitters();          break;
+                                                             
+                case "sb":         StartBlock();             break;
+                case "eb":         EndBlock();               break;
+                case "cb":         ClearBlock();             break;
+                                                                 
+                case "rl":         SetLightColor(0);         break;
+                case "ol":         SetLightColor(1);         break;
+                case "yl":         SetLightColor(2);         break;
+                case "gl":         SetLightColor(3);         break;
+                case "bl":         SetLightColor(4);         break;
+                case "ml":         SetLightColor(5);         break;
+                case "wl":         SetLightColor(6);         break;
+                                                             
+                case "light":      ToggleLight();            break;
+                case "fold":       ToggleFold();             break;
+                                                             
+                case "cue":        Cue();                    break;
+                case "mem":        Mem();                    break;
                                                                    
 
                 default:
@@ -400,12 +433,6 @@ namespace IngameScript
 
                     break;
             }
-        }
-
-
-        public void Save()
-        {
-            Me.CustomData = SaveMachineState();
         }
     }
 }

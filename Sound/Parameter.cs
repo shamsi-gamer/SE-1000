@@ -225,13 +225,13 @@ namespace IngameScript
 
             public override void Randomize()
             {
-                m_value = NormalMin + (float)g_rnd.NextDouble() * (NormalMax - NormalMin);
+                m_value = NormalMin + RND * (NormalMax - NormalMin);
                 
                 if (   Tag != "Att"
                     && Tag != "Dec"
                     && Tag != "Sus"
                     && Tag != "Rel"
-                    && g_rnd.NextDouble() > 0.9f)
+                    && RND > 0.9f)
                 {
                     Envelope = new Envelope(this);
                     Envelope.Randomize();
@@ -243,7 +243,7 @@ namespace IngameScript
                 if (   !SettingOrParentHasTag(this, "Att")
                     && !SettingOrParentHasTag(this, "Dec")
                     && !SettingOrParentHasTag(this, "Rel")
-                    && g_rnd.NextDouble() > 0.9f)
+                    && RND > 0.9f)
                 {
                     Lfo = new LFO(this);
                     Lfo.Randomize();

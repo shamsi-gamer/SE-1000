@@ -43,11 +43,11 @@ namespace IngameScript
 
             public override void Randomize()
             {
-                if (g_rnd.NextDouble() > 0.8f) Cutoff.Randomize();
-                else                           Cutoff.Clear();
+                if (RND > 0.8f) Cutoff.Randomize();
+                else            Cutoff.Clear();
 
-                if (g_rnd.NextDouble() > 0.8f) Resonance.Randomize();
-                else                           Resonance.Clear();
+                if (RND > 0.8f) Resonance.Randomize();
+                else            Resonance.Clear();
             }
 
 

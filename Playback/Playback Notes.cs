@@ -135,7 +135,7 @@ namespace IngameScript
         {
             var chan = CurrentPattern.Channels[ch];
 
-            var noteTime = 
+            var noteStep = 
                  (PlayTime > -1 ? PlayStep : TimeStep) 
                 + chordSpread;
 
@@ -145,7 +145,7 @@ namespace IngameScript
 
 
             if (found != null) StopNote(g_song, found);
-            else               AddNoteAndSounds(new Note(chan, ch, 1, num, noteTime, len));
+            else               AddNoteAndSounds(new Note(chan, ch, 1, num, noteStep, len));
 
 
             if (g_piano)

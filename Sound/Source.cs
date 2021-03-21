@@ -232,10 +232,10 @@ namespace IngameScript
 
             public void Randomize(List<Oscillator> used)
             {
-                Oscillator = OscillatorFromType((OscType)(int)(Math.Pow(g_rnd.NextDouble(), 1.5) * 7)); //9));
+                Oscillator = OscillatorFromType((OscType)(int)(Math.Pow(RND, 1.5) * 7)); //9));
 
 
-                if (   g_rnd.NextDouble() > 0.7f
+                if (   RND > 0.7f
                     && !used.Contains(Oscillator))
                 {
                     Offset = (Parameter)NewSettingFromTag("Off", null);
@@ -252,7 +252,7 @@ namespace IngameScript
 
 
                 if (   Index > 0
-                    && (   g_rnd.NextDouble() > 0.7f
+                    && (   RND > 0.7f
                         || used.Contains(Oscillator)))
                 {
                     Tune = new Tune();
@@ -264,7 +264,7 @@ namespace IngameScript
 
                 if (   (   Oscillator == OscSine
                         || Oscillator == OscBandNoise)
-                    && g_rnd.NextDouble() > 0.7f
+                    && RND > 0.7f
                     && !used.Contains(Oscillator))
                 {
                     Harmonics = new Harmonics();
@@ -275,7 +275,7 @@ namespace IngameScript
 
 
                 if (   Harmonics != null
-                    && g_rnd.NextDouble() > 0.7f)
+                    && RND > 0.7f)
                 {
                     Filter = new Filter();
                     Filter.Randomize();
@@ -284,7 +284,7 @@ namespace IngameScript
                     Filter = null;
 
 
-                if (g_rnd.NextDouble() > 0.9f)
+                if (RND > 0.9f)
                 {
                     Delay = new Delay();
                     Delay.Randomize();

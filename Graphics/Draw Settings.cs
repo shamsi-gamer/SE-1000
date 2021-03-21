@@ -432,6 +432,120 @@ namespace IngameScript
         }
 
 
+        void DrawEnvelope(List<MySprite> sprites, Envelope env, float x, float y, float w, float h, float vol)
+        {
+            var sTime = 
+                StartTime > -1
+                ? g_time - StartTime
+                : 0;
+
+            var len = (int)(EditLength * g_ticksPerStep);
+
+            var a = env.Attack .GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy);
+            var d = env.Decay  .GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy);
+            var s = env.Sustain.GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy);
+            var r = env.Release.GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy);
+                                                                           
+
+            var xoff  = 20;
+            var b     = 18;
+            var v     = Math.Min(vol, 1);
+
+            var fs    = 0.5f;
+            var scale = 1f;
+            var fps   = FPS * scale;
+
+            var x0    = x;// + xoff + b + 1;
+
+            var p0    = new Vector2(x0/* + fps * Offset*/, y + h - b);
+                p0.X  = Math.Min(p0.X, x0 + w - b * 2);
+
+            var p1    = new Vector2(p0.X + fps * a, p0.Y - (h - b * 2) * v);
+                p1.X  = Math.Min(p1.X, x0 + w - b * 2);
+
+            var p2    = new Vector2(p1.X + fps * d, p0.Y - (h - b * 2) * v * s);
+                p2.X  = Math.Min(p2.X, x0 + w - b * 2);
+
+            var p3    = new Vector2(x + xoff + w - b * 2 - fps * r, p2.Y);
+            var p4    = new Vector2(x + xoff + w - b * 2, p0.Y);
+
+
+            var isAtt = IsCurParam("Att");
+            var isDec = IsCurParam("Dec");
+            var isSus = IsCurParam("Sus");
+            var isRel = IsCurParam("Rel");
+
+
+            var wa = isAtt ? 6 : 1;
+            var wd = isDec ? 6 : 1;
+            var ws = isSus ? 6 : 1;
+            var wr = isRel ? 6 : 1;
+
+
+            // draw envelope supports and info
+
+            var sw = 1;
+
+            DrawLine(sprites, p0.X, p0.Y, p0.X, y,         color3, sw);
+            DrawLine(sprites, p2.X, p2.Y, p2.X, y + h - b, color3, sw);
+            DrawLine(sprites, p1.X, p1.Y, p1.X, y + h - b, color3, sw);
+            DrawLine(sprites, p3.X, p3.Y, p3.X, y + h - b, color3, sw);
+            DrawLine(sprites, p1.X, p2.Y, p3.X, p3.Y,      color3, sw);
+                                                              
+            DrawLine(sprites, p0.X, p0.Y, p4.X, p4.Y,      color3, sw);
+
+
+            // draw labels
+
+            DrawString(sprites, a.ToString(".00") + (isAtt ? " s" : ""),  p0.X + 6,             p0.Y +  3,         fs, isAtt ? color6 : color3, TextAlignment.CENTER);
+            DrawString(sprites, d.ToString(".00") + (isDec ? " s" : ""), (p1.X + p2.X)/2 + 16, (p1.Y+p2.Y)/2 - 20, fs, isDec ? color6 : color3, TextAlignment.CENTER);
+            DrawString(sprites, s.ToString(".00"),                       (p2.X + p3.X)/2 - 5,   p2.Y - 20,         fs, isSus ? color6 : color3, TextAlignment.CENTER);
+            DrawString(sprites, r.ToString(".00") + (isRel ? " s" : ""), (p3.X + p4.X)/2 - 5,   p0.Y +  3,         fs, isRel ? color6 : color3, TextAlignment.CENTER);
+
+
+            // draw the envelope
+
+
+            // attack
+            DrawLine(sprites, p0, p1, color6, wa);
+
+            // decay
+            var pPrev = Vector2.Zero;
+            
+            for (float f = 0; f <= 1; f += 0.01f)
+            {
+                var p = new Vector2(
+                    p1.X + (p2.X - p1.X) * f,
+                    p1.Y + (p2.Y - p1.Y) * (1 - (float)Math.Pow(1-f, 2)));
+
+                if (f > 0)
+                    DrawLine(sprites, pPrev, p, color6, wd);
+
+                pPrev = p;    
+            }
+
+            // sustain
+            DrawLine(sprites, p2, p3, color6, ws);
+
+            // release
+            for (float f = 0; f <= 1; f += 0.01f)
+            {
+                var p = new Vector2(
+                    p3.X + (p4.X - p3.X) * f,
+                    p3.Y + (p4.Y - p3.Y) * (1 - (float)Math.Pow(1-f, 2)));
+
+                if (f > 0)
+                    DrawLine(sprites, pPrev, p, color6, wr);
+
+                pPrev = p;    
+            }
+
+
+            if (isDec && d < 0.01)
+                FillRect(sprites, p1.X-4, p1.Y-4, 8, 8, color6);
+        }
+
+
         void DrawLfo(List<MySprite> sprites, LFO lfo, float x, float y, float w, float h, bool active, bool on)
         {
             var pPrev = new Vector2(fN, fN);
@@ -528,90 +642,6 @@ namespace IngameScript
                 fs,
                 isOff ? color6 : color3,
                 TextAlignment.CENTER);
-        }
-
-
-        void DrawEnvelope(List<MySprite> sprites, Envelope env, float x, float y, float w, float h, float vol)
-        {
-            var sTime = 
-                StartTime > -1
-                ? g_time - StartTime
-                : 0;
-
-            var len = (int)(EditLength * g_ticksPerStep);
-
-            var a = env.Attack .GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy);
-            var d = env.Decay  .GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy);
-            var s = env.Sustain.GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy);
-            var r = env.Release.GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy);
-                                                                           
-
-            var xoff  = 20;
-            var b     = 18;
-            var v     = Math.Min(vol, 1);
-
-            var fs    = 0.5f;
-            var scale = 1f;
-            var fps   = FPS * scale;
-
-            var x0    = x;// + xoff + b + 1;
-
-            var p0    = new Vector2(x0/* + fps * Offset*/, y + h - b);
-                p0.X  = Math.Min(p0.X, x0 + w - b * 2);
-
-            var p1    = new Vector2(p0.X + fps * a, p0.Y - (h - b * 2) * v);
-                p1.X  = Math.Min(p1.X, x0 + w - b * 2);
-
-            var p2    = new Vector2(p1.X + fps * d, p0.Y - (h - b * 2) * v * s);
-                p2.X  = Math.Min(p2.X, x0 + w - b * 2);
-
-            var p3    = new Vector2(x + xoff + w - b * 2 - fps * r, p2.Y);
-            var p4    = new Vector2(x + xoff + w - b * 2, p0.Y);
-
-
-            var isAtt = IsCurParam("Att");
-            var isDec = IsCurParam("Dec");
-            var isSus = IsCurParam("Sus");
-            var isRel = IsCurParam("Rel");
-
-
-
-            var wa = isAtt ? 6 : 1;
-            var wd = isDec ? 6 : 1;
-            var ws = isSus ? 6 : 1;
-            var wr = isRel ? 6 : 1;
-
-
-            // draw envelope supports and info
-
-            var sw = 1;
-
-            DrawLine(sprites, p0.X, p0.Y, p0.X, y,         color3, sw);
-            DrawLine(sprites, p2.X, p2.Y, p2.X, y + h - b, color3, sw);
-            DrawLine(sprites, p1.X, p1.Y, p1.X, y + h - b, color3, sw);
-            DrawLine(sprites, p3.X, p3.Y, p3.X, y + h - b, color3, sw);
-            DrawLine(sprites, p1.X, p2.Y, p3.X, p3.Y,      color3, sw);
-                                                              
-            DrawLine(sprites, p0.X, p0.Y, p4.X, p4.Y,      color3, sw);
-
-
-            // draw labels
-
-            DrawString(sprites, a.ToString(".00") + (isAtt ? " s" : ""),  p0.X + 6,             p0.Y +  3,         fs, isAtt ? color6 : color3, TextAlignment.CENTER);
-            DrawString(sprites, d.ToString(".00") + (isDec ? " s" : ""), (p1.X + p2.X)/2 + 16, (p1.Y+p2.Y)/2 - 20, fs, isDec ? color6 : color3, TextAlignment.CENTER);
-            DrawString(sprites, s.ToString(".00"),                       (p2.X + p3.X)/2 - 5,   p2.Y - 20,         fs, isSus ? color6 : color3, TextAlignment.CENTER);
-            DrawString(sprites, r.ToString(".00") + (isRel ? " s" : ""), (p3.X + p4.X)/2 - 5,   p0.Y +  3,         fs, isRel ? color6 : color3, TextAlignment.CENTER);
-
-
-            // draw the envelope
-
-            DrawLine(sprites, p0, p1, color6, wa);
-            DrawLine(sprites, p1, p2, color6, wd);
-            DrawLine(sprites, p2, p3, color6, ws);
-            DrawLine(sprites, p3, p4, color6, wr);
-
-            if (isDec && d < 0.01)
-                FillRect(sprites, p1.X-4, p1.Y-4, 8, 8, color6);
         }
 
 
