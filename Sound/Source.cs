@@ -122,12 +122,16 @@ namespace IngameScript
 
             public void CreateSounds(List<Sound> sounds, Source src, Note note, Program prog)
             {
-                var inst = src.Instrument;
+                var  inst   = src.Instrument;
                 var _sounds = new List<Sound>();
 
                 var triggerValues = new List<TriggerValue>();
 
-                var sndTime = StartTime + note.SongTime + 1;
+
+                var sndTime = 
+                    StartTime > -1
+                    ? StartTime + note.SongTime + 1
+                    : g_time + 1;
 
                 var lTime = g_time - StartTime - note.SongTime;
                 var sTime = StartTime > -1 ? g_time - StartTime : lTime;

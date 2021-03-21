@@ -8,33 +8,37 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        // notes don't play when pressing
-        // timing issues when moving blocks etc.
-        // timing issues with playing
-        // when editLength is long, editing the chord doesn't play the current chord properly when a note is added/deleted
-        // fix volume display
-
         // mixer channel volumes aren't saved
+        // volume not shown correctly for harmonics & filters
+        // fix volume display
         // keys should affect trigger, auto should affect volume
+
         // add Modulate to param (Level, Attack, Release)
         // side chain compression (Modulate on all params, with delay and +/-)
         // plug any param into any param (connect button)
-        // hold doesn't seem to work properly when entering long notes
+
+        // blocks
+        // timing issues when moving blocks etc.
+        // timing issues with playing
+        // when editLength is long, editing the chord doesn't play the current chord properly when a note is added/deleted
+
+
         // fix filter
-        // volume not shown correctly for harmonics & filters
         // fix Note-mode moving of notes with block/allpat enabled
+
         // when shuffle is too strong, notes in other channels become too long
+        // hold doesn't seem to work properly when entering long notes
         // BUG: holding a chord and then pressing another chord with some of the same keys will disable
         //   those keys until the second press
         // harmony - across selected patterns, copy existing notes and shift them up or down
         // record keys/chords and mouse control of parameters as automation
         // bring back default samples
+
         // improve randomizer
 
         // save (song saves modified copies of instruments)
 
 
-        // blocks
 
 
         // add delay pitch (every next tap goes +-1 or whatever, +-5 should give thirds which sound nice)
