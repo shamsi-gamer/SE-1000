@@ -120,9 +120,9 @@ namespace IngameScript
             }
 
 
-            public void CreateSounds(List<Sound> sounds, Source src, Note note, Program prog)
+            public void CreateSounds(List<Sound> sounds, Note note, Program prog)
             {
-                var  inst   = src.Instrument;
+                var  inst   = Instrument;
                 var _sounds = new List<Sound>();
 
                 var triggerValues = new List<TriggerValue>();
@@ -136,17 +136,17 @@ namespace IngameScript
                 var lTime = g_time - StartTime - note.SongTime;
                 var sTime = StartTime > -1 ? g_time - StartTime : lTime;
 
-                if (src.Offset != null)
+                if (Offset != null)
                 { 
                     sndTime += (int)Math.Round(
-                          src.Offset.GetValue(g_time, lTime, sTime, note.FrameLength, note, src.Index, triggerValues)
+                          Offset.GetValue(g_time, lTime, sTime, note.FrameLength, note, Index, triggerValues)
                         * FPS);
                 }
 
 
-                var noteNum = AdjustNoteNumber(note, src, note.FrameLength);
+                var noteNum = AdjustNoteNumber(note, this, note.FrameLength);
 
-                if (   src.Oscillator == OscSample
+                if (   Oscillator == OscSample
                     && (   noteNum % NoteScale > 0
                         || noteNum >= (12 + OscSample.Samples.Count) * NoteScale))
                     return;
@@ -154,15 +154,15 @@ namespace IngameScript
                 var vol = note.Volume;
                 
                 // calling GetValue() populates triggerValues, the return values are ignored
-                inst.Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, -1,        triggerValues);
-                src .Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, src.Index, triggerValues);
+                inst.Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, -1,    triggerValues);
+                     Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, Index, triggerValues);
 
 
                 var iSrc = Instrument.Sources.IndexOf(this);
 
                 string relPath = "";
                 
-                     if (src .Volume.Envelope != null) relPath = src .Volume.Envelope.Release.GetPath(iSrc);
+                     if (     Volume.Envelope != null) relPath =      Volume.Envelope.Release.GetPath(iSrc);
                 else if (inst.Volume.Envelope != null) relPath = inst.Volume.Envelope.Release.GetPath(-1);
 
                 var _relLen = triggerValues.Find(v => v.Path == relPath);
@@ -181,8 +181,6 @@ namespace IngameScript
                     if (   noteNum <  12 * NoteScale
                         || noteNum > 150 * NoteScale)
                         return;
-
-                    vol *= OscMult;
 
                     vol = ApplyFilter(
                         vol, 
@@ -204,7 +202,7 @@ namespace IngameScript
                         sndTime,
                         note.FrameLength,
                         relLen,
-                        vol * src.OscMult,
+                        vol * OscMult,
                         Instrument,
                         iSrc,
                         note,
@@ -215,21 +213,21 @@ namespace IngameScript
                 }
 
 
-                // add sounds
-                foreach (var snd in _sounds)
-                    sounds.Add(snd);
-
-
-                // add echos
+                // add sound and echos
                 foreach (var snd in _sounds)
                 { 
-                    prog.AddSoundEchos(
-                        sounds, 
-                        snd, 
-                        src.Delay ?? inst.Delay, 
-                        src.Delay != null
-                        ? snd.SourceIndex
-                        : -1);
+                    var del = Delay ?? inst.Delay;
+
+                    if (del != null)
+                        prog.AddSoundAndEchos(
+                            sounds, 
+                            snd, 
+                            del, 
+                            Delay != null
+                            ? snd.SourceIndex
+                            : -1);
+                    else
+                        sounds.Add(snd);
                 }
             }
 

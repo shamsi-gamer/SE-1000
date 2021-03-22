@@ -6,7 +6,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        void AddSoundEchos(List<Sound> sounds, Sound snd, Delay del, int iSrc)
+        void AddSoundAndEchos(List<Sound> sounds, Sound snd, Delay del, int iSrc)
         {
             if (del == null) return;
 
@@ -16,41 +16,25 @@ namespace IngameScript
             var dc = del.Count.GetValue(g_time, lTime, sTime, snd.FrameLength, snd.Note, snd.SourceIndex, snd.TriggerValues);
             var dt = del.Time .GetValue(g_time, lTime, sTime, snd.FrameLength, snd.Note, snd.SourceIndex, snd.TriggerValues);
 
+
+            Sound echoSrc = null;
+
             for (int i = 0; i < dc; i++)
             {
-                var echoVol = (float)Math.Pow(
-                    del.GetVolume(
-                        i,
-                        g_time,
-                        lTime,
-                        sTime,
-                        snd.FrameLength,
-                        snd.Note,
-                        iSrc,
-                        snd.TriggerValues),
-                    2);
-
-                var echo = new Sound(
-                    snd.Sample,
-                    snd.Note.Channel,
-                    snd.Note.iChan,
-                    snd.FrameTime,
+                var echoVol = del.GetVolume(
+                    i,
+                    g_time,
+                    lTime,
+                    sTime,
                     snd.FrameLength,
-                    snd.ReleaseLength,
-                    snd.TriggerVolume,
-                    snd.Instrument,
-                    snd.SourceIndex,
                     snd.Note,
-                    snd.TriggerValues,
-                    true,
-                    snd,
-                    echoVol,
-                    snd.Harmonic,
-                    snd.HrmSound,
-                    snd.HrmPos);
+                    iSrc,
+                    snd.TriggerValues);
 
-                echo.FrameTime += (int)((i + 1) * dt * FPS);
+                var echo = new Sound(snd, i > 0, echoSrc, echoVol);
+                if (i == 0) echoSrc = echo;
 
+                echo.FrameTime += (int)(i*dt * FPS);
                 sounds.Add(echo);
             }
         }
@@ -136,10 +120,10 @@ namespace IngameScript
 
         void UpdateSoundSpeakers(Sound snd, float vol)
         {
+            var v = (float)Math.Pow(vol, 2);
+
             if (snd.Speakers.Count == 0)
             {
-                var v = vol;
-
                 while (v-- > 0)
                 { 
                     var spk = g_sm.GetSpeaker();
@@ -156,9 +140,11 @@ namespace IngameScript
             }
 
 
+            v = (float)Math.Pow(vol, 2);
+
             foreach (var spk in snd.Speakers)
             {
-                spk.Block.Volume = Math.Min(vol--, 1);
+                spk.Block.Volume = Math.Min(v--, 1);
 
                 // if sample is ending, restart it //TODO make this smooth
                 if (snd.ElapsedFrameTime >= (snd.Source.Oscillator.Length - 0.1f) * FPS)

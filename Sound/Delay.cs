@@ -1,21 +1,6 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
+
 
 namespace IngameScript
 {
@@ -23,7 +8,8 @@ namespace IngameScript
     {
         public class Delay : Setting
         {
-            public Parameter Count,
+            public Parameter Dry,
+                             Count,
                              Time,
                              Level,
                              Power; // convert to int when applying
@@ -31,6 +17,7 @@ namespace IngameScript
 
             public Delay() : base("Del", null)
             {
+                Dry   = (Parameter)NewSettingFromTag("Dry",  this);
                 Count = (Parameter)NewSettingFromTag("Cnt",  this);
                 Time  = (Parameter)NewSettingFromTag("Time", this);
                 Level = (Parameter)NewSettingFromTag("Lvl",  this);
@@ -40,6 +27,7 @@ namespace IngameScript
 
             public Delay(Delay del) : base(del.Tag, null, del)
             {
+                Dry   = new Parameter(del.Dry,   this);
                 Count = new Parameter(del.Count, this);
                 Time  = new Parameter(del.Time,  this);
                 Level = new Parameter(del.Level, this);
@@ -55,21 +43,29 @@ namespace IngameScript
 
             public float GetVolume(int i, long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues)
             {
-                var dl = Level?.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues) ?? 0;
-                var dc = Count?.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues) ?? 0;
-                var dp = Power?.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues) ?? 1;
 
-                return 
-                    dc != 0
-                    ? dl * (float)Math.Pow(((int)dc - i) / dc, 1/dp)
-                    : 0;
+                if (i == 0)
+                    return Dry.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues);
+
+                else
+                { 
+                    var dc = Count.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues) - 1; // -1 because 0 is the source sound
+                    var dl = Level.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues);
+                    var dp = Power.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues);
+
+                    return 
+                        dc != 0
+                        ? dl * (float)Math.Pow(((int)dc - (i-1)) / dc, 1/dp)
+                        : 0;
+                }
             }
 
 
             public override bool HasDeepParams(Channel chan, int src)
             {
                 return
-                       Count.HasDeepParams(chan, src)
+                       Dry  .HasDeepParams(chan, src)
+                    || Count.HasDeepParams(chan, src)
                     || Time .HasDeepParams(chan, src)
                     || Level.HasDeepParams(chan, src)
                     || Power.HasDeepParams(chan, src);
@@ -78,8 +74,9 @@ namespace IngameScript
 
             public override void Remove(Setting setting)
             {
-                     if (setting == Count) Count = null;
-                else if (setting == Time)  Time  = null;
+                     if (setting == Dry  ) Dry   = null;
+                else if (setting == Count) Count = null;
+                else if (setting == Time ) Time  = null;
                 else if (setting == Level) Level = null;
                 else if (setting == Power) Power = null;
             }
@@ -87,6 +84,7 @@ namespace IngameScript
 
             public override void Clear()
             {
+                Dry  .Clear();
                 Count.Clear();
                 Time .Clear();
                 Level.Clear();
@@ -96,6 +94,7 @@ namespace IngameScript
 
             public override void Randomize()
             {
+                Dry  .Randomize();
                 Count.Randomize();
                 Time .Randomize();
                 Level.Randomize();
@@ -117,10 +116,11 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Cnt":  return Count ?? (Count = new Parameter("Cnt",  0,        100, 1,    16, 1,    10,    4,    this));
-                    case "Time": return Time  ?? (Time  = new Parameter("Time", 0.000001f, 10, 0.01f, 1, 0.01f, 0.1f, 0.2f, this));
-                    case "Lvl":  return Level ?? (Level = new Parameter("Lvl",  0,          1, 0.01f, 1, 0.01f, 0.1f, 0.5f, this));
-                    case "Pow":  return Power ?? (Power = new Parameter("Pow",  0.000001f,  1, 0.01f, 1, 0.01f, 0.1f, 1,    this));
+                    case "Dry":  return Dry   ?? (Dry   = (Parameter)NewSettingFromTag("Dry",  this));
+                    case "Cnt":  return Count ?? (Count = (Parameter)NewSettingFromTag("Cnt",  this));
+                    case "Time": return Time  ?? (Time  = (Parameter)NewSettingFromTag("Time", this));
+                    case "Lvl":  return Level ?? (Level = (Parameter)NewSettingFromTag("Lvl",  this));
+                    case "Pow":  return Power ?? (Power = (Parameter)NewSettingFromTag("Pow",  this));
                 }
 
                 return null;
@@ -132,6 +132,7 @@ namespace IngameScript
                 return
                       W(Tag)
 
+                    + W(Dry  .Save())
                     + W(Count.Save())
                     + W(Time .Save())
                     + W(Level.Save())
@@ -145,6 +146,7 @@ namespace IngameScript
  
                 var del = new Delay();
 
+                del.Dry   = Parameter.Load(data, ref i, inst, iSrc, del);
                 del.Count = Parameter.Load(data, ref i, inst, iSrc, del);
                 del.Time  = Parameter.Load(data, ref i, inst, iSrc, del);
                 del.Level = Parameter.Load(data, ref i, inst, iSrc, del);

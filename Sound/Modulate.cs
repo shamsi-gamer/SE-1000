@@ -56,9 +56,9 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Amt": return Amount  ?? (Amount  = new Parameter("Amt", -10, 10, -1, 1, 0.01f, 0.1f, 0,    this));
-                    case "Att": return Attack  ?? (Attack  = new Parameter("Att",   0, 10,  0, 1, 0.01f, 0.1f, 0,    this));
-                    case "Rel": return Release ?? (Release = new Parameter("Rel",   0, 10,  0, 2, 0.01f, 0.1f, 0.2f, this));
+                    case "Amt": return Amount  ?? (Amount  = (Parameter)NewSettingFromTag("Amt", this));
+                    case "Att": return Attack  ?? (Attack  = (Parameter)NewSettingFromTag("Att", this));
+                    case "Rel": return Release ?? (Release = (Parameter)NewSettingFromTag("Rel", this));
                 }
 
                 return null;

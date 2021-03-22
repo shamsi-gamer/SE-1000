@@ -169,6 +169,7 @@ namespace IngameScript
 
         void DrawDelayFuncButtons(List<MySprite> sprites, Delay del, float w, float h, Channel chan)
         {
+            DrawFuncButton(sprites, "Dry",  0, w, h, true, del.Dry  .HasDeepParams(chan, -1));
             DrawFuncButton(sprites, "Cnt",  1, w, h, true, del.Count.HasDeepParams(chan, -1));
             DrawFuncButton(sprites, "Time", 2, w, h, true, del.Time .HasDeepParams(chan, -1));
             DrawFuncButton(sprites, "Lvl",  3, w, h, true, del.Level.HasDeepParams(chan, -1));

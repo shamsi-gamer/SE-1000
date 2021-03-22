@@ -40,12 +40,13 @@ namespace IngameScript
                     {
                         DrawLfo(sprites, (LFO)g_settings[CurSet-1], x + bx, y + by + 90, w - bx * 2, 110, true, true);
                     }
-                    else if (param.Tag == "Cnt"
+                    else if (param.Tag == "Dry"
+                          || param.Tag == "Cnt"
                           || param.Tag == "Time"
                           || param.Tag == "Lvl"
                           || param.Tag == "Pow")
                     {
-                        DrawDelay(sprites, (Delay)g_settings[CurSet-1], x + 15, y + 140, w - 30, 110, true);
+                        DrawDelay(sprites, (Delay)g_settings[CurSet-1], x + 15, y + 140, w - 32, 110, true);
                     }
                     else if (param.Tag == "Cut"
                           || param.Tag == "Res")
@@ -87,7 +88,7 @@ namespace IngameScript
                 }
                 else if (setting.GetType() == typeof(Delay))
                 {
-                    DrawDelay(sprites, (Delay)setting, x + 15, y + 120, w - 30, 110, true);
+                    DrawDelay(sprites, (Delay)setting, x + 15, y + 140, w - 32, 110, true);
                 }
                 else if (setting.GetType() == typeof(Filter))
                 {
@@ -647,11 +648,12 @@ namespace IngameScript
 
         void DrawDelay(List<MySprite> sprites, Delay del, float x, float y, float w, float h, bool active)
         {
-            var b = 30;
+            var b = 18;
 
 
             FillRect(sprites, x, y + h - b - 1, w, 2, color3);
 
+            var dd = del.Dry  .CurValue;
             var dc = del.Count.CurValue;
             var dt = del.Time .CurValue * 100;
             var dl = del.Level.CurValue;
@@ -659,51 +661,46 @@ namespace IngameScript
 
 
             var fs = 0.5f;
-
             var dx = 0f;
-
-
-            FillRect(sprites, x, y + h - b, 4, -(h - b*2), color3);
 
 
             for (int i = 0; i < (int)dc && dx < w - dt; i++)
             {
-                dx = (i+1) * dt;
+                dx = i * dt;
 
                 FillRect(sprites, 
-                    x + dx, 
+                    x + dx + (i > 0 ? 2 : 0), 
                     y + h - b, 
-                    4, 
+                    i == 0 ? 8 : 4, 
                     -(h - b*2) * del.GetVolume(i, g_time, 0, 0, (int)(EditLength * g_ticksPerStep), null, CurSrc, _triggerDummy),
                     color4);
             }
 
 
+            // dry
+            DrawString(
+                sprites,
+                dd.ToString("0.00"), // -1 because 0 is the source sound
+                x,
+                y - b + 8,
+                fs,
+                IsCurParam("Dry") ? color6 : color3);
+
+
             // count
             DrawString(
                 sprites, 
-                S(Math.Round(dc)), 
-                x, // + Math.Min(dt * dc, w), 
+                S(Math.Round(dc-1)), // -1 because 0 is the source sound
+                x,
                 y + h - b + 8, 
                 fs, 
                 IsCurParam("Cnt") ? color6 : color3);
 
 
-            if (dc > 0)
+            if (dc-1 > 0)
             { 
-                // time
-                DrawString(
-                    sprites, 
-                    Math.Round(dt*10).ToString("0") + " ms", 
-                    x + 60, 
-                    y + h - b + 8, 
-                    fs,
-                    IsCurParam("Time") ? color6 : color3, 
-                    TextAlignment.CENTER);
-
-
                 // level
-                var lx = x + dt + 2;
+                var lx = x + dt + 15;
 
                 DrawString(
                     sprites, 
@@ -715,8 +712,19 @@ namespace IngameScript
                     TextAlignment.CENTER);
 
 
+                // time
+                DrawString(
+                    sprites, 
+                    Math.Round(dt*10).ToString("0") + " ms", 
+                    x + 60, 
+                    y + h - b + 8, 
+                    fs,
+                    IsCurParam("Time") ? color6 : color3, 
+                    TextAlignment.CENTER);
+
+
                 // power
-                var px  = x + MinMax(70, dt*dc/2, w);
+                var px  = x + MinMax(90, dt*(dc-1)/2, w);
                 var dim = dc > 1 && Math.Abs(px - lx) > 20 ? color6 : color3;
 
                 var vol = del.GetVolume(Math.Max(0, (int)dc/2 - 1), 0, 0, 0, (int)(EditLength * g_ticksPerStep), null, CurSrc, _triggerDummy);

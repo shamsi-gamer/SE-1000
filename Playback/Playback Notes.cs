@@ -216,7 +216,7 @@ namespace IngameScript
                 foreach (var src in inst.Sources)
                 { 
                     if (src.On)
-                        src.CreateSounds(note.Sounds, src, note, this);
+                        src.CreateSounds(note.Sounds, note, this);
                 }
 
                 g_notes.Add(note);

@@ -179,10 +179,10 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Att": return Attack  ?? (Attack  = new Parameter("Att", 0, 10, 0,     1, 0.01f, 0.1f, 0,    this));
-                    case "Dec": return Decay   ?? (Decay   = new Parameter("Dec", 0, 10, 0,     1, 0.01f, 0.1f, 0.2f, this));
-                    case "Sus": return Sustain ?? (Sustain = new Parameter("Sus", 0,  1, 0.01f, 1, 0.01f, 0.1f, 0.1f, this));
-                    case "Rel": return Release ?? (Release = new Parameter("Rel", 0, 10, 0,     2, 0.01f, 0.1f, 0.2f, this));
+                    case "Att": return Attack  ?? (Attack  = (Parameter)NewSettingFromTag("Att", this));
+                    case "Dec": return Decay   ?? (Decay   = (Parameter)NewSettingFromTag("Dec", this));
+                    case "Sus": return Sustain ?? (Sustain = (Parameter)NewSettingFromTag("Sus", this));
+                    case "Rel": return Release ?? (Release = (Parameter)NewSettingFromTag("Rel", this));
                 }
 
                 return null;

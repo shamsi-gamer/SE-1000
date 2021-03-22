@@ -93,8 +93,8 @@
             {
                 switch (tag)
                 {
-                    case "Len": return Length ?? (Length = new Parameter("Len", 1,     256, 2,     6, 0.01f,  0.1f, 8, this));
-                    case "Scl": return Scale  ?? (Scale  = new Parameter("Scl", 0.01f,  16, 0.25f, 4, 0.01f,  0.1f, 1, this));
+                    case "Len": return Length ?? (Length = (Parameter)NewSettingFromTag("Len", this));
+                    case "Scl": return Scale  ?? (Scale  = (Parameter)NewSettingFromTag("Scl", this));
                 }
 
                 return null;

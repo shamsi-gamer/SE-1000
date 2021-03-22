@@ -62,8 +62,8 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Cut": return Cutoff    ?? (Cutoff    = new Parameter("Cut", -1,     1, -1,     1, 0.01f,  0.1f, 0, this));
-                    case "Res": return Resonance ?? (Resonance = new Parameter("Res",  0.01f, 1,  0.01f, 1, 0.01f,  0.1f, 0, this));
+                    case "Cut": return Cutoff    ?? (Cutoff    = (Parameter)NewSettingFromTag("Cut", this));
+                    case "Res": return Resonance ?? (Resonance = (Parameter)NewSettingFromTag("Res", this));
                 }
 
                 return null;

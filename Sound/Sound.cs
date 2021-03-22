@@ -42,7 +42,7 @@ namespace IngameScript
             public bool               IsEcho;
 
 
-            public Sound(string sample, Channel chan, int ch, long frameTime, int frameLen, int releaseLen, float vol, Instrument inst, int iSrc, Note note, List<TriggerValue> triggerValues, bool isEcho, Sound echoSource, float echoVol, Parameter harmonic = null, Sound hrmSound = null, float hrmPos = fN)
+            public Sound(string sample, Channel chan, int ch, long frameTime, int frameLen, int releaseLen, float vol, Instrument inst, int iSrc, Note note, List<TriggerValue> triggerValues, bool isEcho, Sound echoSrc, float echoVol, Parameter harmonic = null, Sound hrmSound = null, float hrmPos = fN)
             {
                 Speakers         = new List<Speaker>();
                 Sample           = sample;
@@ -76,7 +76,48 @@ namespace IngameScript
                 HrmPos           = hrmPos;
 
                 IsEcho           = isEcho;
-                EchoSource       = echoSource;
+                EchoSource       = echoSrc;
+                EchoVolume       = echoVol;
+
+                Cache            = IsEcho ? null : new float[FrameLength + ReleaseLength];
+            }
+
+
+            public Sound(Sound snd, bool isEcho, Sound echoSrc, float echoVol)
+            {
+                Speakers         = new List<Speaker>();
+                Sample           = snd.Sample;
+
+                Channel          = snd.Channel;
+                iChan            = snd.iChan;
+
+                FrameTime        = snd.FrameTime;
+
+                FrameLength      = snd.FrameLength;
+                ReleaseLength    = snd.ReleaseLength;
+
+                ElapsedFrameTime = snd.ElapsedFrameTime;
+
+                TriggerVolume    = snd.TriggerVolume;
+                DisplayVolume    = snd.DisplayVolume;
+
+                TriggerValues    = new List<TriggerValue>();
+                foreach (var val in snd.TriggerValues)
+                    TriggerValues.Add(new TriggerValue(val));
+                    
+                Instrument       = snd.Instrument;
+
+                SourceIndex      = snd.SourceIndex;
+                Source           = snd.Source;
+
+                Note             = snd.Note;
+
+                Harmonic         = snd.Harmonic;
+                HrmSound         = snd.HrmSound;
+                HrmPos           = snd.HrmPos;
+
+                IsEcho           = isEcho;
+                EchoSource       = echoSrc;
                 EchoVolume       = echoVol;
 
                 Cache            = IsEcho ? null : new float[FrameLength + ReleaseLength];
@@ -88,7 +129,6 @@ namespace IngameScript
                 var lTime = gTime - FrameTime; // local time
 
                 var vol = 
-                      //TriggerVolume * 
                       Instrument.Volume.GetValue(gTime, lTime, sTime, FrameLength, Note, -1,           TriggerValues)
                     * Source    .Volume.GetValue(gTime, lTime, sTime, FrameLength, Note, Source.Index, TriggerValues);
 

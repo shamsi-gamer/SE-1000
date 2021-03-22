@@ -128,9 +128,9 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Amp":  return Amplitude ?? (Amplitude = new Parameter("Amp",     0,          1,   0,     1, 0.01f,  0.1f, 0,    this));
-                    case "Freq": return Frequency ?? (Frequency = new Parameter("Freq",    0.000001f, 30,   0.01f, 4, 0.01f,  0.1f, 0.5f, this));
-                    case "Off":  return Offset    ?? (Offset    = new Parameter("Off",  -100,        100, -10,    10, 0.01f,  0.1f, 0,    this));
+                    case "Amp":  return Amplitude ?? (Amplitude = (Parameter)NewSettingFromTag("Amp",  this));
+                    case "Freq": return Frequency ?? (Frequency = (Parameter)NewSettingFromTag("Freq", this));
+                    case "Off":  return Offset    ?? (Offset    = (Parameter)NewSettingFromTag("Off",  this));
                 }
 
                 return null;

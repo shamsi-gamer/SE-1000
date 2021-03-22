@@ -39,8 +39,6 @@ namespace IngameScript
                     if (CurSrc < 0) SetInstFunc(SelectedInstrument, func);
                     else            SetSrcFunc (SelectedSource,     func);
                 }
-
-                //g_sampleValid = F;
             }
             else
             {
@@ -269,7 +267,7 @@ namespace IngameScript
             {
                 case 1: AddNextSetting("Cut", SelectedInstrument, CurSrc); break;
                 case 2: AddNextSetting("Res", SelectedInstrument, CurSrc); break;
-                case 5: RemoveSetting(flt);    break;
+                case 5: RemoveSetting(flt); break;
             }
         }
 
@@ -278,11 +276,12 @@ namespace IngameScript
         {
             switch (func)
             {
-                case 1: AddNextSetting("Cnt",  SelectedInstrument, CurSrc);  break;
+                case 0: AddNextSetting("Dry",  SelectedInstrument, CurSrc); break;
+                case 1: AddNextSetting("Cnt",  SelectedInstrument, CurSrc); break;
                 case 2: AddNextSetting("Time", SelectedInstrument, CurSrc); break;
-                case 3: AddNextSetting("Lvl",  SelectedInstrument, CurSrc);  break;
-                case 4: AddNextSetting("Pow",  SelectedInstrument, CurSrc);  break;
-                case 5: RemoveSetting(del);     break;
+                case 3: AddNextSetting("Lvl",  SelectedInstrument, CurSrc); break;
+                case 4: AddNextSetting("Pow",  SelectedInstrument, CurSrc); break;
+                case 5: RemoveSetting(del); break;
             }
         }
 
