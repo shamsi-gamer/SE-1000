@@ -112,9 +112,7 @@ namespace IngameScript
 
             UpdateSoundSpeakers(snd, vol);
 
-
             snd.ElapsedFrameTime = g_time - snd.FrameTime;
-            //snd.ElapsedFrameTime %= MaxSampleLength;
         }
 
 

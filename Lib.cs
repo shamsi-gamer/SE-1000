@@ -42,17 +42,15 @@ namespace IngameScript
         {
             string str;
 
-
-            if (double.IsNegativeInfinity(val))
-                str = "-∞";
-            else if (double.IsPositiveInfinity(val))
-                str = "∞";
+                 if (double.IsNegativeInfinity(val)) str = "-∞";
+            else if (double.IsPositiveInfinity(val)) str =  "∞";
+            else if (double.IsNaN(val))              str = "NaN";
             else if (showZero)
             {
-                string format =
-                    "0"
-                    + (dec != 0 ? "." : "")
-                    + new string('0', Math.Abs(dec));
+                string format = 
+                    (showZero ? "0" : "") 
+                    + "." 
+                    + new string(dec >= 0 ? '0' : '#', Math.Abs(dec));
 
                 str = val
                     .ToString(format)
@@ -65,25 +63,9 @@ namespace IngameScript
                     .PadLeft(pad + Math.Abs(dec) + (dec != 0 ? 1 : 0));
             }
 
-
-            if (dec < 0)
-            {
-                for (int i = str.Length - 1; i >= 0; i--)
-                {
-                    if (str[i] != '0')
-                    {
-                        if (str[i] == '.')
-                            str = str.Substring(0, str.Length - 1);
-
-                        break;
-                    }
-
-                    str = str.Substring(0, str.Length - 1);
-                }
-            }
-
             return str;
         }
+
 
         static void Swap<T>(ref T t1, ref T t2)
         {
@@ -91,6 +73,7 @@ namespace IngameScript
             t1 = t2;
             t2 = temp;
         }
+
 
         int GetNumLength(string name)
         {

@@ -14,6 +14,9 @@ namespace IngameScript
         // volume not shown correctly for harmonics & filters
         // fix volume display
 
+        // timing issues with playing
+        // blocks
+
         // keys should affect trigger, auto should affect volume
 
         // add Modulate to param (Level, Attack, Release)
@@ -22,9 +25,6 @@ namespace IngameScript
 
         // save (song saves modified copies of instruments)
 
-        // blocks
-        // timing issues when moving blocks etc.
-        // timing issues with playing
         
         // when editLength is long, editing the chord doesn't play the current chord properly when a note is added/deleted
         // fix Note-mode moving of notes with block/allpat enabled

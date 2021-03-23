@@ -49,8 +49,10 @@ namespace IngameScript
             StopCurrentNotes(g_song);
 
 
-            PlayTime = -1;
-            //CurSong.StartTime = fN; // don't clear start time here
+            PlayTime  = -1;
+            StartTime = -1;
+            PlayPat   = -1;
+
 
             lastNotes.Clear();
 
@@ -109,7 +111,7 @@ namespace IngameScript
         {
             if (movePat) MovePatterns(CurPat - 1);
             else SetCurrentPattern(CurPat - 1);
-            
+
             MarkLight(lblPrevPat, !movePat);
             songPressed.Add(5);
         }
@@ -234,6 +236,8 @@ namespace IngameScript
                 return;
 
 
+            var oldPat = CurPat;
+
             //StopEdit();
 
             var b = g_song.GetBlock(CurPat);
@@ -264,6 +268,14 @@ namespace IngameScript
             if (OK(g_song.EditPos))
                 g_song.EditPos = CurPat * nSteps + g_song.EditPos % nSteps;
 
+
+            if (PlayTime > -1)
+            {
+                     if (CurPat > oldPat) StartTime -= nSteps * g_ticksPerStep;
+                else if (CurPat < oldPat) StartTime += nSteps * g_ticksPerStep;
+            }
+
+
             //UpdateOctaveLight();
             UpdateSongOff();//g_song.CurPat);
             
@@ -285,6 +297,8 @@ namespace IngameScript
             if (OK(g_song.EditPos))
                 g_song.EditPos = 0;
 
+            //if (PlayTime > -1)
+            //    StartTime -= nSteps * g_ticksPerStep;
 
             g_song.UpdateAutoKeys();
 
@@ -340,12 +354,15 @@ namespace IngameScript
                     SetCurrentPattern(g_song.Patterns.Count-1);
             }
 
-            if (PlayPat >= g_song.Patterns.Count)
-                PlayPat  = g_song.Patterns.Count-1;
-
 
             if (OK(g_song.EditPos))
                 g_song.EditPos = Math.Min(g_song.EditPos, g_song.Patterns.Count * nSteps);
+
+            //if (PlayTime > -1)
+            //    StartTime += nSteps * g_ticksPerStep;
+
+            if (PlayPat >= g_song.Patterns.Count)
+                PlayPat  = g_song.Patterns.Count-1;
 
 
             g_song.UpdateAutoKeys();
@@ -388,6 +405,8 @@ namespace IngameScript
             //if (!OK(recordPosition))
             // recordPosition = 0;
 
+            //if (PlayTime > -1)
+            //    StartTime -= nSteps * g_ticksPerStep;
 
             g_song.UpdateAutoKeys();
 

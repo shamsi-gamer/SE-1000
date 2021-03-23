@@ -382,8 +382,6 @@ namespace IngameScript
 
                     if (IsCurSetting(typeof(Arpeggio)))
                     {
-                        //Stop();
-
                         CurArpeggio.Song.EditPos = -Math.Abs(CurArpeggio.Song.EditPos); // turn off but keep value
                         UpdateEditLight(lblEdit, false);
                     }

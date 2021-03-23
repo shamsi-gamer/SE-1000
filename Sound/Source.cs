@@ -101,18 +101,18 @@ namespace IngameScript
 
                 float w = 0;
 
-                     if (Oscillator == OscSine)      w = (float)Math.Sin(f * Tau);
-                else if (Oscillator == OscTriangle)
+                     if (Oscillator == OscSine     )  w = (float)Math.Sin(f * Tau);
+                else if (Oscillator == OscTriangle )  
                 {
                          if (f <  0.25f)              w = f / 0.25f;
                     else if (f >= 0.25f && f < 0.75f) w = 1 - 4 * (f - 0.25f);
                     else                              w = (f - 0.75f) / 0.25f - 1;
                 }                                                 
-                else if (Oscillator == OscSaw      ) w =  2*f - 1;
-                else if (Oscillator == OscSquare   ) w =  f < 0.5f ? 1 : -1;
-                else if (Oscillator == OscLowNoise ) w = -1 + g_random[(int)(f * 100)] * 2;
-                else if (Oscillator == OscHighNoise) w = -1 + g_random[(int)(f * 100)] * 2;
-                else if (Oscillator == OscBandNoise) w = -1 + g_random[(int)(f * 100)] * 2;
+                else if (Oscillator == OscSaw      )  w =  2*f - 1;
+                else if (Oscillator == OscSquare   )  w =  f < 0.5f ? 1 : -1;
+                else if (Oscillator == OscLowNoise )  w = -1 + g_random[(int)(f * 100)] * 2;
+                else if (Oscillator == OscHighNoise)  w = -1 + g_random[(int)(f * 100)] * 2;
+                else if (Oscillator == OscBandNoise)  w = -1 + g_random[(int)(f * 100)] * 2;
 
                 w *= Volume.Value;
 

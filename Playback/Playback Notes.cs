@@ -125,9 +125,6 @@ namespace IngameScript
 
 
             g_curNote = num;
-            //g_showNote = g_curNote;
-
-            //g_sampleValid = F;
         }
 
 
@@ -143,10 +140,7 @@ namespace IngameScript
                    n.iChan  == ch
                 && n.Number == num);
 
-
-            if (found != null) StopNote(g_song, found);
-            else               AddNoteAndSounds(new Note(chan, ch, 1, num, patStep, len));
-
+            AddNoteAndSounds(new Note(chan, ch, 1, num, patStep, len));
 
             if (g_piano)
                 MarkLight(GetLightFromNote(num));
@@ -219,6 +213,9 @@ namespace IngameScript
                         src.CreateSounds(note.Sounds, note, this);
                 }
 
+                if (PlayTime < 0)
+                    note.PatStep = TimeStep;
+
                 g_notes.Add(note);
                 g_sounds.AddRange(note.Sounds);
             }
@@ -242,22 +239,25 @@ namespace IngameScript
         }
 
 
-        void StopNote(Song song, Note note)
-        {
-            var step = PlayTime > -1 ? PlayStep : TimeStep;
-            note.SetLength(step - note.PatStep, g_ticksPerStep);
-        }
+        //void StopNote(Song song, Note note)
+        //{
+        //    var step = PlayTime > -1 ? PlayStep : TimeStep;
+        //    //note.UpdateStepLength(step - note.PatStep, g_ticksPerStep);
+        //}
 
 
         void StopCurrentNotes(Song song, int ch = -1)
         {
-            var step = PlayTime > -1 ? PlayStep : TimeStep;
+            var timeStep = PlayTime > -1 ? PlayStep      : TimeStep;
 
             foreach (var note in g_notes)
             {
                 if (   ch < 0
                     || note.iChan == ch)
-                    note.SetLength(step - note.PatStep, g_ticksPerStep);
+                { 
+                    var noteStep = PlayTime > -1 ? note.SongStep : note.PatStep;
+                    note.UpdateStepLength(timeStep - noteStep);
+                }
             }
         }
 

@@ -19,6 +19,8 @@ namespace IngameScript
                                
             public int         PatIndex    { get { return Channel.Pattern.Song.Patterns.IndexOf(Channel.Pattern); } }
 
+            public float       SongStep    { get { return PatIndex * nSteps + PatStep; } }
+
             public long        PatTime     { get { return (long)(PatStep * g_ticksPerStep); } }
             public long        SongTime    { get { return GetPatTime(PatIndex) + PatTime; } }
 
@@ -87,11 +89,11 @@ namespace IngameScript
 
             public void Reset()
             {
-                Number     = 69;
-                StepLength = 0;
-                Volume     = 0;
+                Number      = 69;
+                StepLength  = 0;
+                Volume      = 0;
 
-                ArpPlayTime   = fN;
+                ArpPlayTime = fN;
 
                 Sounds.Clear();
             }
@@ -103,22 +105,17 @@ namespace IngameScript
                 {
                          if (PatStep % 2 == 1   ) return (float)Channel.Shuffle / g_ticksPerStep;
                     else if (PatStep % 2 == 1.5f) return (float)Channel.Shuffle / g_ticksPerStep;
-                    else return 0;
+                    else                          return 0;
                 }
             }
 
 
-            public void SetLength(float len, int stepLen)
+            public void UpdateStepLength(float len)
             {
                 StepLength = len;
-                UpdateSoundLengths(stepLen);
-            }
 
-
-            void UpdateSoundLengths(int stepLen)
-            {
                 foreach (var snd in Sounds)
-                    snd.FrameLength = (int)(StepLength * stepLen/* - (snd.Envelope?.Offset ?? 0)*/);
+                    snd.FrameLength = (int)(StepLength * g_ticksPerStep);
             }
         }
     }
