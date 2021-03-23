@@ -234,7 +234,7 @@ namespace IngameScript
 
             public void Randomize(List<Oscillator> used)
             {
-                Oscillator = OscillatorFromType((OscType)(int)(Math.Pow(RND, 1.5) * 7)); //9));
+                Oscillator = OscillatorFromType((OscType)(int)(Math.Pow(RND, 2) * 9));
 
 
                 if (   RND > 0.7f

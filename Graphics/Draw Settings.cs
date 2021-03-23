@@ -196,7 +196,7 @@ namespace IngameScript
                 }
                 else if (setting.Tag == "Flt")
                 {
-                    ew = 80;
+                    ew = 110;
 
                     var flt = (Filter)setting;
 

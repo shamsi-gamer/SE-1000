@@ -8,7 +8,6 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        // filter setting box too short
         // fix filter (separate and add button)
 
         // volume not shown correctly for harmonics & filters
