@@ -124,13 +124,15 @@ namespace IngameScript
             }
 
 
-            public float GetVolume(long gTime, long sTime)
+            public float GetVolume(long gTime, long sTime, Program prog)
             {
+                if (prog.TooComplex) return 0;
+
                 var lTime = gTime - FrameTime; // local time
 
                 var vol = 
-                      Instrument.Volume.GetValue(gTime, lTime, sTime, FrameLength, Note, -1,           TriggerValues)
-                    * Source    .Volume.GetValue(gTime, lTime, sTime, FrameLength, Note, Source.Index, TriggerValues);
+                      Instrument.Volume.GetValue(gTime, lTime, sTime, FrameLength, Note, -1,           TriggerValues, prog)
+                    * Source    .Volume.GetValue(gTime, lTime, sTime, FrameLength, Note, Source.Index, TriggerValues, prog);
 
                 return MinMax(0, vol, 2);
             }

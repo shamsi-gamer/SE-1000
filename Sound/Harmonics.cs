@@ -114,7 +114,7 @@ namespace IngameScript
             }
 
 
-            public void CreateSounds(List<Sound> sounds, Source src, Note note, int noteNum, long sndTime, int sndLen, int relLen, float vol, List<TriggerValue> triggerValues)
+            public void CreateSounds(List<Sound> sounds, Source src, Note note, int noteNum, long sndTime, int sndLen, int relLen, float vol, List<TriggerValue> triggerValues, Program prog)
             {
                 var inst = src.Instrument;
                 var iSrc = inst.Sources.IndexOf(src);
@@ -123,6 +123,8 @@ namespace IngameScript
 
                 for (int i = 0; i < Tones.Length; i++)
                 {
+                    if (prog.TooComplex) return;
+
                     var _noteNum = freq2note(note2freq(noteNum) * (i+1));
 
                     if (   _noteNum <  12*NoteScale
@@ -156,8 +158,8 @@ namespace IngameScript
                     var lTime = g_time - sndTime;
                     var sTime = StartTime > -1 ? g_time - StartTime : lTime;
 
-                    Tones[i].CurValue = Tones[i].GetValue(g_time, lTime, sTime, sndLen, note, iSrc, snd.TriggerValues) * vol;
-                    Tones[i].CurValue = ApplyFilter(Tones[i].CurValue, src, hrmPos, g_time, lTime, sTime, sndLen, note, iSrc, snd.TriggerValues); 
+                    Tones[i].CurValue = Tones[i].GetValue(g_time, lTime, sTime, sndLen, note, iSrc, snd.TriggerValues, prog) * vol;
+                    Tones[i].CurValue = ApplyFilter(Tones[i].CurValue, src, hrmPos, g_time, lTime, sTime, sndLen, note, iSrc, snd.TriggerValues, prog); 
 
                     snd.TriggerVolume = Tones[i].CurValue;
 
@@ -173,7 +175,7 @@ namespace IngameScript
             }
 
 
-            public override void Randomize()
+            public override void Randomize(Program prog)
             {
                 SetPreset((Preset)g_rnd.Next(0, 17));
 
@@ -184,7 +186,7 @@ namespace IngameScript
                 {
                     var tone = Tones[i];
 
-                    if (RND > 0.9f) tone.Randomize();
+                    if (RND > 0.9f) tone.Randomize(prog);
                     else            tone.Clear();
                 }
             }

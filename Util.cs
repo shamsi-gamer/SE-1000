@@ -605,5 +605,10 @@ namespace IngameScript
         {
             return (int)Math.Round((12 * Math.Log(freq / 440, 2) + 69) * NoteScale);
         }
+
+
+        bool TooComplex { get { return 
+               Runtime.CurrentCallChainDepth   / (float)Runtime.MaxCallChainDepth   > 0.8
+            || Runtime.CurrentInstructionCount / (float)Runtime.MaxInstructionCount > 0.8; } }
     }
 }

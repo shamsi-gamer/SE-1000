@@ -55,7 +55,7 @@ namespace IngameScript
             public virtual void    Clear() { }
 
 
-            public virtual void    Randomize() {}
+            public virtual void    Randomize(Program prog) {}
             public virtual void    AdjustFromController(Song song, Program prog) {}
 
             public virtual string  Save() => "";

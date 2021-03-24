@@ -14,9 +14,9 @@ namespace IngameScript
                  if (SelChan < 0)  RandomPatternNotes();
             else if (g_paramKeys
                   || g_paramAuto)  RandomValues(CurChan);
-            else if (CurSet  > -1) g_settings[CurSet].Randomize();
-            else if (CurSrc  > -1) SelectedSource.Randomize(new List<Oscillator>());
-            else if (SelChan > -1) SelectedInstrument.Randomize();
+            else if (CurSet  > -1) g_settings[CurSet].Randomize(this);
+            else if (CurSrc  > -1) SelectedSource    .Randomize(new List<Oscillator>(), this);
+            else if (SelChan > -1) SelectedInstrument.Randomize(this);
 
             MarkLight(lblRandom);
         }

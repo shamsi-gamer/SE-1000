@@ -139,12 +139,12 @@ namespace IngameScript
                 if (Offset != null)
                 { 
                     sndTime += (int)Math.Round(
-                          Offset.GetValue(g_time, lTime, sTime, note.FrameLength, note, Index, triggerValues)
+                          Offset.GetValue(g_time, lTime, sTime, note.FrameLength, note, Index, triggerValues, prog)
                         * FPS);
                 }
 
 
-                var noteNum = AdjustNoteNumber(note, this, note.FrameLength);
+                var noteNum = AdjustNoteNumber(note, this, note.FrameLength, prog);
 
                 if (   Oscillator == OscSample
                     && (   noteNum % NoteScale > 0
@@ -154,8 +154,8 @@ namespace IngameScript
                 var vol = note.Volume;
                 
                 // calling GetValue() populates triggerValues, the return values are ignored
-                inst.Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, -1,    triggerValues);
-                     Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, Index, triggerValues);
+                inst.Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, -1,    triggerValues, prog);
+                     Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, Index, triggerValues, prog);
 
 
                 var iSrc = Instrument.Sources.IndexOf(this);
@@ -174,7 +174,7 @@ namespace IngameScript
 
                 if (Harmonics != null)
                 {
-                    Harmonics.CreateSounds(_sounds, this, note, noteNum, sndTime, note.FrameLength, relLen, vol, triggerValues);
+                    Harmonics.CreateSounds(_sounds, this, note, noteNum, sndTime, note.FrameLength, relLen, vol, triggerValues, prog);
                 }
                 else
                 {
@@ -192,7 +192,8 @@ namespace IngameScript
                         note.FrameLength, 
                         note, 
                         iSrc,
-                        triggerValues);
+                        triggerValues,
+                        prog);
 
 
                     _sounds.Add(new Sound(
@@ -232,8 +233,11 @@ namespace IngameScript
             }
 
 
-            public void Randomize(List<Oscillator> used)
+            public void Randomize(List<Oscillator> used, Program prog)
             {
+                if (prog.TooComplex) return;
+
+
                 Oscillator = OscillatorFromType((OscType)(int)(Math.Pow(RND, 2) * 9));
 
 
@@ -241,7 +245,7 @@ namespace IngameScript
                     && !used.Contains(Oscillator))
                 {
                     Offset = (Parameter)NewSettingFromTag("Off", null);
-                    Offset.Randomize();
+                    Offset.Randomize(prog);
                 }
                 else
                     Offset = null;
@@ -250,7 +254,7 @@ namespace IngameScript
                 if (Index == 0)
                     Volume.SetValue(1, null, Index);
                 else
-                    Volume.Randomize();
+                    Volume.Randomize(prog);
 
 
                 if (   Index > 0
@@ -258,7 +262,7 @@ namespace IngameScript
                         || used.Contains(Oscillator)))
                 {
                     Tune = new Tune();
-                    Tune.Randomize();
+                    Tune.Randomize(prog);
                 }
                 else
                     Tune = null;
@@ -270,7 +274,7 @@ namespace IngameScript
                     && !used.Contains(Oscillator))
                 {
                     Harmonics = new Harmonics();
-                    Harmonics.Randomize();
+                    Harmonics.Randomize(prog);
                 }
                 else
                     Harmonics = null;
@@ -280,7 +284,7 @@ namespace IngameScript
                     && RND > 0.7f)
                 {
                     Filter = new Filter();
-                    Filter.Randomize();
+                    Filter.Randomize(prog);
                 }
                 else
                     Filter = null;
@@ -289,7 +293,7 @@ namespace IngameScript
                 if (RND > 0.9f)
                 {
                     Delay = new Delay();
-                    Delay.Randomize();
+                    Delay.Randomize(prog);
                 }
                 else
                     Delay = null;

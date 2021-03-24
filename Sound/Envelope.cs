@@ -50,8 +50,11 @@ namespace IngameScript
             }
 
 
-            public float GetValue(long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues)
+            public float GetValue(long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues, Program prog)
             {
+                if (prog.TooComplex) return 0;
+
+
                 var trigAtt = triggerValues.Find(v => v.Path == Attack .GetPath(src));
                 var trigDec = triggerValues.Find(v => v.Path == Decay  .GetPath(src));
                 var trigRel = triggerValues.Find(v => v.Path == Release.GetPath(src));
@@ -60,7 +63,7 @@ namespace IngameScript
                 {
                     trigAtt = new TriggerValue(
                         Attack.GetPath(src),
-                        Attack.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues));
+                        Attack.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog));
 
                     triggerValues.Add(trigAtt);
                 }
@@ -69,7 +72,7 @@ namespace IngameScript
                 {
                     trigDec = new TriggerValue(
                         Decay.GetPath(src),
-                        Decay.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues));
+                        Decay.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog));
 
                     triggerValues.Add(trigDec);
                 }
@@ -78,14 +81,14 @@ namespace IngameScript
                 {
                     trigRel = new TriggerValue(
                         Release.GetPath(src),
-                        Release.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues));
+                        Release.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog));
 
                     triggerValues.Add(trigRel);
                 }
 
                 float a = trigAtt.Value,
                       d = trigDec.Value,
-                      s = Sustain.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues),
+                      s = Sustain.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog),
                       r = trigRel.Value;
                 
                 if (note != null)
@@ -156,12 +159,12 @@ namespace IngameScript
             }
 
 
-            public override void Randomize()
+            public override void Randomize(Program prog)
             {
-                Attack .Randomize();
-                Decay  .Randomize();
-                Release.Randomize();
-                Sustain.Randomize();
+                Attack .Randomize(prog);
+                Decay  .Randomize(prog);
+                Release.Randomize(prog);
+                Sustain.Randomize(prog);
             }
 
 

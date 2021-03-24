@@ -14,7 +14,7 @@ namespace IngameScript
                 if (g_follow) 
                     SetCurrentPattern(PlayPat);
 
-                AddPlaybackNotes();
+                if (!TooComplex) AddPlaybackNotes();
 
                 UpdateOctaveLight();
             }
@@ -163,8 +163,8 @@ namespace IngameScript
 
                 if (lTime < snd.FrameLength + snd.ReleaseLength)// + (snd.Instrument.Volume.Envelope?.Release.GetKeyValue(snd.Note, snd.Source.Index) ?? 0) * FPS)
                 {
-                    g_vol[snd.iChan] = Math.Max(
-                        g_vol[snd.iChan],
+                    g_dspVol[snd.iChan] = Math.Max(
+                        g_dspVol[snd.iChan],
                           snd.DisplayVolume
                         * snd.Channel.Volume
                         * g_volume);
@@ -173,10 +173,10 @@ namespace IngameScript
         }
 
 
-        void DampenVolumes()
+        void DampenDisplayVolumes()
         {
-            for (int i = 0; i < g_vol.Length; i++)
-                g_vol[i] *= 0.7f;
+            for (int i = 0; i < g_dspVol.Length; i++)
+                g_dspVol[i] *= 0.7f;
         }
     }
 }

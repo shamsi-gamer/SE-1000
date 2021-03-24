@@ -442,10 +442,10 @@ namespace IngameScript
 
             var len = (int)(EditLength * g_ticksPerStep);
 
-            var a = env.Attack .GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy);
-            var d = env.Decay  .GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy);
-            var s = env.Sustain.GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy);
-            var r = env.Release.GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy);
+            var a = env.Attack .GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy, this);
+            var d = env.Decay  .GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy, this);
+            var s = env.Sustain.GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy, this);
+            var r = env.Release.GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy, this);
                                                                            
 
             var xoff  = 20;
@@ -598,7 +598,8 @@ namespace IngameScript
                     (int)(EditLength * g_ticksPerStep), 
                     null, 
                     -1,
-                    _triggerDummy);
+                    _triggerDummy,
+                    this);
 
                 var p = new Vector2(
                     x + w * f/(float)FPS,
@@ -672,7 +673,7 @@ namespace IngameScript
                     x + dx + (i > 0 ? 2 : 0), 
                     y + h - b, 
                     i == 0 ? 8 : 4, 
-                    -(h - b*2) * del.GetVolume(i, g_time, 0, 0, (int)(EditLength * g_ticksPerStep), null, CurSrc, _triggerDummy),
+                    -(h - b*2) * del.GetVolume(i, g_time, 0, 0, (int)(EditLength * g_ticksPerStep), null, CurSrc, _triggerDummy, this),
                     color4);
             }
 
@@ -727,7 +728,7 @@ namespace IngameScript
                 var px  = x + MinMax(90, dt*(dc-1)/2, w);
                 var dim = dc > 1 && Math.Abs(px - lx) > 20 ? color6 : color3;
 
-                var vol = del.GetVolume(Math.Max(0, (int)dc/2 - 1), 0, 0, 0, (int)(EditLength * g_ticksPerStep), null, CurSrc, _triggerDummy);
+                var vol = del.GetVolume(Math.Max(0, (int)dc/2 - 1), 0, 0, 0, (int)(EditLength * g_ticksPerStep), null, CurSrc, _triggerDummy, this);
 
                 DrawString(
                     sprites, 

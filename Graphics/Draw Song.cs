@@ -9,8 +9,8 @@ namespace IngameScript
     {
         void DrawSongDsp()
         {
-            DrawSong(dspSong1, 0);
-            DrawSong(dspSong2, 1);
+            if (!TooComplex) DrawSong(dspSong1, 0);
+            if (!TooComplex) DrawSong(dspSong2, 1);
         }
 
 

@@ -122,7 +122,7 @@ namespace IngameScript
         List<Note>              g_notes  = new List<Note>();
         List<Sound>             g_sounds = new List<Sound>();
 
-        float[]                 g_vol = new float[nChans];
+        float[]                 g_dspVol = new float[nChans];
 
         const float             ControlSensitivity = 8;                                
         const int               NoteScale          = 2;
@@ -213,7 +213,7 @@ namespace IngameScript
 
 
             for (int i = 0; i < nChans; i++)
-                g_vol[i] = 0;
+                g_dspVol[i] = 0;
 
 
             //copyV.Value =

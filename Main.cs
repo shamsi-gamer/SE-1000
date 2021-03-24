@@ -32,9 +32,10 @@ namespace IngameScript
                 if (CurSet > -1)
                     g_settings[CurSet].AdjustFromController(g_song, this);
 
-                UpdatePlayback();
+                if (!TooComplex) UpdatePlayback();
 
-                if (PlayTime > -1)
+                if (    PlayTime > -1
+                    && !TooComplex)
                     UpdateKeyLights();
             }
 
@@ -42,7 +43,8 @@ namespace IngameScript
             if ((update & UpdateType.Update10) != 0)
             {
                 if (    PlayTime < 0
-                    && _nextToLoad > 10)
+                    && _nextToLoad > 10
+                    && !TooComplex)
                     UpdateKeyLights();
 
 
@@ -57,13 +59,13 @@ namespace IngameScript
 
                 if (_nextToLoad > 10)
                 { 
-                    DrawMain();
-                    DrawInfo();
-                    DrawSongDsp();
-                    DrawMixer();
-                    DrawIO();
+                    if (!TooComplex) DrawMain();
+                    if (!TooComplex) DrawInfo();
+                    if (!TooComplex) DrawSongDsp();
+                    if (!TooComplex) DrawMixer();
+                    if (!TooComplex) DrawIO();
 
-                    DampenVolumes();
+                    DampenDisplayVolumes();
                 }
 
 

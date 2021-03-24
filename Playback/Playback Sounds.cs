@@ -13,8 +13,8 @@ namespace IngameScript
             var lTime = g_time - snd.Note.PatTime;
             var sTime = g_time - StartTime;
 
-            var dc = del.Count.GetValue(g_time, lTime, sTime, snd.FrameLength, snd.Note, snd.SourceIndex, snd.TriggerValues);
-            var dt = del.Time .GetValue(g_time, lTime, sTime, snd.FrameLength, snd.Note, snd.SourceIndex, snd.TriggerValues);
+            var dc = del.Count.GetValue(g_time, lTime, sTime, snd.FrameLength, snd.Note, snd.SourceIndex, snd.TriggerValues, this);
+            var dt = del.Time .GetValue(g_time, lTime, sTime, snd.FrameLength, snd.Note, snd.SourceIndex, snd.TriggerValues, this);
 
 
             Sound echoSrc = null;
@@ -29,7 +29,8 @@ namespace IngameScript
                     snd.FrameLength,
                     snd.Note,
                     iSrc,
-                    snd.TriggerValues);
+                    snd.TriggerValues,
+                    this);
 
                 var echo = new Sound(snd, i > 0, echoSrc, echoVol);
                 if (i == 0) echoSrc = echo;
@@ -44,6 +45,8 @@ namespace IngameScript
         {
             for (int i = 0; i < g_sounds.Count; i++)
             {
+                if (TooComplex) return;
+
                 var snd = g_sounds[i];
                 var lTime = g_time - snd.FrameTime;
 
@@ -68,7 +71,7 @@ namespace IngameScript
             {
                 var updateVol = 
                     PlayTime < snd.FrameTime + snd.FrameLength + snd.ReleaseLength
-                    ? snd.GetVolume(g_time, StartTime)
+                    ? snd.GetVolume(g_time, StartTime, this)
                     : 1;
 
                 vol = snd.TriggerVolume
@@ -88,7 +91,8 @@ namespace IngameScript
                         snd.FrameLength, 
                         snd.Note, 
                         snd.SourceIndex,
-                        snd.TriggerValues);
+                        snd.TriggerValues,
+                        this);
 
                     vol *= snd.Harmonic.CurValue;
                 }

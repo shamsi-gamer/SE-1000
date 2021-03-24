@@ -262,14 +262,14 @@ namespace IngameScript
         }
 
 
-        static int AdjustNoteNumber(Note note, Source src, int sndLen)
+        static int AdjustNoteNumber(Note note, Source src, int sndLen, Program prog)
         {
             var inst = src.Instrument;
 
             float _noteNum = note.Number;
 
-            _noteNum += inst.Tune?.GetValue(g_time, 0, StartTime, sndLen, note, src.Index, _triggerDummy)*NoteScale ?? 0;
-            _noteNum += src .Tune?.GetValue(g_time, 0, StartTime, sndLen, note, src.Index, _triggerDummy)*NoteScale ?? 0;
+            _noteNum += inst.Tune?.GetValue(g_time, 0, StartTime, sndLen, note, src.Index, _triggerDummy, prog) * NoteScale ?? 0;
+            _noteNum += src .Tune?.GetValue(g_time, 0, StartTime, sndLen, note, src.Index, _triggerDummy, prog) * NoteScale ?? 0;
 
             var noteNum = MinMax(12*NoteScale, (int)Math.Round(_noteNum), 150*NoteScale);
 

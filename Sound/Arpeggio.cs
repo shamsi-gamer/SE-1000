@@ -82,10 +82,12 @@
             }
 
 
-            public override void Randomize()
+            public override void Randomize(Program prog)
             {
-                Length.Randomize();
-                Scale .Randomize();
+                if (prog.TooComplex) return;
+
+                Length.Randomize(prog);
+                Scale .Randomize(prog);
             }
 
 

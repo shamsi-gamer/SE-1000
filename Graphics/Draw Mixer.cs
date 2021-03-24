@@ -10,17 +10,17 @@ namespace IngameScript
     {
         void DrawMixer()
         {
-            DrawMixer(dspMixer1, 0);
-            DrawMixer(dspMixer2, 6);
+            if (!TooComplex) DrawMixer(dspMixer1, 0);
+            if (!TooComplex) DrawMixer(dspMixer2, 6);
 
             float maxVol = 0;
 
-            foreach (var vol in g_vol)
+            foreach (var vol in g_dspVol)
                 maxVol = Math.Max(vol, maxVol);
 
-            DrawVolume(maxVol, dspVol1, 2);
-            DrawVolume(maxVol, dspVol2, 1);
-            DrawVolume(maxVol, dspVol3, 0);
+            if (!TooComplex) DrawVolume(maxVol, dspVol1, 2);
+            if (!TooComplex) DrawVolume(maxVol, dspVol2, 1);
+            if (!TooComplex) DrawVolume(maxVol, dspVol3, 0);
         }
 
 
@@ -46,11 +46,13 @@ namespace IngameScript
 
             for (int ch = first; ch < first + 6; ch++)
             {
+                if (TooComplex) break;
+                    
                 var chan = CurrentPattern.Channels[ch];
 
                 var xc = x + bb/2 + (ch - first) * (bw + bb);
 
-                DrawSoundLevel(sprites, xc, y, bw, h - 15, chan.Volume, g_vol[ch], 2);//, ch >= 6 ? this : null);
+                DrawSoundLevel(sprites, xc, y, bw, h - 15, chan.Volume, g_dspVol[ch], 2);//, ch >= 6 ? this : null);
                 FillRect(sprites, xc, y + h + 6, bw, 76, chan.On ^ mixerPressed_.Contains(ch) ? color6 : color0);
 
                 DrawString(sprites, chan.Instrument.Name, xc + bw/2 + 3, y + h + 14, 0.5f, chan.On ? color0 : color6, TextAlignment.CENTER);

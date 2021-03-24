@@ -48,7 +48,8 @@ namespace IngameScript
                       (int)(EditLength * g_ticksPerStep),
                       null,
                       CurSrc,
-                      _dummy))
+                      _dummy,
+                      this))
                 : nSteps;
 
 

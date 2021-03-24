@@ -45,14 +45,17 @@ namespace IngameScript
             }
 
 
-            public float GetValue(long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues)
+            public float GetValue(long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues, Program prog)
             {
+                if (prog.TooComplex) return 0;
+
+
                 // an offset != 0 locks the LFO to the song, a 0 offset leaves it free
                 var time = Offset.GetKeyValue(note, src) > 0 ? lTime : gTime;
 
-                var amp  = Amplitude.GetValue(gTime, time, sTime, noteLen, note, src, triggerValues);
-                var freq = Frequency.GetValue(gTime, time, sTime, noteLen, note, src, triggerValues);
-                var off  = Offset   .GetValue(gTime, time, sTime, noteLen, note, src, triggerValues);
+                var amp  = Amplitude.GetValue(gTime, time, sTime, noteLen, note, src, triggerValues, prog);
+                var freq = Frequency.GetValue(gTime, time, sTime, noteLen, note, src, triggerValues, prog);
+                var off  = Offset   .GetValue(gTime, time, sTime, noteLen, note, src, triggerValues, prog);
 
                 var f = (float)(Math.Pow(2, freq) - 1);
 
@@ -105,11 +108,11 @@ namespace IngameScript
                 Offset   .Clear();
             }
 
-            public override void Randomize()
+            public override void Randomize(Program prog)
             {
-                Amplitude.Randomize();
-                Frequency.Randomize();
-                Offset   .Randomize();
+                Amplitude.Randomize(prog);
+                Frequency.Randomize(prog);
+                Offset   .Randomize(prog);
 
                 Type = (LfoType)g_rnd.Next(0, 6);
             }

@@ -41,12 +41,14 @@ namespace IngameScript
             }
 
 
-            public override void Randomize()
+            public override void Randomize(Program prog)
             {
-                if (RND > 0.8f) Cutoff.Randomize();
+                if (prog.TooComplex) return;
+
+                if (RND > 0.8f) Cutoff.Randomize(prog);
                 else            Cutoff.Clear();
 
-                if (RND > 0.8f) Resonance.Randomize();
+                if (RND > 0.8f) Resonance.Randomize(prog);
                 else            Resonance.Clear();
             }
 
@@ -170,14 +172,17 @@ namespace IngameScript
         }
 
 
-        static float ApplyFilter(float value, Source src, float pos, long gTime, long lTime, long sTime, int len, Note note, int iSrc, List<TriggerValue> triggerValues)
+        static float ApplyFilter(float value, Source src, float pos, long gTime, long lTime, long sTime, int len, Note note, int iSrc, List<TriggerValue> triggerValues, Program prog)
         {
+            if (prog.TooComplex) return value;
+
+
             if (src.Filter != null)
             {
                 value *= GetFilter(
                     pos, 
-                    src.Filter.Cutoff   .GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues), 
-                    src.Filter.Resonance.GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues));
+                    src.Filter.Cutoff   .GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues, prog), 
+                    src.Filter.Resonance.GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues, prog));
             }
 
             var inst = src.Instrument;
@@ -185,8 +190,8 @@ namespace IngameScript
             {
                 value *= GetFilter(
                     pos, 
-                    inst.Filter.Cutoff   .GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues), 
-                    inst.Filter.Resonance.GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues));
+                    inst.Filter.Cutoff   .GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues, prog), 
+                    inst.Filter.Resonance.GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues, prog));
             }
             
             return value;

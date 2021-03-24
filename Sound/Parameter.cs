@@ -99,19 +99,22 @@ namespace IngameScript
             }
 
 
-            public float GetValue(long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues)
+            public float GetValue(long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues, Program prog)
             {
+                if (prog.TooComplex) return 0; //Default
+
+
                 var value = GetKeyValue(note, src);
                 var path  = GetPath(src);
 
 
                 if (Envelope != null)
-                    value *= Envelope.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues);
+                    value *= Envelope.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog);
 
                 if (   triggerValues.Find(v => v.Path == path) == null
                     && Lfo != null)
                 { 
-                    var dv = Lfo.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues)
+                    var dv = Lfo.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog)
                            * Math.Abs(Max - Min)/2;
 
                     value += dv;
@@ -222,31 +225,33 @@ namespace IngameScript
                 Lfo = null;
             }
 
-
-            public override void Randomize()
+            public override void Randomize(Program prog)
             {
                 m_value = NormalMin + RND * (NormalMax - NormalMin);
                 
-                if (   Tag != "Att"
-                    && Tag != "Dec"
-                    && Tag != "Sus"
-                    && Tag != "Rel"
-                    && RND > 0.9f)
+                if (   !prog.TooComplex
+                    && !SettingOrAnyParentHasTag(this, "Att")
+                    && !SettingOrAnyParentHasTag(this, "Dec")
+                    && !SettingOrAnyParentHasTag(this, "Sus")
+                    && !SettingOrAnyParentHasTag(this, "Rel")
+                    && (  !IsDigit(Tag[0]) && RND > 0.5f
+                        || IsDigit(Tag[0]) && RND > 0.9f))
                 {
                     Envelope = new Envelope(this);
-                    Envelope.Randomize();
+                    Envelope.Randomize(prog);
                 }
                 else 
                     Envelope = null;
 
 
-                if (   !SettingOrParentHasTag(this, "Att")
+                if (   !prog.TooComplex
+                    && !SettingOrParentHasTag(this, "Att")
                     && !SettingOrParentHasTag(this, "Dec")
                     && !SettingOrParentHasTag(this, "Rel")
-                    && RND > 0.9f)
+                    && RND > 0.7f)
                 {
                     Lfo = new LFO(this);
-                    Lfo.Randomize();
+                    Lfo.Randomize(prog);
                 }
                 else
                     Lfo = null;

@@ -69,7 +69,7 @@ namespace IngameScript
             }
 
 
-            public void Randomize()
+            public void Randomize(Program prog)
             {
                 Sources.Clear();
                 var nSrc = Math.Max(1, (int)Math.Round(Math.Pow(RND, 1.5) * MaxSources/2));
@@ -81,15 +81,15 @@ namespace IngameScript
                     var src = new Source(this);
                  
                     Sources.Add(src);
-                    src.Randomize(used);
+                    src.Randomize(used, prog);
                 }
 
-                Volume.SetValue(1, null, -1);//.Randomize();
+                Volume.SetValue(1, null, -1);//.Randomize(Program prog);
 
                 //if (RND > 0.7f)
                 //{
                 //    Tune = new Tune();
-                //    Tune.Randomize();
+                //    Tune.Randomize(Program prog);
                 //}
                 //else
                     Tune = null;
@@ -98,7 +98,7 @@ namespace IngameScript
                     && Sources.Find(s => s.Harmonics != null) != null)
                 {
                     Filter = new Filter();
-                    Filter.Randomize();
+                    Filter.Randomize(prog);
                 }
                 else
                     Filter = null;
@@ -106,7 +106,7 @@ namespace IngameScript
                 if (RND > 0.7f)
                 {
                     Delay = new Delay();
-                    Delay.Randomize();
+                    Delay.Randomize(prog);
                 }
                 else
                     Delay = null;
@@ -114,7 +114,7 @@ namespace IngameScript
                 //if (RND > 0.7f)
                 //{
                 //    Arpeggio = new Arpeggio(this);
-                //    Arpeggio.Randomize();
+                //    Arpeggio.Randomize(Program prog);
                 //}
                 //else
                     Arpeggio = null;

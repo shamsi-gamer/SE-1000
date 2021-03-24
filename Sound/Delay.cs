@@ -41,17 +41,18 @@ namespace IngameScript
             }
 
 
-            public float GetVolume(int i, long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues)
+            public float GetVolume(int i, long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues, Program prog)
             {
+                if (prog.TooComplex) return 0;
 
                 if (i == 0)
-                    return Dry.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues);
+                    return Dry.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog);
 
                 else
                 { 
-                    var dc = Count.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues) - 1; // -1 because 0 is the source sound
-                    var dl = Level.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues);
-                    var dp = Power.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues);
+                    var dc = Count.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog) - 1; // -1 because 0 is the source sound
+                    var dl = Level.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog);
+                    var dp = Power.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog);
 
                     return 
                         dc != 0
@@ -92,13 +93,15 @@ namespace IngameScript
             }
 
 
-            public override void Randomize()
+            public override void Randomize(Program prog)
             {
-                Dry  .Randomize();
-                Count.Randomize();
-                Time .Randomize();
-                Level.Randomize();
-                Power.Randomize();
+                if (prog.TooComplex) return;
+
+                Dry  .Randomize(prog);
+                Count.Randomize(prog);
+                Time .Randomize(prog);
+                Level.Randomize(prog);
+                Power.Randomize(prog);
             }
 
 
