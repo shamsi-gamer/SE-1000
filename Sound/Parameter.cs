@@ -80,10 +80,7 @@ namespace IngameScript
             }
 
 
-            public float Value
-            { 
-                get { return m_value; }
-            }
+            public float Value { get { return m_value; } }
 
 
             public void SetValue(float val, Note note, int src)

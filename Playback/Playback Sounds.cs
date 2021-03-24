@@ -41,7 +41,7 @@ namespace IngameScript
         }
 
 
-        void PlaySounds()
+        void UpdateSounds()
         {
             for (int i = 0; i < g_sounds.Count; i++)
             {

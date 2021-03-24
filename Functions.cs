@@ -239,14 +239,13 @@ namespace IngameScript
                 }
                 case 2:
                 { 
-                    var cp = (int)hrm.CurPreset;
-
-                    cp++;
+                    var cp = (int)hrm.CurPreset + 1;
 
                     if (cp > (int)Harmonics.Preset.Random24)
                         cp = (int)Harmonics.Preset.Sine;
 
                     hrm.CurPreset = (Harmonics.Preset)cp;
+                    mainPressed.Add(func);
 
                     break;
                 }
@@ -265,8 +264,21 @@ namespace IngameScript
         {
             switch (func)
             {
-                case 1: AddNextSetting("Cut", SelectedInstrument, CurSrc); break;
-                case 2: AddNextSetting("Res", SelectedInstrument, CurSrc); break;
+                case 1:
+                { 
+                    var p = (int)flt.Pass + 1;
+
+                    if (p > (int)FilterPass.Band)
+                        p = (int)FilterPass.Low;
+
+                    flt.Pass = (FilterPass)p;
+                        mainPressed.Add(func);
+
+                        break;
+                }
+                case 2: AddNextSetting("Cut",  SelectedInstrument, CurSrc); break;
+                case 3: AddNextSetting("Res",  SelectedInstrument, CurSrc); break;
+                case 4: AddNextSetting("Shrp", SelectedInstrument, CurSrc); break;
                 case 5: RemoveSetting(flt); break;
             }
         }

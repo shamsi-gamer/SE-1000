@@ -84,9 +84,9 @@ namespace IngameScript
                 else if (h == 5) RandomChannelNotes();
                 else if (h == 6) ClearNotes();
                                    
-                else if (h == 7) Flip(4); 
-                else if (h == 8) Flip(8); 
-                else if (h == 9) Flip(16);
+                else if (h == 7) Flip(CurPat, CurChan, 4); 
+                else if (h == 8) Flip(CurPat, CurChan, 8); 
+                else if (h == 9) Flip(CurPat, CurChan, 16);
 
                 if (   h != 2
                     && h != 3
@@ -237,7 +237,7 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.PatStep += EditStep;
+                        note.PatStep += Math.Min(EditStep, 1);
 
                         if (note.PatStep >= nSteps)
                         {
@@ -262,7 +262,7 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.PatStep -= EditStep;
+                        note.PatStep -= Math.Min(EditStep, 1);
 
                         if (note.PatStep < 0)
                         {
@@ -294,10 +294,10 @@ namespace IngameScript
         }
 
 
-        void Flip(int frac)
+        void Flip(int pat, int ch, int frac)
         {
             for (int step = 0; step < nSteps; step += nSteps / frac)
-                Tick(CurChan, step);
+                Tick(pat, ch, step);
         }
 
 

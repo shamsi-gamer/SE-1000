@@ -141,7 +141,7 @@ namespace IngameScript
                         sndTime,
                         sndLen,
                         relLen,
-                        0, // is set below
+                        1, // is set below
                         inst,
                         iSrc,
                         note,
@@ -161,7 +161,7 @@ namespace IngameScript
                     Tones[i].CurValue = Tones[i].GetValue(g_time, lTime, sTime, sndLen, note, iSrc, snd.TriggerValues, prog) * vol;
                     Tones[i].CurValue = ApplyFilter(Tones[i].CurValue, src, hrmPos, g_time, lTime, sTime, sndLen, note, iSrc, snd.TriggerValues, prog); 
 
-                    snd.TriggerVolume = Tones[i].CurValue;
+                    //snd.TriggerVolume = Tones[i].CurValue;
 
                     sounds.Add(snd);
                 }

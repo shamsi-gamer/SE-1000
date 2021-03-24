@@ -355,6 +355,9 @@ namespace IngameScript
                 UpdateInstName(false);
                 MarkLight(lblBackOut, CurSrc < 0);
             }
+
+
+            SaveInstruments();
         }
 
 

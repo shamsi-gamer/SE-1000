@@ -8,8 +8,8 @@
     <MDKVersion>1.4.7</MDKVersion>
     <MDKUseGameBinPath>no</MDKUseGameBinPath>
     <MDKGameBinPath>c:\program files (x86)\steam\SteamApps\common\SpaceEngineers\Bin64</MDKGameBinPath>
-    <MDKInstallPath>c:\users\alex\appdata\local\microsoft\visualstudio\16.0_92cb0943\extensions\zyy5tzdt.hnl</MDKInstallPath>
-    <MDKOutputPath>C:\Users\alex\AppData\Roaming\SpaceEngineers\IngameScripts\local</MDKOutputPath>
+    <MDKInstallPath>c:\users\shamsi\appdata\local\microsoft\visualstudio\16.0_92cb0943\extensions\l5nwk2je.b3e</MDKInstallPath>
+    <MDKOutputPath>C:\Users\shamsi\AppData\Roaming\SpaceEngineers\IngameScripts\local</MDKOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Sandbox.Common">

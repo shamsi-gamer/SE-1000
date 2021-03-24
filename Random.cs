@@ -67,28 +67,36 @@ namespace IngameScript
             GetPatterns(g_song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
-                RandomNotes(p, ch, rndInst);
+            {
+                var chan = g_song.Patterns[p].Channels[ch];
+                var inst = g_inst[g_rnd.Next(0, g_inst.Count)];
+
+                if (rndInst != null)
+                { 
+                    if (rndInst.Contains(inst))
+                        return;
+
+                    rndInst.Add(inst);
+                }
+
+                if (   rndInst != null
+                    || g_rndInst)
+                    chan.Instrument = inst;
+
+                if (RND > 0.25) RandomNotes(p, ch);
+
+                if (RND > 0.6  ) Flip(p, ch,  1);
+                if (RND > 0.8  ) Flip(p, ch,  2);
+                if (RND > 0.9  ) Flip(p, ch,  4);
+                if (RND > 0.925) Flip(p, ch,  8);
+                if (RND > 0.95 ) Flip(p, ch, 16);
+            }
         }
 
 
-        void RandomNotes(int pat, int ch, List<Instrument> rndInst)
+        void RandomNotes(int pat, int ch)
         {
             var chan = g_song.Patterns[pat].Channels[ch];
-            var inst = g_inst[g_rnd.Next(0, g_inst.Count)];
-
-
-            if (rndInst != null)
-            { 
-                if (rndInst.Contains(inst))
-                    return;
-
-                rndInst.Add(inst);
-            }
-
-
-            if (   rndInst != null
-                || g_rndInst)
-                chan.Instrument = inst;
 
 
             const int minNote   = 54 * NoteScale;

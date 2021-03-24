@@ -49,7 +49,8 @@ namespace IngameScript
                         DrawDelay(sprites, (Delay)g_settings[CurSet-1], x + 15, y + 140, w - 32, 110, true);
                     }
                     else if (param.Tag == "Cut"
-                          || param.Tag == "Res")
+                          || param.Tag == "Res"
+                          || param.Tag == "Shrp")
                     {
                         DrawFilter(sprites, (Filter)g_settings[CurSet-1], x + 15, y + 140, w - 30, 110, true);
                     }
@@ -92,7 +93,7 @@ namespace IngameScript
                 }
                 else if (setting.GetType() == typeof(Filter))
                 {
-                    DrawFilter(sprites, (Filter)setting, x + 15, y + 120, w - 30, 110, true);
+                    DrawFilter(sprites, (Filter)setting, x + 15, y + 140, w - 30, 110, true);
                 }
                 else if (setting.GetType() == typeof(LFO)) 
                 {
@@ -744,8 +745,9 @@ namespace IngameScript
 
         void DrawFilter(List<MySprite> sprites, Filter flt, float x, float y, float w, float h, bool active)
         {
-            var cut = flt.Cutoff   .CurValue;
-            var res = flt.Resonance.CurValue;
+            var cut  = flt.Cutoff   .CurValue;
+            var res  = flt.Resonance.CurValue;
+            var shrp = flt.Sharpness.CurValue;
 
 
             var fs = 0.5f;
@@ -757,16 +759,20 @@ namespace IngameScript
             FillRect(sprites, x, y + h, w,  2, color3);
 
 
-            DrawFilter(sprites, x, y, w, h, color5, 4, cut, res);
+            DrawFilter(sprites, x, y, w, h, color5, 4, flt.Pass, cut, res, shrp);
 
 
             // cutoff
-            DrawString(sprites, "Cutoff",                    x, y - 40, fs, IsCurParam("Cut") ? color6 : color3);
+            DrawString(sprites, "Cut",                       x, y - 40, fs, IsCurParam("Cut") ? color6 : color3);
             DrawString(sprites, printValue(cut, 2, true, 0), x, y - 25, fs, IsCurParam("Cut") ? color6 : color3);
 
             // resonance
-            DrawString(sprites, "Resonance",                 x + 100, y - 40, fs, IsCurParam("Res") ? color6 : color3);
+            DrawString(sprites, "Res",                       x + 100, y - 40, fs, IsCurParam("Res") ? color6 : color3);
             DrawString(sprites, printValue(res, 2, true, 0), x + 100, y - 25, fs, IsCurParam("Res") ? color6 : color3);
+
+            // sharpness
+            DrawString(sprites, "Shrp",                       x + 200, y - 40, fs, IsCurParam("Shrp") ? color6 : color3);
+            DrawString(sprites, printValue(shrp, 2, true, 0), x + 200, y - 25, fs, IsCurParam("Shrp") ? color6 : color3);
         }
 
 

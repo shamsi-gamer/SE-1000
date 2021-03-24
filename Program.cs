@@ -8,19 +8,28 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
+        Filter doesn't work with envelopes
+
         // fix filter (separate and add button)
+        // harmonic volumes are wrong again
 
         // volume not shown correctly for harmonics & filters
         // fix volume display
 
+        //playback stops when duplicating pattern
+
         // timing issues with playing
         // blocks
+        // clips
 
         // keys should affect trigger, auto should affect volume
 
         // add Modulate to param (Level, Attack, Release)
         // side chain compression (Modulate on all params, with delay and +/-)
         // plug any param into any param (connect button)
+
+        // harmony - across selected patterns, copy existing notes and shift them up or down
+        // record keys/chords and mouse control of parameters as automation
 
         // save (song saves modified copies of instruments)
 
@@ -31,9 +40,6 @@ namespace IngameScript
         // when shuffle is too strong, notes in other channels become too long
         // BUG: holding a chord and then pressing another chord with some of the same keys will disable
         //   those keys until the second press
-
-        // harmony - across selected patterns, copy existing notes and shift them up or down
-        // record keys/chords and mouse control of parameters as automation
 
         // bring back default samples
 
@@ -124,7 +130,7 @@ namespace IngameScript
 
         float[]                 g_dspVol = new float[nChans];
 
-        const float             ControlSensitivity = 8;                                
+        const float             ControlSensitivity = 12;                                
         const int               NoteScale          = 2;
 
 

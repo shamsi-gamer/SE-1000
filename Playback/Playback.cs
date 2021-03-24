@@ -25,7 +25,7 @@ namespace IngameScript
             var delete = StopSounds();
             DeleteSounds(delete);
 
-            PlaySounds();
+            UpdateSounds();
 
             UpdateVolumes();
         }

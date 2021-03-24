@@ -96,10 +96,10 @@ namespace IngameScript
         }
 
 
-        static void DrawLine(List<MySprite> sprites, Vector2 p1, Vector2 p2, Color c, double width = 1)
+        static void DrawLine(List<MySprite> sprites, Vector2 p1, Vector2 p2, Color col, double width = 1)
         {
-            var dp = p2 - p1;
-            var len = dp.Length();
+            var dp    = p2 - p1;
+            var len   = dp.Length();
             var angle = (float)Math.Atan2(p1.Y - p2.Y, p2.X - p1.X);
 
             DrawTexture(
@@ -109,18 +109,18 @@ namespace IngameScript
                 p1.Y + dp.Y/2 - (float)width/2,
                 len,
                 (float)width,
-                c,
+                col,
                 -angle);
         }
         
         
-        static void DrawLine(List<MySprite> sprites, double x1, double y1, double x2, double y2, Color c, double width = 1)
+        static void DrawLine(List<MySprite> sprites, double x1, double y1, double x2, double y2, Color col, double width = 1)
         {
             DrawLine(
                 sprites, 
                 new Vector2((float)x1, (float)y1), 
                 new Vector2((float)x2, (float)y2), 
-                c, 
+                col, 
                 width);
         }
     }
