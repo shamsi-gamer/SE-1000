@@ -8,7 +8,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        public enum FilterPass { Low, High, Band };
+        public enum FilterPass { Low, High, Band, Stop };
 
         public class Filter : Setting
         {
@@ -122,35 +122,51 @@ namespace IngameScript
 
         static float GetFilter(float f, FilterPass pass, float cut, float res, float shrp)
         {
+            shrp = Math.Min(shrp, 0.9999f);
+
             var val = 1f;
             var rw  = 1 - shrp;
 
             if (pass == FilterPass.Low)
             {
-                var c = 1 - (float)Math.Pow(f / ((1+rw) * cut), (6.4f/rw-1)*cut + 1);
-                var r = (1 - (float)Math.Cos(1/rw*Tau*MinMax(0, f + rw - (1+rw)*cut, rw))) / 3;
+                var cw = (1+rw) * cut;
+                var c  = 1 - (float)Math.Pow(f / cw, (6.4f/rw-1)*cut + 1);
+                var r  = (1 - (float)Math.Cos(1/rw*Tau*MinMax(0, f + rw - cw, rw))) / 4;
 
                 val = c + r * res;
             }
             else if (pass == FilterPass.High)
             {
-                var c = 1 - (float)Math.Pow(f / ((1 + rw) * cut), (6.4f / rw - 1) * cut + 1);
-                var r = (1 - (float)Math.Cos(1 / rw * Tau * MinMax(0, f + rw - (1 + rw) * cut, rw))) / 3;
+                var cw = (1+rw) * (1-cut);
+                var c  = 1 - (float)Math.Pow((1-f) / cw, (6.4f/rw-1)*(1-cut) + 1);
+                var r  = (1 - (float)Math.Cos(1/rw*Tau*MinMax(0, 1-f + rw - cw, rw))) / 4;
 
                 val = c + r * res;
             }
             else if (pass == FilterPass.Band)
             {
-                //var _f = f - cut;
+                var f1 =  f - cut - res/2;
+                var f2 = -f + cut - res/2;
 
-                //     if (_f >=  1.25f              ) val = 0;
-                //else if (_f >=  1     && _f < 1.25f) val =     GetCos((_f-1)*4, 0.5f,  0.75f, -res,  3) * (1+res); // low end
-                //else if (_f >=  0.5f  && _f < 1    ) val = 1 + GetCos(2*_f-1,   0,     0.5f,   res, 10) *  res;    // low middle
-                //else if (_f >=  0     && _f < 0.5f ) val = 1 + GetCos(2*_f,     0.5f,  1,     -res, 10) *  res;    // high middle
-                //else if (_f >= -0.25f && _f < 0    ) val =     GetCos( -_f*4,   0.5f,  0.75f, -res,  3) * (1+res); // high end
-                //else if (_f <  -0.25f              ) val = 0;
+                     if (0 <= f1 && f1 <= 1) val = 1 - (float)Math.Pow(f1/(1-shrp), 1/(1-shrp));
+                else if (0 <= f2 && f2 <= 1) val = 1 - (float)Math.Pow(f2/(1-shrp), 1/(1-shrp));
+                else if (f > cut - res/2
+                      && f < cut + res/2)    val = 1;
+                else                         val = 0;
+
             }
- 
+            else if (pass == FilterPass.Stop)
+            {
+                var f1 =  f - cut - res/2;
+                var f2 = -f + cut - res/2;
+
+                     if (0 <= f1 && f1 <= 1-shrp) val = (1 - (float)Math.Cos(Tau*f1 / (2 * (1-shrp)))) / 2;
+                else if (0 <= f2 && f2 <= 1-shrp) val = (1 - (float)Math.Cos(Tau*f2 / (2 * (1-shrp)))) / 2;
+                else if (f > cut - res/2
+                      && f < cut + res/2)         val = 0;
+                else                              val = 1;
+            }
+
             return MinMax(0, val, 2);
         }
 
@@ -218,6 +234,7 @@ namespace IngameScript
                 case FilterPass.Low:  return "Lo";
                 case FilterPass.High: return "Hi";
                 case FilterPass.Band: return "Bnd";
+                case FilterPass.Stop: return "Stp";
             }
 
             return "";

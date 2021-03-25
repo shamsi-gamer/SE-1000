@@ -268,7 +268,7 @@ namespace IngameScript
                 { 
                     var p = (int)flt.Pass + 1;
 
-                    if (p > (int)FilterPass.Band)
+                    if (p > (int)FilterPass.Stop)
                         p = (int)FilterPass.Low;
 
                     flt.Pass = (FilterPass)p;

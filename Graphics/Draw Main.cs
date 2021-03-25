@@ -161,11 +161,14 @@ namespace IngameScript
 
         void DrawFilterFuncButtons(List<MySprite> sprites, Filter flt, float w, float h, Channel chan)
         {
+            var strCut  = flt.Pass > FilterPass.High ? "Freq" : "Cut";
+            var strRes  = flt.Pass > FilterPass.High ? "Wid"  : "Res";
+
             DrawFuncButton(sprites, GetPassName(flt.Pass) + " ↕", 1, w, h, false, false);
-            DrawFuncButton(sprites, "Cut",  2, w, h, true, flt.Cutoff   .HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "Res",  3, w, h, true, flt.Resonance.HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "Shrp", 4, w, h, true, flt.Sharpness.HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "X",    5, w, h, false, false, mainPressed.Contains(5));
+            DrawFuncButton(sprites, strCut,  2, w, h, true, flt.Cutoff   .HasDeepParams(chan, -1));
+            DrawFuncButton(sprites, strRes,  3, w, h, true, flt.Resonance.HasDeepParams(chan, -1));
+            DrawFuncButton(sprites, "Shrp",  4, w, h, true, flt.Sharpness.HasDeepParams(chan, -1));
+            DrawFuncButton(sprites, "X",     5, w, h, false, false, mainPressed.Contains(5));
         }
 
 

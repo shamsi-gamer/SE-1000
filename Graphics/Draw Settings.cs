@@ -750,11 +750,6 @@ namespace IngameScript
             var shrp = flt.Sharpness.CurValue;
 
 
-            var fs = 0.5f;
-
-        //    var dx = 0f;
-
-
             FillRect(sprites, x, y + h, 2, -h, color3);
             FillRect(sprites, x, y + h, w,  2, color3);
 
@@ -762,12 +757,17 @@ namespace IngameScript
             DrawFilter(sprites, x, y, w, h, color5, 4, flt.Pass, cut, res, shrp);
 
 
+            var strCut = flt.Pass > FilterPass.High ? "Freq" : "Cut";
+            var strRes = flt.Pass > FilterPass.High ? "Wid"  : "Res";
+
+            var fs = 0.5f;
+
             // cutoff
-            DrawString(sprites, "Cut",                       x, y - 40, fs, IsCurParam("Cut") ? color6 : color3);
+            DrawString(sprites, strCut,                      x, y - 40, fs, IsCurParam("Cut") ? color6 : color3);
             DrawString(sprites, printValue(cut, 2, true, 0), x, y - 25, fs, IsCurParam("Cut") ? color6 : color3);
 
             // resonance
-            DrawString(sprites, "Res",                       x + 100, y - 40, fs, IsCurParam("Res") ? color6 : color3);
+            DrawString(sprites, strRes,                      x + 100, y - 40, fs, IsCurParam("Res") ? color6 : color3);
             DrawString(sprites, printValue(res, 2, true, 0), x + 100, y - 25, fs, IsCurParam("Res") ? color6 : color3);
 
             // sharpness

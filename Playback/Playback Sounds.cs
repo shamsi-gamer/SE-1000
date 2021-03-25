@@ -95,6 +95,11 @@ namespace IngameScript
                         this);
 
                     vol *= snd.Harmonic.CurValue;
+
+                    vol = MinMax(
+                        snd.Harmonic.Min, 
+                        vol, 
+                        snd.Harmonic.Max);
                 }
 
 
