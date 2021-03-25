@@ -74,7 +74,8 @@ namespace IngameScript
                     ? snd.GetVolume(g_time, StartTime, this)
                     : 1;
 
-                vol = snd.TriggerVolume
+                vol = 
+                      snd.TriggerVolume
                     * updateVol
                     * snd.Channel.Volume
                     * g_volume;
@@ -154,7 +155,8 @@ namespace IngameScript
                 spk.Block.Volume = Math.Min(v--, 1);
 
                 // if sample is ending, restart it //TODO make this smooth
-                if (snd.ElapsedFrameTime >= (snd.Source.Oscillator.Length - 0.1f) * FPS)
+                if (   snd.ElapsedFrameTime >= (snd.Source.Oscillator.Length - 0.1f) * FPS
+                    && snd.Source.Oscillator != OscClick)
                 {
                     spk.Block.Stop();
                     spk.Block.Play();

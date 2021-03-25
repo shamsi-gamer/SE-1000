@@ -44,13 +44,8 @@ namespace IngameScript
             {
                 switch (func)
                 {
-                case 2:
-                    ToggleNote(g_song);
-                    break;
-
-                case 3:
-                    CutNotes(g_song);
-                    break;
+                case 2: ToggleNote(g_song); break;
+                case 3: CutNotes(g_song);   break;
                 }
             }
 

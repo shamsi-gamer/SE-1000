@@ -8,8 +8,8 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        // fix filter (separate and add button)
         //Filter doesn't work with envelopes
+        // moving pat kills playback
         // harmonic volumes are wrong again
 
         // volume not shown correctly for harmonics & filters
