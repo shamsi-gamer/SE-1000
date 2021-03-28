@@ -14,7 +14,7 @@ namespace IngameScript
                  if (SelChan < 0)  RandomPatternNotes();
             else if (g_paramKeys
                   || g_paramAuto)  RandomValues(CurChan);
-            else if (CurSet  > -1) g_settings[CurSet].Randomize(this);
+            else if (CurSet  > -1) CurSetting        .Randomize(this);
             else if (CurSrc  > -1) SelectedSource    .Randomize(new List<Oscillator>(), this);
             else if (SelChan > -1) SelectedInstrument.Randomize(this);
 
@@ -37,13 +37,13 @@ namespace IngameScript
 
         void RandomPatternNotes()
         {
-            var nChannels = g_rnd.Next(1, nChans/2);
+            var nChannels = g_rnd.Next(1, g_nChans/2);
 
             var rndInst = new List<Instrument>();
 
             for (int i = 0; i < nChannels; i++)
             {
-                var ch = g_rnd.Next(0, nChans);
+                var ch = g_rnd.Next(0, g_nChans);
                 RandomNotes(ch, rndInst);
             }
         }
@@ -53,7 +53,7 @@ namespace IngameScript
         {
             if (g_allChan)
             {
-                for (int ch = 0; ch < nChans; ch++)
+                for (int ch = 0; ch < g_nChans; ch++)
                     RandomNotes(ch, null);
             }
             else
@@ -83,13 +83,14 @@ namespace IngameScript
                     || g_rndInst)
                     chan.Instrument = inst;
 
-                if (RND > 0.25) RandomNotes(p, ch);
 
                 if (RND > 0.6  ) Flip(p, ch,  1);
                 if (RND > 0.8  ) Flip(p, ch,  2);
                 if (RND > 0.9  ) Flip(p, ch,  4);
                 if (RND > 0.925) Flip(p, ch,  8);
                 if (RND > 0.95 ) Flip(p, ch, 16);
+
+                RandomNotes(p, ch);
             }
         }
 

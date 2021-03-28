@@ -23,6 +23,7 @@ namespace IngameScript
             inputValid = true;
         }
 
+
         void UpdateSongName()
         {
             var sb = new StringBuilder();
@@ -30,6 +31,7 @@ namespace IngameScript
 
             g_song.Name = S(sb).Trim();
         }
+
 
         void UpdateSongDsp()
         {

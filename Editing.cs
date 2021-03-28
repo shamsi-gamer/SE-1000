@@ -209,31 +209,31 @@ namespace IngameScript
 
         void Edit()
         {
-            if (OK(CurSong.EditPos))
-                CurSong.LastEditPos = CurSong.EditPos;
+            if (OK(g_song.EditPos))
+                g_song.LastEditPos = g_song.EditPos;
 
-            CurSong.EditPos =
-                OK(CurSong.EditPos)
+            g_song.EditPos =
+                OK(g_song.EditPos)
                 ? float.NaN
-                : (OK(CurSong.LastEditPos) ? CurSong.LastEditPos : CurPat * nSteps);
+                : (OK(g_song.LastEditPos) ? g_song.LastEditPos : CurPat * nSteps);
 
-            StopEdit(CurSong);
+            StopEdit(g_song);
 
             UpdateAdjustLights(g_song);
 
             if (g_hold)
-                StopCurrentNotes(CurSong, CurChan);
+                StopCurrentNotes(g_song, CurChan);
 
             g_hold = false;
             UpdateLight(lblHold, false);
 
-            if (!OK(CurSong.EditPos))
+            if (!OK(g_song.EditPos))
             {
-                CurSong.Inter = null;
+                g_song.Inter = null;
                 UpdateLight(lblCmd1, false);
             }
 
-            UpdateEditLight(lblEdit, OK(CurSong.EditPos));
+            UpdateEditLight(lblEdit, OK(g_song.EditPos));
         }
 
 

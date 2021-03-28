@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Text;
+using System.Collections.Generic;
 
 
 namespace IngameScript
@@ -46,7 +48,6 @@ namespace IngameScript
                 PatStep = -1;
 
                 Sounds  = new List<Sound>();
-
                 Keys    = new List<Key>();
 
                 Reset();
@@ -116,6 +117,40 @@ namespace IngameScript
 
                 foreach (var snd in Sounds)
                     snd.FrameLength = (int)(StepLength * g_ticksPerStep);
+            }
+
+
+            public string Save()
+            {
+                var save = 
+                      WS(Number)
+                    + WS(PatStep)
+                    + WS(StepLength)
+                    + WS(Volume)
+                    +  S(Keys.Count);
+
+                foreach (var key in Keys)
+                    save += ";" + key.Save();
+                
+                return save;
+            }
+
+
+            public static Note Load(string[] data, ref int i, Instrument inst)
+            {
+                var note = new Note();
+
+                note.Number     = int  .Parse(data[i++]);
+                note.PatStep    = float.Parse(data[i++]);
+                note.StepLength = float.Parse(data[i++]);
+                note.Volume     = float.Parse(data[i++]);
+
+                var nKeys = int.Parse(data[i++]);
+
+                for (int k = 0; k < nKeys; k++)
+                    note.Keys.Add(Key.Load(data, ref i, inst));
+
+                return note;
             }
         }
     }

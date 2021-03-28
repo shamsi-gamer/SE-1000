@@ -30,7 +30,7 @@ namespace IngameScript
 
         void EnableChannels(bool on)
         {
-            for (int ch = 0; ch < nChans; ch++)
+            for (int ch = 0; ch < g_nChans; ch++)
                 EnableChannel(ch, on);
 
             MarkLight(
@@ -92,7 +92,7 @@ namespace IngameScript
             }
 
 
-            for (int _ch = 0; _ch < nChans; _ch++)
+            for (int _ch = 0; _ch < g_nChans; _ch++)
                 g_on[_ch] = CurrentPattern.Channels[_ch].On;
 
 
@@ -114,7 +114,7 @@ namespace IngameScript
 
         void SoloChannel(int pat, int ch)
         {
-            for (int i = 0; i < nChans; i++)
+            for (int i = 0; i < g_nChans; i++)
             {
                 if (i == ch) continue;
                 EnableChannel(pat, i, false);
@@ -129,7 +129,7 @@ namespace IngameScript
         {
             if (g_solo >= 0)
             {
-                for (int i = 0; i < nChans; i++)
+                for (int i = 0; i < g_nChans; i++)
                     EnableChannel(pat, i, g_on[i]);
             }
         }

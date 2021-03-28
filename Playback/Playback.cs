@@ -5,6 +5,24 @@ namespace IngameScript
 {
     partial class Program
     {
+        void InitPlaybackAfterLoad(long playTime)
+        {
+            SetCurrentPattern(CurPat);
+
+            if (g_autoCue)
+                Cue();
+
+            CueNextPattern();
+
+            PlayTime = playTime % (g_song.Patterns.Count * nSteps * g_ticksPerStep);
+
+            StartTime = 
+                PlayTime > -1 
+                ? g_time - PlayTime        
+                : -1;
+        }
+
+
         void UpdatePlayback()
         {
             if (PlayTime > -1)

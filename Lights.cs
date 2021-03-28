@@ -208,7 +208,7 @@ namespace IngameScript
 
 
                  if (g_iCol == 1) lightColor = new Color(0xFF, 0x50, 0);
-            else if (g_iCol == 5) lightColor = new Color(0xAA, 0,    0xFF);
+            else if (g_iCol == 5) lightColor = new Color(0xAA, 0, 0xFF);
 
 
             var lights = new List<IMyInteriorLight>();
@@ -259,7 +259,7 @@ namespace IngameScript
 
         void UnmarkAllLights()
         {
-            var be = CurSong.EditNotes.Count > 0;
+            var be = g_song.EditNotes.Count > 0;
 
             if (lightsPressed_.Contains(lblLeft))      UnmarkLight(lblLeft,  false, be);
             if (lightsPressed_.Contains(lblRight))     UnmarkLight(lblRight, false, be);
@@ -753,7 +753,7 @@ namespace IngameScript
         {
             var step = PlayStep % nSteps;
 
-            var p = CurSong.Patterns.IndexOf(pat);
+            var p = g_song.Patterns.IndexOf(pat);
 
 
             if (IsCurParam("Tune"))
@@ -783,8 +783,8 @@ namespace IngameScript
                               num == n.Number
                            && (      PlayStep >= p * nSteps + n.PatStep + n.ShOffset
                                   && PlayStep <  p * nSteps + n.PatStep + n.ShOffset + n.StepLength
-                               ||    p * nSteps + n.PatStep >= CurSong.EditPos 
-                                  && p * nSteps + n.PatStep <  CurSong.EditPos + EditStep)) > -1
+                               ||    p * nSteps + n.PatStep >= g_song.EditPos 
+                                  && p * nSteps + n.PatStep <  g_song.EditPos + EditStep)) > -1
                     ||    g_hold
                        && g_notes.FindIndex(n =>
                                  num == n.Number
@@ -796,7 +796,7 @@ namespace IngameScript
 
                 if (!thisChan)
                 {
-                    for (int ch = 0; ch < nChans; ch++)
+                    for (int ch = 0; ch < g_nChans; ch++)
                     {
                         var _chan = pat.Channels[ch];
 
@@ -805,8 +805,8 @@ namespace IngameScript
                                && ch  == n.iChan
                                && (   PlayStep >= p * nSteps + n.PatStep + n.ShOffset
                                    && PlayStep <  p * nSteps + n.PatStep + n.ShOffset + n.StepLength
-                            ||    p * nSteps + n.PatStep >= CurSong.EditPos 
-                               && p * nSteps + n.PatStep <  CurSong.EditPos + EditStep)) > -1;
+                            ||    p * nSteps + n.PatStep >= g_song.EditPos 
+                               && p * nSteps + n.PatStep <  g_song.EditPos + EditStep)) > -1;
                     }
                 }
 
@@ -839,7 +839,7 @@ namespace IngameScript
                     && _step == (int)PlayStep
                     && CurPat == PlayPat) c = on ? color0 : color6;
                 else if (on)                              c = color6;
-                else if (CurSong.EditPos == _step)        c = color3;
+                else if (g_song.EditPos == _step)        c = color3;
                 else                                      c = step % 4 == 0 ? color2 : color0;
 
                 light.BackgroundColor = c;

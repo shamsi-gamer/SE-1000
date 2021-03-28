@@ -1,21 +1,7 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
+﻿using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
 
 
 namespace IngameScript
@@ -29,20 +15,13 @@ namespace IngameScript
             return result;
         }
 
-        public static T Last<T>(this T[] array)
-        {
-            return array[array.Length-1];
-        }
+        public static T    Last      <T>(this T[] array)         { return array[array.Length-1]; }
+        public static T    Last      <T>(this List<T> list)      { return list[list.Count-1]; }
 
-        public static T Last<T>(this List<T> list)
-        {
-            return list[list.Count-1];
-        }
+        public static void RemoveLast<T>(this List<T> list)      { list.RemoveAt(list.Count-1); }
 
-        public static void RemoveLast<T>(this List<T> list)
-        {
-            list.RemoveAt(list.Count-1);
-        }
+        public static int  IndexOf   <T>(this T[] array, T item) { return Array.IndexOf(array, item); }
+        public static bool Contains  <T>(this T[] array, T item) { return Array.IndexOf(array, item) > -1; }
     }
 
 
@@ -83,34 +62,23 @@ namespace IngameScript
             }
         }
         
-        Arpeggio CurOrAnyParentArpeggio
-        {
-            get
-            {
-                var setting = CurSetting;
-                while (setting != null)
-                {
-                    if (setting.GetType() == typeof(Arpeggio))
-                        return (Arpeggio)setting;
+        //Arpeggio CurOrAnyParentArpeggio
+        //{
+        //    get
+        //    {
+        //        var setting = CurSetting;
+        //        while (setting != null)
+        //        {
+        //            if (setting.GetType() == typeof(Arpeggio))
+        //                return (Arpeggio)setting;
 
-                    setting = setting.Parent;
-                }
+        //            setting = setting.Parent;
+        //        }
 
-                return null;
-            }
-        }
+        //        return null;
+        //    }
+        //}
 
-
-        Song CurSong
-        {
-            get
-            {
-                return
-                    IsCurOrAnyParent(typeof(Arpeggio))
-                    ? CurOrAnyParentArpeggio?.Song
-                    : g_song;
-            }
-        }
 
         static Pattern    CurrentPattern     { get { return g_song.Patterns[CurPat]; } }
         static Channel    CurrentChannel     { get { return CurrentPattern.Channels[CurChan]; } }
@@ -118,7 +86,7 @@ namespace IngameScript
         static Channel    SelectedChannel    { get { return SelChan > -1 ? CurrentPattern.Channels[SelChan] : null; } }
         static Instrument SelectedInstrument { get { return SelectedChannel?.Instrument ?? null; } }
         static Source     SelectedSource     { get { return CurSrc > -1 ? SelectedInstrument.Sources[CurSrc] : null; } }
-
+        
 
         static bool IsParam(Setting setting) 
         {
@@ -169,25 +137,23 @@ namespace IngameScript
 
         bool IsCurParam()
         {
-            return
-                   CurSet > -1
-                && IsParam(g_settings[CurSet]);
+            return IsParam(CurSetting);
         }
 
 
         bool IsCurParam(string tag)
         {
-            return 
-                   CurSet > -1
-                && HasTag(g_settings[CurSet], tag);
+            return HasTag(CurSetting, tag);
         }
 
 
         bool IsCurSetting(Type type)
         {
-            return
-                   CurSet > -1
-                && g_settings[CurSet].GetType() == type;
+            //return
+            //       CurSet > -1
+            //    && g_settings[CurSet].GetType() == type;
+
+            return CurSetting?.GetType() == type;
         }
 
 
@@ -312,7 +278,7 @@ namespace IngameScript
 
         bool IsModPresent()
         {
-            return _nextToLoad < 10
+            return _loadStep < 10
                 ||    (OscSine     ?.Samples.Count ?? 0) > 0
                    && (OscTriangle ?.Samples.Count ?? 0) > 0
                    && (OscSaw      ?.Samples.Count ?? 0) > 0

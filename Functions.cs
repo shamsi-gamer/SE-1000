@@ -24,7 +24,7 @@ namespace IngameScript
             {
                 if (CurSet > -1)
                 {
-                    var setting = g_settings[CurSet];
+                    var setting = CurSetting;
 
                          if (setting.GetType() == typeof(Envelope )) SetEnvelopeFunc ((Envelope) setting, func);
                     else if (setting.GetType() == typeof(LFO      )) SetLfoFunc      ((LFO)      setting, func);
@@ -85,11 +85,11 @@ namespace IngameScript
         void AddNextSetting(string tag, Instrument inst, int iSrc)
         {
             if (CurSet > -1)
-                g_settings[CurSet]._IsCurrent = false;
+                CurSetting._IsCurrent = false;
 
             Setting setting;
 
-                 if (CurSet > -1) setting = g_settings[CurSet].GetOrAddSettingFromTag(tag);
+                 if (CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
             else if (iSrc   > -1) setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
             else                  setting = inst.GetOrAddSettingFromTag(tag);              
 
@@ -97,8 +97,8 @@ namespace IngameScript
 
             CurSet++;
 
-            if (IsParam(g_settings[CurSet]))
-                g_settings[CurSet]._IsCurrent = true;
+            if (IsCurParam())
+                CurSetting._IsCurrent = true;
         }
 
 

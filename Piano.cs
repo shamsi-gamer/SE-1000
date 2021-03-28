@@ -67,7 +67,7 @@ namespace IngameScript
             else if (g_piano)
             {
                 PlayNote(
-                    CurSong,
+                    g_song,
                     HighToNote(h), 
                     g_chord > -1 && g_chordMode ? g_chords[g_chord] : null,
                     CurChan);
@@ -143,7 +143,7 @@ namespace IngameScript
                 else // l < 15
                 {
                     PlayNote(
-                        CurSong,
+                        g_song,
                         LowToNote(l),
                         g_chord > -1 && g_chordMode ? g_chords[g_chord] : null,
                         CurChan);
@@ -157,7 +157,7 @@ namespace IngameScript
         void Tick(int ch, int step)
         {
             int first, last;
-            GetPatterns(CurSong, CurPat, out first, out last);
+            GetPatterns(g_song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
                 Tick(p, ch, step);
@@ -167,7 +167,7 @@ namespace IngameScript
         void Tick(int pat, int ch, int step)
         {
             var _chan = g_song .Patterns[pat].Channels[ch];
-            var  chan = CurSong.Patterns[pat].Channels[ch];
+            var  chan = g_song.Patterns[pat].Channels[ch];
 
             var found = chan.Notes.Where(n => 
                    n.PatStep >= step
@@ -210,7 +210,7 @@ namespace IngameScript
         {
             if (g_allChan)
             {
-                for (int i = 0; i < nChans; i++)
+                for (int i = 0; i < g_nChans; i++)
                     Shift(i, fwd);
             }
             else
@@ -220,12 +220,12 @@ namespace IngameScript
 
         void Shift(int ch, bool fwd)
         {
-            var pats = CurSong.Patterns;
+            var pats = g_song.Patterns;
 
             var spill = new List<Note>();
 
             int first, last;
-            GetPatterns(CurSong, CurPat, out first, out last);
+            GetPatterns(g_song, CurPat, out first, out last);
 
             if (fwd)
             {
@@ -305,7 +305,7 @@ namespace IngameScript
         {
             if (g_allChan)
             {
-                for (int i = 0; i < nChans; i++)
+                for (int i = 0; i < g_nChans; i++)
                     ClearNotes(i);
             }
             else
@@ -316,11 +316,11 @@ namespace IngameScript
         void ClearNotes(int ch)
         {
             int first, last;
-            GetPatterns(CurSong, CurPat, out first, out last);
+            GetPatterns(g_song, CurPat, out first, out last);
 
             for (int p = first; p <= last; p++)
             { 
-                var chan = CurSong.Patterns[p].Channels[ch];
+                var chan = g_song.Patterns[p].Channels[ch];
 
                 if (g_paramKeys)
                 {
@@ -348,7 +348,7 @@ namespace IngameScript
             }
 
             if (g_paramAuto)
-                CurSong.UpdateAutoKeys();
+                g_song.UpdateAutoKeys();
         }
 
 

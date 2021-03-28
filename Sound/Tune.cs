@@ -49,9 +49,8 @@ namespace IngameScript
             {
                 var tune =
                       W(base.Save())
-
-                    + W(B(UseChord))
-                    + W(B(AllOctaves));
+                    + WB(UseChord)
+                    + WB(AllOctaves);
 
                 tune += S(Chord.Count);
 

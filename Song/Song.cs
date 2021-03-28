@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 
 namespace IngameScript
@@ -14,7 +15,7 @@ namespace IngameScript
             public List<Pattern> Patterns;
             public List<Block>   Blocks;
 
-            public List<Key>[]   ChannelAutoKeys = new List<Key>[nChans];
+            public List<Key>[]   ChannelAutoKeys = new List<Key>[g_nChans];
 
 
             public int           Length;
@@ -81,7 +82,7 @@ namespace IngameScript
 
             public void UpdateAutoKeys()
             {
-                for (int ch = 0; ch < nChans; ch++)
+                for (int ch = 0; ch < g_nChans; ch++)
                 { 
                     var chanKeys = ChannelAutoKeys[ch];
 
@@ -134,7 +135,7 @@ namespace IngameScript
             public int   GetNotePat(Note note) { return Patterns.FindIndex(p => p.Channels.Contains(note.Channel)); }
             public float GetStep   (Note note) { return GetNotePat(note) * nSteps + note.PatStep; }
 
-            public int   GetKeyPat (Key key)   { return Patterns.FindIndex(p => p.Channels.Find(c => c.AutoKeys.Contains(key)) != null); }
+            public int   GetKeyPat (Key key)   { return Patterns.FindIndex(p => Array.Find(p.Channels, c => c.AutoKeys.Contains(key)) != null); }
             public float GetStep   (Key key)   { return GetKeyPat(key) * nSteps + key.StepTime; }
 
 
@@ -143,6 +144,103 @@ namespace IngameScript
                 return Blocks.Find(b =>
                        pat >= b.First
                     && pat <= b.Last);
+            }
+
+
+            public string Save()
+            {
+                return
+                      N(Name.Replace("\n", "\u0085"))
+                    + N(SavePatterns())
+                    + SaveBlocks();
+            }
+
+
+            string SavePatterns()
+            {
+                var save = "";
+
+                save += S(Patterns.Count);
+
+                foreach (var pat in Patterns)
+                    save += "\n" + pat.Save();
+
+                return save;
+            }
+
+
+            string SaveBlocks()
+            {
+                var save = S(g_song.Blocks.Count);
+
+                foreach (var b in g_song.Blocks)
+                {
+                    save +=
+                      ";" + S(b.First)
+                    + ";" + S(b.Last);
+                }
+
+                return save;
+            }
+
+
+            public static Song Load(string[] lines, ref int line)
+            { 
+                if (lines.Length < 3)
+                    return null;
+
+                var song = new Song();
+
+                song.Name = lines[line++].Replace("\u0085", "\n");
+
+                if (!song.LoadPatterns(lines, ref line)) return null;
+                if (!song.LoadBlocks(lines[line++]))     return null;
+
+                song.UpdateAutoKeys();
+                //if (!Finalize(insts)) return F;
+                //if (!LoadEdit(lines, ref line)) return F;
+
+                return song;
+            }
+
+
+            bool LoadPatterns(string[] lines, ref int line)
+            {
+                int nPats = int.Parse(lines[line++]);
+
+                for (int p = 0; p < nPats; p++)
+                {
+                    int i = 0;
+                    var pat = Pattern.Load(lines[line++].Split(';'), ref i);
+                    if (pat == null) return false;
+
+                    pat.Song = this;
+
+                    Patterns.Add(pat);
+                }
+
+                return true;
+            }
+
+
+            bool LoadBlocks(string line)
+            {
+                var data = line.Split(';');
+                var i    = 0;
+
+                Blocks.Clear();
+
+                int nBlocks = int.Parse(data[i++]);
+
+                for (int b = 0; b < nBlocks; b++)
+                {
+                    int first = int.Parse(data[i++]);
+                    int last  = int.Parse(data[i++]);
+
+                    Blocks.Add(new Block(first, last));
+                }
+
+                return true;
             }
         }
 
@@ -183,7 +281,7 @@ namespace IngameScript
         //    g_editLength  = 2;
         //    g_curNote     = 69 * NoteScale;
         //    //g_showNote      = g_curNote;
-                         
+
         //    g_loop       = 
         //    g_block       = 
         //    g_in          = 
@@ -215,7 +313,7 @@ namespace IngameScript
         //    CurChan     =  0;
         //    SelChan     = -1;
         //    CurSrc      = -1;
-                            
+
         //    StartTime   = -1;
 
 
@@ -223,7 +321,7 @@ namespace IngameScript
 
         //    for (int i = 0; i < g_chords.Length; i++)
         //        g_chords[i] = new List<int>();
-            
+
 
         //    SetLightColor(4);
         //    UpdateLights();

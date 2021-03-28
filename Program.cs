@@ -8,7 +8,11 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
+        // save (song saves modified copies of instruments)
+        // clips
+
         //Filter doesn't work with envelopes
+        // moving channels doesn't work, channels disappear (it seems to instance them)
         // moving pat kills playback
         // harmonic volumes are wrong again
 
@@ -19,7 +23,6 @@ namespace IngameScript
 
         // timing issues with playing
         // blocks
-        // clips
 
         // keys should affect trigger, auto should affect volume
 
@@ -29,8 +32,6 @@ namespace IngameScript
 
         // harmony - across selected patterns, copy existing notes and shift them up or down
         // record keys/chords and mouse control of parameters as automation
-
-        // save (song saves modified copies of instruments)
 
         
         // when editLength is long, editing the chord doesn't play the current chord properly when a note is added/deleted
@@ -127,7 +128,7 @@ namespace IngameScript
         List<Note>              g_notes  = new List<Note>();
         List<Sound>             g_sounds = new List<Sound>();
 
-        float[]                 g_dspVol = new float[nChans];
+        float[]                 g_dspVol = new float[g_nChans];
 
         const float             ControlSensitivity = 12;                                
         const int               NoteScale          = 2;
@@ -167,8 +168,8 @@ namespace IngameScript
 
 
         float
-            instCount = 0,
-            dspCount  = 0;
+            g_instCount = 0,
+            g_dspCount  = 0;
 
         #endregion
 
@@ -217,7 +218,7 @@ namespace IngameScript
             InitFuncButtons(); 
 
 
-            for (int i = 0; i < nChans; i++)
+            for (int i = 0; i < g_nChans; i++)
                 g_dspVol[i] = 0;
 
 
@@ -253,49 +254,18 @@ namespace IngameScript
         void FinishStartup()
         {
             // load oscillators one by one to avoid complexity hang
-            if (_nextToLoad < 10)
-                LoadOscillatorSamples(_nextToLoad++);
+            if (_loadStep < 10)
+                LoadOscillatorSamples(_loadStep++);
 
-            if (_nextToLoad == 10)
+            if (_loadStep == 10)
             {
-                long playTime;
-                string curPath;
-
-                LoadMachineState(out playTime, out curPath);
-                LoadInstruments();
-                LoadSong();
-                
-
-                InitPlaybackAfterLoad(playTime);
-
-
-                if (curPath != "")
-                    SwitchToSetting(curPath, g_inst[CurChan]);
-
+                Load();
 
                 UpdateLights();
                 SetLightColor(g_iCol);
 
-                _nextToLoad++;
+                _loadStep++;
             }
-        }
-
-
-        void InitPlaybackAfterLoad(long playTime)
-        {
-            SetCurrentPattern(CurPat);
-
-            if (g_autoCue)
-                Cue();
-
-            CueNextPattern();
-
-            PlayTime = playTime % (g_song.Patterns.Count * nSteps * g_ticksPerStep);
-
-            StartTime = 
-                PlayTime > -1 
-                ? g_time - PlayTime        
-                : -1;
         }
 
 
@@ -396,11 +366,11 @@ namespace IngameScript
                 case "edit step":  ChangeEditStep();         break;
                 case "edit len":   ChangeEditLength();       break;
                                                              
-                case "step":       Step(CurSong, CurChan);   break;
-                case "hold":       Hold(CurSong);            break;
+                case "step":       Step(g_song, CurChan);   break;
+                case "hold":       Hold(g_song);            break;
                                                              
-                case "left":       Left(CurSong);            break;
-                case "right":      Right(CurSong);           break;
+                case "left":       Left(g_song);            break;
+                case "right":      Right(g_song);           break;
                                                              
                 case "random":     Random();                 break;
                                                              

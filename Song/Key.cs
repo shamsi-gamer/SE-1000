@@ -1,24 +1,4 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
-
-
-namespace IngameScript
+﻿namespace IngameScript
 {
     partial class Program
     {
@@ -27,13 +7,13 @@ namespace IngameScript
             public int       SourceIndex;
 
             public Parameter Parameter;
+            public string    Path { get { return Parameter.GetPath(SourceIndex); } }
 
             public float     Value,
                              StepTime;
 
             public Channel   Channel;
 
-            public string Path { get { return Parameter.GetPath(SourceIndex); } }
 
             public Key(int srcIndex, Parameter param, float val, float stepTime, Channel chan = null)
             {
@@ -44,6 +24,7 @@ namespace IngameScript
                 Channel     = chan;
             }
 
+
             public Key(Key key)
             {
                 SourceIndex = key.SourceIndex;
@@ -51,6 +32,31 @@ namespace IngameScript
                 Value       = key.Value;
                 StepTime    = key.StepTime;
                 Channel     = key.Channel;
+            }
+
+
+            public string Save()
+            {
+                return
+                      WS(SourceIndex)
+                    + W (Path)
+                    + WS(Value)
+                    +  S(StepTime);
+            }
+
+
+            public static Key Load(string[] data, ref int i, Instrument inst)
+            {
+                var srcIndex = int.Parse(data[i++]);
+                var path     = data[i++];
+                var value    = float.Parse(data[i++]);
+                var stepTime = float.Parse(data[i++]);
+
+                return new Key(
+                    srcIndex,
+                    (Parameter)GetSettingFromPath(inst, path),
+                    value,
+                    stepTime);
             }
         }
     }

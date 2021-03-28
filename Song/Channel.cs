@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Text;
+using System.Collections.Generic;
 
 
 namespace IngameScript
@@ -37,9 +39,9 @@ namespace IngameScript
             }
 
 
-            public Channel(Channel chan)
+            public Channel(Channel chan, Pattern pat = null)
             {
-                Pattern    = chan.Pattern;
+                Pattern    = pat ?? chan.Pattern;
 
                 On         = chan.On;
                 Instrument = chan.Instrument;
@@ -90,9 +92,106 @@ namespace IngameScript
             }
 
 
-            public bool HasNoteKeys(string path) { return Notes.Find(n => n.Keys.Find(k => k.Path == path) != null) != null; }
+            public bool HasNoteKeys(string path) { return Notes   .Find(n => n.Keys.Find(k => k.Path == path) != null) != null; }
             public bool HasAutoKeys(string path) { return AutoKeys.Find(k => k.Path == path) != null; }
             public bool HasKeys    (string path) { return HasNoteKeys(path) || HasAutoKeys(path); }
+
+
+            public bool IsDefault { get
+            {
+                return
+                       Notes   .Count == 0
+                    && AutoKeys.Count == 0
+                    && On
+                    && Volume  == 1
+                    && Shuffle == 0;
+            } }
+
+
+            public string Save()
+            {
+                var save =
+                      WS(Pattern.Channels.IndexOf(this))
+                    + W (Instrument.Name)
+
+                    + WB(On)
+                    + WS(Volume)
+                    + WS(Shuffle)
+                    + WS(Transpose)
+
+                    + SaveNotes()
+                    + SaveAutoKeys();
+
+                return save;
+            }
+
+
+            string SaveNotes()
+            {
+                var save = S(Notes.Count);
+
+                foreach (var n in Notes)
+                    save += ";" + n.Save();
+
+                return save;
+            }
+
+
+            string SaveAutoKeys()
+            {
+                var save = ";" + S(AutoKeys.Count);
+
+                foreach (var k in AutoKeys)
+                    save += ";" + k.Save();
+
+                return save;
+            }
+
+
+            public static Channel Load(string[] data, ref int i, out int index, Pattern pat)
+            {
+                var chan = new Channel(pat);
+                
+                index           = int.Parse(data[i++]);
+
+                var instName    = data[i++];
+                chan.Instrument = g_inst.Find(inst => inst.Name == instName);
+
+                chan.On         = int  .Parse(data[i++]) > 0;
+                chan.Volume     = float.Parse(data[i++]);
+                chan.Shuffle    = int  .Parse(data[i++]);
+                chan.Transpose  = int  .Parse(data[i++]);
+
+                chan.LoadNotes   (data, ref i, index);
+                chan.LoadAutoKeys(data, ref i);
+
+                return chan;
+            }
+
+
+            void LoadNotes(string[] data, ref int i, int iChan)
+            {
+                var nNotes = int.Parse(data[i++]);
+
+                for (int n = 0; n < nNotes; n++)
+                {
+                    var note = Note.Load(data, ref i, Instrument);
+
+                    note.Channel = this;
+                    note.iChan   = iChan;
+
+                    Notes.Add(note);
+                }
+            }
+
+
+            void LoadAutoKeys(string[] data, ref int i)
+            {
+                var nKeys = int.Parse(data[i++]);
+
+                for (int k = 0; k < nKeys; k++)
+                    AutoKeys.Add(Key.Load(data, ref i, Instrument));
+            }
         }
     }
 }

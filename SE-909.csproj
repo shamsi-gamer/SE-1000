@@ -39,7 +39,9 @@
   <Import Project="MDK/MDK.paths.props" Condition="exists('MDK/MDK.paths.props')" />
   <ItemGroup>
     <Compile Include="Chords.cs" />
+    <Compile Include="Graphics\Draw Clips.cs" />
     <Compile Include="Graphics\Draw Harmonics.cs" />
+    <Compile Include="Graphics\Draw Volume.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Minify.cs" />
     <Compile Include="IO\Save.cs" />
@@ -66,7 +68,7 @@
     <Compile Include="Graphics\Draw Song.cs" />
     <Compile Include="Graphics\Draw Mixer.cs" />
     <Compile Include="Graphics\Draw Info.cs" />
-    <Compile Include="Input.cs" />
+    <Compile Include="IO\Input.cs" />
     <Compile Include="Playback\Playback.cs" />
     <Compile Include="Sound\Instrument.cs" />
     <Compile Include="IO\Load.cs" />
@@ -109,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <Content Include="Strings.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

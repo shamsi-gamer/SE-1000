@@ -79,7 +79,7 @@ namespace IngameScript
             FillRect  (sprites,        cx - 2,  y + 60, 357, 30, color6);
             FillRect  (sprites,        cx,      y + 62, 353, 26, color0);
                                                 
-            FillRect  (sprites,        cx,      y + 62, 353 * dspCount / Runtime.MaxInstructionCount, 26, color6);
+            FillRect  (sprites,        cx,      y + 62, 353 * g_dspCount / Runtime.MaxInstructionCount, 26, color6);
 
 
             DrawString(sprites, "RUN", x + 20,  y + 96, 1.2f, color6);

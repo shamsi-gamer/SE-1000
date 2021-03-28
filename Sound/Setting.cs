@@ -50,9 +50,9 @@ namespace IngameScript
 
 
             public virtual bool    HasDeepParams(Channel chan, int src) { return false; }
-            public virtual void    Remove(Setting setting) { }
+            public virtual void    Remove(Setting setting) {}
                                    
-            public virtual void    Clear() { }
+            public virtual void    Clear() {}
 
 
             public virtual void    Randomize(Program prog) {}
@@ -66,7 +66,7 @@ namespace IngameScript
         {
             return (Parameter)GetSettingFromPath(
                 inst, 
-                g_settings[CurSet].GetPath(CurSrc));
+                CurSetting.GetPath(CurSrc));
         }
 
 

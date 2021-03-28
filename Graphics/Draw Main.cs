@@ -106,7 +106,7 @@ namespace IngameScript
 
             if (CurSet > -1)
             { 
-                var setting = g_settings[CurSet];
+                var setting = CurSetting;
 
                      if (setting.GetType() == typeof(Envelope )) DrawEnvelopeFuncButtons (sprites, (Envelope )setting, w, h, chan);
                 else if (setting.GetType() == typeof(LFO      )) DrawLfoFuncButtons      (sprites, (LFO      )setting, w, h, chan);

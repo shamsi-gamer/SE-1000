@@ -208,16 +208,11 @@ namespace IngameScript
                 return;
 
 
-            //var bl =
-            //       g_set >= Set.LfoAmplitude
-            //    && g_set <= Set.LfoFixed;
-
-
             if (SelChan < 0)
             {
                 SetChan(-move);
             }
-            else if (CurSrc < 0) // inst
+            else if (CurSrc < 0) // instrument
             {
                 var i = g_inst.IndexOf(CurrentInstrument);
                 var n = i + move;
@@ -247,17 +242,11 @@ namespace IngameScript
                 UpdateInstName();
                 inputValid = false;
 
-                //g_sampleValid = F;
-
-                //UpdateDspOffset(ref instOff, g_song.CurSrc, g_inst.Count, maxDspInst, 0, 1);
                 UpdateInstOff(CurChan);
                 
                 g_srcOff = 0;
-
-                //UpdateLight(lblOn,       F);
-                //UpdateLight(lblLfoFixed, F, bl);
             }
-            else // src
+            else // source
             {
                 var inst = CurrentInstrument;
                 var next = CurSrc + move;
@@ -276,14 +265,7 @@ namespace IngameScript
 
                 dspMain.Surface.WriteText("", false);
 
-                //UpdateDspOffset(ref srcOff, g_song.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
-                //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurSrc);
                 UpdateSrcOff();
-
-                //g_sampleValid = F; 
-                
-                //UpdateLight(lblOn,       CurrentSource.On);
-                //UpdateLight(lblLfoFixed, CurrentSource.Lfo.Fixed, bl);
             }
 
 
@@ -306,7 +288,7 @@ namespace IngameScript
 
                 if (IsCurParam())
                 { 
-                    g_settings[CurSet]._IsCurrent = false;
+                    CurSetting._IsCurrent = false;
                     if (IsCurParam("Tune")) ucl = true;
                 }
 
@@ -390,7 +372,7 @@ namespace IngameScript
                     }
                     else if (IsCurParam())
                     { 
-                        g_settings[CurSet]._IsCurrent = false;
+                        CurSetting._IsCurrent = false;
                         if (IsCurParam("Tune")) ucl = true;
                     }
 
@@ -918,13 +900,15 @@ namespace IngameScript
         {
             ch += CurChan;
 
-            if (ch >= nChans) ch = 0;
-            if (ch < 0) ch = nChans - 1;
+            if (ch >= g_nChans) ch = 0;
+            if (ch < 0) ch = g_nChans - 1;
 
             if (g_move)
             {
-                CurrentPattern.Channels.RemoveAt(CurChan);
-                CurrentPattern.Channels.Insert(ch, CurrentChannel);
+                var temp = CurrentPattern.Channels[CurChan];
+                
+                CurrentPattern.Channels[CurChan] = CurrentPattern.Channels[ch];
+                CurrentPattern.Channels[ch]      = temp;
             }
 
             CurChan = ch;

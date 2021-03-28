@@ -23,7 +23,7 @@ namespace IngameScript
             DrawGrid(sprites, x + xt, y, w - xt, rh, CurPat);
 
 
-            var ch = rh / nChans;
+            var ch = rh / g_nChans;
             var cy = y + rh - (CurChan + 1) * ch;
 
             FillRect(sprites, xt, cy, w - xt, ch, color3);
@@ -68,11 +68,11 @@ namespace IngameScript
 
         void DrawChannelList(List<MySprite> sprites, float x, float y, float w, float h, Song song)
         {
-            var ch = h / nChans;
+            var ch = h / g_nChans;
 
             FillRect(sprites, x, y + h - CurChan * ch - 35, w, ch, color6);
 
-            for (int c = 0; c < nChans; c++)
+            for (int c = 0; c < g_nChans; c++)
             {
                 var yLine = y + h - c * ch - 40;
 
@@ -94,12 +94,12 @@ namespace IngameScript
         void DrawGrid(List<MySprite> sprites, float x, float y, float w, float h, int pattern, int patSteps = nSteps)
         {
             var wt = w / nSteps;
-            var ht = h / nChans;
+            var ht = h / g_nChans;
 
             for (int t = 0; t < patSteps; t += 4)
                 FillRect(sprites, x + t * wt, y, wt, h, color1);
 
-            for (int ch = 0; ch < nChans; ch += 2)
+            for (int ch = 0; ch < g_nChans; ch += 2)
                 FillRect(sprites, x, y + h - (ch + 1) * ht, wt*patSteps, ht, color2);
 
             for (int t = 0; t < patSteps; t++)
@@ -110,11 +110,11 @@ namespace IngameScript
         void DrawPattern(List<MySprite> sprites, float x, float y, float w, float h, Song song, int pat, int gs, bool isolated, int songSteps = nSteps)
         {
             var wt = w/nSteps;
-            var ht = h/nChans;
+            var ht = h/g_nChans;
 
-            for (int ch = 0; ch < nChans; ch++)
+            for (int ch = 0; ch < g_nChans; ch++)
             {
-                var yLine = y + h - (ch+1) * h/nChans;
+                var yLine = y + h - (ch+1) * h/g_nChans;
 
                 var bh = h/80;
                 var th = ht - bh*2;
@@ -166,16 +166,16 @@ namespace IngameScript
         void DrawPatNeg(List<MySprite> sprites, float x, float y, float w, float h, Song song, int pat, float step, bool isolated)
         {
             var wt = w/nSteps;
-            var ht = h/nChans;
+            var ht = h/g_nChans;
 
             var _step = step % nSteps;
 
             var bt = w/76;
             var th = ht - bt*2;
 
-            for (int ch = 0; ch < nChans; ch++)
+            for (int ch = 0; ch < g_nChans; ch++)
             {
-                var yLine = y + h - (ch + 1) * h/nChans;
+                var yLine = y + h - (ch + 1) * h/g_nChans;
 
                 for (int p = 0; p <= pat; p++)
                 {

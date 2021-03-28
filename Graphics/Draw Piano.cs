@@ -147,7 +147,7 @@ namespace IngameScript
         {
             if (!arpeggio)
             { 
-                for (int ch = 0; ch < nChans; ch++)
+                for (int ch = 0; ch < g_nChans; ch++)
                 {
                     if (ch != CurChan)
                         DrawChanNotes(sprites, x, y, w, h, song, p, gs, ch, color3);
@@ -215,7 +215,7 @@ namespace IngameScript
 
         void DrawPianoNeg(List<MySprite> sprites, float x, float y, float w, float h, Song song, int p, float step, bool isolated)
         {
-            for (int ch = 0; ch < nChans; ch++)
+            for (int ch = 0; ch < g_nChans; ch++)
             {
                 var wt = w/nSteps;
                 var ht = h/25;

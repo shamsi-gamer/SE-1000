@@ -22,7 +22,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        bool[] g_on = new bool[nChans];
+        bool[] g_on = new bool[g_nChans];
 
 
         bool               g_in, 

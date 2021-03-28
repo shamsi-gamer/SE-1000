@@ -14,92 +14,79 @@ namespace IngameScript
                 return;
             }
 
-
-            if (!g_init)
-                return;
-
-
             //pnlInfoLog.CustomData = "";
 
+            if (!g_init) return;
             FinishStartup();
-
 
             _triggerDummy.Clear();
 
+            if ((update & UpdateType.Update1)  != 0) Update1();
+            if ((update & UpdateType.Update10) != 0) Update10();
 
-            if ((update & UpdateType.Update1) != 0)
-            {
-                if (CurSet > -1)
-                    g_settings[CurSet].AdjustFromController(g_song, this);
-
-                if (!TooComplex) UpdatePlayback();
-
-                if (    PlayTime > -1
-                    && !TooComplex)
-                    UpdateKeyLights();
-            }
-
-
-            if ((update & UpdateType.Update10) != 0)
-            {
-                if (    PlayTime < 0
-                    && _nextToLoad > 10
-                    && !TooComplex)
-                    UpdateKeyLights();
-
-
-                if (g_started)
-                {
-                    UpdateInst();
-                    UpdateSongName();
-                }
-                else
-                    g_started = true;
-
-
-                if (_nextToLoad > 10)
-                { 
-                    if (!TooComplex) DrawMain();
-                    if (!TooComplex) DrawInfo();
-                    if (!TooComplex) DrawSongDsp();
-                    if (!TooComplex) DrawMixer();
-                    if (!TooComplex) DrawIO();
-
-                    DampenDisplayVolumes();
-                }
-
-
-                ResetRuntimeInfo();
-
-
-                dspCount = instCount;
-                instCount = 0;
-
-
-                UnmarkAllLights(); // by this point they have been visually marked on previous cycle
-
-
-                warningLight.Enabled = g_sm.UsedRatio > 0.9f;
-            }
-
-
-            if (_nextToLoad > 10)
+            if (_loadStep > 10)
                 FinalizePlayback(g_song);
 
-
-            instCount = Math.Max(instCount, Runtime.CurrentInstructionCount);
-
-            
             //pnlInfoLog.CustomData = "";
 
+            UpdateRuntimeInfo();
+        }
 
-            if ((update & UpdateType.Update1) != 0)
-                UpdateRuntimeInfo();
+
+        void Update1()
+        {
+            CurSetting?.AdjustFromController(g_song, this);
+
+            if (!TooComplex) UpdatePlayback();
+
+            if (    PlayTime > -1
+                && !TooComplex)
+                UpdateKeyLights();
+        }
+
+
+        void Update10()
+        { 
+            if (    PlayTime < 0
+                && _loadStep > 10
+                && !TooComplex)
+                UpdateKeyLights();
+
+
+            if (g_started)
+            {
+                UpdateInst();
+                UpdateSongName();
+            }
+            else
+                g_started = true;
+
+
+            if (_loadStep > 10)
+            { 
+                DrawDisplays();
+                DampenDisplayVolumes();
+            }
+
+
+            ResetRuntimeInfo();
+
+
+            g_dspCount = g_instCount;
+            g_instCount = 0;
+
+
+            UnmarkAllLights(); // by this point they have been visually marked on previous cycle
+
+
+            warningLight.Enabled = g_sm.UsedRatio > 0.9f;
         }
 
 
         void UpdateRuntimeInfo()
         {
+            g_instCount = Math.Max(g_instCount, Runtime.CurrentInstructionCount);
+
             if (g_curRuntimeTick >= g_runtimeMs.Length)
                 return;
 

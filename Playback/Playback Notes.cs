@@ -151,7 +151,7 @@ namespace IngameScript
         {
             var pat = g_song.Patterns[PlayPat];
 
-            for (int ch = 0; ch < nChans; ch++)
+            for (int ch = 0; ch < g_nChans; ch++)
             {
                 var chan = pat.Channels[ch];
                 if (!chan.On) continue;

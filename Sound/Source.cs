@@ -323,7 +323,7 @@ namespace IngameScript
             {
                 return
                       WS((int)Oscillator.Type)
-                    + W (B(On))
+                    + WB(On)
 
                     + Volume.Save()
                     

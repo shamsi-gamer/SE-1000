@@ -58,7 +58,7 @@ namespace IngameScript
                           OscCrunch    = null,
                           OscSample    = null; 
 
-        static int _nextToLoad = 0;
+        static int _loadStep = 0;
 
 
         void LoadOscillatorSamples(int i)

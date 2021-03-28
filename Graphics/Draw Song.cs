@@ -7,7 +7,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        void DrawSongDsp()
+        void DrawSong()
         {
             if (!TooComplex) DrawSong(dspSong1, 0);
             if (!TooComplex) DrawSong(dspSong2, 1);
@@ -35,15 +35,15 @@ namespace IngameScript
             var ht = wt;
 
             var pw = wt * nSteps;
-            var ph = ht * nChans;
+            var ph = ht * g_nChans;
 
             var pxCur = x - (nDsp*4 + g_songOff) * pw + CurPat * pw;
             var py = y + h/2 - ph/2;
 
             var first = nDsp * 4 + g_songOff;
-            var next = Math.Min((nDsp + 1) * 4 + g_songOff, CurSong.Patterns.Count);
+            var next = Math.Min((nDsp + 1) * 4 + g_songOff, g_song.Patterns.Count);
 
-            var curBlock = CurSong.GetBlock(CurPat);
+            var curBlock = g_song.GetBlock(CurPat);
 
             var _f = first - g_songOff;
 
@@ -61,7 +61,7 @@ namespace IngameScript
 
                 var bo = 30;
 
-                var block = CurSong.GetBlock(p);
+                var block = g_song.GetBlock(p);
                 if (block != null)
                 {
                     var c = curBlock == block ? color3 : color2;
@@ -79,7 +79,7 @@ namespace IngameScript
                 for (int p = first; p < next; p++)
                 {
                     var px = x - (nDsp * 4 + g_songOff) * pw + p * pw;
-                    var ch = ph / nChans;
+                    var ch = ph / g_nChans;
                     var cy = py + ph - (CurChan + 1) * ch;
 
                     FillRect(sprites, px, cy, pw, ch, color3);
@@ -87,11 +87,11 @@ namespace IngameScript
             }
 
 
-            if (   CurSong.EditPos >= first * nSteps
-                && CurSong.EditPos <  next  * nSteps)
+            if (   g_song.EditPos >= first * nSteps
+                && g_song.EditPos <  next  * nSteps)
             {
                 var pl    = x - pw * (nDsp * 4 * pw + CurPat + g_songOff);
-                var xTick = wt * CurSong.EditPos;
+                var xTick = wt * g_song.EditPos;
 
                 FillRect(
                     sprites,
@@ -108,13 +108,13 @@ namespace IngameScript
                 var _p = p - g_songOff;
                 var px = x - _f * pw + _p * pw;
 
-                if (g_piano) DrawPianoRoll(sprites, px, py, pw, ph, CurSong, p, 1, false, nSteps);
-                else         DrawPattern  (sprites, px, py, pw, ph, CurSong, p, 1, false);
+                if (g_piano) DrawPianoRoll(sprites, px, py, pw, ph, g_song, p, 1, false, nSteps);
+                else         DrawPattern  (sprites, px, py, pw, ph, g_song, p, 1, false);
 
                 if (g_paramKeys)
                 {
                     FillRect     (sprites, px, py+ph+ph/5, pw, 1,    color3);
-                    DrawParamKeys(sprites, px, py + ph,    pw, ph/5, CurSong, p, CurChan);
+                    DrawParamKeys(sprites, px, py + ph,    pw, ph/5, g_song, p, CurChan);
                 }
                 else if (g_paramAuto)
                 {
@@ -125,9 +125,9 @@ namespace IngameScript
             if (g_paramAuto)
             { 
                 var fx   = x - _f * pw;
-                var wMax = Math.Min(CurSong.Patterns.Count * pw, w * 2);
+                var wMax = Math.Min(g_song.Patterns.Count * pw, w * 2);
 
-                DrawParamAuto(sprites, fx, py + ph, pw, ph/5, wMax, CurSong, 0, CurChan);
+                DrawParamAuto(sprites, fx, py + ph, pw, ph/5, wMax, g_song, 0, CurChan);
             }
 
 
@@ -141,20 +141,20 @@ namespace IngameScript
 
                 FillRect(sprites, xTick, py, wt, ph, color6);
 
-                if (g_piano) DrawPianoNeg(sprites, pl, py, pw, ph, CurSong, PlayPat, (int)PlayStep, false);
-                else         DrawPatNeg  (sprites, pl, py, pw, ph, CurSong, PlayPat, (int)PlayStep, false);
+                if (g_piano) DrawPianoNeg(sprites, pl, py, pw, ph, g_song, PlayPat, (int)PlayStep, false);
+                else         DrawPatNeg  (sprites, pl, py, pw, ph, g_song, PlayPat, (int)PlayStep, false);
             }
 
 
-            if (CurSong.Patterns.Count > maxDspPats)
+            if (g_song.Patterns.Count > maxDspPats)
             {
-                var bw = (w * 2) / (float)CurSong.Patterns.Count;
+                var bw = (w * 2) / (float)g_song.Patterns.Count;
                 var sh = 29;
 
                 var px = x - nDsp * 4 * pw;
                 var by = y + h - sh;
 
-                for (int p = 0; p < CurSong.Patterns.Count; p++)
+                for (int p = 0; p < g_song.Patterns.Count; p++)
                 {
                     FillRect(sprites, px + bw * p + 1, by, 1, sh, color4);
 
@@ -162,7 +162,7 @@ namespace IngameScript
                     if (m > -1) DrawString(sprites, S((char)(65 + m)), px + 5, by - 30, 0.7f, color4);
                 }
 
-                foreach (var b in CurSong.Blocks)
+                foreach (var b in g_song.Blocks)
                 {
                     var bx = px + bw * b.First + 1;
                     var sw = bw * b.Len - 2;
@@ -189,7 +189,7 @@ namespace IngameScript
 
                 var px = x - _f * pw + _p * pw;
 
-                var b = CurSong.GetBlock(p);
+                var b = g_song.GetBlock(p);
                 var c = b != null && b == curBlock ? color5 : color4;
 
                 DrawString(sprites, S(p + 1), px + 8, py - 28, 0.8f, c);
