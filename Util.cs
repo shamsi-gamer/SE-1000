@@ -576,5 +576,11 @@ namespace IngameScript
         bool TooComplex { get { return 
                Runtime.CurrentCallChainDepth   / (float)Runtime.MaxCallChainDepth   > 0.8
             || Runtime.CurrentInstructionCount / (float)Runtime.MaxInstructionCount > 0.8; } }
+
+
+        IMyTerminalBlock Get   (string s)             { return GridTerminalSystem.GetBlockWithName(s); }
+        IMyTextPanel     GetLcd(string s)             { return Get(s) as IMyTextPanel; }
+        IMyTextPanel     Lbl   (string s)             { return GetLcd("Label " + s); }
+        IMyTextPanel     Dsp   (string s, int i = -1) { return GetLcd(s + " Display" + (i > -1 ? " " + S(i) : "")); }
     }
 }

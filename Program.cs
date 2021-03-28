@@ -8,97 +8,6 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        // save (song saves modified copies of instruments)
-        // clips
-
-        //Filter doesn't work with envelopes
-        // moving channels doesn't work, channels disappear (it seems to instance them)
-        // moving pat kills playback
-        // harmonic volumes are wrong again
-
-        // volume not shown correctly for harmonics & filters
-        // fix volume display
-
-        //playback stops when duplicating pattern
-
-        // timing issues with playing
-        // blocks
-
-        // keys should affect trigger, auto should affect volume
-
-        // add Modulate to param (Level, Attack, Release)
-        // side chain compression (Modulate on all params, with delay and +/-)
-        // plug any param into any param (connect button)
-
-        // harmony - across selected patterns, copy existing notes and shift them up or down
-        // record keys/chords and mouse control of parameters as automation
-
-        
-        // when editLength is long, editing the chord doesn't play the current chord properly when a note is added/deleted
-        // fix Note-mode moving of notes with block/allpat enabled
-        // hold doesn't seem to work properly when entering long notes
-        // when shuffle is too strong, notes in other channels become too long
-        // BUG: holding a chord and then pressing another chord with some of the same keys will disable
-        //   those keys until the second press
-
-        // bring back default samples
-
-        // improve randomizer
-
-        // add delay dim which will use the filter or blend between osc and sine
-
-
-        // add delay pitch (every next tap goes +-1 or whatever, +-5 should give thirds which sound nice)
-        // add delay dampiing
-
-
-        // need to reduce code complexity
-        // move playback engine into separate PB
-        // minify TextAlignment.CENTER, etc.
-        // use as much Linq instead of loops as possible
-        // refactor .GetValue(.......) into passing a single time/note object
-
-
-        // lfo song start (maybe sync value)
-
-
-        // ARPEGGIATOR
-        // show playback in arp relative to arp
-        // faintly show outlying notes in arpeggio
-        // scale
-        // make it so arpeggio length can't be deleted
-
-
-        // note button
-        // fin button (finalize notes to octave)
-
-
-        // copy/paste
-
-
-        // BUG volume display doesn't work for harmonics
-
-
-        // source offset before note time (add playback notes before)
-
-        // make long note loop breaks smooth (blend across 1 frame)
-        // real time tune
-
-        // deal with loops properly
-        // when randoming with random instrument, the new instrument's name is set to the old one
-
-        // allow loading without mod
-
-        // replace Pick with Note
-
-
-        // pattern length
-
-
-
-
-
-        #region Variables
         Display
             dspMixer1, dspMixer2,
             dspVol1, dspVol2, dspVol3,
@@ -151,34 +60,14 @@ namespace IngameScript
         
         Key                     g_editKey = null;
                                 
-        List<Note>              lastNotes    = new List<Note>();
+        List<Note>              lastNotes = new List<Note>();
                                              
+        Channel                 copyChan  = null;
                                 
-        Channel                 copyChan = null;
-                                
-                                
-        //Oscillator              copyW = Oscillator.Sine;
-
-        //Parameter copyV, copyA, copyD, copyS, copyR;
-        //Parameter copyDC, copyDT, copyDL, copyDP;
-
-        //bool copyLFx;
-
-        //int copyTr, copyOff;
-
 
         float
             g_instCount = 0,
             g_dspCount  = 0;
-
-        #endregion
-
-
-
-        IMyTerminalBlock Get   (string s)             { return GridTerminalSystem.GetBlockWithName(s); }
-        IMyTextPanel     GetLcd(string s)             { return Get(s) as IMyTextPanel; }
-        IMyTextPanel     Lbl   (string s)             { return GetLcd("Label " + s); }
-        IMyTextPanel     Dsp   (string s, int i = -1) { return GetLcd(s + " Display" + (i > -1 ? " " + S(i) : "")); }
 
 
 

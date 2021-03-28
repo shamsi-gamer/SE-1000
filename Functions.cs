@@ -89,9 +89,9 @@ namespace IngameScript
 
             Setting setting;
 
-                 if (CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
+            if (CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
             else if (iSrc   > -1) setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
-            else                  setting = inst.GetOrAddSettingFromTag(tag);              
+            else                  setting = inst.GetOrAddSettingFromTag(tag);
 
             g_settings.Add(setting);
 
@@ -175,7 +175,7 @@ namespace IngameScript
                     ||    param.Parent != null
                        && param.Tag == "Off"
                        
-                    || param.Tag.Substring(0, 3) == "Hrm"
+                    || param.Parent.GetType() == typeof(Harmonics)
 
                     || param.Tag == "Cut"
                     || param.Tag == "Res"
