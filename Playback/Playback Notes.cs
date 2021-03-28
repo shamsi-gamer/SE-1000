@@ -9,6 +9,8 @@ namespace IngameScript
     {
         void PlayNote(Song song, int num, List<int> chord, int ch)
         {
+            if (TooComplex) return;
+
             StopCurrentNotes(song, ch);
             lastNotes.Clear();
 
@@ -68,6 +70,8 @@ namespace IngameScript
                 {
                     for (int i = 0; i < notes.Count; i++)
                     {
+                        if (TooComplex) return;
+
                         var note = notes[i];
                         int found;
 
@@ -85,6 +89,8 @@ namespace IngameScript
 
                     for (int i = 0; i < notes.Count; i++)
                     {
+                        if (TooComplex) return;
+
                         var note = notes[i];
 
                         if (!(   g_chordEdit
@@ -149,13 +155,16 @@ namespace IngameScript
 
         void AddPlaybackNotes()
         {
+            if (TooComplex)
+                return;
+
+
             var pat = g_song.Patterns[PlayPat];
 
             for (int ch = 0; ch < g_nChans; ch++)
             {
                 var chan = pat.Channels[ch];
                 if (!chan.On) continue;
-
 
                 var sh    = (int)PlayStep % 2 != 0 ? chan.Shuffle : 0;
                 var notes = chan.Notes.FindAll(n => n.SongTime == PlayTime);
@@ -191,6 +200,8 @@ namespace IngameScript
 
                 foreach (var n in notes)
                 {
+                    if (TooComplex) return;
+
                     var arp = n.Instrument.Arpeggio;
 
                     var arpNotes = arp.Song.Patterns[0].Channels[0].Notes.FindAll(_n =>
@@ -208,7 +219,9 @@ namespace IngameScript
             else
             {
                 foreach (var src in inst.Sources)
-                { 
+                {
+                    if (TooComplex) return;
+
                     if (src.On)
                         src.CreateSounds(note.Sounds, note, this);
                 }

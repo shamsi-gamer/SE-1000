@@ -256,18 +256,18 @@ namespace IngameScript
         }
 
 
-        bool Finalize(List<Instrument> loadedInst)
-        {
-            foreach (var l in loadedInst)
-            {
-                var f = g_inst.FindIndex(i => i.Name == l.Name);
+        //bool Finalize(List<Instrument> loadedInst)
+        //{
+        //    foreach (var l in loadedInst)
+        //    {
+        //        var f = g_inst.FindIndex(i => i.Name == l.Name);
 
-                if (f > -1) g_inst[f] = l;
-                else g_inst.Add(l);
-            }
+        //        if (f > -1) g_inst[f] = l;
+        //        else g_inst.Add(l);
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
 
         void CreateDefaultSong()

@@ -105,6 +105,9 @@ namespace IngameScript
 
         void DrawSetting(List<MySprite> sprites, Setting setting, float x, float y, ref float yo, bool active)
         {
+            if (TooComplex) return;
+
+
             bool draw = sprites != null;
 
 
@@ -126,9 +129,9 @@ namespace IngameScript
                     : color0;
 
                 var boxCol = 
-                    active
-                    ? (thisSetting ? color1 : color4)
-                    : (thisSetting ? color6 : color3);
+                    active ? color1 : color4;
+                    //? (thisSetting ? color1 : color4)
+                    //: (thisSetting ? color6 : color3);
 
 
                 if (   setting != null
@@ -169,7 +172,7 @@ namespace IngameScript
                     else
                     {
                         ew = 85f; 
-                        str = printValue(param.Value, 2, true, 1).PadLeft(6);
+                        str = printValue(param.CurValue, 2, true, 1).PadLeft(6);
                     }
                 }
                 else if (setting.Tag == "Env")
@@ -179,10 +182,10 @@ namespace IngameScript
                     var env = (Envelope)setting;
 
                     str =
-                          printValue(env.Attack .Value, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(env.Decay  .Value, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(env.Sustain.Value, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(env.Release.Value, 2, true, 0).PadLeft(4);
+                          printValue(env.Attack .CurValue, 2, true, 0).PadLeft(4) + "  "
+                        + printValue(env.Decay  .CurValue, 2, true, 0).PadLeft(4) + "  "
+                        + printValue(env.Sustain.CurValue, 2, true, 0).PadLeft(4) + "  "
+                        + printValue(env.Release.CurValue, 2, true, 0).PadLeft(4);
                 }
                 else if (setting.Tag == "LFO")
                 {
@@ -191,9 +194,9 @@ namespace IngameScript
                     var lfo = (LFO)setting;
 
                     str =
-                          printValue(lfo.Amplitude.Value, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(lfo.Frequency.Value, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(lfo.Offset   .Value, 2, true, 0).PadLeft(4);
+                          printValue(lfo.Amplitude.CurValue, 2, true, 0).PadLeft(4) + "  "
+                        + printValue(lfo.Frequency.CurValue, 2, true, 0).PadLeft(4) + "  "
+                        + printValue(lfo.Offset   .CurValue, 2, true, 0).PadLeft(4);
                 }
                 else if (setting.Tag == "Flt")
                 {
@@ -202,8 +205,8 @@ namespace IngameScript
                     var flt = (Filter)setting;
 
                     str =
-                          printValue(flt.Cutoff   .Value, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(flt.Resonance.Value, 2, true, 0).PadLeft(4);
+                          printValue(flt.Cutoff   .CurValue, 2, true, 0).PadLeft(4) + "  "
+                        + printValue(flt.Resonance.CurValue, 2, true, 0).PadLeft(4);
                 }
                 else if (setting.Tag == "Mod")
                 {
@@ -212,9 +215,9 @@ namespace IngameScript
                     var mod = (Modulate)setting;
 
                     str =
-                          printValue(mod.Amount .Value, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(mod.Attack .Value, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(mod.Release.Value, 2, true, 0).PadLeft(4);
+                          printValue(mod.Amount .CurValue, 2, true, 0).PadLeft(4) + "  "
+                        + printValue(mod.Attack .CurValue, 2, true, 0).PadLeft(4) + "  "
+                        + printValue(mod.Release.CurValue, 2, true, 0).PadLeft(4);
                 }
                 else if (setting.Tag == "Del")
                 {
@@ -223,10 +226,10 @@ namespace IngameScript
                     var del = (Delay)setting;
 
                     str =
-                          printValue(del.Count.Value, 0, true, 0).PadLeft(2) + "  "
-                        + printValue(del.Time .Value, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(del.Level.Value, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(del.Power.Value, 2, true, 0).PadLeft(4);
+                          printValue(del.Count.CurValue, 0, true, 0).PadLeft(2) + "  "
+                        + printValue(del.Time .CurValue, 2, true, 0).PadLeft(4) + "  "
+                        + printValue(del.Level.CurValue, 2, true, 0).PadLeft(4) + "  "
+                        + printValue(del.Power.CurValue, 2, true, 0).PadLeft(4);
                 }
                 else
                 {

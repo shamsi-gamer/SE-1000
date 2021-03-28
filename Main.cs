@@ -14,7 +14,7 @@ namespace IngameScript
                 return;
             }
 
-            //pnlInfoLog.CustomData = "";
+            pnlInfoLog.CustomData = "";
 
             if (!g_init) return;
             FinishStartup();
@@ -27,7 +27,7 @@ namespace IngameScript
             if (_loadStep > 10)
                 FinalizePlayback(g_song);
 
-            //pnlInfoLog.CustomData = "";
+            pnlInfoLog.CustomData = "";
 
             UpdateRuntimeInfo();
         }
@@ -39,8 +39,7 @@ namespace IngameScript
 
             if (!TooComplex) UpdatePlayback();
 
-            if (    PlayTime > -1
-                && !TooComplex)
+            if (PlayTime > -1)
                 UpdateKeyLights();
         }
 

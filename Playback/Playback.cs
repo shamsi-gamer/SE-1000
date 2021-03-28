@@ -12,31 +12,36 @@ namespace IngameScript
             if (g_autoCue)
                 Cue();
 
-            CueNextPattern();
-
             PlayTime = playTime % (g_song.Patterns.Count * nSteps * g_ticksPerStep);
 
             StartTime = 
                 PlayTime > -1 
                 ? g_time - PlayTime        
                 : -1;
+
+            CueNextPattern();
+        }
+
+
+        void UpdateTime()
+        {
+            CueNextPattern();
+
+            if (g_follow) 
+                SetCurrentPattern(PlayPat);
+
+            AddPlaybackNotes();
+
+            UpdateOctaveLight();
         }
 
 
         void UpdatePlayback()
         {
-            if (PlayTime > -1)
-            {
-                CueNextPattern();
+            if (PlayTime < 0)
+                return;
 
-                if (g_follow) 
-                    SetCurrentPattern(PlayPat);
-
-                if (!TooComplex) AddPlaybackNotes();
-
-                UpdateOctaveLight();
-            }
-
+            UpdateTime();
 
             StopNotes(PlayStep);
 
@@ -44,7 +49,6 @@ namespace IngameScript
             DeleteSounds(delete);
 
             UpdateSounds();
-
             UpdateVolumes();
         }
 
@@ -52,11 +56,11 @@ namespace IngameScript
         void CueNextPattern()
         {
             //var noteLen = (int)(EditLength * g_ticksPerStep);
-            
-            g_song.Length =
+
+            g_song.Length = g_song.Patterns.Count * nSteps;
             //    g_song.Arpeggio != null
             //    ? (int)Math.Round(g_song.Arpeggio.Length.GetValue(g_time, 0, g_song.StartTime, noteLen, null, g_song.CurSrc))
-                /*:*/ g_song.Patterns.Count * nSteps;
+            /*:*/
 
 
             if (g_cue > -1)

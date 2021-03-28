@@ -21,6 +21,8 @@ namespace IngameScript
 
             for (int i = 0; i < dc; i++)
             {
+                if (TooComplex) return;
+                
                 var echoVol = del.GetVolume(
                     i,
                     g_time,
@@ -45,8 +47,6 @@ namespace IngameScript
         {
             for (int i = 0; i < g_sounds.Count; i++)
             {
-                if (TooComplex) return;
-
                 var snd = g_sounds[i];
                 var lTime = g_time - snd.FrameTime;
 
@@ -59,68 +59,71 @@ namespace IngameScript
 
         void UpdateSound(Sound snd)
         {
-            var song = snd.Note.Channel.Pattern.Song;
-
-            var lTime = g_time - snd.FrameTime;
-            var sTime = g_time - StartTime;
-
-
-            float vol = 0;
-
-            if (snd.Cache != null) // not echo
+            if (!TooComplex)
             {
-                var updateVol = 
-                    PlayTime < snd.FrameTime + snd.FrameLength + snd.ReleaseLength
-                    ? snd.GetVolume(g_time, StartTime, this)
-                    : 1;
+                var song = snd.Note.Channel.Pattern.Song;
 
-                vol = 
-                      snd.TriggerVolume
-                    * updateVol
-                    * snd.Channel.Volume
-                    * g_volume;
+                var lTime = g_time - snd.FrameTime;
+                var sTime = g_time - StartTime;
 
-                if (snd.Harmonic != null)
+
+                float vol = 0;
+
+                if (snd.Cache != null) // not echo
                 {
-                    snd.Harmonic.CurValue = ApplyFilter(
-                        snd.Harmonic.CurValue, 
-                        snd.Source,
-                        snd.HrmPos, 
-                        g_time,
-                        lTime,
-                        sTime,
-                        snd.FrameLength, 
-                        snd.Note, 
-                        snd.SourceIndex,
-                        snd.TriggerValues,
-                        this);
+                    var updateVol = 
+                        PlayTime < snd.FrameTime + snd.FrameLength + snd.ReleaseLength
+                        ? snd.GetVolume(g_time, StartTime, this)
+                        : 1;
 
-                    vol *= snd.Harmonic.CurValue;
+                    vol = 
+                          snd.TriggerVolume
+                        * updateVol
+                        * snd.Channel.Volume
+                        * g_volume;
 
-                    vol = MinMax(
-                        snd.Harmonic.Min, 
-                        vol, 
-                        snd.Harmonic.Max);
+                    if (snd.Harmonic != null)
+                    {
+                        snd.Harmonic.CurValue = ApplyFilter(
+                            snd.Harmonic.CurValue, 
+                            snd.Source,
+                            snd.HrmPos, 
+                            g_time,
+                            lTime,
+                            sTime,
+                            snd.FrameLength, 
+                            snd.Note, 
+                            snd.SourceIndex,
+                            snd.TriggerValues,
+                            this);
+
+                        vol *= snd.Harmonic.CurValue;
+
+                        vol = MinMax(
+                            snd.Harmonic.Min, 
+                            vol, 
+                            snd.Harmonic.Max);
+                    }
+
+
+                    if (snd.HrmSound != null)
+                        snd.HrmSound.DisplayVolume = Math.Max(vol, snd.HrmSound.DisplayVolume);
+                    else
+                        snd.DisplayVolume = vol;
+
+
+                    if (lTime < snd.Cache.Length)
+                        snd.Cache[lTime] = vol;
+                }
+                else if (lTime < snd.EchoSource.Cache.Length)
+                {
+                    vol = snd.EchoSource.Cache[lTime]
+                        * snd.EchoVolume;
                 }
 
 
-                if (snd.HrmSound != null)
-                    snd.HrmSound.DisplayVolume = Math.Max(vol, snd.HrmSound.DisplayVolume);
-                else
-                    snd.DisplayVolume = vol;
-
-
-                if (lTime < snd.Cache.Length)
-                    snd.Cache[lTime] = vol;
+                UpdateSoundSpeakers(snd, vol);
             }
-            else if (lTime < snd.EchoSource.Cache.Length)
-            {
-                vol = snd.EchoSource.Cache[lTime]
-                    * snd.EchoVolume;
-            }
-
-
-            UpdateSoundSpeakers(snd, vol);
 
             snd.ElapsedFrameTime = g_time - snd.FrameTime;
         }
@@ -128,6 +131,8 @@ namespace IngameScript
 
         void UpdateSoundSpeakers(Sound snd, float vol)
         {
+            if (TooComplex) return;
+
             var v = (float)Math.Pow(vol, 2);
 
             if (snd.Speakers.Count == 0)
@@ -152,6 +157,12 @@ namespace IngameScript
 
             foreach (var spk in snd.Speakers)
             {
+                if (TooComplex) 
+                {
+                    spk.Block.Stop(); 
+                    return;
+                }
+
                 spk.Block.Volume = Math.Min(v--, 1);
 
                 // if sample is ending, restart it //TODO make this smooth

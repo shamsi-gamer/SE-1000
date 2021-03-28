@@ -314,6 +314,8 @@ namespace IngameScript
 
         void UpdateLights()
         {
+            if (TooComplex) return;
+
             UpdateLight(lblFollow,      g_follow);
             UpdateLight(lblLoop,        g_loop);
             UpdateLight(lblBlock,       g_block);
@@ -344,6 +346,8 @@ namespace IngameScript
 
         void UpdateChordLights()
         {
+            if (TooComplex) return;
+
             if (   IsCurParam("Tune")
                 && !(g_paramKeys || g_paramAuto))
             {
@@ -383,6 +387,8 @@ namespace IngameScript
 
         void UpdateChordLight(IMyTextPanel lbl, int chord)
         {
+            if (TooComplex) return;
+
             var c = g_chords[chord-1];
 
             string chordName = GetChordName(c, S(chord));
@@ -436,6 +442,8 @@ namespace IngameScript
 
         void UpdateOctaveLight()
         {
+            if (TooComplex) return;
+            
             int val;
 
                 //if (g_chordMode) 
@@ -665,6 +673,9 @@ namespace IngameScript
 
         void UpdateKeyLights()
         {
+            if (TooComplex) 
+                return;
+                
             if (ShowPiano)
             {
                 UpdateLight(

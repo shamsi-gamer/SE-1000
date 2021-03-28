@@ -169,8 +169,8 @@ namespace IngameScript
                     FillRect(sprites, x + sw, iy, w - sw, sh, color6);
 
 
-                var col_0 = src.On && CurSrc > -1 ? color6 : color3;
-                var col_1 = src.On && CurSrc > -1 ? color0 : color5;
+                var col_0 = src.On && CurSrc > -1 && CurSet < 0 ? color6 : color3;
+                var col_1 = src.On && CurSrc > -1 && CurSet < 0 ? color0 : color5;
 
                 if (src.Oscillator == OscSample)
                 {

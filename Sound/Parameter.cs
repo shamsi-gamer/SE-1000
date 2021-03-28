@@ -98,7 +98,7 @@ namespace IngameScript
 
             public float GetValue(long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues, Program prog)
             {
-                if (prog.TooComplex) return 0; //Default
+                if (prog.TooComplex) return CurValue;
 
 
                 var value = GetKeyValue(note, src);

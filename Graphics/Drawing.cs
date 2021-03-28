@@ -17,8 +17,8 @@ namespace IngameScript
 
             if (!TooComplex)
             { 
-                if (true) DrawClips();
-                else      DrawMixer();
+                if (false) DrawClips();
+                else       DrawMixer();
             }
 
             DrawVolume();
