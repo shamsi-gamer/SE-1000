@@ -11,7 +11,7 @@ namespace IngameScript
     {
         public class Display
         {
-            public IMyTextSurface Surface;
+            public IMyTextPanel   Panel;
             public RectangleF     Viewport;
 
             public float          Scale,
@@ -20,23 +20,22 @@ namespace IngameScript
                                   ContentHeight;
 
 
-            public Display(IMyTextSurface surface)
+            public Display(IMyTextPanel panel)
             {
-                Surface = surface;
-
+                Panel = panel;
                 Init();
             }
 
 
             void Init()
             {
-                Surface.ContentType = ContentType.SCRIPT;
+                Panel.ContentType = ContentType.SCRIPT;
 
                 Scale = 1;
 
-                Surface.Script = "";
+                Panel.Script = "";
 
-                Viewport = new RectangleF((Surface.TextureSize - Surface.SurfaceSize) / 2, Surface.SurfaceSize);
+                Viewport = new RectangleF((Panel.TextureSize - Panel.SurfaceSize) / 2, Panel.SurfaceSize);
 
                 ContentWidth  = Viewport.Width;
                 ContentHeight = Viewport.Height;
@@ -48,9 +47,9 @@ namespace IngameScript
                 get
                 {
                     return
-                          Math.Min(Surface.TextureSize.X, Surface.TextureSize.Y) / 512
-                        * Math.Min(Surface.SurfaceSize.X, Surface.SurfaceSize.Y)
-                        / Math.Min(Surface.TextureSize.Y, Surface.TextureSize.Y);
+                          Math.Min(Panel.TextureSize.X, Panel.TextureSize.Y) / 512
+                        * Math.Min(Panel.SurfaceSize.X, Panel.SurfaceSize.Y)
+                        / Math.Min(Panel.TextureSize.Y, Panel.TextureSize.Y);
                 }
             }
 
@@ -62,9 +61,9 @@ namespace IngameScript
                     if (Scale == 0)
                     {
                         return
-                            Surface.SurfaceSize.X / ContentWidth < Surface.SurfaceSize.Y / ContentHeight
-                            ? (Surface.SurfaceSize.X - 10) / ContentWidth
-                            : (Surface.SurfaceSize.Y - 10) / ContentHeight;
+                            Panel.SurfaceSize.X / ContentWidth < Panel.SurfaceSize.Y / ContentHeight
+                            ? (Panel.SurfaceSize.X - 10) / ContentWidth
+                            : (Panel.SurfaceSize.Y - 10) / ContentHeight;
                     }
                     else return Scale;
                 }
@@ -73,7 +72,7 @@ namespace IngameScript
 
             public void Draw(List<MySprite> sprites)
             {
-                var frame = Surface.DrawFrame();
+                var frame = Panel.DrawFrame();
                 Draw(ref frame, sprites);
                 frame.Dispose();
             }

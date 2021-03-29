@@ -236,7 +236,7 @@ namespace IngameScript
                 return;
 
 
-            var oldPat = CurPat;
+            //var oldPat = CurPat;
 
             //StopEdit();
 
@@ -248,7 +248,7 @@ namespace IngameScript
                 var off = p > CurPat ? 1 : -1;
 
                      if (g_in ) b.First = MinMax(0, b.First + off, Math.Min(CurPat, b.Last));
-                else if (g_out) b.Last  = MinMax(Math.Max(b.First, CurPat), b.Last + off, g_song.Patterns.Count - 1);
+                else if (g_out) b.Last  = MinMax(Math.Max(b.First, CurPat), b.Last + off, g_song.Patterns.Count-1);
             }
             else
             {
@@ -269,11 +269,11 @@ namespace IngameScript
                 g_song.EditPos = CurPat * nSteps + g_song.EditPos % nSteps;
 
 
-            if (PlayTime > -1)
-            {
-                     if (CurPat > oldPat) StartTime -= nSteps * g_ticksPerStep;
-                else if (CurPat < oldPat) StartTime += nSteps * g_ticksPerStep;
-            }
+            //if (PlayTime > -1)
+            //{
+            //         if (CurPat > oldPat) StartTime -= nSteps * g_ticksPerStep;
+            //    else if (CurPat < oldPat) StartTime += nSteps * g_ticksPerStep;
+            //}
 
 
             //UpdateOctaveLight();
@@ -381,8 +381,8 @@ namespace IngameScript
         {
             var block = g_song.GetBlock(CurPat);
 
-            if (g_block
-            && block != null)
+            if (   g_block
+                && block != null)
             {
                 for (int p = block.First; p <= block.Last; p++)
                     g_song.Patterns.Insert(block.Last + 1 + p - block.First, new Pattern(g_song.Patterns[p]));

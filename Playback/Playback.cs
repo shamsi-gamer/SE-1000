@@ -104,6 +104,13 @@ namespace IngameScript
                 PlayTime > -1 
                 ? (int)(PlayStep / nSteps) 
                 : -1;
+
+
+            //if (PlayTime > -1)
+            //{
+            //         if (CurPat > oldPat) StartTime -= nSteps * g_ticksPerStep;
+            //    else if (CurPat < oldPat) StartTime += nSteps * g_ticksPerStep;
+            //}
         }
 
 

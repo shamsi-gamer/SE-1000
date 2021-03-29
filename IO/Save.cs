@@ -171,7 +171,7 @@ namespace IngameScript
         {
             SaveSong();
 
-            dspIO.Surface.WriteText(lblNext.CustomData);
+            dspIO.Panel.WriteText(lblNext.CustomData);
 
             infoPressed.Add(1);
         }

@@ -263,7 +263,7 @@ namespace IngameScript
 
                 CurSrc = next;
 
-                dspMain.Surface.WriteText("", false);
+                dspMain.Panel.WriteText("", false);
 
                 UpdateSrcOff();
             }

@@ -408,7 +408,7 @@ namespace IngameScript
         {
             if (   CurPat  > -1
                 && SelChan > -1)
-                dspMain.Surface.WriteText(add ? SelectedChannel.Instrument.Name : "", false);
+                dspMain.Panel.WriteText(add ? SelectedChannel.Instrument.Name : "", false);
         }
 
 

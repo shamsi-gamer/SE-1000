@@ -15,7 +15,7 @@ namespace IngameScript
                 && CurSrc < 0)
             {
                 var sb = new StringBuilder();
-                dspMain.Surface.ReadText(sb, false);
+                dspMain.Panel.ReadText(sb, false);
 
                 CurrentInstrument.Name = S(sb).Trim().Trim(new char[] {';'});
             }
@@ -27,7 +27,7 @@ namespace IngameScript
         void UpdateSongName()
         {
             var sb = new StringBuilder();
-            dspInfo.Surface.ReadText(sb, false);
+            dspInfo.Panel.ReadText(sb, false);
 
             g_song.Name = S(sb).Trim();
         }
@@ -35,7 +35,7 @@ namespace IngameScript
 
         void UpdateSongDsp()
         {
-            dspInfo.Surface.WriteText(g_song.Name.Replace("\u0085", "\n"));
+            dspInfo.Panel.WriteText(g_song.Name.Replace("\u0085", "\n"));
         }
     }
 }

@@ -111,16 +111,6 @@ namespace IngameScript
                 g_dspVol[i] = 0;
 
 
-            //copyV.Value =
-            //copyA.Value =
-            //copyD.Value =
-            //copyS.Value =
-            //copyR.Value = fN;
-
-            //copyTr  =
-            //copyOff = 0;
-
-
             GridTerminalSystem.GetBlocksOfType(g_locks, b => !b.Name.Contains("Fold"));
 
             GridTerminalSystem.GetBlocksOfType(g_gyros);
