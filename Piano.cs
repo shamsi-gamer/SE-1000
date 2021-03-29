@@ -186,7 +186,7 @@ namespace IngameScript
             else if (g_pick)
             {
                 g_curNote = found[0].Number;
-                //g_showNote  = g_curNote;
+                //g_showNote = g_curNote;
 
                 g_pick = false;
 

@@ -139,7 +139,7 @@ namespace IngameScript
             var chan = CurrentPattern.Channels[ch];
 
             var patStep = 
-                 (PlayTime > -1 ? PlayStep : 0) 
+                 (PlayTime > -1 ? (PlayPat - CurPat) * nSteps + (PlayStep % nSteps) : 0) 
                 + chordSpread;
 
             var found = g_notes.Find(n =>
