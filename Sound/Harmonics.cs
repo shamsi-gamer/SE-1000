@@ -123,6 +123,10 @@ namespace IngameScript
 
                 for (int i = 0; i < Tones.Length; i++)
                 {
+                    if (    Tones[i].Value == 0
+                        && !Tones[i].HasDeepParams(note.Channel, iSrc))
+                        continue;
+
                     if (prog.TooComplex) return;
 
                     var _noteNum = freq2note(note2freq(noteNum) * (i+1));
