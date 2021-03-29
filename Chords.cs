@@ -171,6 +171,7 @@ namespace IngameScript
         }
 
 
+        // return steps
         float ChordSpread(int n)
         {
             return (float)(g_chordSpread*Math.Pow(n, 1.33) / g_ticksPerStep);        

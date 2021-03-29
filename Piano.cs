@@ -84,9 +84,9 @@ namespace IngameScript
                 else if (h == 5) RandomChannelNotes();
                 else if (h == 6) ClearNotes();
                                    
-                else if (h == 7) Flip(CurPat, CurChan, 4); 
-                else if (h == 8) Flip(CurPat, CurChan, 8); 
-                else if (h == 9) Flip(CurPat, CurChan, 16);
+                else if (h == 7) Flip(CurChan, 4); 
+                else if (h == 8) Flip(CurChan, 8); 
+                else if (h == 9) Flip(CurChan, 16);
 
                 if (   h != 2
                     && h != 3
@@ -179,8 +179,8 @@ namespace IngameScript
                 {
                     var notes = GetChordNotes(g_curNote);
 
-                    foreach (var note in notes)
-                        chan.AddNote(new Note(chan, ch, 1, note, step, EditLength));
+                    for (int n = 0; n < notes.Count; n++)
+                        chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordSpread(n), EditLength));
                 }
             }
             else if (g_pick)
@@ -291,6 +291,19 @@ namespace IngameScript
         {
             g_allChan = !g_allChan;
             UpdateHighLights(CurrentPattern, CurrentChannel);
+        }
+
+
+        void Flip(int ch, int frac)
+        {
+            int first, last;
+            GetPatterns(g_song, CurPat, out first, out last);
+
+            for (int p = first; p <= last; p++)
+            { 
+                for (int step = 0; step < nSteps; step += nSteps / frac)
+                    Tick(p, ch, step);
+            }
         }
 
 
