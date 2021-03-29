@@ -89,7 +89,7 @@ namespace IngameScript
 
             Setting setting;
 
-            if (CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
+                 if (CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
             else if (iSrc   > -1) setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
             else                  setting = inst.GetOrAddSettingFromTag(tag);
 
@@ -104,6 +104,8 @@ namespace IngameScript
 
         void RemoveSetting(Setting setting)
         {
+            Log($"setting.Tag = {setting.Tag}");
+
             int set = CurSet;
 
             if (   HasTag(setting, "Att")
@@ -117,7 +119,7 @@ namespace IngameScript
             else 
             {
                 var inst = SelectedInstrument;
-                var src  = CurSrc > -1 ? inst.Sources[CurSrc] : null;
+                var src  = SelectedSource;
 
                 switch (setting.Tag)
                 {
@@ -138,6 +140,8 @@ namespace IngameScript
 
         void SetParamFunc(Parameter param, int func)
         {
+            Log($"param.Tag = \"{param.Tag}\"");
+
             switch (func)
             {
             case 1:
@@ -172,10 +176,12 @@ namespace IngameScript
 
                     || param.Tag == "Amp"
                     || param.Tag == "Freq"
+
                     ||    param.Parent != null
                        && param.Tag == "Off"
                        
-                    || param.Parent.GetType() == typeof(Harmonics)
+                    ||    param.Parent != null
+                       && param.Parent.GetType() == typeof(Harmonics)
 
                     || param.Tag == "Cut"
                     || param.Tag == "Res"

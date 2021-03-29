@@ -159,13 +159,13 @@ namespace IngameScript
             for (int i = g_srcOff; i < Math.Min(g_srcOff + maxDspSrc, nSrc); i++)
             {
                 var src    = inst.Sources[i];
-                var active = i == CurSrc;
+                var active = i == CurSrc && CurSet < 0;
 
                 var ssh = 0f;
                 DrawSourceSettings(null, 0, 0, inst.Sources[i], active, ref ssh);
                 var sh = ssh + 20;
 
-                if (CurSrc == i)
+                if (CurSrc == i && CurSet < 0)
                     FillRect(sprites, x + sw, iy, w - sw, sh, color6);
 
 

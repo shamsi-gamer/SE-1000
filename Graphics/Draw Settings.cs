@@ -108,9 +108,6 @@ namespace IngameScript
             if (TooComplex) return;
 
 
-            bool draw = sprites != null;
-
-
             var  sh = 18f;
 
             var  xo =  8f;
@@ -119,17 +116,14 @@ namespace IngameScript
 
             float ew = 0;
 
-            if (draw)
+            if (sprites != null)
             { 
                 bool thisSetting = CurSetting == setting;
 
-                var textCol = 
-                    active
-                    ? color6
-                    : color0;
+                var textCol = active ? color6: color0;
 
-                var boxCol = 
-                    active ? color1 : color4;
+                var boxCol = thisSetting ? color6 : color3;
+                    //active
                     //? (thisSetting ? color1 : color4)
                     //: (thisSetting ? color6 : color3);
 

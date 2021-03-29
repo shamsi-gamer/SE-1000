@@ -47,6 +47,8 @@ namespace IngameScript
         {
             for (int i = 0; i < g_sounds.Count; i++)
             {
+                if (TooComplex) return;
+
                 var snd = g_sounds[i];
                 var lTime = g_time - snd.FrameTime;
 
@@ -72,7 +74,8 @@ namespace IngameScript
                 if (snd.Cache != null) // not echo
                 {
                     var updateVol = 
-                        PlayTime < snd.FrameTime + snd.FrameLength + snd.ReleaseLength
+                            PlayTime < snd.FrameTime + snd.FrameLength + snd.ReleaseLength
+                        && !TooComplex
                         ? snd.GetVolume(g_time, StartTime, this)
                         : 1;
 
@@ -82,7 +85,8 @@ namespace IngameScript
                         * snd.Channel.Volume
                         * g_volume;
 
-                    if (snd.Harmonic != null)
+                    if (   snd.Harmonic != null
+                        && !TooComplex)
                     {
                         snd.Harmonic.CurValue = ApplyFilter(
                             snd.Harmonic.CurValue, 
@@ -157,12 +161,6 @@ namespace IngameScript
 
             foreach (var spk in snd.Speakers)
             {
-                if (TooComplex) 
-                {
-                    spk.Block.Stop(); 
-                    return;
-                }
-
                 spk.Block.Volume = Math.Min(v--, 1);
 
                 // if sample is ending, restart it //TODO make this smooth

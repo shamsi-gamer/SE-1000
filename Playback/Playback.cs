@@ -25,6 +25,9 @@ namespace IngameScript
 
         void UpdateTime()
         {
+            if (PlayTime < 0)
+                return;
+
             CueNextPattern();
 
             if (g_follow) 
@@ -38,9 +41,6 @@ namespace IngameScript
 
         void UpdatePlayback()
         {
-            if (PlayTime < 0)
-                return;
-
             UpdateTime();
 
             StopNotes(PlayStep);
@@ -180,10 +180,12 @@ namespace IngameScript
         {
             for (int i = 0; i < g_sounds.Count; i++)
             {
+                if (TooComplex) return;
+
                 var snd   = g_sounds[i];
                 var lTime = g_time - snd.FrameTime;
 
-                if (lTime < snd.FrameLength + snd.ReleaseLength)// + (snd.Instrument.Volume.Envelope?.Release.GetKeyValue(snd.Note, snd.Source.Index) ?? 0) * FPS)
+                if (lTime < snd.FrameLength + snd.ReleaseLength)
                 {
                     g_dspVol[snd.iChan] = Math.Max(
                         g_dspVol[snd.iChan],

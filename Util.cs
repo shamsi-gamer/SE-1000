@@ -574,8 +574,8 @@ namespace IngameScript
 
 
         bool TooComplex { get { return 
-               Runtime.CurrentCallChainDepth   / (float)Runtime.MaxCallChainDepth   > 0.8
-            || Runtime.CurrentInstructionCount / (float)Runtime.MaxInstructionCount > 0.8; } }
+               Runtime.CurrentCallChainDepth   / (float)Runtime.MaxCallChainDepth   > 0.8f
+            || Runtime.CurrentInstructionCount / (float)Runtime.MaxInstructionCount > 0.8f; } }
 
 
         IMyTerminalBlock Get   (string s)             { return GridTerminalSystem.GetBlockWithName(s); }
