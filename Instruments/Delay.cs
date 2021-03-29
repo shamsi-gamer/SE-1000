@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VRage.Game.GUI.TextPanel;
 
 
 namespace IngameScript
@@ -156,6 +157,31 @@ namespace IngameScript
                 del.Power = Parameter.Load(data, ref i, inst, iSrc, del);
 
                 return del;
+            }
+
+
+            public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
+            {
+                DrawFuncButton(sprites, "Dry",  0, w, h, true, Dry  .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Cnt",  1, w, h, true, Count.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Time", 2, w, h, true, Time .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Lvl",  3, w, h, true, Level.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Pow",  4, w, h, true, Power.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "X",    5, w, h, false, false, mainPressed.Contains(5));
+            }
+
+
+            public override void Func(int func, Program prog)
+            {
+                switch (func)
+                {
+                    case 0: prog.AddNextSetting("Dry");  break;
+                    case 1: prog.AddNextSetting("Cnt");  break;
+                    case 2: prog.AddNextSetting("Time"); break;
+                    case 3: prog.AddNextSetting("Lvl");  break;
+                    case 4: prog.AddNextSetting("Pow");  break;
+                    case 5: prog.RemoveSetting(this);    break;
+                }
             }
         }
     }

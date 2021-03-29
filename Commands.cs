@@ -769,7 +769,7 @@ namespace IngameScript
                         else
                         {
                             var param = (Parameter)GetSettingFromPath(chan.Instrument, path);
-                            note.Keys.Add(new Key(CurSrc, param, param.Value, song.GetStep(note)));
+                            note.Keys.Add(new Key(CurSrc, param, param.Value, note.SongStep));
                             AdjustKey(note.Keys.Last(), delta);
                         }
                     }

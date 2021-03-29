@@ -33,9 +33,8 @@ namespace IngameScript
             lblFold, lblGyro, lblNoise;
 
 
-        List<IMyTextPanel>
-            lblHigh,
-            lblLow;
+        List<IMyTextPanel> lblHigh,
+                           lblLow;
 
         List<IMyTextPanel> lblMem;
 
@@ -43,14 +42,14 @@ namespace IngameScript
         IMyInteriorLight   warningLight;
 
 
-        List<int>          mixerPressed   = new List<int>();
-        List<int>          mixerPressed_  = new List<int>();
-                                          
-        List<int>          infoPressed    = new List<int>();
-        List<int>          infoPressed_   = new List<int>();
+        static List<int>   mixerPressed   = new List<int>();
+        static List<int>   mixerPressed_  = new List<int>();
+                                   
+        static List<int>   infoPressed    = new List<int>();
+        static List<int>   infoPressed_   = new List<int>();
 
-        List<int>          songPressed    = new List<int>();
-        List<int>          mainPressed    = new List<int>();
+        static List<int>   songPressed    = new List<int>();
+        static List<int>   mainPressed    = new List<int>();
 
         List<IMyTextPanel> lightsPressed  = new List<IMyTextPanel>();
         List<IMyTextPanel> lightsPressed_ = new List<IMyTextPanel>();
@@ -536,8 +535,8 @@ namespace IngameScript
                     UpdateLight(
                         lblCmd3,
                         SelectedChannel.Notes.Find(n =>
-                               song.GetStep(n) >= song.EditPos
-                            && song.GetStep(n) <  song.EditPos+1
+                               n.SongStep >= song.EditPos
+                            && n.SongStep <  song.EditPos+1
                             && n.Keys.Find(k => k.Path == path) != null) != null
                         ? "X"
                         : " ",

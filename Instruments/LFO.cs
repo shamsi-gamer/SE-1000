@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VRage.Game.GUI.TextPanel;
 
 
 namespace IngameScript
@@ -166,6 +167,36 @@ namespace IngameScript
                 lfo.Offset    = Parameter.Load(data, ref i, inst, iSrc, lfo);
 
                 return lfo;
+            }
+
+
+            public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
+            {
+                DrawFuncButton(sprites, "Amp",   1, w, h, true, Amplitude.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Freq",  2, w, h, true, Frequency.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Off",   3, w, h, true, Offset   .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Osc ↕", 4, w, h, false, false);
+                DrawFuncButton(sprites, "X",     5, w, h, false, false, mainPressed.Contains(5));
+            }
+
+
+            public override void Func(int func, Program prog)
+            {
+                switch (func)
+                {
+                    case 1: prog.AddNextSetting("Amp");  break;
+                    case 2: prog.AddNextSetting("Freq"); break;
+                    case 3: prog.AddNextSetting("Off");  break;
+                    case 4:
+                    {
+                        var newOsc = (int)Type + 1;
+                        if (newOsc > (int)LfoType.Noise) newOsc = 0;
+                        Type = (LfoType)newOsc;
+                        mainPressed.Add(func);
+                        break;
+                    }
+                    case 5: prog.RemoveSetting(this); break;
+                }
             }
         }
     }

@@ -59,8 +59,8 @@ namespace IngameScript
 
             if (SelChan > -1)
             {
-                if (CurSrc < 0) DrawInstFuncLabels(sprites, w, h, song);
-                else            DrawSrcFuncLabels (sprites, w, h, song);
+                if (CurSrc < 0) DrawInstFuncButtons(sprites, w, h, song);
+                else            DrawSrcFuncButtons (sprites, w, h, song);
             }
             else
             {
@@ -72,20 +72,14 @@ namespace IngameScript
         }
 
 
-        void DrawInstFuncLabels(List<MySprite> sprites, float w, float h, Song song)
+        void DrawInstFuncButtons(List<MySprite> sprites, float w, float h, Song song)
         {
             var chan = SelectedChannel;
 
             if (CurSet > -1)
             { 
                 var setting = g_settings[CurSet];
-
-                     if (setting.GetType() == typeof(Envelope)) DrawEnvelopeFuncButtons(sprites, (Envelope )setting, w, h, chan);
-                else if (setting.GetType() == typeof(LFO     )) DrawLfoFuncButtons     (sprites, (LFO      )setting, w, h, chan);
-                else if (setting.GetType() == typeof(Filter  )) DrawFilterFuncButtons  (sprites, (Filter   )setting, w, h, chan);
-                else if (setting.GetType() == typeof(Delay   )) DrawDelayFuncButtons   (sprites, (Delay    )setting, w, h, chan);
-                else if (setting.GetType() == typeof(Arpeggio)) DrawArpeggioFuncButtons(sprites, (Arpeggio )setting, w, h, chan);
-                else if (IsParam(setting))                      DrawParamFuncButtons   (sprites, (Parameter)setting, w, h, song, chan);
+                setting.DrawFuncButtons(sprites, w, h, chan);
             }
             else
             {
@@ -100,20 +94,13 @@ namespace IngameScript
         }
 
 
-        void DrawSrcFuncLabels(List<MySprite> sprites, float w, float h, Song song)
+        void DrawSrcFuncButtons(List<MySprite> sprites, float w, float h, Song song)
         {
             var chan = SelectedChannel;
 
             if (CurSet > -1)
             { 
-                var setting = CurSetting;
-
-                     if (setting.GetType() == typeof(Envelope )) DrawEnvelopeFuncButtons (sprites, (Envelope )setting, w, h, chan);
-                else if (setting.GetType() == typeof(LFO      )) DrawLfoFuncButtons      (sprites, (LFO      )setting, w, h, chan);
-                else if (setting.GetType() == typeof(Harmonics)) DrawHarmonicsFuncButtons(sprites, (Harmonics)setting, w, h, chan);
-                else if (setting.GetType() == typeof(Filter   )) DrawFilterFuncButtons   (sprites, (Filter   )setting, w, h, chan);
-                else if (setting.GetType() == typeof(Delay    )) DrawDelayFuncButtons    (sprites, (Delay    )setting, w, h, chan);
-                else if (IsParam(setting))                       DrawParamFuncButtons    (sprites, (Parameter)setting, w, h, song, chan);
+                CurSetting.DrawFuncButtons(sprites, w, h, chan);
             }
             else
             {
@@ -129,91 +116,7 @@ namespace IngameScript
         }
 
 
-        void DrawEnvelopeFuncButtons(List<MySprite> sprites, Envelope env, float w, float h, Channel chan)
-        {
-            DrawFuncButton(sprites, "A", 1, w, h, true, env.Attack .HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "D", 2, w, h, true, env.Decay  .HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "S", 3, w, h, true, env.Sustain.HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "R", 4, w, h, true, env.Release.HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "X", 5, w, h, false, false, mainPressed.Contains(5));
-        }
-
-
-        void DrawLfoFuncButtons(List<MySprite> sprites, LFO lfo, float w, float h, Channel chan)
-        {
-            DrawFuncButton(sprites, "Amp",   1, w, h, true, lfo.Amplitude.HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "Freq",  2, w, h, true, lfo.Frequency.HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "Off",   3, w, h, true, lfo.Offset   .HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "Osc ↕", 4, w, h, false, false);
-            DrawFuncButton(sprites, "X",     5, w, h, false, false, mainPressed.Contains(5));
-        }
-
-
-        void DrawHarmonicsFuncButtons(List<MySprite> sprites, Harmonics hrm, float w, float h, Channel chan)
-        {
-            DrawFuncButton(sprites, "Smth",  1, w, h, false, false, mainPressed.Contains(1));
-            DrawFuncButton(sprites, "Pre ↕", 2, w, h, false, false, mainPressed.Contains(2));
-            DrawFuncButton(sprites, "Set",   3, w, h, false, false, mainPressed.Contains(3));
-            DrawFuncButton(sprites, "Tone",  4, w, h, true,  hrm.Tones[hrm.CurTone].HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "X",     5, w, h, false, false, mainPressed.Contains(5));
-        }
-
-
-        void DrawFilterFuncButtons(List<MySprite> sprites, Filter flt, float w, float h, Channel chan)
-        {
-            var strCut  = flt.Pass > FilterPass.High ? "Freq" : "Cut";
-            var strRes  = flt.Pass > FilterPass.High ? "Wid"  : "Res";
-
-            DrawFuncButton(sprites, GetPassName(flt.Pass) + " ↕", 1, w, h, false, false);
-            DrawFuncButton(sprites, strCut,  2, w, h, true, flt.Cutoff   .HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, strRes,  3, w, h, true, flt.Resonance.HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "Shrp",  4, w, h, true, flt.Sharpness.HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "X",     5, w, h, false, false, mainPressed.Contains(5));
-        }
-
-
-        void DrawDelayFuncButtons(List<MySprite> sprites, Delay del, float w, float h, Channel chan)
-        {
-            DrawFuncButton(sprites, "Dry",  0, w, h, true, del.Dry  .HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "Cnt",  1, w, h, true, del.Count.HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "Time", 2, w, h, true, del.Time .HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "Lvl",  3, w, h, true, del.Level.HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "Pow",  4, w, h, true, del.Power.HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "X",    5, w, h, false, false, mainPressed.Contains(5));
-        }
-
-
-        void DrawArpeggioFuncButtons(List<MySprite> sprites, Arpeggio arp, float w, float h, Channel chan)
-        {
-            DrawFuncButton(sprites, "Len", 1, w, h, true, arp.Length.HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "Scl", 2, w, h, true, arp.Scale .HasDeepParams(chan, -1));
-            DrawFuncButton(sprites, "X",   5, w, h, false, false, mainPressed.Contains(5));                
-        }
-
-
-        void DrawParamFuncButtons(List<MySprite> sprites, Parameter param, float w, float h, Song song, Channel chan)
-        {
-            if (   !SettingOrAnyParentHasTag(param, "Att")
-                && !SettingOrAnyParentHasTag(param, "Dec")
-                && !SettingOrAnyParentHasTag(param, "Sus")
-                && !SettingOrAnyParentHasTag(param, "Rel"))
-            {
-                DrawFuncButton(sprites, "Env", 1, w, h, true, param.Envelope != null);
-
-                if (   param.Tag != "Vol"
-                    && (   param.Parent == null
-                        || param.Parent.GetType() != typeof(Harmonics)))
-                    DrawFuncButton(sprites, "X", 5, w, h, false, false, mainPressed.Contains(5));
-            }
-
-            DrawFuncButton(sprites, "LFO",  2, w, h, true, param.Lfo != null);
-
-            DrawFuncButton(sprites, "Key",  3, w, h, true, chan.HasNoteKeys(param.GetPath(CurSrc)));
-            DrawFuncButton(sprites, "Auto", 4, w, h, true, chan.HasAutoKeys(param.GetPath(CurSrc)));
-        }
-
-
-        void DrawFuncButton(List<MySprite> sprites, string str, int i, float w, float h, bool isSetting, bool hasSetting, bool down = false)
+        static void DrawFuncButton(List<MySprite> sprites, string str, int i, float w, float h, bool isSetting, bool hasSetting, bool down = false)
         {
             var bw = w/6;
             var x0 = bw/2;

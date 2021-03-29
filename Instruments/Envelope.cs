@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VRage.Game.GUI.TextPanel;
 
 
 namespace IngameScript
@@ -216,6 +217,29 @@ namespace IngameScript
                 env.Release = Parameter.Load(data, ref i, inst, iSrc, env);
 
                 return env;
+            }
+
+
+            public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
+            {
+                DrawFuncButton(sprites, "A", 1, w, h, true, Attack .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "D", 2, w, h, true, Decay  .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "S", 3, w, h, true, Sustain.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "R", 4, w, h, true, Release.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "X", 5, w, h, false, false, mainPressed.Contains(5));
+            }
+
+
+            public override void Func(int func, Program prog)
+            {
+                switch (func)
+                {
+                    case 1: prog.AddNextSetting("Att"); break;
+                    case 2: prog.AddNextSetting("Dec"); break;
+                    case 3: prog.AddNextSetting("Sus"); break;
+                    case 4: prog.AddNextSetting("Rel"); break;
+                    case 5: prog.RemoveSetting(this);                               break;
+                }
             }
         }
     }

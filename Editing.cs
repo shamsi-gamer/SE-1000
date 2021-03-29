@@ -111,19 +111,19 @@ namespace IngameScript
                 StopEdit(song);
 
                 song.Inter = CurrentChannel.Notes.Find(n =>
-                       song.GetStep(n) >= song.EditPos
-                    && song.GetStep(n) <  song.EditPos + EditStep);
+                       n.SongStep >= song.EditPos
+                    && n.SongStep <  song.EditPos + EditStep);
             }
             else
             {
                 var note = CurrentChannel.Notes.Find(n =>
-                       song.GetStep(n) >= song.EditPos
-                    && song.GetStep(n) <  song.EditPos + EditStep);
+                       n.SongStep >= song.EditPos
+                    && n.SongStep <  song.EditPos + EditStep);
 
                 if (note != null)
                 {
-                    var si = song.GetStep(song.Inter);
-                    var sn = song.GetStep(note);
+                    var si = song.Inter.SongStep;
+                    var sn = note      .SongStep;
 
                     var path  = g_settings.Last().GetPath(CurSrc);
                     var param = (Parameter)GetSettingFromPath(note.Instrument, path);
@@ -139,11 +139,11 @@ namespace IngameScript
                     {
                         foreach (var n in song.Patterns[p].Channels[CurChan].Notes)
                         {
-                            if (   song.GetStep(n) <  Math.Min(si, sn)
-                                || song.GetStep(n) >= Math.Max(si, sn))
+                            if (   n.SongStep <  Math.Min(si, sn)
+                                || n.SongStep >= Math.Max(si, sn))
                                 continue;
 
-                            var val = start + (end - start) * Math.Abs(song.GetStep(n) - si) / Math.Max(1, Math.Abs(sn - si));
+                            var val = start + (end - start) * Math.Abs(n.SongStep - si) / Math.Max(1, Math.Abs(sn - si));
 
                             var nParam = (Parameter)GetSettingFromPath(n.Instrument, path);
                             var key = n.Keys.Find(k => k.Path == path);
@@ -152,7 +152,7 @@ namespace IngameScript
                                 SetKeyValue(key, val);
                             else
                             {
-                                n.Keys.Add(new Key(CurSrc, param, nParam.Value, song.GetStep(n)));
+                                n.Keys.Add(new Key(CurSrc, param, nParam.Value, n.SongStep));
                                 SetKeyValue(n.Keys.Last(), val);
                             }
                         }
@@ -312,9 +312,9 @@ namespace IngameScript
 
                 foreach (var note in chan.Notes)
                 {
-                    if (   song.EditPos > song.GetStep(note)
-                        && song.EditPos < song.GetStep(note) + note.StepLength)
-                        note.StepLength = song.EditPos - song.GetStep(note) + 1;
+                    if (   song.EditPos > note.SongStep
+                        && song.EditPos < note.SongStep + note.StepLength)
+                        note.StepLength = song.EditPos - note.SongStep + 1;
                 }
             }
 
@@ -332,8 +332,8 @@ namespace IngameScript
                 
                 foreach (var note in chan.Notes)
                 {
-                    if (   song.GetStep(note) >= song.EditPos
-                        && song.GetStep(note) <  song.EditPos + EditStep)
+                    if (   note.SongStep >= song.EditPos
+                        && note.SongStep <  song.EditPos + EditStep)
                         notes.Add(note);
                 }
 
@@ -365,8 +365,8 @@ namespace IngameScript
 
                     foreach (var note in chan.Notes)
                     {
-                        if (   song.EditPos > song.GetStep(note)
-                            && song.EditPos < song.GetStep(note) + note.StepLength - 1)
+                        if (   song.EditPos > note.SongStep
+                            && song.EditPos < note.SongStep + note.StepLength - 1)
                             notes.Add(note);
                     }
                 }

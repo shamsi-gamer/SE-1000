@@ -184,7 +184,7 @@ namespace IngameScript
                         || n.Number > max)
                         continue;
 
-                    var noteStart = song.GetStep(n) + n.ShOffset;
+                    var noteStart = n.SongStep + n.ShOffset;
                     var noteEnd   = noteStart + n.StepLength;
 
                     if (   noteEnd   <= patStart
@@ -249,7 +249,7 @@ namespace IngameScript
                             || n.Number > max)
                             continue;
 
-                        var noteStart = song.GetStep(n) + n.ShOffset;
+                        var noteStart = n.SongStep + n.ShOffset;
                         var noteEnd   = noteStart + n.StepLength;
 
                         if (   noteEnd   <= patStart

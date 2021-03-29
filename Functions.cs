@@ -8,6 +8,7 @@ namespace IngameScript
     {
         List<IMyButtonPanel> funcButtons = new List<IMyButtonPanel>();
 
+
         void InitFuncButtons()
         {
             for (int i = 0; i < 6; i++)
@@ -24,15 +25,7 @@ namespace IngameScript
             {
                 if (CurSet > -1)
                 {
-                    var setting = CurSetting;
-
-                         if (setting.GetType() == typeof(Envelope )) SetEnvelopeFunc ((Envelope) setting, func);
-                    else if (setting.GetType() == typeof(LFO      )) SetLfoFunc      ((LFO)      setting, func);
-                    else if (setting.GetType() == typeof(Harmonics)) SetHarmonicsFunc((Harmonics)setting, func);
-                    else if (setting.GetType() == typeof(Filter   )) SetFilterFunc   ((Filter)   setting, func);
-                    else if (setting.GetType() == typeof(Arpeggio )) SetArpeggioFunc ((Arpeggio) setting, func);
-                    else if (setting.GetType() == typeof(Delay    )) SetDelayFunc    ((Delay)    setting, func);
-                    else if (IsParam(setting))                       SetParamFunc    ((Parameter)setting, func);
+                    CurSetting.Func(func, this);
                 }
                 else 
                 {
@@ -48,7 +41,6 @@ namespace IngameScript
                 case 3: CutNotes(g_song);   break;
                 }
             }
-
 
             mainPressed.Add(func);
 
@@ -82,8 +74,12 @@ namespace IngameScript
         }
 
 
-        void AddNextSetting(string tag, Instrument inst, int iSrc)
+        void AddNextSetting(string tag, Instrument inst = null, int iSrc = -2)
         {
+            if (inst == null) inst = SelectedInstrument;
+            if (iSrc == -2)   iSrc = CurSrc;
+
+
             if (CurSet > -1)
                 CurSetting._IsCurrent = false;
 
@@ -135,190 +131,6 @@ namespace IngameScript
             g_settings.RemoveAt(set);
 
             CurSet -= CurSet - set + 1;
-        }
-
-
-        void SetParamFunc(Parameter param, int func)
-        {
-            Log($"param.Tag = \"{param.Tag}\"");
-
-            switch (func)
-            {
-            case 1:
-                if (   SettingOrAnyParentHasTag(param, "Att")
-                    || SettingOrAnyParentHasTag(param, "Dec")
-                    || SettingOrAnyParentHasTag(param, "Sus")
-                    || SettingOrAnyParentHasTag(param, "Rel"))
-                    break;
-
-                AddNextSetting("Env", SelectedInstrument, CurSrc);
-                break;
-
-            case 2:
-                AddNextSetting("LFO", SelectedInstrument, CurSrc);
-                break;
-
-            case 3:
-                g_paramKeys = true;
-                UpdateChordLights();
-                break;
-
-            case 4:
-                g_paramAuto = true;
-                UpdateChordLights();
-                break;
-
-            case 5: 
-                if (   param.Tag == "Att"
-                    || param.Tag == "Dec"
-                    || param.Tag == "Sus"
-                    || param.Tag == "Rel"
-
-                    || param.Tag == "Amp"
-                    || param.Tag == "Freq"
-
-                    ||    param.Parent != null
-                       && param.Tag == "Off"
-                       
-                    ||    param.Parent != null
-                       && param.Parent.GetType() == typeof(Harmonics)
-
-                    || param.Tag == "Cut"
-                    || param.Tag == "Res"
-
-                    || param.Tag == "Len"
-                    || param.Tag == "Scl")
-                    break;
-
-                RemoveSetting(param); 
-                break;
-            }
-        }
-
-
-        void SetEnvelopeFunc(Envelope env, int func)
-        {
-            switch (func)
-            {
-                case 1: AddNextSetting("Att", SelectedInstrument, CurSrc); break;
-                case 2: AddNextSetting("Dec", SelectedInstrument, CurSrc); break;
-                case 3: AddNextSetting("Sus", SelectedInstrument, CurSrc); break;
-                case 4: AddNextSetting("Rel", SelectedInstrument, CurSrc); break;
-                case 5: RemoveSetting(env);    break;
-            }
-        }
-
-
-        void SetLfoFunc(LFO lfo, int func)
-        {
-            switch (func)
-            {
-                case 1: AddNextSetting("Amp",  SelectedInstrument, CurSrc); break;
-                case 2: AddNextSetting("Freq", SelectedInstrument, CurSrc); break;
-                case 3: AddNextSetting("Off",  SelectedInstrument, CurSrc); break;
-                case 4:
-                {
-                    var newOsc = (int)lfo.Type + 1;
-                    if (newOsc > (int)LFO.LfoType.Noise) newOsc = 0;
-                    lfo.Type = (LFO.LfoType)newOsc;
-                    mainPressed.Add(func);
-                    break;
-                }
-                case 5: RemoveSetting(lfo); break;
-            }
-        }
-
-
-        void SetHarmonicsFunc(Harmonics hrm, int func)
-        {
-            switch (func)
-            {
-                case 1:
-                {
-                    hrm.Smooth();
-                    break;
-                }
-                case 2:
-                { 
-                    var cp = (int)hrm.CurPreset + 1;
-
-                    if (cp > (int)Harmonics.Preset.Random24)
-                        cp = (int)Harmonics.Preset.Sine;
-
-                    hrm.CurPreset = (Harmonics.Preset)cp;
-                    mainPressed.Add(func);
-
-                    break;
-                }
-                case 3:
-                {
-                    hrm.SetPreset(hrm.CurPreset);
-                    break;
-                }
-                case 4: AddNextSetting(S(hrm.CurTone), SelectedInstrument, CurSrc); break;
-                case 5: RemoveSetting(hrm); break;
-            }
-        }
-
-
-        void SetFilterFunc(Filter flt, int func)
-        {
-            switch (func)
-            {
-                case 1:
-                { 
-                    var p = (int)flt.Pass + 1;
-
-                    if (p > (int)FilterPass.Stop)
-                        p = (int)FilterPass.Low;
-
-                    flt.Pass = (FilterPass)p;
-                        mainPressed.Add(func);
-
-                        break;
-                }
-                case 2: AddNextSetting("Cut",  SelectedInstrument, CurSrc); break;
-                case 3: AddNextSetting("Res",  SelectedInstrument, CurSrc); break;
-                case 4: AddNextSetting("Shrp", SelectedInstrument, CurSrc); break;
-                case 5: RemoveSetting(flt); break;
-            }
-        }
-
-
-        void SetDelayFunc(Delay del, int func)
-        {
-            switch (func)
-            {
-                case 0: AddNextSetting("Dry",  SelectedInstrument, CurSrc); break;
-                case 1: AddNextSetting("Cnt",  SelectedInstrument, CurSrc); break;
-                case 2: AddNextSetting("Time", SelectedInstrument, CurSrc); break;
-                case 3: AddNextSetting("Lvl",  SelectedInstrument, CurSrc); break;
-                case 4: AddNextSetting("Pow",  SelectedInstrument, CurSrc); break;
-                case 5: RemoveSetting(del); break;
-            }
-        }
-
-
-        void SetArpeggioFunc(Arpeggio arp, int func)
-        {
-            switch (func)
-            { 
-            case 1:
-                arp.Song.EditPos = -1;
-                UpdateEditLight(lblEdit, false);
-
-                AddNextSetting("Len", SelectedInstrument, CurSrc);
-                break;
-
-            case 2:
-                arp.Song.EditPos = -1;
-                UpdateEditLight(lblEdit, false);
-
-                AddNextSetting("Scl", SelectedInstrument, CurSrc);
-                break;
-
-            case 5: RemoveSetting(arp); break;
-            }
         }
 
 

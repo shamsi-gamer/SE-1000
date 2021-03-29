@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using VRage.Game.GUI.TextPanel;
 
 
 namespace IngameScript
@@ -245,6 +246,48 @@ namespace IngameScript
                 hrm.CurTone   = int.Parse(data[i++]);
 
                 return hrm;
+            }
+
+
+            public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
+            {
+                DrawFuncButton(sprites, "Smth",  1, w, h, false, false, mainPressed.Contains(1));
+                DrawFuncButton(sprites, "Pre ↕", 2, w, h, false, false, mainPressed.Contains(2));
+                DrawFuncButton(sprites, "Set",   3, w, h, false, false, mainPressed.Contains(3));
+                DrawFuncButton(sprites, "Tone",  4, w, h, true,  Tones[CurTone].HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "X",     5, w, h, false, false, mainPressed.Contains(5));
+            }
+
+
+            public override void Func(int func, Program prog)
+            {
+                switch (func)
+                {
+                    case 1:
+                    {
+                        Smooth();
+                        break;
+                    }
+                    case 2:
+                    { 
+                        var cp = (int)CurPreset + 1;
+
+                        if (cp > (int)Preset.Random24)
+                            cp = (int)Preset.Sine;
+
+                        CurPreset = (Preset)cp;
+                        mainPressed.Add(func);
+
+                        break;
+                    }
+                    case 3:
+                    {
+                        SetPreset(CurPreset);
+                        break;
+                    }
+                    case 4: prog.AddNextSetting(S(CurTone)); break;
+                    case 5: prog.RemoveSetting(this); break;
+                }
             }
         }
     }

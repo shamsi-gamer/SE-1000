@@ -130,7 +130,7 @@ namespace IngameScript
 
                     foreach (var n in chan.Notes)
                     {
-                        var noteStart = song.GetStep(n) + n.ShOffset;
+                        var noteStart = n.SongStep + n.ShOffset;
                         var noteEnd   = noteStart + n.StepLength;
 
                         if (   noteEnd   <= patStart
@@ -186,7 +186,7 @@ namespace IngameScript
 
                     foreach (var n in chan.Notes)
                     {
-                        var noteStart = song.GetStep(n) + n.ShOffset;
+                        var noteStart = n.SongStep + n.ShOffset;
                         var noteEnd   = noteStart + n.StepLength;
 
                         if (   noteEnd   <= patStart

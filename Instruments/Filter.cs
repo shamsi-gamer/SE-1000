@@ -117,6 +117,43 @@ namespace IngameScript
 
                 return flt;
             }
+
+
+            public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
+            {
+                var strCut  = Pass > FilterPass.High ? "Freq" : "Cut";
+                var strRes  = Pass > FilterPass.High ? "Wid"  : "Res";
+
+                DrawFuncButton(sprites, GetPassName(Pass) + " ↕", 1, w, h, false, false);
+                DrawFuncButton(sprites, strCut,  2, w, h, true, Cutoff   .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strRes,  3, w, h, true, Resonance.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Shrp",  4, w, h, true, Sharpness.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "X",     5, w, h, false, false, mainPressed.Contains(5));
+            }
+
+
+            public override void Func(int func, Program prog)
+            {
+                switch (func)
+                {
+                    case 1:
+                        {
+                            var p = (int)Pass + 1;
+
+                            if (p > (int)FilterPass.Stop)
+                                p = (int)FilterPass.Low;
+
+                            Pass = (FilterPass)p;
+                            mainPressed.Add(func);
+
+                            break;
+                        }
+                    case 2: prog.AddNextSetting("Cut");  break;
+                    case 3: prog.AddNextSetting("Res");  break;
+                    case 4: prog.AddNextSetting("Shrp"); break;
+                    case 5: prog.RemoveSetting(this);    break;
+                }
+            }
         }
 
 

@@ -21,6 +21,7 @@ namespace IngameScript
                                
             public int         PatIndex    { get { return Channel.Pattern.Song.Patterns.IndexOf(Channel.Pattern); } }
 
+            //public Song        Song        { get { return Channel.Pattern.Song; } }
             public float       SongStep    { get { return PatIndex * nSteps + PatStep; } }
 
             public long        PatTime     { get { return (long)(PatStep * g_ticksPerStep); } }

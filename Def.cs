@@ -21,7 +21,7 @@ namespace IngameScript
         static float[] g_random = new float[1000];
 
 
-        Color
+        static Color
             color6,
             color5,
             color4,

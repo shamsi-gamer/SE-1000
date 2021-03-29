@@ -913,8 +913,8 @@ namespace IngameScript
                 // draw interpolation circle
                 if (   note == song.Inter
                     ||    song.Inter != null
-                       && song.GetStep(note) >= song.EditPos
-                       && song.GetStep(note) <  song.EditPos+1)
+                       && note.SongStep >= song.EditPos
+                       && note.SongStep <  song.EditPos+1)
                 {      
                     FillCircle(sprites, p0.X, p0.Y, cd/2+dr,   color0);
                     FillCircle(sprites, p0.X, p0.Y, cd/2+dr*2, color6);
@@ -925,8 +925,8 @@ namespace IngameScript
 
 
                 // draw shadow
-                if (   song.GetStep(note) >= song.EditPos
-                    && song.GetStep(note) <  song.EditPos+1)
+                if (   note.SongStep >= song.EditPos
+                    && note.SongStep <  song.EditPos+1)
                 {
                     DrawLine  (sprites, pt.X, pt.Y, p0.X, p0.Y, color0, w/250+2);
                     FillCircle(sprites, p0.X, p0.Y, cd/2+1, color0);
@@ -941,14 +941,14 @@ namespace IngameScript
 
 
             var curNote = chan.Notes.Find(n =>
-                   song.GetStep(n) >= song.EditPos
-                && song.GetStep(n) <  song.EditPos+1);
+                   n.SongStep >= song.EditPos
+                && n.SongStep <  song.EditPos+1);
 
             // draw interpolation line
             if (   song.Inter != null
                 && curNote != null
-                && (   song.GetNotePat(song.Inter) == p
-                    || song.GetNotePat(curNote) == p))
+                && (   song.Inter.PatIndex == p
+                    || curNote   .PatIndex == p))
             {
                 var pi = ValuePos(x, y, w, h, p, song.Inter, path, song);
                 var pc = ValuePos(x, y, w, h, p, curNote,    path, song);
@@ -1060,7 +1060,7 @@ namespace IngameScript
             }
 
             return new Vector2(
-                x + wt * (note.PatStep + (song.GetNotePat(note) - p)*nSteps + note.ShOffset) + wt/2, 
+                x + wt * (note.PatStep + (note.PatIndex - p)*nSteps + note.ShOffset) + wt/2, 
                 y + h - h/2 * val - cd/2);
         }
 

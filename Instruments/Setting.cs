@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using System.Collections.Generic;
+using VRage.Game.GUI.TextPanel;
 
 
 namespace IngameScript
@@ -59,6 +61,9 @@ namespace IngameScript
             public virtual void    AdjustFromController(Song song, Program prog) {}
 
             public virtual string  Save() => "";
+
+            public virtual void    DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan) {}
+            public virtual void    Func(int func, Program prog) {}
         }
 
 
@@ -98,6 +103,7 @@ namespace IngameScript
 
             case "Tune": return "Tune";
 
+            case "Trig": return "Trigger";
             case "Env":  return "Envelope";
             case "Att":  return "Attack";
             case "Dec":  return "Decay";
@@ -135,10 +141,11 @@ namespace IngameScript
         {
             switch (tag)
             { 
-            case "Vol":  return new Parameter("Vol",     0,          2,   0.5f,  1,    0.01f,  0.1f, 1,    parent);
+            case "Vol":  return new Parameter("Vol",  0,          2,   0.5f,  1,    0.01f,  0.1f, 1,    parent);
                                                                                        
             case "Tune": return new Tune();                                            
                                                                                        
+            case "Trig": return new Parameter((Parameter)parent, parent, tag);
             case "Env":  return new Envelope(parent);                                  
             case "Att":  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f, 0,     parent);
             case "Dec":  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f, 0.2f,  parent);

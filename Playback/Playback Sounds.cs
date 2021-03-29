@@ -63,8 +63,6 @@ namespace IngameScript
         {
             if (!TooComplex)
             {
-                var song = snd.Note.Channel.Pattern.Song;
-
                 var lTime = g_time - snd.FrameTime;
                 var sTime = g_time - StartTime;
 

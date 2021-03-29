@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VRage.Game.GUI.TextPanel;
 
 
 namespace IngameScript
@@ -8,24 +9,25 @@ namespace IngameScript
     {
         public class Parameter : Setting
         {
-            float           m_value;
+            float            m_value;
 
-            public float    CurValue = 0,
+            public float     CurValue = 0,
+                             
+                             Default,
+                             
+                             Min,
+                             Max,
+                             
+                             NormalMin,
+                             NormalMax,
+                             
+                             Delta,
+                             BigDelta;
 
-                            Default,
-
-                            Min,
-                            Max,
-                        
-                            NormalMin,
-                            NormalMax,
-                        
-                            Delta,
-                            BigDelta;
-
-            public Envelope Envelope;
-            public LFO      Lfo;
-            public Modulate Modulate;
+            public Parameter Trigger;
+            public Envelope  Envelope;
+            public LFO       Lfo;
+            public Modulate  Modulate;
 
 
             public Parameter(string tag, float min, float max, float normalMin, float normalMax, float delta, float bigDelta, float defVal, Setting parent) : base(tag, parent)
@@ -44,13 +46,14 @@ namespace IngameScript
                 Delta     = delta;
                 BigDelta  = bigDelta;
 
+                Trigger   = null;
                 Envelope  = null;
                 Lfo       = null;
                 Modulate  = null;
             }
 
 
-            public Parameter(Parameter param, Setting parent) : base(param.Tag, parent, param.Prototype)
+            public Parameter(Parameter param, Setting parent, string tag = "") : base(tag != "" ? tag : param.Tag, parent, param.Prototype)
             {
                 Tag       = param.Tag;
                           
@@ -65,6 +68,7 @@ namespace IngameScript
                 Delta     = param.Delta;
                 BigDelta  = param.BigDelta;
 
+                Trigger   = param.Trigger ?.Copy(this);
                 Envelope  = param.Envelope?.Copy(this);
                 Lfo       = param.Lfo     ?.Copy(this);
                 Modulate  = param.Modulate?.Copy(this);
@@ -116,10 +120,7 @@ namespace IngameScript
 
                     value += dv;
 
-                    if (   Tag == "Vol"
-                        || Tag == "Att"
-                        || Tag == "Dec"
-                        || Tag == "Rel")
+                    if (ParentIsEnvelope)
                         triggerValues.Add(new TriggerValue(path, value));
                 }
                 
@@ -131,8 +132,8 @@ namespace IngameScript
                 else                 auto = 1;
 
                 if (note != null)
-                { 
-                    var val = GetAutoValue(note.Channel.Pattern.Song, note, path);
+                {
+                    var val = GetAutoValue(note.PatStep, note.PatIndex, note.iChan, path);
                     
                     if (OK(val))
                     {
@@ -163,16 +164,14 @@ namespace IngameScript
             }
 
 
-            public float GetAutoValue(Song song, Note note, string path)
-            {
-                return GetAutoValue(note.PatStep, song.GetNotePat(note), note.iChan, path);
-            }
+            //public float GetAutoValue(Song song, Note note, string path)
+            //{
+            //    return GetAutoValue(note.PatStep, song.GetNotePat(note), note.iChan, path);
+            //}
 
 
             public static float GetAutoValue(float songStep, int pat, int ch, string path)
             {
-                // the expected pos is in song time, NOT in pattern time
-
                 var prevKey = PrevSongAutoKey(songStep, pat, ch, path);
                 var nextKey = NextSongAutoKey(songStep, pat, ch, path);
 
@@ -227,10 +226,7 @@ namespace IngameScript
                 m_value = NormalMin + RND * (NormalMax - NormalMin);
                 
                 if (   !prog.TooComplex
-                    && !SettingOrAnyParentHasTag(this, "Att")
-                    && !SettingOrAnyParentHasTag(this, "Dec")
-                    && !SettingOrAnyParentHasTag(this, "Sus")
-                    && !SettingOrAnyParentHasTag(this, "Rel")
+                    && !AnyParentIsEnvelope
                     && (  !IsDigit(Tag[0]) && RND > 0.5f
                         || IsDigit(Tag[0]) && RND > 0.9f))
                 {
@@ -316,6 +312,102 @@ namespace IngameScript
 
                 return param;
             }
+
+
+            public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
+            {
+                if (!AnyParentIsEnvelope)
+                {
+                    DrawFuncButton(sprites, "Trig", 0, w, h, true, Envelope != null);
+                    DrawFuncButton(sprites, "Env",  1, w, h, true, Envelope != null);
+
+                    if (   Tag != "Vol"
+                        && (   Parent == null
+                            || Parent.GetType() != typeof(Harmonics)))
+                        DrawFuncButton(sprites, "X", 5, w, h, false, false, mainPressed.Contains(5));
+                }
+
+                DrawFuncButton(sprites, "LFO",  2, w, h, true, Lfo != null);
+
+                DrawFuncButton(sprites, "Key",  3, w, h, true, chan.HasNoteKeys(GetPath(CurSrc)));
+                DrawFuncButton(sprites, "Auto", 4, w, h, true, chan.HasAutoKeys(GetPath(CurSrc)));
+            }
+
+
+            public override void Func(int func, Program prog)
+            {
+                switch (func)
+                {
+                case 0:
+                    if (AnyParentIsEnvelope) break;
+
+                    prog.AddNextSetting("Trig");
+                    break;
+
+                case 1:
+                    if (AnyParentIsEnvelope) break;
+                    prog.AddNextSetting("Env");
+                    break;
+
+                case 2:
+                    prog.AddNextSetting("LFO");
+                    break;
+
+                case 3:
+                    prog.g_paramKeys = true;
+                    prog.UpdateChordLights();
+                    break;
+
+                case 4:
+                    prog.g_paramAuto = true;
+                    prog.UpdateChordLights();
+                    break;
+
+                case 5: 
+                    if (   ParentIsEnvelope
+
+                        || Tag == "Amp"
+                        || Tag == "Freq"
+
+                        ||    Parent != null
+                           && Tag == "Off"
+                       
+                        ||    Parent != null
+                           && Parent.GetType() == typeof(Harmonics)
+
+                        || Tag == "Cut"
+                        || Tag == "Res"
+
+                        || Tag == "Len"
+                        || Tag == "Scl")
+                        break;
+
+                    prog.RemoveSetting(this); 
+                    break;
+                }
+            }
+
+
+            public bool ParentIsEnvelope { get 
+            {
+                return
+                       Tag == "Att"
+                    || Tag == "Dec"
+                    || Tag == "Sus"
+                    || Tag == "Rel"
+                    || Tag == "Trig";
+            } }
+
+
+            public bool AnyParentIsEnvelope { get 
+            {
+                return
+                       SettingOrAnyParentHasTag(this, "Att")
+                    || SettingOrAnyParentHasTag(this, "Dec")
+                    || SettingOrAnyParentHasTag(this, "Sus")
+                    || SettingOrAnyParentHasTag(this, "Rel")
+                    || SettingOrAnyParentHasTag(this, "Trig");
+            } }
         }
 
 
