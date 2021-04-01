@@ -105,8 +105,6 @@ namespace IngameScript
                 //+ WS(CurSet)
                 + (CurSet > -1 ? W(CurSetting.GetPath(CurSrc)) : W(""))
 
-                + WS(PlayTime)       
-
                 + WS(g_editStep)
                 + WS(g_editLength)     
 
@@ -119,7 +117,6 @@ namespace IngameScript
                 + WS(g_instOff)        
                 + WS(g_srcOff)
 
-                + WS(g_cue)
                 + WS(g_solo)
 
                 + WS(g_volume)

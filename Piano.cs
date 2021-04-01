@@ -180,7 +180,7 @@ namespace IngameScript
                     var notes = GetChordNotes(g_curNote);
 
                     for (int n = 0; n < notes.Count; n++)
-                        chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordSpread(n), EditLength));
+                        chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordSpread(n), EditStepLength));
                 }
             }
             else if (g_pick)
@@ -239,10 +239,10 @@ namespace IngameScript
 
                         note.PatStep += Math.Min(EditStep, 1);
 
-                        if (note.PatStep >= nSteps)
+                        if (note.PatStep >= g_nSteps)
                         {
                             chan.Notes.RemoveAt(n);
-                            note.PatStep -= nSteps;
+                            note.PatStep -= g_nSteps;
 
                             if (p == last) spill.Add(note);
                             else pats[p + 1].Channels[ch].Notes.Add(note);
@@ -267,7 +267,7 @@ namespace IngameScript
                         if (note.PatStep < 0)
                         {
                             chan.Notes.RemoveAt(n);
-                            note.PatStep += nSteps;
+                            note.PatStep += g_nSteps;
 
                             if (p == first) spill.Add(note);
                             else pats[p-1].Channels[ch].Notes.Add(note);
@@ -301,7 +301,7 @@ namespace IngameScript
 
             for (int p = first; p <= last; p++)
             { 
-                for (int step = 0; step < nSteps; step += nSteps / frac)
+                for (int step = 0; step < g_nSteps; step += g_nSteps / frac)
                     Tick(p, ch, step);
             }
         }
@@ -309,7 +309,7 @@ namespace IngameScript
 
         void Flip(int pat, int ch, int frac)
         {
-            for (int step = 0; step < nSteps; step += nSteps / frac)
+            for (int step = 0; step < g_nSteps; step += g_nSteps / frac)
                 Tick(pat, ch, step);
         }
 

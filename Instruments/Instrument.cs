@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VRage.Game.GUI.TextPanel;
 
 
 namespace IngameScript
@@ -11,14 +12,10 @@ namespace IngameScript
             public string       Name;
 
             public Parameter    Volume;
-
             public Tune         Tune;
-
             public Filter       Filter;
-
             public Delay        Delay;
             public Arpeggio     Arpeggio;
-
 
             public List<Source> Sources;
 
@@ -27,7 +24,7 @@ namespace IngameScript
             {
                 Name     = "New Sound";
                          
-                Volume   = (Parameter)NewSettingFromTag("Vol", null);
+                Volume   = (Parameter)NewFromTag("Vol", null);
 
                 Tune     = null;
                 Filter   = null;
@@ -188,6 +185,24 @@ namespace IngameScript
                     Source.Load(lines, ref line, inst, j);
 
                 return inst;
+            }
+
+
+            public void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
+            {
+                if (CurSet > -1)
+                { 
+                    var setting = g_settings[CurSet];
+                    setting.DrawFuncButtons(sprites, w, h, chan);
+                }
+                else
+                {
+                    DrawFuncButton(sprites, "Vol",  1, w, h, true, Volume.HasDeepParams(chan, -1));
+                    DrawFuncButton(sprites, "Tune", 2, w, h, true, Tune     != null);
+                    DrawFuncButton(sprites, "Flt",  3, w, h, true, Filter   != null);
+                    DrawFuncButton(sprites, "Del",  4, w, h, true, Delay    != null);
+                    DrawFuncButton(sprites, "Arp",  5, w, h, true, Arpeggio != null);
+                }
             }
         }
     }

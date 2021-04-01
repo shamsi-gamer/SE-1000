@@ -82,7 +82,7 @@ namespace IngameScript
         void InitSpeakers()
         {
             var speakers = new List<IMySoundBlock>();
-            GridTerminalSystem.GetBlocksOfType(speakers);
+            Get(speakers);
 
             for (int i = 0; i < speakers.Count; i++)
             {

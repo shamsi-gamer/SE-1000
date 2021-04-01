@@ -9,9 +9,8 @@ namespace IngameScript
     {
         void DrawInstrument(List<MySprite> sprites, float x, float y, float w, float h)
         {
-            var timeScale = 2;
-
-            var rh = h - 50;
+            var rh         = h - 50;
+            var instHeight = h - 80;
 
             var inst = SelectedInstrument;
 
@@ -23,16 +22,18 @@ namespace IngameScript
 
 
             FillRect(sprites, x,      y, w,    h,  color0);
-            FillRect(sprites, x + lw, y, w-lw, rh, color2);
+
+            // settings background
+            FillRect(sprites, x + lw, y, w-lw, instHeight, color2);
 
 
-            DrawInstrumentList(sprites, x, y, lw, rh, SelectedChannel);
+            DrawInstrumentList(sprites, x, y, lw, instHeight, SelectedChannel);
 
 
             FillRect(sprites, x + lw,      0,    w2, rh/4, color3);
             FillRect(sprites, x + lw,      rh/8, w2, 1,    color5);
                                            
-            FillRect(sprites, x + lw + w2, 0,    1,  rh/4, color5);
+            FillRect(sprites, x + lw + w2, 0,     1, rh/4, color5);
 
             //DrawInstSample(
             //    sprites,
@@ -45,6 +46,7 @@ namespace IngameScript
             //    timeScale);
 
 
+            // instrument separator line
             FillRect(sprites, x + lw, rh/4, w-lw, 1, color5);
 
 
@@ -53,62 +55,78 @@ namespace IngameScript
                 x + lw + w3, 
                 rh/4,
                 x + lw + w3,
-                rh,
+                instHeight,
                 color6);
 
 
             // draw time position line
-            foreach (var note in g_notes)
-            {
-                if (   note.Instrument == inst
-                    && g_time - note.PatTime >= 0
-                    && g_time - note.PatTime < note.FrameLength)
-                {
-                    FillRect(sprites, 
-                        x + lw + w2 * (g_time - note.PatTime) / (float)FPS / timeScale,
-                        0,
-                        3,
-                        rh/4,
-                        color6);
-                }
-            }
+            //foreach (var note in g_notes)
+            //{
+            //    if (   note.Instrument == inst
+            //        && g_time - note.PatTime >= 0
+            //        && g_time - note.PatTime < note.FrameLength)
+            //    {
+            //        FillRect(sprites, 
+            //            x + lw + w2 * (g_time - note.PatTime) / (float)FPS / timeScale,
+            //            0,
+            //            3,
+            //            rh/4,
+            //            color6);
+            //    }
+            //}
 
 
-            DrawSettings(sprites, x + lw, y + rh/4 + 20, (w-lw)/3, rh - rh/4);
 
-            DrawInstrumentSettings(
+            DrawInstrumentLabels(
                 sprites,
-                x + lw + w2 + 21, 
-                y + 5, 
-                SelectedInstrument);
+                SelectedInstrument,
+                x + lw + w2 + 21,
+                y + 5);
 
 
-            DrawSourceList(sprites, x + lw + (w-lw)/3, y + rh/4, (w-lw)*2/3f, rh - rh/4, inst);
+            DrawCurrentSetting(
+                sprites, 
+                x + lw, 
+                y + rh/4, 
+                (w-lw)/3, 
+                instHeight - rh/4);
 
-            FillRect(sprites, x, y + rh, w, 1, color6);
-            DrawFuncButtons(sprites, w, h, g_song);
+            DrawSourceList(
+                sprites, 
+                x + lw + (w-lw)/3, 
+                y + rh/4, 
+                (w-lw)*2/3f, 
+                instHeight - rh/4, 
+                inst);
+
+
+            // bottom func separator
+            FillRect(sprites, x, y + instHeight, w, 1, color6);
+            
+            DrawFuncButtons(sprites, w, h - 74, g_song);
         }
 
 
-        void DrawInstrumentSettings(List<MySprite> sprites, float x, float y, Instrument inst)
+        void DrawInstrumentLabels(List<MySprite> sprites, Instrument inst, float x, float y)
         {
-            float yo = 0;
-                                       DrawSetting(sprites, inst.Volume,   x, y + yo, ref yo, false);
-            if (inst.Tune     != null) DrawSetting(sprites, inst.Tune,     x, y + yo, ref yo, false);
-            if (inst.Filter   != null) DrawSetting(sprites, inst.Filter,   x, y + yo, ref yo, false);
-            if (inst.Delay    != null) DrawSetting(sprites, inst.Delay,    x, y + yo, ref yo, false);
-            if (inst.Arpeggio != null) DrawSetting(sprites, inst.Arpeggio, x, y + yo, ref yo, false);
+            var dp = new DrawParams(false, this);
+
+            inst.Volume   .DrawLabel(sprites, x, y + dp.OffY, dp);
+            inst.Tune    ?.DrawLabel(sprites, x, y + dp.OffY, dp);
+            inst.Filter  ?.DrawLabel(sprites, x, y + dp.OffY, dp);
+            inst.Delay   ?.DrawLabel(sprites, x, y + dp.OffY, dp);
+            inst.Arpeggio?.DrawLabel(sprites, x, y + dp.OffY, dp);
         }
 
 
-        void DrawSourceSettings(List<MySprite> sprites, float x, float y, Source src, bool active, ref float yo)
+        void DrawSourceLabels(List<MySprite> sprites, Source src, float x, float y, DrawParams dp)
         {
-            if (src.Offset    != null) DrawSetting(sprites, src.Offset,    x, y + yo, ref yo, active);
-                                       DrawSetting(sprites, src.Volume,    x, y + yo, ref yo, active);
-            if (src.Tune      != null) DrawSetting(sprites, src.Tune,      x, y + yo, ref yo, active);
-            if (src.Harmonics != null) DrawSetting(sprites, src.Harmonics, x, y + yo, ref yo, active);
-            if (src.Filter    != null) DrawSetting(sprites, src.Filter,    x, y + yo, ref yo, active);
-            if (src.Delay     != null) DrawSetting(sprites, src.Delay,     x, y + yo, ref yo, active);
+            src.Offset   ?.DrawLabel(sprites, x, y + dp.OffY, dp);
+            src.Volume    .DrawLabel(sprites, x, y + dp.OffY, dp);
+            src.Tune     ?.DrawLabel(sprites, x, y + dp.OffY, dp);
+            src.Harmonics?.DrawLabel(sprites, x, y + dp.OffY, dp);
+            src.Filter   ?.DrawLabel(sprites, x, y + dp.OffY, dp);
+            src.Delay    ?.DrawLabel(sprites, x, y + dp.OffY, dp);
         }
 
 
@@ -161,9 +179,11 @@ namespace IngameScript
                 var src    = inst.Sources[i];
                 var active = i == CurSrc && CurSet < 0;
 
-                var ssh = 0f;
-                DrawSourceSettings(null, 0, 0, inst.Sources[i], active, ref ssh);
-                var sh = ssh + 20;
+                //var ssh = 0f;
+                var dp1 = new DrawParams(active, this);
+                DrawSourceLabels(null, inst.Sources[i], 0, 0, dp1);//, ref ssh);
+
+                var sh = dp1.OffY + 20;
 
                 if (CurSrc == i && CurSet < 0)
                     FillRect(sprites, x + sw, iy, w - sw, sh, color6);
@@ -174,17 +194,17 @@ namespace IngameScript
 
                 if (src.Oscillator == OscSample)
                 {
-                    DrawString(sprites, src.Oscillator.ShortName, x + sw + 10, iy + sh/2 - 10, 0.7f, i == CurSrc ? col_1 : col_0, TextAlignment.CENTER);
+                    DrawString(sprites, src.Oscillator.ShortName, x + sw + 10, iy + sh/2 - 10, 0.7f, i == CurSrc ? col_1 : col_0, TaC);
                 }
                 else
                 { 
                     DrawSrcSample(sprites, x + sw + 10, iy + sh/2 - 10, 50, 20, src, active, CurSrc > -1);
-                    DrawString(sprites, src.Oscillator.ShortName, x + sw + 100, iy + sh/2 - 10, 0.6f, active ? col_1 : col_0, TextAlignment.CENTER);
+                    DrawString(sprites, src.Oscillator.ShortName, x + sw + 100, iy + sh/2 - 10, 0.6f, active ? col_1 : col_0, TaC);
                 }
 
 
-                var yo = 0f;
-                DrawSourceSettings(sprites, x + sw + 139, iy + sh/2 - ssh/2 + 2, src, active, ref yo);
+                var dp2 = new DrawParams(active, this);
+                DrawSourceLabels(sprites, src, x + sw + 139, iy + sh/2 - dp1.OffY/2 + 2, dp2);
 
                 FillRect(sprites, x + sw, iy + sh, w - sw, 1, color3);
 

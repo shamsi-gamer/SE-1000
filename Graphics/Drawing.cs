@@ -49,7 +49,7 @@ namespace IngameScript
                 Position        = pos + size/2,
                 Size            = size,
                 Color           = c,
-                Alignment       = TextAlignment.CENTER,
+                Alignment       = TaC,
                 RotationOrScale = rotation
             });
         }

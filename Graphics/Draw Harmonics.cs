@@ -23,14 +23,11 @@ namespace IngameScript
 
             var wc  = wt / hrm.Tones.Length;
 
-            float yo = 0;
-
-            DrawSourceSettings(sprites, x + 5, y + 10, SelectedSource, false, ref yo);
+            var dp = new DrawParams(false, this);
+            DrawSourceLabels(sprites, SelectedSource, x + 5, y + 10, dp);
 
             DrawHarmonicsSample(sprites, x + 100, y + 150, 100, 60, song, hrm);
 
-
-            var sndLen    = (int)(EditLength * g_ticksPerStep);
 
             for (int i = 0; i < hrm.Tones.Length; i++)
             {
@@ -54,7 +51,7 @@ namespace IngameScript
             for (int i = 0; i < hrm.Tones.Length; i++)
             {
                 if (hrm.Tones[i].HasDeepParams(chan, -1))
-                    DrawString(sprites, "▲", xt + i*wc + wc/2, yt + ht + 10, 0.6f, color3, TextAlignment.CENTER);
+                    DrawString(sprites, "▲", xt + i*wc + wc/2, yt + ht + 10, 0.6f, color3, TaC);
             }
 
 
@@ -109,7 +106,7 @@ namespace IngameScript
                 y + 4, 
                 1.2f, 
                 color6,
-                TextAlignment.CENTER);
+                TaC);
         }
     }
 }

@@ -23,9 +23,9 @@ namespace IngameScript
             {
                 Pass      = FilterPass.Low;
 
-                Cutoff    = (Parameter)NewSettingFromTag("Cut",  this);
-                Resonance = (Parameter)NewSettingFromTag("Res",  this);
-                Sharpness = (Parameter)NewSettingFromTag("Shrp", this);
+                Cutoff    = (Parameter)NewFromTag("Cut",  this);
+                Resonance = (Parameter)NewFromTag("Res",  this);
+                Sharpness = (Parameter)NewFromTag("Shrp", this);
             }
 
 
@@ -83,9 +83,9 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Cut":  return Cutoff    ?? (Cutoff    = (Parameter)NewSettingFromTag("Cut",  this));
-                    case "Res":  return Resonance ?? (Resonance = (Parameter)NewSettingFromTag("Res",  this));
-                    case "Shrp": return Sharpness ?? (Sharpness = (Parameter)NewSettingFromTag("Shrp", this));
+                    case "Cut":  return Cutoff    ?? (Cutoff    = (Parameter)NewFromTag("Cut",  this));
+                    case "Res":  return Resonance ?? (Resonance = (Parameter)NewFromTag("Res",  this));
+                    case "Shrp": return Sharpness ?? (Sharpness = (Parameter)NewFromTag("Shrp", this));
                 }
 
                 return null;
@@ -119,6 +119,58 @@ namespace IngameScript
             }
 
 
+            public override void GetLabel(out string str, out float width)
+            {
+                width = 110;
+
+                str =
+                      printValue(Cutoff   .CurValue, 2, true, 0).PadLeft(4) + "  "
+                    + printValue(Resonance.CurValue, 2, true, 0).PadLeft(4);
+            }
+
+
+            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            { 
+                if (Cutoff   .HasDeepParams(null, CurSrc)) { Cutoff   .DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Resonance.HasDeepParams(null, CurSrc)) { Resonance.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+
+                base.FinishDrawLabel(dp);
+            }
+
+
+            public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
+            {
+                var cut  = Cutoff   .CurValue;
+                var res  = Resonance.CurValue;
+                var shrp = Sharpness.CurValue;
+
+
+                FillRect(sprites, x, y + h, 2, -h, color3);
+                FillRect(sprites, x, y + h, w,  2, color3);
+
+
+                DrawFilter(sprites, x, y, w, h, color5, 4, Pass, cut, res, shrp);
+
+
+                var strCut = Pass > FilterPass.High ? "Freq" : "Cut";
+                var strRes = Pass > FilterPass.High ? "Wid"  : "Res";
+
+                var fs = 0.5f;
+
+                // cutoff
+                DrawString(sprites, strCut,                      x, y - 40, fs, IsCurParam("Cut") ? color6 : color3);
+                DrawString(sprites, printValue(cut, 2, true, 0), x, y - 25, fs, IsCurParam("Cut") ? color6 : color3);
+
+                // resonance
+                DrawString(sprites, strRes,                      x + 100, y - 40, fs, IsCurParam("Res") ? color6 : color3);
+                DrawString(sprites, printValue(res, 2, true, 0), x + 100, y - 25, fs, IsCurParam("Res") ? color6 : color3);
+
+                // sharpness
+                DrawString(sprites, "Shrp",                       x + 200, y - 40, fs, IsCurParam("Shrp") ? color6 : color3);
+                DrawString(sprites, printValue(shrp, 2, true, 0), x + 200, y - 25, fs, IsCurParam("Shrp") ? color6 : color3);
+            }
+
+
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
                 var strCut  = Pass > FilterPass.High ? "Freq" : "Cut";
@@ -132,7 +184,7 @@ namespace IngameScript
             }
 
 
-            public override void Func(int func, Program prog)
+            public override void Func(int func)
             {
                 switch (func)
                 {
@@ -148,10 +200,10 @@ namespace IngameScript
 
                             break;
                         }
-                    case 2: prog.AddNextSetting("Cut");  break;
-                    case 3: prog.AddNextSetting("Res");  break;
-                    case 4: prog.AddNextSetting("Shrp"); break;
-                    case 5: prog.RemoveSetting(this);    break;
+                    case 2: AddNextSetting("Cut");  break;
+                    case 3: AddNextSetting("Res");  break;
+                    case 4: AddNextSetting("Shrp"); break;
+                    case 5: RemoveSetting(this);    break;
                 }
             }
         }
@@ -234,19 +286,18 @@ namespace IngameScript
         }
 
 
-        static float ApplyFilter(float value, Source src, float pos, long gTime, long lTime, long sTime, int len, Note note, int iSrc, List<TriggerValue> triggerValues, Program prog)
+        static float ApplyFilter(float value, Source src, float pos, TimeParams tp)
         {
-            if (prog.TooComplex) return value;
-
+            if (tp.Program.TooComplex) return value;
 
             if (src.Filter != null)
             {
                 value *= GetFilter(
                     pos,
                     src.Filter.Pass,
-                    src.Filter.Cutoff   .GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues, prog), 
-                    src.Filter.Resonance.GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues, prog),
-                    src.Filter.Sharpness.GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues, prog));
+                    src.Filter.Cutoff   .GetValue(tp), 
+                    src.Filter.Resonance.GetValue(tp),
+                    src.Filter.Sharpness.GetValue(tp));
             }
 
             var inst = src.Instrument;
@@ -255,9 +306,9 @@ namespace IngameScript
                 value *= GetFilter(
                     pos, 
                     inst.Filter.Pass,
-                    inst.Filter.Cutoff   .GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues, prog), 
-                    inst.Filter.Resonance.GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues, prog),
-                    inst.Filter.Sharpness.GetValue(gTime, lTime, sTime, len, note, iSrc, triggerValues, prog));
+                    inst.Filter.Cutoff   .GetValue(tp), 
+                    inst.Filter.Resonance.GetValue(tp),
+                    inst.Filter.Sharpness.GetValue(tp));
             }
             
             return value;

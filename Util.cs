@@ -27,18 +27,18 @@ namespace IngameScript
 
     partial class Program
     {                                                                              
-        List<Setting> g_settings = new List<Setting>();
+        static List<Setting> g_settings = new List<Setting>();
 
                       
-        Setting   LastSetting  { get { return g_settings.Count > 0 ? g_settings.Last() : null; } }
+        static Setting       LastSetting  { get { return g_settings.Count > 0 ? g_settings.Last() : null; } }
+                             
+                             
+        static Setting       CurSetting   { get { return CurSet > -1 ? g_settings[CurSet] : null; } }
+        static Parameter     CurParam     { get { return (Parameter)CurSetting; } }
 
 
-        Setting   CurSetting   { get { return CurSet > -1 ? g_settings[CurSet] : null; } }
-        Parameter CurParam     { get { return (Parameter)CurSetting; } }
-
-
-        Harmonics CurHarmonics { get { return (Harmonics)CurSetting; } }
-        Harmonics CurOrParentHarmonics
+        static Harmonics     CurHarmonics { get { return (Harmonics)CurSetting; } }
+        static Harmonics     CurOrParentHarmonics
         {
             get
             {
@@ -88,66 +88,19 @@ namespace IngameScript
         static Source     SelectedSource     { get { return CurSrc > -1 ? SelectedInstrument.Sources[CurSrc] : null; } }
         
 
-        static bool IsParam(Setting setting) 
-        {
-            if (setting == null) return false;
-
-            return setting.GetType() == typeof(Tune)
-                || setting.GetType() == typeof(Parameter); 
-        }
-
-
-        bool IsSettingType(Setting setting, Type type)
-        {
-            return
-                   setting != null
-                && setting.GetType() == type;
-        }
-
-
-        static bool HasTag(Setting setting, string tag)
-        {
-            return 
-                   setting != null
-                && setting.Tag == tag;
-        }
-
-
-        static bool SettingOrParentHasTag(Setting setting, string tag)
-        {
-            return HasTag(setting, tag)
-                ||    setting.Parent != null
-                   && HasTag(setting.Parent, tag);
-        }
-
-
-        static bool SettingOrAnyParentHasTag(Setting setting, string tag)
-        {
-            while (setting != null)
-            {
-                if (setting.Tag == tag)
-                    return true;
-
-                setting = setting.Parent;
-            }
-
-            return false;
-        }
-
-
-        bool IsCurParam()
+        static bool IsCurParam()
         {
             return IsParam(CurSetting);
         }
 
 
-        bool IsCurParam(string tag)
+        static bool IsCurParam(string tag)
         {
             return HasTag(CurSetting, tag);
         }
 
 
-        bool IsCurSetting(Type type)
+        static bool IsCurSetting(Type type)
         {
             //return
             //       CurSet > -1
@@ -414,7 +367,7 @@ namespace IngameScript
 
         float GetBPM()
         {
-            return 120f / (g_ticksPerStep * nSteps) * 120f;
+            return 120f / (g_ticksPerStep * g_nSteps) * 120f;
         }
 
 
@@ -432,12 +385,12 @@ namespace IngameScript
         void LimitRecPosition(Song song)
         {
             int st, nx;
-            GetPosLimits(song, CurPat, out st, out nx);
+            song.GetPosLimits(CurPat, out st, out nx);
 
                  if (song.EditPos >= nx) song.EditPos -= nx - st;
             else if (song.EditPos <  st) song.EditPos += nx - st;
 
-            var cp = (int)(song.EditPos / nSteps);
+            var cp = (int)(song.EditPos / g_nSteps);
             if (cp != CurPat) SetCurrentPattern(cp);
         }
 
@@ -557,7 +510,7 @@ namespace IngameScript
 
         static long GetPatTime(int pat) 
         {
-            return pat * nSteps * g_ticksPerStep; 
+            return pat * g_nSteps * g_ticksPerStep; 
         } 
 
 
@@ -577,6 +530,9 @@ namespace IngameScript
                Runtime.CurrentCallChainDepth   / (float)Runtime.MaxCallChainDepth   > 0.8f
             || Runtime.CurrentInstructionCount / (float)Runtime.MaxInstructionCount > 0.8f; } }
 
+
+        void             Get<T>(List<T> blocks)                          where T : class { GridTerminalSystem.GetBlocksOfType(blocks);            }
+        void             Get<T>(List<T> blocks, Func<T, bool> condition) where T : class { GridTerminalSystem.GetBlocksOfType(blocks, condition); }
 
         IMyTerminalBlock Get   (string s)             { return GridTerminalSystem.GetBlockWithName(s); }
         IMyTextPanel     GetLcd(string s)             { return Get(s) as IMyTextPanel; }

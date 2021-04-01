@@ -39,8 +39,8 @@ namespace IngameScript
 
                     int found;
                     while ((found = chan.Notes.FindIndex(n => 
-                               CurPat * nSteps + n.PatStep >= song.EditPos 
-                            && CurPat * nSteps + n.PatStep <  song.EditPos + 1)) > -1)
+                               CurPat * g_nSteps + n.PatStep >= song.EditPos 
+                            && CurPat * g_nSteps + n.PatStep <  song.EditPos + 1)) > -1)
                         chan.Notes.RemoveAt(found);
 
                     lastNotes.Clear();
@@ -74,7 +74,7 @@ namespace IngameScript
                             if (pat < 0) return;
 
                             lastNote.StepLength = Math.Min(
-                                song.EditPos - (pat * nSteps + lastNote.PatStep) + EditStep + ChordSpread(i),
+                                song.EditPos - (pat * g_nSteps + lastNote.PatStep) + EditStep + ChordSpread(i),
                                 10f * FPS / g_ticksPerStep);
 
                             TriggerNote(lastNote.Number, lastNote.iChan, EditStep, ChordSpread(i));
@@ -131,8 +131,8 @@ namespace IngameScript
                     var start = param.GetKeyValue(song.Inter, CurSrc);
                     var end   = param.GetKeyValue(note,       CurSrc);
 
-                    int f = (int)(si / nSteps);
-                    int l = (int)(sn / nSteps);
+                    int f = (int)(si / g_nSteps);
+                    int l = (int)(sn / g_nSteps);
                     int d = f < l ? 1 : -1;
 
                     for (int p = f; f < l ? (p <= l) : (p >= l); p += d)
@@ -174,8 +174,8 @@ namespace IngameScript
                 && g_paramAuto)
             {
                 var key = SelectedChannel.AutoKeys.Find(k => 
-                         k.StepTime >= (song.EditPos % nSteps)
-                      && k.StepTime <  (song.EditPos % nSteps) + 1);
+                         k.StepTime >= (song.EditPos % g_nSteps)
+                      && k.StepTime <  (song.EditPos % g_nSteps) + 1);
 
                 g_editKey = g_editKey ?? key;
 
@@ -215,14 +215,14 @@ namespace IngameScript
             g_song.EditPos =
                 OK(g_song.EditPos)
                 ? float.NaN
-                : (OK(g_song.LastEditPos) ? g_song.LastEditPos : CurPat * nSteps);
+                : (OK(g_song.LastEditPos) ? g_song.LastEditPos : CurPat * g_nSteps);
 
             StopEdit(g_song);
 
             UpdateAdjustLights(g_song);
 
             if (g_hold)
-                StopCurrentNotes(g_song, CurChan);
+                g_song.StopCurrentNotes(CurChan);
 
             g_hold = false;
             UpdateLight(lblHold, false);
@@ -301,8 +301,8 @@ namespace IngameScript
         {
             for (int p = 0; p <= CurPat; p++)
             {
-                var patStart =  CurPat   *nSteps;
-                var patEnd   = (CurPat+1)*nSteps;
+                var patStart =  CurPat   *g_nSteps;
+                var patEnd   = (CurPat+1)*g_nSteps;
 
                 var pat  = song.Patterns[p];
                 var chan = pat.Channels[CurChan];
@@ -354,8 +354,8 @@ namespace IngameScript
 
                 for (int p = 0; p <= CurPat; p++)
                 {
-                    var patStart =  CurPat   *nSteps;
-                    var patEnd   = (CurPat+1)*nSteps;
+                    var patStart =  CurPat   *g_nSteps;
+                    var patEnd   = (CurPat+1)*g_nSteps;
 
                     var pat  = song.Patterns[p];
                     var chan = pat.Channels[CurChan];
@@ -473,8 +473,8 @@ namespace IngameScript
                 {
                     foreach (var n in song.EditNotes)
                     {
-                        var is05 = n.StepLength == 0.5f && EditLength >= 1;
-                        n.StepLength = MinMax(0.5f, n.StepLength + move * EditLength, 10f * FPS / g_ticksPerStep);
+                        var is05 = n.StepLength == 0.5f && EditStepLength >= 1;
+                        n.StepLength = MinMax(0.5f, n.StepLength + move * EditStepLength, 10f * FPS / g_ticksPerStep);
                         if (is05) n.StepLength -= 0.5f;
                     }
                 }
@@ -491,10 +491,10 @@ namespace IngameScript
                         n.PatStep += move * EditStep;
 
                         if (   n.PatStep < 0
-                            || n.PatStep >= nSteps)
+                            || n.PatStep >= g_nSteps)
                         {
                             n.Channel.Notes.Remove(n);
-                            n.PatStep -= move * nSteps;
+                            n.PatStep -= move * g_nSteps;
 
                             chan.Notes.Add(n);
                             n.Channel = chan;
@@ -510,10 +510,10 @@ namespace IngameScript
                 LimitRecPosition(song);
 
                 if (   g_editKey.StepTime < 0
-                    || g_editKey.StepTime >= nSteps)
+                    || g_editKey.StepTime >= g_nSteps)
                 { 
                     g_editKey.Channel.AutoKeys.Remove(g_editKey);
-                    g_editKey.StepTime -= move * nSteps;
+                    g_editKey.StepTime -= move * g_nSteps;
 
                     chan.AutoKeys.Add(g_editKey);
                     g_editKey.Channel = chan;
@@ -527,9 +527,9 @@ namespace IngameScript
 
                 if (g_follow)
                 {
-                    if (song.EditPos >= (CurPat + 1) * nSteps) // TODO blocks
+                    if (song.EditPos >= (CurPat + 1) * g_nSteps) // TODO blocks
                     {
-                        if (song.EditPos >= song.Patterns.Count * nSteps)
+                        if (song.EditPos >= song.Patterns.Count * g_nSteps)
                         {
                             if (create)
                             {
@@ -539,11 +539,11 @@ namespace IngameScript
                                 song.Patterns.Insert(CurPat + 1, pat);
                             }
                             else
-                                song.EditPos -= song.Patterns.Count * nSteps;
+                                song.EditPos -= song.Patterns.Count * g_nSteps;
                         }
                     }
                     else if (!OK(song.EditPos))
-                        song.EditPos += song.Patterns.Count * nSteps;
+                        song.EditPos += song.Patterns.Count * g_nSteps;
                 }
 
                 LimitRecPosition(song);

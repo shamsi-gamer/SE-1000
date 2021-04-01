@@ -8,15 +8,16 @@ namespace IngameScript
     {
         public void Main(string arg, UpdateType update)
         {
+            pnlInfoLog.CustomData = "";
+
             if (arg.Length > 0)
             { 
                 ProcessArg(arg);
                 return;
             }
 
-            pnlInfoLog.CustomData = "";
-
             if (!g_init) return;
+
             FinishStartup();
 
             _triggerDummy.Clear();
@@ -25,11 +26,14 @@ namespace IngameScript
             if ((update & UpdateType.Update10) != 0) Update10();
 
             if (_loadStep > 10)
-                FinalizePlayback(g_song);
-
-            pnlInfoLog.CustomData = "";
+            {
+                g_time++;
+                g_song.FinalizePlayback();
+            }
 
             UpdateRuntimeInfo();
+
+            //pnlInfoLog.CustomData = "";
         }
 
 
@@ -37,20 +41,17 @@ namespace IngameScript
         {
             CurSetting?.AdjustFromController(g_song, this);
 
-            if (!TooComplex) UpdatePlayback();
-
-            if (PlayTime > -1)
-                UpdateKeyLights();
+            if (!TooComplex)          UpdatePlayback();
+            if (g_song.PlayTime > -1) UpdateKeyLights();
         }
 
 
         void Update10()
         { 
-            if (    PlayTime < 0
+            if (   g_song.PlayTime < 0
                 && _loadStep > 10
                 && !TooComplex)
                 UpdateKeyLights();
-
 
             if (g_started)
             {
@@ -62,7 +63,7 @@ namespace IngameScript
 
 
             if (_loadStep > 10)
-            { 
+            {
                 DrawDisplays();
                 DampenDisplayVolumes();
             }

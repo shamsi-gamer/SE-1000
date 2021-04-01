@@ -21,11 +21,7 @@ namespace IngameScript
                 DrawChannelList(sprites, x, y, 340, rh, song);
             else
             {
-                DrawInstrumentSettings(
-                    sprites,
-                    x + 5, 
-                    y + 10, 
-                    SelectedInstrument);
+                DrawInstrumentLabels(sprites, SelectedInstrument, x + 5, y + 10);
 
                 var lenCol = CurSetting == arp.Length ? color6 : color3;
                 DrawString(sprites, "Length",                                 x + 30, y + 160, 1f,   lenCol);
@@ -39,36 +35,30 @@ namespace IngameScript
 
             var _dummy = new List<TriggerValue>();
 
+            var tp = new TimeParams(g_time, 0, g_time - g_song.StartTime, null, EditLength, CurSrc, _dummy, this);
+
             var songSteps =
                 arp != null
-                ? (int)Math.Round(arp.Length.GetValue(
-                      g_time,
-                      0,
-                      StartTime,
-                      (int)(EditLength * g_ticksPerStep),
-                      null,
-                      CurSrc,
-                      _dummy,
-                      this))
-                : nSteps;
+                ? (int)Math.Round(arp.Length.GetValue(tp))
+                : g_nSteps;
 
 
             var xt = 340;
-            var wt = (float)(w - xt) / nSteps;
+            var wt = (float)(w - xt) / g_nSteps;
 
             DrawPianoGrid(sprites, x + xt, y, w - xt, rh, CurChan, songSteps);
 
 
             // draw edit position
             if (   OK(song.EditPos)
-                && song.EditPos >= CurPat      * nSteps
-                && song.EditPos < (CurPat + 1) * nSteps)
+                && song.EditPos >= CurPat      * g_nSteps
+                && song.EditPos < (CurPat + 1) * g_nSteps)
             { 
                 FillRect(
                     sprites, 
-                    x + xt + wt * (song.EditPos % nSteps), 
+                    x + xt + wt * (song.EditPos % g_nSteps), 
                     y, 
-                    wt / (EditLength == 0.5f ? 2 : 1), 
+                    wt / (EditStepLength == 0.5f ? 2 : 1), 
                     g_paramKeys || g_paramAuto ? h : rh, 
                     color3);
             }
@@ -78,8 +68,8 @@ namespace IngameScript
 
 
             // draw position line/s
-            if (   PlayTime > -1
-                && PlayPat == pat)
+            if (   g_song.PlayTime > -1
+                && g_song.PlayPat == pat)
             {
                 if (IsCurOrParentSetting(typeof(Arpeggio)))
                 { 
@@ -89,8 +79,8 @@ namespace IngameScript
                     { 
                         var notes = g_song.Patterns[p].Channels[SelChan].Notes.FindAll(n => 
                                   n.Instrument.Arpeggio != null
-                               && PlayTime >= n.PatStep*g_ticksPerStep + n.PatTime                
-                               && PlayTime <  n.PatStep*g_ticksPerStep + n.PatTime + n.FrameLength);
+                               && g_song.PlayTime >= n.PatStep*g_ticksPerStep + n.PatTime                
+                               && g_song.PlayTime <  n.PatStep*g_ticksPerStep + n.PatTime + n.FrameLength);
 
                         foreach (var n in notes)
                             arpNotes.Add(n);
@@ -98,7 +88,7 @@ namespace IngameScript
 
                     foreach (var an in arpNotes)
                     {
-                        var ft = (int)((an.ArpPlayTime / g_ticksPerStep) % nSteps);
+                        var ft = (int)((an.ArpPlayTime / g_ticksPerStep) % g_nSteps);
 
                         FillRect(sprites, x + xt + wt * ft, y, wt, rh, color6);
                         DrawPianoNeg(sprites, x + xt, y, w - xt, rh, song, pat, ft, true);
@@ -106,8 +96,8 @@ namespace IngameScript
                 }
                 else
                 { 
-                    FillRect(sprites, x + xt + wt * ((int)PlayStep % nSteps), y, wt, rh, color6);
-                    DrawPianoNeg(sprites, x + xt, y, w - xt, rh, g_song, pat, (int)PlayStep, true);
+                    FillRect(sprites, x + xt + wt * ((int)g_song.PlayStep % g_nSteps), y, wt, rh, color6);
+                    DrawPianoNeg(sprites, x + xt, y, w - xt, rh, g_song, pat, (int)g_song.PlayStep, true);
                 }
             }
 
@@ -115,7 +105,7 @@ namespace IngameScript
             FillRect(sprites, x, y + (arp != null ? irh : rh), w, 1, color6);
 
             if (IsCurParam())
-                DrawParamValues(sprites, CurParam, x, y, w, h, xt, rh, song, pat);
+                DrawValueLegend(sprites, CurParam, x, y, w, h, xt, rh, song, pat);
 
             if (SelChan < 0 || arp != null)
                 DrawFuncButtons(sprites, w, h, song);
@@ -124,7 +114,7 @@ namespace IngameScript
 
         void DrawPianoGrid(List<MySprite> sprites, float x, float y, float w, float h, int ch, int songSteps)
         {
-            var wt = w/nSteps;
+            var wt = w/g_nSteps;
             var ht = h/25;
 
             for (int t = 0; t < songSteps; t += 4)
@@ -158,9 +148,9 @@ namespace IngameScript
         }
 
 
-        void DrawChanNotes(List<MySprite> sprites, float x, float y, float w, float h, Song song, int p, int gs, int ch, Color col, int songSteps = nSteps)
+        void DrawChanNotes(List<MySprite> sprites, float x, float y, float w, float h, Song song, int p, int gs, int ch, Color col, int songSteps = g_nSteps)
         {
-            var wt = w/nSteps;
+            var wt = w/g_nSteps;
             var ht = h/25;
                      
             var bw = w/76;
@@ -169,7 +159,7 @@ namespace IngameScript
 
             for (int _p = 0; _p <= p; _p++)
             {
-                var patStart = p * nSteps;
+                var patStart = p * g_nSteps;
                 var patEnd   = patStart + songSteps;
 
                 var pat  = song.Patterns[_p];
@@ -217,10 +207,10 @@ namespace IngameScript
         {
             for (int ch = 0; ch < g_nChans; ch++)
             {
-                var wt = w/nSteps;
+                var wt = w/g_nSteps;
                 var ht = h/25;
 
-                var _step = step % nSteps;
+                var _step = step % g_nSteps;
 
                 var bh = h/200;
                 var th = ht - bh*2;
@@ -233,8 +223,8 @@ namespace IngameScript
 
                 for (int _p = 0; _p <= p; _p++)
                 {
-                    var patStart =  p   *nSteps;
-                    var patEnd   = (p+1)*nSteps;
+                    var patStart =  p   *g_nSteps;
+                    var patEnd   = (p+1)*g_nSteps;
 
                     var chan = song.Patterns[_p].Channels[ch];
 

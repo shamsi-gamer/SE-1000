@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
+using VRageMath;
 
 
 namespace IngameScript
@@ -55,8 +56,6 @@ namespace IngameScript
 
             public Parameter(Parameter param, Setting parent, string tag = "") : base(tag != "" ? tag : param.Tag, parent, param.Prototype)
             {
-                Tag       = param.Tag;
-                          
                 m_value   = param.m_value;
 
                 Min       = param.Min;
@@ -100,30 +99,32 @@ namespace IngameScript
             }
 
 
-            public float GetValue(long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues, Program prog)
+            public float GetValue(TimeParams tp)
             {
-                if (prog.TooComplex) return CurValue;
+                if (tp.Program.TooComplex) return CurValue;
 
 
-                var value = GetKeyValue(note, src);
-                var path  = GetPath(src);
+                var value = GetKeyValue(tp.Note, tp.SourceIndex);
+                var path  = GetPath(tp.SourceIndex);
 
-
-                if (Envelope != null)
-                    value *= Envelope.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog);
-
-                if (   triggerValues.Find(v => v.Path == path) == null
+                if (   tp.TriggerValues.Find(v => v.Path == path) == null
                     && Lfo != null)
-                { 
-                    var dv = Lfo.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog)
-                           * Math.Abs(Max - Min)/2;
+                {
+                    //var dv = Lfo.GetValue(tp)
+                    //       * Math.Abs(Max - Min)/2;
 
-                    value += dv;
+                    //value += dv;
+
+                    value *= Lfo.GetValue(tp);
 
                     if (ParentIsEnvelope)
-                        triggerValues.Add(new TriggerValue(path, value));
+                        tp.TriggerValues.Add(new TriggerValue(path, value));
                 }
+
                 
+                if (Envelope != null)
+                    value *= Envelope.GetValue(tp);
+
 
                 float auto;
 
@@ -131,9 +132,14 @@ namespace IngameScript
                     || Tag == "Off") auto = 0;
                 else                 auto = 1;
 
-                if (note != null)
-                {
-                    var val = GetAutoValue(note.PatStep, note.PatIndex, note.iChan, path);
+
+                if (tp.Note != null)
+                { 
+                    var val = GetAutoValue(
+                        tp.Note.PatStep, 
+                        tp.Note.PatIndex, 
+                        tp.Note.iChan, 
+                        path);
                     
                     if (OK(val))
                     {
@@ -141,12 +147,11 @@ namespace IngameScript
                             || Tag == "Off") auto += val;
                         else                 auto *= val;
                     }
+
+                    if (   Tag == "Tune"
+                        || Tag == "Off") value += auto;
+                    else                 value *= auto;
                 }
-
-                if (   Tag == "Tune"
-                    || Tag == "Off") value += auto;
-                else                 value *= auto;
-
 
                 return CurValue = MinMax(Min, value, Max);
             }
@@ -162,12 +167,6 @@ namespace IngameScript
 
                 else return m_value;
             }
-
-
-            //public float GetAutoValue(Song song, Note note, string path)
-            //{
-            //    return GetAutoValue(note.PatStep, song.GetNotePat(note), note.iChan, path);
-            //}
 
 
             public static float GetAutoValue(float songStep, int pat, int ch, string path)
@@ -193,10 +192,32 @@ namespace IngameScript
             }
 
 
+            public override void AdjustFromController(Song song, Program prog)
+            {
+                if (g_remote.RotationIndicator.X != 0) 
+                    prog.AdjustFromController(song, this, -g_remote.RotationIndicator.X/ControlSensitivity);
+            }
+
+
+            public override Setting GetOrAddSettingFromTag(string tag)
+            {
+                switch (tag)
+                {
+                    case "Trig": return Trigger  ?? (Trigger  = new Parameter(this, this, tag));
+                    case "Env":  return Envelope ?? (Envelope = new Envelope (this));
+                    case "LFO":  return Lfo      ?? (Lfo      = new LFO      (this));
+                    case "Mod":  return Modulate ?? (Modulate = new Modulate (this));
+                }
+
+                return null;
+            }
+
+
             public override bool HasDeepParams(Channel chan, int src)
             {
                 return
-                       Envelope != null
+                       Trigger  != null
+                    || Envelope != null
                     || Lfo      != null
                     || (chan?.HasKeys(GetPath(src)) ?? false)
                     || _IsCurrent;
@@ -205,7 +226,8 @@ namespace IngameScript
 
             public override void Remove(Setting setting)
             {
-                     if (setting == Envelope) Envelope = null;
+                     if (setting == Trigger)  Trigger  = null;
+                else if (setting == Envelope) Envelope = null;
                 else if (setting == Lfo)      Lfo      = null;
             }
 
@@ -238,9 +260,9 @@ namespace IngameScript
 
 
                 if (   !prog.TooComplex
-                    && !SettingOrParentHasTag(this, "Att")
-                    && !SettingOrParentHasTag(this, "Dec")
-                    && !SettingOrParentHasTag(this, "Rel")
+                    && !HasTagOrParent(this, "Att")
+                    && !HasTagOrParent(this, "Dec")
+                    && !HasTagOrParent(this, "Rel")
                     && RND > 0.7f)
                 {
                     Lfo = new LFO(this);
@@ -251,26 +273,6 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Song song, Program prog)
-            {
-                if (g_remote.RotationIndicator.X != 0) 
-                    prog.AdjustFromController(song, this, -g_remote.RotationIndicator.X/ControlSensitivity);
-            }
-
-
-            public override Setting GetOrAddSettingFromTag(string tag)
-            {
-                switch (tag)
-                {
-                    case "Env": return Envelope ?? (Envelope = new Envelope(this));
-                    case "LFO": return Lfo      ?? (Lfo      = new LFO     (this));
-                    case "Mod": return Modulate ?? (Modulate = new Modulate(this));
-                }
-
-                return null;
-            }
-
-
             public override string Save()
             {
                 return
@@ -278,6 +280,7 @@ namespace IngameScript
 
                     + S(m_value)
 
+                    + Program.Save(Trigger)
                     + Program.Save(Envelope)
                     + Program.Save(Lfo)
                     + Program.Save(Modulate);
@@ -298,15 +301,17 @@ namespace IngameScript
                 param.m_value = float.Parse(data[i++]);
 
                 while (i < data.Length
-                    && (   data[i] == "Env" 
+                    && (   data[i] == "Trig" 
+                        || data[i] == "Env" 
                         || data[i] == "LFO" 
                         || data[i] == "Mod"))
                 {
                     switch (data[i])
                     { 
-                        case "Env": param.Envelope = Envelope.Load(data, ref i, inst, iSrc, param); break;
-                        case "LFO": param.Lfo      = LFO     .Load(data, ref i, inst, iSrc, param); break;
-                        case "Mod": param.Modulate = Modulate.Load(data, ref i, inst, iSrc, param); break;
+                        case "Trig": param.Trigger  = Parameter.Load(data, ref i, inst, iSrc, param); break;
+                        case "Env":  param.Envelope = Envelope .Load(data, ref i, inst, iSrc, param); break;
+                        case "LFO":  param.Lfo      = LFO      .Load(data, ref i, inst, iSrc, param); break;
+                        case "Mod":  param.Modulate = Modulate .Load(data, ref i, inst, iSrc, param); break;
                     }
                 }
 
@@ -314,18 +319,120 @@ namespace IngameScript
             }
 
 
+            public override void GetLabel(out string str, out float width)
+            {
+                if (Tag == "Vol")
+                {
+                    width = 72f;
+                    str = printValue(100 * Math.Log10(Value), 0, true, 0).PadLeft(4);
+                }
+                else
+                {
+                    width = 85f; 
+                    str   = printValue(CurValue, 2, true, 1).PadLeft(6);
+                }
+            }
+
+
+            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            {
+                base.DrawLabel(sprites, x, y, dp);
+
+                if (Trigger  != null) { Trigger .DrawLabel(sprites, x + dp.OffX, y + dp.OffY, dp); dp.Children = true; }
+                if (Envelope != null) { Envelope.DrawLabel(sprites, x + dp.OffX, y + dp.OffY, dp); dp.Children = true; }
+                if (Lfo      != null) { Lfo     .DrawLabel(sprites, x + dp.OffX, y + dp.OffY, dp); dp.Children = true; }
+
+                base.FinishDrawLabel(dp);
+            }
+
+
+            public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
+            {
+                DrawRect(sprites, x, y, w, h, Color.Yellow);
+
+                if (   Tag == "Att"
+                    || Tag == "Dec"
+                    || Tag == "Sus"
+                    || Tag == "Rel"
+                    || Tag == "Amp"
+                    || Tag == "Freq"
+                    ||    Parent != null // LFO offset has a parent
+                       && Tag == "Off"
+                    || Tag == "Dry"
+                    || Tag == "Cnt"
+                    || Tag == "Time"
+                    || Tag == "Lvl"
+                    || Tag == "Pow"
+                    || Tag == "Cut"
+                    || Tag == "Res"
+                    || Tag == "Shrp")
+                {
+                    Parent.DrawSetting(sprites, x, y, w, h, dp);
+                }
+                else if (Tag == "Vol")
+                {
+                    var volWidth  = 60;
+                    var volHeight = 180;
+
+                    DrawSoundLevel(
+                        sprites, 
+                        x + w/2 - volWidth, 
+                        y + h/2 - volHeight/2, 
+                        volWidth, 
+                        volHeight, 
+                        Value, 
+                        CurValue);
+
+                    DrawString(
+                        sprites,
+                        printValue(100 * Math.Log10(Value), 0, true, 0) + " dB", 
+                        x + w/2 + 10, 
+                        y + h/2 + volHeight/2 - 30,
+                        1f, 
+                        color6);
+                }
+                else if (Parent == null // source offset has no parent
+                      && Tag    == "Off")
+                    DrawValueHorizontal(sprites, x, y, w, h, Min, Max, Value, CurValue, Tag);
+                else                                
+                    DrawValueVertical  (sprites, x, y, w, h, Min, Max, Value, CurValue, Tag, false);
+            }
+
+
+            public void DrawSettingValues(List<MySprite> sprites, float x, float y, float w, float h, float vol, Program prog)
+            {
+                var bx = 40;
+                var by = 55;
+
+                if (Tag == "Vol")
+                {
+                    DrawSoundLevel(sprites, x + bx + 20, y + by + 90, 60, 120, Value, CurValue);
+
+                    var db = printValue(100 * Math.Log10(Value), 0, true, 0) + " dB";
+                    DrawString(sprites, db, x + bx + 100, y + by + 180, 1f, color6);
+                }
+                else if (Parent == null // source offset has no parent
+                      && Tag    == "Off")
+                    DrawValueHorizontal(sprites, x + bx +  5, y + by + 90, 180,  50, Min, Max, Value, CurValue, Tag);
+                else
+                    DrawValueVertical  (sprites, x + bx + 20, y + by + 90,  60, 120, Min, Max, Value, CurValue, Tag, false);
+            }
+
+
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                if (!AnyParentIsEnvelope)
+                if (   !AnyParentIsEnvelope
+                    && !HasTagOrAnyParent(this,"Trig"))
                 {
-                    DrawFuncButton(sprites, "Trig", 0, w, h, true, Envelope != null);
+                    DrawFuncButton(sprites, "Trig", 0, w, h, true, Trigger  != null);
                     DrawFuncButton(sprites, "Env",  1, w, h, true, Envelope != null);
-
-                    if (   Tag != "Vol"
-                        && (   Parent == null
-                            || Parent.GetType() != typeof(Harmonics)))
-                        DrawFuncButton(sprites, "X", 5, w, h, false, false, mainPressed.Contains(5));
                 }
+
+                if (   !AnyParentIsEnvelope
+                    && Tag != "Vol"
+                    && (   Parent == null
+                        || Parent.GetType() != typeof(Harmonics)))
+                    DrawFuncButton(sprites, "X", 5, w, h, false, false, mainPressed.Contains(5));
 
                 DrawFuncButton(sprites, "LFO",  2, w, h, true, Lfo != null);
 
@@ -334,33 +441,33 @@ namespace IngameScript
             }
 
 
-            public override void Func(int func, Program prog)
+            public override void Func(int func)
             {
                 switch (func)
                 {
                 case 0:
-                    if (AnyParentIsEnvelope) break;
-
-                    prog.AddNextSetting("Trig");
+                    if (   AnyParentIsEnvelope
+                        || HasTagOrAnyParent(this, "Trig")) break;
+                    AddNextSetting("Trig");
                     break;
 
                 case 1:
                     if (AnyParentIsEnvelope) break;
-                    prog.AddNextSetting("Env");
+                    AddNextSetting("Env");
                     break;
 
                 case 2:
-                    prog.AddNextSetting("LFO");
+                    AddNextSetting("LFO");
                     break;
 
                 case 3:
-                    prog.g_paramKeys = true;
-                    prog.UpdateChordLights();
+                    g_paramKeys = true;
+                    UpdateChordLights();
                     break;
 
                 case 4:
-                    prog.g_paramAuto = true;
-                    prog.UpdateChordLights();
+                    g_paramAuto = true;
+                    UpdateChordLights();
                     break;
 
                 case 5: 
@@ -382,7 +489,7 @@ namespace IngameScript
                         || Tag == "Scl")
                         break;
 
-                    prog.RemoveSetting(this); 
+                    RemoveSetting(this); 
                     break;
                 }
             }
@@ -402,11 +509,10 @@ namespace IngameScript
             public bool AnyParentIsEnvelope { get 
             {
                 return
-                       SettingOrAnyParentHasTag(this, "Att")
-                    || SettingOrAnyParentHasTag(this, "Dec")
-                    || SettingOrAnyParentHasTag(this, "Sus")
-                    || SettingOrAnyParentHasTag(this, "Rel")
-                    || SettingOrAnyParentHasTag(this, "Trig");
+                       HasTagOrAnyParent(this, "Att")
+                    || HasTagOrAnyParent(this, "Dec")
+                    || HasTagOrAnyParent(this, "Sus")
+                    || HasTagOrAnyParent(this, "Rel");
             } }
         }
 

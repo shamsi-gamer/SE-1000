@@ -31,10 +31,10 @@ namespace IngameScript
 
 
             var xt = 256f;
-            var wt = xt / nSteps;
+            var wt = xt / g_nSteps;
             var ht = wt;
 
-            var pw = wt * nSteps;
+            var pw = wt * g_nSteps;
             var ph = ht * g_nChans;
 
             var pxCur = x - (nDsp*4 + g_songOff) * pw + CurPat * pw;
@@ -87,8 +87,8 @@ namespace IngameScript
             }
 
 
-            if (   g_song.EditPos >= first * nSteps
-                && g_song.EditPos <  next  * nSteps)
+            if (   g_song.EditPos >= first * g_nSteps
+                && g_song.EditPos <  next  * g_nSteps)
             {
                 var pl    = x - pw * (nDsp * 4 * pw + CurPat + g_songOff);
                 var xTick = wt * g_song.EditPos;
@@ -108,7 +108,7 @@ namespace IngameScript
                 var _p = p - g_songOff;
                 var px = x - _f * pw + _p * pw;
 
-                if (g_piano) DrawPianoRoll(sprites, px, py, pw, ph, g_song, p, 1, false, nSteps);
+                if (g_piano) DrawPianoRoll(sprites, px, py, pw, ph, g_song, p, 1, false, g_nSteps);
                 else         DrawPattern  (sprites, px, py, pw, ph, g_song, p, 1, false);
 
                 if (g_paramKeys)
@@ -131,18 +131,18 @@ namespace IngameScript
             }
 
 
-            DrawRect(sprites, pxCur + 1, py, wt * nSteps - 2, ph, color6, 2);
+            DrawRect(sprites, pxCur + 1, py, wt * g_nSteps - 2, ph, color6, 2);
 
 
-            if (OK(PlayStep))
+            if (OK(g_song.PlayStep))
             {
                 var pl    = x  - pw * (nDsp * 4 + g_songOff);
-                var xTick = pl + wt * (int)PlayStep;
+                var xTick = pl + wt * (int)g_song.PlayStep;
 
                 FillRect(sprites, xTick, py, wt, ph, color6);
 
-                if (g_piano) DrawPianoNeg(sprites, pl, py, pw, ph, g_song, PlayPat, (int)PlayStep, false);
-                else         DrawPatNeg  (sprites, pl, py, pw, ph, g_song, PlayPat, (int)PlayStep, false);
+                if (g_piano) DrawPianoNeg(sprites, pl, py, pw, ph, g_song, g_song.PlayPat, (int)g_song.PlayStep, false);
+                else         DrawPatNeg  (sprites, pl, py, pw, ph, g_song, g_song.PlayPat, (int)g_song.PlayStep, false);
             }
 
 
@@ -178,8 +178,8 @@ namespace IngameScript
 
                 FillRect(sprites, px + bw * CurPat, by, bw, sh, color4);
 
-                if (OK(PlayStep))
-                    FillRect(sprites, px + bw / nSteps * PlayStep, by, 4, sh, color6);
+                if (OK(g_song.PlayStep))
+                    FillRect(sprites, px + bw / g_nSteps * g_song.PlayStep, by, 4, sh, color6);
             }
 
 

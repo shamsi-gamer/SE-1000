@@ -161,12 +161,14 @@ namespace IngameScript
                     if (i == 0) snd0 = snd;
 
                     var lTime = g_time - sndTime;
-                    var sTime = StartTime > -1 ? g_time - StartTime : lTime;
+                    var sTime = g_song.StartTime > -1 ? g_time - g_song.StartTime : lTime;
 
-                    Tones[i].CurValue = Tones[i].GetValue(g_time, lTime, sTime, sndLen, note, iSrc, snd.TriggerValues, prog) * vol;
-                    Tones[i].CurValue = ApplyFilter(Tones[i].CurValue, src, hrmPos, g_time, lTime, sTime, sndLen, note, iSrc, snd.TriggerValues, prog); 
+                    var tp = new TimeParams(g_time, lTime, sTime, note, sndLen, iSrc, snd.TriggerValues, prog);
 
-                    //snd.TriggerVolume = Tones[i].CurValue;
+                    Tones[i].SetValue(Tones[i].GetValue(tp) * vol,                     note, iSrc);
+                    Tones[i].SetValue(ApplyFilter(Tones[i].CurValue, src, hrmPos, tp), note, iSrc); 
+
+                    snd.TriggerVolume = Tones[i].CurValue;
 
                     sounds.Add(snd);
                 }
@@ -219,6 +221,17 @@ namespace IngameScript
             }
 
 
+            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            {
+                base.DrawLabel(sprites, x, y, dp);
+
+                for (int i = 0; i < Tones.Length; i++)
+                    if (Tones[i].HasDeepParams(null, CurSrc)) { Tones[i].DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                
+                base.FinishDrawLabel(dp);
+            }
+
+
             public override string Save()
             {
                 var hrm = W(Tag);
@@ -259,7 +272,7 @@ namespace IngameScript
             }
 
 
-            public override void Func(int func, Program prog)
+            public override void Func(int func)
             {
                 switch (func)
                 {
@@ -285,8 +298,8 @@ namespace IngameScript
                         SetPreset(CurPreset);
                         break;
                     }
-                    case 4: prog.AddNextSetting(S(CurTone)); break;
-                    case 5: prog.RemoveSetting(this); break;
+                    case 4: AddNextSetting(S(CurTone)); break;
+                    case 5: RemoveSetting(this); break;
                 }
             }
         }

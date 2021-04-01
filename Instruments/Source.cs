@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VRage.Game.GUI.TextPanel;
 
 
 namespace IngameScript
@@ -37,7 +38,7 @@ namespace IngameScript
 
                 Offset     = null;
 
-                Volume     = (Parameter)NewSettingFromTag("Vol", null);
+                Volume     = (Parameter)NewFromTag("Vol", null);
                 Tune       = null;
 
                 Harmonics  = null;
@@ -129,19 +130,18 @@ namespace IngameScript
 
 
                 var sndTime = 
-                    StartTime > -1
-                    ? StartTime + note.SongTime + 1
+                    g_song.StartTime > -1
+                    ? g_song.StartTime + note.SongTime + 1
                     : g_time + 1;
 
-                var lTime = g_time - StartTime - note.SongTime;
-                var sTime = StartTime > -1 ? g_time - StartTime : lTime;
+                var lTime = g_time - g_song.StartTime - note.SongTime;
+                var sTime = g_song.StartTime > -1 ? g_time - g_song.StartTime : lTime;
+
+                var tp = new TimeParams(sndTime, lTime, sTime, note, note.FrameLength, Index, triggerValues, prog);
+
 
                 if (Offset != null)
-                { 
-                    sndTime += (int)Math.Round(
-                          Offset.GetValue(g_time, lTime, sTime, note.FrameLength, note, Index, triggerValues, prog)
-                        * FPS);
-                }
+                    sndTime += (int)Math.Round(Offset.GetValue(tp) * FPS);
 
 
                 var noteNum = AdjustNoteNumber(note, this, note.FrameLength, prog);
@@ -153,16 +153,19 @@ namespace IngameScript
 
                 var vol = note.Volume;
                 
-                // calling GetValue() populates triggerValues, the return values are ignored
-                inst.Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, -1,    triggerValues, prog);
-                     Volume.GetValue(g_time, lTime, sTime, note.FrameLength, note, Index, triggerValues, prog);
 
+                // the next two GetValue() calls populate triggerValues, the return values are ignored
 
-                var iSrc = Instrument.Sources.IndexOf(this);
+                tp.SourceIndex = -1;
+                inst.Volume.Trigger?.GetValue(tp);
+
+                tp.SourceIndex = Index;
+                Volume.Trigger?.GetValue(tp);
+
 
                 string relPath = "";
                 
-                     if (     Volume.Envelope != null) relPath =      Volume.Envelope.Release.GetPath(iSrc);
+                     if (     Volume.Envelope != null) relPath =      Volume.Envelope.Release.GetPath(Index);
                 else if (inst.Volume.Envelope != null) relPath = inst.Volume.Envelope.Release.GetPath(-1);
 
                 var _relLen = triggerValues.Find(v => v.Path == relPath);
@@ -170,7 +173,6 @@ namespace IngameScript
 
 
                 var sample = GetSample(noteNum);
-
 
                 if (Harmonics != null)
                 {
@@ -182,19 +184,7 @@ namespace IngameScript
                         || noteNum > 150 * NoteScale)
                         return;
 
-                    vol = ApplyFilter(
-                        vol, 
-                        this, 
-                        0, 
-                        sndTime, 
-                        0, 
-                        sTime,
-                        note.FrameLength, 
-                        note, 
-                        iSrc,
-                        triggerValues,
-                        prog);
-
+                    vol = ApplyFilter(vol, this, 0, tp);
 
                     _sounds.Add(new Sound(
                         sample,
@@ -205,7 +195,7 @@ namespace IngameScript
                         relLen,
                         vol * OscMult,
                         Instrument,
-                        iSrc,
+                        Index,
                         note,
                         triggerValues,
                         false,
@@ -223,10 +213,7 @@ namespace IngameScript
                         prog.AddSoundAndEchos(
                             sounds, 
                             snd, 
-                            del, 
-                            Delay != null
-                            ? snd.SourceIndex
-                            : -1);
+                            del);
                     else
                         sounds.Add(snd);
                 }
@@ -244,7 +231,7 @@ namespace IngameScript
                 if (   RND > 0.7f
                     && !used.Contains(Oscillator))
                 {
-                    Offset = (Parameter)NewSettingFromTag("Off", null);
+                    Offset = (Parameter)NewFromTag("Off", null);
                     Offset.Randomize(prog);
                 }
                 else
@@ -365,6 +352,24 @@ namespace IngameScript
                         case "Flt":  src.Filter    = Filter   .Load(data, ref i, inst, iSrc);       break;
                         case "Del":  src.Delay     = Delay    .Load(data, ref i, inst, iSrc);       break;
                     }
+                }
+            }
+
+
+            public void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
+            {
+                if (CurSet > -1)
+                { 
+                    CurSetting.DrawFuncButtons(sprites, w, y, chan);
+                }
+                else
+                {
+                    DrawFuncButton(sprites, "Off",  0, w, y, true, Offset    != null);
+                    DrawFuncButton(sprites, "Vol",  1, w, y, true, Volume.HasDeepParams(chan, Index));
+                    DrawFuncButton(sprites, "Tune", 2, w, y, true, Tune      != null);
+                    DrawFuncButton(sprites, "Hrm",  3, w, y, true, Harmonics != null);
+                    DrawFuncButton(sprites, "Flt",  4, w, y, true, Filter    != null);
+                    DrawFuncButton(sprites, "Del",  5, w, y, true, Delay     != null);
                 }
             }
         }

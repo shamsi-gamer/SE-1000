@@ -18,11 +18,11 @@ namespace IngameScript
 
             public Delay() : base("Del", null)
             {
-                Dry   = (Parameter)NewSettingFromTag("Dry",  this);
-                Count = (Parameter)NewSettingFromTag("Cnt",  this);
-                Time  = (Parameter)NewSettingFromTag("Time", this);
-                Level = (Parameter)NewSettingFromTag("Lvl",  this);
-                Power = (Parameter)NewSettingFromTag("Pow",  this);
+                Dry   = (Parameter)NewFromTag("Dry",  this);
+                Count = (Parameter)NewFromTag("Cnt",  this);
+                Time  = (Parameter)NewFromTag("Time", this);
+                Level = (Parameter)NewFromTag("Lvl",  this);
+                Power = (Parameter)NewFromTag("Pow",  this);
             }
 
 
@@ -42,18 +42,20 @@ namespace IngameScript
             }
 
 
-            public float GetVolume(int i, long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues, Program prog)
+            public float GetVolume(int i, TimeParams tp)
             {
-                if (prog.TooComplex) return 0;
+                if (tp.Program.TooComplex) return 0;
 
                 if (i == 0)
-                    return Dry.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog);
-
+                {
+                    Log("dry");
+                    return Dry.GetValue(tp);
+                }
                 else
                 { 
-                    var dc = Count.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog) - 1; // -1 because 0 is the source sound
-                    var dl = Level.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog);
-                    var dp = Power.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog);
+                    var dc = Count.GetValue(tp) - 1; // -1 because 0 is the source sound
+                    var dl = Level.GetValue(tp);
+                    var dp = Power.GetValue(tp);
 
                     return 
                         dc != 0
@@ -120,11 +122,11 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Dry":  return Dry   ?? (Dry   = (Parameter)NewSettingFromTag("Dry",  this));
-                    case "Cnt":  return Count ?? (Count = (Parameter)NewSettingFromTag("Cnt",  this));
-                    case "Time": return Time  ?? (Time  = (Parameter)NewSettingFromTag("Time", this));
-                    case "Lvl":  return Level ?? (Level = (Parameter)NewSettingFromTag("Lvl",  this));
-                    case "Pow":  return Power ?? (Power = (Parameter)NewSettingFromTag("Pow",  this));
+                    case "Dry":  return Dry   ?? (Dry   = (Parameter)NewFromTag(tag, this));
+                    case "Cnt":  return Count ?? (Count = (Parameter)NewFromTag(tag, this));
+                    case "Time": return Time  ?? (Time  = (Parameter)NewFromTag(tag, this));
+                    case "Lvl":  return Level ?? (Level = (Parameter)NewFromTag(tag, this));
+                    case "Pow":  return Power ?? (Power = (Parameter)NewFromTag(tag, this));
                 }
 
                 return null;
@@ -160,6 +162,129 @@ namespace IngameScript
             }
 
 
+            public override void GetLabel(out string str, out float width)
+            {
+                width = 176;
+
+                str =
+                      printValue(Count.CurValue, 0, true, 0).PadLeft(2) + "  "
+                    + printValue(Time .CurValue, 2, true, 0).PadLeft(4) + "  "
+                    + printValue(Level.CurValue, 2, true, 0).PadLeft(4) + "  "
+                    + printValue(Power.CurValue, 2, true, 0).PadLeft(4);
+            }
+
+
+            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            {
+                base.DrawLabel(sprites, x, y, dp);
+
+                if (Count.HasDeepParams(null, CurSrc)) { Count.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Time .HasDeepParams(null, CurSrc)) { Time .DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Level.HasDeepParams(null, CurSrc)) { Level.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Power.HasDeepParams(null, CurSrc)) { Power.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+
+                base.FinishDrawLabel(dp);
+            }
+
+
+            public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams _dp)
+            {
+                var b = 18;
+
+
+                FillRect(sprites, x, y + h - b - 1, w, 2, color3);
+
+                var dd = Dry  .CurValue;
+                var dc = Count.CurValue;
+                var dt = Time .CurValue * 100;
+                var dl = Level.CurValue;
+                var dp = Power.CurValue;
+
+
+                var fs = 0.5f;
+                var dx = 0f;
+
+
+                var tpSet = new TimeParams(g_time, 0, 0, null, EditLength, CurSrc, _triggerDummy, _dp.Program);
+
+                for (int i = 0; i < (int)dc && dx < w - dt; i++)
+                {
+                    dx = i * dt;
+
+                    FillRect(sprites, 
+                        x + dx + (i > 0 ? 2 : 0), 
+                        y + h - b, 
+                        i == 0 ? 8 : 4, 
+                        -(h - b*2) * GetVolume(i, tpSet),
+                        color4);
+                }
+
+
+                // dry
+                DrawString(
+                    sprites,
+                    S00(dd), // -1 because 0 is the source sound
+                    x,
+                    y - b + 8,
+                    fs,
+                    IsCurParam("Dry") ? color6 : color3);
+
+
+                // count
+                DrawString(
+                    sprites, 
+                    S(Math.Round(dc-1)), // -1 because 0 is the source sound
+                    x,
+                    y + h - b + 8, 
+                    fs, 
+                    IsCurParam("Cnt") ? color6 : color3);
+
+
+                if (dc-1 > 0)
+                { 
+                    // level
+                    var lx = x + dt + 15;
+
+                    DrawString(
+                        sprites, 
+                        S00(dl), 
+                        lx, 
+                        y + h - b - (h - b*2) * dl - 24, 
+                        fs,
+                        IsCurParam("Lvl") ? color6 : color3, 
+                        TaC);
+
+
+                    // time
+                    DrawString(
+                        sprites, 
+                        S0(Math.Round(dt*10)) + " ms", 
+                        x + 60, 
+                        y + h - b + 8, 
+                        fs,
+                        IsCurParam("Time") ? color6 : color3, 
+                        TaC);
+
+
+                    // power
+                    var px  = x + MinMax(90, dt*(dc-1)/2, w);
+                    var dim = dc > 1 && Math.Abs(px - lx) > 20 ? color6 : color3;
+
+                    var tp  = new TimeParams(0, 0, 0, null, EditLength, CurSrc, _triggerDummy, _dp.Program);
+                    var vol = GetVolume(Math.Max(0, (int)dc / 2 - 1), tp);
+
+                    DrawString(
+                        sprites, 
+                        S00(dp),
+                        px,
+                        y + h - b - (h - b*2) * vol - 24,
+                        fs,
+                        IsCurParam("Pow") ? color6 : color3,
+                        TaC);
+                }
+            }
+
+
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
                 DrawFuncButton(sprites, "Dry",  0, w, h, true, Dry  .HasDeepParams(chan, -1));
@@ -171,16 +296,16 @@ namespace IngameScript
             }
 
 
-            public override void Func(int func, Program prog)
+            public override void Func(int func)
             {
                 switch (func)
                 {
-                    case 0: prog.AddNextSetting("Dry");  break;
-                    case 1: prog.AddNextSetting("Cnt");  break;
-                    case 2: prog.AddNextSetting("Time"); break;
-                    case 3: prog.AddNextSetting("Lvl");  break;
-                    case 4: prog.AddNextSetting("Pow");  break;
-                    case 5: prog.RemoveSetting(this);    break;
+                    case 0: AddNextSetting("Dry");  break;
+                    case 1: AddNextSetting("Cnt");  break;
+                    case 2: AddNextSetting("Time"); break;
+                    case 3: AddNextSetting("Lvl");  break;
+                    case 4: AddNextSetting("Pow");  break;
+                    case 5: RemoveSetting(this);    break;
                 }
             }
         }

@@ -114,8 +114,6 @@ namespace IngameScript
 
             curPath = cfg[c++];
 
-            if (!long .TryParse(cfg[c++], out playTime      )) return false;
-
             if (!int  .TryParse(cfg[c++], out g_editStep    )) return false;
             if (!int  .TryParse(cfg[c++], out g_editLength  )) return false;
 
@@ -128,7 +126,6 @@ namespace IngameScript
             if (!int  .TryParse(cfg[c++], out g_instOff     )) return false;
             if (!int  .TryParse(cfg[c++], out g_srcOff      )) return false;
                                                             
-            if (!int  .TryParse(cfg[c++], out g_cue         )) return false;
             if (!int  .TryParse(cfg[c++], out g_solo        )) return false;
 
             if (!float.TryParse(cfg[c++], out g_volume      )) return false;

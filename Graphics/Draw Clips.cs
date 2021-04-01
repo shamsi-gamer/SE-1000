@@ -54,7 +54,7 @@ namespace IngameScript
                         y + h/4*iy + h/8 - 15 - (nNameLines-1)*20,
                         1,
                         color0,
-                        TextAlignment.CENTER);
+                        TaC);
                 }
             }
 

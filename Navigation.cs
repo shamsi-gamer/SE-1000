@@ -12,18 +12,18 @@ namespace IngameScript
 
         void Play()
         {
-            if (PlayTime > -1)
+            if (g_song.PlayTime > -1)
                 return;
 
-            if (g_cue > -1)
+            if (g_song.Cue > -1)
             {
-                PlayTime = GetPatTime(g_cue);
-                g_cue = -1;
+                g_song.PlayTime = GetPatTime(g_song.Cue);
+                g_song.Cue = -1;
             }
             else
-                PlayTime = GetPatTime(CurPat);
+                g_song.PlayTime = GetPatTime(CurPat);
 
-            StartTime = g_time - PlayTime;
+            g_song.StartTime = g_time - g_song.PlayTime;
 
             UpdatePlayStopLights();
         }
@@ -31,7 +31,7 @@ namespace IngameScript
 
         void Stop()
         {
-            if (PlayTime < 0)
+            if (g_song.PlayTime < 0)
             {
                 var b = g_song.GetBlock(CurPat);
 
@@ -42,28 +42,20 @@ namespace IngameScript
 
                 SetCurrentPattern(_block ? b.First : 0);
 
-                g_cue = -1;
+                g_song.Cue = -1;
             }
 
 
-            StopCurrentNotes(g_song);
+            g_song.StopCurrentNotes();
 
 
-            PlayTime  = -1;
-            StartTime = -1;
-            PlayPat   = -1;
+            g_song.PlayTime  = -1;
+            g_song.StartTime = -1;
 
 
             lastNotes.Clear();
 
             UpdatePlayStopLights();
-        }
-
-
-        void Cue()
-        {
-            g_cue = g_cue == CurPat ? -1 : CurPat;
-            UpdateLight(lblCue, g_cue > -1);
         }
 
 
@@ -78,16 +70,23 @@ namespace IngameScript
             }
             else if (g_mem[m] > -1)
             {
-                if (PlayTime > -1)
+                if (g_song.PlayTime > -1)
                 {
-                    g_cue = g_mem[m];
-                    UpdateLight(lblCue, g_cue > -1);
+                    g_song.Cue = g_mem[m];
+                    UpdateLight(lblCue, g_song.Cue > -1);
                 }
                 else
                     SetCurrentPattern(g_mem[m]);
             }
 
             MarkLight(lblMem[m]);
+        }
+
+
+        void Cue()
+        {
+            g_song.SetCue();
+            UpdateLight(lblCue, g_song.Cue > -1);
         }
 
 
@@ -213,14 +212,11 @@ namespace IngameScript
                 g_song.Patterns.Insert(destPat, pat);
             }
 
-            if (PlayTime > -1)
-            {
-                PlayTime += GetPatTime(CurPat - destPat);
-                PlayPat   = (int)(PlayStep / nSteps);
-            }
+            if (g_song.PlayTime > -1)
+                g_song.PlayTime += GetPatTime(CurPat - destPat);
 
             if (OK(g_song.EditPos))
-                g_song.EditPos = CurPat * nSteps + g_song.EditPos % nSteps;
+                g_song.EditPos = CurPat * g_nSteps + g_song.EditPos % g_nSteps;
 
 
             g_song.UpdateAutoKeys();
@@ -260,13 +256,13 @@ namespace IngameScript
 
                 if (g_autoCue)
                 {
-                    g_cue = CurPat;
-                    UpdateLight(lblCue, g_cue > -1);
+                    g_song.Cue = CurPat;
+                    UpdateLight(lblCue, g_song.Cue > -1);
                 }
             }
 
             if (OK(g_song.EditPos))
-                g_song.EditPos = CurPat * nSteps + g_song.EditPos % nSteps;
+                g_song.EditPos = CurPat * g_nSteps + g_song.EditPos % g_nSteps;
 
 
             //if (PlayTime > -1)
@@ -356,13 +352,13 @@ namespace IngameScript
 
 
             if (OK(g_song.EditPos))
-                g_song.EditPos = Math.Min(g_song.EditPos, g_song.Patterns.Count * nSteps);
+                g_song.EditPos = Math.Min(g_song.EditPos, g_song.Patterns.Count * g_nSteps);
 
             //if (PlayTime > -1)
             //    StartTime += nSteps * g_ticksPerStep;
 
-            if (PlayPat >= g_song.Patterns.Count)
-                PlayPat  = g_song.Patterns.Count-1;
+            //if (g_song.PlayPat >= g_song.Patterns.Count)
+            //    g_song.PlayPat  = g_song.Patterns.Count-1;
 
 
             g_song.UpdateAutoKeys();

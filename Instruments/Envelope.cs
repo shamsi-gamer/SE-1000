@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
+using VRageMath;
 
 
 namespace IngameScript
@@ -21,10 +22,10 @@ namespace IngameScript
 
             public Envelope(Setting parent) : base("Env", parent)
             {
-                Attack      = (Parameter)NewSettingFromTag("Att", this);
-                Decay       = (Parameter)NewSettingFromTag("Dec", this);
-                Sustain     = (Parameter)NewSettingFromTag("Sus", this);
-                Release     = (Parameter)NewSettingFromTag("Rel", this);
+                Attack      = (Parameter)NewFromTag("Att", this);
+                Decay       = (Parameter)NewFromTag("Dec", this);
+                Sustain     = (Parameter)NewFromTag("Sus", this);
+                Release     = (Parameter)NewFromTag("Rel", this);
 
                 TrigAttack  = 
                 TrigDecay   = 
@@ -51,51 +52,51 @@ namespace IngameScript
             }
 
 
-            public float GetValue(long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues, Program prog)
+            public float GetValue(TimeParams tp)
             {
-                if (prog.TooComplex) return 0;
+                if (tp.Program.TooComplex) return 0;
 
 
-                var trigAtt = triggerValues.Find(v => v.Path == Attack .GetPath(src));
-                var trigDec = triggerValues.Find(v => v.Path == Decay  .GetPath(src));
-                var trigRel = triggerValues.Find(v => v.Path == Release.GetPath(src));
+                var trigAtt = tp.TriggerValues.Find(v => v.Path == Attack .GetPath(tp.SourceIndex));
+                var trigDec = tp.TriggerValues.Find(v => v.Path == Decay  .GetPath(tp.SourceIndex));
+                var trigRel = tp.TriggerValues.Find(v => v.Path == Release.GetPath(tp.SourceIndex));
 
                 if (trigAtt == null)
                 {
                     trigAtt = new TriggerValue(
-                        Attack.GetPath(src),
-                        Attack.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog));
+                        Attack.GetPath(tp.SourceIndex),
+                        Attack.GetValue(tp));
 
-                    triggerValues.Add(trigAtt);
+                    tp.TriggerValues.Add(trigAtt);
                 }
 
                 if (trigDec == null)
                 {
                     trigDec = new TriggerValue(
-                        Decay.GetPath(src),
-                        Decay.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog));
+                        Decay.GetPath(tp.SourceIndex),
+                        Decay.GetValue(tp));
 
-                    triggerValues.Add(trigDec);
+                    tp.TriggerValues.Add(trigDec);
                 }
 
                 if (trigRel == null)
                 {
                     trigRel = new TriggerValue(
-                        Release.GetPath(src),
-                        Release.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog));
+                        Release.GetPath(tp.SourceIndex),
+                        Release.GetValue(tp));
 
-                    triggerValues.Add(trigRel);
+                    tp.TriggerValues.Add(trigRel);
                 }
 
                 float a = trigAtt.Value,
                       d = trigDec.Value,
-                      s = Sustain.GetValue(gTime, lTime, sTime, noteLen, note, src, triggerValues, prog),
+                      s = Sustain.GetValue(tp),
                       r = trigRel.Value;
                 
-                if (note != null)
-                    noteLen = note.FrameLength;
+                if (tp.Note != null)
+                    tp.NoteLength = tp.Note.FrameLength;
 
-                return GetValue(lTime, noteLen, a, d, s, r);
+                return GetValue(tp.Local, tp.NoteLength, a, d, s, r);
             }
 
 
@@ -183,10 +184,10 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Att": return Attack  ?? (Attack  = (Parameter)NewSettingFromTag("Att", this));
-                    case "Dec": return Decay   ?? (Decay   = (Parameter)NewSettingFromTag("Dec", this));
-                    case "Sus": return Sustain ?? (Sustain = (Parameter)NewSettingFromTag("Sus", this));
-                    case "Rel": return Release ?? (Release = (Parameter)NewSettingFromTag("Rel", this));
+                    case "Att": return Attack  ?? (Attack  = (Parameter)NewFromTag("Att", this));
+                    case "Dec": return Decay   ?? (Decay   = (Parameter)NewFromTag("Dec", this));
+                    case "Sus": return Sustain ?? (Sustain = (Parameter)NewFromTag("Sus", this));
+                    case "Rel": return Release ?? (Release = (Parameter)NewFromTag("Rel", this));
                 }
 
                 return null;
@@ -220,25 +221,168 @@ namespace IngameScript
             }
 
 
-            public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
+            public override void GetLabel(out string str, out float width)
             {
-                DrawFuncButton(sprites, "A", 1, w, h, true, Attack .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "D", 2, w, h, true, Decay  .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "S", 3, w, h, true, Sustain.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "R", 4, w, h, true, Release.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "X", 5, w, h, false, false, mainPressed.Contains(5));
+                width = 186;
+
+                str =
+                      printValue(Attack .CurValue, 2, true, 0).PadLeft(4) + "  "
+                    + printValue(Decay  .CurValue, 2, true, 0).PadLeft(4) + "  "
+                    + printValue(Sustain.CurValue, 2, true, 0).PadLeft(4) + "  "
+                    + printValue(Release.CurValue, 2, true, 0).PadLeft(4);
             }
 
 
-            public override void Func(int func, Program prog)
+            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            {
+                base.DrawLabel(sprites, x, y, dp);
+
+                if (Attack .HasDeepParams(null, CurSrc)) { Attack .DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Decay  .HasDeepParams(null, CurSrc)) { Decay  .DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Sustain.HasDeepParams(null, CurSrc)) { Sustain.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Release.HasDeepParams(null, CurSrc)) { Release.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+
+                base.FinishDrawLabel(dp);
+            }
+
+
+            public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
+            {
+                var sTime = 
+                    g_song.StartTime > -1
+                    ? g_time - g_song.StartTime
+                    : 0;
+
+                var tp  = new TimeParams(g_time, 0, sTime, null, EditLength, -1, _triggerDummy, dp.Program);
+
+                var a = Attack .GetValue(tp);
+                var d = Decay  .GetValue(tp);
+                var s = Sustain.GetValue(tp);
+                var r = Release.GetValue(tp);
+                                                                       
+
+                var w0 = 240f;
+                var h0 = 120f;
+
+
+                //var xoff  = 20;
+                //var b     = 18;
+                var v     = Math.Min(dp.Volume, 1);
+
+                var fs    = 0.5f;
+                var scale = 1f;
+                var fps   = FPS * scale;
+
+                var x0    = x + w/2 - w0/2;
+
+                var p0    = new Vector2(x0, y + h/2 + h0/2);
+                    p0.X  = Math.Min(p0.X, x0 + w0);
+
+                var p1    = new Vector2(p0.X + a*fps, p0.Y - h0*v);
+                    p1.X  = Math.Min(p1.X, x0 + w0);
+
+                var p2    = new Vector2(p1.X + d*fps, p0.Y - h0*v * s);
+                    p2.X  = Math.Min(p2.X, x0 + w0);
+
+                var p3    = new Vector2(x0 + w0 - r*fps, p2.Y);
+                var p4    = new Vector2(x0 + w0, p0.Y);
+
+
+                var isAtt = IsCurParam("Att");
+                var isDec = IsCurParam("Dec");
+                var isSus = IsCurParam("Sus");
+                var isRel = IsCurParam("Rel");
+
+
+                var wa = isAtt ? 6 : 1;
+                var wd = isDec ? 6 : 1;
+                var ws = isSus ? 6 : 1;
+                var wr = isRel ? 6 : 1;
+
+
+                // draw envelope supports and info
+
+                var sw = 1;
+
+                DrawLine(sprites, p0.X, p0.Y, p0.X, y + h0, color3, sw);
+                DrawLine(sprites, p2.X, p2.Y, p2.X, p0.Y,   color3, sw);
+                DrawLine(sprites, p1.X, p1.Y, p1.X, y + h0, color3, sw);
+                DrawLine(sprites, p3.X, p3.Y, p3.X, p0.Y,   color3, sw);
+                DrawLine(sprites, p1.X, p2.Y, p3.X, p3.Y,   color3, sw);
+                                                              
+                DrawLine(sprites, p0.X, p0.Y, p4.X, p4.Y,   color3, sw);
+
+
+                // draw labels
+
+                DrawString(sprites, S_00(a) + (isAtt ? " s" : ""),  p0.X           +  6,  p0.Y +  3,         fs, isAtt ? color6 : color3, TaC);
+                DrawString(sprites, S_00(d) + (isDec ? " s" : ""), (p1.X + p2.X)/2 + 16, (p1.Y+p2.Y)/2 - 20, fs, isDec ? color6 : color3, TaC);
+                DrawString(sprites, S_00(s),                       (p2.X + p3.X)/2 -  5,  p2.Y - 20,         fs, isSus ? color6 : color3, TaC);
+                DrawString(sprites, S_00(r) + (isRel ? " s" : ""), (p3.X + p4.X)/2 -  5,  p0.Y +  3,         fs, isRel ? color6 : color3, TaC);
+
+
+                // draw the envelope
+
+
+                // attack
+                DrawLine(sprites, p0, p1, color6, wa);
+
+                // decay
+                var pPrev = Vector2.Zero;
+            
+                for (float f = 0; f <= 1; f += 0.01f)
+                {
+                    var p = new Vector2(
+                        p1.X + (p2.X - p1.X) * f,
+                        p1.Y + (p2.Y - p1.Y) * (1 - (float)Math.Pow(1-f, 2)));
+
+                    if (f > 0)
+                        DrawLine(sprites, pPrev, p, color6, wd);
+
+                    pPrev = p;    
+                }
+
+                // sustain
+                DrawLine(sprites, p2, p3, color6, ws);
+
+                // release
+                for (float f = 0; f <= 1; f += 0.01f)
+                {
+                    var p = new Vector2(
+                        p3.X + (p4.X - p3.X) * f,
+                        p3.Y + (p4.Y - p3.Y) * (1 - (float)Math.Pow(1-f, 2)));
+
+                    if (f > 0)
+                        DrawLine(sprites, pPrev, p, color6, wr);
+
+                    pPrev = p;    
+                }
+
+
+                if (isDec && d < 0.01)
+                    FillRect(sprites, p1.X-4, p1.Y-4, 8, 8, color6);
+            }
+
+
+            public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
+            {
+                DrawFuncButton(sprites, "A", 1, w, y, true, Attack .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "D", 2, w, y, true, Decay  .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "S", 3, w, y, true, Sustain.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "R", 4, w, y, true, Release.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "X", 5, w, y, false, false, mainPressed.Contains(5));
+            }
+
+
+            public override void Func(int func)
             {
                 switch (func)
                 {
-                    case 1: prog.AddNextSetting("Att"); break;
-                    case 2: prog.AddNextSetting("Dec"); break;
-                    case 3: prog.AddNextSetting("Sus"); break;
-                    case 4: prog.AddNextSetting("Rel"); break;
-                    case 5: prog.RemoveSetting(this);                               break;
+                    case 1: AddNextSetting("Att"); break;
+                    case 2: AddNextSetting("Dec"); break;
+                    case 3: AddNextSetting("Sus"); break;
+                    case 4: AddNextSetting("Rel"); break;
+                    case 5: RemoveSetting(this);   break;
                 }
             }
         }

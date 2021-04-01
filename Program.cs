@@ -34,8 +34,8 @@ namespace IngameScript
 
         static List<Instrument> g_inst   = new List<Instrument>();
 
-        List<Note>              g_notes  = new List<Note>();
-        List<Sound>             g_sounds = new List<Sound>();
+        static List<Note>       g_notes  = new List<Note>();
+        static List<Sound>      g_sounds = new List<Sound>();
 
         float[]                 g_dspVol = new float[g_nChans];
 
@@ -111,10 +111,11 @@ namespace IngameScript
                 g_dspVol[i] = 0;
 
 
-            GridTerminalSystem.GetBlocksOfType(g_locks, b => !b.Name.Contains("Fold"));
+            Get(g_locks, b => !b.Name.Contains("Fold"));
 
-            GridTerminalSystem.GetBlocksOfType(g_gyros);
-            GridTerminalSystem.GetBlocksOfType(g_timers);
+            Get(g_gyros);
+            Get(g_timers);
+
 
             g_lightPiston = Get("Light Piston")   as IMyPistonBase;
             g_lightHinge1 = Get("Light Hinge 1")  as IMyMotorBase;
@@ -140,7 +141,7 @@ namespace IngameScript
             {
                 Load();
 
-                UpdateLights();
+                //UpdateLights();
                 SetLightColor(g_iCol);
 
                 _loadStep++;

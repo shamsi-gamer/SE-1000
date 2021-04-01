@@ -121,7 +121,7 @@ namespace IngameScript
             var note  = -1;
 
 
-            while (step < nSteps)
+            while (step < g_nSteps)
             {
                 if (RND >= 0.5)
                 {
@@ -224,7 +224,7 @@ namespace IngameScript
             var chan  = g_song.Patterns[pat].Channels[ch];
             var param = GetCurrentParam(chan.Instrument);
 
-            for (int step = 0; step < nSteps; step++)
+            for (int step = 0; step < g_nSteps; step++)
             { 
                 if (RND < 0.5)
                     continue;

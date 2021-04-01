@@ -25,7 +25,7 @@ namespace IngameScript
             {
                 if (CurSet > -1)
                 {
-                    CurSetting.Func(func, this);
+                    CurSetting.Func(func);
                 }
                 else 
                 {
@@ -74,11 +74,10 @@ namespace IngameScript
         }
 
 
-        void AddNextSetting(string tag, Instrument inst = null, int iSrc = -2)
+        static void AddNextSetting(string tag, Instrument inst = null, int iSrc = -2)
         {
             if (inst == null) inst = SelectedInstrument;
             if (iSrc == -2)   iSrc = CurSrc;
-
 
             if (CurSet > -1)
                 CurSetting._IsCurrent = false;
@@ -98,10 +97,8 @@ namespace IngameScript
         }
 
 
-        void RemoveSetting(Setting setting)
+        static void RemoveSetting(Setting setting)
         {
-            Log($"setting.Tag = {setting.Tag}");
-
             int set = CurSet;
 
             if (   HasTag(setting, "Att")

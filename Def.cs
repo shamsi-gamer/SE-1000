@@ -11,7 +11,7 @@ namespace IngameScript
         const int   FPS = 60;
 
         const int   g_nChans = 12;
-        const int   nSteps = 16;
+        const int   g_nSteps = 16;
 
 
         const float dVol = 0.01f;
@@ -36,7 +36,7 @@ namespace IngameScript
         const int MaxSources = 12;
 
         // display limits
-        const int maxDspInst = 16;
+        const int maxDspInst = 15;
         const int maxDspSrc  = 6;
         const int maxDspPats = 8;
 

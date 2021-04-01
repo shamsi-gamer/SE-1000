@@ -29,18 +29,18 @@ namespace IngameScript
 
             FillRect(sprites, x, y, w, h, color0);
 
-            if (PlayTime > -1)
+            if (g_song.PlayTime > -1)
             {
-                var sec = (int)(PlayStep * g_ticksPerStep / FPS);
+                var sec = (int)(g_song.PlayStep * g_ticksPerStep / FPS);
                 var min = sec / 60;
                 sec %= 60;
 
                 FillRect(sprites, x + 220, y + h - 192, 250, 64, color6);
-                DrawString(sprites, S(min) + ":" + sec.ToString("00"), x + 345, y + h - 191, 2f, color0, TextAlignment.CENTER);
+                DrawString(sprites, S(min) + ":" + sec.ToString("00"), x + 345, y + h - 191, 2f, color0, TaC);
             }
 
 
-            DrawString(sprites, GetBPM().ToString("0"), x + 343, y + h - 122, 2.5f, color6, TextAlignment.CENTER);
+            DrawString(sprites, S0(GetBPM()), x + 343, y + h - 122, 2.5f, color6, TaC);
             DrawString(sprites, "BPM", x + 312, y + h - 43, 1f, color6);
 
             var prLoad    = infoPressed_.Contains(0);
@@ -62,12 +62,12 @@ namespace IngameScript
             var nameLines = g_song.Name.Split('\n');
 
             if (nameLines.Length > 0) 
-                DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TextAlignment.CENTER);
+                DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TaC);
 
             if (nameLines.Length > 1) 
             {
                 for (var i = 1; i < Math.Min(nameLines.Length, 4); i++)
-                    DrawString(sprites, nameLines[i], x + w/2, y + 211 + i * 30, 1, color6, TextAlignment.CENTER);
+                    DrawString(sprites, nameLines[i], x + w/2, y + 211 + i * 30, 1, color6, TaC);
             }
 
 
@@ -167,7 +167,7 @@ namespace IngameScript
             var sprites = new List<MySprite>();
 
             FillRect(sprites, x, y, w, h, color0);
-            DrawString(sprites, "Copy\nPaste\nSong\nHere", cx, cy - 220, 3.5f, color6, TextAlignment.CENTER);
+            DrawString(sprites, "Copy\nPaste\nSong\nHere", cx, cy - 220, 3.5f, color6, TaC);
 
             dsp.Draw(sprites);
         }
@@ -176,7 +176,7 @@ namespace IngameScript
         void DrawMissingMod()
         {
             var dsp = new List<IMyTextPanel>();
-            GridTerminalSystem.GetBlocksOfType(dsp);
+            Get(dsp);
 
             foreach (var d in dsp)
             {
@@ -187,7 +187,7 @@ namespace IngameScript
 
             var pnl = dspMain.Panel;
 
-            pnl.Alignment   = TextAlignment.CENTER;
+            pnl.Alignment   = TaC;
             pnl.Font        = "Monospace";
             pnl.FontSize    = 1.7f;
             pnl.TextPadding = 20;

@@ -22,7 +22,7 @@ namespace IngameScript
             public int         PatIndex    { get { return Channel.Pattern.Song.Patterns.IndexOf(Channel.Pattern); } }
 
             //public Song        Song        { get { return Channel.Pattern.Song; } }
-            public float       SongStep    { get { return PatIndex * nSteps + PatStep; } }
+            public float       SongStep    { get { return PatIndex * g_nSteps + PatStep; } }
 
             public long        PatTime     { get { return (long)(PatStep * g_ticksPerStep); } }
             public long        SongTime    { get { return GetPatTime(PatIndex) + PatTime; } }
@@ -117,7 +117,7 @@ namespace IngameScript
                 StepLength = len;
 
                 foreach (var snd in Sounds)
-                    snd.FrameLength = (int)(StepLength * g_ticksPerStep);
+                    snd.Length = (int)(StepLength * g_ticksPerStep);
             }
 
 

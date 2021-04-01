@@ -25,7 +25,7 @@ namespace IngameScript
         bool[] g_on = new bool[g_nChans];
 
 
-        bool               g_in, 
+        static bool        g_in, 
                            g_out,
 
                            g_loop,
@@ -70,35 +70,29 @@ namespace IngameScript
                            CurChan,
                            SelChan = -1,
                            CurSrc  = -1,
-                           CurSet  = -1,
-                            
-                           PlayPat;
+                           CurSet  = -1;
 
 
         static long        g_time    = -1; // in ticks
  
-        float              TimeStep { get { return (float)g_time / g_ticksPerStep; } }
+        static float       TimeStep { get { return (float)g_time / g_ticksPerStep; } }
 
 
-        public static long StartTime = -1, // in ticks
-                           PlayTime  = -1;
+        static float[]     g_steps = { 0.25f, 0.5f, 1, 2, 4, 8, 16, 65536f };
 
-        public float       PlayStep { get { return PlayTime > -1 ? PlayTime / (float)g_ticksPerStep : fN; } }
+        static int         g_editStep   = 2;
+        static int         g_editLength = 2;
 
 
-        float[]            g_steps = { 0.25f, 0.5f, 1, 2, 4, 8, 16, 65536f };
-
-        int                g_editStep   = 2;
-        int                g_editLength = 2;
-
-        float              EditStep   { get { return g_steps[g_editStep  ]; } }
-        float              EditLength { get { return g_steps[g_editLength]; } }
+        static float       EditStep       { get { return g_steps[g_editStep  ]; } }
+        static float       EditStepLength { get { return g_steps[g_editLength]; } }
+        static int         EditLength     { get { return (int)(EditStepLength * g_ticksPerStep); } }
 
 
 
-        List<int>[]        g_chords; // = new List<int>[4];
+        static List<int>[] g_chords; // = new List<int>[4];
 
-        int                g_chord,
+        static int         g_chord,
                            g_curNote,
                               
                            g_songOff,
@@ -107,7 +101,6 @@ namespace IngameScript
 
         //int                g_showNote;
 
-                           g_cue  = -1,
                            g_solo = -1;
 
 
@@ -166,10 +159,6 @@ namespace IngameScript
             CurSrc        = -1;
             CurSet        = -1;
                           
-            PlayTime      = -1;
-            StartTime     = -1;
-            PlayPat       = -1;
-            
             g_editStep    =  2;
             g_editLength  =  2;
 
@@ -182,7 +171,6 @@ namespace IngameScript
             g_instOff     =  0;
             g_srcOff      =  0;
 
-            g_cue         = -1;
             g_solo        = -1;
                             
             g_volume      =  1;

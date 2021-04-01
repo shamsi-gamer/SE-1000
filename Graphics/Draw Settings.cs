@@ -9,312 +9,33 @@ namespace IngameScript
 {
     partial class Program
     {
-        void DrawSettings(List<MySprite> sprites, float x, float y, float w, float h)
+        void DrawCurrentSetting(List<MySprite> sprites, float x, float y, float w, float h)
         {
-            Setting setting;
+            if (CurSet < 0) return;
 
-            if (CurSet > -1)
-            { 
-                setting = g_settings[CurSet];
+            var setting = g_settings[CurSet];
 
-                DrawString(sprites, FullNameFromTag(setting.Tag), x + 15, y + 30, 1f, color5);
+            DrawRect(sprites, x, y, w, h, Color.Red);
 
-                var bx = 40;
-                var by = 55;
+            DrawString(sprites, FullNameFromTag(setting.Tag), x + w/2, y, 1f, color5, TaC);
 
-                if (IsParam(setting))
-                {
-                    var param = (Parameter)setting;
+            var nameHeight = 40;
 
-                    if (   param.Tag == "Att"
-                        || param.Tag == "Dec"
-                        || param.Tag == "Sus"
-                        || param.Tag == "Rel")
-                    {
-                        DrawEnvelope(sprites, (Envelope)g_settings[CurSet-1], x + 15, y + 110, w - 15, 140, 1);
-                    }
-                    else if (param.Tag == "Amp"
-                          || param.Tag == "Freq"
-                          ||    param.Parent != null // LFO offset has a parent
-                             && param.Tag == "Off")
-                    {
-                        DrawLfo(sprites, (LFO)g_settings[CurSet-1], x + bx, y + by + 90, w - bx * 2, 110, true, true);
-                    }
-                    else if (param.Tag == "Dry"
-                          || param.Tag == "Cnt"
-                          || param.Tag == "Time"
-                          || param.Tag == "Lvl"
-                          || param.Tag == "Pow")
-                    {
-                        DrawDelay(sprites, (Delay)g_settings[CurSet-1], x + 15, y + 140, w - 32, 110, true);
-                    }
-                    else if (param.Tag == "Cut"
-                          || param.Tag == "Res"
-                          || param.Tag == "Shrp")
-                    {
-                        DrawFilter(sprites, (Filter)g_settings[CurSet-1], x + 15, y + 140, w - 30, 110, true);
-                    }
-                    else if (param.Tag == "Vol")
-                    {
-                        DrawSoundLevel(sprites, x + bx + 20, y + by + 90, 60, 120, 
-                            param.Value,
-                            param.CurValue);
-
-                        var db = 100 * Math.Log10(param.Value);
-                        var strDb = printValue(db, 0, true, 0) + " dB";
-
-                        // draw value 
-                        DrawString(sprites, strDb, x + bx + 100, y + by + 180, 1f, color6);
-                    }
-                    else if (param.Parent == null // source offset has no parent
-                          && param.Tag    == "Off")
-                    {
-                        DrawValueHorizontal(sprites, x + bx + 5, y + by + 90, 180, 50, param.Min, param.Max, 
-                            param.Value,
-                            param.CurValue,
-                            param.Tag);
-                    }
-                    else
-                    { 
-                        DrawValueVertical(sprites, x + bx + 20, y + by + 90, 60, 120, param.Min, param.Max,
-                            param.Value,
-                            param.CurValue,
-                            param.Tag,
-                            false);
-                    }
-                }
-                else if (setting.GetType() == typeof(Envelope))
-                {
-                    DrawEnvelope(sprites, (Envelope)setting, x + 15, y + 110, w - 15, 140, 1);
-                }
-                else if (setting.GetType() == typeof(Delay))
-                {
-                    DrawDelay(sprites, (Delay)setting, x + 15, y + 140, w - 32, 110, true);
-                }
-                else if (setting.GetType() == typeof(Filter))
-                {
-                    DrawFilter(sprites, (Filter)setting, x + 15, y + 140, w - 30, 110, true);
-                }
-                else if (setting.GetType() == typeof(LFO)) 
-                {
-                    DrawLfo(sprites, (LFO)setting, x + bx, y + by + 90, w - bx*2, 110, true, true);
-                }
-            }
+            setting.DrawSetting(
+                sprites, 
+                x,
+                y + nameHeight, 
+                w, 
+                h - nameHeight, 
+                new DrawParams(this));
         }
 
 
-        void DrawSetting(List<MySprite> sprites, Setting setting, float x, float y, ref float yo, bool active)
+        static void DrawValueVertical(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag, bool mixer = true)
         {
-            if (TooComplex) return;
+            DrawRect(sprites, x, y, w, h, Color.Cyan);
 
 
-            var  sh = 18f;
-
-            var  xo =  8f;
-            var _yo =  0f;
-
-
-            float ew = 0;
-
-            if (sprites != null)
-            { 
-                bool thisSetting = CurSetting == setting;
-
-                var textCol = active ? color6: color0;
-
-                var boxCol = thisSetting ? color6 : color3;
-                    //active
-                    //? (thisSetting ? color1 : color4)
-                    //: (thisSetting ? color6 : color3);
-
-
-                if (   setting != null
-                    && !HasTag(setting, "Vol")
-                    && !HasTag(setting, "Off")
-                    && setting.GetType() != typeof(Tune)
-                    && setting.GetType() != typeof(Harmonics)
-                    && setting.GetType() != typeof(Filter)
-                    && setting.GetType() != typeof(Delay)
-                    && setting.GetType() != typeof(Arpeggio))
-                { 
-                    if (yo == 0)
-                        DrawLine(sprites, x, y + sh/2, x + xo, y + sh/2, boxCol);
-                    else
-                    {
-                        DrawLine(sprites, x - ew/2, y - yo+sh - 3, x - ew/2, y + sh/2, boxCol);
-                        DrawLine(sprites, x - ew/2, y + sh/2,      x + xo,   y + sh/2, boxCol);
-                    }
-                }
-
-
-                x += xo;
-                    
-                var str = "";
-
-
-                if (IsParam(setting))
-                {
-                    var param = (Parameter)setting;
-                    
-                    if (param.Tag == "Vol")
-                    {
-                        ew = 72f;
-                        
-                        var db = 100 * Math.Log10(param.Value);
-                        str = printValue(db, 0, true, 0).PadLeft(4);
-                    }
-                    else
-                    {
-                        ew = 85f; 
-                        str = printValue(param.CurValue, 2, true, 1).PadLeft(6);
-                    }
-                }
-                else if (setting.Tag == "Env")
-                {
-                    ew = 186;
-
-                    var env = (Envelope)setting;
-
-                    str =
-                          printValue(env.Attack .CurValue, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(env.Decay  .CurValue, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(env.Sustain.CurValue, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(env.Release.CurValue, 2, true, 0).PadLeft(4);
-                }
-                else if (setting.Tag == "LFO")
-                {
-                    ew = 153;
-
-                    var lfo = (LFO)setting;
-
-                    str =
-                          printValue(lfo.Amplitude.CurValue, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(lfo.Frequency.CurValue, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(lfo.Offset   .CurValue, 2, true, 0).PadLeft(4);
-                }
-                else if (setting.Tag == "Flt")
-                {
-                    ew = 110;
-
-                    var flt = (Filter)setting;
-
-                    str =
-                          printValue(flt.Cutoff   .CurValue, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(flt.Resonance.CurValue, 2, true, 0).PadLeft(4);
-                }
-                else if (setting.Tag == "Mod")
-                {
-                    ew = 120;
-
-                    var mod = (Modulate)setting;
-
-                    str =
-                          printValue(mod.Amount .CurValue, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(mod.Attack .CurValue, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(mod.Release.CurValue, 2, true, 0).PadLeft(4);
-                }
-                else if (setting.Tag == "Del")
-                {
-                    ew = 176;
-
-                    var del = (Delay)setting;
-
-                    str =
-                          printValue(del.Count.CurValue, 0, true, 0).PadLeft(2) + "  "
-                        + printValue(del.Time .CurValue, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(del.Level.CurValue, 2, true, 0).PadLeft(4) + "  "
-                        + printValue(del.Power.CurValue, 2, true, 0).PadLeft(4);
-                }
-                else
-                {
-                    ew = 30f;
-                }
-
-
-                // setting name
-                FillRect(sprites, x, y, ew, 15, boxCol);
-
-                DrawString(sprites, setting.Tag, x +  5, y + 2, 0.36f, textCol);
-                DrawString(sprites, str,         x + 30, y + 2, 0.36f, textCol);
-
-                x += ew;
-            }
-
-
-            bool children = false;
-
-                 if (setting.GetType() == typeof(Parameter)) DrawParamSetting    (sprites, (Parameter)setting, x, y, ref _yo, active, ref children);
-            else if (setting.GetType() == typeof(Envelope )) DrawEnvelopeSetting (sprites, (Envelope )setting, x, y, ref _yo, active, ref children);
-            else if (setting.GetType() == typeof(LFO      )) DrawLfoSetting      (sprites, (LFO      )setting, x, y, ref _yo, active, ref children);
-            else if (setting.GetType() == typeof(Harmonics)) DrawHarmonicsSetting(sprites, (Harmonics)setting, x, y, ref _yo, active, ref children);
-            else if (setting.GetType() == typeof(Filter   )) DrawFilterSetting   (sprites, (Filter   )setting, x, y, ref _yo, active, ref children);
-            else if (setting.GetType() == typeof(Delay    )) DrawDelaySetting    (sprites, (Delay    )setting, x, y, ref _yo, active, ref children);
-            else if (setting.GetType() == typeof(Arpeggio )) DrawArpeggioSetting (sprites, (Arpeggio )setting, x, y, ref _yo, active, ref children);
-
-
-            if (!children)
-                _yo += sh;
-
-            yo += _yo;
-        }
-
-
-        void DrawParamSetting(List<MySprite> sprites, Parameter param, float x, float y, ref float yo, bool active, ref bool children)
-        { 
-            if (param.Envelope != null) { DrawSetting(sprites, param.Envelope, x, y + yo, ref yo, active); children = true; }
-            if (param.Lfo      != null) { DrawSetting(sprites, param.Lfo,      x, y + yo, ref yo, active); children = true; }
-        }
-
-
-        void DrawEnvelopeSetting(List<MySprite> sprites, Envelope env, float x, float y, ref float yo, bool active, ref bool children)
-        { 
-            if (env.Attack .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Attack,  x, y + yo, ref yo, active); children = true; }
-            if (env.Decay  .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Decay,   x, y + yo, ref yo, active); children = true; }
-            if (env.Sustain.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Sustain, x, y + yo, ref yo, active); children = true; }
-            if (env.Release.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, env.Release, x, y + yo, ref yo, active); children = true; }
-        }
-
-
-        void DrawLfoSetting(List<MySprite> sprites, LFO lfo, float x, float y, ref float yo, bool active, ref bool children)
-        { 
-            if (lfo.Frequency.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, lfo.Frequency, x, y + yo, ref yo, active); children = true; }                
-            if (lfo.Amplitude.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, lfo.Amplitude, x, y + yo, ref yo, active); children = true; }
-            if (lfo.Offset   .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, lfo.Offset,    x, y + yo, ref yo, active); children = true; }
-        }
-
-
-        void DrawHarmonicsSetting(List<MySprite> sprites, Harmonics hrm, float x, float y, ref float yo, bool active, ref bool children)
-        { 
-            for (int i = 0; i < hrm.Tones.Length; i++)
-                if (hrm.Tones[i].HasDeepParams(null, CurSrc)) { DrawSetting(sprites, hrm.Tones[i], x, y + yo, ref yo, active); children = true; }
-        }
-
-
-        void DrawFilterSetting(List<MySprite> sprites, Filter flt, float x, float y, ref float yo, bool active, ref bool children)
-        { 
-            if (flt.Cutoff   .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, flt.Cutoff,    x, y + yo, ref yo, active); children = true; }
-            if (flt.Resonance.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, flt.Resonance, x, y + yo, ref yo, active); children = true; }
-        }
-
-
-        void DrawDelaySetting(List<MySprite> sprites, Delay del, float x, float y, ref float yo, bool active, ref bool children)
-        {
-            if (del.Count.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Count, x, y + yo, ref yo, active); children = true; }
-            if (del.Time .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Time,  x, y + yo, ref yo, active); children = true; }
-            if (del.Level.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Level, x, y + yo, ref yo, active); children = true; }
-            if (del.Power.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, del.Power, x, y + yo, ref yo, active); children = true; }
-        }
-
-
-        void DrawArpeggioSetting(List<MySprite> sprites, Arpeggio arp, float x, float y, ref float yo, bool active, ref bool children)
-        { 
-            if (arp.Length.HasDeepParams(null, CurSrc)) { DrawSetting(sprites, arp.Length, x, y + yo, ref yo, active); children = true; }
-            if (arp.Scale .HasDeepParams(null, CurSrc)) { DrawSetting(sprites, arp.Scale,  x, y + yo, ref yo, active); children = true; }
-        }
-
-
-        void DrawValueVertical(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag, bool mixer = true)
-        {
             var wb = w/10;
             var wg = w/20;
             var wl = w - wg - wb;
@@ -372,8 +93,10 @@ namespace IngameScript
         }
 
 
-        void DrawValueHorizontal(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag)
+        static void DrawValueHorizontal(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag)
         {
+            DrawRect(sprites, x, y, w, h, Color.Cyan);
+
             var hb = h/10;
             var hg = h/20;
             var hl = h - hg - hb;
@@ -431,349 +154,7 @@ namespace IngameScript
         }
 
 
-        void DrawEnvelope(List<MySprite> sprites, Envelope env, float x, float y, float w, float h, float vol)
-        {
-            var sTime = 
-                StartTime > -1
-                ? g_time - StartTime
-                : 0;
-
-            var len = (int)(EditLength * g_ticksPerStep);
-
-            var a = env.Attack .GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy, this);
-            var d = env.Decay  .GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy, this);
-            var s = env.Sustain.GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy, this);
-            var r = env.Release.GetValue(g_time, 0, sTime, len, null, -1, _triggerDummy, this);
-                                                                           
-
-            var xoff  = 20;
-            var b     = 18;
-            var v     = Math.Min(vol, 1);
-
-            var fs    = 0.5f;
-            var scale = 1f;
-            var fps   = FPS * scale;
-
-            var x0    = x;// + xoff + b + 1;
-
-            var p0    = new Vector2(x0/* + fps * Offset*/, y + h - b);
-                p0.X  = Math.Min(p0.X, x0 + w - b * 2);
-
-            var p1    = new Vector2(p0.X + fps * a, p0.Y - (h - b * 2) * v);
-                p1.X  = Math.Min(p1.X, x0 + w - b * 2);
-
-            var p2    = new Vector2(p1.X + fps * d, p0.Y - (h - b * 2) * v * s);
-                p2.X  = Math.Min(p2.X, x0 + w - b * 2);
-
-            var p3    = new Vector2(x + xoff + w - b * 2 - fps * r, p2.Y);
-            var p4    = new Vector2(x + xoff + w - b * 2, p0.Y);
-
-
-            var isAtt = IsCurParam("Att");
-            var isDec = IsCurParam("Dec");
-            var isSus = IsCurParam("Sus");
-            var isRel = IsCurParam("Rel");
-
-
-            var wa = isAtt ? 6 : 1;
-            var wd = isDec ? 6 : 1;
-            var ws = isSus ? 6 : 1;
-            var wr = isRel ? 6 : 1;
-
-
-            // draw envelope supports and info
-
-            var sw = 1;
-
-            DrawLine(sprites, p0.X, p0.Y, p0.X, y,         color3, sw);
-            DrawLine(sprites, p2.X, p2.Y, p2.X, y + h - b, color3, sw);
-            DrawLine(sprites, p1.X, p1.Y, p1.X, y + h - b, color3, sw);
-            DrawLine(sprites, p3.X, p3.Y, p3.X, y + h - b, color3, sw);
-            DrawLine(sprites, p1.X, p2.Y, p3.X, p3.Y,      color3, sw);
-                                                              
-            DrawLine(sprites, p0.X, p0.Y, p4.X, p4.Y,      color3, sw);
-
-
-            // draw labels
-
-            DrawString(sprites, a.ToString(".00") + (isAtt ? " s" : ""),  p0.X + 6,             p0.Y +  3,         fs, isAtt ? color6 : color3, TextAlignment.CENTER);
-            DrawString(sprites, d.ToString(".00") + (isDec ? " s" : ""), (p1.X + p2.X)/2 + 16, (p1.Y+p2.Y)/2 - 20, fs, isDec ? color6 : color3, TextAlignment.CENTER);
-            DrawString(sprites, s.ToString(".00"),                       (p2.X + p3.X)/2 - 5,   p2.Y - 20,         fs, isSus ? color6 : color3, TextAlignment.CENTER);
-            DrawString(sprites, r.ToString(".00") + (isRel ? " s" : ""), (p3.X + p4.X)/2 - 5,   p0.Y +  3,         fs, isRel ? color6 : color3, TextAlignment.CENTER);
-
-
-            // draw the envelope
-
-
-            // attack
-            DrawLine(sprites, p0, p1, color6, wa);
-
-            // decay
-            var pPrev = Vector2.Zero;
-            
-            for (float f = 0; f <= 1; f += 0.01f)
-            {
-                var p = new Vector2(
-                    p1.X + (p2.X - p1.X) * f,
-                    p1.Y + (p2.Y - p1.Y) * (1 - (float)Math.Pow(1-f, 2)));
-
-                if (f > 0)
-                    DrawLine(sprites, pPrev, p, color6, wd);
-
-                pPrev = p;    
-            }
-
-            // sustain
-            DrawLine(sprites, p2, p3, color6, ws);
-
-            // release
-            for (float f = 0; f <= 1; f += 0.01f)
-            {
-                var p = new Vector2(
-                    p3.X + (p4.X - p3.X) * f,
-                    p3.Y + (p4.Y - p3.Y) * (1 - (float)Math.Pow(1-f, 2)));
-
-                if (f > 0)
-                    DrawLine(sprites, pPrev, p, color6, wr);
-
-                pPrev = p;    
-            }
-
-
-            if (isDec && d < 0.01)
-                FillRect(sprites, p1.X-4, p1.Y-4, 8, 8, color6);
-        }
-
-
-        void DrawLfo(List<MySprite> sprites, LFO lfo, float x, float y, float w, float h, bool active, bool on)
-        {
-            var pPrev = new Vector2(fN, fN);
-
-            var fs = 0.5f;
-
-
-            var amp  = lfo.Amplitude.CurValue;
-            var freq = lfo.Frequency.CurValue;
-            var off  = lfo.Offset   .CurValue;
-
-
-            var isAmp  = IsCurParam("Amp");
-            var isFreq = IsCurParam("Freq");
-            var isOff  = IsCurParam("Off");
-
-
-            DrawLine(sprites, x, y,   x,   y+h, isAmp  ? color6 : color3);
-            DrawLine(sprites, x, y+h, x+w, y+h, isFreq ? color6 : color3);
-
-
-
-            // draw current value
-            var startTime = PlayTime > -1 ? StartTime : 0;
-            var lTime     = PlayTime > -1 ? g_time - startTime : 0;
-
-            var val  = lfo.CurValue;
-            var blur = lfo.Type == LFO.LfoType.Noise ? Math.Pow(freq, 4) : 1;
-
-            var ty   = (float)Math.Max(y,   y + h/2 - val*h/2 - blur);
-            var by   = (float)Math.Min(y+h, y + h/2 - val*h/2 + blur*2);
-
-            var col  = new Color(
-                color4.R,
-                color4.G,
-                color4.B,
-                (int)(Math.Pow(1/freq, 2.5)*0xFF));
-
-            FillRect(sprites, x, ty, w, Math.Max(2, by-ty), col);
-
-
-            // draw the waveform
-            for (long f = 0; f < FPS; f++)
-            {
-                var v = lfo.GetValue(
-                    g_time + f, 
-                    lTime + f, 
-                    g_time - startTime + f, 
-                    (int)(EditLength * g_ticksPerStep), 
-                    null, 
-                    -1,
-                    _triggerDummy,
-                    this);
-
-                var p = new Vector2(
-                    x + w * f/(float)FPS,
-                    y + h/2 - v*h/2);
-
-                if (   OK(pPrev.X)
-                    && OK(pPrev.Y))
-                    DrawLine(sprites, pPrev, p, color4, 2);
-
-                pPrev = p;
-            }
-
-
-            // amplitude label
-            DrawString(
-                sprites, 
-                amp.ToString(".00"), 
-                x + w/2, 
-                y + h/2 - h/2*amp - 20, 
-                fs, 
-                isAmp ? color6 : color3,
-                TextAlignment.CENTER);
-
-
-            // frequency label
-            DrawString(
-                sprites, 
-                (Math.Pow(2, freq)-1).ToString(".00") + (isFreq ? " Hz" : ""),
-                x + w/2,
-                y + h + 3,
-                fs,
-                isFreq ? color6 : color3,
-                TextAlignment.CENTER);
-
-
-            // offset label
-            DrawString(
-                sprites, 
-                off.ToString(".00") + (isOff ? " s" : ""),
-                x,
-                y + h + 3,
-                fs,
-                isOff ? color6 : color3,
-                TextAlignment.CENTER);
-        }
-
-
-        void DrawDelay(List<MySprite> sprites, Delay del, float x, float y, float w, float h, bool active)
-        {
-            var b = 18;
-
-
-            FillRect(sprites, x, y + h - b - 1, w, 2, color3);
-
-            var dd = del.Dry  .CurValue;
-            var dc = del.Count.CurValue;
-            var dt = del.Time .CurValue * 100;
-            var dl = del.Level.CurValue;
-            var dp = del.Power.CurValue;
-
-
-            var fs = 0.5f;
-            var dx = 0f;
-
-
-            for (int i = 0; i < (int)dc && dx < w - dt; i++)
-            {
-                dx = i * dt;
-
-                FillRect(sprites, 
-                    x + dx + (i > 0 ? 2 : 0), 
-                    y + h - b, 
-                    i == 0 ? 8 : 4, 
-                    -(h - b*2) * del.GetVolume(i, g_time, 0, 0, (int)(EditLength * g_ticksPerStep), null, CurSrc, _triggerDummy, this),
-                    color4);
-            }
-
-
-            // dry
-            DrawString(
-                sprites,
-                dd.ToString("0.00"), // -1 because 0 is the source sound
-                x,
-                y - b + 8,
-                fs,
-                IsCurParam("Dry") ? color6 : color3);
-
-
-            // count
-            DrawString(
-                sprites, 
-                S(Math.Round(dc-1)), // -1 because 0 is the source sound
-                x,
-                y + h - b + 8, 
-                fs, 
-                IsCurParam("Cnt") ? color6 : color3);
-
-
-            if (dc-1 > 0)
-            { 
-                // level
-                var lx = x + dt + 15;
-
-                DrawString(
-                    sprites, 
-                    dl.ToString("0.00"), 
-                    lx, 
-                    y + h - b - (h - b*2) * dl - 24, 
-                    fs,
-                    IsCurParam("Lvl") ? color6 : color3, 
-                    TextAlignment.CENTER);
-
-
-                // time
-                DrawString(
-                    sprites, 
-                    Math.Round(dt*10).ToString("0") + " ms", 
-                    x + 60, 
-                    y + h - b + 8, 
-                    fs,
-                    IsCurParam("Time") ? color6 : color3, 
-                    TextAlignment.CENTER);
-
-
-                // power
-                var px  = x + MinMax(90, dt*(dc-1)/2, w);
-                var dim = dc > 1 && Math.Abs(px - lx) > 20 ? color6 : color3;
-
-                var vol = del.GetVolume(Math.Max(0, (int)dc/2 - 1), 0, 0, 0, (int)(EditLength * g_ticksPerStep), null, CurSrc, _triggerDummy, this);
-
-                DrawString(
-                    sprites, 
-                    dp.ToString("0.00"),
-                    px,
-                    y + h - b - (h - b*2) * vol - 24,
-                    fs,
-                    IsCurParam("Pow") ? color6 : color3,
-                    TextAlignment.CENTER);
-            }
-        }
-
-
-        void DrawFilter(List<MySprite> sprites, Filter flt, float x, float y, float w, float h, bool active)
-        {
-            var cut  = flt.Cutoff   .CurValue;
-            var res  = flt.Resonance.CurValue;
-            var shrp = flt.Sharpness.CurValue;
-
-
-            FillRect(sprites, x, y + h, 2, -h, color3);
-            FillRect(sprites, x, y + h, w,  2, color3);
-
-
-            DrawFilter(sprites, x, y, w, h, color5, 4, flt.Pass, cut, res, shrp);
-
-
-            var strCut = flt.Pass > FilterPass.High ? "Freq" : "Cut";
-            var strRes = flt.Pass > FilterPass.High ? "Wid"  : "Res";
-
-            var fs = 0.5f;
-
-            // cutoff
-            DrawString(sprites, strCut,                      x, y - 40, fs, IsCurParam("Cut") ? color6 : color3);
-            DrawString(sprites, printValue(cut, 2, true, 0), x, y - 25, fs, IsCurParam("Cut") ? color6 : color3);
-
-            // resonance
-            DrawString(sprites, strRes,                      x + 100, y - 40, fs, IsCurParam("Res") ? color6 : color3);
-            DrawString(sprites, printValue(res, 2, true, 0), x + 100, y - 25, fs, IsCurParam("Res") ? color6 : color3);
-
-            // sharpness
-            DrawString(sprites, "Shrp",                       x + 200, y - 40, fs, IsCurParam("Shrp") ? color6 : color3);
-            DrawString(sprites, printValue(shrp, 2, true, 0), x + 200, y - 25, fs, IsCurParam("Shrp") ? color6 : color3);
-        }
-
-
-        void DrawParamValues(List<MySprite> sprites, Parameter param, float x, float y, float w, float h, float xt, float rh, Song song, int pat)
+        void DrawValueLegend(List<MySprite> sprites, Parameter param, float x, float y, float w, float h, float xt, float rh, Song song, int pat)
         {
             var path  = param.GetPath(CurSrc);
 
@@ -852,8 +233,8 @@ namespace IngameScript
             {
                 var key = SelectedChannel.AutoKeys.Find(
                        k => k.Path == path
-                    && k.StepTime >= (song.EditPos % nSteps) 
-                    && k.StepTime <  (song.EditPos % nSteps) + 1);
+                    && k.StepTime >= (song.EditPos % g_nSteps) 
+                    && k.StepTime <  (song.EditPos % g_nSteps) + 1);
 
                 var strVal = "";
                     
@@ -889,7 +270,7 @@ namespace IngameScript
 
         void DrawParamKeys(List<MySprite> sprites, float x, float y, float w, float h, Song song, int p, int ch)
         {
-            var wt   = w / nSteps;
+            var wt   = w / g_nSteps;
             var cd   = w/65; // circle diameter
             var dr   = w/250;
 
@@ -960,7 +341,7 @@ namespace IngameScript
 
         void DrawParamAuto(List<MySprite> sprites, float x, float y, float w, float h, float wTotal, Song song, int p, int ch)
         {
-            var wt = w/nSteps;
+            var wt = w/g_nSteps;
             var cd = w/65; // circle diameter
             var dr = w/250;
 
@@ -1049,7 +430,7 @@ namespace IngameScript
             var param = (Parameter)GetSettingFromPath(note.Instrument, path);
             var val   = param.GetKeyValue(note, CurSrc);
 
-            var wt    = w/nSteps;
+            var wt    = w/g_nSteps;
             var cd    = w/65; // circle diameter
 
             switch (param.Tag)
@@ -1060,7 +441,7 @@ namespace IngameScript
             }
 
             return new Vector2(
-                x + wt * (note.PatStep + (note.PatIndex - p)*nSteps + note.ShOffset) + wt/2, 
+                x + wt * (note.PatStep + (note.PatIndex - p)*g_nSteps + note.ShOffset) + wt/2, 
                 y + h - h/2 * val - cd/2);
         }
 
@@ -1071,7 +452,7 @@ namespace IngameScript
             var inst    = chan.Instrument;
             var setting = GetSettingFromPath(inst, key.Path);
             var val     = key.Value;
-            var wt      = w/nSteps;
+            var wt      = w/g_nSteps;
 
             switch (setting.Tag)
             {
@@ -1087,7 +468,7 @@ namespace IngameScript
             else                       yo = h;
 
             var kp = new Vector2(
-                x + wt * (key.StepTime - p*nSteps) + wt/2, 
+                x + wt * (key.StepTime - p*g_nSteps) + wt/2, 
                 y + yo - h * val);
 
             return kp;

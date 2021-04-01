@@ -14,11 +14,11 @@ namespace IngameScript
             public Channel            Channel;
             public int                iChan;
                                       
-            public long               FrameTime; // in ticks
-            public int                FrameLength;
+            public long               Time; // in ticks
+            public int                Length;
             public int                ReleaseLength;
                                       
-            public long               ElapsedFrameTime;
+            public long               ElapsedTime; // in ticks
                                       
             public float              TriggerVolume,
                                       DisplayVolume;
@@ -44,83 +44,83 @@ namespace IngameScript
 
             public Sound(string sample, Channel chan, int ch, long frameTime, int frameLen, int releaseLen, float vol, Instrument inst, int iSrc, Note note, List<TriggerValue> triggerValues, bool isEcho, Sound echoSrc, float echoVol, Parameter harmonic = null, Sound hrmSound = null, float hrmPos = fN)
             {
-                Speakers         = new List<Speaker>();
-                Sample           = sample;
-                                 
-                Channel          = chan;
-                iChan            = ch;
-                                 
-                FrameTime        = frameTime;
+                Speakers      = new List<Speaker>();
+                Sample        = sample;
+                              
+                Channel       = chan;
+                iChan         = ch;
+                              
+                Time     = frameTime;
 
-                FrameLength      = frameLen;
-                ReleaseLength    = releaseLen;
+                Length   = frameLen;
+                ReleaseLength = releaseLen;
 
-                ElapsedFrameTime = 0;
+                ElapsedTime   = 0;
 
-                TriggerVolume    = vol;
-                DisplayVolume    = vol;
+                TriggerVolume = vol;
+                DisplayVolume = vol;
 
-                TriggerValues    = new List<TriggerValue>();
+                TriggerValues = new List<TriggerValue>();
                 foreach (var val in triggerValues)
                     TriggerValues.Add(new TriggerValue(val));
                     
-                Instrument       = inst;
+                Instrument    = inst;
 
-                SourceIndex      = iSrc;
-                Source           = Instrument.Sources[iSrc];
-                                 
-                Note             = note;
-                                 
-                Harmonic         = harmonic;
-                HrmSound         = hrmSound;
-                HrmPos           = hrmPos;
+                SourceIndex   = iSrc;
+                Source        = Instrument.Sources[iSrc];
+                              
+                Note          = note;
+                              
+                Harmonic      = harmonic;
+                HrmSound      = hrmSound;
+                HrmPos        = hrmPos;
 
-                IsEcho           = isEcho;
-                EchoSource       = echoSrc;
-                EchoVolume       = echoVol;
+                IsEcho        = isEcho;
+                EchoSource    = echoSrc;
+                EchoVolume    = echoVol;
 
-                Cache            = IsEcho ? null : new float[FrameLength + ReleaseLength];
+                Cache         = IsEcho ? null : new float[Length + ReleaseLength];
             }
 
 
             public Sound(Sound snd, bool isEcho, Sound echoSrc, float echoVol)
             {
-                Speakers         = new List<Speaker>();
-                Sample           = snd.Sample;
+                Speakers      = new List<Speaker>();
+                Sample        = snd.Sample;
 
-                Channel          = snd.Channel;
-                iChan            = snd.iChan;
+                Channel       = snd.Channel;
+                iChan         = snd.iChan;
 
-                FrameTime        = snd.FrameTime;
+                Time     = snd.Time;
 
-                FrameLength      = snd.FrameLength;
-                ReleaseLength    = snd.ReleaseLength;
+                Length   = snd.Length;
+                ReleaseLength = snd.ReleaseLength;
 
-                ElapsedFrameTime = snd.ElapsedFrameTime;
+                ElapsedTime   = snd.ElapsedTime;
 
-                TriggerVolume    = snd.TriggerVolume;
-                DisplayVolume    = snd.DisplayVolume;
+                TriggerVolume = snd.TriggerVolume;
+                DisplayVolume = snd.DisplayVolume;
 
-                TriggerValues    = new List<TriggerValue>();
+                TriggerValues = new List<TriggerValue>();
                 foreach (var val in snd.TriggerValues)
                     TriggerValues.Add(new TriggerValue(val));
                     
-                Instrument       = snd.Instrument;
+                Instrument    = snd.Instrument;
 
-                SourceIndex      = snd.SourceIndex;
-                Source           = snd.Source;
+                SourceIndex   = snd.SourceIndex;
+                Source        = snd.Source;
 
-                Note             = snd.Note;
+                Note          = snd.Note;
 
-                Harmonic         = snd.Harmonic;
-                HrmSound         = snd.HrmSound;
-                HrmPos           = snd.HrmPos;
+                Harmonic      = snd.Harmonic;
+                HrmSound      = snd.HrmSound;
+                HrmPos        = snd.HrmPos;
 
-                IsEcho           = isEcho;
-                EchoSource       = echoSrc;
-                EchoVolume       = echoVol;
+                IsEcho        = isEcho;
+                EchoSource    = echoSrc;
+                EchoVolume    = echoVol;
 
-                Cache            = IsEcho ? null : new float[FrameLength + ReleaseLength];
+                Cache         = IsEcho ? null : new float[Length + ReleaseLength];
             }
 
 
@@ -128,11 +128,14 @@ namespace IngameScript
             {
                 if (prog.TooComplex) return 0;
 
-                var lTime = gTime - FrameTime; // local time
+                var lTime = gTime - Time; // local time
+
+                var tpInst = new TimeParams(gTime, lTime, sTime, Note, Length, -1,           TriggerValues, prog);
+                var tpSrc  = new TimeParams(gTime, lTime, sTime, Note, Length, Source.Index, TriggerValues, prog);
 
                 var vol = 
-                      Instrument.Volume.GetValue(gTime, lTime, sTime, FrameLength, Note, -1,           TriggerValues, prog)
-                    * Source    .Volume.GetValue(gTime, lTime, sTime, FrameLength, Note, Source.Index, TriggerValues, prog);
+                      Instrument.Volume.GetValue(tpInst)
+                    * Source    .Volume.GetValue(tpSrc);
 
                 return MinMax(0, vol, 2);
             }

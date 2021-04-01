@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
+using VRageMath;
 
 
 namespace IngameScript
@@ -24,9 +25,9 @@ namespace IngameScript
             {
                 Type      = LfoType.Sine;
 
-                Amplitude = (Parameter)NewSettingFromTag("Amp",  this);
-                Frequency = (Parameter)NewSettingFromTag("Freq", this);
-                Offset    = (Parameter)NewSettingFromTag("Off",  this);
+                Amplitude = (Parameter)NewFromTag("Amp",  this);
+                Frequency = (Parameter)NewFromTag("Freq", this);
+                Offset    = (Parameter)NewFromTag("Off",  this);
             }
 
 
@@ -46,17 +47,17 @@ namespace IngameScript
             }
 
 
-            public float GetValue(long gTime, long lTime, long sTime, int noteLen, Note note, int src, List<TriggerValue> triggerValues, Program prog)
+            public float GetValue(TimeParams tp)
             {
-                if (prog.TooComplex) return 0;
+                if (tp.Program.TooComplex) return 0;
 
 
                 // an offset != 0 locks the LFO to the song, a 0 offset leaves it free
-                var time = Offset.GetKeyValue(note, src) > 0 ? lTime : gTime;
+                var time = Offset.GetKeyValue(tp.Note, tp.SourceIndex) > 0 ? tp.Local : tp.Global;
 
-                var amp  = Amplitude.GetValue(gTime, time, sTime, noteLen, note, src, triggerValues, prog);
-                var freq = Frequency.GetValue(gTime, time, sTime, noteLen, note, src, triggerValues, prog);
-                var off  = Offset   .GetValue(gTime, time, sTime, noteLen, note, src, triggerValues, prog);
+                var amp  = Amplitude.GetValue(tp);
+                var freq = Frequency.GetValue(tp);
+                var off  = Offset   .GetValue(tp);
 
                 var f = (float)(Math.Pow(2, freq) - 1);
 
@@ -132,9 +133,9 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Amp":  return Amplitude ?? (Amplitude = (Parameter)NewSettingFromTag("Amp",  this));
-                    case "Freq": return Frequency ?? (Frequency = (Parameter)NewSettingFromTag("Freq", this));
-                    case "Off":  return Offset    ?? (Offset    = (Parameter)NewSettingFromTag("Off",  this));
+                    case "Amp":  return Amplitude ?? (Amplitude = (Parameter)NewFromTag("Amp",  this));
+                    case "Freq": return Frequency ?? (Frequency = (Parameter)NewFromTag("Freq", this));
+                    case "Off":  return Offset    ?? (Offset    = (Parameter)NewFromTag("Off",  this));
                 }
 
                 return null;
@@ -170,23 +171,153 @@ namespace IngameScript
             }
 
 
-            public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
+            public override void GetLabel(out string str, out float width)
             {
-                DrawFuncButton(sprites, "Amp",   1, w, h, true, Amplitude.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Freq",  2, w, h, true, Frequency.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Off",   3, w, h, true, Offset   .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Osc ↕", 4, w, h, false, false);
-                DrawFuncButton(sprites, "X",     5, w, h, false, false, mainPressed.Contains(5));
+                width = 153;
+
+                str =
+                      printValue(Amplitude.CurValue, 2, true, 0).PadLeft(4) + "  "
+                    + printValue(Frequency.CurValue, 2, true, 0).PadLeft(4) + "  "
+                    + printValue(Offset   .CurValue, 2, true, 0).PadLeft(4);
             }
 
 
-            public override void Func(int func, Program prog)
+            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            {
+                base.DrawLabel(sprites, x, y, dp);
+
+                if (Frequency.HasDeepParams(null, CurSrc)) { Frequency.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }                
+                if (Amplitude.HasDeepParams(null, CurSrc)) { Amplitude.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Offset   .HasDeepParams(null, CurSrc)) { Offset   .DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+
+                base.FinishDrawLabel(dp);
+            }
+
+
+            public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
+            {
+                var pPrev = new Vector2(fN, fN);
+
+                var fs = 0.5f;
+
+
+                var w0 = 240f;
+                var h0 = 120f;
+
+                var x0 = x + w/2 - w0/2;
+                var y0 = y + h/2 - h0/2;
+
+
+                var amp    = Amplitude.CurValue;
+                var freq   = Frequency.CurValue;
+                var off    = Offset   .CurValue;
+
+                var isAmp  = IsCurParam("Amp");
+                var isFreq = IsCurParam("Freq");
+                var isOff  = IsCurParam("Off");
+
+
+                DrawLine(sprites, x0, y0,    x0,    y0+h0, isAmp  ? color6 : color3);
+                DrawLine(sprites, x0, y0+h0, x0+w0, y0+h0, isFreq ? color6 : color3);
+
+
+                // draw current value
+
+                var lTime = g_song.PlayTime > -1 ? g_time - g_song.StartTime : 0;
+
+                var val   = CurValue;
+                var blur  = Type == LFO.LfoType.Noise ? Math.Pow(freq, 4) : 1;
+                          
+                var ty    = (float)Math.Max(y0,    y0 + h0/2 - val*h/2 - blur);
+                var by    = (float)Math.Min(y0+h0, y0 + h0/2 - val*h/2 + blur*2);
+
+                var col  = new Color(
+                    color4.R,
+                    color4.G,
+                    color4.B,
+                    (int)(Math.Pow(1/freq, 2.5)*0xFF));
+
+                FillRect(sprites, x0, ty, w0, Math.Max(2, by-ty), col);
+
+
+                // draw the waveform
+                for (long f = 0; f < FPS; f++)
+                {
+                    var tp = new TimeParams(
+                        f + g_time,
+                        f + lTime,
+                        f + g_time - g_song.StartTime,
+                        null,
+                        EditLength,
+                        -1,
+                        _triggerDummy,
+                        dp.Program);
+
+                    var v = GetValue(tp);
+
+                    var p = new Vector2(
+                        x0 + w0 * f/(float)FPS,
+                        y0 + h0/2 - v*h0/2);
+
+                    if (   OK(pPrev.X)
+                        && OK(pPrev.Y))
+                        DrawLine(sprites, pPrev, p, color4, 2);
+
+                    pPrev = p;
+                }
+
+
+                // amplitude label
+                DrawString(
+                    sprites, 
+                    S_00(amp), 
+                    x0 + w0/2, 
+                    y0 + h0/2 - h0/2*amp - 20, 
+                    fs, 
+                    isAmp ? color6 : color3,
+                    TaC);
+
+
+                // frequency label
+                DrawString(
+                    sprites, 
+                    S_00(Math.Pow(2, freq)-1) + (isFreq ? " Hz" : ""),
+                    x0 + w0/2,
+                    y0 + h0 + 3,
+                    fs,
+                    isFreq ? color6 : color3,
+                    TaC);
+
+
+                // offset label
+                DrawString(
+                    sprites, 
+                    S_00(off) + (isOff ? " s" : ""),
+                    x0,
+                    y0 + h0 + 3,
+                    fs,
+                    isOff ? color6 : color3,
+                    TaC);
+            }
+
+
+            public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
+            {
+                DrawFuncButton(sprites, "Amp",   1, w, y, true, Amplitude.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Freq",  2, w, y, true, Frequency.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Off",   3, w, y, true, Offset   .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Osc ↕", 4, w, y, false, false);
+                DrawFuncButton(sprites, "X",     5, w, y, false, false, mainPressed.Contains(5));
+            }
+
+
+            public override void Func(int func)
             {
                 switch (func)
                 {
-                    case 1: prog.AddNextSetting("Amp");  break;
-                    case 2: prog.AddNextSetting("Freq"); break;
-                    case 3: prog.AddNextSetting("Off");  break;
+                    case 1: AddNextSetting("Amp");  break;
+                    case 2: AddNextSetting("Freq"); break;
+                    case 3: AddNextSetting("Off");  break;
                     case 4:
                     {
                         var newOsc = (int)Type + 1;
@@ -195,7 +326,7 @@ namespace IngameScript
                         mainPressed.Add(func);
                         break;
                     }
-                    case 5: prog.RemoveSetting(this); break;
+                    case 5: RemoveSetting(this); break;
                 }
             }
         }

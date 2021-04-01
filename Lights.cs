@@ -10,7 +10,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        IMyTextPanel
+        static IMyTextPanel
             lblOctave, lblShuffle,
             lblMixerVolumeUp, lblMixerVolumeDown, lblMixerAll, lblMixerMuteAll,
             lblPlay, lblStop,
@@ -51,8 +51,8 @@ namespace IngameScript
         static List<int>   songPressed    = new List<int>();
         static List<int>   mainPressed    = new List<int>();
 
-        List<IMyTextPanel> lightsPressed  = new List<IMyTextPanel>();
-        List<IMyTextPanel> lightsPressed_ = new List<IMyTextPanel>();
+        static List<IMyTextPanel> lightsPressed  = new List<IMyTextPanel>();
+        static List<IMyTextPanel> lightsPressed_ = new List<IMyTextPanel>();
 
         IMyReflectorLight frontLight;
 
@@ -159,15 +159,15 @@ namespace IngameScript
             lblHigh = new List<IMyTextPanel>();
             lblLow  = new List<IMyTextPanel>();
 
-            GridTerminalSystem.GetBlocksOfType(lblHigh, l => l.CustomName.Length >= 11 && l.CustomName.Substring(0, 11) == "Label High ");
+            Get(lblHigh, l => l.CustomName.Length >= 11 && l.CustomName.Substring(0, 11) == "Label High ");
             lblHigh = lblHigh.OrderBy(l => int.Parse(l.CustomName.Substring(11))).ToList();
 
-            GridTerminalSystem.GetBlocksOfType(lblLow, l => l.CustomName.Length >= 10 && l.CustomName.Substring(0, 10) == "Label Low ");
+            Get(lblLow, l => l.CustomName.Length >= 10 && l.CustomName.Substring(0, 10) == "Label Low ");
             lblLow = lblLow.OrderBy(l => int.Parse(l.CustomName.Substring(10))).ToList();
 
 
             lblMem = new List<IMyTextPanel>();
-            GridTerminalSystem.GetBlocksOfType(lblMem, l => l.CustomName.Length >= 10 && l.CustomName.Substring(0, 10) == "Label Mem ");
+            Get(lblMem, l => l.CustomName.Length >= 10 && l.CustomName.Substring(0, 10) == "Label Mem ");
             lblMem = lblMem.OrderBy(l => int.Parse(l.CustomName.Substring(10))).ToList();
 
 
@@ -189,7 +189,7 @@ namespace IngameScript
 
 
             var labels = new List<IMyTextPanel>();
-            GridTerminalSystem.GetBlocksOfType(labels, l => l.CustomName != "Label Edit");
+            Get(labels, l => l.CustomName != "Label Edit");
 
             foreach (var l in labels)
             {
@@ -320,7 +320,7 @@ namespace IngameScript
             UpdateLight(lblBlock,       g_block);
             UpdateLight(lblAllPatterns, g_allPats);
             UpdateLight(lblMovePat,     g_movePat);
-            UpdateLight(lblCue,         g_cue > -1);
+            UpdateLight(lblCue,         g_song.Cue > -1);
             UpdateLight(lblAutoCue,     g_autoCue);
 
             UpdateEditLight(lblEdit, OK(g_song.EditPos));
@@ -343,9 +343,9 @@ namespace IngameScript
         }
 
 
-        void UpdateChordLights()
+        static void UpdateChordLights()
         {
-            if (TooComplex) return;
+            //if (TooComplex) return;
 
             if (   IsCurParam("Tune")
                 && !(g_paramKeys || g_paramAuto))
@@ -384,9 +384,9 @@ namespace IngameScript
         }
 
 
-        void UpdateChordLight(IMyTextPanel lbl, int chord)
+        static void UpdateChordLight(IMyTextPanel lbl, int chord)
         {
-            if (TooComplex) return;
+            //if (TooComplex) return;
 
             var c = g_chords[chord-1];
 
@@ -456,8 +456,8 @@ namespace IngameScript
 
         void UpdatePlayStopLights()
         {
-            UpdateLight(lblPlay, PlayTime > -1);
-            UpdateLight(lblStop, PlayTime > -1);
+            UpdateLight(lblPlay, g_song.PlayTime > -1);
+            UpdateLight(lblStop, g_song.PlayTime > -1);
         }
 
 
@@ -479,14 +479,14 @@ namespace IngameScript
             var strStep = 
                 EditStep == 0.5f
                 ? "½"
-                : EditStep.ToString("0");
+                : S0(EditStep);
 
             string strLength;
 
-                 if (EditLength == 0.25f ) strLength = "¼";
-            else if (EditLength == 0.5f  ) strLength = "½";
-            else if (EditLength == 65536f) strLength = "∞";
-            else                           strLength = EditLength.ToString("0");
+                 if (EditStepLength == 0.25f ) strLength = "¼";
+            else if (EditStepLength == 0.5f  ) strLength = "½";
+            else if (EditStepLength == 65536f) strLength = "∞";
+            else                               strLength = S0(EditStepLength);
 
             lblEditStep  .WriteText("·· " + strStep);
             lblEditLength.WriteText("─ "  + strLength);
@@ -549,8 +549,8 @@ namespace IngameScript
                     { 
                         if (SelectedChannel.AutoKeys.Find(k =>
                                 k.Path == path
-                                && k.StepTime >= (song.EditPos % nSteps)
-                                && k.StepTime <  (song.EditPos % nSteps) + 1) != null)
+                                && k.StepTime >= (song.EditPos % g_nSteps)
+                                && k.StepTime <  (song.EditPos % g_nSteps) + 1) != null)
                         {
                             UpdateLight(lblCmd1, "Move", 10, 10);
                             UpdateLight(lblCmd3, "X",    10, 10);
@@ -761,7 +761,7 @@ namespace IngameScript
 
         void UpdateLight(Pattern pat, Channel chan, IMyTextPanel light, int num)
         {
-            var step = PlayStep % nSteps;
+            var step = g_song.PlayStep % g_nSteps;
 
             var p = g_song.Patterns.IndexOf(pat);
 
@@ -791,15 +791,15 @@ namespace IngameScript
                 var thisChan =
                        chan.Notes.FindIndex(n =>
                               num == n.Number
-                           && (      PlayStep >= p * nSteps + n.PatStep + n.ShOffset
-                                  && PlayStep <  p * nSteps + n.PatStep + n.ShOffset + n.StepLength
-                               ||    p * nSteps + n.PatStep >= g_song.EditPos 
-                                  && p * nSteps + n.PatStep <  g_song.EditPos + EditStep)) > -1
+                           && (      g_song.PlayStep >= p * g_nSteps + n.PatStep + n.ShOffset
+                                  && g_song.PlayStep <  p * g_nSteps + n.PatStep + n.ShOffset + n.StepLength
+                               ||    p * g_nSteps + n.PatStep >= g_song.EditPos 
+                                  && p * g_nSteps + n.PatStep <  g_song.EditPos + EditStep)) > -1
                     ||    g_hold
                        && g_notes.FindIndex(n =>
                                  num == n.Number
-                              && PlayStep >= n.PatStep
-                              && PlayStep <  n.PatStep + n.StepLength) > -1;
+                              && g_song.PlayStep >= n.PatStep
+                              && g_song.PlayStep <  n.PatStep + n.StepLength) > -1;
 
 
                 var otherChans = false;
@@ -813,10 +813,10 @@ namespace IngameScript
                         otherChans |= _chan.Notes.FindIndex(n =>
                                   num == n.Number
                                && ch  == n.iChan
-                               && (   PlayStep >= p * nSteps + n.PatStep + n.ShOffset
-                                   && PlayStep <  p * nSteps + n.PatStep + n.ShOffset + n.StepLength
-                            ||    p * nSteps + n.PatStep >= g_song.EditPos 
-                               && p * nSteps + n.PatStep <  g_song.EditPos + EditStep)) > -1;
+                               && (   g_song.PlayStep >= p * g_nSteps + n.PatStep + n.ShOffset
+                                   && g_song.PlayStep <  p * g_nSteps + n.PatStep + n.ShOffset + n.StepLength
+                            ||    p * g_nSteps + n.PatStep >= g_song.EditPos 
+                               && p * g_nSteps + n.PatStep <  g_song.EditPos + EditStep)) > -1;
                     }
                 }
 
@@ -833,11 +833,11 @@ namespace IngameScript
 
         void UpdateStepLights()
         {
-            for (int step = 0; step < nSteps; step++)
+            for (int step = 0; step < g_nSteps; step++)
             {
                 var light = lblLow[step];
 
-                var _step = step + CurPat * nSteps;
+                var _step = step + CurPat * g_nSteps;
 
                 var on = CurrentChannel.Notes.Find(n => 
                        n.PatStep >= step
@@ -845,19 +845,19 @@ namespace IngameScript
 
                 Color c;
 
-                if (   OK(PlayStep)
-                    && _step == (int)PlayStep
-                    && CurPat == PlayPat) c = on ? color0 : color6;
-                else if (on)                              c = color6;
-                else if (g_song.EditPos == _step)        c = color3;
-                else                                      c = step % 4 == 0 ? color2 : color0;
+                if (   OK(g_song.PlayStep)
+                    && _step  == (int)g_song.PlayStep
+                    && CurPat == g_song.PlayPat)  c = on ? color0 : color6;
+                else if (on)                      c = color6;
+                else if (g_song.EditPos == _step) c = color3;
+                else                              c = step % 4 == 0 ? color2 : color0;
 
                 light.BackgroundColor = c;
             }
         }
 
 
-        void UpdateLight(IMyTextPanel light, string text, float size, float pad)
+        static void UpdateLight(IMyTextPanel light, string text, float size, float pad)
         {
             if (light == null) return;
 
@@ -867,7 +867,7 @@ namespace IngameScript
         }
 
 
-        void UpdateLight(IMyTextPanel light, bool b, bool b2 = false)
+        static void UpdateLight(IMyTextPanel light, bool b, bool b2 = false)
         {
             if (light == null) return;
 
@@ -884,7 +884,7 @@ namespace IngameScript
         }
 
 
-        void UpdateEditLight(IMyTextPanel light, bool b)
+        static void UpdateEditLight(IMyTextPanel light, bool b)
         {
             if (light == null) return;
 

@@ -22,7 +22,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        string GetChordName(List<int> chord, string other)
+        static string GetChordName(List<int> chord, string other)
         {
                  if (IsChord(chord, 4, 8))     return "+";  // augmented
             else if (IsChord(chord, 4, 7))     return "M";  // major
@@ -60,7 +60,7 @@ namespace IngameScript
         }
 
 
-        bool IsChord(List<int> chord, int n2, int n3)
+        static bool IsChord(List<int> chord, int n2, int n3)
         {
             var c = new List<int>(chord);
 
@@ -83,7 +83,7 @@ namespace IngameScript
         }
 
 
-        bool IsChord(List<int> chord, int n2, int n3, int n4)
+        static bool IsChord(List<int> chord, int n2, int n3, int n4)
         {
             var c = new List<int>(chord);
 

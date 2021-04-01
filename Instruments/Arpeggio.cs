@@ -22,8 +22,8 @@ namespace IngameScript
                 
                 SetInstrument(inst);
 
-                Length = (Parameter)NewSettingFromTag("Len", this);
-                Scale  = (Parameter)NewSettingFromTag("Scl", this);
+                Length = (Parameter)NewFromTag("Len", this);
+                Scale  = (Parameter)NewFromTag("Scl", this);
             }
 
 
@@ -99,8 +99,8 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Len": return Length ?? (Length = (Parameter)NewSettingFromTag("Len", this));
-                    case "Scl": return Scale  ?? (Scale  = (Parameter)NewSettingFromTag("Scl", this));
+                    case "Len": return Length ?? (Length = (Parameter)NewFromTag("Len", this));
+                    case "Scl": return Scale  ?? (Scale  = (Parameter)NewFromTag("Scl", this));
                 }
 
                 return null;
@@ -133,6 +133,17 @@ namespace IngameScript
             }
 
 
+            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            {
+                base.DrawLabel(sprites, x, y, dp);
+
+                if (Length.HasDeepParams(null, CurSrc)) { Length.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Scale .HasDeepParams(null, CurSrc)) { Scale .DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+
+                base.FinishDrawLabel(dp);
+            }
+
+
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
                 DrawFuncButton(sprites, "Len", 1, w, h, true, Length.HasDeepParams(chan, -1));
@@ -141,25 +152,25 @@ namespace IngameScript
             }
 
 
-            public override void Func(int func, Program prog)
+            public override void Func(int func)
             {
                 switch (func)
                 { 
                 case 1:
                     Song.EditPos = -1;
-                    prog.UpdateEditLight(prog.lblEdit, false);
+                    UpdateEditLight(lblEdit, false);
 
-                    prog.AddNextSetting("Len");
+                    AddNextSetting("Len");
                     break;
 
                 case 2:
                     Song.EditPos = -1;
-                    prog.UpdateEditLight(prog.lblEdit, false);
+                    UpdateEditLight(lblEdit, false);
 
-                    prog.AddNextSetting("Scl");
+                    AddNextSetting("Scl");
                     break;
 
-                case 5: prog.RemoveSetting(this); break;
+                case 5: RemoveSetting(this); break;
                 }
             }
         }

@@ -42,6 +42,7 @@
     <Compile Include="Graphics\Draw Clips.cs" />
     <Compile Include="Graphics\Draw Harmonics.cs" />
     <Compile Include="Graphics\Draw Volume.cs" />
+    <Compile Include="Graphics\DrawParams.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Minify.cs" />
     <Compile Include="IO\Save.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Playback\Pattern.cs" />
     <Compile Include="Piano.cs" />
     <Compile Include="Playback\Playback Notes.cs" />
+    <Compile Include="Playback\TimeParams.cs" />
     <Compile Include="Program.cs" />
     <AdditionalFiles Include="thumb.png" />
     <AdditionalFiles Include="MDK\whitelist.cache" />

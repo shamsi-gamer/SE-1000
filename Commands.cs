@@ -1,21 +1,5 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
 
 
 namespace IngameScript
@@ -76,6 +60,7 @@ namespace IngameScript
                 MarkLight(lblNew);
             }
         }
+
 
         void Duplicate()
         {
@@ -243,7 +228,7 @@ namespace IngameScript
                 inputValid = false;
 
                 UpdateInstOff(CurChan);
-                
+
                 g_srcOff = 0;
             }
             else // source
@@ -583,59 +568,11 @@ namespace IngameScript
             }
             else
             { 
-                var inst = CurrentInstrument;
-
                 var src =
                     CurSrc > -1
-                    ? inst.Sources[CurSrc]
+                    ? CurrentInstrument.Sources[CurSrc]
                     : null;
 
-                //if (   src != null
-                //    && g_set >= Set.Oscillator
-                //    && g_set <= Set.Offset)
-                //    //&& OK(copyV.Value))
-                //{
-                //    src.Oscillator = copyW;
-                //    //src.Volume     = copyV;
-                //    //src.Offset     = copyOff;
-
-                //    MarkLight(lblPaste);
-                //}
-                //else if (src != null
-                //      && g_set >= Set.LfoAmplitude
-                //      && g_set <= Set.LfoFixed)
-                //{
-                //    //src.LfoAmplitude = copyLA;
-                //    //src.LfoFrequency = copyLF;
-                //    //src.LfoOffset    = copyLO;
-                //    //src.LfoFixed     = copyLFx;
-
-                //    MarkLight(lblPaste);
-                //}
-                //else if (src != null
-                //      && g_set >= Set.Attack
-                //      && g_set <= Set.Release)
-                //{
-                //    //src.Attack  = copyA;
-                //    //src.Decay   = copyD;
-                //    //src.Sustain = copyS;
-                //    //src.Release = copyR;
-
-                //    MarkLight(lblPaste);
-                //}
-                //else if (src == null
-                //      && g_song.SelChan > -1
-                //      && g_set >= Set.DelayCount
-                //      && g_set <= Set.DelayPower)
-                //{
-                //    //inst.DelayCount = copyDC;
-                //    //inst.DelayTime  = copyDT;
-                //    //inst.DelayLevel = copyDL;
-                //    //inst.DelayPower = copyDP;
-
-                //    MarkLight(lblPaste);
-                //}
-                //else 
                 if (SelChan < 0)
                 {
                     int f, l;
@@ -677,8 +614,8 @@ namespace IngameScript
 
                     var key = chan.AutoKeys.Find(k =>
                            k.Path == path
-                        && k.StepTime >= (g_song.EditPos % nSteps)
-                        && k.StepTime <  (g_song.EditPos % nSteps) + 1);
+                        && k.StepTime >= (g_song.EditPos % g_nSteps)
+                        && k.StepTime <  (g_song.EditPos % g_nSteps) + 1);
 
                     if (key == null) // create
                     {
@@ -688,7 +625,7 @@ namespace IngameScript
                             CurSrc,
                             param,
                             OK(val) ? val : param.Value,
-                            g_song.EditPos % nSteps,
+                            g_song.EditPos % g_nSteps,
                             SelectedChannel);
 
                         chan.AutoKeys.Add(newKey);
@@ -780,8 +717,8 @@ namespace IngameScript
                     { 
                         var key = chan.AutoKeys.Find(
                                k => k.Path == path
-                            && k.StepTime >= (song.EditPos % nSteps) 
-                            && k.StepTime <  (song.EditPos % nSteps) + 1);
+                            && k.StepTime >= (song.EditPos % g_nSteps) 
+                            && k.StepTime <  (song.EditPos % g_nSteps) + 1);
 
                         if (key != null)
                             AdjustKey(key, delta);

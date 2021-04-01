@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
 
@@ -51,27 +52,101 @@ namespace IngameScript
             public virtual Setting GetOrAddSettingFromTag(string tag) => null;
 
 
-            public virtual bool    HasDeepParams(Channel chan, int src) { return false; }
-            public virtual void    Remove(Setting setting) {}
-                                   
-            public virtual void    Clear() {}
+            public virtual bool HasDeepParams(Channel chan, int src) { return false; }
+            public virtual void Remove(Setting setting) {}
+                                
+            public virtual void Clear() {}
 
 
-            public virtual void    Randomize(Program prog) {}
-            public virtual void    AdjustFromController(Song song, Program prog) {}
+            public virtual void Randomize(Program prog) {}
+            public virtual void AdjustFromController(Song song, Program prog) {}
 
-            public virtual string  Save() => "";
 
-            public virtual void    DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan) {}
-            public virtual void    Func(int func, Program prog) {}
+            public virtual void GetLabel(out string str, out float width) 
+            { 
+                str   = ""; 
+                width = 30; 
+            }
+
+
+            public virtual void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            {
+                if (dp.Program.TooComplex) return;
+
+
+                var  sh = 18f;
+
+                var  xo =  8f;
+
+
+                if (sprites != null)
+                { 
+                    bool thisSetting = this == CurSetting;
+
+                    var textCol = dp.Active ? color6: color0;
+
+                    var boxCol = thisSetting ? color6 : color3;
+                        //active
+                        //? (thisSetting ? color1 : color4)
+                        //: (thisSetting ? color6 : color3);
+
+
+                    string str;
+                    float  ew;
+                    GetLabel(out str, out ew);
+
+
+                    if (   !HasTag(this, "Vol")
+                        && !HasTag(this, "Off")
+                        && GetType() != typeof(Tune)
+                        && GetType() != typeof(Harmonics)
+                        && GetType() != typeof(Filter)
+                        && GetType() != typeof(Delay)
+                        && GetType() != typeof(Arpeggio))
+                    { 
+                        if (dp.OffY == 0)
+                            DrawLine(sprites, x, y + sh/2, x + xo, y + sh/2, boxCol);
+                        else
+                        {
+                            DrawLine(sprites, x - ew/2, y - dp.OffY +sh   - 3, x - ew/2, y + sh/2, boxCol);
+                            DrawLine(sprites, x - ew/2, y           +sh/2,     x + xo,   y + sh/2, boxCol);
+                        }
+                    }
+
+                    x += xo;
+                    
+                    // setting name
+                    FillRect(sprites, x, y, ew, 15, boxCol);
+
+                    DrawString(sprites, Tag, x +  5, y + 2, 0.36f, textCol);
+                    DrawString(sprites, str, x + 30, y + 2, 0.36f, textCol);
+
+                    dp.OffX += ew + xo;
+                }
+            }
+
+
+            public virtual void FinishDrawLabel(DrawParams dp)
+            {
+                var sh = 18f;
+
+                if (!dp.Children)
+                    dp.OffY += sh;
+            }
+
+
+            public virtual void   DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp) {}
+                
+            public virtual string Save() => "";
+
+            public virtual void   DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan) {}
+            public virtual void   Func(int func) {}
         }
 
 
-        Parameter GetCurrentParam(Instrument inst)
+        static Parameter GetCurrentParam(Instrument inst)
         {
-            return (Parameter)GetSettingFromPath(
-                inst, 
-                CurSetting.GetPath(CurSrc));
+            return (Parameter)GetSettingFromPath(inst, CurSetting.GetPath(CurSrc));
         }
 
 
@@ -137,7 +212,7 @@ namespace IngameScript
         }
 
 
-        static Setting NewSettingFromTag(string tag, Setting parent)
+        static Setting NewFromTag(string tag, Setting parent)
         {
             switch (tag)
             { 
@@ -180,6 +255,53 @@ namespace IngameScript
             }
 
             return null;
+        }
+
+
+        static bool IsParam(Setting setting) 
+        {
+            if (setting == null) return false;
+
+            return setting.GetType() == typeof(Tune)
+                || setting.GetType() == typeof(Parameter); 
+        }
+
+
+        bool IsSettingType(Setting setting, Type type)
+        {
+            return
+                   setting != null
+                && setting.GetType() == type;
+        }
+
+
+        static bool HasTag(Setting setting, string tag)
+        {
+            return 
+                   setting != null
+                && setting.Tag == tag;
+        }
+
+
+        static bool HasTagOrParent(Setting setting, string tag)
+        {
+            return HasTag(setting, tag)
+                ||    setting.Parent != null
+                   && HasTag(setting.Parent, tag);
+        }
+
+
+        static bool HasTagOrAnyParent(Setting setting, string tag)
+        {
+            while (setting != null)
+            {
+                if (setting.Tag == tag)
+                    return true;
+
+                setting = setting.Parent;
+            }
+
+            return false;
         }
     }
 }

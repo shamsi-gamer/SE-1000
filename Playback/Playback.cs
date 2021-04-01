@@ -9,32 +9,38 @@ namespace IngameScript
         {
             SetCurrentPattern(CurPat);
 
-            if (g_autoCue)
-                Cue();
+            g_song.PlayTime = playTime % (g_song.Patterns.Count * g_nSteps * g_ticksPerStep);
 
-            PlayTime = playTime % (g_song.Patterns.Count * nSteps * g_ticksPerStep);
-
-            StartTime = 
-                PlayTime > -1 
-                ? g_time - PlayTime        
+            g_song.StartTime =
+                g_song.PlayTime > -1 
+                ? g_time - g_song.PlayTime        
                 : -1;
 
-            CueNextPattern();
+            if (g_autoCue)
+            { 
+                g_song.SetCue();
+                UpdateLight(lblCue, g_song.Cue > -1);
+            }
+
+            g_song.CueNextPattern();
+
+            UpdateLight(lblCue, g_song.Cue > -1);
         }
 
 
         void UpdateTime()
         {
-            if (PlayTime < 0)
+            if (g_song.PlayTime < 0)
                 return;
 
-            CueNextPattern();
-
+            g_song.CueNextPattern();
+            
             if (g_follow) 
-                SetCurrentPattern(PlayPat);
+                SetCurrentPattern(g_song.PlayPat);
 
             AddPlaybackNotes();
 
+            UpdateLight(lblCue, g_song.Cue > -1);
             UpdateOctaveLight();
         }
 
@@ -43,143 +49,13 @@ namespace IngameScript
         {
             UpdateTime();
 
-            StopNotes(PlayStep);
+            StopNotes(g_song.PlayStep);
 
             var delete = StopSounds();
             DeleteSounds(delete);
 
             UpdateSounds();
             UpdateVolumes();
-        }
-
-
-        void CueNextPattern()
-        {
-            //var noteLen = (int)(EditLength * g_ticksPerStep);
-
-            g_song.Length = g_song.Patterns.Count * nSteps;
-            //    g_song.Arpeggio != null
-            //    ? (int)Math.Round(g_song.Arpeggio.Length.GetValue(g_time, 0, g_song.StartTime, noteLen, null, g_song.CurSrc))
-            /*:*/
-
-
-            if (g_cue > -1)
-            {
-                var b = g_song.GetBlock(PlayPat);
-
-                if (g_block && b != null)
-                    PlayPat = b.Last;
-            }
-
-
-            if (PlayStep >= (PlayPat + 1) * nSteps)
-            { 
-                int start, end;
-                GetPosLimits(g_song, PlayPat, out start, out end);
-                end = start + Math.Min(end - start, g_song.Length);
-
-                if (g_cue > -1)
-                {
-                    var b = g_song.GetBlock(g_cue);
-                    if (g_block && b != null)
-                        g_cue = b.First;
-
-                    PlayTime  = GetPatTime(g_cue);
-                    StartTime = g_time - PlayTime;
-
-                    g_cue = -1;
-                    UpdateLight(lblCue, g_cue > -1);
-                }
-                else if (PlayStep >= end)
-                {
-                    StopCurrentNotes(g_song);
-
-                    PlayTime  -= (end - start) * g_ticksPerStep;
-                    StartTime += (end - start) * g_ticksPerStep;
-                }
-            }
-
-
-            PlayPat = 
-                PlayTime > -1 
-                ? (int)(PlayStep / nSteps) 
-                : -1;
-
-
-            //if (PlayTime > -1)
-            //{
-            //         if (CurPat > oldPat) StartTime -= nSteps * g_ticksPerStep;
-            //    else if (CurPat < oldPat) StartTime += nSteps * g_ticksPerStep;
-            //}
-        }
-
-
-        void GetPosLimits(Song song, int pat, out int start, out int end)
-        {
-            int first, last;
-            GetPlayPatterns(song, pat, out first, out last);
-
-            start =  first     * nSteps;
-            end   = (last + 1) * nSteps;
-        }
-
-
-        void GetPlayPatterns(Song song, int p, out int f, out int l)
-        {
-            if (g_loop)
-            {
-                f = p;
-                l = p;
-
-                var b = song.GetBlock(p);
-
-                if (   g_block
-                    && b != null)
-                {
-                    f = b.First;
-                    l = b.Last;
-                }
-            }
-            else
-            {
-                f = 0;
-                l = song.Patterns.Count-1;
-            }
-        }
-
-
-        void FinalizePlayback(Song song)
-        {
-            //var pat = song.Patterns[song.PlayPat];
-
-            //for (int ch = 0; ch < nChans; ch++)
-            //{
-            //    var chan = pat.Channels[ch];
-
-            //    var arpNotes = chan.Notes.FindAll(n =>
-            //                n.Instrument.Arpeggio != null
-            //            && (int)(song.PlayStep * g_ticksPerStep) >= (int)((song.PlayPat * nSteps + n.StepTime               ) * g_ticksPerStep)
-            //            && (int)(song.PlayStep * g_ticksPerStep) <  (int)((song.PlayPat * nSteps + n.StepTime + n.StepLength) * g_ticksPerStep));
-
-            //    var noteLen = (int)(EditLength * g_ticksPerStep);
-
-            //    foreach (var n in arpNotes)
-            //    {
-            //        var arp = n.Instrument.Arpeggio;
-
-            //        n.FramePlayTime += arp.Scale .GetValue(g_time, 0, song.StartTime, noteLen, n, -1);
-            //        var maxLength    = arp.Length.GetValue(g_time, 0, song.StartTime, noteLen, n, -1);
-
-            //        while (n.FramePlayTime >= maxLength * g_ticksPerStep)
-            //            n.FramePlayTime -= maxLength * g_ticksPerStep;
-            //    }
-            //}
-
-
-            g_time++;
-
-            if (PlayTime > -1)
-                PlayTime++;
         }
 
 
@@ -190,9 +66,9 @@ namespace IngameScript
                 if (TooComplex) return;
 
                 var snd   = g_sounds[i];
-                var lTime = g_time - snd.FrameTime;
+                var lTime = g_time - snd.Time;
 
-                if (lTime < snd.FrameLength + snd.ReleaseLength)
+                if (lTime < snd.Length + snd.ReleaseLength)
                 {
                     g_dspVol[snd.iChan] = Math.Max(
                         g_dspVol[snd.iChan],

@@ -27,6 +27,17 @@ namespace IngameScript
             public Note          Inter;
 
 
+            public long          StartTime, // in ticks
+                                 PlayTime;
+
+            public int           PlayPat; // this can't be a property because it must sometimes be separate from PlayTime, for queueing
+
+            public float         PlayStep { get { return PlayTime > -1 ? PlayTime / (float)g_ticksPerStep : fN; } }
+
+
+            public int           Cue;
+
+
             public Song(string name = "Song 1")
             {
                 Name     = name;
@@ -42,6 +53,13 @@ namespace IngameScript
 
                 EditNotes = new List<Note>();
                 
+                PlayTime  = -1;
+                StartTime = -1;
+
+                PlayPat   = -1;
+
+                Cue       = -1;
+
                 ResetState();
             }
 
@@ -69,6 +87,13 @@ namespace IngameScript
 
                 EditNotes = new List<Note>();
                 
+                PlayTime  = song.PlayTime;
+                StartTime = song.StartTime;
+
+                PlayPat   = song.PlayPat;
+
+                Cue       = song.Cue;
+
                 ResetState();
             }
 
@@ -98,7 +123,7 @@ namespace IngameScript
                                 keys[k].SourceIndex,
                                 keys[k].Parameter,
                                 keys[k].Value, 
-                                keys[k].StepTime + p*nSteps,
+                                keys[k].StepTime + p*g_nSteps,
                                 keys[k].Channel));
                         }
                     }
@@ -136,7 +161,7 @@ namespace IngameScript
             //public float GetStep   (Note note) { return GetNotePat(note) * nSteps + note.PatStep; }
 
             public int   GetKeyPat (Key key)   { return Patterns.FindIndex(p => Array.Find(p.Channels, c => c.AutoKeys.Contains(key)) != null); }
-            public float GetStep   (Key key)   { return GetKeyPat(key) * nSteps + key.StepTime; }
+            public float GetStep   (Key key)   { return GetKeyPat(key) * g_nSteps + key.StepTime; }
 
 
             public Block GetBlock(int pat)
@@ -147,10 +172,165 @@ namespace IngameScript
             }
 
 
+            public void SetCue()
+            {
+                Cue = Cue == CurPat ? -1 : CurPat;
+            }
+
+
+            public void CueNextPattern()
+            {
+                //var noteLen = (int)(EditLength * g_ticksPerStep);
+
+                Length = Patterns.Count * g_nSteps;
+                //    g_song.Arpeggio != null
+                //    ? (int)Math.Round(g_song.Arpeggio.Length.GetValue(g_time, 0, g_song.StartTime, noteLen, null, g_song.CurSrc))
+                /*:*/
+
+
+                if (Cue > -1)
+                {
+                    var b = GetBlock(PlayPat);
+
+                    if (g_block && b != null)
+                        PlayPat = b.Last;
+                }
+
+
+                if (PlayStep >= (PlayPat + 1) * g_nSteps)
+                { 
+                    int start, end;
+                    GetPosLimits(PlayPat, out start, out end);
+                    end = start + Math.Min(end - start, Length);
+
+                    if (Cue > -1)
+                    {
+                        var b = GetBlock(Cue);
+                        if (g_block && b != null)
+                            Cue = b.First;
+
+                        PlayTime  = GetPatTime(Cue);
+                        StartTime = g_time - PlayTime;
+
+                        Cue = -1;
+                    }
+                    else if (PlayStep >= end)
+                    {
+                        StopCurrentNotes();
+
+                        PlayTime  -= (end - start) * g_ticksPerStep;
+                        StartTime += (end - start) * g_ticksPerStep;
+                    }
+                }
+
+
+                PlayPat =
+                    PlayTime > -1
+                    ? (int)(PlayStep / g_nSteps)
+                    : -1;
+
+
+                //if (PlayTime > -1)
+                //{
+                //         if (CurPat > oldPat) StartTime -= nSteps * g_ticksPerStep;
+                //    else if (CurPat < oldPat) StartTime += nSteps * g_ticksPerStep;
+                //}
+            }
+
+
+            public void GetPosLimits(int pat, out int start, out int end)
+            {
+                int first, last;
+                GetPlayPatterns(pat, out first, out last);
+
+                start =  first     * g_nSteps;
+                end   = (last + 1) * g_nSteps;
+            }
+
+
+            public void GetPlayPatterns(int p, out int f, out int l)
+            {
+                if (g_loop)
+                {
+                    f = p;
+                    l = p;
+
+                    var b = GetBlock(p);
+
+                    if (   g_block
+                        && b != null)
+                    {
+                        f = b.First;
+                        l = b.Last;
+                    }
+                }
+                else
+                {
+                    f = 0;
+                    l = Patterns.Count-1;
+                }
+            }
+
+
+            public void StopCurrentNotes(int ch = -1)
+            {
+                var timeStep = PlayTime > -1 ? PlayStep : TimeStep;
+
+                foreach (var note in g_notes)
+                {
+                    if (   ch < 0
+                        || note.iChan == ch)
+                    { 
+                        var noteStep = PlayTime > -1 ? note.SongStep : note.PatStep;
+                        note.UpdateStepLength(timeStep - noteStep);
+                    }
+                }
+            }
+
+
+            public void FinalizePlayback()
+            {
+                //var pat = song.Patterns[song.PlayPat];
+
+                //for (int ch = 0; ch < nChans; ch++)
+                //{
+                //    var chan = pat.Channels[ch];
+
+                //    var arpNotes = chan.Notes.FindAll(n =>
+                //                n.Instrument.Arpeggio != null
+                //            && (int)(song.PlayStep * g_ticksPerStep) >= (int)((song.PlayPat * nSteps + n.StepTime               ) * g_ticksPerStep)
+                //            && (int)(song.PlayStep * g_ticksPerStep) <  (int)((song.PlayPat * nSteps + n.StepTime + n.StepLength) * g_ticksPerStep));
+
+                //    var noteLen = (int)(EditLength * g_ticksPerStep);
+
+                //    foreach (var n in arpNotes)
+                //    {
+                //        var arp = n.Instrument.Arpeggio;
+
+                //        n.FramePlayTime += arp.Scale .GetValue(g_time, 0, song.StartTime, noteLen, n, -1);
+                //        var maxLength    = arp.Length.GetValue(g_time, 0, song.StartTime, noteLen, n, -1);
+
+                //        while (n.FramePlayTime >= maxLength * g_ticksPerStep)
+                //            n.FramePlayTime -= maxLength * g_ticksPerStep;
+                //    }
+                //}
+
+
+                if (PlayTime > -1)
+                    PlayTime++;
+            }
+
+
             public string Save()
             {
+                var cfg = 
+                      WS(PlayTime)
+                    + WS(PlayPat)
+                    + S(Cue);
+
                 return
                       N(Name.Replace("\n", "\u0085"))
+                    + N(cfg)
                     + N(SavePatterns())
                     + SaveBlocks();
             }
@@ -171,9 +351,9 @@ namespace IngameScript
 
             string SaveBlocks()
             {
-                var save = S(g_song.Blocks.Count);
+                var save = S(Blocks.Count);
 
-                foreach (var b in g_song.Blocks)
+                foreach (var b in Blocks)
                 {
                     save +=
                       ";" + S(b.First)
@@ -193,12 +373,17 @@ namespace IngameScript
 
                 song.Name = lines[line++].Replace("\u0085", "\n");
 
+                var cfg = lines[line++].Split(';');
+                int i   = 0;
+
+                song.PlayTime = long.Parse(cfg[i++]);
+                song.PlayPat  = int .Parse(cfg[i++]);
+                song.Cue      = int .Parse(cfg[i++]);
+
                 if (!song.LoadPatterns(lines, ref line)) return null;
                 if (!song.LoadBlocks(lines[line++]))     return null;
 
                 song.UpdateAutoKeys();
-                //if (!Finalize(insts)) return F;
-                //if (!LoadEdit(lines, ref line)) return F;
 
                 return song;
             }

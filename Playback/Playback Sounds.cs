@@ -6,15 +6,17 @@ namespace IngameScript
 {
     partial class Program
     {
-        void AddSoundAndEchos(List<Sound> sounds, Sound snd, Delay del, int iSrc)
+        void AddSoundAndEchos(List<Sound> sounds, Sound snd, Delay del)
         {
             if (del == null) return;
 
             var lTime = g_time - snd.Note.PatTime;
-            var sTime = g_time - StartTime;
+            var sTime = g_time - g_song.StartTime;
 
-            var dc = del.Count.GetValue(g_time, lTime, sTime, snd.FrameLength, snd.Note, snd.SourceIndex, snd.TriggerValues, this);
-            var dt = del.Time .GetValue(g_time, lTime, sTime, snd.FrameLength, snd.Note, snd.SourceIndex, snd.TriggerValues, this);
+            var tp = new TimeParams(g_time, lTime, sTime, snd.Note, snd.Length, snd.SourceIndex, snd.TriggerValues, this);
+
+            var dc = del.Count.GetValue(tp);
+            var dt = del.Time .GetValue(tp);
 
 
             Sound echoSrc = null;
@@ -23,21 +25,12 @@ namespace IngameScript
             {
                 if (TooComplex) return;
                 
-                var echoVol = del.GetVolume(
-                    i,
-                    g_time,
-                    lTime,
-                    sTime,
-                    snd.FrameLength,
-                    snd.Note,
-                    iSrc,
-                    snd.TriggerValues,
-                    this);
+                var echoVol = del.GetVolume(i, tp);
 
                 var echo = new Sound(snd, i > 0, echoSrc, echoVol);
                 if (i == 0) echoSrc = echo;
 
-                echo.FrameTime += (int)(i*dt * FPS);
+                echo.Time += (int)(i*dt * FPS);
                 sounds.Add(echo);
             }
         }
@@ -50,10 +43,10 @@ namespace IngameScript
                 if (TooComplex) return;
 
                 var snd = g_sounds[i];
-                var lTime = g_time - snd.FrameTime;
+                var lTime = g_time - snd.Time;
 
                 if (   lTime >= 0
-                    && lTime < snd.FrameLength + snd.ReleaseLength)
+                    && lTime < snd.Length + snd.ReleaseLength)
                     UpdateSound(snd);
             }
         }
@@ -63,18 +56,19 @@ namespace IngameScript
         {
             if (!TooComplex)
             {
-                var lTime = g_time - snd.FrameTime;
-                var sTime = g_time - StartTime;
+                var lTime = g_time - snd.Time;
+                var sTime = g_time - g_song.StartTime;
 
+                var tp = new TimeParams(g_time, lTime, sTime, snd.Note, snd.Length, snd.SourceIndex, snd.TriggerValues, this);
 
                 float vol = 0;
 
                 if (snd.Cache != null) // not echo
                 {
                     var updateVol = 
-                            PlayTime < snd.FrameTime + snd.FrameLength + snd.ReleaseLength
+                            g_song.PlayTime < snd.Time + snd.Length + snd.ReleaseLength
                         && !TooComplex
-                        ? snd.GetVolume(g_time, StartTime, this)
+                        ? snd.GetVolume(g_time, g_song.StartTime, this)
                         : 1;
 
                     vol = 
@@ -86,18 +80,7 @@ namespace IngameScript
                     if (   snd.Harmonic != null
                         && !TooComplex)
                     {
-                        snd.Harmonic.CurValue = ApplyFilter(
-                            snd.Harmonic.CurValue, 
-                            snd.Source,
-                            snd.HrmPos, 
-                            g_time,
-                            lTime,
-                            sTime,
-                            snd.FrameLength, 
-                            snd.Note, 
-                            snd.SourceIndex,
-                            snd.TriggerValues,
-                            this);
+                        snd.Harmonic.CurValue = ApplyFilter(snd.Harmonic.CurValue, snd.Source, snd.HrmPos, tp);
 
                         vol *= snd.Harmonic.CurValue;
 
@@ -127,7 +110,7 @@ namespace IngameScript
                 UpdateSoundSpeakers(snd, vol);
             }
 
-            snd.ElapsedFrameTime = g_time - snd.FrameTime;
+            snd.ElapsedTime = g_time - snd.Time;
         }
 
 
@@ -162,7 +145,7 @@ namespace IngameScript
                 spk.Block.Volume = Math.Min(v--, 1);
 
                 // if sample is ending, restart it //TODO make this smooth
-                if (   snd.ElapsedFrameTime >= (snd.Source.Oscillator.Length - 0.1f) * FPS
+                if (   snd.ElapsedTime >= (snd.Source.Oscillator.Length - 0.1f) * FPS
                     && snd.Source.Oscillator != OscClick)
                 {
                     spk.Block.Stop();
@@ -180,7 +163,7 @@ namespace IngameScript
             {
                 var snd = g_sounds[i];
 
-                if (g_time > snd.FrameTime + snd.FrameLength + snd.ReleaseLength)
+                if (g_time > snd.Time + snd.Length + snd.ReleaseLength)
                 {
                     snd.Stop();
                     delete.Add(i);
