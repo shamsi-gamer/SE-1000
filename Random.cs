@@ -63,6 +63,8 @@ namespace IngameScript
 
         void RandomNotes(int ch, List<Instrument> rndInst)
         {
+            if (TooComplex) return;
+
             int first, last;
             GetPatterns(g_song, CurPat, out first, out last);
 
@@ -97,6 +99,9 @@ namespace IngameScript
 
         void RandomNotes(int pat, int ch)
         {
+            if (TooComplex) return;
+
+
             var chan = g_song.Patterns[pat].Channels[ch];
 
 
@@ -123,6 +128,8 @@ namespace IngameScript
 
             while (step < g_nSteps)
             {
+                if (TooComplex) return;
+
                 if (RND >= 0.5)
                 {
                     var found = chan.Notes.Find(n => n.PatStep == step);

@@ -110,12 +110,10 @@ namespace IngameScript
                 if (   tp.TriggerValues.Find(v => v.Path == path) == null
                     && Lfo != null)
                 {
-                    //var dv = Lfo.GetValue(tp)
-                    //       * Math.Abs(Max - Min)/2;
+                    var lfo = Lfo.GetValue(tp);
 
-                    //value += dv;
-
-                    value *= Lfo.GetValue(tp);
+                    if (Lfo.Op == LFO.LfoOp.Add) value += lfo * Math.Abs(Max - Min) / 2;
+                    else                         value *= Lfo.GetValue(tp);
 
                     if (ParentIsEnvelope)
                         tp.TriggerValues.Add(new TriggerValue(path, value));
@@ -338,17 +336,18 @@ namespace IngameScript
             {
                 base.DrawLabel(sprites, x, y, dp);
 
-                if (Trigger  != null) { Trigger .DrawLabel(sprites, x + dp.OffX, y + dp.OffY, dp); dp.Children = true; }
-                if (Envelope != null) { Envelope.DrawLabel(sprites, x + dp.OffX, y + dp.OffY, dp); dp.Children = true; }
-                if (Lfo      != null) { Lfo     .DrawLabel(sprites, x + dp.OffX, y + dp.OffY, dp); dp.Children = true; }
+                if (Trigger  != null) { Trigger .DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                if (Envelope != null) { Envelope.DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                if (Lfo      != null) { Lfo     .DrawLabel(sprites, x, y, dp); dp.Children = true; }
 
                 base.FinishDrawLabel(dp);
             }
 
 
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
-            {
-                DrawRect(sprites, x, y, w, h, Color.Yellow);
+            {   
+                var valWidth  =  60;
+                var valHeight = 180;
 
                 if (   Tag == "Att"
                     || Tag == "Dec"
@@ -371,15 +370,12 @@ namespace IngameScript
                 }
                 else if (Tag == "Vol")
                 {
-                    var volWidth  = 60;
-                    var volHeight = 180;
-
                     DrawSoundLevel(
                         sprites, 
-                        x + w/2 - volWidth, 
-                        y + h/2 - volHeight/2, 
-                        volWidth, 
-                        volHeight, 
+                        x + w/2 - valWidth, 
+                        y + h/2 - valHeight/2, 
+                        valWidth, 
+                        valHeight, 
                         Value, 
                         CurValue);
 
@@ -387,15 +383,36 @@ namespace IngameScript
                         sprites,
                         printValue(100 * Math.Log10(Value), 0, true, 0) + " dB", 
                         x + w/2 + 10, 
-                        y + h/2 + volHeight/2 - 30,
+                        y + h/2 + valHeight/2 - 30,
                         1f, 
                         color6);
                 }
                 else if (Parent == null // source offset has no parent
                       && Tag    == "Off")
-                    DrawValueHorizontal(sprites, x, y, w, h, Min, Max, Value, CurValue, Tag);
-                else                                
-                    DrawValueVertical  (sprites, x, y, w, h, Min, Max, Value, CurValue, Tag, false);
+                { 
+                    DrawValueHorizontal(
+                        sprites, 
+                        x + w/2 - valHeight/2, // this is deliberately backwards
+                        y + h/2 - valWidth /2,
+                        valHeight,
+                        valWidth, 
+                        Min, Max, 
+                        Value, CurValue, 
+                        Tag);
+                }
+                else
+                { 
+                    DrawValueVertical(
+                        sprites, 
+                        x + w/2 - valWidth, 
+                        y + h/2 - valHeight/2,
+                        valWidth,
+                        valHeight, 
+                        Min, Max, 
+                        Value, CurValue, 
+                        Tag, 
+                        false);
+                }
             }
 
 
@@ -460,15 +477,8 @@ namespace IngameScript
                     AddNextSetting("LFO");
                     break;
 
-                case 3:
-                    g_paramKeys = true;
-                    UpdateChordLights();
-                    break;
-
-                case 4:
-                    g_paramAuto = true;
-                    UpdateChordLights();
-                    break;
+                case 3: g_paramKeys = true; UpdateChordLights(); break;
+                case 4: g_paramAuto = true; UpdateChordLights(); break;
 
                 case 5: 
                     if (   ParentIsEnvelope

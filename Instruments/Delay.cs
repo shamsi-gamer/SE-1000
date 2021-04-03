@@ -178,10 +178,10 @@ namespace IngameScript
             {
                 base.DrawLabel(sprites, x, y, dp);
 
-                if (Count.HasDeepParams(null, CurSrc)) { Count.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
-                if (Time .HasDeepParams(null, CurSrc)) { Time .DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
-                if (Level.HasDeepParams(null, CurSrc)) { Level.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
-                if (Power.HasDeepParams(null, CurSrc)) { Power.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Count.HasDeepParams(null, CurSrc)) { Count.DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                if (Time .HasDeepParams(null, CurSrc)) { Time .DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                if (Level.HasDeepParams(null, CurSrc)) { Level.DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                if (Power.HasDeepParams(null, CurSrc)) { Power.DrawLabel(sprites, x, y, dp); dp.Children = true; }
 
                 base.FinishDrawLabel(dp);
             }
@@ -192,7 +192,14 @@ namespace IngameScript
                 var b = 18;
 
 
-                FillRect(sprites, x, y + h - b - 1, w, 2, color3);
+                var w0 = 240f;
+                var h0 = 120f;
+
+                var x0 = x + w/2 - w0/2;
+                var y0 = y + h/2 - h0/2;
+
+
+                FillRect(sprites, x0, y0 + h0 - b - 1, w0, 2, color3);
 
                 var dd = Dry  .CurValue;
                 var dc = Count.CurValue;
@@ -212,10 +219,10 @@ namespace IngameScript
                     dx = i * dt;
 
                     FillRect(sprites, 
-                        x + dx + (i > 0 ? 2 : 0), 
-                        y + h - b, 
+                        x0 + dx + (i > 0 ? 2 : 0), 
+                        y0 + h0 - b, 
                         i == 0 ? 8 : 4, 
-                        -(h - b*2) * GetVolume(i, tpSet),
+                        -(h0 - b*2) * GetVolume(i, tpSet),
                         color4);
                 }
 
@@ -224,8 +231,8 @@ namespace IngameScript
                 DrawString(
                     sprites,
                     S00(dd), // -1 because 0 is the source sound
-                    x,
-                    y - b + 8,
+                    x0,
+                    y0 - b + 8,
                     fs,
                     IsCurParam("Dry") ? color6 : color3);
 
@@ -234,8 +241,8 @@ namespace IngameScript
                 DrawString(
                     sprites, 
                     S(Math.Round(dc-1)), // -1 because 0 is the source sound
-                    x,
-                    y + h - b + 8, 
+                    x0,
+                    y0 + h0 - b + 8, 
                     fs, 
                     IsCurParam("Cnt") ? color6 : color3);
 
@@ -243,13 +250,13 @@ namespace IngameScript
                 if (dc-1 > 0)
                 { 
                     // level
-                    var lx = x + dt + 15;
+                    var lx = x0 + dt + 15;
 
                     DrawString(
                         sprites, 
                         S00(dl), 
                         lx, 
-                        y + h - b - (h - b*2) * dl - 24, 
+                        y0 + h0 - b - (h0 - b*2) * dl - 24, 
                         fs,
                         IsCurParam("Lvl") ? color6 : color3, 
                         TaC);
@@ -259,15 +266,15 @@ namespace IngameScript
                     DrawString(
                         sprites, 
                         S0(Math.Round(dt*10)) + " ms", 
-                        x + 60, 
-                        y + h - b + 8, 
+                        x0 + 60, 
+                        y0 + h0 - b + 8, 
                         fs,
                         IsCurParam("Time") ? color6 : color3, 
                         TaC);
 
 
                     // power
-                    var px  = x + MinMax(90, dt*(dc-1)/2, w);
+                    var px  = x0 + MinMax(90, dt*(dc-1)/2, w0);
                     var dim = dc > 1 && Math.Abs(px - lx) > 20 ? color6 : color3;
 
                     var tp  = new TimeParams(0, 0, 0, null, EditLength, CurSrc, _triggerDummy, _dp.Program);
@@ -277,7 +284,7 @@ namespace IngameScript
                         sprites, 
                         S00(dp),
                         px,
-                        y + h - b - (h - b*2) * vol - 24,
+                        y0 + h0 - b - (h0 - b*2) * vol - 24,
                         fs,
                         IsCurParam("Pow") ? color6 : color3,
                         TaC);

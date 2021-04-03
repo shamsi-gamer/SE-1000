@@ -137,8 +137,8 @@ namespace IngameScript
             {
                 base.DrawLabel(sprites, x, y, dp);
 
-                if (Length.HasDeepParams(null, CurSrc)) { Length.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
-                if (Scale .HasDeepParams(null, CurSrc)) { Scale .DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Length.HasDeepParams(null, CurSrc)) { Length.DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                if (Scale .HasDeepParams(null, CurSrc)) { Scale .DrawLabel(sprites, x, y, dp); dp.Children = true; }
 
                 base.FinishDrawLabel(dp);
             }

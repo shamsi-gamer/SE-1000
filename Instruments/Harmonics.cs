@@ -49,20 +49,20 @@ namespace IngameScript
                 {
                 case Preset.Sine:     FillSine();            break;
                                                                  
-                case Preset.Saw4:     FillSaw( 4);           break;
-                case Preset.Saw8:     FillSaw( 8);           break;
-                case Preset.Saw16:    FillSaw(16);           break;
-                case Preset.Saw24:    FillSaw(24);           break;
+                case Preset.Saw4:     FillSaw   ( 4);        break;
+                case Preset.Saw8:     FillSaw   ( 8);        break;
+                case Preset.Saw16:    FillSaw   (16);        break;
+                case Preset.Saw24:    FillSaw   (24);        break;
                                                                  
                 case Preset.Square4:  FillSquare( 4);        break;
                 case Preset.Square8:  FillSquare( 8);        break;
                 case Preset.Square16: FillSquare(16);        break;
                 case Preset.Square24: FillSquare(24);        break;
                                                                  
-                case Preset.Flat4:    FillFlat( 4);          break;
-                case Preset.Flat8:    FillFlat( 8);          break;
-                case Preset.Flat16:   FillFlat(16);          break;
-                case Preset.Flat24:   FillFlat(24);          break;
+                case Preset.Flat4:    FillFlat  ( 4);        break;
+                case Preset.Flat8:    FillFlat  ( 8);        break;
+                case Preset.Flat16:   FillFlat  (16);        break;
+                case Preset.Flat24:   FillFlat  (24);        break;
 
                 case Preset.Random4:  FillRandom( 4, g_rnd); break;
                 case Preset.Random8:  FillRandom( 8, g_rnd); break;
@@ -226,7 +226,7 @@ namespace IngameScript
                 base.DrawLabel(sprites, x, y, dp);
 
                 for (int i = 0; i < Tones.Length; i++)
-                    if (Tones[i].HasDeepParams(null, CurSrc)) { Tones[i].DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                    if (Tones[i].HasDeepParams(null, CurSrc)) { Tones[i].DrawLabel(sprites, x, y, dp); dp.Children = true; }
                 
                 base.FinishDrawLabel(dp);
             }

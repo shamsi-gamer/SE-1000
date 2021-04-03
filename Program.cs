@@ -171,112 +171,112 @@ namespace IngameScript
 
             switch (arg)
             {
-                case "load":       LoadSongExt();            break;
-                case "save":       SaveSongExt();            break;
-             
-                case "import":     ImportInstruments();      break;
-
-                case "play":       Play();                   break;
-                case "stop":       Stop();                   break;
-                                                                 
-                case "bpm up":     SetStepLength(-1);        break;
-                case "bpm down":   SetStepLength(1);         break;
-                                                                 
-                case "del pat":    DeletePattern();          break;
-                case "dup pat":    DuplicatePattern();       break;
-                case "new pat":    NewPattern();             break;
-                case "move pat":   ToggleMovePattern();      break;
-                case "prev pat":   PrevPattern(g_movePat);   break;
-                case "next pat":   NextPattern(g_movePat);   break;
-                                                             
-                case "loop":       ToogleLoop();             break;
-                case "block":      ToggleBlock();            break;
-                case "all pat":    ToggleAllPatterns();      break;
-                case "auto cue":   ToggleAutoCue();          break;
-                case "follow":     ToggleFollow();           break;
-                                                                 
-                case "new":        New();                    break;
-                case "dup":        Duplicate();              break;
-                case "del":        Delete();                 break;
-                case "move":       ToggleMove();             break;
-                case "prev":       Move(-1);                 break;
-                case "next":       Move( 1);                 break;
-                                                             
-                case "out":        BackOut();                break;
-                case "back":       Back();                   break;
-                case "enter":      Enter();                  break;
-                                                             
-                case "f1":         SetFunc(0);               break;
-                case "f2":         SetFunc(1);               break;
-                case "f3":         SetFunc(2);               break;
-                case "f4":         SetFunc(3);               break;
-                case "f5":         SetFunc(4);               break;
-                case "f6":         SetFunc(5);               break;
-                                                             
-                case "cmd1":       Command1();               break;
-                case "cmd2":       Command2();               break;
-                case "up":         Adjust(g_song,  1);       break;
-                case "down":       Adjust(g_song, -1);       break;
-                case "shift":      Shift();                  break;
-                case "cmd3":       Command3();               break;
-
-                case "tr up":      SetTranspose(g_song,  1); break;
-                case "tr down":    SetTranspose(g_song, -1); break;
-                                       
-                case "spread":     Spread();                 break;
+                case "load":       LoadSongExt();                   break;
+                case "save":       SaveSongExt();                   break;
+                                                                    
+                case "import":     ImportInstruments();             break;
+                                                                    
+                case "play":       Play();                          break;
+                case "stop":       Stop();                          break;
+                                                                        
+                case "bpm up":     SetStepLength(-1);               break;
+                case "bpm down":   SetStepLength(1);                break;
+                                                                        
+                case "del pat":    DeletePattern();                 break;
+                case "dup pat":    DuplicatePattern();              break;
+                case "new pat":    NewPattern();                    break;
+                case "move pat":   ToggleMovePattern();             break;
+                case "prev pat":   PrevPattern(g_movePat);          break;
+                case "next pat":   NextPattern(g_movePat);          break;
+                                                                    
+                case "loop":       ToogleLoop();                    break;
+                case "block":      ToggleBlock();                   break;
+                case "all pat":    ToggleAllPatterns();             break;
+                case "auto cue":   ToggleAutoCue();                 break;
+                case "follow":     ToggleFollow();                  break;
+                                                                        
+                case "new":        New();                           break;
+                case "dup":        Duplicate();                     break;
+                case "del":        Delete();                        break;
+                case "move":       ToggleMove();                    break;
+                case "prev":       Move(-1);                        break;
+                case "next":       Move( 1);                        break;
+                                                                    
+                case "out":        BackOut();                       break;
+                case "back":       Back();                          break;
+                case "enter":      Enter();                         break;
+                                                                    
+                case "f1":         SetFunc(0);                      break;
+                case "f2":         SetFunc(1);                      break;
+                case "f3":         SetFunc(2);                      break;
+                case "f4":         SetFunc(3);                      break;
+                case "f5":         SetFunc(4);                      break;
+                case "f6":         SetFunc(5);                      break;
+                                                                    
+                case "cmd1":       Command1();                      break;
+                case "cmd2":       Command2();                      break;
+                case "up":         Adjust(g_song, CurSetting,   1); break;
+                case "down":       Adjust(g_song, CurSetting, - 1); break;
+                case "shift":      Shift();                         break;
+                case "cmd3":       Command3();                      break;
+                                                                    
+                case "tr up":      SetTranspose(g_song,  1);        break;
+                case "tr down":    SetTranspose(g_song, -1);        break;
+                                                                    
+                case "spread":     Spread();                        break;
 
                 case "rnd snd":    RandomSound(g_inst.IndexOf(CurrentInstrument)); break;
                                        
-                case "up all":     SetVolumeAll( 1);         break;
-                case "down all":   SetVolumeAll(-1);         break;
+                case "up all":     SetVolumeAll( 1);                break;
+                case "down all":   SetVolumeAll(-1);                break;
+                                                                    
+                case "solo all":   EnableChannels(true);            break;
+                case "mute all":   EnableChannels(false);           break;
+                case "m shift":    MixerShift();                    break;
+                                                                    
+                case "edit":       Edit();                          break;
+                                                                    
+                case "chord":      ToggleChordMode();               break;
+                case "chord 1":    Chord(1);                        break;
+                case "chord 2":    Chord(2);                        break;
+                case "chord 3":    Chord(3);                        break;
+                case "chord 4":    Chord(4);                        break;
+                case "chord edit": ToggleChordEdit();               break;
+                                                                    
+                case "edit step":  ChangeEditStep();                break;
+                case "edit len":   ChangeEditLength();              break;
+                                                                    
+                case "step":       Step(g_song, CurChan);           break;
+                case "hold":       Hold(g_song);                    break;
+                                                                     
+                case "left":       Left(g_song);                    break;
+                case "right":      Right(g_song);                   break;
                                                              
-                case "solo all":   EnableChannels(true);     break;
-                case "mute all":   EnableChannels(false);    break;
-                case "m shift":    MixerShift();             break;
-                                                             
-                case "edit":       Edit();                   break;
-                                                             
-                case "chord":      ToggleChordMode();        break;
-                case "chord 1":    Chord(1);                 break;
-                case "chord 2":    Chord(2);                 break;
-                case "chord 3":    Chord(3);                 break;
-                case "chord 4":    Chord(4);                 break;
-                case "chord edit": ToggleChordEdit();        break;
-                                                             
-                case "edit step":  ChangeEditStep();         break;
-                case "edit len":   ChangeEditLength();       break;
-                                                             
-                case "step":       Step(g_song, CurChan);   break;
-                case "hold":       Hold(g_song);            break;
-                                                             
-                case "left":       Left(g_song);            break;
-                case "right":      Right(g_song);           break;
-                                                             
-                case "random":     Random();                 break;
-                                                             
-                case "lock":       Lock();                   break;
-                case "auto lock":  AutoLock();               break;
-                                                                 
-                case "gyro":       Gyro();                   break;
-                case "noise":      NoiseEmitters();          break;
-                                                             
-                case "sb":         StartBlock();             break;
-                case "eb":         EndBlock();               break;
-                case "cb":         ClearBlock();             break;
-                                                                 
-                case "rl":         SetLightColor(0);         break;
-                case "ol":         SetLightColor(1);         break;
-                case "yl":         SetLightColor(2);         break;
-                case "gl":         SetLightColor(3);         break;
-                case "bl":         SetLightColor(4);         break;
-                case "ml":         SetLightColor(5);         break;
-                case "wl":         SetLightColor(6);         break;
-                                                             
-                case "light":      ToggleLight();            break;
-                case "fold":       ToggleFold();             break;
-                                                             
-                case "cue":        Cue();                    break;
-                case "mem":        Mem();                    break;
+                case "random":     Random();                        break;
+                                                                    
+                case "lock":       Lock();                          break;
+                case "auto lock":  AutoLock();                      break;
+                                                                        
+                case "gyro":       Gyro();                          break;
+                case "noise":      NoiseEmitters();                 break;
+                                                                    
+                case "sb":         StartBlock();                    break;
+                case "eb":         EndBlock();                      break;
+                case "cb":         ClearBlock();                    break;
+                                                                        
+                case "rl":         SetLightColor(0);                break;
+                case "ol":         SetLightColor(1);                break;
+                case "yl":         SetLightColor(2);                break;
+                case "gl":         SetLightColor(3);                break;
+                case "bl":         SetLightColor(4);                break;
+                case "ml":         SetLightColor(5);                break;
+                case "wl":         SetLightColor(6);                break;
+                                                                    
+                case "light":      ToggleLight();                   break;
+                case "fold":       ToggleFold();                    break;
+                                                                    
+                case "cue":        Cue();                           break;
+                case "mem":        Mem();                           break;
                                                                    
 
                 default:

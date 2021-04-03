@@ -103,7 +103,7 @@ namespace IngameScript
             var strMed = printValue(med,            -3, true, 0);
             var strMax = printValue(g_maxRuntimeMs, -3, true, 0);
 
-            DrawString(sprites, "med " + strMed + ", max " + strMax, cx + 55, y + 107, 0.5f, color6);
+            DrawString(sprites, "med " + strMed + ", max " + strMax + " ms", cx + 55, y + 107, 0.5f, color6);
 
 
             DrawString(sprites, "POLY", x + 20, y + 136, 1.2f, color6);

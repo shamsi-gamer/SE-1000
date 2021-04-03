@@ -131,8 +131,8 @@ namespace IngameScript
 
             public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
             { 
-                if (Cutoff   .HasDeepParams(null, CurSrc)) { Cutoff   .DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
-                if (Resonance.HasDeepParams(null, CurSrc)) { Resonance.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Cutoff   .HasDeepParams(null, CurSrc)) { Cutoff   .DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                if (Resonance.HasDeepParams(null, CurSrc)) { Resonance.DrawLabel(sprites, x, y, dp); dp.Children = true; }
 
                 base.FinishDrawLabel(dp);
             }
@@ -145,11 +145,18 @@ namespace IngameScript
                 var shrp = Sharpness.CurValue;
 
 
-                FillRect(sprites, x, y + h, 2, -h, color3);
-                FillRect(sprites, x, y + h, w,  2, color3);
+                var w0 = 240f;
+                var h0 = 120f;
+
+                var x0 = x + w / 2 - w0 / 2;
+                var y0 = y + h / 2 - h0 / 2;
 
 
-                DrawFilter(sprites, x, y, w, h, color5, 4, Pass, cut, res, shrp);
+                FillRect(sprites, x0, y0 + h0, 2, -h0, color3);
+                FillRect(sprites, x0, y0 + h0, w0,  2, color3);
+
+
+                DrawFilter(sprites, x0, y0, w0, h0, color5, 4, Pass, cut, res, shrp);
 
 
                 var strCut = Pass > FilterPass.High ? "Freq" : "Cut";
@@ -158,16 +165,16 @@ namespace IngameScript
                 var fs = 0.5f;
 
                 // cutoff
-                DrawString(sprites, strCut,                      x, y - 40, fs, IsCurParam("Cut") ? color6 : color3);
-                DrawString(sprites, printValue(cut, 2, true, 0), x, y - 25, fs, IsCurParam("Cut") ? color6 : color3);
-
-                // resonance
-                DrawString(sprites, strRes,                      x + 100, y - 40, fs, IsCurParam("Res") ? color6 : color3);
-                DrawString(sprites, printValue(res, 2, true, 0), x + 100, y - 25, fs, IsCurParam("Res") ? color6 : color3);
+                DrawString(sprites, strCut,                       x0,       y0 - 40, fs, IsCurParam("Cut") ? color6 : color3);
+                DrawString(sprites, printValue(cut, 2, true, 0),  x0,       y0 - 25, fs, IsCurParam("Cut") ? color6 : color3);
+                                                                  
+                // resonance                                      
+                DrawString(sprites, strRes,                       x0 + 100, y0 - 40, fs, IsCurParam("Res") ? color6 : color3);
+                DrawString(sprites, printValue(res, 2, true, 0),  x0 + 100, y0 - 25, fs, IsCurParam("Res") ? color6 : color3);
 
                 // sharpness
-                DrawString(sprites, "Shrp",                       x + 200, y - 40, fs, IsCurParam("Shrp") ? color6 : color3);
-                DrawString(sprites, printValue(shrp, 2, true, 0), x + 200, y - 25, fs, IsCurParam("Shrp") ? color6 : color3);
+                DrawString(sprites, "Shrp",                       x0 + 200, y0 - 40, fs, IsCurParam("Shrp") ? color6 : color3);
+                DrawString(sprites, printValue(shrp, 2, true, 0), x0 + 200, y0 - 25, fs, IsCurParam("Shrp") ? color6 : color3);
             }
 
 

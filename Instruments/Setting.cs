@@ -74,8 +74,11 @@ namespace IngameScript
                 if (dp.Program.TooComplex) return;
 
 
-                var  sh = 18f;
+                x += dp.OffX;
+                y += dp.OffY;
 
+
+                var  sh = 18f;
                 var  xo =  8f;
 
 
@@ -128,10 +131,8 @@ namespace IngameScript
 
             public virtual void FinishDrawLabel(DrawParams dp)
             {
-                var sh = 18f;
-
                 if (!dp.Children)
-                    dp.OffY += sh;
+                    dp.OffY += 18;
             }
 
 
@@ -257,6 +258,10 @@ namespace IngameScript
             return null;
         }
 
+
+        // I use these instead of Setting methods because this way
+        // all the extra null checks are avoided and it keeps the code
+        // more compact, since that's an issue here
 
         static bool IsParam(Setting setting) 
         {

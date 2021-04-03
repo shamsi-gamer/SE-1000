@@ -10,8 +10,10 @@ namespace IngameScript
     {
         public class LFO : Setting
         {
+            public enum LfoOp   { Multiply, Add };
             public enum LfoType { Sine, Triangle, Saw, BackSaw, Square, Noise };
 
+            public LfoOp     Op;
             public LfoType   Type;
 
             public Parameter Amplitude,
@@ -23,6 +25,7 @@ namespace IngameScript
 
             public LFO(Setting parent) : base("LFO", parent) 
             {
+                Op        = LfoOp  .Multiply;
                 Type      = LfoType.Sine;
 
                 Amplitude = (Parameter)NewFromTag("Amp",  this);
@@ -33,6 +36,7 @@ namespace IngameScript
 
             public LFO(LFO lfo, Setting parent) : base(lfo.Tag, parent, lfo.Prototype)
             {
+                Op        = lfo.Op;
                 Type      = lfo.Type;
 
                 Amplitude = new Parameter(lfo.Amplitude, this);
@@ -89,7 +93,9 @@ namespace IngameScript
             public override bool HasDeepParams(Channel chan, int src)
             {
                 return
-                       Amplitude.HasDeepParams(chan, src)
+                       Op   != LfoOp  .Multiply
+                    || Type != LfoType.Sine
+                    || Amplitude.HasDeepParams(chan, src)
                     || Frequency.HasDeepParams(chan, src)
                     || Offset   .HasDeepParams(chan, src);
             }
@@ -122,7 +128,7 @@ namespace IngameScript
 
             public override void AdjustFromController(Song song, Program prog)
             {
-                if (g_remote.MoveIndicator.X != 0) prog.AdjustFromController(song, Offset, g_remote.MoveIndicator.X/ControlSensitivity);
+                if (g_remote.MoveIndicator    .X != 0) prog.AdjustFromController(song, Offset,    g_remote.MoveIndicator    .X/ControlSensitivity);
 
                 if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(song, Amplitude, g_remote.RotationIndicator.X/ControlSensitivity);
                 if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(song, Frequency, g_remote.RotationIndicator.Y/ControlSensitivity);
@@ -147,6 +153,7 @@ namespace IngameScript
                 return
                       W (Tag)
 
+                    + WS((int)Op)
                     + WS((int)Type)
 
                     + W (Amplitude.Save())
@@ -161,6 +168,7 @@ namespace IngameScript
  
                 var lfo = new LFO(parent);
 
+                lfo.Op   = (LfoOp)  int.Parse(data[i++]);
                 lfo.Type = (LfoType)int.Parse(data[i++]);
 
                 lfo.Amplitude = Parameter.Load(data, ref i, inst, iSrc, lfo);
@@ -186,9 +194,9 @@ namespace IngameScript
             {
                 base.DrawLabel(sprites, x, y, dp);
 
-                if (Frequency.HasDeepParams(null, CurSrc)) { Frequency.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }                
-                if (Amplitude.HasDeepParams(null, CurSrc)) { Amplitude.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
-                if (Offset   .HasDeepParams(null, CurSrc)) { Offset   .DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Frequency.HasDeepParams(null, CurSrc)) { Frequency.DrawLabel(sprites, x, y, dp); dp.Children = true; }                
+                if (Amplitude.HasDeepParams(null, CurSrc)) { Amplitude.DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                if (Offset   .HasDeepParams(null, CurSrc)) { Offset   .DrawLabel(sprites, x, y, dp); dp.Children = true; }
 
                 base.FinishDrawLabel(dp);
             }
@@ -197,9 +205,6 @@ namespace IngameScript
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
                 var pPrev = new Vector2(fN, fN);
-
-                var fs = 0.5f;
-
 
                 var w0 = 240f;
                 var h0 = 120f;
@@ -267,6 +272,9 @@ namespace IngameScript
                 }
 
 
+                var fs = 0.5f;
+
+
                 // amplitude label
                 DrawString(
                     sprites, 
@@ -303,6 +311,7 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
+                DrawFuncButton(sprites, (Op == LfoOp.Add ? "Add " : "Mult") + "↕", 0, w, y, false, false);
                 DrawFuncButton(sprites, "Amp",   1, w, y, true, Amplitude.HasDeepParams(chan, -1));
                 DrawFuncButton(sprites, "Freq",  2, w, y, true, Frequency.HasDeepParams(chan, -1));
                 DrawFuncButton(sprites, "Off",   3, w, y, true, Offset   .HasDeepParams(chan, -1));
@@ -315,6 +324,14 @@ namespace IngameScript
             {
                 switch (func)
                 {
+                    case 0:
+                    {
+                        var newOp = (int)Op + 1;
+                        if (newOp > (int)LfoOp.Add) newOp = 0;
+                        Op = (LfoOp)newOp;
+                        mainPressed.Add(func);
+                        break;
+                    }
                     case 1: AddNextSetting("Amp");  break;
                     case 2: AddNextSetting("Freq"); break;
                     case 3: AddNextSetting("Off");  break;

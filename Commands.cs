@@ -671,12 +671,6 @@ namespace IngameScript
         }
 
 
-        void Adjust(Song song, float delta)
-        {
-            Adjust(song, CurSetting, delta);
-        }
-
-
         void Adjust(Song song, Setting setting, float delta)
         {
             if (IsSettingType(setting, typeof(Harmonics)))

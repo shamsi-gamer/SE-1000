@@ -106,9 +106,8 @@ namespace IngameScript
                 var nl = noteLen/(float)FPS;
 
                 if (lt >= nl + r)
-                { 
                     return 0;
-                }
+                
                 else if (lt >= nl) // release
                 {
                          if (a   >= nl) s  = nl/a;
@@ -117,17 +116,13 @@ namespace IngameScript
                     return s * (1 - MinMax(0, (float)Math.Pow((lt-nl)/r, 2), 1));
                 }
                 else if (lt >= a + d) // sustain
-                {
                     return s;
-                }
+                
                 else if (lt >= a) // decay
-                {
                     return s + (1 - (float)Math.Pow((lt-a)/d, 2)) * (1-s);
-                }
+                
                 else if (lt >= 0) // attack 
-                {
                     return lt/a;
-                }
 
                 return 0;
             }
@@ -237,10 +232,10 @@ namespace IngameScript
             {
                 base.DrawLabel(sprites, x, y, dp);
 
-                if (Attack .HasDeepParams(null, CurSrc)) { Attack .DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
-                if (Decay  .HasDeepParams(null, CurSrc)) { Decay  .DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
-                if (Sustain.HasDeepParams(null, CurSrc)) { Sustain.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
-                if (Release.HasDeepParams(null, CurSrc)) { Release.DrawLabel(sprites, x, y + dp.OffY, dp); dp.Children = true; }
+                if (Attack .HasDeepParams(null, CurSrc)) { Attack .DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                if (Decay  .HasDeepParams(null, CurSrc)) { Decay  .DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                if (Sustain.HasDeepParams(null, CurSrc)) { Sustain.DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                if (Release.HasDeepParams(null, CurSrc)) { Release.DrawLabel(sprites, x, y, dp); dp.Children = true; }
 
                 base.FinishDrawLabel(dp);
             }

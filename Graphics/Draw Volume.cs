@@ -49,8 +49,6 @@ namespace IngameScript
 
         static void DrawSoundLevel(List<MySprite> sprites, float x, float y, float w, float h, float level, float v, float scale = 1)
         {
-            DrawRect(sprites, x, y, w, h, Color.Cyan);
-
             var wb = w/10;
             var wg = w/20;
             var wl = w - wg - wb;

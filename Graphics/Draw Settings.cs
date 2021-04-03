@@ -15,8 +15,6 @@ namespace IngameScript
 
             var setting = g_settings[CurSet];
 
-            DrawRect(sprites, x, y, w, h, Color.Red);
-
             DrawString(sprites, FullNameFromTag(setting.Tag), x + w/2, y, 1f, color5, TaC);
 
             var nameHeight = 40;
@@ -33,9 +31,6 @@ namespace IngameScript
 
         static void DrawValueVertical(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag, bool mixer = true)
         {
-            DrawRect(sprites, x, y, w, h, Color.Cyan);
-
-
             var wb = w/10;
             var wg = w/20;
             var wl = w - wg - wb;
@@ -95,17 +90,12 @@ namespace IngameScript
 
         static void DrawValueHorizontal(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag)
         {
-            DrawRect(sprites, x, y, w, h, Color.Cyan);
-
             var hb = h/10;
             var hg = h/20;
             var hl = h - hg - hb;
             var hs = 10;
 
             var wk = w/50;
-            var sx = 10;
-
-            var zx = x + w/2;
 
 
             // value marks
@@ -127,7 +117,7 @@ namespace IngameScript
             // current value bar
             FillRect(
                 sprites, 
-                zx, 
+                x + w/2, 
                 y + hs,          
                 w/2 * v, 
                 hl - hs, 
@@ -136,7 +126,7 @@ namespace IngameScript
             // set value bar
             FillRect(
                 sprites, 
-                zx, 
+                x + w/2, 
                 y + h - hb, 
                 w/2 * value,
                 hb,
@@ -147,7 +137,7 @@ namespace IngameScript
             DrawString(
                 sprites, 
                 printValue(v, 2, true, 0), 
-                zx - sx - 10, 
+                x + w/2 - 20, 
                 y + hl + 30, 
                 1f, 
                 color6);
