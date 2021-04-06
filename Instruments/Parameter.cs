@@ -54,7 +54,8 @@ namespace IngameScript
             }
 
 
-            public Parameter(Parameter param, Setting parent, string tag = "") : base(tag != "" ? tag : param.Tag, parent, param.Prototype)
+            public Parameter(Parameter param, Setting parent, string tag = "") 
+                : base(tag != "" ? tag : param.Tag, parent, param.Prototype)
             {
                 m_value   = param.m_value;
 
@@ -195,7 +196,7 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Trig": return Trigger  ?? (Trigger  = new Parameter(this, this, tag));
+                    case "Trig": return Trigger  ?? (Trigger  = (Parameter)NewFromTag(tag, this));
                     case "Env":  return Envelope ?? (Envelope = new Envelope (this));
                     case "LFO":  return Lfo      ?? (Lfo      = new LFO      (this));
                     case "Mod":  return Modulate ?? (Modulate = new Modulate (this));
@@ -227,6 +228,9 @@ namespace IngameScript
             public override void Clear()
             {
                 m_value = Default;
+
+                Trigger?.Clear();
+                Trigger = null;
 
                 Envelope?.Clear();
                 Envelope = null;
@@ -300,7 +304,7 @@ namespace IngameScript
                 {
                     switch (data[i])
                     { 
-                        case "Trig": param.Trigger  = Parameter.Load(data, ref i, inst, iSrc, param); break;
+                        case "Trig": param.Trigger  =           Load(data, ref i, inst, iSrc, param); break;
                         case "Env":  param.Envelope = Envelope .Load(data, ref i, inst, iSrc, param); break;
                         case "LFO":  param.Lfo      = LFO      .Load(data, ref i, inst, iSrc, param); break;
                         case "Mod":  param.Modulate = Modulate .Load(data, ref i, inst, iSrc, param); break;

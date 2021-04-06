@@ -39,7 +39,7 @@ namespace IngameScript
             var hk = h/50;
             var sy = 10;
 
-            var zy = y + h/2;// - h * (value - min) / (max - min);
+            var zy = y+h - h*(value-min)/(max-min);
 
 
             // value marks
@@ -80,7 +80,7 @@ namespace IngameScript
             // set value number
             DrawString(
                 sprites, 
-                printValue(v, 2, true, 0), 
+                printValue(value, 2, true, 0), 
                 x + wl + 30, 
                 zy - sy - 10, 
                 1f, 
@@ -136,7 +136,7 @@ namespace IngameScript
             // set value number
             DrawString(
                 sprites, 
-                printValue(v, 2, true, 0), 
+                printValue(value, 2, true, 0), 
                 x + w/2 - 20, 
                 y + hl + 30, 
                 1f, 

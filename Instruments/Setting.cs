@@ -214,40 +214,31 @@ namespace IngameScript
         {
             switch (tag)
             { 
-            case "Vol":  return new Parameter("Vol",  0,          2,   0.5f,  1,    0.01f,  0.1f, 1,    parent);
+            case "Vol":  return new Parameter(tag,    0,           2,   0.5f,  1,    0.01f,  0.1f, 1,     parent);
                                                                                        
-            case "Tune": return new Tune();                                            
-                                                                                       
-            case "Trig": return new Parameter((Parameter)parent, parent, tag);
+            case "Trig": return new Parameter(tag,    0,           1,   0.4f,  1,    0.01f,  0.1f, 1,     parent);//Parameter((Parameter)parent, parent, tag);
             case "Env":  return new Envelope(parent);                                  
             case "Att":  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f, 0,     parent);
             case "Dec":  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f, 0.2f,  parent);
             case "Sus":  return new Parameter(tag,    0,           1,   0.01f, 1,    0.01f,  0.1f, 0.1f,  parent);
             case "Rel":  return new Parameter(tag,    0,          10,   0,     2,    0.01f,  0.1f, 0.2f,  parent);
                                                                                                          
-            case "LFO":  return new LFO(parent);                                                         
             case "Amp":  return new Parameter(tag,    0,           1,   0,     1,    0.01f,  0.1f, 0,     parent);
             case "Freq": return new Parameter(tag,    0.000001f,  30,   0.01f, 4,    0.01f,  0.1f, 0.5f,  parent);
             case "Off":  return new Parameter(tag, -100,         100, -10,    10,    0.01f,  0.1f, 0,     parent);
                                                                                                          
-            case "Hrm":  return new Harmonics();                                                         
-                                                                                                         
-            case "Flt":  return new Filter();                                                            
             case "Cut":  return new Parameter(tag,    0,           1,   0.1f,  1,    0.01f,  0.1f, 0.5f,  parent);
             case "Res":  return new Parameter(tag,    0,           1,   0,     0.7f, 0.01f,  0.1f, 0,     parent);
             case "Shrp": return new Parameter(tag,    0,           1,   0,     0.9f, 0.01f,  0.1f, 0.75f, parent);
                                                                                         
-            case "Mod":  return new Modulate(parent);                                   
             case "Amt":  return new Parameter(tag,  -10,          10,  -1,     1,    0.01f,  0.1f, 0,     parent);
                                                                                                           
-            case "Del":  return new Delay();                                                              
             case "Dry":  return new Parameter(tag,    0,           1,   0,     1,    0.01f, 0.1f,  1,     parent);
             case "Cnt":  return new Parameter(tag,    1,         100,   2,    16,    1,     10,    4,     parent);
             case "Time": return new Parameter(tag,    0.000001f,  10,   0.01f, 0.3f, 0.01f,  0.1f, 0.2f,  parent);
             case "Lvl":  return new Parameter(tag,    0,           1,   0.3f,  1,    0.01f,  0.1f, 0.5f,  parent);
             case "Pow":  return new Parameter(tag,    0.01f,      10,   0.2f,  1.2f, 0.01f,  0.1f, 1,     parent);
                                                                                                           
-            case "Arp":  return new Arpeggio((Instrument)null);                                           
             case "Len":  return new Parameter(tag,    1,         256,   2,     6,    0.01f,  0.1f, 8,     parent);
             case "Scl":  return new Parameter(tag,    0.01f,      16,   0.25f, 4,    0.01f,  0.1f, 1,     parent);
             }
