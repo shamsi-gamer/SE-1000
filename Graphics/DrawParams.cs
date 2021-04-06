@@ -12,6 +12,7 @@
             public float   OffX;
             public float   OffY;
 
+
             public DrawParams(Program prog)
             {
                 Volume   = 1;
@@ -23,17 +24,20 @@
                 OffY     = 0;
             }
 
+
             public DrawParams(float vol, Program prog) 
                 : this(prog)
             {
                 Volume = vol;
             }
 
+
             public DrawParams(bool active, Program prog)
                 : this(prog)
             {
                 Active = active;
             }
+
 
             public DrawParams(float vol, bool active, bool on, Program prog) 
                 : this(vol, prog)
@@ -42,6 +46,7 @@
                 On     = on;
             }
 
+            
             public DrawParams(bool active, bool children, Program prog)
                 : this(prog)
             {
@@ -49,12 +54,23 @@
                 Children = children;
             }
 
+            
             public DrawParams(float vol, bool active, bool on, bool children, Program prog)
                 : this(vol, prog)
             {
                 Active   = active;
                 On       = on;
                 Children = children;
+            }
+
+            
+            public void Next(float xo, ref float yo, bool next = true)
+            {
+                Children = true; 
+                //OffX     = xo;
+
+                //if (next)
+                //    yo += g_labelHeight;
             }
         }
     }

@@ -77,12 +77,6 @@ namespace IngameScript
             public Parameter Copy(Setting parent) => new Parameter(this, parent);
 
 
-            public void MakeValid()
-            {
-                Prototype = this;
-            }
-
-
             public float Value { get { return m_value; } }
 
 
@@ -322,7 +316,7 @@ namespace IngameScript
                 if (Tag == "Vol")
                 {
                     width = 72f;
-                    str = printValue(100 * Math.Log10(Value), 0, true, 0).PadLeft(4);
+                    str   = printValue(100 * Math.Log10(Value), 0, true, 0).PadLeft(4);
                 }
                 else
                 {
@@ -332,15 +326,25 @@ namespace IngameScript
             }
 
 
-            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp, ref float _yo)
             {
-                base.DrawLabel(sprites, x, y, dp);
+                //x += dp.OffX;
+                y += /*dp.OffY + */_yo;
 
-                if (Trigger  != null) { Trigger .DrawLabel(sprites, x, y, dp); dp.Children = true; }
-                if (Envelope != null) { Envelope.DrawLabel(sprites, x, y, dp); dp.Children = true; }
-                if (Lfo      != null) { Lfo     .DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                float yo = 0;
 
-                base.FinishDrawLabel(dp);
+                base.DrawLabels(sprites, x, y, dp, ref yo);
+
+                var xo = dp.OffX;
+
+                if (Trigger  != null) { Trigger .DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
+                if (Envelope != null) { Envelope.DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
+                if (Lfo      != null) { Lfo     .DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
+
+                base.FinishDrawLabel(dp, ref yo);
+
+                //if (!dp.Children)
+                    _yo += yo;
             }
 
 

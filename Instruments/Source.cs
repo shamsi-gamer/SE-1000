@@ -356,6 +356,19 @@ namespace IngameScript
             }
 
 
+            public void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
+            {
+                float yo = 0;
+
+                Offset   ?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
+                Volume    .DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
+                Tune     ?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
+                Harmonics?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
+                Filter   ?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
+                Delay    ?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
+            }
+
+
             public void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
                 if (CurSet > -1)

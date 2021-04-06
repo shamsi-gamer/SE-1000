@@ -129,12 +129,24 @@ namespace IngameScript
             }
 
 
-            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
-            { 
-                if (Cutoff   .HasDeepParams(null, CurSrc)) { Cutoff   .DrawLabel(sprites, x, y, dp); dp.Children = true; }
-                if (Resonance.HasDeepParams(null, CurSrc)) { Resonance.DrawLabel(sprites, x, y, dp); dp.Children = true; }
+            public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp, ref float _yo)
+            {
+                x += dp.OffX;
+                y += /*dp.OffY + */_yo;
 
-                base.FinishDrawLabel(dp);
+                float yo = 0;
+
+                base.DrawLabels(sprites, x, y, dp, ref yo);
+
+                var xo = 0;//dp.OffX;
+
+                if (Cutoff   .HasDeepParams(null, CurSrc)) { Cutoff   .DrawLabels(sprites, x, y, dp, ref yo); dp.Next(xo, ref yo); }
+                if (Resonance.HasDeepParams(null, CurSrc)) { Resonance.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(xo, ref yo); }
+
+                //base.FinishDrawLabel(dp, ref yo);
+
+                if (!dp.Children)
+                    _yo += yo;
             }
 
 

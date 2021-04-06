@@ -21,7 +21,7 @@ namespace IngameScript
             var w2 = (w-lw)/2;
 
 
-            FillRect(sprites, x,      y, w,    h,  color0);
+            FillRect(sprites, x, y, w, h, color0);
 
             // settings background
             FillRect(sprites, x + lw, y, w-lw, instHeight, color2);
@@ -76,12 +76,8 @@ namespace IngameScript
             //}
 
 
-
-            DrawInstrumentLabels(
-                sprites,
-                SelectedInstrument,
-                x + lw + w2 + 21,
-                y + 5);
+            var dpInst = new DrawParams(this);
+            SelectedInstrument.DrawLabels(sprites, x + lw + w2 + 21, y + 5, dpInst);
 
 
             DrawCurrentSetting(
@@ -104,29 +100,6 @@ namespace IngameScript
             FillRect(sprites, x, y + instHeight, w, 1, color6);
             
             DrawFuncButtons(sprites, w, h - 74, g_song);
-        }
-
-
-        void DrawInstrumentLabels(List<MySprite> sprites, Instrument inst, float x, float y)
-        {
-            var dp = new DrawParams(false, this);
-
-            inst.Volume   .DrawLabel(sprites, x, y + dp.OffY, dp);
-            inst.Tune    ?.DrawLabel(sprites, x, y + dp.OffY, dp);
-            inst.Filter  ?.DrawLabel(sprites, x, y + dp.OffY, dp);
-            inst.Delay   ?.DrawLabel(sprites, x, y + dp.OffY, dp);
-            inst.Arpeggio?.DrawLabel(sprites, x, y + dp.OffY, dp);
-        }
-
-
-        void DrawSourceLabels(List<MySprite> sprites, Source src, float x, float y, DrawParams dp)
-        {
-            src.Offset   ?.DrawLabel(sprites, x, y + dp.OffY, dp);
-            src.Volume    .DrawLabel(sprites, x, y + dp.OffY, dp);
-            src.Tune     ?.DrawLabel(sprites, x, y + dp.OffY, dp);
-            src.Harmonics?.DrawLabel(sprites, x, y + dp.OffY, dp);
-            src.Filter   ?.DrawLabel(sprites, x, y + dp.OffY, dp);
-            src.Delay    ?.DrawLabel(sprites, x, y + dp.OffY, dp);
         }
 
 
@@ -181,7 +154,7 @@ namespace IngameScript
 
                 //var ssh = 0f;
                 var dp1 = new DrawParams(active, this);
-                DrawSourceLabels(null, inst.Sources[i], 0, 0, dp1);//, ref ssh);
+                inst.Sources[i].DrawLabels(null, 0, 0, dp1);//, ref ssh);
 
                 var sh = dp1.OffY + 20;
 
@@ -204,7 +177,7 @@ namespace IngameScript
 
 
                 var dp2 = new DrawParams(active, this);
-                DrawSourceLabels(sprites, src, x + sw + 139, iy + sh/2 - dp1.OffY/2 + 2, dp2);
+                src.DrawLabels(sprites, x + sw + 139, iy + sh/2 - dp1.OffY/2 + 2, dp2);
 
                 FillRect(sprites, x + sw, iy + sh, w - sw, 1, color3);
 

@@ -44,7 +44,7 @@ namespace IngameScript
 
             public Instrument(Instrument inst)
             {
-                Name = inst.Name;
+                Name     = inst.Name;
 
                 Volume   = new Parameter(inst.Volume, null);
 
@@ -57,12 +57,6 @@ namespace IngameScript
                 Sources = new List<Source>();
                 foreach (var src in inst.Sources)
                     Sources.Add(new Source(src, this));
-            }
-
-
-            public void MakeValid()
-            {
-                Volume.MakeValid();
             }
 
 
@@ -186,6 +180,18 @@ namespace IngameScript
 
                 return inst;
             }
+
+
+            public void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
+            {
+                float yo = 0;
+
+                Volume   .DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
+                Tune    ?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
+                Filter  ?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
+                Delay   ?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
+                Arpeggio?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
+            }                                           
 
 
             public void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)

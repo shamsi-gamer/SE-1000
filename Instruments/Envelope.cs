@@ -96,7 +96,7 @@ namespace IngameScript
                 if (tp.Note != null)
                     tp.NoteLength = tp.Note.FrameLength;
 
-                return GetValue(tp.Local, tp.NoteLength, a, d, s, r);
+                return GetValue(tp.LocalTime, tp.NoteLength, a, d, s, r);
             }
 
 
@@ -228,16 +228,26 @@ namespace IngameScript
             }
 
 
-            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp, ref float _yo)
             {
-                base.DrawLabel(sprites, x, y, dp);
+                //x += dp.OffX;
+                y += /*dp.OffY + */_yo;
 
-                if (Attack .HasDeepParams(null, CurSrc)) { Attack .DrawLabel(sprites, x, y, dp); dp.Children = true; }
-                if (Decay  .HasDeepParams(null, CurSrc)) { Decay  .DrawLabel(sprites, x, y, dp); dp.Children = true; }
-                if (Sustain.HasDeepParams(null, CurSrc)) { Sustain.DrawLabel(sprites, x, y, dp); dp.Children = true; }
-                if (Release.HasDeepParams(null, CurSrc)) { Release.DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                float yo = 0;
 
-                base.FinishDrawLabel(dp);
+                base.DrawLabels(sprites, x, y, dp, ref yo);
+
+                var xo = dp.OffX;
+
+                if (Attack .HasDeepParams(CurrentChannel, CurSrc)) { Attack .DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
+                if (Decay  .HasDeepParams(CurrentChannel, CurSrc)) { Decay  .DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
+                if (Sustain.HasDeepParams(CurrentChannel, CurSrc)) { Sustain.DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
+                if (Release.HasDeepParams(CurrentChannel, CurSrc)) { Release.DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
+
+                base.FinishDrawLabel(dp, ref yo);
+
+                //if (!dp.Children)
+                    _yo += yo;
             }
 
 

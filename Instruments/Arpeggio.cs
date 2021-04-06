@@ -133,14 +133,18 @@ namespace IngameScript
             }
 
 
-            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp, ref float _yo)
             {
-                base.DrawLabel(sprites, x, y, dp);
+                float yo = 0;
 
-                if (Length.HasDeepParams(null, CurSrc)) { Length.DrawLabel(sprites, x, y, dp); dp.Children = true; }
-                if (Scale .HasDeepParams(null, CurSrc)) { Scale .DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                base.DrawLabels(sprites, x, y, dp, ref yo);
 
-                base.FinishDrawLabel(dp);
+                var xo = 0;//dp.OffX;
+
+                if (Length.HasDeepParams(null, CurSrc)) { Length.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo); }
+                if (Scale .HasDeepParams(null, CurSrc)) { Scale .DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo); }
+
+                base.FinishDrawLabel(dp, ref yo);
             }
 
 

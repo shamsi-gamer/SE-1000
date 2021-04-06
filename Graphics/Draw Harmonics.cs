@@ -24,7 +24,7 @@ namespace IngameScript
             var wc  = wt / hrm.Tones.Length;
 
             var dp = new DrawParams(false, this);
-            DrawSourceLabels(sprites, SelectedSource, x + 5, y + 10, dp);
+            SelectedSource.DrawLabels(sprites, x + 5, y + 10, dp);
 
             DrawHarmonicsSample(sprites, x + 100, y + 150, 100, 60, song, hrm);
 

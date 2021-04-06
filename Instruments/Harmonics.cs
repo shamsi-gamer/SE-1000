@@ -221,17 +221,6 @@ namespace IngameScript
             }
 
 
-            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
-            {
-                base.DrawLabel(sprites, x, y, dp);
-
-                for (int i = 0; i < Tones.Length; i++)
-                    if (Tones[i].HasDeepParams(null, CurSrc)) { Tones[i].DrawLabel(sprites, x, y, dp); dp.Children = true; }
-                
-                base.FinishDrawLabel(dp);
-            }
-
-
             public override string Save()
             {
                 var hrm = W(Tag);
@@ -256,9 +245,32 @@ namespace IngameScript
                     hrm.Tones[j] = Parameter.Load(data, ref i, inst, iSrc, hrm);
                 
                 hrm.CurPreset = (Preset)int.Parse(data[i++]);
-                hrm.CurTone   = int.Parse(data[i++]);
+                hrm.CurTone   =         int.Parse(data[i++]);
 
                 return hrm;
+            }
+
+
+            public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp, ref float _yo)
+            {
+                float yo = 0;
+
+                base.DrawLabels(sprites, x, y, dp, ref yo);
+
+                var  xo         = dp.OffX;
+                bool atLeastOne = false;
+
+                for (int i = 0; i < Tones.Length; i++)
+                { 
+                    if (Tones[i].HasDeepParams(null, CurSrc)) 
+                    {
+                        Tones[i].DrawLabels(sprites, x, y, dp, ref yo); 
+                        dp.Next(0, ref yo, atLeastOne); 
+                        atLeastOne = true;
+                    }
+                }
+                
+                base.FinishDrawLabel(dp, ref yo);
             }
 
 

@@ -21,7 +21,8 @@ namespace IngameScript
                 DrawChannelList(sprites, x, y, 340, rh, song);
             else
             {
-                DrawInstrumentLabels(sprites, SelectedInstrument, x + 5, y + 10);
+                var dp = new DrawParams(this);
+                SelectedInstrument.DrawLabels(sprites, x + 5, y + 10, dp);
 
                 var lenCol = CurSetting == arp.Length ? color6 : color3;
                 DrawString(sprites, "Length",                                 x + 30, y + 160, 1f,   lenCol);

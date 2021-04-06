@@ -7,9 +7,9 @@ namespace IngameScript
     {
         public class TimeParams
         {
-            public long               Global;
-            public long               Local;
-            public long               Song;
+            public long               GlobalTime;
+            public long               LocalTime;
+            public long               SongTime;
                                       
             public Note               Note;
             public int                NoteLength;
@@ -22,9 +22,9 @@ namespace IngameScript
 
             public TimeParams(long gTime, long lTime, long sTime, Program prog)
             {
-                Global        = gTime;
-                Local         = lTime;
-                Song          = sTime;
+                GlobalTime    = gTime;
+                LocalTime     = lTime;
+                SongTime      = sTime;
                               
                 Note          = null;
                 NoteLength    = 0;

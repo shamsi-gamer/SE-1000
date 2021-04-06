@@ -76,28 +76,28 @@ namespace IngameScript
         }
 
 
-        void FillCircle(List<MySprite> sprites, Vector2 p, float r, Color color)
+        static void FillCircle(List<MySprite> sprites, Vector2 p, float r, Color color)
         {
             DrawTexture(sprites, "Circle", p.X - r, p.Y - r, r*2, r*2, color);
         }
 
 
-        void FillCircle(List<MySprite> sprites, float x, float y, float r, Color color)
+        static void FillCircle(List<MySprite> sprites, float x, float y, float r, Color color)
         {
             DrawTexture(sprites, "Circle", x-r, y-r, r*2, r*2, color);
         }
 
 
-        void DrawCircle(List<MySprite> sprites, Vector2 p, float r, Color color)
-        {
-            DrawTexture(sprites, "CircleHollow", p.X-r, p.Y-r, r*2, r*2, color);
-        }
+        //void DrawCircle(List<MySprite> sprites, Vector2 p, float r, Color color)
+        //{
+        //    DrawTexture(sprites, "CircleHollow", p.X-r, p.Y-r, r*2, r*2, color);
+        //}
 
 
-        void DrawCircle(List<MySprite> sprites, float x, float y, float r, Color color)
-        {
-            DrawTexture(sprites, "CircleHollow", x-r, y-r, r*2, r*2, color);
-        }
+        //void DrawCircle(List<MySprite> sprites, float x, float y, float r, Color color)
+        //{
+        //    DrawTexture(sprites, "CircleHollow", x-r, y-r, r*2, r*2, color);
+        //}
 
 
         static void DrawLine(List<MySprite> sprites, Vector2 p1, Vector2 p2, Color col, float width = 1)

@@ -13,14 +13,16 @@ namespace IngameScript
             public enum LfoOp   { Multiply, Add };
             public enum LfoType { Sine, Triangle, Saw, BackSaw, Square, Noise };
 
-            public LfoOp     Op;
-            public LfoType   Type;
+            public LfoOp        Op;
+            public LfoType      Type;
+                                
+            public Parameter    Amplitude,
+                                Frequency,
+                                Offset;
+                                
+            public float        CurValue;
 
-            public Parameter Amplitude,
-                             Frequency,
-                             Offset;
-
-            public float     CurValue = 0;
+            public Queue<float> ValueCache;
 
 
             public LFO(Setting parent) : base("LFO", parent) 
@@ -31,6 +33,12 @@ namespace IngameScript
                 Amplitude = (Parameter)NewFromTag("Amp",  this);
                 Frequency = (Parameter)NewFromTag("Freq", this);
                 Offset    = (Parameter)NewFromTag("Off",  this);
+
+                CurValue  = 0;
+
+                ValueCache = new Queue<float>();
+                for (int i = 0; i <= FPS; i++)
+                    ValueCache.Enqueue(0);
             }
 
 
@@ -55,9 +63,11 @@ namespace IngameScript
             {
                 if (tp.Program.TooComplex) return 0;
 
-
                 // an offset != 0 locks the LFO to the song, a 0 offset leaves it free
-                var time = Offset.GetKeyValue(tp.Note, tp.SourceIndex) > 0 ? tp.Local : tp.Global;
+                var time = 
+                    Offset.GetKeyValue(tp.Note, tp.SourceIndex) > 0 
+                    ? tp.LocalTime 
+                    : tp.GlobalTime;
 
                 var amp  = Amplitude.GetValue(tp);
                 var freq = Frequency.GetValue(tp);
@@ -85,6 +95,9 @@ namespace IngameScript
                     case LfoType.Square:  CurValue = amp * (t < 0.5 ? 1 : -1); break;
                     case LfoType.Noise:   CurValue = amp * g_random[(int)(time/(float)FPS * f) % g_random.Length]; break;
                 }
+
+                ValueCache.Dequeue();
+                ValueCache.Enqueue(CurValue);
 
                 return CurValue;
             }
@@ -190,15 +203,25 @@ namespace IngameScript
             }
 
 
-            public override void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp, ref float _yo)
             {
-                base.DrawLabel(sprites, x, y, dp);
+                //x += dp.OffX;
+                y += /*dp.OffY + */_yo;
 
-                if (Frequency.HasDeepParams(null, CurSrc)) { Frequency.DrawLabel(sprites, x, y, dp); dp.Children = true; }                
-                if (Amplitude.HasDeepParams(null, CurSrc)) { Amplitude.DrawLabel(sprites, x, y, dp); dp.Children = true; }
-                if (Offset   .HasDeepParams(null, CurSrc)) { Offset   .DrawLabel(sprites, x, y, dp); dp.Children = true; }
+                float yo = 0;
 
-                base.FinishDrawLabel(dp);
+                base.DrawLabels(sprites, x, y, dp, ref yo);
+
+                var xo = dp.OffX;
+
+                if (Frequency.HasDeepParams(null, CurSrc)) { Frequency.DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }                
+                if (Amplitude.HasDeepParams(null, CurSrc)) { Amplitude.DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
+                if (Offset   .HasDeepParams(null, CurSrc)) { Offset   .DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
+
+                base.FinishDrawLabel(dp, ref yo);
+
+                //if (!dp.Children)
+                    _yo += yo;
             }
 
 
@@ -206,37 +229,36 @@ namespace IngameScript
             {
                 var pPrev = new Vector2(fN, fN);
 
-                var w0 = 240f;
-                var h0 = 120f;
-
-                var x0 = x + w/2 - w0/2;
-                var y0 = y + h/2 - h0/2;
-
+                var w0     = 240f;
+                var h0     = 120f;
+                           
+                var x0     = x + w/2 - w0/2;
+                var y0     = y + h/2 - h0/2;
 
                 var amp    = Amplitude.CurValue;
                 var freq   = Frequency.CurValue;
                 var off    = Offset   .CurValue;
 
-                var isAmp  = IsCurParam("Amp");
+                var isAmp  = IsCurParam("Amp" );
                 var isFreq = IsCurParam("Freq");
-                var isOff  = IsCurParam("Off");
+                var isOff  = IsCurParam("Off" );
 
 
-                DrawLine(sprites, x0, y0,    x0,    y0+h0, isAmp  ? color6 : color3);
-                DrawLine(sprites, x0, y0+h0, x0+w0, y0+h0, isFreq ? color6 : color3);
+                // draw axes
+                DrawLine(sprites, x0, y0,      x0,    y0+h0,   isAmp  ? color6 : color3);
+                DrawLine(sprites, x0, y0+h0/2, x0+w0, y0+h0/2, isFreq ? color6 : color3);
 
 
                 // draw current value
-
                 var lTime = g_song.PlayTime > -1 ? g_time - g_song.StartTime : 0;
 
                 var val   = CurValue;
                 var blur  = Type == LFO.LfoType.Noise ? Math.Pow(freq, 4) : 1;
                           
-                var ty    = (float)Math.Max(y0,    y0 + h0/2 - val*h/2 - blur);
-                var by    = (float)Math.Min(y0+h0, y0 + h0/2 - val*h/2 + blur*2);
+                var ty    = (float)Math.Max(y0,    y0 + h0/2 - val*h0/2 - blur  );
+                var by    = (float)Math.Min(y0+h0, y0 + h0/2 - val*h0/2 + blur*2);
 
-                var col  = new Color(
+                var col = new Color(
                     color4.R,
                     color4.G,
                     color4.B,
@@ -244,6 +266,8 @@ namespace IngameScript
 
                 FillRect(sprites, x0, ty, w0, Math.Max(2, by-ty), col);
 
+
+                var cache = ValueCache.ToArray();
 
                 // draw the waveform
                 for (long f = 0; f < FPS; f++)
@@ -258,7 +282,7 @@ namespace IngameScript
                         _triggerDummy,
                         dp.Program);
 
-                    var v = GetValue(tp);
+                    var v = cache[f];
 
                     var p = new Vector2(
                         x0 + w0 * f/(float)FPS,
@@ -274,8 +298,7 @@ namespace IngameScript
 
                 var fs = 0.5f;
 
-
-                // amplitude label
+                // draw amplitude label
                 DrawString(
                     sprites, 
                     S_00(amp), 
@@ -284,7 +307,6 @@ namespace IngameScript
                     fs, 
                     isAmp ? color6 : color3,
                     TaC);
-
 
                 // frequency label
                 DrawString(
@@ -295,7 +317,6 @@ namespace IngameScript
                     fs,
                     isFreq ? color6 : color3,
                     TaC);
-
 
                 // offset label
                 DrawString(

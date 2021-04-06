@@ -2,12 +2,16 @@
 using System.Text;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
+using VRageMath;
 
 
 namespace IngameScript
 {
     partial class Program
     {
+        const float g_labelHeight = 18;
+
+
         public class Setting
         {
             public string  Tag;
@@ -69,70 +73,67 @@ namespace IngameScript
             }
 
 
-            public virtual void DrawLabel(List<MySprite> sprites, float x, float y, DrawParams dp)
+            public virtual void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp, ref float yo)
             {
                 if (dp.Program.TooComplex) return;
 
 
-                x += dp.OffX;
-                y += dp.OffY;
+                var xo = 8f;
+
+                if (sprites == null)
+                    return;
 
 
-                var  sh = 18f;
-                var  xo =  8f;
+                bool thisSetting = this == CurSetting;
+
+                var textCol = thisSetting ? color0 : color6;
+                var lineCol = thisSetting ? color6 : color4;
+                var boxCol  = thisSetting ? color6 : color3;
 
 
-                if (sprites != null)
+                string str;
+                float  ew;
+                GetLabel(out str, out ew);
+
+
+                // draw connector lines
+                if (   !HasTag(this, "Vol")
+                    && !HasTag(this, "Off")
+                    && GetType() != typeof(Tune)
+                    && GetType() != typeof(Harmonics)
+                    && GetType() != typeof(Filter)
+                    && GetType() != typeof(Delay)
+                    && GetType() != typeof(Arpeggio))
                 { 
-                    bool thisSetting = this == CurSetting;
+                    var ly = y + g_labelHeight/2;
 
-                    var textCol = dp.Active ? color6: color0;
+                    // horizontal
+                    DrawLine(sprites, x-xo, ly, x, ly, boxCol);
 
-                    var boxCol = thisSetting ? color6 : color3;
-                        //active
-                        //? (thisSetting ? color1 : color4)
-                        //: (thisSetting ? color6 : color3);
-
-
-                    string str;
-                    float  ew;
-                    GetLabel(out str, out ew);
-
-
-                    if (   !HasTag(this, "Vol")
-                        && !HasTag(this, "Off")
-                        && GetType() != typeof(Tune)
-                        && GetType() != typeof(Harmonics)
-                        && GetType() != typeof(Filter)
-                        && GetType() != typeof(Delay)
-                        && GetType() != typeof(Arpeggio))
-                    { 
-                        if (dp.OffY == 0)
-                            DrawLine(sprites, x, y + sh/2, x + xo, y + sh/2, boxCol);
-                        else
-                        {
-                            DrawLine(sprites, x - ew/2, y - dp.OffY +sh   - 3, x - ew/2, y + sh/2, boxCol);
-                            DrawLine(sprites, x - ew/2, y           +sh/2,     x + xo,   y + sh/2, boxCol);
-                        }
-                    }
-
-                    x += xo;
-                    
-                    // setting name
-                    FillRect(sprites, x, y, ew, 15, boxCol);
-
-                    DrawString(sprites, Tag, x +  5, y + 2, 0.36f, textCol);
-                    DrawString(sprites, str, x + 30, y + 2, 0.36f, textCol);
-
-                    dp.OffX += ew + xo;
+                    // vertical
+                    if (dp.OffY > 0)
+                        DrawLine(sprites, x-xo, y-yo, x-xo, ly, boxCol);
                 }
+
+                //x += xo;
+                    
+                // label background
+                FillRect(sprites, x, y, ew, 15, boxCol);
+
+                // label name
+                DrawString(sprites, Tag, x +  5, y + 2, 0.36f, textCol);
+                DrawString(sprites, str, x + 30, y + 2, 0.36f, textCol);
+
+                dp.OffX = ew + xo;
             }
 
 
-            public virtual void FinishDrawLabel(DrawParams dp)
+            public virtual void FinishDrawLabel(DrawParams dp, ref float yo)
             {
-                if (!dp.Children)
-                    dp.OffY += 18;
+                //if (!dp.Children) 
+                    yo += g_labelHeight;
+                    
+                //dp.OffY += yo;
             }
 
 
