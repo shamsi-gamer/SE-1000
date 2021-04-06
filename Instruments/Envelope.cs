@@ -228,26 +228,21 @@ namespace IngameScript
             }
 
 
-            public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp, ref float _yo)
+            public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
             {
-                //x += dp.OffX;
-                y += /*dp.OffY + */_yo;
+                x += _dp.OffX;
+                y += _dp.OffY;
 
-                float yo = 0;
+                var dp = new DrawParams(_dp);
 
-                base.DrawLabels(sprites, x, y, dp, ref yo);
+                base.DrawLabels(sprites, x, y, dp);
 
-                var xo = dp.OffX;
+                if (Attack .HasDeepParams(CurrentChannel, CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
+                if (Decay  .HasDeepParams(CurrentChannel, CurSrc)) Decay  .DrawLabels(sprites, x, y, dp);
+                if (Sustain.HasDeepParams(CurrentChannel, CurSrc)) Sustain.DrawLabels(sprites, x, y, dp);
+                if (Release.HasDeepParams(CurrentChannel, CurSrc)) Release.DrawLabels(sprites, x, y, dp);
 
-                if (Attack .HasDeepParams(CurrentChannel, CurSrc)) { Attack .DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
-                if (Decay  .HasDeepParams(CurrentChannel, CurSrc)) { Decay  .DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
-                if (Sustain.HasDeepParams(CurrentChannel, CurSrc)) { Sustain.DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
-                if (Release.HasDeepParams(CurrentChannel, CurSrc)) { Release.DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(xo, ref yo); }
-
-                base.FinishDrawLabel(dp, ref yo);
-
-                //if (!dp.Children)
-                    _yo += yo;
+                _dp.Next(dp);
             }
 
 
@@ -270,8 +265,6 @@ namespace IngameScript
                 var h0 = 120f;
 
 
-                //var xoff  = 20;
-                //var b     = 18;
                 var v     = Math.Min(dp.Volume, 1);
 
                 var fs    = 0.5f;

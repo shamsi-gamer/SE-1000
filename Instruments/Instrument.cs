@@ -184,13 +184,11 @@ namespace IngameScript
 
             public void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
             {
-                float yo = 0;
-
-                Volume   .DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
-                Tune    ?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
-                Filter  ?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
-                Delay   ?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
-                Arpeggio?.DrawLabels(sprites, x, y, dp, ref yo); dp.Next(0, ref yo);
+                Volume   .DrawLabels(sprites, x, y, dp);
+                Tune    ?.DrawLabels(sprites, x, y, dp);
+                Filter  ?.DrawLabels(sprites, x, y, dp);
+                Delay   ?.DrawLabels(sprites, x, y, dp);
+                Arpeggio?.DrawLabels(sprites, x, y, dp);
             }                                           
 
 

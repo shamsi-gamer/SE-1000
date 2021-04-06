@@ -73,22 +73,15 @@ namespace IngameScript
             }
 
 
-            public virtual void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp, ref float yo)
+            public virtual void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
             {
                 if (dp.Program.TooComplex) return;
+                if (sprites == null) return;
 
 
-                var xo = 8f;
-
-                if (sprites == null)
-                    return;
-
-
-                bool thisSetting = this == CurSetting;
-
-                var textCol = thisSetting ? color0 : color6;
-                var lineCol = thisSetting ? color6 : color4;
-                var boxCol  = thisSetting ? color6 : color3;
+                var textCol = this == CurSetting ? color0 : color6;
+                var lineCol = this == CurSetting ? color6 : color4;
+                var boxCol  = this == CurSetting ? color6 : color3;
 
 
                 string str;
@@ -96,6 +89,8 @@ namespace IngameScript
                 GetLabel(out str, out ew);
 
 
+                var dx = 8f;
+                
                 // draw connector lines
                 if (   !HasTag(this, "Vol")
                     && !HasTag(this, "Off")
@@ -108,15 +103,16 @@ namespace IngameScript
                     var ly = y + g_labelHeight/2;
 
                     // horizontal
-                    DrawLine(sprites, x-xo, ly, x, ly, boxCol);
+                    DrawLine(sprites, x-dx, ly, x, ly, boxCol);
 
                     // vertical
-                    if (dp.OffY > 0)
-                        DrawLine(sprites, x-xo, y-yo, x-xo, ly, boxCol);
+                    if (dp.TopY > 0)
+                        DrawLine(sprites, x-dx, ly-dp.TopY, x-dx, ly, boxCol);
                 }
 
-                //x += xo;
-                    
+                dp.TopY = 0;
+
+
                 // label background
                 FillRect(sprites, x, y, ew, 15, boxCol);
 
@@ -124,7 +120,7 @@ namespace IngameScript
                 DrawString(sprites, Tag, x +  5, y + 2, 0.36f, textCol);
                 DrawString(sprites, str, x + 30, y + 2, 0.36f, textCol);
 
-                dp.OffX = ew + xo;
+                dp.OffX = ew + dx;
             }
 
 
@@ -132,7 +128,7 @@ namespace IngameScript
             {
                 //if (!dp.Children) 
                     yo += g_labelHeight;
-                    
+
                 //dp.OffY += yo;
             }
 

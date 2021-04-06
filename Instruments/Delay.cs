@@ -174,26 +174,21 @@ namespace IngameScript
             }
 
 
-            public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp, ref float _yo)
+            public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
             {
-                x += dp.OffX;
-                y += /*dp.OffY + */_yo;
+                x += _dp.OffX;
+                y += _dp.OffY;
 
-                float yo = 0;
+                var dp = new DrawParams(_dp);
 
-                base.DrawLabels(sprites, x, y, dp, ref yo);
+                base.DrawLabels(sprites, x, y, dp);
 
-                var xo = dp.OffX;
+                if (Count.HasDeepParams(CurrentChannel, CurSrc)) Count.DrawLabels(sprites, x, y, dp);
+                if (Time .HasDeepParams(CurrentChannel, CurSrc)) Time .DrawLabels(sprites, x, y, dp);
+                if (Level.HasDeepParams(CurrentChannel, CurSrc)) Level.DrawLabels(sprites, x, y, dp);
+                if (Power.HasDeepParams(CurrentChannel, CurSrc)) Power.DrawLabels(sprites, x, y, dp);
 
-                if (Count.HasDeepParams(null, CurSrc)) { Count.DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(0, ref yo); }
-                if (Time .HasDeepParams(null, CurSrc)) { Time .DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(0, ref yo); }
-                if (Level.HasDeepParams(null, CurSrc)) { Level.DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(0, ref yo); }
-                if (Power.HasDeepParams(null, CurSrc)) { Power.DrawLabels(sprites, x+xo, y, dp, ref yo); dp.Next(0, ref yo); }
-
-                //base.FinishDrawLabel(dp, ref yo);
-
-                if (!dp.Children)
-                    _yo += yo;
+                _dp.Next(dp);
             }
 
 
