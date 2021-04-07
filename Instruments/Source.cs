@@ -306,6 +306,19 @@ namespace IngameScript
             }
 
 
+            public void Delete(Song song)
+            {
+                // this method removes note and channel automation associated with this source
+
+                Offset   ?.Delete(song, Index);
+                Volume   ?.Delete(song, Index);
+                Tune     ?.Delete(song, Index);
+                Harmonics?.Delete(song, Index);
+                Filter   ?.Delete(song, Index);
+                Delay    ?.Delete(song, Index);
+            }
+
+
             public string Save()
             {
                 return

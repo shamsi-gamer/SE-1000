@@ -127,6 +127,7 @@ namespace IngameScript
 
                 var inst = CurrentInstrument;
 
+                inst.Sources[CurSrc].Delete(g_song);
                 inst.Sources.RemoveAt(CurSrc);
 
                 //for (int i = g_song.CurSrc; i < inst.Sources.Count; i++)
@@ -158,6 +159,7 @@ namespace IngameScript
                 var i = g_inst.IndexOf(CurrentInstrument);
                 var inst = CurrentInstrument;
 
+                CurrentInstrument.Delete(g_song);
                 g_inst.Remove(CurrentInstrument);
 
                 if (g_inst.Count == 0)
@@ -561,7 +563,6 @@ namespace IngameScript
                 var src = SelectedSource;
 
                 var newOsc = (int)src.Oscillator.Type + 1;
-                //if (newOsc > (int)OscType.Sample) newOsc = 0;
                 if (newOsc > (int)OscType.Crunch) newOsc = 0;
                 src.Oscillator = OscillatorFromType((OscType)newOsc);
                 MarkLight(lblCmd2);
@@ -647,21 +648,6 @@ namespace IngameScript
                 UpdateAdjustLights(g_song);
             }
         }
-
-
-        //void ToggleLfoFixed()
-        //{
-        //    if (g_song.CurSrc < 0) return;
-
-        //    var src = CurrentInstrument.Sources[g_song.CurSrc];
-        //    //src.LfoFixed = !src.LfoFixed;
-
-        //    var bl =
-        //           g_set >= Set.LfoAmplitude
-        //        && g_set <= Set.LfoFixed;
-
-        //    //UpdateLight(lblLfoFixed, g_song.CurSrc > -1 && CurrentSource.LfoFixed, bl);
-        //}
 
 
         void Shift()
@@ -780,53 +766,6 @@ namespace IngameScript
         }
 
 
-        //float AdjustValue(string tag, float value, float d)
-        //{
-        //    float mod     = d * (g_shift ? 10 : 1);
-        //    float modTune = d * (g_shift ? 24 : 1);
-
-        //    var   sdVal  = dVal  * mod;
-        //    var   sdTime = dTime * mod;
-
-        //    if (   IsDigit(tag[0])
-        //        || tag == "Tone")
-        //    { 
-        //        return value + sdVal * (float)Math.Pow(2, value); // not a real tag, used for Harmonics
-        //    }
-        //    else
-        //    { 
-        //        value 
-        //        switch (tag)
-        //        {
-        //            case "Vol":  return value + sdVal; 
-        //            case "Tune": return value + modTune/2; 
-
-        //            case "Cut":  return value + sdVal;
-        //            case "Res":  return value + sdVal;
-
-        //            case "Att":  return value + sdVal; 
-        //            case "Dec":  return value + sdVal; 
-        //            case "Sus":  return value + sdVal; 
-        //            case "Rel":  return value + sdVal; 
-
-        //            case "Cnt":  return value + mod;   
-        //            case "Time": return value + sdTime;
-        //            case "Lvl":  return value + sdVal; 
-        //            case "Pow":  return value + sdVal; 
-
-        //            case "Amp":  return value + sdVal; 
-        //            case "Freq": return value + sdVal; 
-        //            case "Off":  return value + sdVal;
-
-        //            case "Len":  return value + mod;
-        //            case "Scl":  return value + sdVal;
-        //        }
-        //    }
-
-        //    return fN;
-        //}
-
-
         void SetChan(int ch)
         {
             ch += CurChan;
@@ -861,7 +800,7 @@ namespace IngameScript
 
             for (int p = first; p <= last; p++)
             {
-                var pat = g_song.Patterns[p];
+                var pat  = g_song.Patterns[p];
                 var chan = pat.Channels[ch];
 
                 chan.Shuffle = MinMax(0, sh, g_ticksPerStep - 1);

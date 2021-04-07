@@ -92,6 +92,16 @@ namespace IngameScript
             }
 
 
+            public void Delete(Song song, int iSrc)
+            {
+                // this method removes note and channel automation associated with this setting
+
+                Cutoff   ?.Delete(song, iSrc);
+                Resonance?.Delete(song, iSrc);
+                Sharpness?.Delete(song, iSrc);
+            }
+
+
             public override string Save()
             {
                 return

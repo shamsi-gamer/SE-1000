@@ -54,7 +54,7 @@ namespace IngameScript
             }
 
 
-            public Parameter(Parameter param, Setting parent, string tag = "") 
+            public Parameter(Parameter param, Setting parent, string tag = "")//, bool copy = false) 
                 : base(tag != "" ? tag : param.Tag, parent, param.Prototype)
             {
                 m_value   = param.m_value;
@@ -68,10 +68,10 @@ namespace IngameScript
                 Delta     = param.Delta;
                 BigDelta  = param.BigDelta;
 
-                Trigger   = param.Trigger ?.Copy(this);
-                Envelope  = param.Envelope?.Copy(this);
-                Lfo       = param.Lfo     ?.Copy(this);
-                Modulate  = param.Modulate?.Copy(this);
+                Trigger   = null;//copy ? param.Trigger ?.Copy(this) : null;
+                Envelope  = null;//copy ? param.Envelope?.Copy(this) : null;
+                Lfo       = null;//copy ? param.Lfo     ?.Copy(this) : null;
+                Modulate  = null;//copy ? param.Modulate?.Copy(this) : null;
             }
 
 
@@ -229,14 +229,13 @@ namespace IngameScript
             {
                 m_value = Default;
 
-                Trigger?.Clear();
-                Trigger = null;
-
+                Trigger ?.Clear();
                 Envelope?.Clear();
-                Envelope = null;
+                Lfo     ?.Clear();
 
-                Lfo?.Clear();
-                Lfo = null;
+                Trigger  = null;
+                Envelope = null;
+                Lfo      = null;
             }
 
             public override void Randomize(Program prog)
@@ -266,6 +265,28 @@ namespace IngameScript
                 }
                 else
                     Lfo = null;
+            }
+
+
+            public void Delete(Song song, int iSrc)
+            {
+                // this method removes note and channel automation associated with this setting
+
+                foreach (var pat in song.Patterns)
+                {
+                    foreach (var chan in pat.Channels)
+                    {
+                        chan.AutoKeys = chan.AutoKeys.FindAll(k => k.Path != GetPath(iSrc));
+
+                        foreach (var note in chan.Notes)
+                            note.Keys = note.Keys.FindAll(k => k.Path != GetPath(iSrc));
+                    }
+                }
+
+                Trigger ?.Delete(song, iSrc);
+                Envelope?.Delete(song, iSrc);
+                Lfo     ?.Delete(song, iSrc);
+                Modulate?.Delete(song, iSrc);
             }
 
 

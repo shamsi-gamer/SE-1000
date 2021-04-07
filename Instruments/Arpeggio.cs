@@ -107,6 +107,15 @@ namespace IngameScript
             }
 
 
+            public void Delete(Song song, int iSrc)
+            {
+                // this method removes note and channel automation associated with this setting
+
+                Length.Delete(song, iSrc);
+                Scale .Delete(song, iSrc);
+            }
+
+
             public override string Save()
             {
                 var arp = W(Tag);

@@ -47,8 +47,7 @@ namespace IngameScript
                 if (tp.Program.TooComplex) return 0;
 
                 if (i == 0)
-                {
-                    Log("dry");
+                { 
                     return Dry.GetValue(tp);
                 }
                 else
@@ -130,6 +129,17 @@ namespace IngameScript
                 }
 
                 return null;
+            }
+
+
+            public void Delete(Song song, int iSrc)
+            {
+                // this method removes note and channel automation associated with this setting
+
+                Count.Delete(song, iSrc);
+                Time .Delete(song, iSrc);
+                Level.Delete(song, iSrc);
+                Power.Delete(song, iSrc);
             }
 
 

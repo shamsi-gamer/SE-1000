@@ -27,22 +27,6 @@ namespace IngameScript
         }
 
 
-        void SaveInstruments()
-        {
-            var sbInst = new StringBuilder();
-
-            for (int i = 0; i < g_inst.Count; i++)
-            { 
-                sbInst.Append(g_inst[i].Save());
-
-                if (i < g_inst.Count-1)
-                    sbInst.Append("\n");
-            }
-
-            lblPrev.CustomData = sbInst.ToString();
-        }
-
-
         uint SaveToggles()
         {
             uint f = 0;
@@ -102,7 +86,6 @@ namespace IngameScript
                 + WS(SelChan)        
                 + WS(CurSrc)
 
-                //+ WS(CurSet)
                 + (CurSet > -1 ? W(CurSetting.GetPath(CurSrc)) : W(""))
 
                 + WS(g_editStep)
@@ -161,6 +144,22 @@ namespace IngameScript
             }
 
             return chords;
+        }
+
+
+        void SaveInstruments()
+        {
+            var sbInst = new StringBuilder();
+
+            for (int i = 0; i < g_inst.Count; i++)
+            { 
+                sbInst.Append(g_inst[i].Save());
+
+                if (i < g_inst.Count-1)
+                    sbInst.Append("\n");
+            }
+
+            lblPrev.CustomData = sbInst.ToString();
         }
 
 

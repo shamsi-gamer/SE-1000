@@ -72,6 +72,16 @@ namespace IngameScript
             }
 
 
+            public void Delete(Song song, int iSrc)
+            {
+                // this method removes note and channel automation associated with this setting
+
+                Amount .Delete(song, iSrc);
+                Attack .Delete(song, iSrc);
+                Release.Delete(song, iSrc);
+            }
+
+
             public override string Save()
             {
                 return

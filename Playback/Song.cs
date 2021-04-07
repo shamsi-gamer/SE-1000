@@ -157,11 +157,8 @@ namespace IngameScript
             }
 
 
-            //public int   GetNotePat(Note note) { return Patterns.FindIndex(p => p.Channels.Contains(note.Channel)); }
-            //public float GetStep   (Note note) { return GetNotePat(note) * nSteps + note.PatStep; }
-
-            public int   GetKeyPat (Key key)   { return Patterns.FindIndex(p => Array.Find(p.Channels, c => c.AutoKeys.Contains(key)) != null); }
-            public float GetStep   (Key key)   { return GetKeyPat(key) * g_nSteps + key.StepTime; }
+            public int   GetKeyPat(Key key) { return Patterns.FindIndex(p => Array.Find(p.Channels, c => c.AutoKeys.Contains(key)) != null); }
+            public float GetStep  (Key key) { return GetKeyPat(key) * g_nSteps + key.StepTime; }
 
 
             public Block GetBlock(int pat)

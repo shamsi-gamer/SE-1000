@@ -127,6 +127,21 @@ namespace IngameScript
             }
 
 
+            public void Delete(Song song)
+            {
+                // this method removes note and channel automation associated with this instrument
+
+                Volume   .Delete(song, -1);
+                Tune    ?.Delete(song, -1);
+                Filter  ?.Delete(song, -1);
+                Delay   ?.Delete(song, -1);
+                Arpeggio?.Delete(song, -1);
+
+                foreach (var src in Sources)
+                    src.Delete(song);
+            }
+
+
             public string Save()
             {
                 var inst = N(

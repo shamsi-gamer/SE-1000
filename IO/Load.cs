@@ -9,34 +9,30 @@ namespace IngameScript
     {
         void Load()
         {
-            long   playTime;
             string curPath;
 
-            LoadMachineState(out playTime, out curPath);
+            LoadMachineState(out curPath);
             LoadInstruments();
             LoadSong();
-
-            InitPlaybackAfterLoad(playTime);
 
             if (curPath != "")
                 SwitchToSetting(curPath, g_inst[CurChan]);
         }
 
 
-        void LoadMachineState(out long playTime, out string curPath)
+        void LoadMachineState(out string curPath)
         {
             var state = lblMove.CustomData;
 
             var lines = state.Split('\n');
             var line  = 0;
 
-            playTime = -1;
             curPath  = "";
 
             var cfg = lines[line++].Split(';');
             if (!LoadToggles(cfg[0])) goto NothingLoaded;
             
-            if (!LoadSettings(cfg, out playTime, out curPath)) goto NothingLoaded;
+            if (!LoadSettings(cfg, out curPath)) goto NothingLoaded;
 
             if (!LoadMems  (lines[line++])) goto NothingLoaded;
             if (!LoadChords(lines[line++])) goto NothingLoaded;
@@ -97,9 +93,8 @@ namespace IngameScript
         }
 
 
-        bool LoadSettings(string[] cfg, out long playTime, out string curPath)
+        bool LoadSettings(string[] cfg, out string curPath)
         {
-            playTime = -1;
             curPath  = "";
 
             int c = 1; // 0 holds the toggles, loaded in LoadToggles()
@@ -161,7 +156,6 @@ namespace IngameScript
         void ImportInstruments()
         {
             LoadInstruments();
-
 
             // set all instruments to first
             
@@ -250,6 +244,8 @@ namespace IngameScript
 
             if (g_song == null)
                 CreateDefaultSong();
+
+            InitPlaybackAfterLoad(g_song.PlayTime);
         }
 
 
