@@ -94,9 +94,6 @@ namespace IngameScript
 
             if (IsCurParam())
                 CurSetting._IsCurrent = true;
-
-            Log("CurSet = " + CurSet);
-            Log("CurSetting.GetPath(iSrc) = " + CurSetting.GetPath(iSrc));
         }
 
 

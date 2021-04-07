@@ -87,6 +87,7 @@ namespace IngameScript
             }
 
 
+            // draw edit position
             if (   g_song.EditPos >= first * g_nSteps
                 && g_song.EditPos <  next  * g_nSteps)
             {
@@ -103,6 +104,7 @@ namespace IngameScript
             }
 
 
+            // draw keys
             for (int p = first; p < next; p++)
             {
                 var _p = p - g_songOff;
@@ -131,9 +133,11 @@ namespace IngameScript
             }
 
 
+            // draw current pattern box
             DrawRect(sprites, pxCur + 1, py, wt * g_nSteps - 2, ph, color6, 2);
 
 
+            // draw play position
             if (OK(g_song.PlayStep))
             {
                 var pl    = x  - pw * (nDsp * 4 + g_songOff);
@@ -208,7 +212,7 @@ namespace IngameScript
 
         void DrawSongFuncButtons(List<MySprite> sprites, float w, float h, int nDsp)
         {
-            var bw = w/6;
+            var bw =  w/6;
             var x0 = bw/2;
 
             if (nDsp == 0)

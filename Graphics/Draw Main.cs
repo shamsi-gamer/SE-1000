@@ -71,10 +71,12 @@ namespace IngameScript
         }
 
 
-        static void DrawFuncButton(List<MySprite> sprites, string str, int i, float w, float y, bool isSetting, bool hasSetting, bool down = false)
+        static void DrawFuncButton(List<MySprite> sprites, string str, int i, float w, float h, bool isSetting, bool hasSetting, bool down = false)
         {
             var bw =  w/6;
             var x0 = bw/2;
+
+            var y  = h - 74;
 
             if (down)
                 FillRect(sprites, i * bw, y + 24, bw, 50, color6);

@@ -99,7 +99,7 @@ namespace IngameScript
             // bottom func separator
             FillRect(sprites, x, y + instHeight, w, 1, color6);
             
-            DrawFuncButtons(sprites, w, h - 74, g_song);
+            DrawFuncButtons(sprites, w, h, g_song);
         }
 
 
