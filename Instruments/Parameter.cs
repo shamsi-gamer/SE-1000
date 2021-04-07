@@ -110,7 +110,8 @@ namespace IngameScript
                     if (Lfo.Op == LFO.LfoOp.Add) value += lfo * Math.Abs(Max - Min) / 2;
                     else                         value *= Lfo.GetValue(tp);
 
-                    if (ParentIsEnvelope)
+                    if (   ParentIsEnvelope
+                        || Parent.Tag == "Trig")
                         tp.TriggerValues.Add(new TriggerValue(path, value));
                 }
 
@@ -535,8 +536,7 @@ namespace IngameScript
                        Tag == "Att"
                     || Tag == "Dec"
                     || Tag == "Sus"
-                    || Tag == "Rel"
-                    || Tag == "Trig";
+                    || Tag == "Rel";
             } }
 
 
