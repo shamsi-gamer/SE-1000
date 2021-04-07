@@ -62,6 +62,16 @@ namespace IngameScript
             var pow    = 3f;
             var extra  = 1.15f;
 
+            
+            // current level
+            FillRect(
+                sprites,
+                x + ws,
+                y + h,
+                wl - ws,
+                -h * Math.Min((float)Math.Pow(v / extra, pow), 1),
+                color4);
+
 
             // value marks
             for (int i = 0; i <= nMarks; i++)
@@ -98,14 +108,14 @@ namespace IngameScript
 
 
             // current level bars
-            DrawLevelBars(
-                sprites,
-                x + ws,          
-                y + h, 
-                wl - ws, 
-                -h * Math.Min((float)Math.Pow(v / extra, pow), 1), 
-                h/48, 
-                color4);
+            //DrawLevelBars(
+            //    sprites,
+            //    x + ws,          
+            //    y + h, 
+            //    wl - ws, 
+            //    -h * Math.Min((float)Math.Pow(v / extra, pow), 1), 
+            //    h/48, 
+            //    color4);
 
 
             // set value bar
