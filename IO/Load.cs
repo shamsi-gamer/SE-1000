@@ -16,7 +16,7 @@ namespace IngameScript
             LoadSong();
 
             if (curPath != "")
-                SwitchToSetting(curPath, g_inst[CurChan]);
+                SwitchToSetting(curPath, CurrentInstrument);
         }
 
 

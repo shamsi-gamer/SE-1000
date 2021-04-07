@@ -216,7 +216,7 @@ namespace IngameScript
             { 
             case "Vol":  return new Parameter(tag,    0,           2,   0.5f,  1,    0.01f,  0.1f, 1,     parent);
                                                                                        
-            case "Trig": return new Parameter((Parameter)parent, parent, tag);
+            case "Trig": return new Parameter((Parameter)parent, parent, tag, false);
             case "Env":  return new Envelope(parent);                                  
             case "Att":  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f, 0,     parent);
             case "Dec":  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f, 0.2f,  parent);

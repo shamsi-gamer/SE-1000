@@ -54,7 +54,7 @@ namespace IngameScript
             }
 
 
-            public Parameter(Parameter param, Setting parent, string tag = "")//, bool copy = false) 
+            public Parameter(Parameter param, Setting parent, string tag = "", bool copy = true) 
                 : base(tag != "" ? tag : param.Tag, parent, param.Prototype)
             {
                 m_value   = param.m_value;
@@ -68,10 +68,10 @@ namespace IngameScript
                 Delta     = param.Delta;
                 BigDelta  = param.BigDelta;
 
-                Trigger   = null;//copy ? param.Trigger ?.Copy(this) : null;
-                Envelope  = null;//copy ? param.Envelope?.Copy(this) : null;
-                Lfo       = null;//copy ? param.Lfo     ?.Copy(this) : null;
-                Modulate  = null;//copy ? param.Modulate?.Copy(this) : null;
+                Trigger   = copy ? param.Trigger ?.Copy(this) : null;
+                Envelope  = copy ? param.Envelope?.Copy(this) : null;
+                Lfo       = copy ? param.Lfo     ?.Copy(this) : null;
+                Modulate  = copy ? param.Modulate?.Copy(this) : null;
             }
 
 
