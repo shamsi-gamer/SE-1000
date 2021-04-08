@@ -102,17 +102,17 @@ namespace IngameScript
                 var value = GetKeyValue(tp.Note, tp.SourceIndex);
                 var path  = GetPath(tp.SourceIndex);
 
-                if (   tp.TriggerValues.Find(v => v.Path == path) == null
-                    && Lfo != null)
+                if (   /*tp.TriggerValues.Find(v => v.Path == path) == null
+                    &&*/ Lfo != null)
                 {
                     var lfo = Lfo.GetValue(tp);
 
                     if (Lfo.Op == LFO.LfoOp.Add) value += lfo * Math.Abs(Max - Min) / 2;
                     else                         value *= Lfo.GetValue(tp);
 
-                    if (   ParentIsEnvelope
-                        || Parent.Tag == "Trig")
-                        tp.TriggerValues.Add(new TriggerValue(path, value));
+                    //if (   ParentIsEnvelope
+                    //    || Parent.Tag == "Trig")
+                    //    tp.TriggerValues.Add(new TriggerValue(path, value));
                 }
 
                 

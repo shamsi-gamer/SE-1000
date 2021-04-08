@@ -45,6 +45,21 @@ namespace IngameScript
                 SourceIndex   = iSrc;
                 TriggerValues = triggerValues;
             }
+
+
+            public float GetTriggerValue(Parameter param)
+            {
+                var path    = param.GetPath(SourceIndex);
+                var trigVal = TriggerValues.Find(v => v.Path == path);
+
+                if (trigVal == null)
+                {
+                    trigVal = new TriggerValue(path, param.GetValue(this));
+                    TriggerValues.Add(trigVal);
+                }
+
+                return trigVal.Value;
+            }
         }
     }
 }

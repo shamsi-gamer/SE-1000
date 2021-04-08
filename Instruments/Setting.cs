@@ -124,15 +124,6 @@ namespace IngameScript
             }
 
 
-            public virtual void FinishDrawLabel(DrawParams dp, ref float yo)
-            {
-                //if (!dp.Children) 
-                    yo += g_labelHeight;
-
-                //dp.OffY += yo;
-            }
-
-
             public virtual void   DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp) {}
                 
             public virtual string Save() => "";

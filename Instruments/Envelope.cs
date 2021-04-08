@@ -17,6 +17,7 @@ namespace IngameScript
 
             public float     TrigAttack,
                              TrigDecay,
+                             TrigSustain,
                              TrigRelease;
 
 
@@ -29,6 +30,7 @@ namespace IngameScript
 
                 TrigAttack  = 
                 TrigDecay   = 
+                TrigSustain =
                 TrigRelease = fN;
             }
 
@@ -42,6 +44,7 @@ namespace IngameScript
 
                 TrigAttack  = env.TrigAttack;
                 TrigDecay   = env.TrigDecay;
+                TrigSustain = env.TrigSustain;
                 TrigRelease = env.TrigRelease;
             }
 
@@ -56,47 +59,16 @@ namespace IngameScript
             {
                 if (tp.Program.TooComplex) return 0;
 
-
-                var trigAtt = tp.TriggerValues.Find(v => v.Path == Attack .GetPath(tp.SourceIndex));
-                var trigDec = tp.TriggerValues.Find(v => v.Path == Decay  .GetPath(tp.SourceIndex));
-                var trigRel = tp.TriggerValues.Find(v => v.Path == Release.GetPath(tp.SourceIndex));
-
-                if (trigAtt == null)
-                {
-                    trigAtt = new TriggerValue(
-                        Attack.GetPath(tp.SourceIndex),
-                        Attack.GetValue(tp));
-
-                    tp.TriggerValues.Add(trigAtt);
-                }
-
-                if (trigDec == null)
-                {
-                    trigDec = new TriggerValue(
-                        Decay.GetPath(tp.SourceIndex),
-                        Decay.GetValue(tp));
-
-                    tp.TriggerValues.Add(trigDec);
-                }
-
-                if (trigRel == null)
-                {
-                    trigRel = new TriggerValue(
-                        Release.GetPath(tp.SourceIndex),
-                        Release.GetValue(tp));
-
-                    tp.TriggerValues.Add(trigRel);
-                }
-
-                float a = trigAtt.Value,
-                      d = trigDec.Value,
-                      s = Sustain.GetValue(tp),
-                      r = trigRel.Value;
-                
                 if (tp.Note != null)
                     tp.NoteLength = tp.Note.FrameLength;
 
-                return GetValue(tp.LocalTime, tp.NoteLength, a, d, s, r);
+                return GetValue(
+                    tp.LocalTime, 
+                    tp.NoteLength, 
+                    tp.GetTriggerValue(Attack ),
+                    tp.GetTriggerValue(Decay  ),
+                    tp.GetTriggerValue(Sustain),
+                    tp.GetTriggerValue(Release));
             }
 
 
@@ -140,8 +112,8 @@ namespace IngameScript
 
             public override void Remove(Setting setting)
             {
-                     if (setting == Attack)  Attack  = null;
-                else if (setting == Decay)   Decay   = null;
+                     if (setting == Attack ) Attack  = null;
+                else if (setting == Decay  ) Decay   = null;
                 else if (setting == Sustain) Sustain = null;
                 else if (setting == Release) Release = null;
             }

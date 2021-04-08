@@ -15,14 +15,10 @@ namespace IngameScript
             public Oscillator Oscillator;
 
             public Parameter  Offset;
-
             public Parameter  Volume;
-
             public Tune       Tune;
-
             public Harmonics  Harmonics;
             public Filter     Filter;
-
             public Delay      Delay;
 
 
@@ -103,12 +99,7 @@ namespace IngameScript
                 float w = 0;
 
                      if (Oscillator == OscSine     )  w = (float)Math.Sin(f * Tau);
-                else if (Oscillator == OscTriangle )  
-                {
-                         if (f <  0.25f)              w = f / 0.25f;
-                    else if (f >= 0.25f && f < 0.75f) w = 1 - 4 * (f - 0.25f);
-                    else                              w = (f - 0.75f) / 0.25f - 1;
-                }                                                 
+                else if (Oscillator == OscTriangle )  w =  1 - 2*Math.Abs(2*(f%1)-1);
                 else if (Oscillator == OscSaw      )  w =  2*f - 1;
                 else if (Oscillator == OscSquare   )  w =  f < 0.5f ? 1 : -1;
                 else if (Oscillator == OscLowNoise )  w = -1 + g_random[(int)(f * 100)] * 2;
@@ -295,7 +286,7 @@ namespace IngameScript
                 switch (tag)
                 {
                     case "Vol":  return Volume;
-                    case "Off":  return Offset    ?? (Offset    = new Parameter("Off", -100, 100, -10, 10, 0.01f, 0.1f, 0, null));
+                    case "Off":  return Offset    ?? (Offset    = (Parameter)NewFromTag(tag, null));
                     case "Tune": return Tune      ?? (Tune      = new Tune());
                     case "Hrm":  return Harmonics ?? (Harmonics = new Harmonics());
                     case "Flt":  return Filter    ?? (Filter    = new Filter());
