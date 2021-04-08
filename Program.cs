@@ -111,7 +111,7 @@ namespace IngameScript
                 g_dspVol[i] = 0;
 
 
-            Get(g_locks, b => !b.Name.Contains("Fold"));
+            Get(g_locks, b => !b.CustomName.Contains("Fold"));
 
             Get(g_gyros);
             Get(g_timers);

@@ -24,7 +24,7 @@ namespace IngameScript
             {
                 Name     = "New Sound";
                          
-                Volume   = (Parameter)NewFromTag("Vol", null);
+                Volume   = (Parameter)NewSettingFromTag("Vol", null);
 
                 Tune     = null;
                 Filter   = null;

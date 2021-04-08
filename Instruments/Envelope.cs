@@ -23,10 +23,10 @@ namespace IngameScript
 
             public Envelope(Setting parent) : base("Env", parent)
             {
-                Attack      = (Parameter)NewFromTag("Att", this);
-                Decay       = (Parameter)NewFromTag("Dec", this);
-                Sustain     = (Parameter)NewFromTag("Sus", this);
-                Release     = (Parameter)NewFromTag("Rel", this);
+                Attack      = (Parameter)NewSettingFromTag("Att", this);
+                Decay       = (Parameter)NewSettingFromTag("Dec", this);
+                Sustain     = (Parameter)NewSettingFromTag("Sus", this);
+                Release     = (Parameter)NewSettingFromTag("Rel", this);
 
                 TrigAttack  = 
                 TrigDecay   = 
@@ -151,10 +151,10 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Att": return Attack  ?? (Attack  = (Parameter)NewFromTag("Att", this));
-                    case "Dec": return Decay   ?? (Decay   = (Parameter)NewFromTag("Dec", this));
-                    case "Sus": return Sustain ?? (Sustain = (Parameter)NewFromTag("Sus", this));
-                    case "Rel": return Release ?? (Release = (Parameter)NewFromTag("Rel", this));
+                    case "Att": return Attack  ?? (Attack  = (Parameter)NewSettingFromTag("Att", this));
+                    case "Dec": return Decay   ?? (Decay   = (Parameter)NewSettingFromTag("Dec", this));
+                    case "Sus": return Sustain ?? (Sustain = (Parameter)NewSettingFromTag("Sus", this));
+                    case "Rel": return Release ?? (Release = (Parameter)NewSettingFromTag("Rel", this));
                 }
 
                 return null;

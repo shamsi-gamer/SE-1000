@@ -201,7 +201,7 @@ namespace IngameScript
         }
 
 
-        static Setting NewFromTag(string tag, Setting parent)
+        static Setting NewSettingFromTag(string tag, Setting parent)
         {
             switch (tag)
             { 
@@ -214,8 +214,8 @@ namespace IngameScript
             case "Sus":  return new Parameter(tag,    0,           1,   0.01f, 1,    0.01f,  0.1f, 0.1f,  parent);
             case "Rel":  return new Parameter(tag,    0,          10,   0,     2,    0.01f,  0.1f, 0.2f,  parent);
                                                                                                          
-            case "Amp":  return new Parameter(tag,    0,           1,   0,     1,    0.01f,  0.1f, 0,     parent);
-            case "Freq": return new Parameter(tag,    0.000001f,  30,   0.01f, 4,    0.01f,  0.1f, 0.5f,  parent);
+            case "Amp":  return new Parameter(tag,    0,           1,   0,     1,    0.01f,  0.1f, 1,     parent);
+            case "Freq": return new Parameter(tag,    0.000001f,  30,   0.01f, 4,    0.01f,  0.1f, 1,     parent);
             case "Off":  return new Parameter(tag, -100,         100, -10,    10,    0.01f,  0.1f, 0,     parent);
                                                                                                          
             case "Cut":  return new Parameter(tag,    0,           1,   0.1f,  1,    0.01f,  0.1f, 0.5f,  parent);

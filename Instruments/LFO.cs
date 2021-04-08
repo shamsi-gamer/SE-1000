@@ -30,9 +30,9 @@ namespace IngameScript
                 Op        = LfoOp  .Multiply;
                 Type      = LfoType.Sine;
 
-                Amplitude = (Parameter)NewFromTag("Amp",  this);
-                Frequency = (Parameter)NewFromTag("Freq", this);
-                Offset    = (Parameter)NewFromTag("Off",  this);
+                Amplitude = (Parameter)NewSettingFromTag("Amp",  this);
+                Frequency = (Parameter)NewSettingFromTag("Freq", this);
+                Offset    = (Parameter)NewSettingFromTag("Off",  this);
 
                 CurValue  = 0;
 
@@ -152,9 +152,9 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Amp":  return Amplitude ?? (Amplitude = (Parameter)NewFromTag("Amp",  this));
-                    case "Freq": return Frequency ?? (Frequency = (Parameter)NewFromTag("Freq", this));
-                    case "Off":  return Offset    ?? (Offset    = (Parameter)NewFromTag("Off",  this));
+                    case "Amp":  return Amplitude ?? (Amplitude = (Parameter)NewSettingFromTag("Amp",  this));
+                    case "Freq": return Frequency ?? (Frequency = (Parameter)NewSettingFromTag("Freq", this));
+                    case "Off":  return Offset    ?? (Offset    = (Parameter)NewSettingFromTag("Off",  this));
                 }
 
                 return null;

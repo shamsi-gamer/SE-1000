@@ -14,9 +14,9 @@ namespace IngameScript
 
             public Modulate(Setting parent) : base("Mod", parent)
             {
-                Amount  = (Parameter)NewFromTag("Amt", this);
-                Attack  = (Parameter)NewFromTag("Att", this);
-                Release = (Parameter)NewFromTag("Rel", this);
+                Amount  = (Parameter)NewSettingFromTag("Amt", this);
+                Attack  = (Parameter)NewSettingFromTag("Att", this);
+                Release = (Parameter)NewSettingFromTag("Rel", this);
             }
 
 
@@ -52,9 +52,9 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Amt": return Amount  ?? (Amount  = (Parameter)NewFromTag("Amt", this));
-                    case "Att": return Attack  ?? (Attack  = (Parameter)NewFromTag("Att", this));
-                    case "Rel": return Release ?? (Release = (Parameter)NewFromTag("Rel", this));
+                    case "Amt": return Amount  ?? (Amount  = (Parameter)NewSettingFromTag("Amt", this));
+                    case "Att": return Attack  ?? (Attack  = (Parameter)NewSettingFromTag("Att", this));
+                    case "Rel": return Release ?? (Release = (Parameter)NewSettingFromTag("Rel", this));
                 }
 
                 return null;

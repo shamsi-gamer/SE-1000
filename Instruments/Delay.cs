@@ -18,11 +18,11 @@ namespace IngameScript
 
             public Delay() : base("Del", null)
             {
-                Dry   = (Parameter)NewFromTag("Dry",  this);
-                Count = (Parameter)NewFromTag("Cnt",  this);
-                Time  = (Parameter)NewFromTag("Time", this);
-                Level = (Parameter)NewFromTag("Lvl",  this);
-                Power = (Parameter)NewFromTag("Pow",  this);
+                Dry   = (Parameter)NewSettingFromTag("Dry",  this);
+                Count = (Parameter)NewSettingFromTag("Cnt",  this);
+                Time  = (Parameter)NewSettingFromTag("Time", this);
+                Level = (Parameter)NewSettingFromTag("Lvl",  this);
+                Power = (Parameter)NewSettingFromTag("Pow",  this);
             }
 
 
@@ -121,11 +121,11 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Dry":  return Dry   ?? (Dry   = (Parameter)NewFromTag(tag, this));
-                    case "Cnt":  return Count ?? (Count = (Parameter)NewFromTag(tag, this));
-                    case "Time": return Time  ?? (Time  = (Parameter)NewFromTag(tag, this));
-                    case "Lvl":  return Level ?? (Level = (Parameter)NewFromTag(tag, this));
-                    case "Pow":  return Power ?? (Power = (Parameter)NewFromTag(tag, this));
+                    case "Dry":  return Dry   ?? (Dry   = (Parameter)NewSettingFromTag(tag, this));
+                    case "Cnt":  return Count ?? (Count = (Parameter)NewSettingFromTag(tag, this));
+                    case "Time": return Time  ?? (Time  = (Parameter)NewSettingFromTag(tag, this));
+                    case "Lvl":  return Level ?? (Level = (Parameter)NewSettingFromTag(tag, this));
+                    case "Pow":  return Power ?? (Power = (Parameter)NewSettingFromTag(tag, this));
                 }
 
                 return null;

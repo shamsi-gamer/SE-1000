@@ -22,8 +22,8 @@ namespace IngameScript
                 
                 SetInstrument(inst);
 
-                Length = (Parameter)NewFromTag("Len", this);
-                Scale  = (Parameter)NewFromTag("Scl", this);
+                Length = (Parameter)NewSettingFromTag("Len", this);
+                Scale  = (Parameter)NewSettingFromTag("Scl", this);
             }
 
 
@@ -99,8 +99,8 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Len": return Length ?? (Length = (Parameter)NewFromTag("Len", this));
-                    case "Scl": return Scale  ?? (Scale  = (Parameter)NewFromTag("Scl", this));
+                    case "Len": return Length ?? (Length = (Parameter)NewSettingFromTag("Len", this));
+                    case "Scl": return Scale  ?? (Scale  = (Parameter)NewSettingFromTag("Scl", this));
                 }
 
                 return null;

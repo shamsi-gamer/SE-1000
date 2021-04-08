@@ -21,12 +21,17 @@ namespace IngameScript
 {
     partial class Program
     {
-        Vector2 vector2(float angle, float dist)
+        static float logb(double _base, double value)
         {
-            return new Vector2(
-                dist * (float)Math.Cos(angle),
-                dist * (float)Math.Sin(angle));
+            return (float)(Math.Log(value) / Math.Log(_base));
         }
+
+        //Vector2 vector2(float angle, float dist)
+        //{
+        //    return new Vector2(
+        //        dist * (float)Math.Cos(angle),
+        //        dist * (float)Math.Sin(angle));
+        //}
 
 
         static string printNoZero(double d, int dec)
@@ -67,12 +72,12 @@ namespace IngameScript
         }
 
 
-        static void Swap<T>(ref T t1, ref T t2)
-        {
-            var temp = t1;
-            t1 = t2;
-            t2 = temp;
-        }
+        //static void Swap<T>(ref T t1, ref T t2)
+        //{
+        //    var temp = t1;
+        //    t1 = t2;
+        //    t2 = temp;
+        //}
 
 
         int GetNumLength(string name)

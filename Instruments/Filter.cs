@@ -23,9 +23,9 @@ namespace IngameScript
             {
                 Pass      = FilterPass.Low;
 
-                Cutoff    = (Parameter)NewFromTag("Cut",  this);
-                Resonance = (Parameter)NewFromTag("Res",  this);
-                Sharpness = (Parameter)NewFromTag("Shrp", this);
+                Cutoff    = (Parameter)NewSettingFromTag("Cut",  this);
+                Resonance = (Parameter)NewSettingFromTag("Res",  this);
+                Sharpness = (Parameter)NewSettingFromTag("Shrp", this);
             }
 
 
@@ -83,9 +83,9 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Cut":  return Cutoff    ?? (Cutoff    = (Parameter)NewFromTag("Cut",  this));
-                    case "Res":  return Resonance ?? (Resonance = (Parameter)NewFromTag("Res",  this));
-                    case "Shrp": return Sharpness ?? (Sharpness = (Parameter)NewFromTag("Shrp", this));
+                    case "Cut":  return Cutoff    ?? (Cutoff    = (Parameter)NewSettingFromTag("Cut",  this));
+                    case "Res":  return Resonance ?? (Resonance = (Parameter)NewSettingFromTag("Res",  this));
+                    case "Shrp": return Sharpness ?? (Sharpness = (Parameter)NewSettingFromTag("Shrp", this));
                 }
 
                 return null;

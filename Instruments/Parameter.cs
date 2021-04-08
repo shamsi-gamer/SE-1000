@@ -182,7 +182,10 @@ namespace IngameScript
                 else if (Tag == "Dec") ((Envelope)Parent).TrigDecay   = fN;
                 else if (Tag == "Rel") ((Envelope)Parent).TrigRelease = fN;
 
-                return value + delta * (shift ? BigDelta : Delta);
+                if (Tag == "Freq")
+                    return value + delta * (shift ? BigDelta : Delta) * logb(Math.Sqrt(2), value);
+                else
+                    return value + delta * (shift ? BigDelta : Delta);
             }
 
 
@@ -197,7 +200,7 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Trig": return Trigger  ?? (Trigger  = (Parameter)NewFromTag(tag, this));
+                    case "Trig": return Trigger  ?? (Trigger  = (Parameter)NewSettingFromTag(tag, this));
                     case "Env":  return Envelope ?? (Envelope = new Envelope (this));
                     case "LFO":  return Lfo      ?? (Lfo      = new LFO      (this));
                     case "Mod":  return Modulate ?? (Modulate = new Modulate (this));

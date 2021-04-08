@@ -34,7 +34,7 @@ namespace IngameScript
 
                 Offset     = null;
 
-                Volume     = (Parameter)NewFromTag("Vol", null);
+                Volume     = (Parameter)NewSettingFromTag("Vol", null);
                 Tune       = null;
 
                 Harmonics  = null;
@@ -222,7 +222,7 @@ namespace IngameScript
                 if (   RND > 0.7f
                     && !used.Contains(Oscillator))
                 {
-                    Offset = (Parameter)NewFromTag("Off", null);
+                    Offset = (Parameter)NewSettingFromTag("Off", null);
                     Offset.Randomize(prog);
                 }
                 else
@@ -286,7 +286,7 @@ namespace IngameScript
                 switch (tag)
                 {
                     case "Vol":  return Volume;
-                    case "Off":  return Offset    ?? (Offset    = (Parameter)NewFromTag(tag, null));
+                    case "Off":  return Offset    ?? (Offset    = (Parameter)NewSettingFromTag(tag, null));
                     case "Tune": return Tune      ?? (Tune      = new Tune());
                     case "Hrm":  return Harmonics ?? (Harmonics = new Harmonics());
                     case "Flt":  return Filter    ?? (Filter    = new Filter());

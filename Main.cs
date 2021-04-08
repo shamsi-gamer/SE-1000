@@ -41,8 +41,11 @@ namespace IngameScript
         {
             CurSetting?.AdjustFromController(g_song, this);
 
-            if (!TooComplex)          UpdatePlayback();
-            if (g_song.PlayTime > -1) UpdateKeyLights();
+            if (!TooComplex) 
+                UpdatePlayback();
+
+            if (g_song.PlayTime > -1) 
+                UpdateKeyLights();
         }
 
 
@@ -52,6 +55,7 @@ namespace IngameScript
                 && _loadStep > 10
                 && !TooComplex)
                 UpdateKeyLights();
+
 
             if (g_started)
             {
@@ -72,11 +76,11 @@ namespace IngameScript
             ResetRuntimeInfo();
 
 
-            g_dspCount = g_instCount;
+            g_dspCount  = g_instCount;
             g_instCount = 0;
 
 
-            UnmarkAllLights(); // by this point they have been visually marked on previous cycle
+            UnmarkAllLights(); // by this point they have been visually marked at a previous cycle
 
 
             warningLight.Enabled = g_sm.UsedRatio > 0.9f;
@@ -103,7 +107,7 @@ namespace IngameScript
                 g_runtimeMs[i] = 0;
 
             g_curRuntimeTick = 0;
-            g_maxRuntimeMs = 0;
+            g_maxRuntimeMs   = 0;
         }
     }
 }
