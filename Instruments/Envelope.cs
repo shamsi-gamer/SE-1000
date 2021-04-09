@@ -201,12 +201,12 @@ namespace IngameScript
 
             public override void GetLabel(out string str, out float width)
             {
-                width = 186;
+                width = 176;
 
                 str =
-                      printValue(Attack .CurValue, 2, true, 0).PadLeft(4) + "  "
-                    + printValue(Decay  .CurValue, 2, true, 0).PadLeft(4) + "  "
-                    + printValue(Sustain.CurValue, 2, true, 0).PadLeft(4) + "  "
+                      printValue(Attack .CurValue, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Decay  .CurValue, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Sustain.CurValue, 2, true, 0).PadLeft(4) + " "
                     + printValue(Release.CurValue, 2, true, 0).PadLeft(4);
             }
 

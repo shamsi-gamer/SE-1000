@@ -52,7 +52,7 @@ namespace IngameScript
         static float[]          g_runtimeMs      = new float[6];
         static float            g_maxRuntimeMs   = 0;
                                               
-
+        static List<Time>       g_times = new List<Time>();
                                 
         static Song             g_song = new Song();
                                 

@@ -28,6 +28,10 @@ namespace IngameScript
             if (_loadStep > 10)
             {
                 g_time++;
+
+                foreach (var time in g_times)
+                    time.Move();
+
                 g_song.FinalizePlayback();
             }
 
@@ -79,8 +83,8 @@ namespace IngameScript
             g_dspCount  = g_instCount;
             g_instCount = 0;
 
-
-            UnmarkAllLights(); // by this point they have been visually marked at a previous cycle
+            UpdateLockLights(); // catch the locks being set by autolock
+            UnmarkAllLights();  // by this point they have been visually marked at a previous cycle
 
 
             warningLight.Enabled = g_sm.UsedRatio > 0.9f;

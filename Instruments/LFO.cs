@@ -22,7 +22,7 @@ namespace IngameScript
                                 
             public float        CurValue;
 
-            public Queue<float> ValueCache;
+            public Time         Time;
 
 
             public LFO(Setting parent) : base("LFO", parent) 
@@ -36,9 +36,7 @@ namespace IngameScript
 
                 CurValue  = 0;
 
-                ValueCache = new Queue<float>();
-                for (int i = 0; i <= FPS; i++)
-                    ValueCache.Enqueue(0);
+                g_times.Add(Time = new Time(g_time, 1f/FPS / Frequency.Value));
             }
 
 
@@ -50,6 +48,10 @@ namespace IngameScript
                 Amplitude = new Parameter(lfo.Amplitude, this);
                 Frequency = new Parameter(lfo.Frequency, this);
                 Offset    = new Parameter(lfo.Offset,    this);
+
+                CurValue  = lfo.CurValue;
+
+                g_times.Add(Time = new Time(g_time, 1f/FPS / Frequency.Value));
             }
 
 
@@ -64,9 +66,9 @@ namespace IngameScript
                 if (tp.Program.TooComplex) return 0;
 
                 // an offset != 0 locks the LFO to the song, a 0 offset leaves it free
-                var time = 
-                    Offset.GetKeyValue(tp.Note, tp.SourceIndex) > 0 
-                    ? tp.LocalTime 
+                var time =
+                    Offset.GetKeyValue(tp.Note, tp.SourceIndex) > 0
+                    ? tp.LocalTime
                     : tp.GlobalTime;
 
                 var amp  = Amplitude.GetValue(tp);
@@ -80,24 +82,13 @@ namespace IngameScript
 
                 switch (Type)
                 {
-                    case LfoType.Sine:    CurValue = amp * (float)Math.Sin(t * Tau); break;
-                    case LfoType.Triangle:
-                    { 
-                             if (t <  0.25f)              t = t / 0.25f;
-                        else if (t >= 0.25f && t < 0.75f) t = 1 - 4 * (t - 0.25f);
-                        else                              t = (t - 0.75f) / 0.25f - 1; 
-
-                        CurValue = amp * t;
-                        break;
-                    }
-                    case LfoType.Saw:     CurValue = amp * (t*2 - 1); break;
-                    case LfoType.BackSaw: CurValue = amp * (1 - t*2); break;
-                    case LfoType.Square:  CurValue = amp * (t < 0.5 ? 1 : -1); break;
-                    case LfoType.Noise:   CurValue = amp * g_random[(int)(time/(float)FPS * f) % g_random.Length]; break;
+                    case LfoType.Sine:     CurValue = amp * (float)Math.Sin(t * Tau);    break;
+                    case LfoType.Triangle: CurValue = amp * (1 - 2*Math.Abs(2*(t%1)-1)); break;
+                    case LfoType.Saw:      CurValue = amp * (t*2 - 1);                   break;
+                    case LfoType.BackSaw:  CurValue = amp * (1 - t*2);                   break;
+                    case LfoType.Square:   CurValue = amp * (t < 0.5 ? 1 : -1);          break;
+                    case LfoType.Noise:    CurValue = amp * g_random[(int)(time/(float)FPS * f) % g_random.Length]; break;
                 }
-
-                ValueCache.Dequeue();
-                ValueCache.Enqueue(CurValue);
 
                 return CurValue;
             }
@@ -204,11 +195,25 @@ namespace IngameScript
 
             public override void GetLabel(out string str, out float width)
             {
-                width = 153;
+                width = 175;
+
+                var strOsc = "";
+
+                switch (Type)
+                {
+                    case LfoType.Sine:     strOsc = "∫ ";  break;
+                    case LfoType.Triangle: strOsc = "/\\"; break;
+                    case LfoType.Saw:      strOsc = "/ ";  break;
+                    case LfoType.BackSaw:  strOsc = "\\ "; break;
+                    case LfoType.Square:   strOsc = "П ";  break;
+                    case LfoType.Noise:    strOsc = "╫ ";  break;
+                }
 
                 str =
-                      printValue(Amplitude.CurValue, 2, true, 0).PadLeft(4) + "  "
-                    + printValue(Frequency.CurValue, 2, true, 0).PadLeft(4) + "  "
+                     (Op == LfoOp.Add ? "+ " : "* ")
+                    + strOsc + " "
+                    + printValue(Amplitude.CurValue, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Frequency.CurValue, 2, true, 0).PadLeft(4) + " "
                     + printValue(Offset   .CurValue, 2, true, 0).PadLeft(4);
             }
 
@@ -254,14 +259,16 @@ namespace IngameScript
                 DrawLine(sprites, x0, y0+h0/2, x0+w0, y0+h0/2, isFreq ? color6 : color3);
 
 
-                // draw current value
-                var lTime = g_song.PlayTime > -1 ? g_time - g_song.StartTime : 0;
+                var time = (long)(Time.Value * FPS);
+                var _tp  = new TimeParams(time, time, time, null, EditLength, -1, _triggerDummy, dp.Program);
 
-                var val   = CurValue;
-                var blur  = Type == LFO.LfoType.Noise ? Math.Pow(freq, 4) : 1;
+                var val  = GetValue(_tp);
+
+                // draw current value
+                var blur = Type == LFO.LfoType.Noise ? Math.Pow(freq, 4) : 1;
                           
-                var ty    = (float)Math.Max(y0,    y0 + h0/2 - val*h0/2 - blur  );
-                var by    = (float)Math.Min(y0+h0, y0 + h0/2 - val*h0/2 + blur*2);
+                var ty   = (float)Math.Max(y0,    y0 + h0/2 - val*h0/2 - blur  );
+                var by   = (float)Math.Min(y0+h0, y0 + h0/2 - val*h0/2 + blur*2);
 
                 var col = new Color(
                     color4.R,
@@ -272,22 +279,24 @@ namespace IngameScript
                 FillRect(sprites, x0, ty, w0, Math.Max(2, by-ty), col);
 
 
-                var cache = ValueCache.ToArray();
+                var cache = Time.Cache.ToArray();
 
                 // draw the waveform
-                for (long f = 0; f < FPS; f++)
+                for (long f = 0; f <= FPS; f++)
                 {
+                    var t = (long)(cache[f] * FPS);
+
                     var tp = new TimeParams(
-                        f + g_time,
-                        f + lTime,
-                        f + g_time - g_song.StartTime,
+                        t,
+                        t,
+                        t,
                         null,
                         EditLength,
                         -1,
                         _triggerDummy,
                         dp.Program);
 
-                    var v = cache[f];
+                    var v = GetValue(tp);
 
                     var p = new Vector2(
                         x0 + w0 * f/(float)FPS,
@@ -299,6 +308,10 @@ namespace IngameScript
 
                     pPrev = p;
                 }
+
+
+                // draw the value ball
+                FillCircle(sprites, x0 + w0, y0 + h0/2 - val*h0/2, 4, color6);
 
 
                 var fs = 0.5f;

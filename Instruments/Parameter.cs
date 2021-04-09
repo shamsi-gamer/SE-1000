@@ -105,10 +105,15 @@ namespace IngameScript
                 if (   /*tp.TriggerValues.Find(v => v.Path == path) == null
                     &&*/ Lfo != null)
                 {
-                    var lfo = Lfo.GetValue(tp);
+                    var _tp = new TimeParams(tp);
+
+                    _tp.LocalTime  = (long)(Lfo.Time.Value * FPS);
+                    _tp.GlobalTime = _tp.LocalTime;
+
+                    var lfo = Lfo.GetValue(_tp);
 
                     if (Lfo.Op == LFO.LfoOp.Add) value += lfo * Math.Abs(Max - Min) / 2;
-                    else                         value *= Lfo.GetValue(tp);
+                    else                         value *= lfo;
 
                     //if (   ParentIsEnvelope
                     //    || Parent.Tag == "Trig")
@@ -182,10 +187,12 @@ namespace IngameScript
                 else if (Tag == "Dec") ((Envelope)Parent).TrigDecay   = fN;
                 else if (Tag == "Rel") ((Envelope)Parent).TrigRelease = fN;
 
-                if (Tag == "Freq")
-                    return value + delta * (shift ? BigDelta : Delta) * logb(Math.Sqrt(2), value);
-                else
-                    return value + delta * (shift ? BigDelta : Delta);
+                var dv = delta * (shift ? BigDelta : Delta);
+
+                if (Tag == "Freq") 
+                    dv *= (float)Math.Pow(Math.Sqrt(2), value);
+
+                return value + dv;
             }
 
 
@@ -225,7 +232,11 @@ namespace IngameScript
             {
                      if (setting == Trigger)  Trigger  = null;
                 else if (setting == Envelope) Envelope = null;
-                else if (setting == Lfo)      Lfo      = null;
+                else if (setting == Lfo)    
+                {
+                    g_times.Remove(Lfo.Time);
+                    Lfo = null; 
+                }
             }
 
 
@@ -239,8 +250,11 @@ namespace IngameScript
 
                 Trigger  = null;
                 Envelope = null;
-                Lfo      = null;
+
+                if (Lfo != null) g_times.Remove(Lfo.Time);
+                Lfo = null;
             }
+
 
             public override void Randomize(Program prog)
             {
@@ -268,7 +282,12 @@ namespace IngameScript
                     Lfo.Randomize(prog);
                 }
                 else
+                { 
+                    if (Lfo != null)
+                        g_times.Remove(Lfo.Time);
+
                     Lfo = null;
+                }
             }
 
 
