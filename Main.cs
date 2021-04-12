@@ -8,7 +8,8 @@ namespace IngameScript
     {
         public void Main(string arg, UpdateType update)
         {
-            pnlInfoLog.CustomData = "";
+            //pnlInfoLog.CustomData = "";
+
 
             if (arg.Length > 0)
             { 
@@ -37,7 +38,8 @@ namespace IngameScript
 
             UpdateRuntimeInfo();
 
-            //pnlInfoLog.CustomData = "";
+
+            pnlInfoLog.CustomData = "";
         }
 
 
@@ -80,7 +82,7 @@ namespace IngameScript
             ResetRuntimeInfo();
 
 
-            g_dspCount  = g_instCount;
+            g_dspCount = g_instCount;
             g_instCount = 0;
 
             UpdateLockLights(); // catch the locks being set by autolock

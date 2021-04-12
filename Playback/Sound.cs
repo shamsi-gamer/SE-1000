@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 
 namespace IngameScript
@@ -50,9 +51,9 @@ namespace IngameScript
                 Channel       = chan;
                 iChan         = ch;
                               
-                Time     = frameTime;
+                Time          = frameTime;
 
-                Length   = frameLen;
+                Length        = frameLen;
                 ReleaseLength = releaseLen;
 
                 ElapsedTime   = 0;
@@ -148,6 +149,106 @@ namespace IngameScript
 
                 Speakers.Clear();
             }
+
+
+            public void Update(Program prog)
+            {
+                if (!prog.TooComplex)
+                {
+                    var lTime = g_time - Time;
+                    var sTime = g_time - g_song.StartTime;
+
+                    var tp = new TimeParams(g_time, lTime, sTime, Note, Length, SourceIndex, TriggerValues, prog);
+
+                    float vol = 0;
+
+                    if (Cache != null) // not echo
+                    {
+                        var updateVol = 
+                                g_song.PlayTime < Time + Length + ReleaseLength
+                            && !prog.TooComplex
+                            ? GetVolume(g_time, g_song.StartTime, prog)
+                            : 1;
+
+                        vol = 
+                              TriggerVolume
+                            * updateVol
+                            * Channel.Volume
+                            * g_volume;
+
+                        if (    Harmonic != null
+                            && !prog.TooComplex)
+                        {
+                            Harmonic.CurValue = ApplyFilter(Harmonic.CurValue, Source, HrmPos, tp);
+
+                            vol *= Harmonic.CurValue;
+                            vol  = MinMax(Harmonic.Min, vol, Harmonic.Max);
+                        }
+
+
+                        if (HrmSound != null)
+                            HrmSound.DisplayVolume = Math.Max(vol, HrmSound.DisplayVolume);
+                        else
+                            DisplayVolume = vol;
+
+
+                        if (lTime < Cache.Length)
+                            Cache[lTime] = vol;
+                    }
+                    else if (lTime < EchoSource.Cache.Length)
+                    {
+                        vol = EchoSource.Cache[lTime]
+                            * EchoVolume;
+                    }
+
+
+                    UpdateSpeakers(vol, prog);
+                }
+
+                ElapsedTime = g_time - Time;
+            }
+
+
+            void UpdateSpeakers(float vol, Program prog)
+            {
+                if (prog.TooComplex) return;
+
+                var v = (float)Math.Pow(vol, 2);
+
+                if (Speakers.Count == 0)
+                {
+                    while (v-- > 0)
+                    { 
+                        var spk = g_sm.GetSpeaker();
+
+                        if (spk != null)
+                        { 
+                            spk.Block.SelectedSound = Sample;
+                            spk.Block.LoopPeriod    = 60;
+                            spk.Block.Play();
+
+                            Speakers.Add(spk);
+                        }
+                    }
+                }
+
+
+                v = (float)Math.Pow(vol, 2);
+
+                foreach (var spk in Speakers)
+                {
+                    spk.Block.Volume = Math.Min(v--, 1);
+
+                    // if sample is ending, restart it //TODO make this smooth
+                    if (   ElapsedTime >= (Source.Oscillator.Length - 0.1f) * FPS
+                        && Source.Oscillator != OscClick)
+                    {
+                        spk.Block.Stop();
+                        spk.Block.Play();
+                    }
+                }        
+            }
+
         }
     }
 }

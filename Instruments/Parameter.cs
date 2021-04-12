@@ -102,22 +102,16 @@ namespace IngameScript
                 var value = GetKeyValue(tp.Note, tp.SourceIndex);
                 var path  = GetPath(tp.SourceIndex);
 
-                if (   /*tp.TriggerValues.Find(v => v.Path == path) == null
-                    &&*/ Lfo != null)
+                if (   tp.TriggerValues.Find(v => v.Path == path) == null
+                    && Lfo != null)
                 {
-                    //var _tp = new TimeParams(tp);
-
-                    //_tp.LocalTime  = (long)(Lfo.Time.Value * FPS);
-                    //_tp.GlobalTime = _tp.LocalTime;
-
-                    var lfo = Lfo.GetValue(tp);//_tp);
+                    var lfo = Lfo.GetValue(tp);
 
                     if (Lfo.Op == LFO.LfoOp.Add) value += lfo * Math.Abs(Max - Min) / 2;
                     else                         value *= lfo;
 
-                    //if (   ParentIsEnvelope
-                    //    || Parent.Tag == "Trig")
-                    //    tp.TriggerValues.Add(new TriggerValue(path, value));
+                    if (ParentIsEnvelope)
+                        tp.TriggerValues.Add(new TriggerValue(path, MinMax(Min, value, Max)));
                 }
 
                 
@@ -193,10 +187,8 @@ namespace IngameScript
                 if (Tag == "Freq")
                 { 
                     dv *= (float)Math.Pow(Math.Sqrt(2), value);
-
                     var _delta = 1f/FPS * (value + dv);
-                    
-                    ((LFO)Parent).Delta  = _delta;
+                    ((LFO)Parent).Delta = _delta;
                 }
 
                 return value + dv;

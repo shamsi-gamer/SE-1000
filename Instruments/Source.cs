@@ -145,13 +145,9 @@ namespace IngameScript
                 var vol = note.Volume;
                 
 
-                // the next two GetValue() calls populate triggerValues, the return values are ignored
-
-                tp.SourceIndex = -1;
-                inst.Volume.Trigger?.GetValue(tp);
-
-                tp.SourceIndex = Index;
-                Volume.Trigger?.GetValue(tp);
+                // these two GetValue() calls populate triggerValues, the return values are ignored
+                tp.SourceIndex = -1;    inst.Volume .GetValue(tp);
+                tp.SourceIndex = Index;      Volume?.GetValue(tp);
 
 
                 string relPath = "";
@@ -159,9 +155,9 @@ namespace IngameScript
                      if (     Volume.Envelope != null) relPath =      Volume.Envelope.Release.GetPath(Index);
                 else if (inst.Volume.Envelope != null) relPath = inst.Volume.Envelope.Release.GetPath(-1);
 
-                var _relLen = triggerValues.Find(v => v.Path == relPath);
-                var relLen = (int)((_relLen?.Value ?? 0) * FPS);
 
+                var _relLen = triggerValues.Find(v => v.Path == relPath);
+                var  relLen = (int)((_relLen?.Value ?? 0) * FPS);
 
                 var sample = GetSample(noteNum);
 
