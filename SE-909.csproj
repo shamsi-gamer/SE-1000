@@ -43,7 +43,6 @@
     <Compile Include="Graphics\Draw Harmonics.cs" />
     <Compile Include="Graphics\Draw Volume.cs" />
     <Compile Include="Graphics\DrawParams.cs" />
-    <Compile Include="Instruments\Time.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Minify.cs" />
     <Compile Include="IO\Save.cs" />

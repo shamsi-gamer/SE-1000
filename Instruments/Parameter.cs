@@ -105,12 +105,12 @@ namespace IngameScript
                 if (   /*tp.TriggerValues.Find(v => v.Path == path) == null
                     &&*/ Lfo != null)
                 {
-                    var _tp = new TimeParams(tp);
+                    //var _tp = new TimeParams(tp);
 
-                    _tp.LocalTime  = (long)(Lfo.Time.Value * FPS);
-                    _tp.GlobalTime = _tp.LocalTime;
+                    //_tp.LocalTime  = (long)(Lfo.Time.Value * FPS);
+                    //_tp.GlobalTime = _tp.LocalTime;
 
-                    var lfo = Lfo.GetValue(_tp);
+                    var lfo = Lfo.GetValue(tp);//_tp);
 
                     if (Lfo.Op == LFO.LfoOp.Add) value += lfo * Math.Abs(Max - Min) / 2;
                     else                         value *= lfo;
@@ -185,12 +185,19 @@ namespace IngameScript
             {
                      if (Tag == "Att") ((Envelope)Parent).TrigAttack  = fN;
                 else if (Tag == "Dec") ((Envelope)Parent).TrigDecay   = fN;
+                else if (Tag == "Sus") ((Envelope)Parent).TrigSustain = fN;
                 else if (Tag == "Rel") ((Envelope)Parent).TrigRelease = fN;
 
                 var dv = delta * (shift ? BigDelta : Delta);
 
-                if (Tag == "Freq") 
+                if (Tag == "Freq")
+                { 
                     dv *= (float)Math.Pow(Math.Sqrt(2), value);
+
+                    var _delta = 1f/FPS * (value + dv);
+                    
+                    ((LFO)Parent).Delta  = _delta;
+                }
 
                 return value + dv;
             }
@@ -208,9 +215,9 @@ namespace IngameScript
                 switch (tag)
                 {
                     case "Trig": return Trigger  ?? (Trigger  = (Parameter)NewSettingFromTag(tag, this));
-                    case "Env":  return Envelope ?? (Envelope = new Envelope (this));
-                    case "LFO":  return Lfo      ?? (Lfo      = new LFO      (this));
-                    case "Mod":  return Modulate ?? (Modulate = new Modulate (this));
+                    case "Env":  return Envelope ?? (Envelope = new Envelope(this));
+                    case "LFO":  return Lfo      ?? (Lfo      = new LFO     (this));
+                    case "Mod":  return Modulate ?? (Modulate = new Modulate(this));
                 }
 
                 return null;
@@ -234,7 +241,7 @@ namespace IngameScript
                 else if (setting == Envelope) Envelope = null;
                 else if (setting == Lfo)    
                 {
-                    g_times.Remove(Lfo.Time);
+                    g_lfo.Remove(Lfo);
                     Lfo = null; 
                 }
             }
@@ -251,7 +258,7 @@ namespace IngameScript
                 Trigger  = null;
                 Envelope = null;
 
-                if (Lfo != null) g_times.Remove(Lfo.Time);
+                if (Lfo != null) g_lfo.Remove(Lfo);
                 Lfo = null;
             }
 
@@ -273,10 +280,11 @@ namespace IngameScript
 
 
                 if (   !prog.TooComplex
-                    && !HasTagOrParent(this, "Att")
-                    && !HasTagOrParent(this, "Dec")
-                    && !HasTagOrParent(this, "Rel")
-                    && RND > 0.7f)
+                    //&& !HasTagOrParent(this, "Att")
+                    //&& !HasTagOrParent(this, "Dec")
+                    //&& !HasTagOrParent(this, "Sus")
+                    //&& !HasTagOrParent(this, "Rel")
+                    && RND > 0.8f)
                 {
                     Lfo = new LFO(this);
                     Lfo.Randomize(prog);
@@ -284,7 +292,7 @@ namespace IngameScript
                 else
                 { 
                     if (Lfo != null)
-                        g_times.Remove(Lfo.Time);
+                        g_lfo.Remove(Lfo);
 
                     Lfo = null;
                 }

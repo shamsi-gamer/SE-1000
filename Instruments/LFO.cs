@@ -20,38 +20,65 @@ namespace IngameScript
                                 Frequency,
                                 Offset;
                                 
-            public float        CurValue;
+            public float        Phase,
+                                Delta,
 
-            public Time         Time;
+                                CurValue;
+
+            public Queue<float> ValueCache;
+
+                  int           m_count;
+            const int           MaxCount = 4;
+
+ 
 
 
             public LFO(Setting parent) : base("LFO", parent) 
             {
-                Op        = LfoOp  .Multiply;
-                Type      = LfoType.Sine;
+                Op          = LfoOp  .Multiply;
+                Type        = LfoType.Sine;
+                            
+                Amplitude   = (Parameter)NewSettingFromTag("Amp",  this);
+                Frequency   = (Parameter)NewSettingFromTag("Freq", this);
+                Offset      = (Parameter)NewSettingFromTag("Off",  this);
+                            
+                CurValue    = 0;
 
-                Amplitude = (Parameter)NewSettingFromTag("Amp",  this);
-                Frequency = (Parameter)NewSettingFromTag("Freq", this);
-                Offset    = (Parameter)NewSettingFromTag("Off",  this);
+                g_lfo.Add(this);
 
-                CurValue  = 0;
+                Phase       = 0;
+                Delta       = 1f/FPS * Frequency.Value;
 
-                g_times.Add(Time = new Time(g_time, 1f/FPS / Frequency.Value));
+                ValueCache = new Queue<float>();
+                for (int i = 0; i <= FPS; i++)
+                    ValueCache.Enqueue(0);
+
+                m_count     = 0;
             }
 
 
-            public LFO(LFO lfo, Setting parent) : base(lfo.Tag, parent, lfo.Prototype)
+            public LFO(LFO lfo, Setting parent) 
+                : base(lfo.Tag, parent, lfo.Prototype)
             {
-                Op        = lfo.Op;
-                Type      = lfo.Type;
+                Op          = lfo.Op;
+                Type        = lfo.Type;
+                            
+                Amplitude   = new Parameter(lfo.Amplitude, this);
+                Frequency   = new Parameter(lfo.Frequency, this);
+                Offset      = new Parameter(lfo.Offset,    this);
+                            
+                CurValue    = lfo.CurValue;
 
-                Amplitude = new Parameter(lfo.Amplitude, this);
-                Frequency = new Parameter(lfo.Frequency, this);
-                Offset    = new Parameter(lfo.Offset,    this);
+                g_lfo.Add(this);
 
-                CurValue  = lfo.CurValue;
+                Phase       = lfo.Phase;
+                Delta       = lfo.Delta;
 
-                g_times.Add(Time = new Time(g_time, 1f/FPS / Frequency.Value));
+                ValueCache = new Queue<float>();
+                foreach (var val in lfo.ValueCache)
+                    ValueCache.Enqueue(val);
+
+                m_count     = lfo.m_count;
             }
 
 
@@ -61,34 +88,41 @@ namespace IngameScript
             }
 
 
+            public void AdvanceTime()
+            {
+                Phase += Delta;
+
+                Delta = 1f/FPS * Frequency.CurValue;
+                
+                if (++m_count >= MaxCount)
+                {
+                    ValueCache.Dequeue();
+                    ValueCache.Enqueue(CurValue);
+
+                    m_count = 0;
+                }
+            }
+
+
             public float GetValue(TimeParams tp)
             {
                 if (tp.Program.TooComplex) return 0;
-
-                // an offset != 0 locks the LFO to the song, a 0 offset leaves it free
-                var time =
-                    Offset.GetKeyValue(tp.Note, tp.SourceIndex) > 0
-                    ? tp.LocalTime
-                    : tp.GlobalTime;
 
                 var amp  = Amplitude.GetValue(tp);
                 var freq = Frequency.GetValue(tp);
                 var off  = Offset   .GetValue(tp);
 
-                var f = (float)(Math.Pow(2, freq) - 1);
-
-                var L = FPS / f;
-                var t = (time % L) / L;
-
                 switch (Type)
                 {
-                    case LfoType.Sine:     CurValue = amp * (float)Math.Sin(t * Tau);    break;
-                    case LfoType.Triangle: CurValue = amp * (1 - 2*Math.Abs(2*(t%1)-1)); break;
-                    case LfoType.Saw:      CurValue = amp * (t*2 - 1);                   break;
-                    case LfoType.BackSaw:  CurValue = amp * (1 - t*2);                   break;
-                    case LfoType.Square:   CurValue = amp * (t < 0.5 ? 1 : -1);          break;
-                    case LfoType.Noise:    CurValue = amp * g_random[(int)(time/(float)FPS * f) % g_random.Length]; break;
+                    case LfoType.Sine:     CurValue = (float)Math.Sin(Phase * Tau);                   break;
+                    case LfoType.Triangle: CurValue = (1 - 2* Math.Abs(2*(Phase % 1)-1));             break;
+                    case LfoType.Saw:      CurValue = (   Phase  % 1);                                break;
+                    case LfoType.BackSaw:  CurValue = ((1-Phase) % 1);                                break;
+                    case LfoType.Square:   CurValue = (float)(1 - 2* Math.Round((Phase % 2)/2));      break;
+                    case LfoType.Noise:    CurValue = g_random[(int)(Phase * FPS) % g_random.Length]; break;
                 }
+
+                CurValue *= amp;
 
                 return CurValue;
             }
@@ -259,13 +293,13 @@ namespace IngameScript
                 DrawLine(sprites, x0, y0+h0/2, x0+w0, y0+h0/2, isFreq ? color6 : color3);
 
 
-                var time = (long)(Time.Value * FPS);
+                var time = (long)(Phase * FPS);
                 var _tp  = new TimeParams(time, time, time, null, EditLength, -1, _triggerDummy, dp.Program);
 
                 var val  = GetValue(_tp);
 
                 // draw current value
-                var blur = Type == LFO.LfoType.Noise ? Math.Pow(freq, 4) : 1;
+                var blur = Type == LfoType.Noise ? Math.Pow(freq, 4) : 1;
                           
                 var ty   = (float)Math.Max(y0,    y0 + h0/2 - val*h0/2 - blur  );
                 var by   = (float)Math.Min(y0+h0, y0 + h0/2 - val*h0/2 + blur*2);
@@ -279,27 +313,13 @@ namespace IngameScript
                 FillRect(sprites, x0, ty, w0, Math.Max(2, by-ty), col);
 
 
-                var cache = Time.Cache.ToArray();
-
                 // draw the waveform
-                for (long f = 0; f <= FPS; f++)
+
+                var f = 0;
+                foreach (var v in ValueCache)
                 {
-                    var t = (long)(cache[f] * FPS);
-
-                    var tp = new TimeParams(
-                        t,
-                        t,
-                        t,
-                        null,
-                        EditLength,
-                        -1,
-                        _triggerDummy,
-                        dp.Program);
-
-                    var v = GetValue(tp);
-
                     var p = new Vector2(
-                        x0 + w0 * f/(float)FPS,
+                        x0 + w0 * f/FPS,
                         y0 + h0/2 - v*h0/2);
 
                     if (   OK(pPrev.X)
@@ -307,6 +327,7 @@ namespace IngameScript
                         DrawLine(sprites, pPrev, p, color4, 2);
 
                     pPrev = p;
+                    f++;
                 }
 
 

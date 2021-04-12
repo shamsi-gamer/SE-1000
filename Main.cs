@@ -29,8 +29,8 @@ namespace IngameScript
             {
                 g_time++;
 
-                foreach (var time in g_times)
-                    time.Move();
+                foreach (var lfo in g_lfo)
+                    lfo.AdvanceTime();
 
                 g_song.FinalizePlayback();
             }
