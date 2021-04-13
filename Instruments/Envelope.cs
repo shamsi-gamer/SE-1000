@@ -55,14 +55,14 @@ namespace IngameScript
             }
 
 
-            public float GetValue(TimeParams tp)
+            public float UpdateValue(TimeParams tp)
             {
                 if (tp.Program.TooComplex) return 0;
 
                 if (tp.Note != null)
                     tp.NoteLength = tp.Note.FrameLength;
 
-                return GetValue(
+                return UpdateValue(
                     tp.LocalTime, 
                     tp.NoteLength, 
                     tp.GetTriggerValue(Attack ),
@@ -72,7 +72,7 @@ namespace IngameScript
             }
 
 
-            public static float GetValue(long lTime, int noteLen, float a, float d, float s, float r)
+            public static float UpdateValue(long lTime, int noteLen, float a, float d, float s, float r)
             {
                 var lt = lTime  /(float)FPS;
                 var nl = noteLen/(float)FPS;
@@ -238,10 +238,10 @@ namespace IngameScript
 
                 var tp  = new TimeParams(g_time, 0, sTime, null, EditLength, -1, _triggerDummy, dp.Program);
 
-                var a = Attack .GetValue(tp);
-                var d = Decay  .GetValue(tp);
-                var s = Sustain.GetValue(tp);
-                var r = Release.GetValue(tp);
+                var a = Attack .UpdateValue(tp);
+                var d = Decay  .UpdateValue(tp);
+                var s = Sustain.UpdateValue(tp);
+                var r = Release.UpdateValue(tp);
                                                                        
 
                 var w0 = 240f;

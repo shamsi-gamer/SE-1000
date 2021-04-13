@@ -181,7 +181,7 @@ namespace IngameScript
 
                 Length = Patterns.Count * g_nSteps;
                 //    g_song.Arpeggio != null
-                //    ? (int)Math.Round(g_song.Arpeggio.Length.GetValue(g_time, 0, g_song.StartTime, noteLen, null, g_song.CurSrc))
+                //    ? (int)Math.Round(g_song.Arpeggio.Length.UpdateValue(g_time, 0, g_song.StartTime, noteLen, null, g_song.CurSrc))
                 /*:*/
 
 
@@ -304,8 +304,8 @@ namespace IngameScript
                 //    {
                 //        var arp = n.Instrument.Arpeggio;
 
-                //        n.FramePlayTime += arp.Scale .GetValue(g_time, 0, song.StartTime, noteLen, n, -1);
-                //        var maxLength    = arp.Length.GetValue(g_time, 0, song.StartTime, noteLen, n, -1);
+                //        n.FramePlayTime += arp.Scale .UpdateValue(g_time, 0, song.StartTime, noteLen, n, -1);
+                //        var maxLength    = arp.Length.UpdateValue(g_time, 0, song.StartTime, noteLen, n, -1);
 
                 //        while (n.FramePlayTime >= maxLength * g_ticksPerStep)
                 //            n.FramePlayTime -= maxLength * g_ticksPerStep;

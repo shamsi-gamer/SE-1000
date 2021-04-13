@@ -14,8 +14,8 @@ namespace IngameScript
 
             var tp = new TimeParams(g_time, lTime, sTime, snd.Note, snd.Length, snd.SourceIndex, snd.TriggerValues, this);
 
-            var dc = del.Count.GetValue(tp);
-            var dt = del.Time .GetValue(tp);
+            var dc = del.Count.UpdateValue(tp);
+            var dt = del.Time .UpdateValue(tp);
 
 
             Sound echoSrc = null;

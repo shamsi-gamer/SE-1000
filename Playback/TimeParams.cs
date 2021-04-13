@@ -78,7 +78,7 @@ namespace IngameScript
 
                 if (trigVal == null)
                 {
-                    trigVal = new TriggerValue(path, param.GetValue(this));
+                    trigVal = new TriggerValue(path, param.UpdateValue(this));
                     TriggerValues.Add(trigVal);
                 }
 

@@ -98,7 +98,7 @@ namespace IngameScript
             }
 
 
-            public float GetValue(TimeParams tp)
+            public float UpdateValue(TimeParams tp)
             {
                 if (tp.Program.TooComplex) return CurValue;
 
@@ -109,7 +109,7 @@ namespace IngameScript
                 if (   tp.TriggerValues.Find(v => v.Path == path) == null
                     && Lfo != null)
                 {
-                    var lfo = Lfo.GetValue(tp);
+                    var lfo = Lfo.UpdateValue(tp);
 
                     if (Lfo.Op == LFO.LfoOp.Add) value += lfo * Math.Abs(Max - Min) / 2;
                     else                         value *= lfo;
@@ -120,7 +120,7 @@ namespace IngameScript
 
                 
                 if (Envelope != null)
-                    value *= Envelope.GetValue(tp);
+                    value *= Envelope.UpdateValue(tp);
 
 
                 float auto;

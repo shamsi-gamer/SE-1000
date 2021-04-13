@@ -40,7 +40,7 @@ namespace IngameScript
 
             var songSteps =
                 arp != null
-                ? (int)Math.Round(arp.Length.GetValue(tp))
+                ? (int)Math.Round(arp.Length.UpdateValue(tp))
                 : g_nSteps;
 
 

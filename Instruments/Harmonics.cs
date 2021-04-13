@@ -9,7 +9,7 @@ namespace IngameScript
     {
         public class Harmonics : Setting
         {
-            public enum Preset { Sine, Square4, Square8, Square16, Square24, Saw4, Saw8, Saw16, Saw24, Flat4, Flat8, Flat16, Flat24, Random4, Random8, Random16, Random24 };
+            public enum Preset { Sine, Square4, Square8, Square16, Square24, Saw4, Saw8, Saw16, Saw24, Pulse4, Pulse8, Pulse16, Pulse24, Random4, Random8, Random16, Random24 };
 
             public Parameter[] Tones    = new Parameter[24];
                    float[]     m_values = new float    [24];
@@ -48,7 +48,7 @@ namespace IngameScript
             {
                 switch (preset)
                 {
-                case Preset.Sine:     FillSine();            break;
+                case Preset.Sine:     FillSine();              break;
                                                                  
                 case Preset.Square4:  FillSquare  ( 4);        break;
                 case Preset.Square8:  FillSquare  ( 8);        break;
@@ -60,10 +60,10 @@ namespace IngameScript
                 case Preset.Saw16:    FillSaw     (16);        break;
                 case Preset.Saw24:    FillSaw     (24);        break;
                                                                    
-                case Preset.Flat4:    FillFlat    ( 4);        break;
-                case Preset.Flat8:    FillFlat    ( 8);        break;
-                case Preset.Flat16:   FillFlat    (16);        break;
-                case Preset.Flat24:   FillFlat    (24);        break;
+                case Preset.Pulse4:   FillPulse   ( 4);        break;
+                case Preset.Pulse8:   FillPulse   ( 8);        break;
+                case Preset.Pulse16:  FillPulse   (16);        break;
+                case Preset.Pulse24:  FillPulse   (24);        break;
 
                 case Preset.Random4:  FillRandom  ( 4, g_rnd); break;
                 case Preset.Random8:  FillRandom  ( 8, g_rnd); break;
@@ -94,7 +94,7 @@ namespace IngameScript
             }
 
 
-            public void FillFlat(int nTones)
+            public void FillPulse(int nTones)
             {
                 var div = (float)Math.Log(nTones, 1.75);
 
@@ -173,8 +173,9 @@ namespace IngameScript
 
                     var tp = new TimeParams(g_time, lTime, sTime, note, sndLen, iSrc, snd.TriggerValues, prog);
 
-                    Tones[i].SetValue(Tones[i].GetValue(tp),                           note, iSrc);
-                    Tones[i].SetValue(ApplyFilter(Tones[i].CurValue, src, hrmPos, tp), note, iSrc); 
+                    Tones[i].UpdateValue(tp);
+                    //Tones[i].SetValue(Tones[i].UpdateValue(tp),                           note, iSrc);
+                    //Tones[i].SetValue(ApplyFilter(Tones[i].CurValue, src, hrmPos, tp), note, iSrc); 
 
                     //snd.TriggerVolume = Tones[i].CurValue;
 

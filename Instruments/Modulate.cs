@@ -34,7 +34,7 @@ namespace IngameScript
             }
 
 
-            public float GetValue(long gTime, long lTime, long sTime, int noteLen, Note note, int src, Program prog)
+            public float UpdateValue(long gTime, long lTime, long sTime, int noteLen, Note note, int src, Program prog)
             {
                 if (prog.TooComplex) return 0;
 

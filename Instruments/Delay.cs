@@ -48,13 +48,13 @@ namespace IngameScript
 
                 if (i == 0)
                 { 
-                    return Dry.GetValue(tp);
+                    return Dry.UpdateValue(tp);
                 }
                 else
                 { 
-                    var dc = Count.GetValue(tp) - 1; // -1 because 0 is the source sound
-                    var dl = Level.GetValue(tp);
-                    var dp = Power.GetValue(tp);
+                    var dc = Count.UpdateValue(tp) - 1; // -1 because 0 is the source sound
+                    var dl = Level.UpdateValue(tp);
+                    var dp = Power.UpdateValue(tp);
 
                     return 
                         dc != 0

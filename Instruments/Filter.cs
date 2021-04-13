@@ -319,9 +319,9 @@ namespace IngameScript
                 value *= GetFilter(
                     pos,
                     src.Filter.Pass,
-                    src.Filter.Cutoff   .GetValue(tp), 
-                    src.Filter.Resonance.GetValue(tp),
-                    src.Filter.Sharpness.GetValue(tp));
+                    src.Filter.Cutoff   .UpdateValue(tp), 
+                    src.Filter.Resonance.UpdateValue(tp),
+                    src.Filter.Sharpness.UpdateValue(tp));
             }
 
             var inst = src.Instrument;
@@ -330,9 +330,9 @@ namespace IngameScript
                 value *= GetFilter(
                     pos, 
                     inst.Filter.Pass,
-                    inst.Filter.Cutoff   .GetValue(tp), 
-                    inst.Filter.Resonance.GetValue(tp),
-                    inst.Filter.Sharpness.GetValue(tp));
+                    inst.Filter.Cutoff   .UpdateValue(tp), 
+                    inst.Filter.Resonance.UpdateValue(tp),
+                    inst.Filter.Sharpness.UpdateValue(tp));
             }
             
             return value;

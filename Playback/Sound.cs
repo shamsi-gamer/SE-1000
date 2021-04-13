@@ -135,8 +135,8 @@ namespace IngameScript
                 var tpSrc  = new TimeParams(gTime, lTime, sTime, Note, Length, Source.Index, TriggerValues, prog);
 
                 var vol = 
-                      Instrument.Volume.GetValue(tpInst)
-                    * Source    .Volume.GetValue(tpSrc);
+                      Instrument.Volume.UpdateValue(tpInst)
+                    * Source    .Volume.UpdateValue(tpSrc);
 
                 return MinMax(0, vol, 2);
             }

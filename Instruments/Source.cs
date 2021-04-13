@@ -133,7 +133,7 @@ namespace IngameScript
 
 
                 if (Offset != null)
-                    sndTime += (int)Math.Round(Offset.GetValue(tp) * FPS);
+                    sndTime += (int)Math.Round(Offset.UpdateValue(tp) * FPS);
 
 
                 var noteNum = AdjustNoteNumber(note, this, note.FrameLength, prog);
@@ -146,9 +146,9 @@ namespace IngameScript
                 var vol = note.Volume;
                 
 
-                // these two GetValue() calls populate triggerValues, the return values are ignored
-                tp.SourceIndex = -1;    inst.Volume .GetValue(tp);
-                tp.SourceIndex = Index;      Volume?.GetValue(tp);
+                // populate triggerValues
+                tp.SourceIndex = -1;    inst.Volume .UpdateValue(tp);
+                tp.SourceIndex = Index;      Volume?.UpdateValue(tp);
 
 
                 string relPath = "";

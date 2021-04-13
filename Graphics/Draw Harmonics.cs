@@ -88,15 +88,15 @@ namespace IngameScript
                 case Harmonics.Preset.Square16: str = "Sqr 16";  break;
                 case Harmonics.Preset.Square24: str = "Sqr 24";  break;
 
-                case Harmonics.Preset.Flat4:    str = "Flat 4";  break;
-                case Harmonics.Preset.Flat8:    str = "Flat 8";  break;
-                case Harmonics.Preset.Flat16:   str = "Flat 16"; break;
-                case Harmonics.Preset.Flat24:   str = "Flat 24"; break;
-
-                case Harmonics.Preset.Random4:  str = "Rnd 4";  break;
-                case Harmonics.Preset.Random8:  str = "Rnd 8";  break;
-                case Harmonics.Preset.Random16: str = "Rnd 16"; break;
-                case Harmonics.Preset.Random24: str = "Rnd 24"; break;
+                case Harmonics.Preset.Pulse4:   str = "Pls 4";   break;
+                case Harmonics.Preset.Pulse8:   str = "Pls 8";   break;
+                case Harmonics.Preset.Pulse16:  str = "Pls 16";  break;
+                case Harmonics.Preset.Pulse24:  str = "Pls 24";  break;
+                                                                 
+                case Harmonics.Preset.Random4:  str = "Rnd 4";   break;
+                case Harmonics.Preset.Random8:  str = "Rnd 8";   break;
+                case Harmonics.Preset.Random16: str = "Rnd 16";  break;
+                case Harmonics.Preset.Random24: str = "Rnd 24";  break;
             }
 
             DrawString(

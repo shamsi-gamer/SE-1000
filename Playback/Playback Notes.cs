@@ -275,8 +275,8 @@ namespace IngameScript
                 _triggerDummy, 
                 prog);
 
-            _noteNum += inst.Tune?.GetValue(tp) * NoteScale ?? 0;
-            _noteNum += src .Tune?.GetValue(tp) * NoteScale ?? 0;
+            _noteNum += inst.Tune?.UpdateValue(tp) * NoteScale ?? 0;
+            _noteNum += src .Tune?.UpdateValue(tp) * NoteScale ?? 0;
 
             var noteNum = MinMax(12*NoteScale, (int)Math.Round(_noteNum), 150*NoteScale);
 

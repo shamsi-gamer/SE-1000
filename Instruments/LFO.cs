@@ -104,13 +104,13 @@ namespace IngameScript
             }
 
 
-            public float GetValue(TimeParams tp)
+            public float UpdateValue(TimeParams tp)
             {
                 if (tp.Program.TooComplex) return 0;
 
-                var amp  = Amplitude.GetValue(tp);
-                var freq = Frequency.GetValue(tp);
-                var off  = Offset   .GetValue(tp);
+                var amp  = Amplitude.UpdateValue(tp);
+                var freq = Frequency.UpdateValue(tp);
+                var off  = Offset   .UpdateValue(tp);
 
                 switch (Type)
                 {
@@ -296,7 +296,7 @@ namespace IngameScript
                 var time = (long)(Phase * FPS);
                 var _tp  = new TimeParams(time, time, time, null, EditLength, -1, _triggerDummy, dp.Program);
 
-                var val  = GetValue(_tp);
+                var val  = UpdateValue(_tp);
 
                 // draw current value
                 var blur = Type == LfoType.Noise ? Math.Pow(freq, 4) : 1;
