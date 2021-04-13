@@ -31,15 +31,15 @@ namespace IngameScript
 
             for (int i = 0; i < hrm.Tones.Length; i++)
             {
-                var val     = hrm.Tones[i].CurValue;
-                var toneVal = hrm.Tones[i].Value;
+                var curVal = hrm.Tones[i].CurValue;
+                var val    = hrm.Tones[i].Value;
 
                 var xh = xt + i*wc;
 
-                FillRect(sprites, xh + gap/2,                yt + ht, wc - gap,     -ht,           color2);
-                FillRect(sprites, xh + gap/2,                yt + ht, wc - gap - 8, -ht * val,     color5);
+                FillRect(sprites, xh + gap/2,                yt + ht, wc - gap,     -ht,          color2);
+                FillRect(sprites, xh + gap/2,                yt + ht, wc - gap - 8, -ht * curVal, color4);
 
-                FillRect(sprites, xh + gap/2 + (wc-gap) - 7, yt + ht, 7,            -ht * toneVal, color6);
+                FillRect(sprites, xh + gap/2 + (wc-gap) - 7, yt + ht, 7,            -ht * val,    color6);
             }
 
 

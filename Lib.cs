@@ -1,30 +1,17 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
+﻿using System;
+
 
 namespace IngameScript
 {
     partial class Program
     {
-        static float logb(double _base, double value)
-        {
-            return (float)(Math.Log(value) / Math.Log(_base));
-        }
+        //static float sqr(float x) { return x*x; }
+
+
+        //static float logb(double _base, double value)
+        //{
+        //    return (float)(Math.Log(value) / Math.Log(_base));
+        //}
 
         //Vector2 vector2(float angle, float dist)
         //{
@@ -104,7 +91,7 @@ namespace IngameScript
 
         static int    MinMax(int    min, int    val, int    max) { return Math.Min(Math.Max(min, val), max); }
         static float  MinMax(float  min, float  val, float  max) { return Math.Min(Math.Max(min, val), max); }
-        static double MinMax(double min, double val, double max) { return Math.Min(Math.Max(min, val), max); }
+        //static double MinMax(double min, double val, double max) { return Math.Min(Math.Max(min, val), max); }
 
 
         static int GetInt(string str, string pre, string suf = "")

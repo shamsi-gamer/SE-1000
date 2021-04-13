@@ -90,7 +90,11 @@ namespace IngameScript
                     if (key != null) key.Value = MinMax(Min, val, Max);
                     else             m_value   = MinMax(Min, val, Max);
                 }
-                else m_value = MinMax(Min, val, Max);
+                else
+                { 
+                    m_value = MinMax(Min, val, Max);
+                    CurValue = m_value;
+                }
             }
 
 

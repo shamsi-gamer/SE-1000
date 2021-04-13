@@ -144,46 +144,10 @@ namespace IngameScript
             var nSrc = inst.Sources.Count;
             var sw   = 20;
 
-
             var iy = y - g_srcOff;
 
             for (int i = g_srcOff; i < Math.Min(g_srcOff + maxDspSrc, nSrc); i++)
-            {
-                var src    = inst.Sources[i];
-                var active = i == CurSrc && CurSet < 0;
-
-                //var ssh = 0f;
-                var dp1 = new DrawParams(active, this);
-                inst.Sources[i].DrawLabels(null, 0, 0, dp1);//, ref ssh);
-
-                var sh = dp1.OffY + 20;
-
-                if (CurSrc == i && CurSet < 0)
-                    FillRect(sprites, x + sw, iy, w - sw, sh, color6);
-
-
-                var col_0 = src.On && CurSrc > -1 && CurSet < 0 ? color6 : color3;
-                var col_1 = src.On && CurSrc > -1 && CurSet < 0 ? color0 : color5;
-
-                if (src.Oscillator == OscSample)
-                {
-                    DrawString(sprites, src.Oscillator.ShortName, x + sw + 10, iy + sh/2 - 10, 0.7f, i == CurSrc ? col_1 : col_0, TaC);
-                }
-                else
-                { 
-                    DrawSrcSample(sprites, x + sw + 10, iy + sh/2 - 10, 50, 20, src, active, CurSrc > -1);
-                    DrawString(sprites, src.Oscillator.ShortName, x + sw + 100, iy + sh/2 - 10, 0.6f, active ? col_1 : col_0, TaC);
-                }
-
-
-                var dp2 = new DrawParams(active, this);
-                src.DrawLabels(sprites, x + sw + 139, iy + sh/2 - dp1.OffY/2 + 2, dp2);
-
-                FillRect(sprites, x + sw, iy + sh, w - sw, 1, color3);
-
-                iy += sh;
-            }
-
+                inst.Sources[i].DrawSource(sprites, x + sw, ref iy, w - sw, this);
 
             if (CurSrc > -1 && nSrc > 8)
             {

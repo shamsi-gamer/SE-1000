@@ -153,57 +153,61 @@ namespace IngameScript
 
             public void Update(Program prog)
             {
-                if (!prog.TooComplex)
+                if (prog.TooComplex)
                 {
-                    var lTime = g_time - Time;
-                    var sTime = g_time - g_song.StartTime;
-
-                    var tp = new TimeParams(g_time, lTime, sTime, Note, Length, SourceIndex, TriggerValues, prog);
-
-                    float vol = 0;
-
-                    if (Cache != null) // not echo
-                    {
-                        var updateVol = 
-                                g_song.PlayTime < Time + Length + ReleaseLength
-                            && !prog.TooComplex
-                            ? GetVolume(g_time, g_song.StartTime, prog)
-                            : 1;
-
-                        vol = 
-                              TriggerVolume
-                            * updateVol
-                            * Channel.Volume
-                            * g_volume;
-
-                        if (    Harmonic != null
-                            && !prog.TooComplex)
-                        {
-                            Harmonic.CurValue = ApplyFilter(Harmonic.CurValue, Source, HrmPos, tp);
-
-                            vol *= Harmonic.CurValue;
-                            vol  = MinMax(Harmonic.Min, vol, Harmonic.Max);
-                        }
-
-
-                        if (HrmSound != null)
-                            HrmSound.DisplayVolume = Math.Max(vol, HrmSound.DisplayVolume);
-                        else
-                            DisplayVolume = vol;
-
-
-                        if (lTime < Cache.Length)
-                            Cache[lTime] = vol;
-                    }
-                    else if (lTime < EchoSource.Cache.Length)
-                    {
-                        vol = EchoSource.Cache[lTime]
-                            * EchoVolume;
-                    }
-
-
-                    UpdateSpeakers(vol, prog);
+                    ElapsedTime = g_time - Time;
+                    return;
                 }
+
+
+                var lTime = g_time - Time;
+                var sTime = g_time - g_song.StartTime;
+
+                var tp = new TimeParams(g_time, lTime, sTime, Note, Length, SourceIndex, TriggerValues, prog);
+
+                float vol = 0;
+
+                if (Cache != null) // not echo
+                {
+                    var updateVol = 
+                           g_song.PlayTime < Time + Length + ReleaseLength
+                        && !prog.TooComplex
+                        ? GetVolume(g_time, g_song.StartTime, prog)
+                        : 1;
+
+                    vol = 
+                          TriggerVolume
+                        * updateVol
+                        * Channel.Volume
+                        * g_volume;
+
+                    if (    Harmonic != null
+                        && !prog.TooComplex)
+                    {
+                        Harmonic.CurValue = ApplyFilter(Harmonic.CurValue, Source, HrmPos, tp);
+
+                        vol *= Harmonic.CurValue;
+                        vol  = MinMax(Harmonic.Min, vol, Harmonic.Max);
+                    }
+
+
+                    if (HrmSound != null)
+                        HrmSound.DisplayVolume = Math.Max(vol, HrmSound.DisplayVolume);
+                    else
+                        DisplayVolume = vol;
+
+
+                    if (lTime < Cache.Length)
+                        Cache[lTime] = vol;
+                }
+                else if (lTime < EchoSource.Cache.Length)
+                {
+                    vol = EchoSource.Cache[lTime]
+                        * EchoVolume;
+                }
+
+
+                UpdateSpeakers(vol, prog);
 
                 ElapsedTime = g_time - Time;
             }

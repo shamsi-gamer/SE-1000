@@ -347,7 +347,7 @@ namespace IngameScript
         {
             //if (TooComplex) return;
 
-            if (   IsCurParam("Tune")
+            if (    IsCurParam("Tune")
                 && !(g_paramKeys || g_paramAuto))
             {
                 var inst = SelectedInstrument;

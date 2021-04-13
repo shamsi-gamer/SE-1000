@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
+using VRageMath;
 
 
 namespace IngameScript
@@ -364,6 +365,93 @@ namespace IngameScript
                 Harmonics?.DrawLabels(sprites, x, y, dp); 
                 Filter   ?.DrawLabels(sprites, x, y, dp); 
                 Delay    ?.DrawLabels(sprites, x, y, dp); 
+            }
+
+
+            public void DrawSource(List<MySprite> sprites, float x, ref float y, float w, Program prog)
+            {
+                var active = 
+                       CurSrc == Index 
+                    && CurSet <  0;
+
+
+                var dp1 = new DrawParams(active, prog);
+                DrawLabels(null, 0, 0, dp1);
+
+                var sh = dp1.OffY + 20;
+
+                if (CurSrc == Index)
+                    FillRect(sprites, x, y, w, sh, CurSet < 0 ? color6 : color3);
+
+
+                var col_0 = On && CurSrc > -1 ? color6 : color4;
+                var col_1 = On && CurSrc > -1 ? color0 : color5;
+
+                if (Oscillator == OscSample)
+                {
+                    DrawString(sprites, Oscillator.ShortName, x + 10, y + sh/2 - 10, 0.7f, CurSrc == Index ? col_1 : col_0, TaC);
+                }
+                else
+                { 
+                    DrawSample(sprites,                       x +  10, y + sh/2 - 10, 50, 20, active, CurSrc > -1);
+                    DrawString(sprites, Oscillator.ShortName, x + 100, y + sh/2 - 10, 0.6f, active ? col_1 : col_0, TaC);
+                }
+
+
+                var dp2 = new DrawParams(active, prog);
+                DrawLabels(sprites, x + 139, y + sh/2 - dp1.OffY/2 + 2, dp2);
+
+                FillRect(sprites, x, y + sh, w, 1, color3);
+
+                y += sh;
+            }
+
+
+            void DrawSample(List<MySprite> sprites, float x, float y, float w, float h, bool active, bool bright)
+            {
+                var col_0 = On && bright ? color6 : color3;
+                var col_1 = On && bright ? color0 : color5;
+
+                var pPrev = new Vector2(fN, fN);
+
+
+                var df = 1/24f;
+
+                for (float f = 0; f <= 1; f += df)
+                {
+                    float wf;
+                
+                    if (Oscillator == OscClick)
+                    { 
+                             if (f == 0   ) wf =  0;
+                        else if (f == df  ) wf =  1;
+                        else if (f == df*2) wf = -1;
+                        else                wf =  0;
+                    }
+                    else if (Oscillator == OscCrunch)
+                    { 
+                        var _f = f % (1/4f);
+
+                             if (fequal(_f, 0   )) wf =  0;
+                        else if (fequal(_f, df  )) wf =  1;
+                        else if (fequal(_f, df*2)) wf = -1;
+                        else                       wf =  0;
+                    }
+                    else 
+                    { 
+                        wf = GetWaveform(f*2.1f / Tau);
+                    }
+
+                    var p = new Vector2(
+                        x + w * f,
+                        y + h/2 - wf * h/2);
+
+                    if (   OK(pPrev.X)
+                        && OK(pPrev.Y))
+                        DrawLine(sprites, pPrev, p, active ? col_1 : col_0, active ? 2 : 1);
+
+                    pPrev = p;
+                }
             }
 
 

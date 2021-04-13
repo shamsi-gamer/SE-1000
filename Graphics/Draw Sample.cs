@@ -74,52 +74,6 @@ namespace IngameScript
         //}
 
 
-        void DrawSrcSample(List<MySprite> sprites, float x, float y, float w, float h, Source src, bool active, bool bright)
-        {
-            var col_0 = src.On && bright ? color6 : color3;
-            var col_1 = src.On && bright ? color0 : color5;
-
-            var pPrev = new Vector2(fN, fN);
-
-
-            var df = 1/24f;
-
-            for (float f = 0; f <= 1; f += df)
-            {
-                var wf = 0f;
-                
-                if (src.Oscillator == OscClick)
-                { 
-                         if (f == 0   ) wf =  0;
-                    else if (f == df  ) wf =  1;
-                    else if (f == df*2) wf = -1;
-                    else                wf =  0;
-                }
-                else if (src.Oscillator == OscCrunch)
-                { 
-                    var _f = f % (1/4f);
-
-                         if (fequal(_f, 0   )) wf =  0;
-                    else if (fequal(_f, df  )) wf =  1;
-                    else if (fequal(_f, df*2)) wf = -1;
-                    else                       wf =  0;
-                }
-                else 
-                { 
-                    wf = src.GetWaveform(f*2.1f / Tau);
-                }
-
-                var p = new Vector2(
-                    x + w * f,
-                    y + h/2 - wf * h/2);
-
-                if (   OK(pPrev.X)
-                    && OK(pPrev.Y))
-                    DrawLine(sprites, pPrev, p, active ? col_1 : col_0, active ? 2 : 1);
-
-                pPrev = p;
-            }
-        }
 
 
         void DrawHarmonicsSample(List<MySprite> sprites, float x, float y, float w, float h, Song song, Harmonics hrm)

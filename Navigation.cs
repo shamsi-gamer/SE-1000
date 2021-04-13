@@ -354,11 +354,12 @@ namespace IngameScript
             if (OK(g_song.EditPos))
                 g_song.EditPos = Math.Min(g_song.EditPos, g_song.Patterns.Count * g_nSteps);
 
-            //if (PlayTime > -1)
-            //    StartTime += nSteps * g_ticksPerStep;
 
-            //if (g_song.PlayPat >= g_song.Patterns.Count)
-            //    g_song.PlayPat  = g_song.Patterns.Count-1;
+            //if (g_song.PlayTime > -1)
+            //    g_song.StartTime += nSteps * g_ticksPerStep;
+
+            if (g_song.PlayPat >= g_song.Patterns.Count)
+                g_song.PlayPat = g_song.Patterns.Count - 1;
 
 
             g_song.UpdateAutoKeys();
