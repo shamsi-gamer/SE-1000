@@ -661,10 +661,7 @@ namespace IngameScript
         {
             if (IsSettingType(setting, typeof(Harmonics)))
             {
-                var hrm  = CurHarmonics;
-                var tone = hrm.Tones[hrm.CurTone];
-
-                tone.SetValue(tone.AdjustValue(tone.Value, delta, g_shift), null, -1);
+                CurHarmonics.Adjust(delta);
             }
             else if (   IsParam(setting)
                      && (   g_paramKeys 

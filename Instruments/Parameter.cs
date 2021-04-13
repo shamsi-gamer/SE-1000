@@ -179,23 +179,35 @@ namespace IngameScript
             }
 
 
-            public float AdjustValue(float value, float delta, bool shift)
+            public float AdjustValue(float value, float delta, bool shift, bool scale = false)
             {
                      if (Tag == "Att") ((Envelope)Parent).TrigAttack  = fN;
                 else if (Tag == "Dec") ((Envelope)Parent).TrigDecay   = fN;
                 else if (Tag == "Sus") ((Envelope)Parent).TrigSustain = fN;
                 else if (Tag == "Rel") ((Envelope)Parent).TrigRelease = fN;
 
-                var dv = delta * (shift ? BigDelta : Delta);
+                if (scale)
+                {
+                    var dv = 
+                        shift
+                        ? (delta > 0 ? 1 + BigDelta : 1 - BigDelta)
+                        : (delta > 0 ? 1 +    Delta : 1 -    Delta);
 
-                if (Tag == "Freq")
-                { 
-                    dv *= (float)Math.Pow(Math.Sqrt(2), value);
-                    var _delta = 1f/FPS * (value + dv);
-                    ((LFO)Parent).Delta = _delta;
+                    return value * dv;
                 }
+                else
+                { 
+                    var dv = delta * (shift ? BigDelta : Delta);
 
-                return value + dv;
+                    if (Tag == "Freq")
+                    { 
+                        dv *= (float)Math.Pow(Math.Sqrt(2), value);
+                        var _delta = 1f/FPS * (value + dv);
+                        ((LFO)Parent).Delta = _delta;
+                    }
+
+                    return value + dv;
+                }
             }
 
 

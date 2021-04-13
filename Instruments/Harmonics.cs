@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
+using VRageMath;
 
 
 namespace IngameScript
@@ -208,6 +209,21 @@ namespace IngameScript
             }
 
 
+            public void Adjust(float delta)
+            { 
+                if (CurTone > -1)
+                {
+                    var tone = Tones[CurTone];
+                    tone.SetValue(tone.AdjustValue(tone.Value, delta, g_shift), null, -1);
+                }
+                else
+                {
+                    foreach (var tone in Tones)
+                        tone.SetValue(tone.AdjustValue(tone.Value, delta, g_shift, true), null, -1);
+                }
+            }
+
+
             public void Smooth()
             { 
                 var values = new float[Tones.Length];
@@ -275,20 +291,143 @@ namespace IngameScript
                 y += _dp.OffY;
 
                 var dp = new DrawParams(_dp);
-                //bool atLeastOne = false;
 
                 base.DrawLabels(sprites, x, y, dp);
 
                 for (int i = 0; i < Tones.Length; i++)
                 { 
                     if (Tones[i].HasDeepParams(CurrentChannel, CurSrc)) 
-                    {
                         Tones[i].DrawLabels(sprites, x, y, dp); 
-                        //atLeastOne = true;
-                    }
                 }
 
                 _dp.Next(dp);
+            }
+
+
+            public void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, Song song, Channel chan, Program prog)
+            {
+                FillRect(sprites, x, y, w, h, color0);
+
+                var  rh = h - 90;
+                var irh = h - 50;
+
+                var xt  = 300f;
+                var wt  = 600f;
+                var yt  = 50f;
+                var ht  = 300f;
+
+                var gap = 4f;
+
+                var wc  = wt / Tones.Length;
+
+                var dp = new DrawParams(false, prog);
+                SelectedSource.DrawLabels(sprites, x + 5, y + 10, dp);
+
+                DrawSample(sprites, x + 100, y + 150, 100, 60);
+
+
+                for (int i = 0; i < Tones.Length; i++)
+                {
+                    var curVal = Tones[i].CurValue;
+                    var val    = Tones[i].Value;
+
+                    var xh = xt + i*wc;
+
+                    FillRect(sprites, xh + gap/2,                yt + ht, wc - gap,     -ht,          color2);
+                    FillRect(sprites, xh + gap/2,                yt + ht, wc - gap - 8, -ht * curVal, color4);
+
+                    FillRect(sprites, xh + gap/2 + (wc-gap) - 7, yt + ht, 7,            -ht * val,    color6);
+                }
+
+
+                // current tone
+                if (CurTone > -1) FillRect(sprites, xt + CurTone * wc, yt + ht + 10, wc,    20, color5);
+                else              FillRect(sprites, xt,                yt + ht + 10, wc*24, 20, color5);
+
+
+                // has param marks
+                for (int i = 0; i < Tones.Length; i++)
+                {
+                    if (Tones[i].HasDeepParams(chan, -1))
+                        DrawString(sprites, "▲", xt + i*wc + wc/2, yt + ht + 10, 0.6f, color3, TaC);
+                }
+
+
+                // draw sample curve
+
+                var bw = w/6;
+                var be = 0f;
+
+                DrawPreset(sprites, CurPreset, 2*bw - be/2, h - 100, bw + be, 50);
+
+                DrawFuncButtons(sprites, w, h, chan);
+            }
+
+
+            void DrawSample(List<MySprite> sprites, float x, float y, float w, float h)
+            {
+                var pPrev = new Vector2(fN, fN);
+
+
+                var df = 1/48f;
+
+                for (float f = 0; f < 1+df/2; f += df)
+                {
+                    var wf = 0f;
+                
+                    for (int i = 0; i < Tones.Length; i++)
+                    {
+                        var val = Tones[i].CurValue;
+                        wf += (float)Math.Sin(f*(i+1) * Tau) * val;
+                    }
+
+                    var p = new Vector2(
+                        x + w * f,
+                        y + h/2 - wf * h/2);
+
+                    if (   OK(pPrev.X)
+                        && OK(pPrev.Y))
+                        DrawLine(sprites, pPrev, p, color6, 2);
+
+                    pPrev = p;
+                }
+            } 
+
+
+            void DrawPreset(List<MySprite> sprites, Preset preset, float x, float y, float w, float h)
+            {
+                var str = "";
+
+                switch (preset)
+                {
+                    case Preset.Sine:     str = "Sine";    break;
+
+                    case Preset.Saw4:     str = "Saw 4";   break;
+                    case Preset.Saw8:     str = "Saw 8";   break;
+                    case Preset.Saw16:    str = "Saw 16";  break;
+                    case Preset.Saw24:    str = "Saw 24";  break;
+
+                    case Preset.Square4:  str = "Sqr 4";   break;
+                    case Preset.Square8:  str = "Sqr 8";   break;
+                    case Preset.Square16: str = "Sqr 16";  break;
+                    case Preset.Square24: str = "Sqr 24";  break;
+
+                    case Preset.Pulse4:   str = "Pls 4";   break;
+                    case Preset.Pulse8:   str = "Pls 8";   break;
+                    case Preset.Pulse16:  str = "Pls 16";  break;
+                    case Preset.Pulse24:  str = "Pls 24";  break;
+                                                       
+                    case Preset.Random4:  str = "Rnd 4";   break;
+                    case Preset.Random8:  str = "Rnd 8";   break;
+                    case Preset.Random16: str = "Rnd 16";  break;
+                    case Preset.Random24: str = "Rnd 24";  break;
+                }
+
+
+                var x0 = w/2;
+
+                DrawRect  (sprites,      x,      y,     w, h, color4);
+                DrawString(sprites, str, x + x0, y + 4,       1.2f, color6, TaC);
             }
 
 
@@ -297,7 +436,10 @@ namespace IngameScript
                 DrawFuncButton(sprites, "Smth",  1, w, h, false, false, mainPressed.Contains(1));
                 DrawFuncButton(sprites, "Pre ↕", 2, w, h, false, false, mainPressed.Contains(2));
                 DrawFuncButton(sprites, "Set",   3, w, h, false, false, mainPressed.Contains(3));
-                DrawFuncButton(sprites, "Tone",  4, w, h, true,  Tones[CurTone].HasDeepParams(chan, -1));
+                
+                if (CurTone > -1)
+                    DrawFuncButton(sprites, "Tone", 4, w, h, true, Tones[CurTone].HasDeepParams(chan, -1));
+
                 DrawFuncButton(sprites, "X",     5, w, h, false, false, mainPressed.Contains(5));
             }
 
@@ -306,11 +448,7 @@ namespace IngameScript
             {
                 switch (func)
                 {
-                    case 1:
-                    {
-                        Smooth();
-                        break;
-                    }
+                    case 1: Smooth(); break;
                     case 2:
                     { 
                         var cp = (int)CurPreset + 1;
@@ -323,14 +461,23 @@ namespace IngameScript
 
                         break;
                     }
-                    case 3:
-                    {
-                        SetPreset(CurPreset);
+                    case 3: SetPreset(CurPreset); break; 
+                    case 4:
+                        if (CurTone > -1) 
+                            AddNextSetting(S(CurTone));
                         break;
-                    }
-                    case 4: AddNextSetting(S(CurTone)); break;
+
                     case 5: RemoveSetting(this); break;
                 }
+            }
+
+
+            public void MoveEdit(int move)
+            {
+                CurTone += move;
+
+                if (CurTone >= Tones.Length) CurTone = -1;
+                if (CurTone <  -1          ) CurTone = Tones.Length-1;
             }
         }
     }

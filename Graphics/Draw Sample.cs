@@ -76,33 +76,5 @@ namespace IngameScript
 
 
 
-        void DrawHarmonicsSample(List<MySprite> sprites, float x, float y, float w, float h, Song song, Harmonics hrm)
-        {
-            var pPrev = new Vector2(fN, fN);
-
-
-            var df = 1/48f;
-
-            for (float f = 0; f < 1+df/2; f += df)
-            {
-                var wf = 0f;
-                
-                for (int i = 0; i < hrm.Tones.Length; i++)
-                {
-                    var val = hrm.Tones[i].CurValue;
-                    wf += (float)Math.Sin(f*(i+1) * Tau) * val;
-                }
-
-                var p = new Vector2(
-                    x + w * f,
-                    y + h/2 - wf * h/2);
-
-                if (   OK(pPrev.X)
-                    && OK(pPrev.Y))
-                    DrawLine(sprites, pPrev, p, color6, 2);
-
-                pPrev = p;
-            }
-        } 
     }
 }

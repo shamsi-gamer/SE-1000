@@ -460,12 +460,7 @@ namespace IngameScript
 
             if (IsCurSetting(typeof(Harmonics)))
             {
-                var hrm = CurHarmonics;
-
-                hrm.CurTone += move;
-
-                if (hrm.CurTone >= hrm.Tones.Length) hrm.CurTone = 0;
-                if (hrm.CurTone <  0               ) hrm.CurTone = hrm.Tones.Length-1;
+                CurHarmonics.MoveEdit(move);
             }
             else if (song.EditNotes.Count > 0)
             {

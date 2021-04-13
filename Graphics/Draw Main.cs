@@ -34,7 +34,7 @@ namespace IngameScript
                 if (IsCurSetting(typeof(Harmonics)))
                 {
                               var hrm = CurOrParentHarmonics;
-                              DrawHarmonicsDisplay(sprites, x, y, w, h, g_song, CurrentChannel, hrm);
+                              hrm.DrawSetting(sprites, x, y, w, h, g_song, CurrentChannel, this);
                 }
                 else if (IsCurOrParentSetting(typeof(Arpeggio)))
                 {
