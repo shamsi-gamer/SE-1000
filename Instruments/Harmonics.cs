@@ -11,10 +11,11 @@ namespace IngameScript
         {
             public enum Preset { Sine, Square4, Square8, Square16, Square24, Saw4, Saw8, Saw16, Saw24, Flat4, Flat8, Flat16, Flat24, Random4, Random8, Random16, Random24 };
 
-            public Parameter[] Tones = new Parameter[24];
+            public Parameter[] Tones    = new Parameter[24];
+                   float[]     m_values = new float    [24];
 
-            public Preset CurPreset;
-            public int    CurTone;
+            public Preset      CurPreset;
+            public int         CurTone;
 
 
             public Harmonics() : base("Hrm", null)
@@ -95,7 +96,7 @@ namespace IngameScript
 
             public void FillFlat(int nTones)
             {
-                var div = (float)Math.Log(nTones, 2.5);
+                var div = (float)Math.Log(nTones, 1.75);
 
                 for (int i = 0; i < Tones.Length; i++)
                     Tones[i].SetValue(i >= nTones ? 0 : 1f/div, null, -1);
@@ -104,24 +105,25 @@ namespace IngameScript
 
             public void FillRandom(int nTones, Random rnd)
             {
-                var prev  = 0f;
                 var total = 0f;
 
                 for (int i = 0; i < Tones.Length; i++)
                 { 
-                    var val = (float)rnd.NextDouble();
-                    prev = (prev + val)/2;
+                    m_values[i] =
+                           i >= nTones 
+                        || rnd.NextDouble() < 0.5 
+                        ? 0 
+                        : (float)rnd.NextDouble();
 
-                    Tones[i].SetValue(i >= nTones || rnd.NextDouble() < 0.5 ? 0 : val, null, -1);
-                    total += Tones[i].Value;
+                    total += m_values[i] / (float)Math.Pow(i+1, 0.5);
                 }
 
                 for (int i = 0; i < Tones.Length; i++)
-                    Tones[i].SetValue(Tones[i].Value/total, null, -1);
+                    Tones[i].SetValue(m_values[i]/total, null, -1);
             }
 
 
-                public void CreateSounds(List<Sound> sounds, Source src, Note note, int noteNum, long sndTime, int sndLen, int relLen, float vol, List<TriggerValue> triggerValues, Program prog)
+            public void CreateSounds(List<Sound> sounds, Source src, Note note, int noteNum, long sndTime, int sndLen, int relLen, float vol, List<TriggerValue> triggerValues, Program prog)
             {
                 var inst = src.Instrument;
                 var iSrc = inst.Sources.IndexOf(src);

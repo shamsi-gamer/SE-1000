@@ -5,7 +5,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        //static float sqr(float x) { return x*x; }
+        static float sqr(float x) { return x*x; }
 
 
         //static float logb(double _base, double value)
