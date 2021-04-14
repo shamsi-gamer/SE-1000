@@ -98,6 +98,12 @@ namespace IngameScript
             }
 
 
+            public void LimitValue(ref float val)
+            {
+                val = MinMax(Min, val, Max);
+            }
+
+
             public float UpdateValue(TimeParams tp)
             {
                 if (tp.Program.TooComplex) return CurValue;

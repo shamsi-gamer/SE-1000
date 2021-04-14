@@ -172,7 +172,7 @@ namespace IngameScript
                         || noteNum > 150 * NoteScale)
                         return;
 
-                    vol = ApplyFilter(vol, this, 0, tp);
+                    //vol = ApplyFilter(vol, this, 0, tp);
 
                     _sounds.Add(new Sound(
                         sample,

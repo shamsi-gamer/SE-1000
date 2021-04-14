@@ -157,10 +157,13 @@ namespace IngameScript
 
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
-                var cut  = Cutoff   .CurValue;
-                var res  = Resonance.CurValue;
-                var shrp = Sharpness.CurValue;
+                var cut  = Cutoff   .Value;
+                var res  = Resonance.Value;
+                var shrp = Sharpness.Value;
 
+                var curCut  = Cutoff   .CurValue;
+                var curRes  = Resonance.CurValue;
+                var curShrp = Sharpness.CurValue;
 
                 var w0 = 240f;
                 var h0 = 120f;
@@ -173,7 +176,8 @@ namespace IngameScript
                 FillRect(sprites, x0, y0 + h0, w0,  2, color3);
 
 
-                DrawFilter(sprites, x0, y0, w0, h0, color5, 4, Pass, cut, res, shrp);
+                DrawFilter(sprites, x0, y0, w0, h0, color3, 4, Pass, curCut, curRes, curShrp);
+                DrawFilter(sprites, x0, y0, w0, h0, color5, 4, Pass, cut,    res,    shrp);
 
 
                 var strCut = Pass > FilterPass.High ? "Freq" : "Cut";
@@ -182,16 +186,16 @@ namespace IngameScript
                 var fs = 0.5f;
 
                 // cutoff
-                DrawString(sprites, strCut,                       x0,       y0 - 40, fs, IsCurParam("Cut") ? color6 : color3);
-                DrawString(sprites, printValue(cut, 2, true, 0),  x0,       y0 - 25, fs, IsCurParam("Cut") ? color6 : color3);
+                DrawString(sprites, strCut,                       x0,       y0 - 40, fs, IsCurParam("Cut") ? color6 : color4);
+                DrawString(sprites, printValue(cut, 2, true, 0),  x0,       y0 - 25, fs, IsCurParam("Cut") ? color6 : color4);
                                                                   
                 // resonance                                      
-                DrawString(sprites, strRes,                       x0 + 100, y0 - 40, fs, IsCurParam("Res") ? color6 : color3);
-                DrawString(sprites, printValue(res, 2, true, 0),  x0 + 100, y0 - 25, fs, IsCurParam("Res") ? color6 : color3);
+                DrawString(sprites, strRes,                       x0 + 100, y0 - 40, fs, IsCurParam("Res") ? color6 : color4);
+                DrawString(sprites, printValue(res, 2, true, 0),  x0 + 100, y0 - 25, fs, IsCurParam("Res") ? color6 : color4);
 
                 // sharpness
-                DrawString(sprites, "Shrp",                       x0 + 200, y0 - 40, fs, IsCurParam("Shrp") ? color6 : color3);
-                DrawString(sprites, printValue(shrp, 2, true, 0), x0 + 200, y0 - 25, fs, IsCurParam("Shrp") ? color6 : color3);
+                DrawString(sprites, "Shrp",                       x0 + 200, y0 - 40, fs, IsCurParam("Shrp") ? color6 : color4);
+                DrawString(sprites, printValue(shrp, 2, true, 0), x0 + 200, y0 - 25, fs, IsCurParam("Shrp") ? color6 : color4);
             }
 
 
@@ -235,22 +239,22 @@ namespace IngameScript
 
         static float GetFilter(float f, FilterPass pass, float cut, float res, float shrp)
         {
-            shrp = Math.Min(shrp, 0.9999f);
+            shrp = Math.Min(shrp, 1);
 
             var val = 1f;
-            var rw  = 1 - shrp;
+            var rw  = nozero(1-shrp);
 
             if (pass == FilterPass.Low)
             {
-                var cw = (1+rw) * cut;
-                var c  = 1 - (float)Math.Pow(f / cw, (6.4f/rw-1)*cut + 1);
+                var cw = nozero((1+rw) * cut);
+                var c  = 1 - (float)Math.Pow(f/cw, (6.4f/rw-1)*cut + 1);
                 var r  = (1 - (float)Math.Cos(1/rw*Tau*MinMax(0, f + rw - cw, rw))) / 4;
 
                 val = c + r * res;
             }
             else if (pass == FilterPass.High)
             {
-                var cw = (1+rw) * (1-cut);
+                var cw = nozero((1+rw) * (1-cut));
                 var c  = 1 - (float)Math.Pow((1-f) / cw, (6.4f/rw-1)*(1-cut) + 1);
                 var r  = (1 - (float)Math.Cos(1/rw*Tau*MinMax(0, 1-f + rw - cw, rw))) / 4;
 
@@ -261,8 +265,10 @@ namespace IngameScript
                 var f1 =  f - cut - res/2;
                 var f2 = -f + cut - res/2;
 
-                     if (0 <= f1 && f1 <= 1) val = 1 - (float)Math.Pow(f1/(1-shrp), 1/(1-shrp));
-                else if (0 <= f2 && f2 <= 1) val = 1 - (float)Math.Pow(f2/(1-shrp), 1/(1-shrp));
+                var s = nozero(1-shrp);
+
+                     if (0 <= f1 && f1 <= 1) val = 1 - (float)Math.Pow(f1/s, 1/s);
+                else if (0 <= f2 && f2 <= 1) val = 1 - (float)Math.Pow(f2/s, 1/s);
                 else if (f > cut - res/2
                       && f < cut + res/2)    val = 1;
                 else                         val = 0;
@@ -273,8 +279,10 @@ namespace IngameScript
                 var f1 =  f - cut - res/2;
                 var f2 = -f + cut - res/2;
 
-                     if (0 <= f1 && f1 <= 1-shrp) val = (1 - (float)Math.Cos(Tau*f1 / (2 * (1-shrp)))) / 2;
-                else if (0 <= f2 && f2 <= 1-shrp) val = (1 - (float)Math.Cos(Tau*f2 / (2 * (1-shrp)))) / 2;
+                var s = 2 * nozero(1-shrp);
+
+                     if (0 <= f1 && f1 <= 1-shrp) val = (1 - (float)Math.Cos(Tau*f1/s)) / 2;
+                else if (0 <= f2 && f2 <= 1-shrp) val = (1 - (float)Math.Cos(Tau*f2/s)) / 2;
                 else if (f > cut - res/2
                       && f < cut + res/2)         val = 0;
                 else                              val = 1;

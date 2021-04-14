@@ -6,7 +6,7 @@ namespace IngameScript
     partial class Program
     {
         static float sqr(float x) { return x*x; }
-
+        static float nozero(float x) { return x != 0 ? x : 0.000001f; }
 
         //static float logb(double _base, double value)
         //{

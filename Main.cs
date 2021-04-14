@@ -8,7 +8,7 @@ namespace IngameScript
     {
         public void Main(string arg, UpdateType update)
         {
-            //pnlInfoLog.CustomData = "";
+            pnlInfoLog.CustomData = "";
 
 
             if (arg.Length > 0)

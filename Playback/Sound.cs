@@ -184,10 +184,14 @@ namespace IngameScript
                     if (    Harmonic != null
                         && !prog.TooComplex)
                     {
+                        Harmonic.UpdateValue(tp);
+
                         Harmonic.CurValue = ApplyFilter(Harmonic.CurValue, Source, HrmPos, tp);
 
-                        vol *= Harmonic.CurValue;
-                        vol  = MinMax(Harmonic.Min, vol, Harmonic.Max);
+                        vol = MinMax(
+                            Harmonic.Min, 
+                            vol * Harmonic.CurValue, 
+                            Harmonic.Max);
                     }
 
 
@@ -206,7 +210,6 @@ namespace IngameScript
                         * EchoVolume;
                 }
 
-
                 UpdateSpeakers(vol, prog);
 
                 ElapsedTime = g_time - Time;
@@ -216,6 +219,7 @@ namespace IngameScript
             void UpdateSpeakers(float vol, Program prog)
             {
                 if (prog.TooComplex) return;
+
 
                 var v = (float)Math.Pow(vol, 2);
 
