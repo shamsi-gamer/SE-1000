@@ -340,7 +340,7 @@ namespace IngameScript
                 // draw amplitude label
                 DrawString(
                     sprites, 
-                    S_00(amp), 
+                    S_000(amp), 
                     x0 + w0/2, 
                     y0 + h0/2 - h0/2*amp - 20, 
                     fs, 
@@ -350,7 +350,7 @@ namespace IngameScript
                 // frequency label
                 DrawString(
                     sprites, 
-                    S_00(Math.Pow(2, freq)-1) + (isFreq ? " Hz" : ""),
+                    S_000(Math.Pow(2, freq)-1) + (isFreq ? " Hz" : ""),
                     x0 + w0/2,
                     y0 + h0 + 3,
                     fs,
@@ -360,7 +360,7 @@ namespace IngameScript
                 // offset label
                 DrawString(
                     sprites, 
-                    S_00(off) + (isOff ? " s" : ""),
+                    S_000(off) + (isOff ? " s" : ""),
                     x0,
                     y0 + h0 + 3,
                     fs,

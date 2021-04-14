@@ -236,77 +236,77 @@ namespace IngameScript
                     ? g_time - g_song.StartTime
                     : 0;
 
-                var tp  = new TimeParams(g_time, 0, sTime, null, EditLength, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, sTime, null, EditLength, -1, _triggerDummy, dp.Program);
 
-                var a = Attack .UpdateValue(tp);
-                var d = Decay  .UpdateValue(tp);
-                var s = Sustain.UpdateValue(tp);
-                var r = Release.UpdateValue(tp);
-                                                                       
-
-                var w0 = 240f;
-                var h0 = 120f;
+                Attack .UpdateValue(tp);
+                Decay  .UpdateValue(tp);
+                Sustain.UpdateValue(tp);
+                Release.UpdateValue(tp);
 
 
-                var v     = Math.Min(dp.Volume, 1);
-
-                var fs    = 0.5f;
-                var scale = 1f;
-                var fps   = FPS * scale;
-
-                var x0    = x + w/2 - w0/2;
-
-                var p0    = new Vector2(x0, y + h/2 + h0/2);
-                    p0.X  = Math.Min(p0.X, x0 + w0);
-
-                var p1    = new Vector2(p0.X + a*fps, p0.Y - h0*v);
-                    p1.X  = Math.Min(p1.X, x0 + w0);
-
-                var p2    = new Vector2(p1.X + d*fps, p0.Y - h0*v * s);
-                    p2.X  = Math.Min(p2.X, x0 + w0);
-
-                var p3    = new Vector2(x0 + w0 - r*fps, p2.Y);
-                var p4    = new Vector2(x0 + w0, p0.Y);
-
+                var w0    = 240f;
+                var h0    = 120f;
 
                 var isAtt = IsCurParam("Att");
                 var isDec = IsCurParam("Dec");
                 var isSus = IsCurParam("Sus");
                 var isRel = IsCurParam("Rel");
 
+                var x0 = x + w/2 - w0/2;
+                var y0 = y + h/2 - h0/2;
 
+                Vector2 p0, p1, p2, p3, p4;
+
+                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), false, out p0, out p1, out p2, out p3, out p4);
+                DrawEnvelopeSupportsAndInfo(sprites, p0, p1, p2, p3, p4, y0, h0, isAtt, isDec, isSus, isRel);
+
+                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), true, out p0, out p1, out p2, out p3, out p4);
+                DrawEnvelope(sprites, p0, p1, p2, p3, p4, color3, false, false, false, false, Decay.CurValue);
+
+                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), false, out p0, out p1, out p2, out p3, out p4);
+                DrawEnvelope(sprites, p0, p1, p2, p3, p4, color5, isAtt, isDec, isSus, isRel, Decay.Value);
+            }
+
+
+            void DrawEnvelopeSupportsAndInfo(List<MySprite> sprites, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float y, float h, bool isAtt, bool isDec, bool isSus, bool isRel)
+            {
+                var sw = 1;
+
+                DrawLine(sprites, p0.X, p0.Y, p0.X, y + h, color3, sw);
+                DrawLine(sprites, p2.X, p2.Y, p2.X, p0.Y,  color3, sw);
+                DrawLine(sprites, p1.X, p1.Y, p1.X, y + h, color3, sw);
+                DrawLine(sprites, p3.X, p3.Y, p3.X, p0.Y,  color3, sw);
+                DrawLine(sprites, p1.X, p2.Y, p3.X, p3.Y,  color3, sw);
+                                                              
+                DrawLine(sprites, p0.X, p0.Y, p4.X, p4.Y,  color3, sw);
+
+
+                // labels
+
+                var a = Attack .Value;
+                var d = Decay  .Value;
+                var s = Sustain.Value;
+                var r = Release.Value;
+
+                var fs = 0.5f;
+
+                DrawString(sprites, S_000(a) + (isAtt ? " s" : ""),  p0.X           +  6,  p0.Y +  3,         fs, isAtt ? color6 : color3, TaC);
+                DrawString(sprites, S_000(d) + (isDec ? " s" : ""), (p1.X + p2.X)/2 + 16, (p1.Y+p2.Y)/2 - 20, fs, isDec ? color6 : color3, TaC);
+                DrawString(sprites, S_000(s),                       (p2.X + p3.X)/2 -  5,  p2.Y - 20,         fs, isSus ? color6 : color3, TaC);
+                DrawString(sprites, S_000(r) + (isRel ? " s" : ""), (p3.X + p4.X)/2 -  5,  p0.Y +  3,         fs, isRel ? color6 : color3, TaC);
+            }
+
+
+            void DrawEnvelope(List<MySprite> sprites, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Color col, bool isAtt, bool isDec, bool isSus, bool isRel, float d)
+            {
                 var wa = isAtt ? 6 : 1;
                 var wd = isDec ? 6 : 1;
                 var ws = isSus ? 6 : 1;
                 var wr = isRel ? 6 : 1;
 
 
-                // draw envelope supports and info
-
-                var sw = 1;
-
-                DrawLine(sprites, p0.X, p0.Y, p0.X, y + h0, color3, sw);
-                DrawLine(sprites, p2.X, p2.Y, p2.X, p0.Y,   color3, sw);
-                DrawLine(sprites, p1.X, p1.Y, p1.X, y + h0, color3, sw);
-                DrawLine(sprites, p3.X, p3.Y, p3.X, p0.Y,   color3, sw);
-                DrawLine(sprites, p1.X, p2.Y, p3.X, p3.Y,   color3, sw);
-                                                              
-                DrawLine(sprites, p0.X, p0.Y, p4.X, p4.Y,   color3, sw);
-
-
-                // draw labels
-
-                DrawString(sprites, S_00(a) + (isAtt ? " s" : ""),  p0.X           +  6,  p0.Y +  3,         fs, isAtt ? color6 : color3, TaC);
-                DrawString(sprites, S_00(d) + (isDec ? " s" : ""), (p1.X + p2.X)/2 + 16, (p1.Y+p2.Y)/2 - 20, fs, isDec ? color6 : color3, TaC);
-                DrawString(sprites, S_00(s),                       (p2.X + p3.X)/2 -  5,  p2.Y - 20,         fs, isSus ? color6 : color3, TaC);
-                DrawString(sprites, S_00(r) + (isRel ? " s" : ""), (p3.X + p4.X)/2 -  5,  p0.Y +  3,         fs, isRel ? color6 : color3, TaC);
-
-
-                // draw the envelope
-
-
                 // attack
-                DrawLine(sprites, p0, p1, color6, wa);
+                DrawLine(sprites, p0, p1, col, wa);
 
                 // decay
                 var pPrev = Vector2.Zero;
@@ -318,13 +318,16 @@ namespace IngameScript
                         p1.Y + (p2.Y - p1.Y) * (1 - (float)Math.Pow(1-f, 2)));
 
                     if (f > 0)
-                        DrawLine(sprites, pPrev, p, color6, wd);
+                        DrawLine(sprites, pPrev, p, col, wd);
 
                     pPrev = p;    
                 }
 
+                if (isDec && d < 0.01)
+                    FillRect(sprites, p1.X - 4, p1.Y - 4, 8, 8, color6);
+
                 // sustain
-                DrawLine(sprites, p2, p3, color6, ws);
+                DrawLine(sprites, p2, p3, col, ws);
 
                 // release
                 for (float f = 0; f <= 1; f += 0.01f)
@@ -334,14 +337,34 @@ namespace IngameScript
                         p3.Y + (p4.Y - p3.Y) * (1 - (float)Math.Pow(1-f, 2)));
 
                     if (f > 0)
-                        DrawLine(sprites, pPrev, p, color6, wr);
+                        DrawLine(sprites, pPrev, p, col, wr);
 
                     pPrev = p;    
                 }
+            }
 
 
-                if (isDec && d < 0.01)
-                    FillRect(sprites, p1.X-4, p1.Y-4, 8, 8, color6);
+            void GetEnvelopeCoords(float x, float y, float w, float h, float vol, bool current, out Vector2 p0, out Vector2 p1, out Vector2 p2, out Vector2 p3, out Vector2 p4)
+            {
+                var a = current ? Attack .CurValue : Attack .Value;
+                var d = current ? Decay  .CurValue : Decay  .Value;
+                var s = current ? Sustain.CurValue : Sustain.Value;
+                var r = current ? Release.CurValue : Release.Value;
+
+                var scale = 1f;
+                var fps   = FPS * scale;
+
+                p0   = new Vector2(x, y + h);
+                p0.X = Math.Min(p0.X, x + w);
+
+                p1   = new Vector2(p0.X + a*fps, p0.Y - h*vol);
+                p1.X = Math.Min(p1.X, x + w);
+
+                p2   = new Vector2(p1.X + d*fps, p0.Y - h*vol * s);
+                p2.X = Math.Min(p2.X, x + w);
+
+                p3   = new Vector2(x + w - r*fps, p2.Y);
+                p4   = new Vector2(x + w, p0.Y);
             }
 
 

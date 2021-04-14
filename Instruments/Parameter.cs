@@ -12,7 +12,9 @@ namespace IngameScript
         {
             float            m_value;
 
-            public float     CurValue = 0,
+            public float     PrevValue = 0,
+
+                             CurValue = 0,
                              
                              Default,
                              
@@ -91,9 +93,11 @@ namespace IngameScript
                     else             m_value   = MinMax(Min, val, Max);
                 }
                 else
-                { 
-                    m_value = MinMax(Min, val, Max);
-                    CurValue = m_value;
+                {
+                    PrevValue = m_value;
+                    m_value   = MinMax(Min, val, Max);
+
+                    CurValue  = m_value;
                 }
             }
 
@@ -592,6 +596,21 @@ namespace IngameScript
                     || HasTagOrAnyParent(this, "Sus")
                     || HasTagOrAnyParent(this, "Rel");
             } }
+
+
+            //public Color ValueColor { get
+            //{
+            //    var color =
+            //        IsCurParam(Tag)
+            //        ? (Value != PrevValue
+            //           ? color6
+            //           : color5)
+            //        : color3;
+
+            //    PrevValue = Value;
+
+            //    return color;
+            //} }
         }
 
 
