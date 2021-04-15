@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 
 namespace IngameScript
@@ -88,6 +86,18 @@ namespace IngameScript
                     if (   behind >= 0
                         && behind < Notes.Count)
                         Notes[behind].StepLength = note.PatStep - Notes[behind].PatStep;
+                }
+            }
+
+
+            public void UpdateNotes()
+            {
+                var iChan = Pattern.Channels.IndexOf(this);
+
+                foreach (var note in Notes)
+                { 
+                    note.Channel = this;
+                    note.iChan   = iChan;
                 }
             }
 

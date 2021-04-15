@@ -777,9 +777,11 @@ namespace IngameScript
             if (g_move)
             {
                 var temp = CurrentPattern.Channels[CurChan];
-                
                 CurrentPattern.Channels[CurChan] = CurrentPattern.Channels[ch];
                 CurrentPattern.Channels[ch]      = temp;
+
+                CurrentPattern.Channels[CurChan].UpdateNotes();
+                CurrentPattern.Channels[ch]     .UpdateNotes();
             }
 
             CurChan = ch;

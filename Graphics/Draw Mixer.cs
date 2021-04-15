@@ -43,8 +43,8 @@ namespace IngameScript
 
                 var xc = x + bb/2 + (ch - first) * (bw + bb);
 
-                DrawSoundLevel(sprites, xc, y, bw, h - 15, chan.Volume, g_dspVol[ch], 2);//, ch >= 6 ? this : null);
-                FillRect(sprites, xc, y + h + 6, bw, 76, chan.On ^ mixerPressed_.Contains(ch) ? color6 : color0);
+                DrawSoundLevel(sprites, xc, y,         bw, h - 15, chan.Volume, g_dspVol[ch], 2);//, ch >= 6 ? this : null);
+                FillRect      (sprites, xc, y + h + 6, bw, 76,     chan.On ^ mixerPressed_.Contains(ch) ? color6 : color0);
 
                 DrawString(sprites, chan.Instrument.Name, xc + bw/2 + 3, y + h + 14, 0.5f, chan.On ? color0 : color6, TaC);
                 DrawString(sprites, S(ch + 1),            xc + bw/2 + 3, y + h + 35, 1.2f, chan.On ? color0 : color6, TaC);
