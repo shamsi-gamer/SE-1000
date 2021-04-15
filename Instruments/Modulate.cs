@@ -52,20 +52,20 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Amt": return Amount  ?? (Amount  = (Parameter)NewSettingFromTag("Amt", this));
-                    case "Att": return Attack  ?? (Attack  = (Parameter)NewSettingFromTag("Att", this));
-                    case "Rel": return Release ?? (Release = (Parameter)NewSettingFromTag("Rel", this));
+                    case "Amt": return GetOrAddParamFromTag(Amount,  tag);
+                    case "Att": return GetOrAddParamFromTag(Attack,  tag);
+                    case "Rel": return GetOrAddParamFromTag(Release, tag);
                 }
 
                 return null;
             }
 
 
-            public override void GetLabel(out string str, out float width)
+            public override string GetLabel(out float width)
             {
                 width = 120;
 
-                str =
+                return
                       printValue(Amount .CurValue, 2, true, 0).PadLeft(4) + "  "
                     + printValue(Attack .CurValue, 2, true, 0).PadLeft(4) + "  "
                     + printValue(Release.CurValue, 2, true, 0).PadLeft(4);
@@ -99,9 +99,9 @@ namespace IngameScript
 
                 var mod = new Modulate(parent);
 
-                mod.Amount  = Parameter.Load(data, ref i, inst, iSrc, mod);
-                mod.Attack  = Parameter.Load(data, ref i, inst, iSrc, mod);
-                mod.Release = Parameter.Load(data, ref i, inst, iSrc, mod);
+                mod.Amount  = Parameter.Load(data, ref i, inst, iSrc, mod, mod.Amount );
+                mod.Attack  = Parameter.Load(data, ref i, inst, iSrc, mod, mod.Attack );
+                mod.Release = Parameter.Load(data, ref i, inst, iSrc, mod, mod.Release);
 
                 return mod;
             }

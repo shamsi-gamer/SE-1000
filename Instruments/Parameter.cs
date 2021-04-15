@@ -13,8 +13,7 @@ namespace IngameScript
             float            m_value;
 
             public float     PrevValue = 0,
-
-                             CurValue = 0,
+                             CurValue  = 0,
                              
                              Default,
                              
@@ -94,10 +93,8 @@ namespace IngameScript
                 }
                 else
                 {
-                    PrevValue = m_value;
-                    m_value   = MinMax(Min, val, Max);
-
-                    CurValue  = m_value;
+                    m_value  = MinMax(Min, val, Max);
+                    CurValue = m_value;
                 }
             }
 
@@ -232,7 +229,7 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Trig": return Trigger  ?? (Trigger  = (Parameter)NewSettingFromTag(tag, this));
+                    case "Trig": return GetOrAddParamFromTag(Trigger, tag);
                     case "Env":  return Envelope ?? (Envelope = new Envelope(this));
                     case "LFO":  return Lfo      ?? (Lfo      = new LFO     (this));
                     case "Mod":  return Modulate ?? (Modulate = new Modulate(this));
@@ -341,10 +338,18 @@ namespace IngameScript
 
             public override string Save()
             {
+                var nSettings = 0;
+                
+                if (Trigger  != null) nSettings++;
+                if (Envelope != null) nSettings++;
+                if (Lfo      != null) nSettings++;
+                if (Modulate != null) nSettings++;
+
                 return
                       W(Tag)
 
-                    + S(m_value)
+                    + WS(m_value.ToString("0.######")) 
+                    +  S(nSettings)
 
                     + Program.Save(Trigger)
                     + Program.Save(Envelope)
@@ -366,11 +371,9 @@ namespace IngameScript
 
                 param.m_value = float.Parse(data[i++]);
 
-                while (i < data.Length
-                    && (   data[i] == "Trig" 
-                        || data[i] == "Env" 
-                        || data[i] == "LFO" 
-                        || data[i] == "Mod"))
+                var nSettings = int.Parse(data[i++]);
+
+                while (nSettings-- > 0)
                 {
                     switch (data[i])
                     { 
@@ -385,19 +388,19 @@ namespace IngameScript
             }
 
 
-            public override void GetLabel(out string str, out float width)
+            public override string GetLabel(out float width)
             {
-                if (Tag == "Vol")
-                {
-                    width = 72f;
-                    str   = printValue(100 * Math.Log10(Value), 0, true, 0).PadLeft(4);
-                }
-                else
-                {
-                    width = 85f; 
-                    str   = printValue(CurValue, 2, true, 1).PadLeft(6);
-                }
+                width = 70f; 
+                
+                return
+                    Tag == "Vol"
+                    ? printValue(100 * Math.Log10(CurValue), 0, true, 0).PadLeft(4)
+                    : printValue(CurValue, 2, true, 1).PadLeft(4);
             }
+
+
+            public override string GetUpLabel()   { return S_(2) + UpArrow;   }
+            public override string GetDownLabel() { return S_(2) + DownArrow; }
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
@@ -611,6 +614,10 @@ namespace IngameScript
 
             //    return color;
             //} }
+
+
+            public string UpArrow   { get { return CurValue - PrevValue >  0.0001 ? "▲" : " "; } }
+            public string DownArrow { get { return CurValue - PrevValue < -0.0001 ? "▼" : " "; } }
         }
 
 

@@ -59,14 +59,9 @@ namespace IngameScript
 
                 Pass = (FilterPass)g_rnd.Next((int)FilterPass.Band + 1);
 
-                if (RND > 0.8f) Cutoff.Randomize(prog);
-                else            Cutoff.Clear();
-
-                if (RND > 0.8f) Resonance.Randomize(prog);
-                else            Resonance.Clear();
-
-                if (RND > 0.8f) Sharpness.Randomize(prog);
-                else            Sharpness.Clear();
+                if (RND > 0.8f) Cutoff   .Randomize(prog); else Cutoff   .Clear();
+                if (RND > 0.8f) Resonance.Randomize(prog); else Resonance.Clear();
+                if (RND > 0.8f) Sharpness.Randomize(prog); else Sharpness.Clear();
             }
 
 
@@ -83,9 +78,9 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Cut":  return Cutoff    ?? (Cutoff    = (Parameter)NewSettingFromTag("Cut",  this));
-                    case "Res":  return Resonance ?? (Resonance = (Parameter)NewSettingFromTag("Res",  this));
-                    case "Shrp": return Sharpness ?? (Sharpness = (Parameter)NewSettingFromTag("Shrp", this));
+                    case "Cut":  return GetOrAddParamFromTag(Cutoff,    tag);
+                    case "Res":  return GetOrAddParamFromTag(Resonance, tag);
+                    case "Shrp": return GetOrAddParamFromTag(Sharpness, tag);
                 }
 
                 return null;
@@ -108,9 +103,9 @@ namespace IngameScript
                       W(Tag)
 
                     + WS((int)Pass)
-                    + W(Cutoff   .Save())
-                    + W(Resonance.Save())
-                    +   Sharpness.Save();
+                    + W (Cutoff   .Save())
+                    + W (Resonance.Save())
+                    +    Sharpness.Save();
             }
 
 
@@ -121,22 +116,27 @@ namespace IngameScript
                 var flt = new Filter();
 
                 flt.Pass      = (FilterPass)int.Parse(data[i++]);
-                flt.Cutoff    = Parameter.Load(data, ref i, inst, iSrc, flt);
-                flt.Resonance = Parameter.Load(data, ref i, inst, iSrc, flt);
-                flt.Sharpness = Parameter.Load(data, ref i, inst, iSrc, flt);
+                flt.Cutoff    = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Cutoff   );
+                flt.Resonance = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Resonance);
+                flt.Sharpness = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Sharpness);
 
                 return flt;
             }
 
 
-            public override void GetLabel(out string str, out float width)
+            public override string GetLabel(out float width)
             {
-                width = 110;
+                width = 138;
 
-                str =
-                      printValue(Cutoff   .CurValue, 2, true, 0).PadLeft(4) + "  "
-                    + printValue(Resonance.CurValue, 2, true, 0).PadLeft(4);
+                return
+                      printValue(Cutoff   .CurValue, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Resonance.CurValue, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Sharpness.CurValue, 2, true, 0).PadLeft(4);
             }
+
+
+            public override string GetUpLabel()   { return S_(2) + Cutoff.UpArrow   + S_(4) + Resonance.UpArrow   + S_(4) + Sharpness.UpArrow;   }
+            public override string GetDownLabel() { return S_(2) + Cutoff.DownArrow + S_(4) + Resonance.DownArrow + S_(4) + Sharpness.DownArrow; }
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
@@ -248,7 +248,7 @@ namespace IngameScript
             {
                 var cw = nozero((1+rw) * cut);
                 var c  = 1 - (float)Math.Pow(f/cw, (6.4f/rw-1)*cut + 1);
-                var r  = (1 - (float)Math.Cos(1/rw*Tau*MinMax(0, f + rw - cw, rw))) / 4;
+                var r  = (1 - (float)Math.Cos(1/rw*Tau*MinMax(0, f + rw - cw, rw))) / 3;
 
                 val = c + r * res;
             }
@@ -256,7 +256,7 @@ namespace IngameScript
             {
                 var cw = nozero((1+rw) * (1-cut));
                 var c  = 1 - (float)Math.Pow((1-f) / cw, (6.4f/rw-1)*(1-cut) + 1);
-                var r  = (1 - (float)Math.Cos(1/rw*Tau*MinMax(0, 1-f + rw - cw, rw))) / 4;
+                var r  = (1 - (float)Math.Cos(1/rw*Tau*MinMax(0, 1-f + rw - cw, rw))) / 3;
 
                 val = c + r * res;
             }

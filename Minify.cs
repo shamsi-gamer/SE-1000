@@ -10,6 +10,7 @@ namespace IngameScript
         static string W(string str, bool semi = true) { return str + (semi ? ";" : ""); }
 
         static string  S<T> (T      val) { return val.ToString();       }
+        static string  S_   (int i     ) { return new string(' ', i);   }
         static string  S0   (double val) { return val.ToString("0");    }
         static string  S00  (double val) { return val.ToString("0.00"); }
         static string  S_00 (double val) { return val.ToString(".00");  }

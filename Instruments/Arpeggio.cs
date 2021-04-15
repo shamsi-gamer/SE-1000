@@ -99,8 +99,8 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Len": return Length ?? (Length = (Parameter)NewSettingFromTag("Len", this));
-                    case "Scl": return Scale  ?? (Scale  = (Parameter)NewSettingFromTag("Scl", this));
+                    case "Len": return GetOrAddParamFromTag(Length, tag);
+                    case "Scl": return GetOrAddParamFromTag(Scale,  tag);
                 }
 
                 return null;
@@ -135,8 +135,8 @@ namespace IngameScript
  
                 var arp = new Arpeggio(inst);
 
-                arp.Length = Parameter.Load(data, ref i, inst, iSrc, arp);
-                arp.Scale  = Parameter.Load(data, ref i, inst, iSrc, arp);
+                arp.Length = Parameter.Load(data, ref i, inst, iSrc, arp, arp.Length);
+                arp.Scale  = Parameter.Load(data, ref i, inst, iSrc, arp, arp.Scale );
 
                 return arp;
             }

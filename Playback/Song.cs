@@ -323,7 +323,7 @@ namespace IngameScript
                 var cfg = 
                       WS(PlayTime)
                     + WS(PlayPat)
-                    + S(Cue);
+                    +  S(Cue);
 
                 return
                       N(Name.Replace("\n", "\u0085"))

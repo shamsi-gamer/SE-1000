@@ -54,7 +54,11 @@ namespace IngameScript
 
 
             public virtual Setting GetOrAddSettingFromTag(string tag) => null;
-
+            
+            public Parameter GetOrAddParamFromTag(Parameter param, string tag)
+            {
+                return param ?? (Parameter)NewSettingFromTag(tag, this);
+            }
 
             public virtual bool HasDeepParams(Channel chan, int src) { return false; }
             public virtual void Remove(Setting setting) {}
@@ -66,11 +70,15 @@ namespace IngameScript
             public virtual void AdjustFromController(Song song, Program prog) {}
 
 
-            public virtual void GetLabel(out string str, out float width) 
+            public virtual string GetLabel(out float width) 
             { 
-                str   = ""; 
                 width = 30; 
+                return ""; 
             }
+
+
+            public virtual string GetUpLabel()   { return ""; }
+            public virtual string GetDownLabel() { return ""; }
 
 
             public virtual void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
@@ -82,11 +90,6 @@ namespace IngameScript
                 var textCol = this == CurSetting ? color0 : color6;
                 var lineCol = this == CurSetting ? color6 : color4;
                 var boxCol  = this == CurSetting ? color6 : color3;
-
-
-                string str;
-                float  ew;
-                GetLabel(out str, out ew);
 
 
                 var dx = 8f;
@@ -113,12 +116,21 @@ namespace IngameScript
                 dp.TopY = 0;
 
 
+                float ew;
+                var str = GetLabel(out ew);
+
                 // label background
                 FillRect(sprites, x, y, ew, 15, boxCol);
 
                 // label name
-                DrawString(sprites, Tag, x +  5, y + 2, 0.36f, textCol);
-                DrawString(sprites, str, x + 30, y + 2, 0.36f, textCol);
+                DrawString(sprites, Tag,            x +  5, y +  2, 0.36f, textCol);
+                DrawString(sprites, str,            x + 36, y +  2, 0.36f, textCol);
+
+                DrawString(sprites, GetUpLabel(),   x + 36, y -  6, 0.36f, color4);
+                DrawString(sprites, GetDownLabel(), x + 36, y + 10, 0.36f, color4);
+
+                if (IsParam(this))
+                    ((Parameter)this).PrevValue = ((Parameter)this).CurValue;
 
                 dp.OffX = ew + dx;
             }

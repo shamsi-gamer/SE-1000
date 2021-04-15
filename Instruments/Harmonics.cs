@@ -276,7 +276,7 @@ namespace IngameScript
                 var hrm = new Harmonics();
 
                 for (int j = 0; j < hrm.Tones.Length; j++)
-                    hrm.Tones[j] = Parameter.Load(data, ref i, inst, iSrc, hrm);
+                    hrm.Tones[j] = Parameter.Load(data, ref i, inst, iSrc, hrm, hrm.Tones[j]);
                 
                 hrm.CurPreset = (Preset)int.Parse(data[i++]);
                 hrm.CurTone   =         int.Parse(data[i++]);

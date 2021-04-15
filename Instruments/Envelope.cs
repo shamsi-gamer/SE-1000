@@ -151,10 +151,10 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Att": return Attack  ?? (Attack  = (Parameter)NewSettingFromTag("Att", this));
-                    case "Dec": return Decay   ?? (Decay   = (Parameter)NewSettingFromTag("Dec", this));
-                    case "Sus": return Sustain ?? (Sustain = (Parameter)NewSettingFromTag("Sus", this));
-                    case "Rel": return Release ?? (Release = (Parameter)NewSettingFromTag("Rel", this));
+                    case "Att": return GetOrAddParamFromTag(Attack,  tag);
+                    case "Dec": return GetOrAddParamFromTag(Decay,   tag);
+                    case "Sus": return GetOrAddParamFromTag(Sustain, tag);
+                    case "Rel": return GetOrAddParamFromTag(Release, tag);
                 }
 
                 return null;
@@ -190,25 +190,29 @@ namespace IngameScript
 
                 var env = new Envelope(parent);
 
-                env.Attack  = Parameter.Load(data, ref i, inst, iSrc, env);
-                env.Decay   = Parameter.Load(data, ref i, inst, iSrc, env);
-                env.Sustain = Parameter.Load(data, ref i, inst, iSrc, env);
-                env.Release = Parameter.Load(data, ref i, inst, iSrc, env);
+                env.Attack  = Parameter.Load(data, ref i, inst, iSrc, env, env.Attack );
+                env.Decay   = Parameter.Load(data, ref i, inst, iSrc, env, env.Decay  );
+                env.Sustain = Parameter.Load(data, ref i, inst, iSrc, env, env.Sustain);
+                env.Release = Parameter.Load(data, ref i, inst, iSrc, env, env.Release);
 
                 return env;
             }
 
 
-            public override void GetLabel(out string str, out float width)
+            public override string GetLabel(out float width)
             {
-                width = 176;
+                width = 174;
 
-                str =
+                return
                       printValue(Attack .CurValue, 2, true, 0).PadLeft(4) + " "
                     + printValue(Decay  .CurValue, 2, true, 0).PadLeft(4) + " "
                     + printValue(Sustain.CurValue, 2, true, 0).PadLeft(4) + " "
                     + printValue(Release.CurValue, 2, true, 0).PadLeft(4);
             }
+
+
+            public override string GetUpLabel()   { return S_(2) + Attack.UpArrow   + S_(4) + Decay.UpArrow   + S_(4) + Sustain.UpArrow   + S_(4) + Release.UpArrow;   }
+            public override string GetDownLabel() { return S_(2) + Attack.DownArrow + S_(4) + Decay.DownArrow + S_(4) + Sustain.DownArrow + S_(4) + Release.DownArrow; }
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
@@ -290,10 +294,10 @@ namespace IngameScript
 
                 var fs = 0.5f;
 
-                DrawString(sprites, S_000(a) + (isAtt ? " s" : ""),  p0.X           +  6,  p0.Y +  3,         fs, isAtt ? color6 : color3, TaC);
-                DrawString(sprites, S_000(d) + (isDec ? " s" : ""), (p1.X + p2.X)/2 + 16, (p1.Y+p2.Y)/2 - 20, fs, isDec ? color6 : color3, TaC);
-                DrawString(sprites, S_000(s),                       (p2.X + p3.X)/2 -  5,  p2.Y - 20,         fs, isSus ? color6 : color3, TaC);
-                DrawString(sprites, S_000(r) + (isRel ? " s" : ""), (p3.X + p4.X)/2 -  5,  p0.Y +  3,         fs, isRel ? color6 : color3, TaC);
+                DrawString(sprites, S_00(a) + (isAtt ? " s" : ""),  p0.X           +  6,  p0.Y +  3,         fs, isAtt ? color6 : color3, TaC);
+                DrawString(sprites, S_00(d) + (isDec ? " s" : ""), (p1.X + p2.X)/2 + 16, (p1.Y+p2.Y)/2 - 20, fs, isDec ? color6 : color3, TaC);
+                DrawString(sprites, S_00(s),                       (p2.X + p3.X)/2 -  5,  p2.Y - 20,         fs, isSus ? color6 : color3, TaC);
+                DrawString(sprites, S_00(r) + (isRel ? " s" : ""), (p3.X + p4.X)/2 -  5,  p0.Y +  3,         fs, isRel ? color6 : color3, TaC);
             }
 
 

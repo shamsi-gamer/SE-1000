@@ -121,11 +121,11 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Dry":  return Dry   ?? (Dry   = (Parameter)NewSettingFromTag(tag, this));
-                    case "Cnt":  return Count ?? (Count = (Parameter)NewSettingFromTag(tag, this));
-                    case "Time": return Time  ?? (Time  = (Parameter)NewSettingFromTag(tag, this));
-                    case "Lvl":  return Level ?? (Level = (Parameter)NewSettingFromTag(tag, this));
-                    case "Pow":  return Power ?? (Power = (Parameter)NewSettingFromTag(tag, this));
+                    case "Dry":  return GetOrAddParamFromTag(Dry,   tag);
+                    case "Cnt":  return GetOrAddParamFromTag(Count, tag);
+                    case "Time": return GetOrAddParamFromTag(Time,  tag);
+                    case "Lvl":  return GetOrAddParamFromTag(Level, tag);
+                    case "Pow":  return GetOrAddParamFromTag(Power, tag);
                 }
 
                 return null;
@@ -162,21 +162,21 @@ namespace IngameScript
  
                 var del = new Delay();
 
-                del.Dry   = Parameter.Load(data, ref i, inst, iSrc, del);
-                del.Count = Parameter.Load(data, ref i, inst, iSrc, del);
-                del.Time  = Parameter.Load(data, ref i, inst, iSrc, del);
-                del.Level = Parameter.Load(data, ref i, inst, iSrc, del);
-                del.Power = Parameter.Load(data, ref i, inst, iSrc, del);
+                del.Dry   = Parameter.Load(data, ref i, inst, iSrc, del, del.Dry  );
+                del.Count = Parameter.Load(data, ref i, inst, iSrc, del, del.Count);
+                del.Time  = Parameter.Load(data, ref i, inst, iSrc, del, del.Time );
+                del.Level = Parameter.Load(data, ref i, inst, iSrc, del, del.Level);
+                del.Power = Parameter.Load(data, ref i, inst, iSrc, del, del.Power);
 
                 return del;
             }
 
 
-            public override void GetLabel(out string str, out float width)
+            public override string GetLabel(out float width)
             {
                 width = 176;
 
-                str =
+                return
                       printValue(Count.CurValue, 0, true, 0).PadLeft(2) + "  "
                     + printValue(Time .CurValue, 2, true, 0).PadLeft(4) + "  "
                     + printValue(Level.CurValue, 2, true, 0).PadLeft(4) + "  "

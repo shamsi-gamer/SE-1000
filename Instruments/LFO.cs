@@ -177,9 +177,9 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Amp":  return Amplitude ?? (Amplitude = (Parameter)NewSettingFromTag("Amp",  this));
-                    case "Freq": return Frequency ?? (Frequency = (Parameter)NewSettingFromTag("Freq", this));
-                    case "Off":  return Offset    ?? (Offset    = (Parameter)NewSettingFromTag("Off",  this));
+                    case "Amp":  return GetOrAddParamFromTag(Amplitude, tag);
+                    case "Freq": return GetOrAddParamFromTag(Frequency, tag);
+                    case "Off":  return GetOrAddParamFromTag(Offset,    tag);
                 }
 
                 return null;
@@ -219,17 +219,17 @@ namespace IngameScript
                 lfo.Op   = (LfoOp)  int.Parse(data[i++]);
                 lfo.Type = (LfoType)int.Parse(data[i++]);
 
-                lfo.Amplitude = Parameter.Load(data, ref i, inst, iSrc, lfo);
-                lfo.Frequency = Parameter.Load(data, ref i, inst, iSrc, lfo);
-                lfo.Offset    = Parameter.Load(data, ref i, inst, iSrc, lfo);
+                lfo.Amplitude = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Amplitude);
+                lfo.Frequency = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Frequency);
+                lfo.Offset    = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Offset   );
 
                 return lfo;
             }
 
 
-            public override void GetLabel(out string str, out float width)
+            public override string GetLabel(out float width)
             {
-                width = 175;
+                width = 173;
 
                 var strOsc = "";
 
@@ -240,16 +240,20 @@ namespace IngameScript
                     case LfoType.Saw:      strOsc = "/ ";  break;
                     case LfoType.BackSaw:  strOsc = "\\ "; break;
                     case LfoType.Square:   strOsc = "П ";  break;
-                    case LfoType.Noise:    strOsc = "╫ ";  break;
+                    case LfoType.Noise:    strOsc = "# ";  break;
                 }
 
-                str =
+                return
                      (Op == LfoOp.Add ? "+ " : "* ")
                     + strOsc + " "
                     + printValue(Amplitude.CurValue, 2, true, 0).PadLeft(4) + " "
                     + printValue(Frequency.CurValue, 2, true, 0).PadLeft(4) + " "
                     + printValue(Offset   .CurValue, 2, true, 0).PadLeft(4);
             }
+
+
+            public override string GetUpLabel()   { return S_(5) + Amplitude.UpArrow   + S_(5) + Frequency.UpArrow   + S_(5) + Offset.UpArrow;   }
+            public override string GetDownLabel() { return S_(5) + Amplitude.DownArrow + S_(5) + Frequency.DownArrow + S_(5) + Offset.DownArrow; }
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
