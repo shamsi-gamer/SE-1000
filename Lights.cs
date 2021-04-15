@@ -568,7 +568,12 @@ namespace IngameScript
                 {
                     UpdateLight(lblCmd1, " ", 10, 10);
                     UpdateLight(lblCmd3, " ", 10, 10);
+
+                    UpdateLight(lblCmd1, false);
+                    UpdateLight(lblCmd3, false);
                 }
+
+                UpdateLight(lblCmd2, " ", 10, 10);
             }
             else
             {
@@ -578,6 +583,7 @@ namespace IngameScript
                     UpdateLight(lblCmd1, SelectedSource.On);
                     UpdateLight(lblCmd2, "Osc ↕", 10, 10);
                     UpdateLight(lblCmd3, " ",     10, 10);
+                    UpdateLight(lblCmd3, false);
                 }
                 else
                 { 
@@ -586,8 +592,6 @@ namespace IngameScript
 
                     UpdateLight(lblCmd2, SelChan < 0 ? "Paste" : " ", 10, 10);
                     UpdatePasteLight();
-
-                    UpdateLight(lblCmd3, g_transpose, g_song.EditNotes.Count > 0);
 
                     UpdateLight(
                         lblCmd3,     
@@ -598,6 +602,12 @@ namespace IngameScript
                         : " ", 
                         2, 
                         32);
+
+                    UpdateLight(
+                        lblCmd3, 
+                           SelChan < 0 
+                        && g_transpose, 
+                        g_song.EditNotes.Count > 0);
                 }
             }
 

@@ -114,12 +114,12 @@ namespace IngameScript
 
                 switch (Type)
                 {
-                    case LfoType.Sine:     CurValue = (float)Math.Sin(Phase * Tau);                   break;
-                    case LfoType.Triangle: CurValue = (1 - 2* Math.Abs(2*(Phase % 1)-1));             break;
-                    case LfoType.Saw:      CurValue = (   Phase  % 1);                                break;
-                    case LfoType.BackSaw:  CurValue = ((1-Phase) % 1);                                break;
-                    case LfoType.Square:   CurValue = (float)(1 - 2* Math.Round((Phase % 2)/2));      break;
-                    case LfoType.Noise:    CurValue = g_random[(int)(Phase * FPS) % g_random.Length]; break;
+                    case LfoType.Sine:     CurValue = (float)Math.Sin(Phase * Tau);                         break;
+                    case LfoType.Triangle: CurValue = (1 - 2*Math.Abs((Phase % 1)*2 - 1));                    break;
+                    case LfoType.Saw:      CurValue = (   Phase  % 1)*2 - 1;                                break;
+                    case LfoType.BackSaw:  CurValue = ((1-Phase) % 1)*2 + 1;                                break;
+                    case LfoType.Square:   CurValue = (float)(1 - 2*Math.Round(((Phase*2) % 2)/2));            break;
+                    case LfoType.Noise:    CurValue = g_random[(int)(Phase*2) % g_random.Length]*2 - 1; break;
                 }
 
                 CurValue *= amp;

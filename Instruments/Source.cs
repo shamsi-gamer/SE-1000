@@ -115,6 +115,9 @@ namespace IngameScript
 
             public void CreateSounds(List<Sound> sounds, Note note, Program prog)
             {
+                if (prog.TooComplex) return;
+
+
                 var  inst   = Instrument;
                 var _sounds = new List<Sound>();
 
@@ -195,6 +198,8 @@ namespace IngameScript
                 // add sound and echos
                 foreach (var snd in _sounds)
                 { 
+                    if (prog.TooComplex) break;
+
                     var del = Delay ?? inst.Delay;
 
                     if (del != null)

@@ -253,6 +253,9 @@ namespace IngameScript
                 dspMain.Panel.WriteText("", false);
 
                 UpdateSrcOff();
+
+                UpdateLight(lblCmd1, "On", 10, 10);
+                UpdateLight(lblCmd1, inst.Sources[CurSrc].On);
             }
 
 
@@ -449,6 +452,7 @@ namespace IngameScript
 
                 //g_sampleValid = F;
                 MarkLight(lblEnter, CurSrc < 0);
+                UpdateLight(lblCmd3, false);
             }
             else if (CurSrc < 0)
             {

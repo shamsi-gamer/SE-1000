@@ -133,11 +133,11 @@ namespace IngameScript
 
                 for (int i = 0; i < Tones.Length; i++)
                 {
+                    if (prog.TooComplex) return;
+
                     if (    Tones[i].Value == 0
                         && !Tones[i].HasDeepParams(note.Channel, iSrc))
                         continue;
-
-                    if (prog.TooComplex) return;
 
                     var _noteNum = freq2note(note2freq(noteNum) * (i+1));
 
@@ -172,15 +172,12 @@ namespace IngameScript
                     var lTime = g_time - sndTime;
                     var sTime = g_song.StartTime > -1 ? g_time - g_song.StartTime : lTime;
 
-                    var tp = new TimeParams(g_time, lTime, sTime, note, sndLen, iSrc, snd.TriggerValues, prog);
-
-                    Tones[i].UpdateValue(tp);
-                    //Tones[i].SetValue(Tones[i].UpdateValue(tp),                           note, iSrc);
-                    //Tones[i].SetValue(ApplyFilter(Tones[i].CurValue, src, hrmPos, tp), note, iSrc); 
-
-                    //snd.TriggerVolume = Tones[i].CurValue;
-
-                    sounds.Add(snd);
+                    if (!prog.TooComplex)
+                    { 
+                        var tp = new TimeParams(g_time, lTime, sTime, note, sndLen, iSrc, snd.TriggerValues, prog);
+                        Tones[i].UpdateValue(tp);
+                        sounds.Add(snd);
+                    }
                 }
             }
 
