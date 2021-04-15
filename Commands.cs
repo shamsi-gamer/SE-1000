@@ -769,19 +769,27 @@ namespace IngameScript
 
         void SetChan(int ch)
         {
+            int first, last;
+            GetPatterns(g_song, CurPat, out first, out last);
+
             ch += CurChan;
 
-            if (ch >= g_nChans) ch = 0;
-            if (ch < 0) ch = g_nChans - 1;
+            for (int p = first; p <= last; p++)
+            { 
+                var pat = g_song.Patterns[p];
 
-            if (g_move)
-            {
-                var temp = CurrentPattern.Channels[CurChan];
-                CurrentPattern.Channels[CurChan] = CurrentPattern.Channels[ch];
-                CurrentPattern.Channels[ch]      = temp;
+                if (ch >= g_nChans) ch = 0;
+                if (ch < 0) ch = g_nChans - 1;
 
-                CurrentPattern.Channels[CurChan].UpdateNotes();
-                CurrentPattern.Channels[ch]     .UpdateNotes();
+                if (g_move)
+                {
+                    var temp = pat.Channels[CurChan];
+                    pat.Channels[CurChan] = pat.Channels[ch];
+                    pat.Channels[ch]      = temp;
+
+                    pat.Channels[CurChan].UpdateNotes();
+                    pat.Channels[ch]     .UpdateNotes();
+                }
             }
 
             CurChan = ch;
