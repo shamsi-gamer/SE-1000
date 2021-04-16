@@ -19,20 +19,24 @@ namespace IngameScript
 
             public List<Source> Sources;
 
+            public float        DisplayVolume;
+
 
             public Instrument()
             {
-                Name     = "New Sound";
-                         
-                Volume   = (Parameter)NewSettingFromTag("Vol", null);
+                Name          = "New Sound";
+                              
+                Volume        = (Parameter)NewSettingFromTag("Vol", null);
+                              
+                Tune          = null;
+                Filter        = null;
+                              
+                Delay         = null;
+                Arpeggio      = null;
+                              
+                Sources       = new List<Source>();
 
-                Tune     = null;
-                Filter   = null;
-                
-                Delay    = null;
-                Arpeggio = null;
-                         
-                Sources  = new List<Source>();
+                DisplayVolume = float.NaN;
             }
 
 
@@ -57,6 +61,8 @@ namespace IngameScript
                 Sources = new List<Source>();
                 foreach (var src in inst.Sources)
                     Sources.Add(new Source(src, this));
+
+                DisplayVolume = float.NaN;
             }
 
 
@@ -77,12 +83,12 @@ namespace IngameScript
 
                 Volume.SetValue(1, null, -1);//.Randomize(Program prog);
 
-                //if (RND > 0.7f)
-                //{
-                //    Tune = new Tune();
-                //    Tune.Randomize(Program prog);
-                //}
-                //else
+                if (RND > 0.7f)
+                {
+                    Tune = new Tune();
+                    Tune.Randomize(prog);
+                }
+                else
                     Tune = null;
                 
                 if (   RND > 0.7f

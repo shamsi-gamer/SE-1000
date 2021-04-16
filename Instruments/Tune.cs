@@ -45,6 +45,42 @@ namespace IngameScript
             }
 
 
+            public override void Randomize(Program prog)
+            {
+                m_value = NormalMin + RND * (NormalMax - NormalMin);
+
+                if (RND > 1/3f) m_value = (int)(m_value/ 7)* 7;
+                else            m_value = (int)(m_value/12)*12;                
+
+
+                if (   !prog.TooComplex
+                    && !AnyParentIsEnvelope
+                    && (  !IsDigit(Tag[0]) && RND > 0.5f
+                        || IsDigit(Tag[0]) && RND > 0.9f))
+                {
+                    Envelope = new Envelope(this);
+                    Envelope.Randomize(prog);
+                }
+                else 
+                    Envelope = null;
+
+
+                if (   !prog.TooComplex
+                    && RND > 0.8f)
+                {
+                    Lfo = new LFO(this);
+                    Lfo.Randomize(prog);
+                }
+                else
+                { 
+                    if (Lfo != null)
+                        g_lfo.Remove(Lfo);
+
+                    Lfo = null;
+                }
+            }
+
+
             public override string Save()
             {
                 var tune =

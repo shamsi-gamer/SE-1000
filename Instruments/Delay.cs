@@ -237,7 +237,7 @@ namespace IngameScript
                         x0 + dx + (i > 0 ? 2 : 0), 
                         y0 + h0 - b, 
                         i == 0 ? 8 : 4, 
-                        -(h0 - b*2) * GetVolume(i, tpSet),
+                        Math.Min(-(h0 - b*2) * GetVolume(i, tpSet), 0),
                         color4);
                 }
 

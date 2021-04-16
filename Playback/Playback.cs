@@ -51,11 +51,12 @@ namespace IngameScript
 
             StopNotes(g_song.PlayStep);
 
-            var delete = StopSounds();
-            DeleteSounds(delete);
+            DeleteSounds(StopSounds());
 
             UpdateSounds();
             UpdateVolumes();
+
+            ResetVolumes();
         }
 
 
@@ -70,13 +71,23 @@ namespace IngameScript
 
                 if (lTime < snd.Length + snd.ReleaseLength)
                 {
+                    var instVol = snd.Source.Instrument.DisplayVolume;
+                    if (!OK(instVol)) instVol = 0;
+
                     g_dspVol[snd.iChan] = Math.Max(
                         g_dspVol[snd.iChan],
-                          snd.DisplayVolume
+                          instVol
                         * snd.Channel.Volume
                         * g_volume);
                 }
             }
+        }
+
+
+        void ResetVolumes()
+        {
+            foreach (var inst in g_inst)
+                inst.DisplayVolume = float.NaN;
         }
 
 

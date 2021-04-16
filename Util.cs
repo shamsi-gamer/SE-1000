@@ -526,6 +526,18 @@ namespace IngameScript
         }
 
 
+        //static float dbAdd(float a, float b)
+        //{
+        //    return (float)(10 * Math.Log10(Math.Pow(10, a/10) + Math.Pow(10, b/10)));
+        //}
+
+
+        static float sndAdd(float a, float b)
+        {
+            return 1 + (float)Math.Log10(a + b);
+        }
+
+
         bool TooComplex { get { return 
                Runtime.CurrentCallChainDepth   / (float)Runtime.MaxCallChainDepth   > 0.8f
             || Runtime.CurrentInstructionCount / (float)Runtime.MaxInstructionCount > 0.8f; } }

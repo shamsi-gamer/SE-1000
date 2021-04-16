@@ -21,8 +21,8 @@ namespace IngameScript
                                       
             public long               ElapsedTime; // in ticks
                                       
-            public float              TriggerVolume,
-                                      DisplayVolume;
+            public float              TriggerVolume;//,
+                                      //DisplayVolume;
 
             public List<TriggerValue> TriggerValues;
 
@@ -59,7 +59,7 @@ namespace IngameScript
                 ElapsedTime   = 0;
 
                 TriggerVolume = vol;
-                DisplayVolume = vol;
+                //DisplayVolume = vol;
 
                 TriggerValues = new List<TriggerValue>();
                 foreach (var val in triggerValues)
@@ -100,7 +100,7 @@ namespace IngameScript
                 ElapsedTime   = snd.ElapsedTime;
 
                 TriggerVolume = snd.TriggerVolume;
-                DisplayVolume = snd.DisplayVolume;
+                //DisplayVolume = snd.DisplayVolume;
 
                 TriggerValues = new List<TriggerValue>();
                 foreach (var val in snd.TriggerValues)
@@ -181,6 +181,8 @@ namespace IngameScript
                         * Channel.Volume
                         * g_volume;
 
+                    var inst = Source.Instrument;
+
                     if (    Harmonic != null
                         && !prog.TooComplex)
                     {
@@ -192,13 +194,24 @@ namespace IngameScript
                             Harmonic.Min, 
                             vol * Harmonic.CurValue, 
                             Harmonic.Max);
+
+                        inst.DisplayVolume = 
+                            OK(inst.DisplayVolume)
+                            ? sndAdd(inst.DisplayVolume, Harmonic.CurValue)
+                            : Harmonic.CurValue;
                     }
 
 
-                    if (HrmSound != null)
-                        HrmSound.DisplayVolume = Math.Max(vol, HrmSound.DisplayVolume);
-                    else
-                        DisplayVolume = vol;
+                    if (Source.Oscillator == OscClick)
+                        vol = 0;
+                    else if (Source.Oscillator == OscCrunch)
+                        vol /= 2;
+
+
+                    inst.DisplayVolume = 
+                        OK(inst.DisplayVolume)
+                        ? sndAdd(inst.DisplayVolume, vol)
+                        : vol;
 
 
                     if (lTime < Cache.Length)

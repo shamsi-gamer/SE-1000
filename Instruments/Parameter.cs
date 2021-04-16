@@ -10,7 +10,7 @@ namespace IngameScript
     {
         public class Parameter : Setting
         {
-            float            m_value;
+            protected float  m_value;
 
             public float     PrevValue = 0,
                              CurValue  = 0,
@@ -295,10 +295,6 @@ namespace IngameScript
 
 
                 if (   !prog.TooComplex
-                    //&& !HasTagOrParent(this, "Att")
-                    //&& !HasTagOrParent(this, "Dec")
-                    //&& !HasTagOrParent(this, "Sus")
-                    //&& !HasTagOrParent(this, "Rel")
                     && RND > 0.8f)
                 {
                     Lfo = new LFO(this);
@@ -394,8 +390,8 @@ namespace IngameScript
                 
                 return
                     Tag == "Vol"
-                    ? printValue(100 * Math.Log10(CurValue), 0, true, 0).PadLeft(4)
-                    : printValue(CurValue, 2, true, 1).PadLeft(4);
+                    ? printValue(100 * Math.Log10(Value), 0, true, 0).PadLeft(4)
+                    : printValue(Value, 2, true, 1).PadLeft(4);
             }
 
 
