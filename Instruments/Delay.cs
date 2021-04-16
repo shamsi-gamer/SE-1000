@@ -46,9 +46,11 @@ namespace IngameScript
             {
                 if (tp.Program.TooComplex) return 0;
 
+                var val = 0f;
+
                 if (i == 0)
                 { 
-                    return Dry.UpdateValue(tp);
+                    val = Dry.UpdateValue(tp);
                 }
                 else
                 { 
@@ -56,11 +58,13 @@ namespace IngameScript
                     var dl = Level.UpdateValue(tp);
                     var dp = Power.UpdateValue(tp);
 
-                    return 
+                    val = 
                         dc != 0
                         ? dl * (float)Math.Pow(((int)dc - (i-1)) / dc, 1/dp)
                         : 0;
                 }
+
+                return Math.Max(0, val);
             }
 
 
@@ -237,7 +241,7 @@ namespace IngameScript
                         x0 + dx + (i > 0 ? 2 : 0), 
                         y0 + h0 - b, 
                         i == 0 ? 8 : 4, 
-                        Math.Min(-(h0 - b*2) * GetVolume(i, tpSet), 0),
+                        -(h0 - b*2) * GetVolume(i, tpSet),
                         color4);
                 }
 
