@@ -18,7 +18,7 @@ namespace IngameScript
 
             public float       PatStep,
                                StepLength;
-                               
+            
             public int         PatIndex    { get { return Channel.Pattern.Song.Patterns.IndexOf(Channel.Pattern); } }
 
             //public Song        Song        { get { return Channel.Pattern.Song; } }
@@ -43,13 +43,13 @@ namespace IngameScript
 
             public Note()
             {
-                Channel = null;
-                iChan   = -1;
-
-                PatStep = -1;
-
-                Sounds  = new List<Sound>();
-                Keys    = new List<Key>();
+                Channel     = null;
+                iChan       = -1;
+                            
+                PatStep     = -1;
+                            
+                Sounds      = new List<Sound>();
+                Keys        = new List<Key>();
 
                 Reset();
             }
@@ -57,12 +57,12 @@ namespace IngameScript
 
             public Note(Note note)
             {
-                Channel    = note.Channel;
-                iChan      = note.iChan;
-                Number     = note.Number;
-                PatStep    = note.PatStep;
-                StepLength = note.StepLength;
-                Volume     = note.Volume;
+                Channel     = note.Channel;
+                iChan       = note.iChan;
+                Number      = note.Number;
+                PatStep     = note.PatStep;
+                StepLength  = note.StepLength;
+                Volume      = note.Volume;
 
                 Sounds = new List<Sound>();
 
@@ -109,6 +109,15 @@ namespace IngameScript
                     else if (PatStep % 2 == 1.5f) return (float)Channel.Shuffle / g_ticksPerStep;
                     else                          return 0;
                 }
+            }
+
+
+            public void UpdateStepTime(float dStep)
+            {
+                PatStep += dStep;
+
+                foreach (var snd in Sounds)
+                    snd.Time += (int)(dStep * g_ticksPerStep);
             }
 
 

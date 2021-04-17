@@ -11,7 +11,7 @@ namespace IngameScript
         {
             if (TooComplex) return;
 
-            song.StopCurrentNotes(ch);
+            song.TrimCurrentNotes(ch);
             lastNotes.Clear();
 
             var chan  = CurrentPattern.Channels[ch];
@@ -123,7 +123,7 @@ namespace IngameScript
                     > -1;
 
                 if (notFound)
-                    song.StopCurrentNotes(ch);
+                    song.TrimCurrentNotes(ch);
 
                 for (int i = 0; i < notes.Count; i++)
                     TriggerNote(notes[i], ch, EditStepLength, ChordSpread(i));

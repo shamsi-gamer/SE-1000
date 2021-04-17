@@ -222,7 +222,7 @@ namespace IngameScript
             UpdateAdjustLights(g_song);
 
             if (g_hold)
-                g_song.StopCurrentNotes(CurChan);
+                g_song.TrimCurrentNotes(CurChan);
 
             g_hold = false;
             UpdateLight(lblHold, false);

@@ -181,6 +181,12 @@ namespace IngameScript
                         * Channel.Volume
                         * g_volume;
 
+                    if (Source.Oscillator == OscClick)
+                        vol = 0;
+                    else if (Source.Oscillator == OscCrunch)
+                        vol /= 2;
+
+
                     var inst = Source.Instrument;
 
                     if (    Harmonic != null
@@ -200,12 +206,6 @@ namespace IngameScript
                             ? sndAdd(inst.DisplayVolume, Harmonic.CurValue)
                             : Harmonic.CurValue;
                     }
-
-
-                    if (Source.Oscillator == OscClick)
-                        vol = 0;
-                    else if (Source.Oscillator == OscCrunch)
-                        vol /= 2;
 
 
                     inst.DisplayVolume = 

@@ -46,7 +46,7 @@ namespace IngameScript
             }
 
 
-            g_song.StopCurrentNotes();
+            g_song.TrimCurrentNotes();
 
 
             g_song.PlayTime  = -1;

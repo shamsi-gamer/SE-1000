@@ -228,7 +228,7 @@ namespace IngameScript
                                                                                                           
             case "Amp":  return new Parameter(tag,    0,           1,   0,     1,    0.001f, 0.05f, 1,    parent);
             case "Freq": return new Parameter(tag,    0.01f,      30,   0.01f, 4,    0.001f, 0.05f, 1,    parent);
-            case "Off":  return new Parameter(tag, -100,         100, -10,    10,    0.001f, 0.05f, 0,    parent);
+            case "Off":  return new Parameter(tag, -100,         100, -10,    10,    0.01f,  0.1f,  0,    parent);
                                                                                                           
             case "Cut":  return new Parameter(tag,    0,           1,   0.1f,  1,    0.01f,  0.1f,  0.5f, parent);
             case "Res":  return new Parameter(tag,    0,           1,   0,     0.7f, 0.01f,  0.1f,  0,    parent);

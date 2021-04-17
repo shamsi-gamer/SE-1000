@@ -177,12 +177,7 @@ namespace IngameScript
 
             public void CueNextPattern()
             {
-                //var noteLen = (int)(EditLength * g_ticksPerStep);
-
                 Length = Patterns.Count * g_nSteps;
-                //    g_song.Arpeggio != null
-                //    ? (int)Math.Round(g_song.Arpeggio.Length.UpdateValue(g_time, 0, g_song.StartTime, noteLen, null, g_song.CurSrc))
-                /*:*/
 
 
                 if (Cue > -1)
@@ -213,7 +208,7 @@ namespace IngameScript
                     }
                     else if (PlayStep >= end)
                     {
-                        StopCurrentNotes();
+                        WrapCurrentNotes(end - start);
 
                         PlayTime  -= (end - start) * g_ticksPerStep;
                         StartTime += (end - start) * g_ticksPerStep;
@@ -225,13 +220,6 @@ namespace IngameScript
                     PlayTime > -1
                     ? (int)(PlayStep / g_nSteps)
                     : -1;
-
-
-                //if (PlayTime > -1)
-                //{
-                //         if (CurPat > oldPat) StartTime -= nSteps * g_ticksPerStep;
-                //    else if (CurPat < oldPat) StartTime += nSteps * g_ticksPerStep;
-                //}
             }
 
 
@@ -269,7 +257,7 @@ namespace IngameScript
             }
 
 
-            public void StopCurrentNotes(int ch = -1)
+            public void TrimCurrentNotes(int ch = -1)
             {
                 var timeStep = PlayTime > -1 ? PlayStep : TimeStep;
 
@@ -281,6 +269,21 @@ namespace IngameScript
                         var noteStep = PlayTime > -1 ? note.SongStep : note.PatStep;
                         note.UpdateStepLength(timeStep - noteStep);
                     }
+                }
+            }
+
+
+            public void WrapCurrentNotes(int nWrapPats)
+            {
+                var timeStep = PlayTime > -1 ? PlayStep : TimeStep;
+
+                foreach (var note in g_notes)
+                {
+                    var noteStep = PlayTime > -1 ? note.SongStep : note.PatStep;
+
+                    if (   timeStep >= noteStep
+                        && timeStep <  noteStep + note.StepLength)
+                        note.UpdateStepTime(-nWrapPats * g_nSteps);
                 }
             }
 

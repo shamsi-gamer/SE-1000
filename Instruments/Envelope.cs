@@ -359,10 +359,10 @@ namespace IngameScript
                 var fps   = FPS * scale;
 
                 p0   = new Vector2(x, y + h);
-                p0.X = Math.Min(p0.X, x + w);
+                p0.X = Math.Min(p0.X, x + w - r*fps);
 
                 p1   = new Vector2(p0.X + a*fps, p0.Y - h*vol);
-                p1.X = Math.Min(p1.X, x + w);
+                p1.X = Math.Min(p1.X, x + w - r*fps);
 
                 p2   = new Vector2(p1.X + d*fps, p0.Y - h*vol * s);
                 p2.X = Math.Min(p2.X, x + w);

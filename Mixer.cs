@@ -61,7 +61,7 @@ namespace IngameScript
                 g_song.Patterns[p].Channels[ch].On = on;
 
             if (!on)
-                g_song.StopCurrentNotes(ch);
+                g_song.TrimCurrentNotes(ch);
 
             //mixerPressed.Add(ch);
         }
@@ -118,7 +118,7 @@ namespace IngameScript
             {
                 if (i == ch) continue;
                 EnableChannel(pat, i, false);
-                g_song.StopCurrentNotes(i);
+                g_song.TrimCurrentNotes(i);
             }
 
             EnableChannel(pat, ch, true);
