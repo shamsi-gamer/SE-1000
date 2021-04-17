@@ -48,7 +48,7 @@ namespace IngameScript
 
             DrawPattern(sprites, x + xt, y, w - xt, rh, song, pat, 2, isolated);
 
-            if (   g_song.PlayTime > -1
+            if (   OK(g_song.PlayTime)
                 && g_song.PlayPat == pat)
             {
                 FillRect(sprites, x + xt + wt * ((int)g_song.PlayStep % g_nSteps), y, wt, rh, color6);

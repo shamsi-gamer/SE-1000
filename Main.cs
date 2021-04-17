@@ -50,7 +50,7 @@ namespace IngameScript
             if (!TooComplex) 
                 UpdatePlayback();
 
-            if (g_song.PlayTime > -1) 
+            if (OK(g_song.PlayTime)) 
                 UpdateKeyLights();
         }
 

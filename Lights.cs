@@ -456,8 +456,8 @@ namespace IngameScript
 
         void UpdatePlayStopLights()
         {
-            UpdateLight(lblPlay, g_song.PlayTime > -1);
-            UpdateLight(lblStop, g_song.PlayTime > -1);
+            UpdateLight(lblPlay, OK(g_song.PlayTime));
+            UpdateLight(lblStop, OK(g_song.PlayTime));
         }
 
 

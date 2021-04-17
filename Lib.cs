@@ -86,6 +86,7 @@ namespace IngameScript
         }
 
 
+        static bool OK(long  l) { return l != long_NaN; }
         static bool OK(float f) { return !float.IsNaN(f); }
 
 

@@ -236,7 +236,7 @@ namespace IngameScript
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
                 var sTime = 
-                    g_song.StartTime > -1
+                    OK(g_song.PlayTime)
                     ? g_time - g_song.StartTime
                     : 0;
 

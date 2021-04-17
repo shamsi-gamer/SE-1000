@@ -69,7 +69,7 @@ namespace IngameScript
 
 
             // draw position line/s
-            if (   g_song.PlayTime > -1
+            if (   OK(g_song.PlayTime)
                 && g_song.PlayPat == pat)
             {
                 if (IsCurOrParentSetting(typeof(Arpeggio)))

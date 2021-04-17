@@ -32,7 +32,7 @@ namespace IngameScript
 
             public int           PlayPat; // this can't be a property because it must sometimes be separate from PlayTime, for queueing
 
-            public float         PlayStep { get { return PlayTime > -1 ? PlayTime / (float)g_ticksPerStep : fN; } }
+            public float         PlayStep { get { return OK(PlayTime) ? PlayTime / (float)g_ticksPerStep : fN; } }
 
 
             public int           Cue;
@@ -53,8 +53,8 @@ namespace IngameScript
 
                 EditNotes = new List<Note>();
                 
-                PlayTime  = -1;
-                StartTime = -1;
+                PlayTime  = long_NaN;
+                StartTime = long_NaN;
 
                 PlayPat   = -1;
 
@@ -217,7 +217,7 @@ namespace IngameScript
 
 
                 PlayPat =
-                    PlayTime > -1
+                    OK(PlayTime)
                     ? (int)(PlayStep / g_nSteps)
                     : -1;
             }
@@ -259,14 +259,14 @@ namespace IngameScript
 
             public void TrimCurrentNotes(int ch = -1)
             {
-                var timeStep = PlayTime > -1 ? PlayStep : TimeStep;
+                var timeStep = OK(PlayTime) ? PlayStep : TimeStep;
 
                 foreach (var note in g_notes)
                 {
                     if (   ch < 0
                         || note.iChan == ch)
                     { 
-                        var noteStep = PlayTime > -1 ? note.SongStep : note.PatStep;
+                        var noteStep = OK(PlayTime) ? note.SongStep : note.PatStep;
                         note.UpdateStepLength(timeStep - noteStep);
                     }
                 }
@@ -275,11 +275,11 @@ namespace IngameScript
 
             public void WrapCurrentNotes(int nWrapPats)
             {
-                var timeStep = PlayTime > -1 ? PlayStep : TimeStep;
+                var timeStep = OK(PlayTime) ? PlayStep : TimeStep;
 
                 foreach (var note in g_notes)
                 {
-                    var noteStep = PlayTime > -1 ? note.SongStep : note.PatStep;
+                    var noteStep = OK(PlayTime) ? note.SongStep : note.PatStep;
 
                     if (   timeStep >= noteStep
                         && timeStep <  noteStep + note.StepLength)
@@ -316,7 +316,7 @@ namespace IngameScript
                 //}
 
 
-                if (PlayTime > -1)
+                if (OK(PlayTime))
                     PlayTime++;
             }
 

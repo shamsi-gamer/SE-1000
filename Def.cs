@@ -8,6 +8,8 @@ namespace IngameScript
     {
         const float Tau = (float)Math.PI * 2;
 
+        const long  long_NaN = long.MinValue;
+
         const int   FPS = 60;
 
         const int   g_nChans = 12;

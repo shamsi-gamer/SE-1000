@@ -11,10 +11,12 @@ namespace IngameScript
 
             g_song.PlayTime = playTime % (g_song.Patterns.Count * g_nSteps * g_ticksPerStep);
 
+            //PlayTime StartTime and all Time that are long should use long_NaN and OK()
+
             g_song.StartTime =
-                g_song.PlayTime > -1 
+                OK(g_song.PlayTime)
                 ? g_time - g_song.PlayTime        
-                : -1;
+                : long_NaN;
 
             if (g_autoCue)
             { 
@@ -30,7 +32,7 @@ namespace IngameScript
 
         void UpdateTime()
         {
-            if (g_song.PlayTime < 0)
+            if (!OK(g_song.PlayTime))
                 return;
 
             g_song.CueNextPattern();

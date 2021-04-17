@@ -125,12 +125,12 @@ namespace IngameScript
 
 
                 var sndTime = 
-                    g_song.StartTime > -1
+                    OK(g_song.PlayTime)
                     ? g_song.StartTime + note.SongTime + 1
                     : g_time + 1;
 
                 var lTime = g_time - g_song.StartTime - note.SongTime;
-                var sTime = g_song.StartTime > -1 ? g_time - g_song.StartTime : lTime;
+                var sTime = OK(g_song.PlayTime) ? g_time - g_song.StartTime : lTime;
 
                 var tp = new TimeParams(sndTime, lTime, sTime, note, note.FrameLength, Index, triggerValues, prog);
 

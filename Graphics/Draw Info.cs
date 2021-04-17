@@ -29,7 +29,7 @@ namespace IngameScript
 
             FillRect(sprites, x, y, w, h, color0);
 
-            if (g_song.PlayTime > -1)
+            if (OK(g_song.PlayTime))
             {
                 var sec = (int)(g_song.PlayStep * g_ticksPerStep / FPS);
                 var min = sec / 60;
@@ -137,7 +137,7 @@ namespace IngameScript
 
 
                 //var iMan =
-                //    g_song.PlayTime > -1
+                //    OK(g_song.PlayTime)
                 //    ? (int)(g_song.PlayStep / 2) % dance.Length
                 //    : 3;
 

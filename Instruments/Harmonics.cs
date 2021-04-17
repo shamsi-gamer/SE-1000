@@ -170,7 +170,7 @@ namespace IngameScript
                     if (i == 0) snd0 = snd;
 
                     var lTime = g_time - sndTime;
-                    var sTime = g_song.StartTime > -1 ? g_time - g_song.StartTime : lTime;
+                    var sTime = OK(g_song.PlayTime) ? g_time - g_song.StartTime : lTime;
 
                     if (!prog.TooComplex)
                     { 
