@@ -483,10 +483,10 @@ namespace IngameScript
 
             string strLength;
 
-                 if (EditStepLength == 0.25f ) strLength = "¼";
-            else if (EditStepLength == 0.5f  ) strLength = "½";
-            else if (EditStepLength == 65536f) strLength = "∞";
-            else                               strLength = S0(EditStepLength);
+                 if (EditStepLength == 0.25f )    strLength = "¼";
+            else if (EditStepLength == 0.5f  )    strLength = "½";
+            else if (EditStepLength == float_Inf) strLength = "∞";
+            else                                  strLength = S0(EditStepLength);
 
             lblEditStep  .WriteText("·· " + strStep);
             lblEditLength.WriteText("─ "  + strLength);

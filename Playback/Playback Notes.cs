@@ -216,8 +216,19 @@ namespace IngameScript
                     }
                 }
             }
-            else
+            else // normal note
             {
+                var found =
+                    g_notes.Find(n => 
+                           g_song.PlayStep >= n.PatStep 
+                        && g_song.PlayStep <  n.PatStep + n.StepLength);
+                
+                if (   found != null
+                    && found.Number == note.Number
+                    && found.StepLength == float_Inf)
+                    return;
+
+
                 foreach (var src in inst.Sources)
                 {
                     if (TooComplex) return;
