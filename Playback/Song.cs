@@ -273,7 +273,7 @@ namespace IngameScript
             }
 
 
-            public void WrapCurrentNotes(int nWrapPats)
+            public void WrapCurrentNotes(int nWrapSteps)
             {
                 var timeStep = OK(PlayTime) ? PlayStep : TimeStep;
 
@@ -283,7 +283,7 @@ namespace IngameScript
 
                     if (   timeStep >= noteStep
                         && timeStep <  noteStep + note.StepLength)
-                        note.UpdateStepTime(-nWrapPats * g_nSteps);
+                        note.UpdateStepTime(-nWrapSteps);
                 }
             }
 

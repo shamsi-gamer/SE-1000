@@ -235,7 +235,7 @@ namespace IngameScript
         }
 
 
-        void StopNotes(float time)
+        void StopNotes(float step)
         {
             var delete = new List<int>();
 
@@ -243,7 +243,7 @@ namespace IngameScript
             {
                 var note = g_notes[i];
 
-                if (time >= note.PatStep + note.StepLength)
+                if (step >= note.PatStep + note.StepLength)
                     delete.Add(i);
             }
 

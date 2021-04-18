@@ -116,8 +116,8 @@ namespace IngameScript
             {
                 PatStep += dStep;
 
-                foreach (var snd in Sounds)
-                    snd.Time += (int)(dStep * g_ticksPerStep);
+                //foreach (var snd in Sounds)
+                //    snd.Time += (int)(dStep * g_ticksPerStep);
             }
 
 

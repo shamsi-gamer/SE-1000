@@ -11,8 +11,6 @@ namespace IngameScript
 
             g_song.PlayTime = playTime % (g_song.Patterns.Count * g_nSteps * g_ticksPerStep);
 
-            //PlayTime StartTime and all Time that are long should use long_NaN and OK()
-
             g_song.StartTime =
                 OK(g_song.PlayTime)
                 ? g_time - g_song.PlayTime        
@@ -30,6 +28,20 @@ namespace IngameScript
         }
 
 
+        void UpdatePlayback()
+        {
+            UpdateTime();
+
+            StopNotes(g_song.PlayStep);
+            DeleteSounds(StopSounds());
+
+            UpdateSounds();
+            UpdateVolumes();
+
+            ResetVolumes();
+        }
+
+
         void UpdateTime()
         {
             if (!OK(g_song.PlayTime))
@@ -44,21 +56,6 @@ namespace IngameScript
 
             UpdateLight(lblCue, g_song.Cue > -1);
             UpdateOctaveLight();
-        }
-
-
-        void UpdatePlayback()
-        {
-            UpdateTime();
-
-            StopNotes(g_song.PlayStep);
-
-            DeleteSounds(StopSounds());
-
-            UpdateSounds();
-            UpdateVolumes();
-
-            ResetVolumes();
         }
 
 
