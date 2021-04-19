@@ -81,6 +81,13 @@ namespace IngameScript
             }
 
 
+            public override string GetLabel(out float width)
+            {
+                width = 90f; 
+                return printValue(Value, 2, true, 1).PadLeft(5);
+            }
+
+
             public override string Save()
             {
                 var tune =

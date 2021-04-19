@@ -17,6 +17,7 @@ namespace IngameScript
 
             DrawChannelList(sprites, x, y, 340, rh, song);
 
+
             var xt = 340;
             var wt = (w - xt) / g_nSteps;
 
@@ -86,7 +87,7 @@ namespace IngameScript
                     6,
                     yLine + 6,
                     1,
-                    c == CurChan ? color0 : (g_piano ? color2 : (chan.Notes.Count > 0 ? color6 : color2)));
+                    c == CurChan ? color0 : (chan.Notes.Count > 0 ? color6 : color2));
             }
         }
 
@@ -123,7 +124,7 @@ namespace IngameScript
                 for (int p = 0; p <= pat; p++)
                 {
                     var patStart = pat * g_nSteps;
-                    var patEnd   = patStart + songSteps;//(pat+1)*nSteps;
+                    var patEnd   = patStart + songSteps;
 
                     var chan = song.Patterns[p].Channels[ch];
 

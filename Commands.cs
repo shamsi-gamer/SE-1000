@@ -377,6 +377,7 @@ namespace IngameScript
                     }
                 }
 
+                UpdateAdjustLights(g_song);
                 MarkLight(lblBack, CurSrc < 0);
                 UpdateEnterLight();
             }
@@ -402,7 +403,6 @@ namespace IngameScript
 
                 g_shift = false;
                 g_move  = false;
-                //UpdateLight(lblMove, g_move ^ (g_song.CurSrc > -1), g_song.SelChan > -1 && !g_move);
 
                 g_song.EditPos = fN;
                 UpdateEditLight(lblEdit, false);
@@ -418,8 +418,6 @@ namespace IngameScript
                 g_paramAuto = false;
 
                 MarkLight(lblBack, CurSrc < 0);
-                //foreach (var btn in funcButtons)
-                //    ((IMyFunctionalBlock)btn).Enabled = F;
             }
 
 
