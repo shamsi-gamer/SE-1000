@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 
 namespace IngameScript
@@ -12,9 +10,10 @@ namespace IngameScript
             public Channel     Channel;
             public int         iChan;
                                
-            public int         Number;
-                               
             public Instrument  Instrument  { get { return Channel.Instrument; } }
+
+            public int         Number;
+            public float       Volume;
 
             public float       PatStep,
                                StepLength;
@@ -28,8 +27,6 @@ namespace IngameScript
             public long        SongTime    { get { return GetPatTime(PatIndex) + PatTime; } }
 
             public int         FrameLength { get { return (int)(StepLength * g_ticksPerStep); } }
-
-            public float       Volume;
 
             public List<Sound> Sounds;
 
@@ -60,9 +57,9 @@ namespace IngameScript
                 Channel     = note.Channel;
                 iChan       = note.iChan;
                 Number      = note.Number;
+                Volume      = note.Volume;
                 PatStep     = note.PatStep;
                 StepLength  = note.StepLength;
-                Volume      = note.Volume;
 
                 Sounds = new List<Sound>();
 
@@ -77,14 +74,13 @@ namespace IngameScript
                 Channel     = chan;
                 iChan       = ch;
                 Number      = num;
+                Volume      = vol;
                 PatStep     = time;
                 StepLength  = len;
-                Volume      = vol;
 
                 ArpPlayTime = fN;
 
                 Sounds      = new List<Sound>();
-                            
                 Keys        = new List<Key>();
             }
 
@@ -92,8 +88,8 @@ namespace IngameScript
             public void Reset()
             {
                 Number      = 69;
-                StepLength  = 0;
                 Volume      = 0;
+                StepLength  = 0;
 
                 ArpPlayTime = fN;
 

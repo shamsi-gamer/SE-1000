@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace IngameScript
 {
     partial class Program
@@ -240,17 +241,17 @@ namespace IngameScript
                         note.PatStep += Math.Min(EditStep, 1);
 
                         if (note.PatStep >= g_nSteps)
-                        {
-                            chan.Notes.RemoveAt(n);
-                            note.PatStep -= g_nSteps;
-
-                            if (p == last) spill.Add(note);
-                            else pats[p + 1].Channels[ch].Notes.Add(note);
-                        }
+                            spill.Add(note);
                     }
                 }
 
-                pats[first].Channels[ch].Notes.AddRange(spill);
+                foreach (var n in spill)
+                {
+                    var spillPat  = n.PatIndex == last ? first : n.PatIndex+1;
+                    var spillChan = pats[spillPat].Channels[ch];
+
+                    MoveSpillNotes(n, spillChan, -g_nSteps);
+                }
             }
             else
             {
@@ -265,18 +266,28 @@ namespace IngameScript
                         note.PatStep -= Math.Min(EditStep, 1);
 
                         if (note.PatStep < 0)
-                        {
-                            chan.Notes.RemoveAt(n);
-                            note.PatStep += g_nSteps;
-
-                            if (p == first) spill.Add(note);
-                            else pats[p-1].Channels[ch].Notes.Add(note);
-                        }
+                            spill.Add(note);
                     }
                 }
 
-                pats[last].Channels[ch].Notes.AddRange(spill);
+                foreach (var n in spill)
+                {
+                    var spillPat  = n.PatIndex == first ? last : n.PatIndex-1;
+                    var spillChan = pats[spillPat].Channels[ch];
+
+                    MoveSpillNotes(n, spillChan, g_nSteps);
+                }
             }
+        }
+
+
+        void MoveSpillNotes(Note note, Channel spillChan, float dSteps)
+        {
+            note.Channel.Notes.Remove(note);
+            spillChan.Notes.Add(note);
+
+            note.Channel  = spillChan;
+            note.PatStep += dSteps;
         }
 
 
