@@ -52,7 +52,7 @@ namespace IngameScript
 
         void DrawFuncButtons(List<MySprite> sprites, float w, float y, Song song)
         {
-            var bw = w/6;
+            var bw =  w/6;
             var x0 = bw/2;
 
             if (SelChan > -1)
@@ -66,7 +66,7 @@ namespace IngameScript
                     DrawFuncButton(sprites, "Note", 2, w, y, false, false, song.EditNotes.Count > 0);
 
                 if (GetLongNotes(song).Count > 0)
-                    DrawFuncButton(sprites, "Cut",  3, w, y, false, false);
+                    DrawFuncButton(sprites, strCut,  3, w, y, false, false);
             }
         }
 
@@ -94,11 +94,11 @@ namespace IngameScript
             {
                 if (hasSetting)
                 {
-                    DrawString(sprites, "▲", x0 + i * bw - 5, y, 1f, color6, TaC);
-                    DrawString(sprites, "▲", x0 + i * bw + 5, y, 1f, color6, TaC);
+                    DrawString(sprites, strUp, x0 + i * bw - 5, y, 1f, color6, TaC);
+                    DrawString(sprites, strUp, x0 + i * bw + 5, y, 1f, color6, TaC);
                 }
                 else
-                    DrawString(sprites, "▲", x0 + i * bw,     y, 1f, color3, TaC);
+                    DrawString(sprites, strUp, x0 + i * bw,     y, 1f, color3, TaC);
             }
         }
     }

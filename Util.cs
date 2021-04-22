@@ -35,6 +35,7 @@ namespace IngameScript
                              
         static Setting       CurSetting   { get { return CurSet > -1 ? g_settings[CurSet] : null; } }
         static Parameter     CurParam     { get { return (Parameter)CurSetting; } }
+        static Modulate      CurModulate  { get { return (Modulate) CurSetting; } }
 
 
         static Harmonics     CurHarmonics { get { return (Harmonics)CurSetting; } }
@@ -280,7 +281,7 @@ namespace IngameScript
                    g_piano
                 ||    g_chordEdit 
                    && g_chord > -1
-                ||    IsCurParam("Tune")
+                ||    IsCurParam(strTune)
                    && (tune?.UseChord ?? false)
                    && !(g_paramKeys || g_paramAuto)
                 ||    IsCurOrParentSetting(typeof(Arpeggio));

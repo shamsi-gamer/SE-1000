@@ -158,7 +158,7 @@ namespace IngameScript
             // draw legend
             switch (path.Split('/').Last())
             { 
-                case "Vol":
+                case strVol:
                 { 
                     for (float f = 0; f <= 1; f += 0.1f)
                     { 
@@ -171,7 +171,7 @@ namespace IngameScript
 
                     break;
                 }
-                case "Cnt": 
+                case strCnt: 
                 {
                     for (int i = 0; i <= 20; i += 5)
                     { 
@@ -251,9 +251,9 @@ namespace IngameScript
         {
             switch (paramTag)
             { 
-            case "Vol": return printValue(100 * Math.Log10(val), 0, true, 0) + " dB";
-            case "Cnt": return printValue(val, 0, true, 0);
-            default:    return printValue(val, 2, true, 0);
+            case strVol: return printValue(100 * Math.Log10(val), 0, true, 0) + " dB";
+            case strCnt: return printValue(val, 0, true, 0);
+            default:     return printValue(val, 2, true, 0);
             }
         }
 
@@ -261,7 +261,7 @@ namespace IngameScript
         void DrawParamKeys(List<MySprite> sprites, float x, float y, float w, float h, Song song, int p, int ch)
         {
             var wt   = w / g_nSteps;
-            var cd   = w/65; // circle diameter
+            var cd   = w/ 65; // circle diameter
             var dr   = w/250;
 
             var pat  = song.Patterns[p];
@@ -332,7 +332,7 @@ namespace IngameScript
         void DrawParamAuto(List<MySprite> sprites, float x, float y, float w, float h, float wTotal, Song song, int p, int ch)
         {
             var wt = w/g_nSteps;
-            var cd = w/65; // circle diameter
+            var cd = w/ 65; // circle diameter
             var dr = w/250;
 
             var pat   = song.Patterns[p];
@@ -403,12 +403,10 @@ namespace IngameScript
         Key AltChanKey(Key from)
         {
             var val = from.Value;
-            //var pow = 3f;
 
             switch (from.Path.Split('/').Last())
             { 
-                //case "Vol": val = (float)Math.Pow(val, pow); break;
-                case "Cnt": val /= 4; break;
+                case strCnt: val /= 4; break;
             }
 
             return new Key(from.SourceIndex, from.Parameter, val, from.StepTime);
@@ -425,9 +423,9 @@ namespace IngameScript
 
             switch (param.Tag)
             {
-                case "Vol":  val /=  2; break;
-                case "Tune": val /= 64; break;
-                case "Cnt":  val /= 10; break;
+                case strVol:  val /=  2; break;
+                case strTune: val /= 64; break;
+                case strCnt:  val /= 10; break;
             }
 
             return new Vector2(
@@ -446,15 +444,15 @@ namespace IngameScript
 
             switch (setting.Tag)
             {
-                case "Vol":  val /=  2; break;
-                case "Tune": val /= 64; break;
-                case "Cnt":  val /= 10; break;
+                case strVol:  val /=  2; break;
+                case strTune: val /= 64; break;
+                case strCnt:  val /= 10; break;
             }
 
 
             float yo;
 
-            if (setting.Tag == "Tune") yo = h/2;
+            if (setting.Tag == strTune) yo = h/2;
             else                       yo = h;
 
             var kp = new Vector2(

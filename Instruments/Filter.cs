@@ -19,17 +19,18 @@ namespace IngameScript
                               Sharpness;
 
 
-            public Filter() : base("Flt", null)
+            public Filter(Instrument inst, Source src) 
+                : base(strFlt, null, null, inst, src)
             {
                 Pass      = FilterPass.Low;
 
-                Cutoff    = (Parameter)NewSettingFromTag("Cut",  this);
-                Resonance = (Parameter)NewSettingFromTag("Res",  this);
-                Sharpness = (Parameter)NewSettingFromTag("Shrp", this);
+                Cutoff    = (Parameter)NewSettingFromTag(strCut,  this, inst, src);
+                Resonance = (Parameter)NewSettingFromTag(strRes,  this, inst, src);
+                Sharpness = (Parameter)NewSettingFromTag(strShrp, this, inst, src);
             }
 
 
-            public Filter(Filter flt) : base(flt.Tag, null, flt)
+            public Filter(Filter flt) : base(flt.Tag, null, flt, flt.Instrument, flt.Source)
             {
                 Pass      = flt.Pass;
 
@@ -78,9 +79,9 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Cut":  return GetOrAddParamFromTag(Cutoff,    tag);
-                    case "Res":  return GetOrAddParamFromTag(Resonance, tag);
-                    case "Shrp": return GetOrAddParamFromTag(Sharpness, tag);
+                    case strCut:  return GetOrAddParamFromTag(Cutoff,    tag);
+                    case strRes:  return GetOrAddParamFromTag(Resonance, tag);
+                    case strShrp: return GetOrAddParamFromTag(Sharpness, tag);
                 }
 
                 return null;
@@ -113,7 +114,9 @@ namespace IngameScript
             {
                 var tag = data[i++];
  
-                var flt = new Filter();
+                var flt = new Filter(
+                    inst, 
+                    iSrc > -1 ? inst.Sources[iSrc] : null);
 
                 flt.Pass      = (FilterPass)int.Parse(data[i++]);
                 flt.Cutoff    = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Cutoff   );
@@ -168,8 +171,8 @@ namespace IngameScript
                 var w0 = 240f;
                 var h0 = 120f;
 
-                var x0 = x + w / 2 - w0 / 2;
-                var y0 = y + h / 2 - h0 / 2;
+                var x0 = x + w/2 - w0/2;
+                var y0 = y + h/2 - h0/2;
 
 
                 FillRect(sprites, x0, y0 + h0, 2, -h0, color3);
@@ -180,35 +183,34 @@ namespace IngameScript
                 DrawFilter(sprites, x0, y0, w0, h0, color5, 4, Pass, cut,    res,    shrp);
 
 
-                var strCut = Pass > FilterPass.High ? "Freq" : "Cut";
-                var strRes = Pass > FilterPass.High ? "Wid"  : "Res";
+                var _strCut = Pass > FilterPass.High ? strFreq : strCut;
+                var _strRes = Pass > FilterPass.High ? strWid  : strRes;
 
                 var fs = 0.5f;
 
                 // cutoff
-                DrawString(sprites, strCut,                       x0,       y0 - 40, fs, IsCurParam("Cut") ? color6 : color4);
-                DrawString(sprites, printValue(cut, 2, true, 0),  x0,       y0 - 25, fs, IsCurParam("Cut") ? color6 : color4);
+                DrawString(sprites, strCut,                       x0,       y0 - 40, fs, IsCurParam(strCut) ? color6 : color4);
+                DrawString(sprites, printValue(cut, 2, true, 0),  x0,       y0 - 25, fs, IsCurParam(strCut) ? color6 : color4);
                                                                   
                 // resonance                                      
-                DrawString(sprites, strRes,                       x0 + 100, y0 - 40, fs, IsCurParam("Res") ? color6 : color4);
-                DrawString(sprites, printValue(res, 2, true, 0),  x0 + 100, y0 - 25, fs, IsCurParam("Res") ? color6 : color4);
+                DrawString(sprites, strRes,                       x0 + 100, y0 - 40, fs, IsCurParam(strRes) ? color6 : color4);
+                DrawString(sprites, printValue(res, 2, true, 0),  x0 + 100, y0 - 25, fs, IsCurParam(strRes) ? color6 : color4);
 
                 // sharpness
-                DrawString(sprites, "Shrp",                       x0 + 200, y0 - 40, fs, IsCurParam("Shrp") ? color6 : color4);
-                DrawString(sprites, printValue(shrp, 2, true, 0), x0 + 200, y0 - 25, fs, IsCurParam("Shrp") ? color6 : color4);
+                DrawString(sprites, strShrp,                      x0 + 200, y0 - 40, fs, IsCurParam(strShrp) ? color6 : color4);
+                DrawString(sprites, printValue(shrp, 2, true, 0), x0 + 200, y0 - 25, fs, IsCurParam(strShrp) ? color6 : color4);
             }
 
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                var strCut  = Pass > FilterPass.High ? "Freq" : "Cut";
-                var strRes  = Pass > FilterPass.High ? "Wid"  : "Res";
+                var _strCut  = Pass > FilterPass.High ? strFreq : strCut;
+                var _strRes  = Pass > FilterPass.High ? strWid  : strRes;
 
                 DrawFuncButton(sprites, GetPassName(Pass) + " ↕", 1, w, h, false, false);
-                DrawFuncButton(sprites, strCut,  2, w, h, true, Cutoff   .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strRes,  3, w, h, true, Resonance.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Shrp",  4, w, h, true, Sharpness.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "X",     5, w, h, false, false, mainPressed.Contains(5));
+                DrawFuncButton(sprites, _strCut,  2, w, h, true, Cutoff   .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, _strRes,  3, w, h, true, Resonance.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strShrp,  4, w, h, true, Sharpness.HasDeepParams(chan, -1));
             }
 
 
@@ -228,11 +230,16 @@ namespace IngameScript
 
                             break;
                         }
-                    case 2: AddNextSetting("Cut");  break;
-                    case 3: AddNextSetting("Res");  break;
-                    case 4: AddNextSetting("Shrp"); break;
-                    case 5: RemoveSetting(this);    break;
+                    case 2: AddNextSetting(strCut);  break;
+                    case 3: AddNextSetting(strRes);  break;
+                    case 4: AddNextSetting(strShrp); break;
                 }
+            }
+
+
+            public override bool CanDelete()
+            {
+                return true;
             }
         }
 

@@ -16,17 +16,19 @@ namespace IngameScript
                              Power; // convert to int when applying
 
 
-            public Delay() : base("Del", null)
+            public Delay(Instrument inst, Source src) 
+                : base(strDel, null, null, inst, src)
             {
-                Dry   = (Parameter)NewSettingFromTag("Dry",  this);
-                Count = (Parameter)NewSettingFromTag("Cnt",  this);
-                Time  = (Parameter)NewSettingFromTag("Time", this);
-                Level = (Parameter)NewSettingFromTag("Lvl",  this);
-                Power = (Parameter)NewSettingFromTag("Pow",  this);
+                Dry   = (Parameter)NewSettingFromTag(strDry,  this, inst, src);
+                Count = (Parameter)NewSettingFromTag(strCnt,  this, inst, src);
+                Time  = (Parameter)NewSettingFromTag(strTime, this, inst, src);
+                Level = (Parameter)NewSettingFromTag(strLvl,  this, inst, src);
+                Power = (Parameter)NewSettingFromTag(strPow,  this, inst, src);
             }
 
 
-            public Delay(Delay del) : base(del.Tag, null, del)
+            public Delay(Delay del) 
+                : base(del.Tag, null, del, del.Instrument, del.Source)
             {
                 Dry   = new Parameter(del.Dry,   this);
                 Count = new Parameter(del.Count, this);
@@ -79,16 +81,6 @@ namespace IngameScript
             }
 
 
-            public override void Remove(Setting setting)
-            {
-                     if (setting == Dry  ) Dry   = null;
-                else if (setting == Count) Count = null;
-                else if (setting == Time ) Time  = null;
-                else if (setting == Level) Level = null;
-                else if (setting == Power) Power = null;
-            }
-
-
             public override void Clear()
             {
                 Dry  .Clear();
@@ -125,11 +117,11 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Dry":  return GetOrAddParamFromTag(Dry,   tag);
-                    case "Cnt":  return GetOrAddParamFromTag(Count, tag);
-                    case "Time": return GetOrAddParamFromTag(Time,  tag);
-                    case "Lvl":  return GetOrAddParamFromTag(Level, tag);
-                    case "Pow":  return GetOrAddParamFromTag(Power, tag);
+                    case strDry:  return GetOrAddParamFromTag(Dry,   tag);
+                    case strCnt:  return GetOrAddParamFromTag(Count, tag);
+                    case strTime: return GetOrAddParamFromTag(Time,  tag);
+                    case strLvl:  return GetOrAddParamFromTag(Level, tag);
+                    case strPow:  return GetOrAddParamFromTag(Power, tag);
                 }
 
                 return null;
@@ -164,7 +156,9 @@ namespace IngameScript
             {
                 var tag = data[i++];
  
-                var del = new Delay();
+                var del = new Delay(
+                    inst, 
+                    iSrc > -1 ? inst.Sources[iSrc] : null);
 
                 del.Dry   = Parameter.Load(data, ref i, inst, iSrc, del, del.Dry  );
                 del.Count = Parameter.Load(data, ref i, inst, iSrc, del, del.Count);
@@ -253,7 +247,7 @@ namespace IngameScript
                     x0,
                     y0 - b + 8,
                     fs,
-                    IsCurParam("Dry") ? color6 : color3);
+                    IsCurParam(strDry) ? color6 : color3);
 
 
                 // count
@@ -263,7 +257,7 @@ namespace IngameScript
                     x0,
                     y0 + h0 - b + 8, 
                     fs, 
-                    IsCurParam("Cnt") ? color6 : color3);
+                    IsCurParam(strCnt) ? color6 : color3);
 
 
                 if (dc-1 > 0)
@@ -277,7 +271,7 @@ namespace IngameScript
                         lx, 
                         y0 + h0 - b - (h0 - b*2) * dl - 24, 
                         fs,
-                        IsCurParam("Lvl") ? color6 : color3, 
+                        IsCurParam(strLvl) ? color6 : color3, 
                         TaC);
 
 
@@ -288,7 +282,7 @@ namespace IngameScript
                         x0 + 60, 
                         y0 + h0 - b + 8, 
                         fs,
-                        IsCurParam("Time") ? color6 : color3, 
+                        IsCurParam(strTime) ? color6 : color3, 
                         TaC);
 
 
@@ -305,7 +299,7 @@ namespace IngameScript
                         px,
                         y0 + h0 - b - (h0 - b*2) * vol - 24,
                         fs,
-                        IsCurParam("Pow") ? color6 : color3,
+                        IsCurParam(strPow) ? color6 : color3,
                         TaC);
                 }
             }
@@ -313,12 +307,11 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                DrawFuncButton(sprites, "Dry",  0, w, h, true, Dry  .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Cnt",  1, w, h, true, Count.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Time", 2, w, h, true, Time .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Lvl",  3, w, h, true, Level.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Pow",  4, w, h, true, Power.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "X",    5, w, h, false, false, mainPressed.Contains(5));
+                DrawFuncButton(sprites, strDry,  0, w, h, true, Dry  .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strCnt,  1, w, h, true, Count.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strTime, 2, w, h, true, Time .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strLvl,  3, w, h, true, Level.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strPow,  4, w, h, true, Power.HasDeepParams(chan, -1));
             }
 
 
@@ -326,13 +319,18 @@ namespace IngameScript
             {
                 switch (func)
                 {
-                    case 0: AddNextSetting("Dry");  break;
-                    case 1: AddNextSetting("Cnt");  break;
-                    case 2: AddNextSetting("Time"); break;
-                    case 3: AddNextSetting("Lvl");  break;
-                    case 4: AddNextSetting("Pow");  break;
-                    case 5: RemoveSetting(this);    break;
+                    case 0: AddNextSetting(strDry);   break;
+                    case 1: AddNextSetting(strCnt);  break;
+                    case 2: AddNextSetting(strTime); break;
+                    case 3: AddNextSetting(strLvl);  break;
+                    case 4: AddNextSetting(strPow);  break;
                 }
+            }
+
+
+            public override bool CanDelete()
+            {
+                return true;
             }
         }
     }

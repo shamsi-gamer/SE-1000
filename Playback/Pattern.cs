@@ -60,7 +60,7 @@ namespace IngameScript
                 foreach (var chan in Channels)
                 { 
                     if (!chan.IsDefault)
-                        save += ";" + chan.Save();
+                        save += P(chan.Save());
                 }
 
                 return save;

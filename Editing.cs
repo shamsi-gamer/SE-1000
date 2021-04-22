@@ -188,21 +188,21 @@ namespace IngameScript
         {
             switch (key.Path.Split('/').Last())
             {
-                case "Vol":  key.Value = MinMax(0,         val,    2); break;
+                case strVol:  key.Value = MinMax(0,         val,    2); break;
 
-                case "Att":  key.Value = MinMax(0,         val, 1000); break;
-                case "Dec":  key.Value = MinMax(0,         val, 1000); break;
-                case "Sus":  key.Value = MinMax(0,         val,    1); break;
-                case "Rel":  key.Value = MinMax(0,         val, 1000); break;
+                case strAtt:  key.Value = MinMax(0,         val, 1000); break;
+                case strDec:  key.Value = MinMax(0,         val, 1000); break;
+                case strSus:  key.Value = MinMax(0,         val,    1); break;
+                case strRel:  key.Value = MinMax(0,         val, 1000); break;
 
-                case "Cnt":  key.Value = MinMax(0,         val, 1000); break;
-                case "Time": key.Value = MinMax(0.000001f, val,   10); break;
-                case "Lvl":  key.Value = MinMax(0,         val,    1); break;
-                case "Pow":  key.Value = MinMax(0.000001f, val,   10); break;
+                case strCnt:  key.Value = MinMax(0,         val, 1000); break;
+                case strTime: key.Value = MinMax(0.000001f, val,   10); break;
+                case strLvl:  key.Value = MinMax(0,         val,    1); break;
+                case strPow:  key.Value = MinMax(0.000001f, val,   10); break;
 
-                case "Amp":  key.Value = MinMax(0,         val,    1); break;
-                case "Freq": key.Value = MinMax(0.000001f, val,   30); break;
-                case "Off":  key.Value = MinMax(-100,      val,  100); break;
+                case strAmp:  key.Value = MinMax(0,         val,    1); break;
+                case strFreq: key.Value = MinMax(0.000001f, val,   30); break;
+                case strOff:  key.Value = MinMax(-100,      val,  100); break;
             }
         }
 

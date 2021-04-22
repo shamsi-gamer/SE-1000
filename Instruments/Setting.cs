@@ -2,7 +2,6 @@
 using System.Text;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
-using VRageMath;
 
 
 namespace IngameScript
@@ -14,24 +13,33 @@ namespace IngameScript
 
         public class Setting
         {
-            public string  Tag;
+            public string     Tag;
 
-            public Setting Parent;
-            public Setting Prototype;
+            public Setting    Parent;
+            public Setting    Prototype;
 
-            public bool   _IsCurrent;
+            public Instrument Instrument;
+            public Source     Source;
+
+            public bool      _IsCurrent;
+
+            //protected bool m_valid;
 
 
-            public Setting(string tag, Setting parent, Setting proto = null)
+            public Setting(string tag, Setting parent, Setting proto, Instrument inst, Source src)
             {
-                Parent    = parent;
-                Tag       = tag;
-                Prototype = proto;
-               _IsCurrent = false;
+                Tag         = tag;
+                Parent      = parent;
+                Prototype   = proto;
+                Instrument  = inst;
+                Source      = src;
+               _IsCurrent   = false;
+                //m_valid   = false;
             }
 
 
-            public Setting(Setting setting, Setting parent) : this(setting.Tag, parent, setting) { }
+            public Setting(Setting setting, Setting parent, Instrument inst, Source src) 
+                : this(setting.Tag, parent, setting, inst, src) { }
 
 
             public string GetPath(int src = -1)
@@ -57,12 +65,13 @@ namespace IngameScript
             
             public Parameter GetOrAddParamFromTag(Parameter param, string tag)
             {
-                return param ?? (Parameter)NewSettingFromTag(tag, this);
+                return param ?? (Parameter)NewSettingFromTag(tag, this, Instrument, Source);
             }
 
             public virtual bool HasDeepParams(Channel chan, int src) { return false; }
             public virtual void Remove(Setting setting) {}
                                 
+
             public virtual void Clear() {}
 
 
@@ -95,8 +104,8 @@ namespace IngameScript
                 var dx = 8f;
                 
                 // draw connector lines
-                if (   !HasTag(this, "Vol")
-                    && !HasTag(this, "Off")
+                if (   !HasTag(this, strVol)
+                    && !HasTag(this, strOff)
                     && GetType() != typeof(Tune)
                     && GetType() != typeof(Harmonics)
                     && GetType() != typeof(Filter)
@@ -136,12 +145,18 @@ namespace IngameScript
             }
 
 
+            public bool           ParentIsEnvelope    { get { return HasTag(Parent, strEnv); } }
+            public bool           AnyParentIsEnvelope { get { return HasTagOrAnyParent(Parent, strEnv); } }
+
+
             public virtual void   DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp) {}
                 
             public virtual string Save() => "";
 
             public virtual void   DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan) {}
             public virtual void   Func(int func) {}
+
+            public virtual bool   CanDelete() { return false; }
         }
 
 
@@ -175,75 +190,75 @@ namespace IngameScript
 
             switch (tag)
             { 
-            case "Vol":  return "Volume";
+            case strVol:  return "Volume";
 
-            case "Tune": return "Tune";
+            case strTune: return strTune;
 
-            case "Trig": return "Trigger";
-            case "Env":  return "Envelope";
-            case "Att":  return "Attack";
-            case "Dec":  return "Decay";
-            case "Sus":  return "Sustain";
-            case "Rel":  return "Release";
+            case strTrig: return "Trigger";
+            case strEnv:  return "Envelope";
+            case strAtt:  return "Attack";
+            case strDec:  return "Decay";
+            case strSus:  return "Sustain";
+            case strRel:  return "Release";
 
-            case "LFO":  return "LFO";
-            case "Amp":  return "Amplitude";
-            case "Freq": return "Frequency";
-            case "Off":  return "Offset";
+            case strLfo:  return strLfo;
+            case strAmp:  return "Amplitude";
+            case strFreq: return "Frequency";
+            case strOff:  return "Offset";
 
-            case "Flt":  return "Filter";
-            case "Cut":  return "Cutoff";
-            case "Res":  return "Resonance";
+            case strFlt:  return "Filter";
+            case strCut:  return "Cutoff";
+            case strRes:  return "Resonance";
 
-            case "Mod":  return "Modulate";
-            case "Amt":  return "Amount";
+            case strMod:  return "Modulate";
+            case strAmt:  return "Amount";
 
-            case "Del":  return "Delay";
-            case "Cnt":  return "Count";
-            case "Time": return "Time";
-            case "Lvl":  return "Level";
-            case "Pow":  return "Power";
+            case strDel:  return "Delay";
+            case strCnt:  return "Count";
+            case strTime: return strTime;
+            case strLvl:  return "Level";
+            case strPow:  return "Power";
                          
-            case "Arp":  return "Arpeggio";
-            case "Len":  return "Length";
-            case "Scl":  return "Scale";
+            case strArp:  return "Arpeggio";
+            case strLen:  return "Length";
+            case strScl:  return "Scale";
             }
 
             return "";
         }
 
 
-        static Setting NewSettingFromTag(string tag, Setting parent)
+        static Setting NewSettingFromTag(string tag, Setting parent, Instrument inst, Source src)
         {
             switch (tag)
             { 
-            case "Vol":  return new Parameter(tag,    0,           2,   0.5f,  1,    0.01f,  0.1f,  1,    parent);
+            case strVol:  return new Parameter(tag,    0,           2,   0.5f,  1,    0.01f,  0.1f,  1,    parent, inst, src);
                                                                                        
-            case "Trig": return new Parameter((Parameter)parent, parent, tag, false);
-            case "Env":  return new Envelope(parent);                                  
-            case "Att":  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    parent);
-            case "Dec":  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, parent);
-            case "Sus":  return new Parameter(tag,    0,           1,   0.01f, 1,    0.01f,  0.1f,  0.1f, parent);
-            case "Rel":  return new Parameter(tag,    0,          10,   0,     2,    0.01f,  0.1f,  0.2f, parent);
-                                                                                                          
-            case "Amp":  return new Parameter(tag,    0,           1,   0,     1,    0.001f, 0.05f, 1,    parent);
-            case "Freq": return new Parameter(tag,    0.01f,      30,   0.01f, 4,    0.001f, 0.05f, 1,    parent);
-            case "Off":  return new Parameter(tag, -100,         100, -10,    10,    0.01f,  0.1f,  0,    parent);
-                                                                                                          
-            case "Cut":  return new Parameter(tag,    0,           1,   0.1f,  1,    0.01f,  0.1f,  0.5f, parent);
-            case "Res":  return new Parameter(tag,    0,           1,   0,     0.7f, 0.01f,  0.1f,  0,    parent);
-            case "Shrp": return new Parameter(tag,    0,           1,   0,     0.9f, 0.01f,  0.1f,  0.9f, parent);
-                                                                                                    
-            case "Amt":  return new Parameter(tag,  -10,          10,  -1,     1,    0.01f,  0.1f,  0,    parent);
-                                                                                                          
-            case "Dry":  return new Parameter(tag,    0,           1,   0,     1,    0.01f, 0.1f,   1,    parent);
-            case "Cnt":  return new Parameter(tag,    1,         100,   2,    16,    1,     10,     4,    parent);
-            case "Time": return new Parameter(tag,    0.000001f,  10,   0.01f, 0.3f, 0.01f,  0.1f,  0.2f, parent);
-            case "Lvl":  return new Parameter(tag,    0,           1,   0.3f,  1,    0.01f,  0.1f,  0.5f, parent);
-            case "Pow":  return new Parameter(tag,    0.01f,      10,   0.2f,  1.2f, 0.01f,  0.1f,  1,    parent);
-                                                                                                          
-            case "Len":  return new Parameter(tag,    1,         256,   2,     6,    0.01f,  0.1f,  8,    parent);
-            case "Scl":  return new Parameter(tag,    0.01f,      16,   0.25f, 4,    0.01f,  0.1f,  1,    parent);
+            case strTrig: return new Parameter((Parameter)parent, parent, tag, false);
+            case strEnv:  return new Envelope(parent, inst, src);                                  
+            case strAtt:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    parent, inst, src);
+            case strDec:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, parent, inst, src);
+            case strSus:  return new Parameter(tag,    0,           1,   0.01f, 1,    0.01f,  0.1f,  0.1f, parent, inst, src);
+            case strRel:  return new Parameter(tag,    0,          10,   0,     2,    0.01f,  0.1f,  0.2f, parent, inst, src);
+
+            case strAmp:  return new Parameter(tag,    0,           1,   0,     1,    0.001f, 0.05f, 1,    parent, inst, src);
+            case strFreq: return new Parameter(tag,    0.01f,      30,   0.01f, 4,    0.001f, 0.05f, 1,    parent, inst, src);
+            case strOff:  return new Parameter(tag, -100,         100, -10,    10,    0.01f,  0.1f,  0,    parent, inst, src);
+
+            case strCut:  return new Parameter(tag,    0,           1,   0.1f,  1,    0.01f,  0.1f,  0.5f, parent, inst, src);
+            case strRes:  return new Parameter(tag,    0,           1,   0,     0.7f, 0.01f,  0.1f,  0,    parent, inst, src);
+            case strShrp: return new Parameter(tag,    0,           1,   0,     0.9f, 0.01f,  0.1f,  0.9f, parent, inst, src);
+
+            case strAmt:  return new Parameter(tag,   -1,           1,  -0.5f,  0.5f, 0.01f,  0.1f,  0,    parent, inst, src);
+
+            case strDry:  return new Parameter(tag,    0,           1,   0,     1,    0.01f, 0.1f,   1,    parent, inst, src);
+            case strCnt:  return new Parameter(tag,    1,         100,   2,    16,    1,     10,     4,    parent, inst, src);
+            case strTime: return new Parameter(tag,    0.000001f,  10,   0.01f, 0.3f, 0.01f,  0.1f,  0.2f, parent, inst, src);
+            case strLvl:  return new Parameter(tag,    0,           1,   0.3f,  1,    0.01f,  0.1f,  0.5f, parent, inst, src);
+            case strPow:  return new Parameter(tag,    0.01f,      10,   0.2f,  1.2f, 0.01f,  0.1f,  1,    parent, inst, src);
+
+            case strLen:  return new Parameter(tag,    1,         256,   2,     6,    0.01f,  0.1f,  8,    parent, inst, src);
+            case strScl:  return new Parameter(tag,    0.01f,      16,   0.25f, 4,    0.01f,  0.1f,  1,    parent, inst, src);
             }
 
             return null;
@@ -263,7 +278,7 @@ namespace IngameScript
         }
 
 
-        bool IsSettingType(Setting setting, Type type)
+        static bool IsSettingType(Setting setting, Type type)
         {
             return
                    setting != null

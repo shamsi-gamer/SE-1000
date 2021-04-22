@@ -107,6 +107,7 @@
     <Compile Include="Playback\SpeakerManager.cs" />
     <Compile Include="Instruments\TriggerValue.cs" />
     <Compile Include="State.cs" />
+    <Compile Include="Strings.cs" />
     <Compile Include="Toggles.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>

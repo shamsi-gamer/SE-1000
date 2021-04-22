@@ -9,33 +9,43 @@ namespace IngameScript
     {
         void Load()
         {
-            string curPath;
+            string curPath, modConnPath;
+            int    modPat, modChan;
 
-            LoadMachineState(out curPath);
+            LoadMachineState(out curPath, out modConnPath, out modPat, out modChan);
             LoadInstruments();
             LoadSong();
 
             if (curPath != "")
                 SwitchToSetting(curPath, CurrentInstrument);
+
+            if (modConnPath != "")
+            {
+                ModDestChannel    = g_song.Patterns[modPat].Channels[modChan];
+                ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
+            }
         }
 
 
-        void LoadMachineState(out string curPath)
+        void LoadMachineState(out string curPath, out string modConnPath, out int modPat, out int modChan)
         {
             var state = lblMove.CustomData;
 
             var lines = state.Split('\n');
             var line  = 0;
 
-            curPath  = "";
+            curPath     = "";
+            modConnPath = "";
+            modPat      = -1;
+            modChan     = -1;
 
             var cfg = lines[line++].Split(';');
-            if (!LoadToggles(cfg[0])) goto NothingLoaded;
+            if (!LoadToggles(cfg[0]))                                                      goto NothingLoaded;
             
-            if (!LoadSettings(cfg, out curPath)) goto NothingLoaded;
+            if (!LoadSettings(cfg, out curPath, out modConnPath, out modPat, out modChan)) goto NothingLoaded;
 
-            if (!LoadMems  (lines[line++])) goto NothingLoaded;
-            if (!LoadChords(lines[line++])) goto NothingLoaded;
+            if (!LoadMems  (lines[line++]))                                                goto NothingLoaded;
+            if (!LoadChords(lines[line++]))                                                goto NothingLoaded;
 
             return;
 
@@ -93,39 +103,49 @@ namespace IngameScript
         }
 
 
-        bool LoadSettings(string[] cfg, out string curPath)
+        bool LoadSettings(string[] cfg, out string curPath, out string modConnPath, out int modPat, out int modChan)
         {
-            curPath  = "";
+            curPath     = "";
+            modConnPath = "";
+            modPat      = -1;
+            modChan     = -1;
 
             int c = 1; // 0 holds the toggles, loaded in LoadToggles()
 
-            if (!int  .TryParse(cfg[c++], out g_ticksPerStep)) return false;
+            if (!int  .TryParse(cfg[c++], out g_ticksPerStep )) return false;
+                                                             
+            if (!int  .TryParse(cfg[c++], out CurPat         )) return false;
+            if (!int  .TryParse(cfg[c++], out CurChan        )) return false;
+                                                             
+            if (!int  .TryParse(cfg[c++], out SelChan        )) return false;
+            if (!int  .TryParse(cfg[c++], out CurSrc         )) return false;
+                                                             
+            curPath = cfg[c++];                              
+                                                             
+            if (!int  .TryParse(cfg[c++], out g_editStep     )) return false;
+            if (!int  .TryParse(cfg[c++], out g_editLength   )) return false;
+                                                             
+            if (!int  .TryParse(cfg[c++], out g_curNote      )) return false;
+                                                             
+            if (!int  .TryParse(cfg[c++], out g_chord        )) return false;
+            if (!int  .TryParse(cfg[c++], out g_chordSpread  )) return false;
+                                                             
+            if (!int  .TryParse(cfg[c++], out g_songOff      )) return false;
+            if (!int  .TryParse(cfg[c++], out g_instOff      )) return false;
+            if (!int  .TryParse(cfg[c++], out g_srcOff       )) return false;
+                                                             
+            if (!int  .TryParse(cfg[c++], out g_solo         )) return false;
+                                                             
+            if (!float.TryParse(cfg[c++], out g_volume       )) return false;
 
-            if (!int  .TryParse(cfg[c++], out CurPat        )) return false;
-            if (!int  .TryParse(cfg[c++], out CurChan       )) return false;
+            modConnPath = cfg[c++];
 
-            if (!int  .TryParse(cfg[c++], out SelChan       )) return false;
-            if (!int  .TryParse(cfg[c++], out CurSrc        )) return false;
-
-            curPath = cfg[c++];
-
-            if (!int  .TryParse(cfg[c++], out g_editStep    )) return false;
-            if (!int  .TryParse(cfg[c++], out g_editLength  )) return false;
-
-            if (!int  .TryParse(cfg[c++], out g_curNote     )) return false;
-                                                            
-            if (!int  .TryParse(cfg[c++], out g_chord       )) return false;
-            if (!int  .TryParse(cfg[c++], out g_chordSpread )) return false;
-
-            if (!int  .TryParse(cfg[c++], out g_songOff     )) return false;
-            if (!int  .TryParse(cfg[c++], out g_instOff     )) return false;
-            if (!int  .TryParse(cfg[c++], out g_srcOff      )) return false;
-                                                            
-            if (!int  .TryParse(cfg[c++], out g_solo        )) return false;
-
-            if (!float.TryParse(cfg[c++], out g_volume      )) return false;
-
-            if (!int  .TryParse(cfg[c++], out g_iCol        )) return false;
+            if (!int  .TryParse(cfg[c++], out ModCurChan     )) return false;
+            if (!int  .TryParse(cfg[c++], out ModDestSrcIndex)) return false;
+            if (!int  .TryParse(cfg[c++], out modPat         )) return false;
+            if (!int  .TryParse(cfg[c++], out modChan        )) return false;
+                                                             
+            if (!int  .TryParse(cfg[c++], out g_iCol         )) return false;
 
             return true;
         }

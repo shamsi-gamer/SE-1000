@@ -55,8 +55,8 @@ namespace IngameScript
 
             DrawString(sprites, "Load", x + 212, y + 10,     1.1f, prLoad    ? color0 : color6);
             DrawString(sprites, "Save", x + 384, y + 10,     1.1f, prSave    ? color0 : color6);
-            DrawString(sprites, "▼",    x + 240, y + h - 51, 1.5f, prBpmDown ? color0 : color6);
-            DrawString(sprites, "▲",    x + 415, y + h - 51, 1.5f, prBpmUp   ? color0 : color6);
+            DrawString(sprites, strDown,    x + 240, y + h - 51, 1.5f, prBpmDown ? color0 : color6);
+            DrawString(sprites, strUp,    x + 415, y + h - 51, 1.5f, prBpmUp   ? color0 : color6);
 
 
             var nameLines = g_song.Name.Split('\n');

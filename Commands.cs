@@ -272,6 +272,9 @@ namespace IngameScript
             g_paramKeys = false;
             g_paramAuto = false;
 
+            var _curSet = false;
+
+
             if (CurSet > -1)
             {
                 bool ucl = false;
@@ -279,7 +282,7 @@ namespace IngameScript
                 if (IsCurParam())
                 { 
                     CurSetting._IsCurrent = false;
-                    if (IsCurParam("Tune")) ucl = true;
+                    if (IsCurParam(strTune)) ucl = true;
                 }
 
                 CurSet = -1;
@@ -292,42 +295,38 @@ namespace IngameScript
                     UpdateShuffleLight();
                 }
 
-                UpdateEnterLight();
-                MarkLight(lblBackOut, CurSrc < 0);
+                _curSet = true;
             }
 
-            if (CurSrc > -1)
+
+            if (     CurSrc > -1
+                && !_curSet)
             {
-                CurSrc = -1;
+                CurSrc   = -1;
                 g_srcOff =  0;
 
-                g_shift = false;
-
-                UpdateNewLights();
-                UpdateAdjustLights(g_song);
+                g_shift  = false;
 
                 UpdateInstName(true);
                 inputValid = false;
-
-                MarkLight(lblBackOut, CurSrc < 0);
             }
+            
 
-            if (SelChan > -1)
+            if (     SelChan > -1
+                && !_curSet)
             {
                 SelChan = -1;
 
                 g_shift = false;
-
-                g_move = false;
-                //UpdateLight(lblMove, g_move ^ (g_song.CurSrc > -1), g_song.SelChan > -1 && !g_move);
-
-                UpdateNewLights();
-                UpdateAdjustLights(g_song);
+                g_move  = false;
 
                 UpdateInstName(false);
-                MarkLight(lblBackOut, CurSrc < 0);
             }
 
+            UpdateAdjustLights(g_song);
+            UpdateNewLights();
+
+            MarkLight(lblBackOut, CurSrc < 0);
 
             SaveInstruments();
         }
@@ -363,7 +362,7 @@ namespace IngameScript
                     else if (IsCurParam())
                     { 
                         CurSetting._IsCurrent = false;
-                        if (IsCurParam("Tune")) ucl = true;
+                        if (IsCurParam(strTune)) ucl = true;
                     }
 
                     CurSet--;
@@ -376,10 +375,6 @@ namespace IngameScript
                         UpdateShuffleLight();
                     }
                 }
-
-                UpdateAdjustLights(g_song);
-                MarkLight(lblBack, CurSrc < 0);
-                UpdateEnterLight();
             }
             else if (CurSrc > -1)
             {
@@ -388,14 +383,8 @@ namespace IngameScript
 
                 g_shift = false;
 
-                UpdateNewLights();
-                UpdateAdjustLights(g_song);
-
                 UpdateInstName(true);
                 inputValid = false;
-
-                MarkLight(lblBack, CurSrc < 0);
-                //g_sampleValid = F;
             }
             else if (SelChan > -1)
             {
@@ -407,19 +396,16 @@ namespace IngameScript
                 g_song.EditPos = fN;
                 UpdateEditLight(lblEdit, false);
 
-                UpdateNewLights();
-                UpdateAdjustLights(g_song);
-
                 UpdateInstName(false);
-
-                //g_sampleValid = F;
 
                 g_paramKeys = false;
                 g_paramAuto = false;
-
-                MarkLight(lblBack, CurSrc < 0);
             }
 
+            MarkLight(lblBack, CurSrc < 0);
+
+            UpdateNewLights();
+            UpdateAdjustLights(g_song);
 
             SaveInstruments();
         }
@@ -442,13 +428,11 @@ namespace IngameScript
                 UpdateNewLights();
                 UpdateAdjustLights(g_song);
 
-                //UpdateDspOffset(ref instOff, g_song.CurSrc, g_inst.Count, maxDspInst, 0, 1);
                 UpdateInstOff(SelChan);
 
                 UpdateInstName(true);
                 inputValid = false;
 
-                //g_sampleValid = F;
                 MarkLight(lblEnter, CurSrc < 0);
                 UpdateLight(lblCmd3, false);
             }
@@ -463,7 +447,6 @@ namespace IngameScript
 
                 UpdateInstName(false);
 
-                //g_sampleValid = F;
                 MarkLight(lblEnter, CurSrc < 0);
             }
         }
@@ -471,14 +454,49 @@ namespace IngameScript
 
         void Command1()
         {
-            if (   IsCurParam()
-                && OK(g_song.EditPos))
+            if (ModDestConnecting != null)
             {
-                     if (g_paramKeys) Interpolate(g_song);
-                else if (g_paramAuto) EnableKeyMove(g_song);
+                if (ModDestConnecting == CurSetting)
+                    ResetModConnecting();
+
+                else
+                { 
+                    ModDestConnecting.SrcSettings   .Add(CurSet > -1 ? CurSetting : null);
+                    ModDestConnecting.SrcSources    .Add(SelectedSource);
+                    ModDestConnecting.SrcInstruments.Add(SelectedInstrument);
+
+                    CurChan = ModCurChan;
+                    SetCurInst(ModDestChannel.Instrument);
+                    CurSrc = ModDestSrcIndex;
+
+                    SwitchToSetting(
+                        ModDestConnecting.GetPath(ModDestSrcIndex), 
+                        ModDestChannel.Instrument);
+
+                    ResetModConnecting();
+                }
             }
-            else if (CurSet > -1
-                  && IsCurSetting(typeof(Arpeggio))
+            else if (IsCurParam())
+            {
+                if (OK(g_song.EditPos))
+                {
+                         if (g_paramKeys) Interpolate(g_song);
+                    else if (g_paramAuto) EnableKeyMove(g_song);
+                }
+            }
+            else if (IsCurSetting(typeof(Modulate)))
+            {
+                if (ModDestConnecting == null)
+                {
+                    ModDestConnecting = CurModulate;
+                    ModCurChan        = CurChan;
+                    ModDestSrcIndex   = CurSrc;
+                    ModDestChannel    = SelectedChannel;
+
+                    UpdateAdjustLights(g_song);
+                }
+            }
+            else if (IsCurSetting(typeof(Arpeggio))
                   && OK(CurArpeggio.Song.EditPos))
             {
                      if (g_paramKeys) Interpolate  (CurArpeggio.Song);
@@ -501,51 +519,6 @@ namespace IngameScript
                         ? inst.Sources[CurSrc]
                         : null;
 
-                    //if (   src != null
-                    //    && g_set >= Set.Oscillator
-                    //    && g_set <= Set.Offset)
-                    //{
-                    //    copyW   = src.Oscillator;
-                    //    //copyV   = src.Volume;
-                    //    //copyOff = src.Offset;
-
-                    //    MarkLight(lblCopy);
-                    //}
-                    //else if (src != null
-                    //      && g_set >= Set.LfoAmplitude
-                    //      && g_set <= Set.LfoFixed)
-                    //{
-                    //    //copyLA  = src.LfoAmplitude;
-                    //    //copyLF  = src.LfoFrequency;
-                    //    //copyLO  = src.LfoOffset;
-                    //    //copyLFx = src.LfoFixed;
-
-                    //    MarkLight(lblCopy);
-                    //}
-                    //else if (src != null
-                    //      && g_set >= Set.Attack
-                    //      && g_set <= Set.Release)
-                    //{
-                    //    //copyA = src.Attack;
-                    //    //copyD = src.Decay;
-                    //    //copyS = src.Sustain;
-                    //    //copyR = src.Release;
-
-                    //    MarkLight(lblCopy);
-                    //}
-                    //else if (src == null
-                    //      && g_song.SelChan > -1
-                    //      && g_set >= Set.DelayCount
-                    //      && g_set <= Set.DelayPower)
-                    //{
-                    //    //copyDC = inst.DelayCount;
-                    //    //copyDT = inst.DelayTime;
-                    //    //copyDL = inst.DelayLevel;
-                    //    //copyDP = inst.DelayPower;
-
-                    //    MarkLight(lblCopy);
-                    //}
-                    //else 
                     if (SelChan < 0)
                     { 
                         CopyChan(g_song, CurPat, CurChan);
@@ -594,14 +567,14 @@ namespace IngameScript
 
         void Command3()
         {
-            if (   IsCurParam()
-                && OK(g_song.EditPos))
+            if (IsCurParam())
             {
                 var param = CurParam;
                 var path  = g_settings.Last().GetPath(CurSrc);
 
                 
-                if (g_paramKeys)
+                if (   g_paramKeys
+                    && OK(g_song.EditPos))
                 { 
                     var notes = GetEditNotes(g_song);
 
@@ -611,7 +584,8 @@ namespace IngameScript
                         if (iKey > -1) note.Keys.RemoveAt(iKey);
                     }
                 }
-                else if (g_paramAuto)
+                else if (g_paramAuto
+                      && OK(g_song.EditPos))
                 {
                     var chan = SelectedChannel;
 
@@ -640,6 +614,14 @@ namespace IngameScript
                         g_song.UpdateAutoKeys();
                     }
                 }
+
+                UpdateAdjustLights(g_song);
+                MarkLight(lblCmd3);
+            }
+            else if (CurSet > -1)
+            {
+                if (CurSetting.CanDelete())
+                    RemoveSetting(CurSetting);
 
                 UpdateAdjustLights(g_song);
                 MarkLight(lblCmd3);
@@ -722,7 +704,6 @@ namespace IngameScript
                 {
                     AdjustParam(g_song, (Parameter)setting, delta);
                     MarkLight(delta >= 0 ? lblUp : lblDown, !g_shift);
-                    // = F;
                 }
             }  
             else

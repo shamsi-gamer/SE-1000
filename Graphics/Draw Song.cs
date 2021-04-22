@@ -217,7 +217,7 @@ namespace IngameScript
 
             if (nDsp == 0)
             {
-                DrawFuncButton(sprites, "Del",  0, w, h, false, false, songPressed.Contains(0));
+                DrawFuncButton(sprites, strDel,  0, w, h, false, false, songPressed.Contains(0));
                 DrawFuncButton(sprites, "Dup",  1, w, h, false, false, songPressed.Contains(1));
                 DrawFuncButton(sprites, "New",  2, w, h, false, false, songPressed.Contains(2));
                 DrawFuncButton(sprites, "◄",    5, w, h, false, false, songPressed.Contains(5) ^ g_movePat);

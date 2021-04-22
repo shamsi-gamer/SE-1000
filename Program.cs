@@ -53,6 +53,7 @@ namespace IngameScript
         static float            g_maxRuntimeMs   = 0;
                                               
         static List<LFO>        g_lfo = new List<LFO>();
+        static List<Modulate>   g_mod = new List<Modulate>();
                                 
         static Song             g_song = new Song();
                                 
@@ -157,9 +158,9 @@ namespace IngameScript
             dspSong2  = new Display(Dsp("Song",  2));
             dspMixer1 = new Display(Dsp("Mixer", 1));
             dspMixer2 = new Display(Dsp("Mixer", 2));
-            dspVol1   = new Display(Dsp("Vol",   1));
-            dspVol2   = new Display(Dsp("Vol",   2));
-            dspVol3   = new Display(Dsp("Vol",   3));
+            dspVol1   = new Display(Dsp(strVol,   1));
+            dspVol2   = new Display(Dsp(strVol,   2));
+            dspVol3   = new Display(Dsp(strVol,   3));
         }
 
 
@@ -173,6 +174,9 @@ namespace IngameScript
             {
                 case "load":       LoadSongExt();                   break;
                 case "save":       SaveSongExt();                   break;
+
+                case "load all":   Load();                          break;
+                case "save all":   Save();                          break;
                                                                     
                 case "import":     ImportInstruments();             break;
                                                                     
@@ -215,8 +219,8 @@ namespace IngameScript
                                                                     
                 case "cmd1":       Command1();                      break;
                 case "cmd2":       Command2();                      break;
-                case "up":         Adjust(g_song, CurSetting,   1); break;
-                case "down":       Adjust(g_song, CurSetting, - 1); break;
+                case "up":         Adjust(g_song, CurSetting,  1);  break;
+                case "down":       Adjust(g_song, CurSetting, -1);  break;
                 case "shift":      Shift();                         break;
                 case "cmd3":       Command3();                      break;
                                                                     

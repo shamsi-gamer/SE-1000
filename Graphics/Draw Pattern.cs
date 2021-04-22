@@ -71,14 +71,12 @@ namespace IngameScript
         {
             var ch = h / g_nChans;
 
-            FillRect(sprites, x, y + h - CurChan * ch - 35, w, ch, color6);
+            FillRect(sprites, x, y + h - CurChan * ch - 35, w, ch, CurrentChannel.On ? color6 : color3);
 
             for (int c = 0; c < g_nChans; c++)
             {
                 var yLine = y + h - c * ch - 40;
-
-                var pat  = CurrentPattern;
-                var chan = pat.Channels[c];
+                var chan  = CurrentPattern.Channels[c];
 
                 DrawString(sprites, 
                      S(c + 1).PadLeft(2)
@@ -87,7 +85,7 @@ namespace IngameScript
                     6,
                     yLine + 6,
                     1,
-                    c == CurChan ? color0 : (chan.Notes.Count > 0 ? color6 : color2));
+                    c == CurChan ? color0 : (chan.Notes.Count > 0 ? (chan.On ? color6 : color3) : color2));
             }
         }
 

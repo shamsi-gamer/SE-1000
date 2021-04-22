@@ -15,7 +15,7 @@ namespace IngameScript
 
             if (h == 10)
             {
-                if (   IsCurParam("Tune")
+                if (   IsCurParam(strTune)
                     && (tune?.UseChord ?? false))
                 { 
                     g_settings.RemoveLast();
@@ -32,7 +32,7 @@ namespace IngameScript
                 UpdateShuffleLight();
                 UpdateOctaveLight();
             }
-            else if (IsCurParam("Tune")
+            else if (IsCurParam(strTune)
                   && (tune?.UseChord ?? false)
                   && !(g_paramKeys || g_paramAuto))
             {
@@ -102,7 +102,7 @@ namespace IngameScript
             var tune = SelectedSource    ?.Tune
                     ?? SelectedInstrument?.Tune;
 
-            if (   IsCurParam("Tune")
+            if (   IsCurParam(strTune)
                 && (tune?.UseChord ?? false))
             {
                 var chord = tune.Chord;
@@ -167,7 +167,7 @@ namespace IngameScript
 
         void Tick(int pat, int ch, int step)
         {
-            var _chan = g_song .Patterns[pat].Channels[ch];
+            var _chan = g_song.Patterns[pat].Channels[ch];
             var  chan = g_song.Patterns[pat].Channels[ch];
 
             var found = chan.Notes.Where(n => 

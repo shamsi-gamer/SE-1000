@@ -201,11 +201,17 @@ namespace IngameScript
                             vol * Harmonic.CurValue, 
                             Harmonic.Max);
 
+                        Source.CurVolume = Math.Max(Source.CurVolume, Harmonic.CurValue);
+
                         inst.DisplayVolume = 
                             OK(inst.DisplayVolume)
                             ? sndAdd(inst.DisplayVolume, Harmonic.CurValue)
                             : Harmonic.CurValue;
                     }
+
+
+                    Source.CurVolume = Math.Max(Source.CurVolume, vol);
+                    inst  .CurVolume = Math.Max(Source.CurVolume, inst.CurVolume);
 
 
                     inst.DisplayVolume = 
@@ -260,7 +266,8 @@ namespace IngameScript
                 {
                     spk.Block.Volume = Math.Min(v--, 1);
 
-                    // if sample is ending, restart it //TODO make this smooth
+                    // if sample is ending, restart it 
+                    // TODO make this smooth
                     if (   ElapsedTime >= (Source.Oscillator.Length - 0.1f) * FPS
                         && Source.Oscillator != OscClick)
                     {

@@ -21,12 +21,13 @@ namespace IngameScript
                              TrigRelease;
 
 
-            public Envelope(Setting parent) : base("Env", parent)
+            public Envelope(Setting parent, Instrument inst, Source src) 
+                : base(strEnv, parent, null, inst, src)
             {
-                Attack      = (Parameter)NewSettingFromTag("Att", this);
-                Decay       = (Parameter)NewSettingFromTag("Dec", this);
-                Sustain     = (Parameter)NewSettingFromTag("Sus", this);
-                Release     = (Parameter)NewSettingFromTag("Rel", this);
+                Attack      = (Parameter)NewSettingFromTag(strAtt, this, inst, src);
+                Decay       = (Parameter)NewSettingFromTag(strDec, this, inst, src);
+                Sustain     = (Parameter)NewSettingFromTag(strSus, this, inst, src);
+                Release     = (Parameter)NewSettingFromTag(strRel, this, inst, src);
 
                 TrigAttack  = 
                 TrigDecay   = 
@@ -35,7 +36,8 @@ namespace IngameScript
             }
 
 
-            public Envelope(Envelope env, Setting parent) : base(env.Tag, parent, env)
+            public Envelope(Envelope env, Setting parent) 
+                : base(env.Tag, parent, env, env.Instrument, env.Source)
             {
                 Attack      = new Parameter(env.Attack,  this);
                 Decay       = new Parameter(env.Decay,   this);
@@ -110,15 +112,6 @@ namespace IngameScript
             }
 
 
-            public override void Remove(Setting setting)
-            {
-                     if (setting == Attack ) Attack  = null;
-                else if (setting == Decay  ) Decay   = null;
-                else if (setting == Sustain) Sustain = null;
-                else if (setting == Release) Release = null;
-            }
-
-
             public override void Clear()
             {
                 Attack .Clear();
@@ -151,10 +144,10 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Att": return GetOrAddParamFromTag(Attack,  tag);
-                    case "Dec": return GetOrAddParamFromTag(Decay,   tag);
-                    case "Sus": return GetOrAddParamFromTag(Sustain, tag);
-                    case "Rel": return GetOrAddParamFromTag(Release, tag);
+                    case strAtt: return GetOrAddParamFromTag(Attack,  tag);
+                    case strDec: return GetOrAddParamFromTag(Decay,   tag);
+                    case strSus: return GetOrAddParamFromTag(Sustain, tag);
+                    case strRel: return GetOrAddParamFromTag(Release, tag);
                 }
 
                 return null;
@@ -188,7 +181,7 @@ namespace IngameScript
             {
                 var tag = data[i++];
 
-                var env = new Envelope(parent);
+                var env = new Envelope(parent, inst, iSrc > -1 ? inst.Sources[iSrc] : null);
 
                 env.Attack  = Parameter.Load(data, ref i, inst, iSrc, env, env.Attack );
                 env.Decay   = Parameter.Load(data, ref i, inst, iSrc, env, env.Decay  );
@@ -251,10 +244,10 @@ namespace IngameScript
                 var w0    = 240f;
                 var h0    = 120f;
 
-                var isAtt = IsCurParam("Att");
-                var isDec = IsCurParam("Dec");
-                var isSus = IsCurParam("Sus");
-                var isRel = IsCurParam("Rel");
+                var isAtt = IsCurParam(strAtt);
+                var isDec = IsCurParam(strDec);
+                var isSus = IsCurParam(strSus);
+                var isRel = IsCurParam(strRel);
 
                 var x0 = x + w/2 - w0/2;
                 var y0 = y + h/2 - h0/2;
@@ -378,7 +371,6 @@ namespace IngameScript
                 DrawFuncButton(sprites, "D", 2, w, y, true, Decay  .HasDeepParams(chan, -1));
                 DrawFuncButton(sprites, "S", 3, w, y, true, Sustain.HasDeepParams(chan, -1));
                 DrawFuncButton(sprites, "R", 4, w, y, true, Release.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "X", 5, w, y, false, false, mainPressed.Contains(5));
             }
 
 
@@ -386,12 +378,17 @@ namespace IngameScript
             {
                 switch (func)
                 {
-                    case 1: AddNextSetting("Att"); break;
-                    case 2: AddNextSetting("Dec"); break;
-                    case 3: AddNextSetting("Sus"); break;
-                    case 4: AddNextSetting("Rel"); break;
-                    case 5: RemoveSetting(this);   break;
+                    case 1: AddNextSetting(strAtt); break;
+                    case 2: AddNextSetting(strDec); break;
+                    case 3: AddNextSetting(strSus); break;
+                    case 4: AddNextSetting(strRel); break;
                 }
+            }
+
+
+            public override bool CanDelete()
+            {
+                return true;
             }
         }
     }

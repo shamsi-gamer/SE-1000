@@ -30,8 +30,8 @@ namespace IngameScript
             {
                 g_time++;
 
-                foreach (var lfo in g_lfo)
-                    lfo.AdvanceTime();
+                foreach (var lfo in g_lfo) lfo.AdvanceTime();
+                foreach (var mod in g_mod) mod.AdvanceTime();
 
                 g_song.FinalizePlayback();
             }
@@ -39,7 +39,7 @@ namespace IngameScript
             UpdateRuntimeInfo();
 
 
-            pnlInfoLog.CustomData = "";
+            //pnlInfoLog.CustomData = "";
         }
 
 

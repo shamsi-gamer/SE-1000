@@ -101,10 +101,10 @@ namespace IngameScript
         {
             int set = CurSet;
 
-            if (   HasTag(setting, "Att")
-                || HasTag(setting, "Dec")
-                || HasTag(setting, "Sus")
-                || HasTag(setting, "Rel"))
+            if (   HasTag(setting, strAtt)
+                || HasTag(setting, strDec)
+                || HasTag(setting, strSus)
+                || HasTag(setting, strRel))
                 set--;
 
             if (CurSet > 0)
@@ -116,12 +116,12 @@ namespace IngameScript
 
                 switch (setting.Tag)
                 {
-                    case "Off":  if (src != null) src.Offset    = null;                            break;
-                    case "Del":  if (src != null) src.Delay     = null; else inst.Delay    = null; break;
-                    case "Tune": if (src != null) src.Tune      = null; else inst.Tune     = null; break;
-                    case "Hrm":  if (src != null) src.Harmonics = null;                            break;
-                    case "Flt":  if (src != null) src.Filter    = null; else inst.Filter   = null; break;
-                    case "Arp":  if (src == null)                            inst.Arpeggio = null; break;
+                    case strOff:  if (src != null) src.Offset    = null;                            break;
+                    case strDel:  if (src != null) src.Delay     = null; else inst.Delay    = null; break;
+                    case strTune: if (src != null) src.Tune      = null; else inst.Tune     = null; break;
+                    case strHrm:  if (src != null) src.Harmonics = null;                            break;
+                    case strFlt:  if (src != null) src.Filter    = null; else inst.Filter   = null; break;
+                    case strArp:  if (src == null)                            inst.Arpeggio = null; break;
                 }
             }
 
@@ -135,17 +135,17 @@ namespace IngameScript
         {
             switch (func)
             {
-            case 1: AddNextSetting("Vol", inst, -1); break;
+            case 1: AddNextSetting(strVol, inst, -1); break;
             case 2: 
-                AddNextSetting("Tune", inst, -1);
+                AddNextSetting(strTune, inst, -1);
                 UpdateKeyLights();
                 UpdateChordLights();
                 UpdateShuffleLight();
                 break;
 
-            case 3: AddNextSetting("Flt", inst, -1); break;
-            case 4: AddNextSetting("Del", inst, -1); break;
-            case 5: AddNextSetting("Arp", inst, -1); break;
+            case 3: AddNextSetting(strFlt, inst, -1); break;
+            case 4: AddNextSetting(strDel, inst, -1); break;
+            case 5: AddNextSetting(strArp, inst, -1); break;
             }
         }
 
@@ -154,18 +154,18 @@ namespace IngameScript
         {
             switch (func)
             {
-            case 0: AddNextSetting("Off", src.Instrument, src.Index); break; 
-            case 1: AddNextSetting("Vol", src.Instrument, src.Index); break;
+            case 0: AddNextSetting(strOff, src.Instrument, src.Index); break; 
+            case 1: AddNextSetting(strVol, src.Instrument, src.Index); break;
             case 2: 
-                AddNextSetting("Tune", src.Instrument, src.Index);
+                AddNextSetting(strTune, src.Instrument, src.Index);
                 UpdateKeyLights();
                 UpdateChordLights();
                 UpdateShuffleLight();
                 break;
 
-            case 3: AddNextSetting("Hrm", src.Instrument, src.Index); break;
-            case 4: AddNextSetting("Flt", src.Instrument, src.Index); break;
-            case 5: AddNextSetting("Del", src.Instrument, src.Index); break;
+            case 3: AddNextSetting(strHrm, src.Instrument, src.Index);  break;
+            case 4: AddNextSetting(strFlt, src.Instrument, src.Index); break;
+            case 5: AddNextSetting(strDel, src.Instrument, src.Index); break;
             }
         }
     }

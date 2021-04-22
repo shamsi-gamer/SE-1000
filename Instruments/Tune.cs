@@ -14,7 +14,8 @@ namespace IngameScript
                              FinalChord;
 
 
-            public Tune() : base("Tune", -240, 240, -12, 12, 0.5f, 12, 0, null)
+            public Tune(Instrument inst, Source src) 
+                : base(strTune, -240, 240, -12, 12, 0.5f, 12, 0, null, inst, src)
             {
                 UseChord   = false;
                 AllOctaves = false;
@@ -58,7 +59,7 @@ namespace IngameScript
                     && (  !IsDigit(Tag[0]) && RND > 0.5f
                         || IsDigit(Tag[0]) && RND > 0.9f))
                 {
-                    Envelope = new Envelope(this);
+                    Envelope = new Envelope(this, Instrument, Source);
                     Envelope.Randomize(prog);
                 }
                 else 
@@ -68,7 +69,7 @@ namespace IngameScript
                 if (   !prog.TooComplex
                     && RND > 0.8f)
                 {
-                    Lfo = new LFO(this);
+                    Lfo = new LFO(this, Instrument, Source);
                     Lfo.Randomize(prog);
                 }
                 else
@@ -98,7 +99,7 @@ namespace IngameScript
                 tune += S(Chord.Count);
 
                 for (int i = 0; i < Chord.Count; i++)
-                    tune += ";" + S(Chord[i]);
+                    tune += PS(Chord[i]);
 
                 return tune;
             }
@@ -106,7 +107,9 @@ namespace IngameScript
 
             public static Tune Load(string[] data, ref int i, Instrument inst, int iSrc)
             {
-                var tune = new Tune();
+                var tune = new Tune(
+                    inst, 
+                    iSrc > -1 ? inst.Sources[iSrc] : null);
 
                 Parameter.Load(data, ref i, inst, iSrc, null, tune);
 
@@ -119,6 +122,12 @@ namespace IngameScript
                     tune.Chord.Add(int.Parse(data[i++]));
 
                 return tune;
+            }
+
+
+            public override bool CanDelete()
+            {
+                return true;
             }
         }
     }

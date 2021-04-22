@@ -86,7 +86,7 @@ namespace IngameScript
                 + WS(SelChan)        
                 + WS(CurSrc)
 
-                + (CurSet > -1 ? W(CurSetting.GetPath(CurSrc)) : W(""))
+                + W(CurSet > -1 ? CurSetting.GetPath(CurSrc) : "")
 
                 + WS(g_editStep)
                 + WS(g_editLength)     
@@ -98,11 +98,17 @@ namespace IngameScript
                 
                 + WS(g_songOff)        
                 + WS(g_instOff)        
-                + WS(g_srcOff)
+                + WS(g_srcOff )
 
                 + WS(g_solo)
 
                 + WS(g_volume)
+
+                + W (ModDestConnecting != null ? ModDestConnecting.GetPath(ModDestSrcIndex) : "")
+                + WS(ModCurChan)
+                + WS(ModDestSrcIndex)
+                + WS(ModDestChannel != null ? g_song.Patterns.IndexOf(ModDestChannel.Pattern)         : -1)
+                + WS(ModDestChannel != null ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)
 
                 +  S(g_iCol);
         }
@@ -112,7 +118,7 @@ namespace IngameScript
         {
             return 
                 setting != null 
-                ? ";" + setting.Save()
+                ? P(setting.Save())
                 : "";
         }
 
@@ -180,25 +186,25 @@ namespace IngameScript
         }
 
 
-        String SaveEdit()
-        {
-            var str = "";
-            var s   = ";";
+        //String SaveEdit()
+        //{
+        //    var str = "";
+        //    var s   = ";";
 
-            str += S(g_song.EditNotes.Count);
+        //    str += S(g_song.EditNotes.Count);
 
-            foreach (var n in g_song.EditNotes)
-            {
-                str +=
-                  s + S(g_song.Patterns.FindIndex(p => p.Channels.Contains(n.Channel)))
-                + s + S(n.iChan)
-                + s + S(n.Channel.Notes.IndexOf(n));
-            }
+        //    foreach (var n in g_song.EditNotes)
+        //    {
+        //        str +=
+        //          s + S(g_song.Patterns.FindIndex(p => p.Channels.Contains(n.Channel)))
+        //        + s + S(n.iChan)
+        //        + s + S(n.Channel.Notes.IndexOf(n));
+        //    }
 
-            str += "\n";
+        //    str += "\n";
 
-            return str;
-        }
+        //    return str;
+        //}
 
 
         static void add(List<byte> b, short s) { b.AddArray(BitConverter.GetBytes(s)); }

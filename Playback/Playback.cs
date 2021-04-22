@@ -86,7 +86,7 @@ namespace IngameScript
         void ResetVolumes()
         {
             foreach (var inst in g_inst)
-                inst.DisplayVolume = float.NaN;
+                inst.ResetVolumes();
         }
 
 

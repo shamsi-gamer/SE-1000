@@ -19,14 +19,15 @@ namespace IngameScript
 
             public List<Source> Sources;
 
-            public float        DisplayVolume;
+            public float        CurVolume,
+                                DisplayVolume;
 
 
             public Instrument()
             {
                 Name          = "New Sound";
                               
-                Volume        = (Parameter)NewSettingFromTag("Vol", null);
+                Volume        = (Parameter)NewSettingFromTag(strVol, null, this, null);
                               
                 Tune          = null;
                 Filter        = null;
@@ -36,6 +37,7 @@ namespace IngameScript
                               
                 Sources       = new List<Source>();
 
+                CurVolume     = 0;
                 DisplayVolume = float.NaN;
             }
 
@@ -62,7 +64,8 @@ namespace IngameScript
                 foreach (var src in inst.Sources)
                     Sources.Add(new Source(src, this));
 
-                DisplayVolume = float.NaN;
+                CurVolume     = inst.CurVolume;
+                DisplayVolume = inst.DisplayVolume;
             }
 
 
@@ -85,7 +88,7 @@ namespace IngameScript
 
                 if (RND > 0.7f)
                 {
-                    Tune = new Tune();
+                    Tune = new Tune(this, null);
                     Tune.Randomize(prog);
                 }
                 else
@@ -94,7 +97,7 @@ namespace IngameScript
                 if (   RND > 0.7f
                     && Sources.Find(s => s.Harmonics != null) != null)
                 {
-                    Filter = new Filter();
+                    Filter = new Filter(this, null);
                     Filter.Randomize(prog);
                 }
                 else
@@ -102,7 +105,7 @@ namespace IngameScript
 
                 if (RND > 0.7f)
                 {
-                    Delay = new Delay();
+                    Delay = new Delay(this, null);
                     Delay.Randomize(prog);
                 }
                 else
@@ -118,15 +121,25 @@ namespace IngameScript
             }
 
 
+            public void ResetVolumes()
+            {
+                DisplayVolume = float.NaN;
+                CurVolume     = 0;
+
+                foreach (var src in Sources)
+                    src.CurVolume = 0;
+            }
+
+
             public Setting GetOrAddSettingFromTag(string tag)
             {
                 switch (tag)
                 {
-                    case "Vol":  return Volume;
-                    case "Tune": return Tune     ?? (Tune     = new Tune());
-                    case "Flt":  return Filter   ?? (Filter   = new Filter());
-                    case "Del":  return Delay    ?? (Delay    = new Delay());
-                    case "Arp":  return Arpeggio ?? (Arpeggio = new Arpeggio((Instrument)null));
+                    case strVol:  return Volume;
+                    case strTune: return Tune     ?? (Tune     = new Tune    (this, null));
+                    case strFlt:  return Filter   ?? (Filter   = new Filter  (this, null));
+                    case strDel:  return Delay    ?? (Delay    = new Delay   (this, null));
+                    case strArp:  return Arpeggio ?? (Arpeggio = new Arpeggio((Instrument)null));
                 }
 
                 return null;
@@ -182,17 +195,17 @@ namespace IngameScript
                 inst.Volume = Parameter.Load(data, ref i, inst, -1, null);
 
                 while (i < data.Length
-                    && (   data[i] == "Tune" 
-                        || data[i] == "Flt" 
-                        || data[i] == "Del" 
-                        || data[i] == "Arp"))
+                    && (   data[i] == strTune 
+                        || data[i] == strFlt 
+                        || data[i] == strDel 
+                        || data[i] == strArp))
                 {
                     switch (data[i])
                     { 
-                        case "Tune": inst.Tune     = Tune    .Load(data, ref i, inst, -1); break;
-                        case "Flt":  inst.Filter   = Filter  .Load(data, ref i, inst, -1); break;
-                        case "Del":  inst.Delay    = Delay   .Load(data, ref i, inst, -1); break;
-                        case "Arp":  inst.Arpeggio = Arpeggio.Load(data, ref i, inst, -1); break;
+                        case strTune: inst.Tune     = Tune    .Load(data, ref i, inst, -1); break;
+                        case strFlt:  inst.Filter   = Filter  .Load(data, ref i, inst, -1); break;
+                        case strDel:  inst.Delay    = Delay   .Load(data, ref i, inst, -1); break;
+                        case strArp:  inst.Arpeggio = Arpeggio.Load(data, ref i, inst, -1); break;
                     }
                 }
 
@@ -222,11 +235,11 @@ namespace IngameScript
                 }
                 else
                 {
-                    DrawFuncButton(sprites, "Vol",  1, w, h, true, Volume.HasDeepParams(chan, -1));
-                    DrawFuncButton(sprites, "Tune", 2, w, h, true, Tune     != null);
-                    DrawFuncButton(sprites, "Flt",  3, w, h, true, Filter   != null);
-                    DrawFuncButton(sprites, "Del",  4, w, h, true, Delay    != null);
-                    DrawFuncButton(sprites, "Arp",  5, w, h, true, Arpeggio != null);
+                    DrawFuncButton(sprites, strVol,  1, w, h, true, Volume.HasDeepParams(chan, -1));
+                    DrawFuncButton(sprites, strTune, 2, w, h, true, Tune     != null);
+                    DrawFuncButton(sprites, strFlt,  3, w, h, true, Filter   != null);
+                    DrawFuncButton(sprites, strDel,  4, w, h, true, Delay    != null);
+                    DrawFuncButton(sprites, strArp,  5, w, h, true, Arpeggio != null);
                 }
             }
         }

@@ -356,8 +356,8 @@ namespace IngameScript
                 foreach (var b in Blocks)
                 {
                     save +=
-                      ";" + S(b.First)
-                    + ";" + S(b.Last);
+                      PS(b.First)
+                    + PS(b.Last);
                 }
 
                 return save;
@@ -381,7 +381,7 @@ namespace IngameScript
                 song.Cue      = int .Parse(cfg[i++]);
 
                 if (!song.LoadPatterns(lines, ref line)) return null;
-                if (!song.LoadBlocks(lines[line++]))     return null;
+                if (!song.LoadBlocks  (lines[line++]))   return null;
 
                 song.UpdateAutoKeys();
 

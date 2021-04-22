@@ -14,7 +14,8 @@ namespace IngameScript
                              Scale;
 
 
-            public Arpeggio(Instrument inst) : base("Arp", null)
+            public Arpeggio(Instrument inst) 
+                : base(strArp, null, null, inst, null)
             {
                 Song = new Song("");
                 Song.Arpeggio = this;
@@ -22,12 +23,13 @@ namespace IngameScript
                 
                 SetInstrument(inst);
 
-                Length = (Parameter)NewSettingFromTag("Len", this);
-                Scale  = (Parameter)NewSettingFromTag("Scl", this);
+                Length = (Parameter)NewSettingFromTag(strLen, this, inst, null);
+                Scale  = (Parameter)NewSettingFromTag(strScl, this, inst, null);
             }
 
 
-            public Arpeggio(Arpeggio arp) : base(arp.Tag, null, arp.Prototype)
+            public Arpeggio(Arpeggio arp) 
+                : base(arp.Tag, null, arp.Prototype, arp.Instrument, arp.Source)
             {
                 Song   = new Song(arp.Song);
 
@@ -73,12 +75,6 @@ namespace IngameScript
             }
 
 
-            public override void Remove(Setting setting)
-            {
-                if (setting == Scale) Scale  = null;
-            }
-
-
             public void SetInstrument(Instrument inst)
             {
                 foreach (var pat in Song.Patterns)
@@ -99,8 +95,8 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Len": return GetOrAddParamFromTag(Length, tag);
-                    case "Scl": return GetOrAddParamFromTag(Scale,  tag);
+                    case strLen: return GetOrAddParamFromTag(Length, tag);
+                    case strScl: return GetOrAddParamFromTag(Scale,  tag);
                 }
 
                 return null;
@@ -160,8 +156,8 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                DrawFuncButton(sprites, "Len", 1, w, h, true, Length.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Scl", 2, w, h, true, Scale .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strLen, 1, w, h, true, Length.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strScl, 2, w, h, true, Scale .HasDeepParams(chan, -1));
                 DrawFuncButton(sprites, "X",   5, w, h, false, false, mainPressed.Contains(5));                
             }
 
@@ -174,18 +170,22 @@ namespace IngameScript
                     Song.EditPos = -1;
                     UpdateEditLight(lblEdit, false);
 
-                    AddNextSetting("Len");
+                    AddNextSetting(strLen);
                     break;
 
                 case 2:
                     Song.EditPos = -1;
                     UpdateEditLight(lblEdit, false);
 
-                    AddNextSetting("Scl");
+                    AddNextSetting(strScl);
                     break;
-
-                case 5: RemoveSetting(this); break;
                 }
+            }
+
+
+            public override bool CanDelete()
+            {
+                return true;
             }
         }
     }

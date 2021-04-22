@@ -19,17 +19,19 @@ namespace IngameScript
             public int         CurTone;
 
 
-            public Harmonics() : base("Hrm", null)
+            public Harmonics(Instrument inst, Source src) 
+                : base(strHrm, null, null, inst, src)
             {
                 for (int i = 0; i < Tones.Length; i++)
-                    Tones[i] = NewHarmonicParam(i, this);
+                    Tones[i] = NewHarmonicParam(i, this, inst, src);
 
                 CurPreset = Preset.Sine;
                 CurTone   = 0;
             }
 
 
-            public Harmonics(Harmonics hrm) : base(hrm.Tag, null, hrm)
+            public Harmonics(Harmonics hrm) 
+                : base(hrm.Tag, null, hrm, hrm.Instrument, hrm.Source)
             {
                 for (int i = 0; i < hrm.Tones.Length; i++)
                     Tones[i] = new Parameter(hrm.Tones[i], this);
@@ -270,7 +272,9 @@ namespace IngameScript
             {
                 var tag = data[i++];
 
-                var hrm = new Harmonics();
+                var hrm = new Harmonics(
+                    inst, 
+                    iSrc > -1 ? inst.Sources[iSrc] : null);
 
                 for (int j = 0; j < hrm.Tones.Length; j++)
                     hrm.Tones[j] = Parameter.Load(data, ref i, inst, iSrc, hrm, hrm.Tones[j]);
@@ -346,7 +350,7 @@ namespace IngameScript
                 for (int i = 0; i < Tones.Length; i++)
                 {
                     if (Tones[i].HasDeepParams(chan, -1))
-                        DrawString(sprites, "▲", xt + i*wc + wc/2, yt + ht + 10, 0.6f, color3, TaC);
+                        DrawString(sprites, strUp, xt + i*wc + wc/2, yt + ht + 10, 0.6f, color3, TaC);
                 }
 
 
@@ -436,8 +440,6 @@ namespace IngameScript
                 
                 if (CurTone > -1)
                     DrawFuncButton(sprites, "Tone", 4, w, h, true, Tones[CurTone].HasDeepParams(chan, -1));
-
-                DrawFuncButton(sprites, "X",     5, w, h, false, false, mainPressed.Contains(5));
             }
 
 
@@ -463,8 +465,6 @@ namespace IngameScript
                         if (CurTone > -1) 
                             AddNextSetting(S(CurTone));
                         break;
-
-                    case 5: RemoveSetting(this); break;
                 }
             }
 
@@ -475,6 +475,12 @@ namespace IngameScript
 
                 if (CurTone >= Tones.Length) CurTone = -1;
                 if (CurTone <  -1          ) CurTone = Tones.Length-1;
+            }
+
+
+            public override bool CanDelete()
+            {
+                return true;
             }
         }
     }

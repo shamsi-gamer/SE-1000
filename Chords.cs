@@ -44,7 +44,7 @@ namespace IngameScript
             var chordNotes = new List<int>();
 
             if (    g_chord > -1
-                && !IsCurParam("Tune"))
+                && !IsCurParam(strTune))
             {
                 var chord = g_chords[g_chord];
 
@@ -149,7 +149,7 @@ namespace IngameScript
             if (g_chordEdit)
                 return;
 
-            if (IsCurParam("Tune"))
+            if (IsCurParam(strTune))
             {
                 var tune = SelectedSource    ?.Tune
                         ?? SelectedInstrument?.Tune;
@@ -184,7 +184,7 @@ namespace IngameScript
                     ?? SelectedInstrument?.Tune;
 
 
-            if (   IsCurParam("Tune")
+            if (   IsCurParam(strTune)
                 && tune.UseChord)
             {
                 var _chord = g_chords[chord-1];
@@ -262,7 +262,7 @@ namespace IngameScript
 
         void ToggleChordEdit()
         {
-            if (IsCurParam("Tune"))
+            if (IsCurParam(strTune))
             {
                 var inst = SelectedInstrument;
                 var src  = SelectedSource;

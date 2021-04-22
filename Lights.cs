@@ -133,7 +133,7 @@ namespace IngameScript
             lblMove            = Lbl("Move");
             lblNew             = Lbl("New");
             lblDuplicate       = Lbl("Dup");
-            lblDelete          = Lbl("Del");
+            lblDelete          = Lbl(strDel);
 
             lblCmd1            = Lbl("Command 1");
             lblCmd2            = Lbl("Command 2");
@@ -272,8 +272,9 @@ namespace IngameScript
             if (lightsPressed_.Contains(lblNext))      UnmarkLight(lblNext, g_move || CurSrc > -1, SelChan > -1);
             if (lightsPressed_.Contains(lblPrev))      UnmarkLight(lblPrev, g_move || CurSrc > -1, SelChan > -1);
 
-            if (lightsPressed_.Contains(lblEnter))     UnmarkLight(lblEnter, CurSrc > -1 && CurSet < 0, SelChan > -1 && CurSet < 0);
+            if (lightsPressed_.Contains(lblBackOut))   UnmarkLight(lblBack,  CurSrc > -1, SelChan > -1);
             if (lightsPressed_.Contains(lblBack))      UnmarkLight(lblBack,  CurSrc > -1, SelChan > -1);
+            if (lightsPressed_.Contains(lblEnter))     UnmarkLight(lblEnter, CurSrc > -1 && CurSet < 0, SelChan > -1 && CurSet < 0);
 
             if (lightsPressed_.Contains(lblNew))       UnmarkLight(lblNew,       CurSrc > -1, SelChan > -1);
             if (lightsPressed_.Contains(lblDuplicate)) UnmarkLight(lblDuplicate, CurSrc > -1, SelChan > -1);
@@ -347,16 +348,15 @@ namespace IngameScript
         {
             //if (TooComplex) return;
 
-            if (    IsCurParam("Tune")
+            if (    IsCurParam(strTune)
                 && !(g_paramKeys || g_paramAuto))
             {
                 var inst = SelectedInstrument;
-                //var src  = g_song.CurSrc > -1 ? inst.Sources[g_song.CurSrc] : null;
                 var tune = (Tune)GetCurrentParam(inst);
 
                 UpdateLight(lblChord, tune.UseChord);
 
-                UpdateLight(lblChordEdit, tune.UseChord ? "All" : " ", 10, 10);
+                UpdateLight(lblChordEdit, tune.UseChord ? strAll : " ", 10, 10);
                 UpdateLight(lblChordEdit, tune.AllOctaves);
                 // TODO same for source or anything else that needs Tune
             }
@@ -367,7 +367,7 @@ namespace IngameScript
 
                 if (g_chordMode)
                 {
-                    UpdateLight(lblChordEdit, "All", 10, 10);
+                    UpdateLight(lblChordEdit, strAll, 10, 10);
                     UpdateLight(lblChordEdit, g_chordAll);
                 }
                 else
@@ -399,7 +399,7 @@ namespace IngameScript
                       g_chord == chord-1
                    && (   g_chordEdit
                        || g_chordMode)
-                   && !IsCurParam("Tune")
+                   && !IsCurParam(strTune)
                 || lightsPressed.Contains(lbl),
                       g_chordMode
                    && g_chord == chord-1 
@@ -495,9 +495,9 @@ namespace IngameScript
 
         void UpdateNewLights()
         {
-            UpdateEnterLight();
-            UpdateLabelColor(lblBack);
             UpdateLabelColor(lblBackOut);
+            UpdateLabelColor(lblBack);
+            UpdateEnterLight();
 
             UpdateLabelColor(lblPrev);
             UpdateLabelColor(lblNext);
@@ -524,6 +524,14 @@ namespace IngameScript
 
         void UpdateAdjustLights(Song song)
         {
+            if (ModDestConnecting != null)
+            {
+                UpdateLight(lblCmd1, "Conn", 10, 10);
+                UpdateLight(lblCmd1, true);
+                return;
+            }
+
+
             if (CurSet > -1)
             {
                 var path = g_settings.Last().GetPath(CurSrc);
@@ -566,10 +574,10 @@ namespace IngameScript
                 }
                 else
                 {
-                    UpdateLight(lblCmd1, " ", 10, 10);
-                    UpdateLight(lblCmd3, " ", 10, 10);
-
+                    UpdateLight(lblCmd1, HasTag(CurSetting, strMod) ? "Conn" : " ", 10, 10);
                     UpdateLight(lblCmd1, false);
+
+                    UpdateLight(lblCmd3, CurSetting.CanDelete() ? "X" : " ", 10, 10);
                     UpdateLight(lblCmd3, false);
                 }
 
@@ -612,7 +620,6 @@ namespace IngameScript
             }
 
 
-
             bool canAdjust = 
                    IsCurParam()
                 || IsCurSetting(typeof(Harmonics))
@@ -620,28 +627,28 @@ namespace IngameScript
                    && SelChan < 0;
 
 
-            var strDown = "◄";
-            var strUp   = "►";
+            var _strUp   = strRight;
+            var _strDown = strLeft;
 
             if (      canAdjust
-                   && (   IsCurParam("Vol")
-                       || IsCurParam("Tune")
-                       || IsCurParam("Sus")
-                       || IsCurParam("Amp")
-                       || IsCurParam("Lvl")
-                       || IsCurParam("Pow")
-                       ||     IsCurParam("Cnt")
+                   && (   IsCurParam(strVol)
+                       || IsCurParam(strTune)
+                       || IsCurParam(strSus)
+                       || IsCurParam(strAmp)
+                       || IsCurParam(strLvl)
+                       || IsCurParam(strPow)
+                       ||     IsCurParam(strCnt)
                           && (g_paramKeys || g_paramAuto)
                        || IsCurSetting(typeof(Harmonics)))
                 || g_transpose)
             {
-                strUp   = "▲";
-                strDown = "▼";
+                _strUp   = strUp;
+                _strDown = strDown;
             }
 
-            UpdateLight(lblShift, canAdjust ? "Shft"  : " ", 10, 10);
-            UpdateLight(lblDown,  canAdjust ? strDown : " ", 10, 10);
-            UpdateLight(lblUp,    canAdjust ? strUp   : " ", 10, 10);
+            UpdateLight(lblShift, canAdjust ?  strShft : " ", 10, 10);
+            UpdateLight(lblDown,  canAdjust ? _strDown : " ", 10, 10);
+            UpdateLight(lblUp,    canAdjust ? _strUp   : " ", 10, 10);
             
             UpdateLight(lblShift, canAdjust && g_shift);
             UpdateLight(lblDown,  canAdjust && g_shift);
@@ -776,7 +783,7 @@ namespace IngameScript
             var p = g_song.Patterns.IndexOf(pat);
 
 
-            if (IsCurParam("Tune"))
+            if (IsCurParam(strTune))
             {
                 var tune =
                     CurSrc > -1

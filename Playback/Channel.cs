@@ -141,7 +141,7 @@ namespace IngameScript
                 var save = S(Notes.Count);
 
                 foreach (var n in Notes)
-                    save += ";" + n.Save();
+                    save += P(n.Save());
 
                 return save;
             }
@@ -149,10 +149,10 @@ namespace IngameScript
 
             string SaveAutoKeys()
             {
-                var save = ";" + S(AutoKeys.Count);
+                var save = PS(AutoKeys.Count);
 
                 foreach (var k in AutoKeys)
-                    save += ";" + k.Save();
+                    save += P(k.Save());
 
                 return save;
             }

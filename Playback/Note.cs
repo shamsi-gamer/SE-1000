@@ -136,7 +136,7 @@ namespace IngameScript
                     +  S(Keys.Count);
 
                 foreach (var key in Keys)
-                    save += ";" + key.Save();
+                    save += P(key.Save());
                 
                 return save;
             }

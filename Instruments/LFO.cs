@@ -10,10 +10,9 @@ namespace IngameScript
     {
         public class LFO : Setting
         {
-            public enum LfoOp   { Multiply, Add };
-            public enum LfoType { Sine, Triangle, Saw, BackSaw, Square, Noise };
+            public ModOp        Op;
 
-            public LfoOp        Op;
+            public enum LfoType { Sine, Triangle, Saw, BackSaw, Square, Noise };
             public LfoType      Type;
                                 
             public Parameter    Amplitude,
@@ -22,7 +21,6 @@ namespace IngameScript
                                 
             public float        Phase,
                                 Delta,
-
                                 CurValue;
 
             public Queue<float> ValueCache;
@@ -33,21 +31,21 @@ namespace IngameScript
  
 
 
-            public LFO(Setting parent) : base("LFO", parent) 
+            public LFO(Setting parent, Instrument inst, Source src) 
+                : base(strLfo, parent, null, inst, src) 
             {
-                Op          = LfoOp  .Multiply;
+                Op          = ModOp  .Multiply;
                 Type        = LfoType.Sine;
                             
-                Amplitude   = (Parameter)NewSettingFromTag("Amp",  this);
-                Frequency   = (Parameter)NewSettingFromTag("Freq", this);
-                Offset      = (Parameter)NewSettingFromTag("Off",  this);
+                Amplitude   = (Parameter)NewSettingFromTag(strAmp,  this, inst, src);
+                Frequency   = (Parameter)NewSettingFromTag(strFreq, this, inst, src);
+                Offset      = (Parameter)NewSettingFromTag(strOff,  this, inst, src);
                             
-                CurValue    = 0;
-
                 g_lfo.Add(this);
 
                 Phase       = 0;
                 Delta       = 1f/FPS * Frequency.Value;
+                CurValue    = 0;
 
                 ValueCache = new Queue<float>();
                 for (int i = 0; i <= FPS; i++)
@@ -58,7 +56,7 @@ namespace IngameScript
 
 
             public LFO(LFO lfo, Setting parent) 
-                : base(lfo.Tag, parent, lfo.Prototype)
+                : base(lfo.Tag, parent, lfo.Prototype, lfo.Instrument, lfo.Source)
             {
                 Op          = lfo.Op;
                 Type        = lfo.Type;
@@ -66,13 +64,12 @@ namespace IngameScript
                 Amplitude   = new Parameter(lfo.Amplitude, this);
                 Frequency   = new Parameter(lfo.Frequency, this);
                 Offset      = new Parameter(lfo.Offset,    this);
-                            
-                CurValue    = lfo.CurValue;
 
                 g_lfo.Add(this);
 
                 Phase       = lfo.Phase;
                 Delta       = lfo.Delta;
+                CurValue    = lfo.CurValue;
 
                 ValueCache = new Queue<float>();
                 foreach (var val in lfo.ValueCache)
@@ -131,19 +128,11 @@ namespace IngameScript
             public override bool HasDeepParams(Channel chan, int src)
             {
                 return
-                       Op   != LfoOp  .Multiply
+                       Op   != ModOp  .Multiply
                     || Type != LfoType.Sine
                     || Amplitude.HasDeepParams(chan, src)
                     || Frequency.HasDeepParams(chan, src)
                     || Offset   .HasDeepParams(chan, src);
-            }
-
-
-            public override void Remove(Setting setting)
-            {
-                     if (setting == Amplitude) Amplitude = null;
-                else if (setting == Frequency) Frequency = null;
-                else if (setting == Offset)    Offset    = null;
             }
 
 
@@ -177,9 +166,9 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case "Amp":  return GetOrAddParamFromTag(Amplitude, tag);
-                    case "Freq": return GetOrAddParamFromTag(Frequency, tag);
-                    case "Off":  return GetOrAddParamFromTag(Offset,    tag);
+                    case strAmp:  return GetOrAddParamFromTag(Amplitude, tag);
+                    case strFreq: return GetOrAddParamFromTag(Frequency, tag);
+                    case strOff:  return GetOrAddParamFromTag(Offset,    tag);
                 }
 
                 return null;
@@ -214,9 +203,12 @@ namespace IngameScript
             {
                 var tag = data[i++];
  
-                var lfo = new LFO(parent);
+                var lfo = new LFO(
+                    parent, 
+                    inst, 
+                    iSrc > -1 ? inst.Sources[iSrc] : null);
 
-                lfo.Op   = (LfoOp)  int.Parse(data[i++]);
+                lfo.Op   = (ModOp)  int.Parse(data[i++]);
                 lfo.Type = (LfoType)int.Parse(data[i++]);
 
                 lfo.Amplitude = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Amplitude);
@@ -244,7 +236,7 @@ namespace IngameScript
                 }
 
                 return
-                     (Op == LfoOp.Add ? "+ " : "* ")
+                     (Op == ModOp.Add ? "+ " : "* ")
                     + strOsc + " "
                     + printValue(Amplitude.CurValue, 2, true, 0).PadLeft(4) + " "
                     + printValue(Frequency.CurValue, 2, true, 0).PadLeft(4) + " "
@@ -287,9 +279,9 @@ namespace IngameScript
                 var freq   = Frequency.CurValue;
                 var off    = Offset   .CurValue;
 
-                var isAmp  = IsCurParam("Amp" );
-                var isFreq = IsCurParam("Freq");
-                var isOff  = IsCurParam("Off" );
+                var isAmp  = IsCurParam(strAmp );
+                var isFreq = IsCurParam(strFreq);
+                var isOff  = IsCurParam(strOff );
 
 
                 // draw axes
@@ -375,12 +367,11 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                DrawFuncButton(sprites, (Op == LfoOp.Add ? "Add " : "Mult") + "↕", 0, w, y, false, false);
-                DrawFuncButton(sprites, "Amp",   1, w, y, true, Amplitude.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Freq",  2, w, y, true, Frequency.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Off",   3, w, y, true, Offset   .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, false, false);
+                DrawFuncButton(sprites, strAmp,  1, w, y, true, Amplitude.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strFreq, 2, w, y, true, Frequency.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strOff,  3, w, y, true, Offset   .HasDeepParams(chan, -1));
                 DrawFuncButton(sprites, "Osc ↕", 4, w, y, false, false);
-                DrawFuncButton(sprites, "X",     5, w, y, false, false, mainPressed.Contains(5));
             }
 
 
@@ -391,14 +382,14 @@ namespace IngameScript
                     case 0:
                     {
                         var newOp = (int)Op + 1;
-                        if (newOp > (int)LfoOp.Add) newOp = 0;
-                        Op = (LfoOp)newOp;
+                        if (newOp > (int)ModOp.Add) newOp = 0;
+                        Op = (ModOp)newOp;
                         mainPressed.Add(func);
                         break;
                     }
-                    case 1: AddNextSetting("Amp");  break;
-                    case 2: AddNextSetting("Freq"); break;
-                    case 3: AddNextSetting("Off");  break;
+                    case 1: AddNextSetting(strAmp);  break;
+                    case 2: AddNextSetting(strFreq); break;
+                    case 3: AddNextSetting(strOff);  break;
                     case 4:
                     {
                         var newOsc = (int)Type + 1;
@@ -407,8 +398,13 @@ namespace IngameScript
                         mainPressed.Add(func);
                         break;
                     }
-                    case 5: RemoveSetting(this); break;
                 }
+            }
+
+
+            public override bool CanDelete()
+            {
+                return true;
             }
         }
     }
