@@ -108,7 +108,9 @@ namespace IngameScript
 
             public float UpdateValue(TimeParams tp)
             {
-                if (tp.Program.TooComplex) return CurValue;
+                if ( /*m_valid
+                    ||*/tp.Program.TooComplex) 
+                    return CurValue;
 
 
                 var value = GetKeyValue(tp.Note, tp.SourceIndex);
@@ -165,7 +167,10 @@ namespace IngameScript
                     else                  value *= auto;
                 }
 
-                return CurValue = MinMax(Min, value, Max);
+                CurValue = MinMax(Min, value, Max);
+                m_valid  = true;
+
+                return CurValue;
             }
 
 
@@ -295,6 +300,17 @@ namespace IngameScript
 
                 if (Modulate != null) g_mod.Remove(Modulate);
                 Modulate = null;
+            }
+
+
+            public override void Reset()
+            {
+                base.Reset();
+
+                Trigger ?.Reset();
+                Envelope?.Reset();
+                Lfo     ?.Reset();
+                Modulate?.Reset();
             }
 
 

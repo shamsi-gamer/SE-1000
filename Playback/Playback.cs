@@ -38,7 +38,7 @@ namespace IngameScript
             UpdateSounds();
             UpdateVolumes();
 
-            ResetVolumes();
+            ResetValues();
         }
 
 
@@ -83,10 +83,10 @@ namespace IngameScript
         }
 
 
-        void ResetVolumes()
+        void ResetValues()
         {
             foreach (var inst in g_inst)
-                inst.ResetVolumes();
+                inst.ResetValues();
         }
 
 

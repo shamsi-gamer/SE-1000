@@ -19,8 +19,18 @@ namespace IngameScript
 
             public List<Source> Sources;
 
-            public float        CurVolume,
-                                DisplayVolume;
+            public float        DisplayVolume;
+
+
+            public float CurVolume { get 
+            { 
+                var vol = 0f;
+
+                foreach (var src in Sources)
+                    vol = Math.Max(vol, src.CurVolume);
+
+                return vol;
+            } }
 
 
             public Instrument()
@@ -37,7 +47,6 @@ namespace IngameScript
                               
                 Sources       = new List<Source>();
 
-                CurVolume     = 0;
                 DisplayVolume = float.NaN;
             }
 
@@ -64,7 +73,6 @@ namespace IngameScript
                 foreach (var src in inst.Sources)
                     Sources.Add(new Source(src, this));
 
-                CurVolume     = inst.CurVolume;
                 DisplayVolume = inst.DisplayVolume;
             }
 
@@ -121,13 +129,18 @@ namespace IngameScript
             }
 
 
-            public void ResetVolumes()
+            public void ResetValues()
             {
                 DisplayVolume = float.NaN;
-                CurVolume     = 0;
+
+                Volume   .Reset();
+                Tune    ?.Reset();
+                Filter  ?.Reset();
+                Delay   ?.Reset();
+                Arpeggio?.Reset();
 
                 foreach (var src in Sources)
-                    src.CurVolume = 0;
+                    src.ResetValues();
             }
 
 

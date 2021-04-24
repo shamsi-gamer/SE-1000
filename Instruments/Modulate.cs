@@ -98,7 +98,9 @@ namespace IngameScript
 
             public float UpdateValue(TimeParams tp)
             {
-                if (tp.Program.TooComplex) return 0;
+                if ( /*m_valid
+                    ||*/tp.Program.TooComplex) 
+                    return CurValue;
 
                 var amt = Amount .UpdateValue(tp);
                 var att = Attack .UpdateValue(tp);
@@ -116,7 +118,9 @@ namespace IngameScript
                     {
                              if (set.GetType() == typeof(Parameter)) val = Math.Max(val, ((Parameter)set).CurValue);
                         else if (set.GetType() == typeof(LFO      )) val = Math.Max(val, ((LFO      )set).CurValue);
-                        // TODO add more that have CurValue, except Modulate
+                        else if (set.GetType() == typeof(Envelope )) val = Math.Max(val, ((Envelope )set).CurValue);
+                        else if (set.GetType() == typeof(Modulate )) val = Math.Max(val, ((Modulate )set).CurValue);
+                        // TODO add more that have CurValue
                     }
 
                     else if (src != null) 
@@ -126,12 +130,15 @@ namespace IngameScript
                         val = Math.Max(val, inst.CurVolume);
                 }
 
-                CurValue = 
-                    val > 0
-                    ? Math.Min(CurValue + val/FPS/att, 1)
-                    : Math.Max(0, CurValue - 1f/FPS/rel);
-                            
-                CurValue *= amt;
+                var  cv  = Math.Abs(CurValue);
+                var _amt = Math.Abs(amt);
+
+                var a = Math.Min(   cv + val*_amt/FPS/(att>0?att:0.000001f), _amt);
+                var d = Math.Max(0, cv -     _amt/FPS/(rel>0?rel:0.000001f));
+
+                CurValue = Math.Sign(amt) * (d + (a - d) * val);
+
+                m_valid = true;
 
                 return CurValue;
             }
@@ -152,6 +159,16 @@ namespace IngameScript
                 Amount .Clear();
                 Attack .Clear();
                 Release.Clear();
+            }
+
+
+            public override void Reset()
+            {
+                base.Reset();
+
+                Amount .Reset();
+                Attack .Reset();
+                Release.Reset();
             }
 
 
@@ -311,7 +328,7 @@ namespace IngameScript
                 var isRel = IsCurParam(strRel);
 
                 var x0 = x + w/2 - w0/2;
-                var y0 = y + h/2 - h0/2;
+                var y0 = y + h/2 - h0/4;
 
                 Vector2 p0, p1, p2;
 
@@ -334,11 +351,11 @@ namespace IngameScript
                 {
                     for (int i = 0; i < SrcSettings.Count; i++)
                     {
-                        var set  = SrcSettings[i];
-                        var src  = SrcSources[i];
+                        var set  = SrcSettings   [i];
+                        var src  = SrcSources    [i];
                         var inst = SrcInstruments[i];
                         
-                        strFrom += inst.Name;
+                        strFrom += "\n" + inst.Name;
 
                              if (set != null) strFrom += "/" + set.GetPath(src != null ? src.Index : -1);
                         else if (src != null) strFrom += "/" + src.Index;
@@ -365,7 +382,7 @@ namespace IngameScript
 
                 var fs = 0.5f;
 
-                DrawString(sprites, S_00(amt) + (isAmt ? " s" : ""),                      p1.X + 6,            p1.Y - 20, fs, isAmt ? color6 : color3, TaC);
+                DrawString(sprites, S_00(amt) + (isAmt ? " s" : ""),                      p1.X + 18,           p1.Y + (amt>=0?-20:2), fs, isAmt ? color6 : color3, TaC);
                 DrawString(sprites, S_00(a)   + (isAtt ? " s" : ""),                     (p0.X + p1.X)/2 + 6,  p0.Y +  3, fs, isAtt ? color6 : color3, TaC);
                 DrawString(sprites, S_00(r)   + (isRel ? " s" : ""), Math.Max(p0.X + 90, (p1.X + p2.X)/2 - 5), p0.Y +  3, fs, isRel ? color6 : color3, TaC);
             }

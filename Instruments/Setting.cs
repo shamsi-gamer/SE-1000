@@ -23,7 +23,7 @@ namespace IngameScript
 
             public bool      _IsCurrent;
 
-            //protected bool m_valid;
+            protected bool   m_valid;
 
 
             public Setting(string tag, Setting parent, Setting proto, Instrument inst, Source src)
@@ -34,7 +34,7 @@ namespace IngameScript
                 Instrument  = inst;
                 Source      = src;
                _IsCurrent   = false;
-                //m_valid   = false;
+                m_valid     = false;
             }
 
 
@@ -73,6 +73,12 @@ namespace IngameScript
                                 
 
             public virtual void Clear() {}
+
+
+            public virtual void Reset()
+            { 
+                m_valid = false;
+            }
 
 
             public virtual void Randomize(Program prog) {}

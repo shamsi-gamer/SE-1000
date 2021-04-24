@@ -91,6 +91,18 @@ namespace IngameScript
             }
 
 
+            public override void Reset()
+            {
+                base.Reset();
+
+                Dry  .Reset();
+                Count.Reset();
+                Time .Reset();
+                Level.Reset();
+                Power.Reset();
+            }
+
+
             public override void Randomize(Program prog)
             {
                 if (prog.TooComplex) return;

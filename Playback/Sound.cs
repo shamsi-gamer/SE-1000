@@ -170,10 +170,10 @@ namespace IngameScript
                 if (Cache != null) // not echo
                 {
                     var updateVol = 
-                           g_song.PlayTime < Time + Length + ReleaseLength
-                        && !prog.TooComplex
+                        g_song.PlayTime < Time + Length + ReleaseLength
+                        //&& !prog.TooComplex
                         ? GetVolume(g_time, g_song.StartTime, prog)
-                        : 1;
+                        : 0;
 
                     vol = 
                           TriggerVolume
@@ -189,6 +189,8 @@ namespace IngameScript
 
                     var inst = Source.Instrument;
 
+                    var srcVol = 0f;
+
                     if (    Harmonic != null
                         && !prog.TooComplex)
                     {
@@ -201,7 +203,7 @@ namespace IngameScript
                             vol * Harmonic.CurValue, 
                             Harmonic.Max);
 
-                        Source.CurVolume = Math.Max(Source.CurVolume, Harmonic.CurValue);
+                        srcVol = Math.Max(srcVol, Harmonic.CurValue);
 
                         inst.DisplayVolume = 
                             OK(inst.DisplayVolume)
@@ -209,10 +211,7 @@ namespace IngameScript
                             : Harmonic.CurValue;
                     }
 
-
-                    Source.CurVolume = Math.Max(Source.CurVolume, vol);
-                    inst  .CurVolume = Math.Max(Source.CurVolume, inst.CurVolume);
-
+                    Source.CurVolume = Math.Max(srcVol, vol);
 
                     inst.DisplayVolume = 
                         OK(inst.DisplayVolume)
@@ -228,6 +227,7 @@ namespace IngameScript
                     vol = EchoSource.Cache[lTime]
                         * EchoVolume;
                 }
+
 
                 UpdateSpeakers(vol, prog);
 

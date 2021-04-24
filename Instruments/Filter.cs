@@ -54,6 +54,16 @@ namespace IngameScript
             }
 
 
+            public override void Reset()
+            {
+                base.Reset();
+
+                Cutoff   .Reset();
+                Resonance.Reset();
+                Sharpness.Reset();
+            }
+
+
             public override void Randomize(Program prog)
             {
                 if (prog.TooComplex) return;

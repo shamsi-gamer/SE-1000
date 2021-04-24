@@ -103,7 +103,9 @@ namespace IngameScript
 
             public float UpdateValue(TimeParams tp)
             {
-                if (tp.Program.TooComplex) return 0;
+                if ( /*m_valid 
+                    ||*/tp.Program.TooComplex) 
+                    return 0;
 
                 var amp  = Amplitude.UpdateValue(tp);
                 var freq = Frequency.UpdateValue(tp);
@@ -120,6 +122,7 @@ namespace IngameScript
                 }
 
                 CurValue *= amp;
+                m_valid = true;
 
                 return CurValue;
             }
@@ -142,6 +145,17 @@ namespace IngameScript
                 Frequency.Clear();
                 Offset   .Clear();
             }
+
+
+            public override void Reset()
+            {
+                base.Reset();
+
+                Amplitude.Reset();
+                Frequency.Reset();
+                Offset   .Reset();
+            }
+
 
             public override void Randomize(Program prog)
             {

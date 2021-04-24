@@ -475,6 +475,17 @@ namespace IngameScript
                     DrawFuncButton(sprites, strDel,  5, w, y, true, Delay     != null);
                 }
             }
+
+
+            public void ResetValues()
+            {
+                Offset   ?.Reset();
+                Volume   ?.Reset();
+                Tune     ?.Reset();
+                Harmonics?.Reset();
+                Filter   ?.Reset();
+                Delay    ?.Reset();
+            }
         }
     }
 }

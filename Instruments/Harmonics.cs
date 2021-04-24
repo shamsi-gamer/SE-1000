@@ -191,6 +191,15 @@ namespace IngameScript
             }
 
 
+            public override void Reset()
+            {
+                base.Reset();
+
+                foreach (var tone in Tones)
+                    tone.Reset();
+            }
+
+
             public override void Randomize(Program prog)
             {
                 SetPreset((Preset)g_rnd.Next(0, 17));

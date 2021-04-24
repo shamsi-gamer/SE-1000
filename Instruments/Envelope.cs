@@ -20,6 +20,8 @@ namespace IngameScript
                              TrigSustain,
                              TrigRelease;
 
+            public float     CurValue;
+
 
             public Envelope(Setting parent, Instrument inst, Source src) 
                 : base(strEnv, parent, null, inst, src)
@@ -59,18 +61,25 @@ namespace IngameScript
 
             public float UpdateValue(TimeParams tp)
             {
-                if (tp.Program.TooComplex) return 0;
+                if ( /*m_valid
+                    ||*/tp.Program.TooComplex) 
+                    return CurValue;
+
 
                 if (tp.Note != null)
                     tp.NoteLength = tp.Note.FrameLength;
 
-                return UpdateValue(
+                CurValue = UpdateValue(
                     tp.LocalTime, 
                     tp.NoteLength, 
                     tp.GetTriggerValue(Attack ),
                     tp.GetTriggerValue(Decay  ),
                     tp.GetTriggerValue(Sustain),
                     tp.GetTriggerValue(Release));
+
+                m_valid = true;
+
+                return CurValue;
             }
 
 
@@ -118,6 +127,17 @@ namespace IngameScript
                 Decay  .Clear();
                 Sustain.Clear();
                 Release.Clear();
+            }
+
+
+            public override void Reset()
+            {
+                base.Reset();
+
+                Attack .Reset();
+                Decay  .Reset();
+                Sustain.Reset();
+                Release.Reset();
             }
 
 
