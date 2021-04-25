@@ -245,7 +245,7 @@ namespace IngameScript
             case strAtt:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    parent, inst, src);
             case strDec:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, parent, inst, src);
             case strSus:  return new Parameter(tag,    0,           1,   0.01f, 1,    0.01f,  0.1f,  0.1f, parent, inst, src);
-            case strRel:  return new Parameter(tag,    0,          10,   0,     2,    0.01f,  0.1f,  0.2f, parent, inst, src);
+            case strRel:  return new Parameter(tag,    0,          10,   0,     2,    0.01f,  0.1f,  parent.GetType() == typeof(Modulate) ? 0 : 0.2f, parent, inst, src);
 
             case strAmp:  return new Parameter(tag,    0,           1,   0,     1,    0.001f, 0.05f, 1,    parent, inst, src);
             case strFreq: return new Parameter(tag,    0.01f,      30,   0.01f, 4,    0.001f, 0.05f, 1,    parent, inst, src);

@@ -50,18 +50,30 @@ namespace IngameScript
         }
 
 
-        void SwitchToSetting(string path, Instrument inst)
+        void SwitchToSetting(Instrument inst, int iSrc, Setting set)
         {
-            g_settings.Clear();
-            CurSet = -1;
+            SwitchToSetting(inst, iSrc, set.GetPath(iSrc));
+        }
 
+
+        void SwitchToSetting(Instrument inst, int iSrc, string path)
+        {
+            BackOut();
+
+            CurSrc = iSrc;
+
+            CurChan =
             SelChan = Array.FindIndex(
                 CurrentPattern.Channels, 
                 ch => ch.Instrument == inst);
 
-            var tags = path.Split('/');
+            UpdateInstOff(SelChan);
 
-            var iSrc = -1;
+            UpdateInstName(true);
+            g_inputValid = false;
+
+
+            var tags = path.Split('/');
 
             for (int i = 0; i < tags.Length; i++)
             { 

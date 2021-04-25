@@ -105,8 +105,8 @@ namespace IngameScript
                 + WS(g_volume)
 
                 + W (ModDestConnecting != null ? ModDestConnecting.GetPath(ModDestSrcIndex) : "")
-                + WS(ModCurChan)
-                + WS(ModSelChan)
+                //+ WS(ModCurChan)
+                //+ WS(ModSelChan)
                 + WS(ModDestSrcIndex)
                 + WS(ModDestChannel != null ? g_song.Patterns.IndexOf(ModDestChannel.Pattern)         : -1)
                 + WS(ModDestChannel != null ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)

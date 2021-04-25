@@ -462,16 +462,10 @@ namespace IngameScript
                     ModDestConnecting.SrcSources    .Add(SelectedSource);
                     ModDestConnecting.SrcInstruments.Add(SelectedInstrument);
 
-                    BackOut();
-
-                    //CurChan = ModCurChan;
-                    //SelChan = ModSelChan;
-                    //SetCurInst(ModDestChannel.Instrument);
-                    //CurSrc = ModDestSrcIndex;
-
                     SwitchToSetting(
-                        ModDestConnecting.GetPath(ModDestSrcIndex), 
-                        ModDestChannel.Instrument);
+                        ModDestChannel.Instrument,
+                        ModDestSrcIndex, 
+                        ModDestConnecting);
 
                     ResetModConnecting();
                 }
