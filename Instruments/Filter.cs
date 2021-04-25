@@ -142,14 +142,10 @@ namespace IngameScript
                 width = 138;
 
                 return
-                      printValue(Cutoff   .CurValue, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Resonance.CurValue, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Sharpness.CurValue, 2, true, 0).PadLeft(4);
+                      printValue(Cutoff   .Value, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Resonance.Value, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Sharpness.Value, 2, true, 0).PadLeft(4);
             }
-
-
-            public override string GetUpLabel()   { return S_(2) + Cutoff.UpArrow   + S_(4) + Resonance.UpArrow   + S_(4) + Sharpness.UpArrow;   }
-            public override string GetDownLabel() { return S_(2) + Cutoff.DownArrow + S_(4) + Resonance.DownArrow + S_(4) + Sharpness.DownArrow; }
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
@@ -170,19 +166,19 @@ namespace IngameScript
 
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
-                var cut  = Cutoff   .Value;
-                var res  = Resonance.Value;
-                var shrp = Sharpness.Value;
+                var cut     = Cutoff   .Value;
+                var res     = Resonance.Value;
+                var shrp    = Sharpness.Value;
 
                 var curCut  = Cutoff   .CurValue;
                 var curRes  = Resonance.CurValue;
                 var curShrp = Sharpness.CurValue;
 
-                var w0 = 240f;
-                var h0 = 120f;
-
-                var x0 = x + w/2 - w0/2;
-                var y0 = y + h/2 - h0/2;
+                var w0      = 240f;
+                var h0      = 120f;
+                            
+                var x0      = x + w/2 - w0/2;
+                var y0      = y + h/2 - h0/2;
 
 
                 FillRect(sprites, x0, y0 + h0, 2, -h0, color3);

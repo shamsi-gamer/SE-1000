@@ -30,7 +30,6 @@ namespace IngameScript
                 //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurSrc);
                 UpdateSrcOff();
 
-                //g_sampleValid = F;
 
                 MarkLight(lblNew, false);
             }
@@ -53,9 +52,7 @@ namespace IngameScript
                 UpdateInstOff(CurChan);
 
                 UpdateInstName();
-                inputValid = false;
-
-                //g_sampleValid = F;
+                g_inputValid = false;
 
                 MarkLight(lblNew);
             }
@@ -227,7 +224,7 @@ namespace IngameScript
 
 
                 UpdateInstName();
-                inputValid = false;
+                g_inputValid = false;
 
                 UpdateInstOff(CurChan);
 
@@ -308,7 +305,7 @@ namespace IngameScript
                 g_shift  = false;
 
                 UpdateInstName(true);
-                inputValid = false;
+                g_inputValid = false;
             }
             
 
@@ -384,7 +381,7 @@ namespace IngameScript
                 g_shift = false;
 
                 UpdateInstName(true);
-                inputValid = false;
+                g_inputValid = false;
             }
             else if (SelChan > -1)
             {
@@ -431,7 +428,7 @@ namespace IngameScript
                 UpdateInstOff(SelChan);
 
                 UpdateInstName(true);
-                inputValid = false;
+                g_inputValid = false;
 
                 MarkLight(lblEnter, CurSrc < 0);
                 UpdateLight(lblCmd3, false);
@@ -465,9 +462,12 @@ namespace IngameScript
                     ModDestConnecting.SrcSources    .Add(SelectedSource);
                     ModDestConnecting.SrcInstruments.Add(SelectedInstrument);
 
-                    CurChan = ModCurChan;
-                    SetCurInst(ModDestChannel.Instrument);
-                    CurSrc = ModDestSrcIndex;
+                    BackOut();
+
+                    //CurChan = ModCurChan;
+                    //SelChan = ModSelChan;
+                    //SetCurInst(ModDestChannel.Instrument);
+                    //CurSrc = ModDestSrcIndex;
 
                     SwitchToSetting(
                         ModDestConnecting.GetPath(ModDestSrcIndex), 
@@ -490,6 +490,7 @@ namespace IngameScript
                 {
                     ModDestConnecting = CurModulate;
                     ModCurChan        = CurChan;
+                    ModSelChan        = SelChan;
                     ModDestSrcIndex   = CurSrc;
                     ModDestChannel    = SelectedChannel;
 

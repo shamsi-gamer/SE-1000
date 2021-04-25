@@ -141,6 +141,7 @@ namespace IngameScript
             modConnPath = cfg[c++];
 
             if (!int  .TryParse(cfg[c++], out ModCurChan     )) return false;
+            if (!int  .TryParse(cfg[c++], out ModSelChan     )) return false;
             if (!int  .TryParse(cfg[c++], out ModDestSrcIndex)) return false;
             if (!int  .TryParse(cfg[c++], out modPat         )) return false;
             if (!int  .TryParse(cfg[c++], out modChan        )) return false;

@@ -217,15 +217,11 @@ namespace IngameScript
                 width = 174;
 
                 return
-                      printValue(Attack .CurValue, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Decay  .CurValue, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Sustain.CurValue, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Release.CurValue, 2, true, 0).PadLeft(4);
+                      printValue(Attack .Value, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Decay  .Value, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Sustain.Value, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Release.Value, 2, true, 0).PadLeft(4);
             }
-
-
-            public override string GetUpLabel()   { return S_(2) + Attack.UpArrow   + S_(4) + Decay.UpArrow   + S_(4) + Sustain.UpArrow   + S_(4) + Release.UpArrow;   }
-            public override string GetDownLabel() { return S_(2) + Attack.DownArrow + S_(4) + Decay.DownArrow + S_(4) + Sustain.DownArrow + S_(4) + Release.DownArrow; }
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)

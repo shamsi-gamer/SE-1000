@@ -252,14 +252,10 @@ namespace IngameScript
                 return
                      (Op == ModOp.Add ? "+ " : "* ")
                     + strOsc + " "
-                    + printValue(Amplitude.CurValue, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Frequency.CurValue, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Offset   .CurValue, 2, true, 0).PadLeft(4);
+                    + printValue(Amplitude.Value, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Frequency.Value, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Offset   .Value, 2, true, 0).PadLeft(4);
             }
-
-
-            public override string GetUpLabel()   { return S_(5) + Amplitude.UpArrow   + S_(5) + Frequency.UpArrow   + S_(5) + Offset.UpArrow;   }
-            public override string GetDownLabel() { return S_(5) + Amplitude.DownArrow + S_(5) + Frequency.DownArrow + S_(5) + Offset.DownArrow; }
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)

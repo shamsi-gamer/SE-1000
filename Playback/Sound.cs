@@ -181,7 +181,9 @@ namespace IngameScript
                         * Channel.Volume
                         * g_volume;
 
-                    if (Source.Oscillator == OscClick)
+                    // this is for the fake "current volume"
+                    if (   Source.Oscillator == OscClick
+                        && lTime > 1)
                         vol = 0;
                     else if (Source.Oscillator == OscCrunch)
                         vol /= 2;

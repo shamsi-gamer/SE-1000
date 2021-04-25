@@ -5,12 +5,12 @@ namespace IngameScript
 {
     partial class Program
     {
-        public bool inputValid = true;
+        public bool g_inputValid = true;
 
 
         void UpdateInst()
         {
-            if (   inputValid
+            if (   g_inputValid
                 && SelChan > -1
                 && CurSrc < 0)
             {
@@ -20,7 +20,7 @@ namespace IngameScript
                 CurrentInstrument.Name = S(sb).Trim().Trim(new char[] {';'});
             }
 
-            inputValid = true;
+            g_inputValid = true;
         }
 
 

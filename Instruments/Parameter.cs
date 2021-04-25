@@ -427,12 +427,8 @@ namespace IngameScript
                 return
                     Tag == strVol
                     ? printValue(100 * Math.Log10(Value), 0, true, 0).PadLeft(4)
-                    : printValue(Value, 2, true, 1).PadLeft(4);
+                    : printValue(CurValue, 2, true, 1).PadLeft(4);
             }
-
-
-            public override string GetUpLabel()   { return S_(2) + UpArrow;   }
-            public override string GetDownLabel() { return S_(2) + DownArrow; }
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
@@ -610,10 +606,6 @@ namespace IngameScript
 
             //    return color;
             //} }
-
-
-            public string UpArrow   { get { return CurValue - PrevValue >  0.0001 ? strUp : " "; } }
-            public string DownArrow { get { return CurValue - PrevValue < -0.0001 ? strDown : " "; } }
         }
 
 

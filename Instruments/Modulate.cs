@@ -10,7 +10,8 @@ namespace IngameScript
     {
         static Modulate ModDestConnecting =  null;
         static int      ModDestSrcIndex   = -1,
-                        ModCurChan        = -1;
+                        ModCurChan        = -1,
+                        ModSelChan        = -1;
         static Channel  ModDestChannel    =  null;
 
 
@@ -137,7 +138,6 @@ namespace IngameScript
                 var d = Math.Max(0, cv -     _amt/FPS/(rel>0?rel:0.000001f));
 
                 CurValue = Math.Sign(amt) * (d + (a - d) * val);
-
                 m_valid = true;
 
                 return CurValue;
@@ -279,14 +279,10 @@ namespace IngameScript
 
                 return
                       (Op == ModOp.Add ? "+ " : "* ")
-                    + printValue(Amount .CurValue, 2, true, 0).PadLeft(5) + " "
-                    + printValue(Attack .CurValue, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Release.CurValue, 2, true, 0).PadLeft(4);
+                    + printValue(Amount .Value, 2, true, 0).PadLeft(5) + " "
+                    + printValue(Attack .Value, 2, true, 0).PadLeft(4) + " "
+                    + printValue(Release.Value, 2, true, 0).PadLeft(4);
             }
-
-
-            public override string GetUpLabel()   { return S_(2) + Amount.UpArrow   + S_(4) + Attack.UpArrow   + S_(4) + Release.UpArrow;   }
-            public override string GetDownLabel() { return S_(2) + Amount.DownArrow + S_(4) + Attack.DownArrow + S_(4) + Release.DownArrow; }
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
@@ -382,17 +378,16 @@ namespace IngameScript
 
                 var fs = 0.5f;
 
-                DrawString(sprites, S_00(amt) + (isAmt ? " s" : ""),                      p1.X + 18,           p1.Y + (amt>=0?-20:2), fs, isAmt ? color6 : color3, TaC);
-                DrawString(sprites, S_00(a)   + (isAtt ? " s" : ""),                     (p0.X + p1.X)/2 + 6,  p0.Y +  3, fs, isAtt ? color6 : color3, TaC);
-                DrawString(sprites, S_00(r)   + (isRel ? " s" : ""), Math.Max(p0.X + 90, (p1.X + p2.X)/2 - 5), p0.Y +  3, fs, isRel ? color6 : color3, TaC);
+                DrawString(sprites, S_00(amt) + (isAmt ? " s" : ""),                      p1.X + 18,           p1.Y + (amt>=0?-20:4), fs, isAmt ? color6 : color3, TaC);
+                DrawString(sprites, S_00(a)   + (isAtt ? " s" : ""),                     (p0.X + p1.X)/2 + 6,  p0.Y +  3,             fs, isAtt ? color6 : color3, TaC);
+                DrawString(sprites, S_00(r)   + (isRel ? " s" : ""), Math.Max(p0.X + 90, (p1.X + p2.X)/2 - 5), p0.Y +  3,             fs, isRel ? color6 : color3, TaC);
             }
 
 
             void DrawEnvelope(List<MySprite> sprites, Vector2 p0, Vector2 p1, Vector2 p2, Color col, bool isAmt, bool isAtt, bool isRel)
             {
-                var wamt = isAmt ? 6 : 1;
-                var wa   = isAtt ? 6 : 1;
-                var wr   = isRel ? 6 : 1;
+                var wa = isAtt || isAmt ? 6 : 1;
+                var wr = isRel || isAmt ? 6 : 1;
 
 
                 // attack
@@ -477,6 +472,7 @@ namespace IngameScript
             ModDestConnecting = null;
             ModDestSrcIndex   = -1;
             ModCurChan        = -1;
+            ModSelChan        = -1;
             ModDestChannel    = null;
 
             UpdateAdjustLights(g_song);
