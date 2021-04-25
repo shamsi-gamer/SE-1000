@@ -22,7 +22,7 @@ namespace IngameScript
             lblLoop, lblBlock, 
             lblTransposeUp, lblTransposeDown,
             lblAllPatterns, lblMovePat, lblFollow,
-            lblMixerShift, lblMemSet, lblAutoCue, lblMemory,
+            lblMixerShift, lblClips, lblMemSet, lblAutoCue, lblMemory,
             lblPrev, lblNext, lblMove, lblEnter, lblBack, lblBackOut,
             lblNew, lblDuplicate, lblDelete,
             lblCmd1, lblCmd2, lblCmd3,
@@ -110,7 +110,8 @@ namespace IngameScript
             lblAutoCue         = Lbl("Auto Cue");
             lblFollow          = Lbl("Follow");
 
-            lblMixerShift      = Lbl("Mixer Shift");
+            lblMixerShift      = Lbl("M Shift");
+            lblClips           = Lbl("M Clips");
 
             lblMemSet          = Lbl("MemSet");
             lblMemory          = Lbl("Mem");
@@ -341,6 +342,8 @@ namespace IngameScript
             UpdateLockLights();
             UpdateGyroLight();
             UpdateTimerLight();
+
+            UpdateClipsLight();
         }
 
 
@@ -678,6 +681,12 @@ namespace IngameScript
         void UpdateTimerLight()
         {
             UpdateLight(lblNoise, g_timers.Find(t => !t.Enabled) == null);
+        }
+
+
+        void UpdateClipsLight()
+        {
+            UpdateLight(lblClips, g_session ? "Clips" : "Blocks", 8, 18);
         }
 
 

@@ -111,7 +111,7 @@ namespace IngameScript
 
 
         bool ReadBytes(uint f, int b) { return (f & (1 << b)) != 0; }
-        void WriteByte(ref uint f, bool c, int b) { if (c) f |= (uint)(1 << b); }
+        void WriteBit(ref uint f, bool c, int b) { if (c) f |= (uint)(1 << b); }
 
 
         static bool fequal(float a, float b)

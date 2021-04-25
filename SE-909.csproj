@@ -69,6 +69,7 @@
     <Compile Include="Graphics\Draw Mixer.cs" />
     <Compile Include="Graphics\Draw Info.cs" />
     <Compile Include="IO\Input.cs" />
+    <Compile Include="Playback\Session.cs" />
     <Compile Include="Playback\Playback.cs" />
     <Compile Include="Instruments\Instrument.cs" />
     <Compile Include="IO\Load.cs" />

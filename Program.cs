@@ -64,6 +64,7 @@ namespace IngameScript
         List<Note>              lastNotes = new List<Note>();
                                              
         Channel                 copyChan  = null;
+
                                 
 
         float
@@ -236,7 +237,10 @@ namespace IngameScript
                                                                     
                 case "solo all":   EnableChannels(true);            break;
                 case "mute all":   EnableChannels(false);           break;
+
                 case "m shift":    MixerShift();                    break;
+
+                case "clips":      Clips();                         break;
                                                                     
                 case "edit":       Edit();                          break;
                                                                     

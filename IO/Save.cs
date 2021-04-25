@@ -32,42 +32,44 @@ namespace IngameScript
             uint f = 0;
             var  i = 0;
 
-            WriteByte(ref f, g_movePat,    i++);
+            WriteBit(ref f, g_movePat,    i++);
 
-            WriteByte(ref f, g_in,         i++);
-            WriteByte(ref f, g_out,        i++);
+            WriteBit(ref f, g_in,         i++);
+            WriteBit(ref f, g_out,        i++);
 
-            WriteByte(ref f, g_loop,       i++);
-            WriteByte(ref f, g_block,      i++);
-            WriteByte(ref f, g_allPats,    i++);
-            WriteByte(ref f, g_follow,     i++);
-            WriteByte(ref f, g_autoCue,    i++);
+            WriteBit(ref f, g_loop,       i++);
+            WriteBit(ref f, g_block,      i++);
+            WriteBit(ref f, g_allPats,    i++);
+            WriteBit(ref f, g_follow,     i++);
+            WriteBit(ref f, g_autoCue,    i++);
 
-            WriteByte(ref f, g_allChan,    i++);
-            WriteByte(ref f, g_rndInst,    i++);
+            WriteBit(ref f, g_allChan,    i++);
+            WriteBit(ref f, g_rndInst,    i++);
 
-            WriteByte(ref f, g_piano,      i++);
-            WriteByte(ref f, g_move,       i++);
+            WriteBit(ref f, g_piano,      i++);
+            WriteBit(ref f, g_move,       i++);
 
-            WriteByte(ref f, g_transpose,  i++);
-            WriteByte(ref f, g_spread,     i++);
+            WriteBit(ref f, g_transpose,  i++);
+            WriteBit(ref f, g_spread,     i++);
 
-            WriteByte(ref f, g_shift,      i++);
-            WriteByte(ref f, g_mixerShift, i++);
+            WriteBit(ref f, g_shift,      i++);
+            WriteBit(ref f, g_mixerShift, i++);
 
-            WriteByte(ref f, g_hold,       i++);
-            WriteByte(ref f, g_pick,       i++);
+            WriteBit(ref f, g_hold,       i++);
+            WriteBit(ref f, g_pick,       i++);
 
-            WriteByte(ref f, g_chordMode,  i++);
-            WriteByte(ref f, g_chordEdit,  i++);
-            WriteByte(ref f, g_chordAll,   i++);
+            WriteBit(ref f, g_chordMode,  i++);
+            WriteBit(ref f, g_chordEdit,  i++);
+            WriteBit(ref f, g_chordAll,   i++);
 
-            WriteByte(ref f, g_halfSharp,  i++);
+            WriteBit(ref f, g_halfSharp,  i++);
 
-            WriteByte(ref f, g_paramKeys,  i++);
-            WriteByte(ref f, g_paramAuto,  i++);
+            WriteBit(ref f, g_paramKeys,  i++);
+            WriteBit(ref f, g_paramAuto,  i++);
 
-            WriteByte(ref f, g_setMem,     i++);
+            WriteBit(ref f, g_setMem,     i++);
+
+            WriteBit(ref f, g_session,    i++);
 
             return f;
         }

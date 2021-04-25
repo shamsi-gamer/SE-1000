@@ -99,6 +99,8 @@ namespace IngameScript
                          
             g_setMem     = ReadBytes(f, i++);
 
+            g_session    = ReadBytes(f, i++);
+
             return true;
         }
 
