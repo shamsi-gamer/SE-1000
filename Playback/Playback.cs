@@ -17,14 +17,9 @@ namespace IngameScript
                 : long_NaN;
 
             if (g_autoCue)
-            { 
                 g_song.SetCue();
-                UpdateLight(lblCue, g_song.Cue > -1);
-            }
 
             g_song.CueNextPattern();
-
-            UpdateLight(lblCue, g_song.Cue > -1);
         }
 
 
@@ -54,7 +49,6 @@ namespace IngameScript
 
             AddPlaybackNotes();
 
-            UpdateLight(lblCue, g_song.Cue > -1);
             UpdateOctaveLight();
         }
 

@@ -48,7 +48,7 @@ namespace IngameScript
             {
                 if (tp.Program.TooComplex) return 0;
 
-                var val = 0f;
+                float val;
 
                 if (i == 0)
                 { 

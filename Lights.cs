@@ -22,7 +22,7 @@ namespace IngameScript
             lblLoop, lblBlock, 
             lblTransposeUp, lblTransposeDown,
             lblAllPatterns, lblMovePat, lblFollow,
-            lblMixerShift, lblCue, lblAutoCue, lblMemory,
+            lblMixerShift, lblMemSet, lblAutoCue, lblMemory,
             lblPrev, lblNext, lblMove, lblEnter, lblBack, lblBackOut,
             lblNew, lblDuplicate, lblDelete,
             lblCmd1, lblCmd2, lblCmd3,
@@ -37,9 +37,10 @@ namespace IngameScript
                            lblLow;
 
         List<IMyTextPanel> lblMem;
+        IMyTextPanel[]     lblMems = new IMyTextPanel[nMems];
 
 
-        IMyInteriorLight   warningLight;
+        IMyInteriorLight warningLight;
 
 
         static List<int>   mixerPressed   = new List<int>();
@@ -111,7 +112,7 @@ namespace IngameScript
 
             lblMixerShift      = Lbl("Mixer Shift");
 
-            lblCue             = Lbl("Cue");
+            lblMemSet          = Lbl("MemSet");
             lblMemory          = Lbl("Mem");
             lblStep            = Lbl("Step");
             lblHold            = Lbl("Hold");
@@ -153,7 +154,7 @@ namespace IngameScript
 
 
             for (int m = 0; m < nMems; m++)
-                lMems[m] = Lbl("Mem " + S(m));
+                lblMems[m] = Lbl("Mem " + S(m));
 
 
             lblHigh = new List<IMyTextPanel>();
@@ -321,7 +322,6 @@ namespace IngameScript
             UpdateLight(lblBlock,       g_block);
             UpdateLight(lblAllPatterns, g_allPats);
             UpdateLight(lblMovePat,     g_movePat);
-            UpdateLight(lblCue,         g_song.Cue > -1);
             UpdateLight(lblAutoCue,     g_autoCue);
 
             UpdateEditLight(lblEdit, OK(g_song.EditPos));
@@ -467,7 +467,7 @@ namespace IngameScript
 
             for (int m = 0; m < nMems; m++)
             {
-                lMems[m].WriteText(
+                lblMems[m].WriteText(
                       S((char)(65 + m)) + " "
                     + (g_mem[m] > -1 ? S(g_mem[m] + 1).PadLeft(3) : " "));
             }

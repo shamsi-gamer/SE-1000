@@ -7,9 +7,6 @@ namespace IngameScript
 {
     partial class Program
     {
-        IMyTextPanel[] lMems = new IMyTextPanel[nMems];
-
-
         void Play()
         {
             if (OK(g_song.PlayTime))
@@ -70,13 +67,8 @@ namespace IngameScript
             }
             else if (g_mem[m] > -1)
             {
-                if (OK(g_song.PlayTime))
-                {
-                    g_song.Cue = g_mem[m];
-                    UpdateLight(lblCue, g_song.Cue > -1);
-                }
-                else
-                    SetCurrentPattern(g_mem[m]);
+                if (OK(g_song.PlayTime)) g_song.Cue = g_mem[m];
+                else                     SetCurrentPattern(g_mem[m]);
             }
 
             MarkLight(lblMem[m]);
@@ -86,7 +78,6 @@ namespace IngameScript
         void Cue()
         {
             g_song.SetCue();
-            UpdateLight(lblCue, g_song.Cue > -1);
         }
 
 
@@ -255,10 +246,7 @@ namespace IngameScript
 
 
                 if (g_autoCue)
-                {
                     g_song.Cue = CurPat;
-                    UpdateLight(lblCue, g_song.Cue > -1);
-                }
             }
 
             if (OK(g_song.EditPos))
