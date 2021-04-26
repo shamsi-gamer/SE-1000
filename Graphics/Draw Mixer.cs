@@ -39,14 +39,14 @@ namespace IngameScript
             {
                 if (TooComplex) break;
                     
-                var chan = CurrentPattern.Channels[ch];
+                var chan = g_clip.CurrentPattern.Channels[ch];
 
                 var xc = x + bb/2 + (ch - first) * (bw + bb);
 
                 var col = chan.Notes.Count > 0 ? color6 : color3;
 
                 DrawSoundLevel(sprites, xc, y,         bw, h - 15, chan.Volume, g_dspVol[ch], chan, 2);
-                FillRect      (sprites, xc, y + h + 6, bw, 76,     chan.On ^ mixerPressed_.Contains(ch) ? col : color0);
+                FillRect      (sprites, xc, y + h + 6, bw, 76,     chan.On ^ _mixerPressed.Contains(ch) ? col : color0);
 
                 DrawString(sprites, chan.Instrument.Name, xc + bw/2 + 3, y + h + 14, 0.5f, chan.On ? color0 : col, TaC);
                 DrawString(sprites, S(ch + 1),            xc + bw/2 + 3, y + h + 35, 1.2f, chan.On ? color0 : col, TaC);

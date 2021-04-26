@@ -167,7 +167,7 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Song song, Program prog)
+            public override void AdjustFromController(Clip song, Program prog)
             {
                 if (g_remote.MoveIndicator    .X != 0) prog.AdjustFromController(song, Offset,    g_remote.MoveIndicator    .X/ControlSensitivity);
 
@@ -189,7 +189,7 @@ namespace IngameScript
             }
 
 
-            public void Delete(Song song, int iSrc)
+            public void Delete(Clip song, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
@@ -267,9 +267,9 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Frequency.HasDeepParams(CurrentChannel, CurSrc)) Frequency.DrawLabels(sprites, x, y, dp);                
-                if (Amplitude.HasDeepParams(CurrentChannel, CurSrc)) Amplitude.DrawLabels(sprites, x, y, dp);
-                if (Offset   .HasDeepParams(CurrentChannel, CurSrc)) Offset   .DrawLabels(sprites, x, y, dp);
+                if (Frequency.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Frequency.DrawLabels(sprites, x, y, dp);                
+                if (Amplitude.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Amplitude.DrawLabels(sprites, x, y, dp);
+                if (Offset   .HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Offset   .DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }
@@ -394,7 +394,7 @@ namespace IngameScript
                         var newOp = (int)Op + 1;
                         if (newOp > (int)ModOp.Add) newOp = 0;
                         Op = (ModOp)newOp;
-                        mainPressed.Add(func);
+                        g_mainPressed.Add(func);
                         break;
                     }
                     case 1: AddNextSetting(strAmp);  break;
@@ -405,7 +405,7 @@ namespace IngameScript
                         var newOsc = (int)Type + 1;
                         if (newOsc > (int)LfoType.Noise) newOsc = 0;
                         Type = (LfoType)newOsc;
-                        mainPressed.Add(func);
+                        g_mainPressed.Add(func);
                         break;
                     }
                 }

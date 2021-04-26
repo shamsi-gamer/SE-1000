@@ -29,9 +29,9 @@ namespace IngameScript
 
             FillRect(sprites, x, y, w, h, color0);
 
-            if (OK(g_song.PlayTime))
+            if (OK(g_clip.PlayTime))
             {
-                var sec = (int)(g_song.PlayStep * g_ticksPerStep / FPS);
+                var sec = (int)(g_clip.PlayStep * g_ticksPerStep / FPS);
                 var min = sec / 60;
                 sec %= 60;
 
@@ -43,10 +43,10 @@ namespace IngameScript
             DrawString(sprites, S0(GetBPM()), x + 343, y + h - 122, 2.5f, color6, TaC);
             DrawString(sprites, "BPM", x + 312, y + h - 43, 1f, color6);
 
-            var prLoad    = infoPressed_.Contains(0);
-            var prSave    = infoPressed_.Contains(1);
-            var prBpmDown = infoPressed_.Contains(2);
-            var prBpmUp   = infoPressed_.Contains(3);
+            var prLoad    = _infoPressed.Contains(0);
+            var prSave    = _infoPressed.Contains(1);
+            var prBpmDown = _infoPressed.Contains(2);
+            var prBpmUp   = _infoPressed.Contains(3);
 
             if (prLoad   ) FillRect(sprites, x + 202, y + 8,      104, 40, color6);
             if (prSave   ) FillRect(sprites, x + 374, y + 8,      104, 40, color6);
@@ -59,7 +59,7 @@ namespace IngameScript
             DrawString(sprites, strUp,    x + 415, y + h - 51, 1.5f, prBpmUp   ? color0 : color6);
 
 
-            var nameLines = g_song.Name.Split('\n');
+            var nameLines = g_clip.Name.Split('\n');
 
             if (nameLines.Length > 0) 
                 DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TaC);

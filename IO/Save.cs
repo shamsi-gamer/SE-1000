@@ -17,13 +17,7 @@ namespace IngameScript
 
         void SaveMachineState()
         {
-            var sbMachine = new StringBuilder();
-
-            sbMachine.Append(N(SaveSettings(SaveToggles())));
-            sbMachine.Append(N(SaveMems()));
-            sbMachine.Append(  SaveChords());
-
-            lblMove.CustomData = sbMachine.ToString();
+            lblMove.CustomData = N(SaveConfig(SaveToggles()));
         }
 
 
@@ -32,88 +26,18 @@ namespace IngameScript
             uint f = 0;
             var  i = 0;
 
-            WriteBit(ref f, g_movePat,    i++);
-
-            WriteBit(ref f, g_in,         i++);
-            WriteBit(ref f, g_out,        i++);
-
-            WriteBit(ref f, g_loop,       i++);
-            WriteBit(ref f, g_block,      i++);
-            WriteBit(ref f, g_allPats,    i++);
-            WriteBit(ref f, g_follow,     i++);
-            WriteBit(ref f, g_autoCue,    i++);
-
-            WriteBit(ref f, g_allChan,    i++);
-            WriteBit(ref f, g_rndInst,    i++);
-
-            WriteBit(ref f, g_piano,      i++);
-            WriteBit(ref f, g_move,       i++);
-
-            WriteBit(ref f, g_transpose,  i++);
-            WriteBit(ref f, g_spread,     i++);
-
-            WriteBit(ref f, g_shift,      i++);
-            WriteBit(ref f, g_mixerShift, i++);
-
-            WriteBit(ref f, g_hold,       i++);
-            WriteBit(ref f, g_pick,       i++);
-
-            WriteBit(ref f, g_chordMode,  i++);
-            WriteBit(ref f, g_chordEdit,  i++);
-            WriteBit(ref f, g_chordAll,   i++);
-
-            WriteBit(ref f, g_halfSharp,  i++);
-
-            WriteBit(ref f, g_paramKeys,  i++);
-            WriteBit(ref f, g_paramAuto,  i++);
-
-            WriteBit(ref f, g_setMem,     i++);
-
-            WriteBit(ref f, g_session,    i++);
+            WriteBit(ref f, g_session, i++);
+            WriteBit(ref f, g_move,    i++);
 
             return f;
         }
 
 
-        string SaveSettings(uint f)
+        string SaveConfig(uint f)
         {
             return
                   WS(f)              
-
-                + WS(g_ticksPerStep) 
-                
-                + WS(CurPat)         
-                + WS(CurChan)        
-
-                + WS(SelChan)        
-                + WS(CurSrc)
-
-                + W(CurSet > -1 ? CurSetting.GetPath(CurSrc) : "")
-
-                + WS(g_editStep)
-                + WS(g_editLength)     
-
-                + WS(g_curNote)      
-
-                + WS(g_chord)        
-                + WS(g_chordSpread)
-                
-                + WS(g_songOff)        
-                + WS(g_instOff)        
-                + WS(g_srcOff )
-
-                + WS(g_solo)
-
-                + WS(g_volume)
-
-                + W (ModDestConnecting != null ? ModDestConnecting.GetPath(ModDestSrcIndex) : "")
-                //+ WS(ModCurChan)
-                //+ WS(ModSelChan)
-                + WS(ModDestSrcIndex)
-                + WS(ModDestChannel != null ? g_song.Patterns.IndexOf(ModDestChannel.Pattern)         : -1)
-                + WS(ModDestChannel != null ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)
-
-                +  S(g_iCol);
+                + WS(g_ticksPerStep);
         }
 
 
@@ -123,36 +47,6 @@ namespace IngameScript
                 setting != null 
                 ? P(setting.Save())
                 : "";
-        }
-
-
-        string SaveMems()
-        {
-            var mems = "";
-
-            for (int m = 0; m < nMems; m++)
-                mems += S(g_mem[m]) + (m < nMems-1 ? ";" : "");
-
-            return mems;
-        }
-
-
-        string SaveChords()
-        {
-            var chords = "";
-
-            for (int c = 0; c < g_chords.Length; c++)
-            {
-                var chord = g_chords[c];
-
-                for (int k = 0; k < chord.Count; k++)
-                    chords += chord[k] + (k < chord.Count - 1 ? "," : "");
-
-                if (c < g_chords.Length - 1)
-                    chords += ";";
-            }
-
-            return chords;
         }
 
 
@@ -178,13 +72,13 @@ namespace IngameScript
 
             dspIO.Panel.WriteText(lblNext.CustomData);
 
-            infoPressed.Add(1);
+            g_infoPressed.Add(1);
         }
 
 
         void SaveSong()
         {
-            lblNext.CustomData = g_song.Save();
+            lblNext.CustomData = g_clip.Save();
             //sb.AppendLine(SaveEdit());
         }
 

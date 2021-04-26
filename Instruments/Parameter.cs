@@ -233,7 +233,7 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Song song, Program prog)
+            public override void AdjustFromController(Clip song, Program prog)
             {
                 if (g_remote.RotationIndicator.X != 0) 
                     prog.AdjustFromController(song, this, -g_remote.RotationIndicator.X/ControlSensitivity);
@@ -346,7 +346,7 @@ namespace IngameScript
             }
 
 
-            public void Delete(Song song, int iSrc)
+            public void Delete(Clip song, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
@@ -553,8 +553,8 @@ namespace IngameScript
 
                 DrawFuncButton(sprites, strLfo, 2, w, h, true, Lfo      != null);
                 DrawFuncButton(sprites, strMod, 3, w, h, true, Modulate != null);
-                DrawFuncButton(sprites, "Key",  4, w, h, true, chan.HasNoteKeys(GetPath(CurSrc)));
-                DrawFuncButton(sprites, "Auto", 5, w, h, true, chan.HasAutoKeys(GetPath(CurSrc)));
+                DrawFuncButton(sprites, "Key",  4, w, h, true, chan.HasNoteKeys(GetPath(g_clip.CurSrc)));
+                DrawFuncButton(sprites, "Auto", 5, w, h, true, chan.HasAutoKeys(GetPath(g_clip.CurSrc)));
             }
 
 
@@ -576,8 +576,8 @@ namespace IngameScript
                 case 2: AddNextSetting(strLfo); break;
                 case 3: AddNextSetting(strMod); break;
 
-                case 4: g_paramKeys = true; UpdateChordLights(); break;
-                case 5: g_paramAuto = true; UpdateChordLights(); break;
+                case 4: g_clip.ParamKeys = true; UpdateChordLights(); break;
+                case 5: g_clip.ParamAuto = true; UpdateChordLights(); break;
                 }
             }
 
@@ -586,7 +586,7 @@ namespace IngameScript
             {
                 return 
                           Tag == strVol
-                       && CurSrc > -1
+                       && g_clip.CurSrc > -1
 
                     ||    Parent != null
                        && Tag == strOff;

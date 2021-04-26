@@ -76,7 +76,7 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Song song, Program prog)
+            public override void AdjustFromController(Clip song, Program prog)
             {
                 if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(song, Sharpness, -g_remote.MoveIndicator    .Z/ControlSensitivity);
 
@@ -98,7 +98,7 @@ namespace IngameScript
             }
 
 
-            public void Delete(Song song, int iSrc)
+            public void Delete(Clip song, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
@@ -157,8 +157,8 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Cutoff   .HasDeepParams(CurrentChannel, CurSrc)) Cutoff   .DrawLabels(sprites, x, y, dp);
-                if (Resonance.HasDeepParams(CurrentChannel, CurSrc)) Resonance.DrawLabels(sprites, x, y, dp);
+                if (Cutoff   .HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Cutoff   .DrawLabels(sprites, x, y, dp);
+                if (Resonance.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Resonance.DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }
@@ -232,7 +232,7 @@ namespace IngameScript
                                 p = (int)FilterPass.Low;
 
                             Pass = (FilterPass)p;
-                            mainPressed.Add(func);
+                            g_mainPressed.Add(func);
 
                             break;
                         }

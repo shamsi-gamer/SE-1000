@@ -11,13 +11,13 @@ namespace IngameScript
         void UpdateInst()
         {
             if (   g_inputValid
-                && SelChan > -1
-                && CurSrc < 0)
+                && g_clip.SelChan > -1
+                && g_clip.CurSrc < 0)
             {
                 var sb = new StringBuilder();
                 dspMain.Panel.ReadText(sb, false);
 
-                CurrentInstrument.Name = S(sb).Trim().Trim(new char[] {';'});
+                g_clip.CurrentInstrument.Name = S(sb).Trim().Trim(new char[] {';'});
             }
 
             g_inputValid = true;
@@ -29,13 +29,13 @@ namespace IngameScript
             var sb = new StringBuilder();
             dspInfo.Panel.ReadText(sb, false);
 
-            g_song.Name = S(sb).Trim();
+            g_clip.Name = S(sb).Trim();
         }
 
 
         void UpdateSongDsp()
         {
-            dspInfo.Panel.WriteText(g_song.Name.Replace("\u0085", "\n"));
+            dspInfo.Panel.WriteText(g_clip.Name.Replace("\u0085", "\n"));
         }
     }
 }

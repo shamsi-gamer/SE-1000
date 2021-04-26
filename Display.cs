@@ -31,14 +31,14 @@ namespace IngameScript
             {
                 Panel.ContentType = ContentType.SCRIPT;
 
-                Scale = 1;
+                Scale             = 1;
+                                  
+                Panel.Script      = "";
 
-                Panel.Script = "";
-
-                Viewport = new RectangleF((Panel.TextureSize - Panel.SurfaceSize) / 2, Panel.SurfaceSize);
-
-                ContentWidth  = Viewport.Width;
-                ContentHeight = Viewport.Height;
+                Viewport          = new RectangleF((Panel.TextureSize - Panel.SurfaceSize) / 2, Panel.SurfaceSize);
+                                  
+                ContentWidth      = Viewport.Width;
+                ContentHeight     = Viewport.Height;
             }
 
 

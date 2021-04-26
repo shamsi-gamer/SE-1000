@@ -23,8 +23,8 @@ namespace IngameScript
     {
         void MixerShift()
         {
-            g_mixerShift = !g_mixerShift;
-            UpdateLight(lblMixerShift, g_mixerShift);
+            g_clip.MixerShift = !g_clip.MixerShift;
+            UpdateLight(lblMixerShift, g_clip.MixerShift);
         }
 
 
@@ -43,72 +43,64 @@ namespace IngameScript
         void EnableChannel(int ch, bool on)
         {
             int first, last;
-            GetPatterns(g_song, CurPat, out first, out last);
+            g_clip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
-                g_song.Patterns[p].Channels[ch].On = on;
+                g_clip.Patterns[p].Channels[ch].On = on;
         }
 
 
         void Mute(int ch)
         {
-            var on = !CurrentPattern.Channels[ch].On;
+            var on = !g_clip.CurrentPattern.Channels[ch].On;
 
             int first, last;
-            GetPatterns(g_song, CurPat, out first, out last);
+            g_clip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
-                g_song.Patterns[p].Channels[ch].On = on;
+                g_clip.Patterns[p].Channels[ch].On = on;
 
             if (!on)
-                g_song.TrimCurrentNotes(ch);
-
-            //mixerPressed.Add(ch);
+                g_clip.TrimCurrentNotes(ch);
         }
 
 
         void EnableChannel(int pat, int ch, bool on)
         {
-            var chan = g_song.Patterns[pat].Channels[ch];
+            var chan = g_clip.Patterns[pat].Channels[ch];
             chan.On = on;
         }
 
 
         void Solo(int ch)
         {
-            if (g_solo >= 0)
+            if (g_clip.Solo >= 0)
             {
                 int _first, _last;
-                GetPatterns(g_song, CurPat, out _first, out _last);
+                g_clip.GetCurPatterns(out _first, out _last);
 
                 for (int p = _first; p <= _last; p++)
                     UnsoloChannel(p, ch);
             }
 
-            if (ch == g_solo)
+            if (ch == g_clip.Solo)
             {
-                g_solo = -1;
+                g_clip.Solo = -1;
                 return;
             }
 
 
             for (int _ch = 0; _ch < g_nChans; _ch++)
-                g_on[_ch] = CurrentPattern.Channels[_ch].On;
+                g_on[_ch] = g_clip.CurrentPattern.Channels[_ch].On;
 
 
             int first, last;
-            GetPatterns(g_song, CurPat, out first, out last);
+            g_clip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
                 SoloChannel(p, ch);
 
-
-            g_solo = 
-                g_solo == ch
-                ? -1
-                : ch;
-
-            //mixerPressed.Add(ch);
+            g_clip.Solo = g_clip.Solo == ch ? -1 : ch;
         }
 
 
@@ -118,7 +110,7 @@ namespace IngameScript
             {
                 if (i == ch) continue;
                 EnableChannel(pat, i, false);
-                g_song.TrimCurrentNotes(i);
+                g_clip.TrimCurrentNotes(i);
             }
 
             EnableChannel(pat, ch, true);
@@ -127,7 +119,7 @@ namespace IngameScript
 
         void UnsoloChannel(int pat, int ch)
         {
-            if (g_solo >= 0)
+            if (g_clip.Solo >= 0)
             {
                 for (int i = 0; i < g_nChans; i++)
                     EnableChannel(pat, i, g_on[i]);

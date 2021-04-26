@@ -172,7 +172,7 @@ namespace IngameScript
                     if (i == 0) snd0 = snd;
 
                     var lTime = g_time - sndTime;
-                    var sTime = OK(g_song.PlayTime) ? g_time - g_song.StartTime : lTime;
+                    var sTime = OK(g_clip.PlayTime) ? g_time - g_clip.StartTime : lTime;
 
                     if (!prog.TooComplex)
                     { 
@@ -222,12 +222,12 @@ namespace IngameScript
                 if (CurTone > -1)
                 {
                     var tone = Tones[CurTone];
-                    tone.SetValue(tone.AdjustValue(tone.Value, delta, g_shift), null, -1);
+                    tone.SetValue(tone.AdjustValue(tone.Value, delta, g_clip.Shift), null, -1);
                 }
                 else
                 {
                     foreach (var tone in Tones)
-                        tone.SetValue(tone.AdjustValue(tone.Value, delta, g_shift, true), null, -1);
+                        tone.SetValue(tone.AdjustValue(tone.Value, delta, g_clip.Shift, true), null, -1);
                 }
             }
 
@@ -254,7 +254,7 @@ namespace IngameScript
             }
 
 
-            public void Delete(Song song, int iSrc)
+            public void Delete(Clip song, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
@@ -306,7 +306,7 @@ namespace IngameScript
 
                 for (int i = 0; i < Tones.Length; i++)
                 { 
-                    if (Tones[i].HasDeepParams(CurrentChannel, CurSrc)) 
+                    if (Tones[i].HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) 
                         Tones[i].DrawLabels(sprites, x, y, dp); 
                 }
 
@@ -314,7 +314,7 @@ namespace IngameScript
             }
 
 
-            public void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, Song song, Channel chan, Program prog)
+            public void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, Clip song, Channel chan, Program prog)
             {
                 FillRect(sprites, x, y, w, h, color0);
 
@@ -331,7 +331,7 @@ namespace IngameScript
                 var wc  = wt / Tones.Length;
 
                 var dp = new DrawParams(false, prog);
-                SelectedSource.DrawLabels(sprites, x + 5, y + 10, dp);
+                g_clip.SelectedSource.DrawLabels(sprites, x + 5, y + 10, dp);
 
                 DrawSample(sprites, x + 100, y + 150, 100, 60);
 
@@ -443,9 +443,9 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                DrawFuncButton(sprites, "Smth",  1, w, h, false, false, mainPressed.Contains(1));
-                DrawFuncButton(sprites, "Pre ↕", 2, w, h, false, false, mainPressed.Contains(2));
-                DrawFuncButton(sprites, "Set",   3, w, h, false, false, mainPressed.Contains(3));
+                DrawFuncButton(sprites, "Smth",  1, w, h, false, false, g_mainPressed.Contains(1));
+                DrawFuncButton(sprites, "Pre ↕", 2, w, h, false, false, g_mainPressed.Contains(2));
+                DrawFuncButton(sprites, "Set",   3, w, h, false, false, g_mainPressed.Contains(3));
                 
                 if (CurTone > -1)
                     DrawFuncButton(sprites, "Tone", 4, w, h, true, Tones[CurTone].HasDeepParams(chan, -1));
@@ -465,7 +465,7 @@ namespace IngameScript
                             cp = (int)Preset.Sine;
 
                         CurPreset = (Preset)cp;
-                        mainPressed.Add(func);
+                        g_mainPressed.Add(func);
 
                         break;
                     }

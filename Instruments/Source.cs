@@ -124,12 +124,12 @@ namespace IngameScript
 
 
                 var sndTime = 
-                    OK(g_song.PlayTime)
-                    ? g_song.StartTime + note.SongTime + 1
+                    OK(g_clip.PlayTime)
+                    ? g_clip.StartTime + note.SongTime + 1
                     : g_time + 1;
 
-                var lTime = g_time - g_song.StartTime - note.SongTime;
-                var sTime = OK(g_song.PlayTime) ? g_time - g_song.StartTime : lTime;
+                var lTime = g_time - g_clip.StartTime - note.SongTime;
+                var sTime = OK(g_clip.PlayTime) ? g_time - g_clip.StartTime : lTime;
 
                 var tp = new TimeParams(sndTime, lTime, sTime, note, note.FrameLength, Index, triggerValues, prog);
 
@@ -298,7 +298,7 @@ namespace IngameScript
             }
 
 
-            public void Delete(Song song)
+            public void Delete(Clip song)
             {
                 // this method removes note and channel automation associated with this source
 
@@ -375,8 +375,8 @@ namespace IngameScript
             public void DrawSource(List<MySprite> sprites, float x, ref float y, float w, Program prog)
             {
                 var active = 
-                       CurSrc == Index 
-                    && CurSet <  0;
+                       g_clip.CurSrc == Index 
+                    && g_clip.CurSet <  0;
 
 
                 var dp1 = new DrawParams(active, prog);
@@ -384,20 +384,20 @@ namespace IngameScript
 
                 var sh = dp1.OffY + 20;
 
-                if (CurSrc == Index)
-                    FillRect(sprites, x, y, w, sh, CurSet < 0 ? color6 : color3);
+                if (g_clip.CurSrc == Index)
+                    FillRect(sprites, x, y, w, sh, g_clip.CurSet < 0 ? color6 : color3);
 
 
-                var col_0 = On && CurSrc > -1 ? color6 : color4;
-                var col_1 = On && CurSrc > -1 ? color0 : color5;
+                var col_0 = On && g_clip.CurSrc > -1 ? color6 : color4;
+                var col_1 = On && g_clip.CurSrc > -1 ? color0 : color5;
 
                 if (Oscillator == OscSample)
                 {
-                    DrawString(sprites, Oscillator.ShortName, x + 10, y + sh/2 - 10, 0.7f, CurSrc == Index ? col_1 : col_0, TaC);
+                    DrawString(sprites, Oscillator.ShortName, x + 10, y + sh/2 - 10, 0.7f, g_clip.CurSrc == Index ? col_1 : col_0, TaC);
                 }
                 else
                 { 
-                    DrawSample(sprites,                       x +  10, y + sh/2 - 10, 50, 20, active, CurSrc > -1);
+                    DrawSample(sprites,                       x +  10, y + sh/2 - 10, 50, 20, active, g_clip.CurSrc > -1);
                     DrawString(sprites, Oscillator.ShortName, x + 100, y + sh/2 - 10, 0.6f, active ? col_1 : col_0, TaC);
                 }
 
@@ -461,7 +461,7 @@ namespace IngameScript
 
             public void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                if (CurSet > -1)
+                if (g_clip.CurSet > -1)
                 { 
                     CurSetting.DrawFuncButtons(sprites, w, y, chan);
                 }

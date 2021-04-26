@@ -159,7 +159,7 @@ namespace IngameScript
             }
 
 
-            public void Delete(Song song)
+            public void Delete(Clip song)
             {
                 // this method removes note and channel automation associated with this instrument
 
@@ -241,9 +241,9 @@ namespace IngameScript
 
             public void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                if (CurSet > -1)
+                if (g_clip.CurSet > -1)
                 { 
-                    var setting = g_settings[CurSet];
+                    var setting = g_settings[g_clip.CurSet];
                     setting.DrawFuncButtons(sprites, w, h, chan);
                 }
                 else

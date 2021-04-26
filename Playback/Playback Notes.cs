@@ -7,21 +7,21 @@ namespace IngameScript
 {
     partial class Program
     {
-        void PlayNote(Song song, int num, List<int> chord, int ch)
+        void PlayNote(Clip song, int num, List<int> chord, int ch)
         {
             if (TooComplex) return;
 
             song.TrimCurrentNotes(ch);
             lastNotes.Clear();
 
-            var chan  = CurrentPattern.Channels[ch];
+            var chan  = g_clip.CurrentPattern.Channels[ch];
             var notes = GetChordNotes(num);
 
 
             if (OK(song.EditPos))
             {
-                if (   g_chordMode
-                    && g_chord < 0)
+                if (   g_clip.ChordMode
+                    && g_clip.Chord < 0)
                 {
                     var _found = false;
 
@@ -34,7 +34,7 @@ namespace IngameScript
                         { 
                             found = chan.Notes.FindIndex(n => 
                                    note == n.Number
-                                && song.EditPos == CurPat*g_nSteps + n.PatStep + ChordSpread(i));
+                                && song.EditPos == g_clip.CurPat*g_nSteps + n.PatStep + ChordSpread(i));
 
                             if (found > -1) 
                             {
@@ -52,8 +52,8 @@ namespace IngameScript
                         {
                             var note = notes[i];
 
-                            if (!(   g_chordEdit
-                                  && g_chord > -1))
+                            if (!(   g_clip.ChordEdit
+                                  && g_clip.Chord > -1))
                             {
                                 var noteStep = song.EditPos % g_nSteps + ChordSpread(i);
                                 var lastNote = new Note(chan, ch, 1, note, noteStep, EditStepLength);
@@ -78,7 +78,7 @@ namespace IngameScript
                         do
                         { 
                             found = chan.Notes.FindIndex(n => 
-                                song.EditPos == CurPat*g_nSteps + n.PatStep + ChordSpread(i));
+                                song.EditPos == g_clip.CurPat*g_nSteps + n.PatStep + ChordSpread(i));
 
                             if (found > -1) 
                                 chan.Notes.RemoveAt(found);
@@ -93,8 +93,8 @@ namespace IngameScript
 
                         var note = notes[i];
 
-                        if (!(   g_chordEdit
-                              && g_chord > -1))
+                        if (!(   g_clip.ChordEdit
+                              && g_clip.Chord > -1))
                         {
                             var noteStep = song.EditPos % g_nSteps + ChordSpread(i);
                             var lastNote = new Note(chan, ch, 1, note, noteStep, EditStepLength);
@@ -108,10 +108,10 @@ namespace IngameScript
                 }
 
                 
-                if (    (  !g_chordMode
-                         || g_chord > -1)
-                    && !(   g_chordEdit 
-                         && g_chord > -1))
+                if (    (  !g_clip.ChordMode
+                         || g_clip.Chord > -1)
+                    && !(   g_clip.ChordEdit 
+                         && g_clip.Chord > -1))
                     MoveEdit(song, 1, true);
             }
             else
@@ -130,16 +130,16 @@ namespace IngameScript
             }
 
 
-            g_curNote = num;
+            g_clip.CurNote = num;
         }
 
 
         void TriggerNote(int num, int ch, float len, float chordSpread)
         {
-            var chan = CurrentPattern.Channels[ch];
+            var chan = g_clip.CurrentPattern.Channels[ch];
 
             var patStep = 
-                 (OK(g_song.PlayTime) ? (g_song.PlayPat - CurPat) * g_nSteps + (g_song.PlayStep % g_nSteps) : 0) 
+                 (OK(g_clip.PlayTime) ? (g_clip.PlayPat - g_clip.CurPat) * g_nSteps + (g_clip.PlayStep % g_nSteps) : 0) 
                 + chordSpread;
 
             var found = g_notes.Find(n =>
@@ -148,7 +148,7 @@ namespace IngameScript
 
             AddNoteAndSounds(new Note(chan, ch, 1, num, patStep, len));
 
-            if (g_piano)
+            if (g_clip.Piano)
                 MarkLight(GetLightFromNote(num));
         }
 
@@ -159,15 +159,15 @@ namespace IngameScript
                 return;
 
 
-            var pat = g_song.Patterns[g_song.PlayPat];
+            var pat = g_clip.Patterns[g_clip.PlayPat];
 
             for (int ch = 0; ch < g_nChans; ch++)
             {
                 var chan = pat.Channels[ch];
                 if (!chan.On) continue;
 
-                var sh    = (int)g_song.PlayStep % 2 != 0 ? chan.Shuffle : 0;
-                var notes = chan.Notes.FindAll(n => n.SongTime == g_song.PlayTime);
+                var sh    = (int)g_clip.PlayStep % 2 != 0 ? chan.Shuffle : 0;
+                var notes = chan.Notes.FindAll(n => n.SongTime == g_clip.PlayTime);
 
                 foreach (var n in notes)
                 {
@@ -189,14 +189,14 @@ namespace IngameScript
             var inst = note.Instrument;
             note.Sounds.Clear();
 
-            var sh = (int)g_song.PlayStep % 2 != 0 ? note.Channel.Shuffle : 0;
+            var sh = (int)g_clip.PlayStep % 2 != 0 ? note.Channel.Shuffle : 0;
 
             if (note.Instrument.Arpeggio != null)
             {
                 var notes = note.Channel.Notes.FindAll(n =>
                           n.Instrument.Arpeggio != null
-                       && g_song.PlayTime >= g_song.PlayPat*g_nSteps*g_ticksPerStep + n.PatTime
-                       && g_song.PlayTime <  g_song.PlayPat*g_nSteps*g_ticksPerStep + n.PatTime + n.FrameLength);
+                       && g_clip.PlayTime >= g_clip.PlayPat*g_nSteps*g_ticksPerStep + n.PatTime
+                       && g_clip.PlayTime <  g_clip.PlayPat*g_nSteps*g_ticksPerStep + n.PatTime + n.FrameLength);
 
                 foreach (var n in notes)
                 {
@@ -204,8 +204,8 @@ namespace IngameScript
 
                     var arp = n.Instrument.Arpeggio;
 
-                    var arpNotes = arp.Song.Patterns[0].Channels[0].Notes.FindAll(_n =>
-                        g_song.PlayTime == (n.PatStep + sh)*g_ticksPerStep + _n.ArpPlayTime);
+                    var arpNotes = arp.Clip.Patterns[0].Channels[0].Notes.FindAll(_n =>
+                        g_clip.PlayTime == (n.PatStep + sh)*g_ticksPerStep + _n.ArpPlayTime);
 
                     foreach (var nn in arpNotes)
                     {
@@ -220,8 +220,8 @@ namespace IngameScript
             {
                 var found =
                     g_notes.Find(n => 
-                           g_song.PlayStep >= n.PatStep 
-                        && g_song.PlayStep <  n.PatStep + n.StepLength);
+                           g_clip.PlayStep >= n.PatStep 
+                        && g_clip.PlayStep <  n.PatStep + n.StepLength);
                 
                 if (   found != null
                     && found.Number == note.Number
@@ -237,7 +237,7 @@ namespace IngameScript
                         src.CreateSounds(note.Sounds, note, this);
                 }
 
-                if (g_song.PlayTime < 0)
+                if (g_clip.PlayTime < 0)
                     note.PatStep = TimeStep;
 
                 g_notes.Add(note);
@@ -263,7 +263,7 @@ namespace IngameScript
         }
 
 
-        //void StopNote(Song song, Note note)
+        //void StopNote(Clip song, Note note)
         //{
         //    var step = OK(PlayTime) ? PlayStep : TimeStep;
         //    //note.UpdateStepLength(step - note.PatStep, g_ticksPerStep);
@@ -279,7 +279,7 @@ namespace IngameScript
             var tp = new TimeParams(
                 g_time, 
                 0, 
-                g_time - g_song.StartTime, 
+                g_time - g_clip.StartTime, 
                 note, 
                 sndLen, 
                 src.Index, 

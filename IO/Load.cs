@@ -9,43 +9,36 @@ namespace IngameScript
     {
         void Load()
         {
-            string curPath, modConnPath;
-            int    modPat, modChan;
+            string curPath, 
+                   modConnPath;
+            int    modPat,
+                   modChan;
 
-            LoadMachineState(out curPath, out modConnPath, out modPat, out modChan);
+            LoadMachineState();
             LoadInstruments();
-            LoadSong();
+            LoadSong(out curPath, out modConnPath, out modPat, out modChan);
 
             if (curPath != "")
-                SwitchToSetting(CurrentInstrument, CurSrc, curPath);
+                SwitchToSetting(g_clip.CurrentInstrument, g_clip.CurSrc, curPath);
 
             if (modConnPath != "")
             {
-                ModDestChannel    = g_song.Patterns[modPat].Channels[modChan];
+                ModDestChannel    = g_clip.Patterns[modPat].Channels[modChan];
                 ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
             }
         }
 
 
-        void LoadMachineState(out string curPath, out string modConnPath, out int modPat, out int modChan)
+        void LoadMachineState()
         {
             var state = lblMove.CustomData;
 
             var lines = state.Split('\n');
             var line  = 0;
 
-            curPath     = "";
-            modConnPath = "";
-            modPat      = -1;
-            modChan     = -1;
-
             var cfg = lines[line++].Split(';');
-            if (!LoadToggles(cfg[0]))                                                      goto NothingLoaded;
-            
-            if (!LoadSettings(cfg, out curPath, out modConnPath, out modPat, out modChan)) goto NothingLoaded;
-
-            if (!LoadMems  (lines[line++]))                                                goto NothingLoaded;
-            if (!LoadChords(lines[line++]))                                                goto NothingLoaded;
+            if (!LoadToggles(cfg[0])) goto NothingLoaded;
+            if (!LoadConfig(cfg))     goto NothingLoaded;
 
             return;
 
@@ -62,94 +55,19 @@ namespace IngameScript
 
             var i = 0;
 
-            g_movePat    = ReadBytes(f, i++);
-
-            g_in         = ReadBytes(f, i++);
-            g_out        = ReadBytes(f, i++);
-            
-            g_loop       = ReadBytes(f, i++);
-            g_block      = ReadBytes(f, i++);
-            g_allPats    = ReadBytes(f, i++);
-            g_follow     = ReadBytes(f, i++);
-            g_autoCue    = ReadBytes(f, i++);
-            
-            g_allChan    = ReadBytes(f, i++);
-            g_rndInst    = ReadBytes(f, i++);
-            
-            g_piano      = ReadBytes(f, i++);
-            g_move       = ReadBytes(f, i++);
-            
-            g_transpose  = ReadBytes(f, i++);
-            g_spread     = ReadBytes(f, i++);
-
-            g_shift      = ReadBytes(f, i++);
-            g_mixerShift = ReadBytes(f, i++);
-            
-            g_hold       = ReadBytes(f, i++);
-            g_pick       = ReadBytes(f, i++);
-
-            g_chordMode  = ReadBytes(f, i++);
-            g_chordEdit  = ReadBytes(f, i++);
-            g_chordAll   = ReadBytes(f, i++);
-
-            g_halfSharp  = ReadBytes(f, i++);
-
-            g_paramKeys  = ReadBytes(f, i++);
-            g_paramAuto  = ReadBytes(f, i++);
-                         
-            g_setMem     = ReadBytes(f, i++);
-
-            g_session    = ReadBytes(f, i++);
+            g_session = ReadBit(f, i++);
+            g_move    = ReadBit(f, i++);
 
             return true;
         }
 
 
-        bool LoadSettings(string[] cfg, out string curPath, out string modConnPath, out int modPat, out int modChan)
+        bool LoadConfig(string[] cfg)
         {
-            curPath     = "";
-            modConnPath = "";
-            modPat      = -1;
-            modChan     = -1;
-
             int c = 1; // 0 holds the toggles, loaded in LoadToggles()
 
-            if (!int  .TryParse(cfg[c++], out g_ticksPerStep )) return false;
+            if (!int.TryParse(cfg[c++], out g_ticksPerStep)) return false;
                                                              
-            if (!int  .TryParse(cfg[c++], out CurPat         )) return false;
-            if (!int  .TryParse(cfg[c++], out CurChan        )) return false;
-                                                             
-            if (!int  .TryParse(cfg[c++], out SelChan        )) return false;
-            if (!int  .TryParse(cfg[c++], out CurSrc         )) return false;
-                                                             
-            curPath = cfg[c++];                              
-                                                             
-            if (!int  .TryParse(cfg[c++], out g_editStep     )) return false;
-            if (!int  .TryParse(cfg[c++], out g_editLength   )) return false;
-                                                             
-            if (!int  .TryParse(cfg[c++], out g_curNote      )) return false;
-                                                             
-            if (!int  .TryParse(cfg[c++], out g_chord        )) return false;
-            if (!int  .TryParse(cfg[c++], out g_chordSpread  )) return false;
-                                                             
-            if (!int  .TryParse(cfg[c++], out g_songOff      )) return false;
-            if (!int  .TryParse(cfg[c++], out g_instOff      )) return false;
-            if (!int  .TryParse(cfg[c++], out g_srcOff       )) return false;
-                                                             
-            if (!int  .TryParse(cfg[c++], out g_solo         )) return false;
-                                                             
-            if (!float.TryParse(cfg[c++], out g_volume       )) return false;
-
-            modConnPath = cfg[c++];
-
-            //if (!int  .TryParse(cfg[c++], out ModCurChan     )) return false;
-            //if (!int  .TryParse(cfg[c++], out ModSelChan     )) return false;
-            if (!int  .TryParse(cfg[c++], out ModDestSrcIndex)) return false;
-            if (!int  .TryParse(cfg[c++], out modPat         )) return false;
-            if (!int  .TryParse(cfg[c++], out modChan        )) return false;
-                                                             
-            if (!int  .TryParse(cfg[c++], out g_iCol         )) return false;
-
             return true;
         }
 
@@ -183,12 +101,12 @@ namespace IngameScript
             // set all instruments to first
             
             int first, last;
-            GetPatterns(g_song, CurPat, out first, out last);
+            g_clip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
             { 
                 for (int ch = 0; ch < g_nChans; ch++)
-                    g_song.Patterns[p].Channels[ch].Instrument = g_inst[0]; 
+                    g_clip.Patterns[p].Channels[ch].Instrument = g_inst[0]; 
             }
         }
 
@@ -203,46 +121,6 @@ namespace IngameScript
         }
 
 
-        bool LoadMems(string line)
-        {
-            var mems = line.Split(';');
-
-            for (int m = 0; m < nMems; m++)
-                if (!int.TryParse(mems[m], out g_mem[m])) return false;
-
-            return true;
-        }
-
-
-        bool LoadChords(string strChords)
-        {
-            g_chords = new List<int>[4];
-
-            for (int _c = 0; _c < g_chords.Length; _c++)
-                g_chords[_c] = new List<int>();
-
-
-            var chords = strChords.Split(';');
-
-            for (int _c = 0; _c < chords.Length; _c++)
-            { 
-                var _keys = chords[_c].Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
-
-                g_chords[_c] = new List<int>();
-
-                int key;
-                foreach (var k in _keys)
-                {
-                    if (!int.TryParse(k, out key)) return false;
-                    g_chords[_c].Add(key);
-                }
-            }
-
-
-            return true;
-        }
-
-
         void LoadSongExt()
         {
             //var song = new StringBuilder();
@@ -251,11 +129,11 @@ namespace IngameScript
             //if (!LoadSong(S(song)))
             //    NewSong();
 
-            infoPressed.Add(0);
+            g_infoPressed.Add(0);
         }
 
 
-        void LoadSong()
+        void LoadSong(out string curPath, out string modConnPath, out int modPat, out int modChan)
         {
             Stop();
             ClearSong();
@@ -263,12 +141,18 @@ namespace IngameScript
             var lines = lblNext.CustomData.Split('\n');
             var line  = 0;
 
-            g_song = Song.Load(lines, ref line);
+            g_clip = Clip.Load(
+                lines, 
+                ref line, 
+                out curPath, 
+                out modConnPath, 
+                out modPat, 
+                out modChan);
 
-            if (g_song == null)
-                CreateDefaultSong();
+            if (g_clip == null)
+                CreateDefaultClip();
 
-            InitPlaybackAfterLoad(g_song.PlayTime);
+            InitPlaybackAfterLoad(g_clip.PlayTime);
         }
 
 
@@ -286,11 +170,11 @@ namespace IngameScript
         //}
 
 
-        void CreateDefaultSong()
+        void CreateDefaultClip()
         {
-            g_song = new Song();
-            g_song.Patterns.Add(new Pattern(g_song, g_inst[0]));
-            g_song.Name = "New Song";
+            g_clip = new Clip();
+            g_clip.Patterns.Add(new Pattern(g_clip, g_inst[0]));
+            g_clip.Name = "New Clip";
         }
 
 

@@ -7,14 +7,14 @@ namespace IngameScript
 {
     partial class Program
     {
-        void DrawSong()
+        void DrawClip()
         {
-            if (!TooComplex) DrawSong(dspSong1, 0);
-            if (!TooComplex) DrawSong(dspSong2, 1);
+            if (!TooComplex) DrawClip(dspClip1, 0);
+            if (!TooComplex) DrawClip(dspClip2, 1);
         }
 
 
-        void DrawSong(Display dsp, int nDsp)
+        void DrawClip(Display dsp, int nDsp)
         {
             if (dsp == null) return;
 
@@ -37,20 +37,20 @@ namespace IngameScript
             var pw = wt * g_nSteps;
             var ph = ht * g_nChans;
 
-            var pxCur = x - (nDsp*4 + g_songOff) * pw + CurPat * pw;
+            var pxCur = x - (nDsp*4 + g_clip.SongOff) * pw + g_clip.CurPat * pw;
             var py = y + h/2 - ph/2;
 
-            var first = nDsp * 4 + g_songOff;
-            var next = Math.Min((nDsp + 1) * 4 + g_songOff, g_song.Patterns.Count);
+            var first = nDsp * 4 + g_clip.SongOff;
+            var next = Math.Min((nDsp + 1) * 4 + g_clip.SongOff, g_clip.Patterns.Count);
 
-            var curBlock = g_song.GetBlock(CurPat);
+            var curBlock = g_clip.GetBlock(g_clip.CurPat);
 
-            var _f = first - g_songOff;
+            var _f = first - g_clip.SongOff;
 
 
             for (int p = first; p < next; p++)
             {
-                var _p = p - g_songOff;
+                var _p = p - g_clip.SongOff;
 
                 var px = x - _f * pw + _p * pw;
 
@@ -61,7 +61,7 @@ namespace IngameScript
 
                 var bo = 30;
 
-                var block = g_song.GetBlock(p);
+                var block = g_clip.GetBlock(p);
                 if (block != null)
                 {
                     var c = curBlock == block ? color3 : color2;
@@ -74,13 +74,13 @@ namespace IngameScript
             }
 
 
-            if (!g_piano)
+            if (!g_clip.Piano)
             {
                 for (int p = first; p < next; p++)
                 {
-                    var px = x - (nDsp * 4 + g_songOff) * pw + p * pw;
+                    var px = x - (nDsp * 4 + g_clip.SongOff) * pw + p * pw;
                     var ch = ph / g_nChans;
-                    var cy = py + ph - (CurChan + 1) * ch;
+                    var cy = py + ph - (g_clip.CurChan + 1) * ch;
 
                     FillRect(sprites, px, cy, pw, ch, color3);
                 }
@@ -88,18 +88,18 @@ namespace IngameScript
 
 
             // draw edit position
-            if (   g_song.EditPos >= first * g_nSteps
-                && g_song.EditPos <  next  * g_nSteps)
+            if (   g_clip.EditPos >= first * g_nSteps
+                && g_clip.EditPos <  next  * g_nSteps)
             {
-                var pl    = x - pw * (nDsp * 4 * pw + CurPat + g_songOff);
-                var xTick = wt * g_song.EditPos;
+                var pl    = x - pw * (nDsp * 4 * pw + g_clip.CurPat + g_clip.SongOff);
+                var xTick = wt * g_clip.EditPos;
 
                 FillRect(
                     sprites,
                     xTick + 2, 
                     py, 
                     wt - 4,
-                    ph + (g_paramKeys || g_paramAuto ? ph/5 : 0),
+                    ph + (g_clip.ParamKeys || g_clip.ParamAuto ? ph/5 : 0),
                     color3);
             }
 
@@ -107,29 +107,29 @@ namespace IngameScript
             // draw keys
             for (int p = first; p < next; p++)
             {
-                var _p = p - g_songOff;
+                var _p = p - g_clip.SongOff;
                 var px = x - _f * pw + _p * pw;
 
-                if (g_piano) DrawPianoRoll(sprites, px, py, pw, ph, g_song, p, 1, false, g_nSteps);
-                else         DrawPattern  (sprites, px, py, pw, ph, g_song, p, 1, false);
+                if (g_clip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, g_clip, p, 1, false, g_nSteps);
+                else         DrawPattern  (sprites, px, py, pw, ph, g_clip, p, 1, false);
 
-                if (g_paramKeys)
+                if (g_clip.ParamKeys)
                 {
                     FillRect     (sprites, px, py+ph+ph/5, pw, 1,    color3);
-                    DrawParamKeys(sprites, px, py + ph,    pw, ph/5, g_song, p, CurChan);
+                    DrawParamKeys(sprites, px, py + ph,    pw, ph/5, g_clip, p, g_clip.CurChan);
                 }
-                else if (g_paramAuto)
+                else if (g_clip.ParamAuto)
                 {
                     FillRect(sprites, px, py + ph + ph/5, pw, 1, color3);
                 }
             }
 
-            if (g_paramAuto)
+            if (g_clip.ParamAuto)
             { 
                 var fx   = x - _f * pw;
-                var wMax = Math.Min(g_song.Patterns.Count * pw, w * 2);
+                var wMax = Math.Min(g_clip.Patterns.Count * pw, w * 2);
 
-                DrawParamAuto(sprites, fx, py + ph, pw, ph/5, wMax, g_song, 0, CurChan);
+                DrawParamAuto(sprites, fx, py + ph, pw, ph/5, wMax, g_clip, 0, g_clip.CurChan);
             }
 
 
@@ -138,35 +138,35 @@ namespace IngameScript
 
 
             // draw play position
-            if (OK(g_song.PlayStep))
+            if (OK(g_clip.PlayStep))
             {
-                var pl    = x  - pw * (nDsp * 4 + g_songOff);
-                var xTick = pl + wt * (int)g_song.PlayStep;
+                var pl    = x  - pw * (nDsp * 4 + g_clip.SongOff);
+                var xTick = pl + wt * (int)g_clip.PlayStep;
 
                 FillRect(sprites, xTick, py, wt, ph, color6);
 
-                if (g_piano) DrawPianoNeg(sprites, pl, py, pw, ph, g_song, g_song.PlayPat, (int)g_song.PlayStep, false);
-                else         DrawPatNeg  (sprites, pl, py, pw, ph, g_song, g_song.PlayPat, (int)g_song.PlayStep, false);
+                if (g_clip.Piano) DrawPianoNeg(sprites, pl, py, pw, ph, g_clip, g_clip.PlayPat, (int)g_clip.PlayStep, false);
+                else         DrawPatNeg  (sprites, pl, py, pw, ph, g_clip, g_clip.PlayPat, (int)g_clip.PlayStep, false);
             }
 
 
-            if (g_song.Patterns.Count > maxDspPats)
+            if (g_clip.Patterns.Count > maxDspPats)
             {
-                var bw = (w * 2) / (float)g_song.Patterns.Count;
+                var bw = (w * 2) / (float)g_clip.Patterns.Count;
                 var sh = 29;
 
                 var px = x - nDsp * 4 * pw;
                 var by = y + h - sh;
 
-                for (int p = 0; p < g_song.Patterns.Count; p++)
+                for (int p = 0; p < g_clip.Patterns.Count; p++)
                 {
                     FillRect(sprites, px + bw * p + 1, by, 1, sh, color4);
 
-                    var m = Array.FindIndex(g_mem, _m => _m == p);
+                    var m = Array.FindIndex(g_clip.Mems, _m => _m == p);
                     if (m > -1) DrawString(sprites, S((char)(65 + m)), px + 5, by - 30, 0.7f, color4);
                 }
 
-                foreach (var b in g_song.Blocks)
+                foreach (var b in g_clip.Blocks)
                 {
                     var bx = px + bw * b.First + 1;
                     var sw = bw * b.Len - 2;
@@ -180,25 +180,25 @@ namespace IngameScript
                     DrawRightBracket(sprites, bx + sw, by, 16, sh, 1);
                 }
 
-                FillRect(sprites, px + bw * CurPat, by, bw, sh, color4);
+                FillRect(sprites, px + bw * g_clip.CurPat, by, bw, sh, color4);
 
-                if (OK(g_song.PlayStep))
-                    FillRect(sprites, px + bw / g_nSteps * g_song.PlayStep, by, 4, sh, color6);
+                if (OK(g_clip.PlayStep))
+                    FillRect(sprites, px + bw / g_nSteps * g_clip.PlayStep, by, 4, sh, color6);
             }
 
 
             for (int p = first; p < next; p++)
             {
-                var _p = p - g_songOff;
+                var _p = p - g_clip.SongOff;
 
                 var px = x - _f * pw + _p * pw;
 
-                var b = g_song.GetBlock(p);
+                var b = g_clip.GetBlock(p);
                 var c = b != null && b == curBlock ? color5 : color4;
 
                 DrawString(sprites, S(p + 1), px + 8, py - 28, 0.8f, c);
 
-                var m = Array.FindIndex(g_mem, _m => _m == p);
+                var m = Array.FindIndex(g_clip.Mems, _m => _m == p);
                 if (m > -1) DrawString(sprites, S((char)(65 + m)), px + 8, py - 68, 1, color4);
             }
 
@@ -217,26 +217,26 @@ namespace IngameScript
 
             if (nDsp == 0)
             {
-                DrawFuncButton(sprites, strDel, 0, w, h, false, false, songPressed.Contains(0));
-                DrawFuncButton(sprites, "Dup",  1, w, h, false, false, songPressed.Contains(1));
-                DrawFuncButton(sprites, "New",  2, w, h, false, false, songPressed.Contains(2));
+                DrawFuncButton(sprites, strDel, 0, w, h, false, false, g_clipPressed.Contains(0));
+                DrawFuncButton(sprites, "Dup",  1, w, h, false, false, g_clipPressed.Contains(1));
+                DrawFuncButton(sprites, "New",  2, w, h, false, false, g_clipPressed.Contains(2));
 
-                DrawFuncButton(sprites, "Cue",  4, w, h, false, false, g_song.Cue > -1);
-                DrawFuncButton(sprites, "◄",    5, w, h, false, false, songPressed.Contains(5) ^ g_movePat); }
-         else { DrawFuncButton(sprites, "►",    0, w, h, false, false, songPressed.Contains(6) ^ g_movePat);
-                DrawFuncButton(sprites, "◄►",   1, w, h, false, false, g_movePat);
+                DrawFuncButton(sprites, "Cue",  4, w, h, false, false, g_clip.CueNext > -1);
+                DrawFuncButton(sprites, "◄",    5, w, h, false, false, g_clipPressed.Contains(5) ^ g_clip.MovePat); }
+         else { DrawFuncButton(sprites, "►",    0, w, h, false, false, g_clipPressed.Contains(6) ^ g_clip.MovePat);
+                DrawFuncButton(sprites, "◄►",   1, w, h, false, false, g_clip.MovePat);
                                                 
-                DrawFuncButton(sprites, "[",    3, w, h, false, false, g_in);
-                DrawFuncButton(sprites, "]",    4, w, h, false, false, g_out);
-                DrawFuncButton(sprites, "X",    5, w, h, false, false, songPressed.Contains(11));
+                DrawFuncButton(sprites, "[",    3, w, h, false, false, g_clip.In);
+                DrawFuncButton(sprites, "]",    4, w, h, false, false, g_clip.Out);
+                DrawFuncButton(sprites, "X",    5, w, h, false, false, g_clipPressed.Contains(11));
             }
         }
 
 
         void DrawBrackets(List<MySprite> sprites, int p, float x, float y, float w, float h, float bw, float bh)
         {
-            if (g_song.Blocks.Find(b => p == b.First) != null) DrawLeftBracket (sprites, x,     y, bw, h, bh);
-            if (g_song.Blocks.Find(b => p == b.Last ) != null) DrawRightBracket(sprites, x + w, y, bw, h, bh);
+            if (g_clip.Blocks.Find(b => p == b.First) != null) DrawLeftBracket (sprites, x,     y, bw, h, bh);
+            if (g_clip.Blocks.Find(b => p == b.Last ) != null) DrawRightBracket(sprites, x + w, y, bw, h, bh);
         }
 
 

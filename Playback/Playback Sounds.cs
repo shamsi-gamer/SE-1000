@@ -10,7 +10,7 @@ namespace IngameScript
             if (del == null) return;
 
             var lTime = g_time - snd.Note.PatTime;
-            var sTime = g_time - g_song.StartTime;
+            var sTime = g_time - g_clip.StartTime;
 
             var tp = new TimeParams(g_time, lTime, sTime, snd.Note, snd.Length, snd.SourceIndex, snd.TriggerValues, this);
 

@@ -12,7 +12,7 @@ namespace IngameScript
         {
             if (!TooComplex) DrawMain();
             if (!TooComplex) DrawInfo();
-            if (!TooComplex) DrawSong();
+            if (!TooComplex) DrawClip();
             if (!TooComplex) DrawIO();
 
             if (!TooComplex)

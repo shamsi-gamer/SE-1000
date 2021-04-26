@@ -8,7 +8,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        void DrawPatternDisplay(List<MySprite> sprites, float x, float y, float w, float h, Song song, int pat, bool isolated)
+        void DrawPatternDisplay(List<MySprite> sprites, float x, float y, float w, float h, Clip song, int pat, bool isolated)
         {
             FillRect(sprites, x, y, w, h, color0);
 
@@ -21,11 +21,11 @@ namespace IngameScript
             var xt = 340;
             var wt = (w - xt) / g_nSteps;
 
-            DrawGrid(sprites, x + xt, y, w - xt, rh, CurPat);
+            DrawGrid(sprites, x + xt, y, w - xt, rh, g_clip.CurPat);
 
 
             var ch = rh / g_nChans;
-            var cy = y + rh - (CurChan + 1) * ch;
+            var cy = y + rh - (g_clip.CurChan + 1) * ch;
 
             FillRect(sprites, xt, cy, w - xt, ch, color3);
 
@@ -34,26 +34,26 @@ namespace IngameScript
 
 
             // edit position
-            if (   song.EditPos >= CurPat      * g_nSteps
-                && song.EditPos < (CurPat + 1) * g_nSteps)
+            if (   song.EditPos >= g_clip.CurPat      * g_nSteps
+                && song.EditPos < (g_clip.CurPat + 1) * g_nSteps)
             {
                 FillRect(
                     sprites, 
                     x + xt + wt * (song.EditPos % g_nSteps), 
                     y, 
                     wt,
-                    g_paramKeys || g_paramAuto ? h : rh,
+                    g_clip.ParamKeys || g_clip.ParamAuto ? h : rh,
                     color3);
             }
 
 
             DrawPattern(sprites, x + xt, y, w - xt, rh, song, pat, 2, isolated);
 
-            if (   OK(g_song.PlayTime)
-                && g_song.PlayPat == pat)
+            if (   OK(g_clip.PlayTime)
+                && g_clip.PlayPat == pat)
             {
-                FillRect(sprites, x + xt + wt * ((int)g_song.PlayStep % g_nSteps), y, wt, rh, color6);
-                DrawPatNeg(sprites, x + xt, y, w - xt, rh, song, pat, (int)g_song.PlayStep, isolated);
+                FillRect(sprites, x + xt + wt * ((int)g_clip.PlayStep % g_nSteps), y, wt, rh, color6);
+                DrawPatNeg(sprites, x + xt, y, w - xt, rh, song, pat, (int)g_clip.PlayStep, isolated);
             }
 
 
@@ -62,21 +62,21 @@ namespace IngameScript
             if (IsCurParam())
                 DrawValueLegend(sprites, CurParam, x, y, w, h, xt, rh, song, pat);
 
-            if (SelChan < 0)
+            if (g_clip.SelChan < 0)
                 DrawFuncButtons(sprites, w, h, song);
         }
 
 
-        void DrawChannelList(List<MySprite> sprites, float x, float y, float w, float h, Song song)
+        void DrawChannelList(List<MySprite> sprites, float x, float y, float w, float h, Clip song)
         {
             var ch = h / g_nChans;
 
-            FillRect(sprites, x, y + h - CurChan * ch - 35, w, ch, CurrentChannel.On ? color6 : color3);
+            FillRect(sprites, x, y + h - g_clip.CurChan * ch - 35, w, ch, g_clip.CurrentChannel.On ? color6 : color3);
 
             for (int c = 0; c < g_nChans; c++)
             {
                 var yLine = y + h - c * ch - 40;
-                var chan  = CurrentPattern.Channels[c];
+                var chan  = g_clip.CurrentPattern.Channels[c];
 
                 DrawString(sprites, 
                      S(c + 1).PadLeft(2)
@@ -85,7 +85,7 @@ namespace IngameScript
                     6,
                     yLine + 6,
                     1,
-                    c == CurChan ? color0 : (chan.Notes.Count > 0 ? (chan.On ? color6 : color3) : color2));
+                    c == g_clip.CurChan ? color0 : (chan.Notes.Count > 0 ? (chan.On ? color6 : color3) : color2));
             }
         }
 
@@ -106,7 +106,7 @@ namespace IngameScript
         }
 
 
-        void DrawPattern(List<MySprite> sprites, float x, float y, float w, float h, Song song, int pat, int gs, bool isolated, int songSteps = g_nSteps)
+        void DrawPattern(List<MySprite> sprites, float x, float y, float w, float h, Clip song, int pat, int gs, bool isolated, int songSteps = g_nSteps)
         {
             var wt = w/g_nSteps;
             var ht = h/g_nChans;
@@ -162,7 +162,7 @@ namespace IngameScript
         }
 
 
-        void DrawPatNeg(List<MySprite> sprites, float x, float y, float w, float h, Song song, int pat, float step, bool isolated)
+        void DrawPatNeg(List<MySprite> sprites, float x, float y, float w, float h, Clip song, int pat, float step, bool isolated)
         {
             var wt = w/g_nSteps;
             var ht = h/g_nChans;

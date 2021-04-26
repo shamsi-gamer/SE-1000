@@ -46,7 +46,7 @@ Scl
 Scale
 IO
 Info
-Song
+Clip
 Mixer
 load
 save

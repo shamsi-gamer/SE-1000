@@ -9,8 +9,8 @@ namespace IngameScript
     {
         void High(int h)
         {
-            var tune = SelectedSource    ?.Tune
-                    ?? SelectedInstrument?.Tune;
+            var tune = g_clip.SelectedSource    ?.Tune
+                    ?? g_clip.SelectedInstrument?.Tune;
 
 
             if (h == 10)
@@ -19,22 +19,22 @@ namespace IngameScript
                     && (tune?.UseChord ?? false))
                 { 
                     g_settings.RemoveLast();
-                    CurSet--;
-                    g_piano = false;
+                    g_clip.CurSet--;
+                    g_clip.Piano = false;
                     UpdateChordLights();
                 }
                 else
-                    g_piano = !g_piano;
+                    g_clip.Piano = !g_clip.Piano;
 
-                if (g_piano)
-                    g_pick = false;
+                if (g_clip.Piano)
+                    g_clip.Pick = false;
 
                 UpdateShuffleLight();
                 UpdateOctaveLight();
             }
             else if (IsCurParam(strTune)
                   && (tune?.UseChord ?? false)
-                  && !(g_paramKeys || g_paramAuto))
+                  && !(g_clip.ParamKeys || g_clip.ParamAuto))
             {
                 var chord = tune.Chord;
                 var note  = HighToNote(h);
@@ -44,11 +44,11 @@ namespace IngameScript
 
                 tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
             }
-            else if (g_chordEdit
-                  && g_chord > -1)
+            else if (g_clip.ChordEdit
+                  && g_clip.Chord > -1)
             { 
                 var note  = HighToNote(h);
-                var chord = g_chords[g_chord];
+                var chord = g_clip.Chords[g_clip.Chord];
 
                 if (chord.Contains(note)) chord.Remove(note);
                 else                      chord.Add   (note);
@@ -59,19 +59,19 @@ namespace IngameScript
                 {
                     chord.Sort();
 
-                    var oldLength = g_editLength;
-                    g_editLength = Math.Min(g_editLength, g_steps.Length-2);
-                    PlayNote(g_song, chord[0], chord, CurChan);
-                    g_editLength = oldLength;
+                    var oldLength = g_clip.EditLength;
+                    g_clip.EditLength = Math.Min(g_clip.EditLength, g_steps.Length-2);
+                    PlayNote(g_clip, chord[0], chord, g_clip.CurChan);
+                    g_clip.EditLength = oldLength;
                 }
             }
-            else if (g_piano)
+            else if (g_clip.Piano)
             {
                 PlayNote(
-                    g_song,
+                    g_clip,
                     HighToNote(h), 
-                    g_chord > -1 && g_chordMode ? g_chords[g_chord] : null,
-                    CurChan);
+                    g_clip.Chord > -1 && g_clip.ChordMode ? g_clip.Chords[g_clip.Chord] : null,
+                    g_clip.CurChan);
             }
             else
             {
@@ -85,9 +85,9 @@ namespace IngameScript
                 else if (h == 5) RandomChannelNotes();
                 else if (h == 6) ClearNotes();
                                    
-                else if (h == 7) Flip(CurChan, 4); 
-                else if (h == 8) Flip(CurChan, 8); 
-                else if (h == 9) Flip(CurChan, 16);
+                else if (h == 7) Flip(g_clip.CurChan, 4); 
+                else if (h == 8) Flip(g_clip.CurChan, 8); 
+                else if (h == 9) Flip(g_clip.CurChan, 16);
 
                 if (   h != 2
                     && h != 3
@@ -99,8 +99,8 @@ namespace IngameScript
 
         void Low(int l)
         {
-            var tune = SelectedSource    ?.Tune
-                    ?? SelectedInstrument?.Tune;
+            var tune = g_clip.SelectedSource    ?.Tune
+                    ?? g_clip.SelectedInstrument?.Tune;
 
             if (   IsCurParam(strTune)
                 && (tune?.UseChord ?? false))
@@ -113,11 +113,11 @@ namespace IngameScript
 
                 tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
             }
-            else if (g_chordEdit
-                  && g_chord > -1)
+            else if (g_clip.ChordEdit
+                  && g_clip.Chord > -1)
             {
                 var note  = LowToNote(l);
-                var chord = g_chords[g_chord];
+                var chord = g_clip.Chords[g_clip.Chord];
 
                 if (chord.Contains(note)) chord.Remove(note);
                 else                      chord.Add   (note);
@@ -126,39 +126,39 @@ namespace IngameScript
                 {
                     chord.Sort();
 
-                    var oldLength = g_editLength;
-                    g_editLength = Math.Min(g_editLength, g_steps.Length-2);
-                    PlayNote(g_song, chord[0], chord, CurChan);
-                    g_editLength = oldLength;
+                    var oldLength = g_clip.EditLength;
+                    g_clip.EditLength = Math.Min(g_clip.EditLength, g_steps.Length-2);
+                    PlayNote(g_clip, chord[0], chord, g_clip.CurChan);
+                    g_clip.EditLength = oldLength;
                 }
 
                 UpdateChordLights();
             }
-            else if (g_piano)
+            else if (g_clip.Piano)
             {
                 if (l == 15)
                 {
-                    g_halfSharp = !g_halfSharp;
-                    UpdateLight(lblLow[15], g_halfSharp);
+                    g_clip.HalfSharp = !g_clip.HalfSharp;
+                    UpdateLight(lblLow[15], g_clip.HalfSharp);
                 }
                 else // l < 15
                 {
                     PlayNote(
-                        g_song,
+                        g_clip,
                         LowToNote(l),
-                        g_chord > -1 && g_chordMode ? g_chords[g_chord] : null,
-                        CurChan);
+                        g_clip.Chord > -1 && g_clip.ChordMode ? g_clip.Chords[g_clip.Chord] : null,
+                        g_clip.CurChan);
                 }
             }
             else
-                Tick(CurChan, l);
+                Tick(g_clip.CurChan, l);
         }
 
 
         void Tick(int ch, int step)
         {
             int first, last;
-            GetPatterns(g_song, CurPat, out first, out last);
+            g_clip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
                 Tick(p, ch, step);
@@ -167,8 +167,8 @@ namespace IngameScript
 
         void Tick(int pat, int ch, int step)
         {
-            var _chan = g_song.Patterns[pat].Channels[ch];
-            var  chan = g_song.Patterns[pat].Channels[ch];
+            var _chan = g_clip.Patterns[pat].Channels[ch];
+            var  chan = g_clip.Patterns[pat].Channels[ch];
 
             var found = chan.Notes.Where(n => 
                    n.PatStep >= step
@@ -176,20 +176,20 @@ namespace IngameScript
 
             if (found.Length == 0)
             {
-                if (!g_pick)
+                if (!g_clip.Pick)
                 {
-                    var notes = GetChordNotes(g_curNote);
+                    var notes = GetChordNotes(g_clip.CurNote);
 
                     for (int n = 0; n < notes.Count; n++)
                         chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordSpread(n), EditStepLength));
                 }
             }
-            else if (g_pick)
+            else if (g_clip.Pick)
             {
-                g_curNote = found[0].Number;
-                //g_showNote = g_curNote;
+                g_clip.CurNote = found[0].Number;
+                //g_showNote = g_clip.CurNote;
 
-                g_pick = false;
+                g_clip.Pick = false;
 
                 TriggerNote(
                     found[0].Number, 
@@ -199,7 +199,7 @@ namespace IngameScript
             }
             else
             {
-                g_pick = false;
+                g_clip.Pick = false;
                 
                 foreach (var n in found)
                     chan.Notes.Remove(n);
@@ -209,24 +209,24 @@ namespace IngameScript
 
         void Shift(bool fwd)
         {
-            if (g_allChan)
+            if (g_clip.AllChan)
             {
                 for (int i = 0; i < g_nChans; i++)
                     Shift(i, fwd);
             }
             else
-                Shift(CurChan, fwd);
+                Shift(g_clip.CurChan, fwd);
         }
 
 
         void Shift(int ch, bool fwd)
         {
-            var pats = g_song.Patterns;
+            var pats = g_clip.Patterns;
 
             var spill = new List<Note>();
 
             int first, last;
-            GetPatterns(g_song, CurPat, out first, out last);
+            g_clip.GetCurPatterns(out first, out last);
 
             if (fwd)
             {
@@ -293,22 +293,22 @@ namespace IngameScript
 
         void RandomInstrument()
         {
-            g_rndInst = !g_rndInst;
-            UpdateHighLights(CurrentPattern, CurrentChannel);
+            g_clip.RndInst = !g_clip.RndInst;
+            UpdateHighLights(g_clip.CurrentPattern, g_clip.CurrentChannel);
         }
 
 
         void ToggleAllChannels()
         {
-            g_allChan = !g_allChan;
-            UpdateHighLights(CurrentPattern, CurrentChannel);
+            g_clip.AllChan = !g_clip.AllChan;
+            UpdateHighLights(g_clip.CurrentPattern, g_clip.CurrentChannel);
         }
 
 
         void Flip(int ch, int frac)
         {
             int first, last;
-            GetPatterns(g_song, CurPat, out first, out last);
+            g_clip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
             { 
@@ -327,42 +327,42 @@ namespace IngameScript
 
         void ClearNotes()
         {
-            if (g_allChan)
+            if (g_clip.AllChan)
             {
                 for (int i = 0; i < g_nChans; i++)
                     ClearNotes(i);
             }
             else
-                ClearNotes(CurChan);
+                ClearNotes(g_clip.CurChan);
         }
 
 
         void ClearNotes(int ch)
         {
             int first, last;
-            GetPatterns(g_song, CurPat, out first, out last);
+            g_clip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
             { 
-                var chan = g_song.Patterns[p].Channels[ch];
+                var chan = g_clip.Patterns[p].Channels[ch];
 
-                if (g_paramKeys)
+                if (g_clip.ParamKeys)
                 {
                     foreach (var note in chan.Notes)
                     { 
                         var param = GetCurrentParam(note.Instrument);
 
                         var index = 0;
-                        while ((index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSrc))) > -1)
+                        while ((index = note.Keys.FindIndex(k => k.Path == param.GetPath(g_clip.CurSrc))) > -1)
                             note.Keys.RemoveAt(index);
                     }
                 }
-                else if (g_paramAuto)
+                else if (g_clip.ParamAuto)
                 {
                     var param = GetCurrentParam(chan.Instrument);
                     var index = 0;
                         
-                    while ((index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(CurSrc))) > -1)
+                    while ((index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(g_clip.CurSrc))) > -1)
                         chan.AutoKeys.RemoveAt(index);
                 }
                 else
@@ -371,15 +371,15 @@ namespace IngameScript
                 }
             }
 
-            if (g_paramAuto)
-                g_song.UpdateAutoKeys();
+            if (g_clip.ParamAuto)
+                g_clip.UpdateAutoKeys();
         }
 
 
         void PickNote()
         {
-            g_pick = !g_pick;
-            UpdateLight(lblHigh[7], g_pick);
+            g_clip.Pick = !g_clip.Pick;
+            UpdateLight(lblHigh[7], g_clip.Pick);
         }
 
 
@@ -392,8 +392,8 @@ namespace IngameScript
             if (high > 6) h++;
 
             return 
-                  (60 + CurrentChannel.Transpose * 12 + h) * NoteScale 
-                + (g_halfSharp ? 1 : 0);
+                  (60 + g_clip.CurrentChannel.Transpose * 12 + h) * NoteScale 
+                + (g_clip.HalfSharp ? 1 : 0);
         }
 
 
@@ -407,8 +407,8 @@ namespace IngameScript
             if (low > 13) l--;
 
             return 
-                  (60 + CurrentChannel.Transpose * 12 + l) * NoteScale
-                + (g_halfSharp ? 1 : 0);
+                  (60 + g_clip.CurrentChannel.Transpose * 12 + l) * NoteScale
+                + (g_clip.HalfSharp ? 1 : 0);
         }
 
 
@@ -436,7 +436,7 @@ namespace IngameScript
         {
             return
                   S((char)(65 + (low+2) % 7)) 
-                + (g_halfSharp ? "‡" : "");
+                + (g_clip.HalfSharp ? "‡" : "");
         }
     }
 }

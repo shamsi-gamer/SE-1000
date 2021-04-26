@@ -33,7 +33,7 @@ namespace IngameScript
                 foreach (var lfo in g_lfo) lfo.AdvanceTime();
                 foreach (var mod in g_mod) mod.AdvanceTime();
 
-                g_song.FinalizePlayback();
+                g_clip.FinalizePlayback();
             }
 
             UpdateRuntimeInfo();
@@ -45,19 +45,19 @@ namespace IngameScript
 
         void Update1()
         {
-            CurSetting?.AdjustFromController(g_song, this);
+            CurSetting?.AdjustFromController(g_clip, this);
 
             if (!TooComplex) 
                 UpdatePlayback();
 
-            if (OK(g_song.PlayTime)) 
+            if (OK(g_clip.PlayTime)) 
                 UpdateKeyLights();
         }
 
 
         void Update10()
         { 
-            if (   g_song.PlayTime < 0
+            if (   g_clip.PlayTime < 0
                 && _loadStep > 10
                 && !TooComplex)
                 UpdateKeyLights();

@@ -12,7 +12,7 @@ namespace IngameScript
             var rh         = h - 50;
             var instHeight = h - 80;
 
-            var inst = SelectedInstrument;
+            var inst = g_clip.SelectedInstrument;
 
             var lw = 196;
 
@@ -27,7 +27,7 @@ namespace IngameScript
             FillRect(sprites, x + lw, y, w-lw, instHeight, color2);
 
 
-            DrawInstrumentList(sprites, x, y, lw, instHeight, SelectedChannel);
+            DrawInstrumentList(sprites, x, y, lw, instHeight, g_clip.SelectedChannel);
 
 
             FillRect(sprites, x + lw,      0,    w2, rh/4, color3);
@@ -77,7 +77,7 @@ namespace IngameScript
 
 
             var dpInst = new DrawParams(this);
-            SelectedInstrument.DrawLabels(sprites, x + lw + w2 + 21, y + 5, dpInst);
+            g_clip.SelectedInstrument.DrawLabels(sprites, x + lw + w2 + 21, y + 5, dpInst);
 
 
             DrawCurrentSetting(
@@ -99,7 +99,7 @@ namespace IngameScript
             // bottom func separator
             FillRect(sprites, x, y + instHeight, w, 1, color6);
             
-            DrawFuncButtons(sprites, w, h, g_song);
+            DrawFuncButtons(sprites, w, h, g_clip);
         }
 
 
@@ -111,10 +111,10 @@ namespace IngameScript
             var iInst = g_inst.IndexOf(chan.Instrument);
             var step  = 28.5f;
 
-            if (SelChan > -1 && CurSrc < 0)
-                FillRect(sprites, x + sw, y + (iInst - g_instOff) * step, w - sw, step, color6);
+            if (g_clip.SelChan > -1 && g_clip.CurSrc < 0)
+                FillRect(sprites, x + sw, y + (iInst - g_clip.InstOff) * step, w - sw, step, color6);
 
-            for (int i = g_instOff; i < Math.Min(g_instOff + maxDspInst, g_inst.Count); i++)
+            for (int i = g_clip.InstOff; i < Math.Min(g_clip.InstOff + maxDspInst, g_inst.Count); i++)
             {
                 var inst = g_inst[i];
 
@@ -122,16 +122,16 @@ namespace IngameScript
                     sprites, 
                     inst.Name.Substring(0, Math.Min(inst.Name.Length, maxNameLength)),
                     x + sw + 5,
-                    y + (i - g_instOff) * step,
+                    y + (i - g_clip.InstOff) * step,
                     0.7f,
                     inst == chan.Instrument 
-                    ? (CurSrc > -1 ? color6 : color0) 
-                    : (CurSrc > -1 ? color3 : color6));
+                    ? (g_clip.CurSrc > -1 ? color6 : color0) 
+                    : (g_clip.CurSrc > -1 ? color3 : color6));
             }
 
             FillRect(sprites, x + w - 4, y, 4, h, color6);
 
-            if (SelChan > -1 && g_inst.Count > maxDspInst)
+            if (g_clip.SelChan > -1 && g_inst.Count > maxDspInst)
             {
                 var bh = h / (float)g_inst.Count;
                 FillRect(sprites, x, y + bh * iInst, sw, bh, color6);
@@ -144,15 +144,15 @@ namespace IngameScript
             var nSrc = inst.Sources.Count;
             var sw   = 20;
 
-            var iy = y - g_srcOff;
+            var iy = y - g_clip.SrcOff;
 
-            for (int i = g_srcOff; i < Math.Min(g_srcOff + maxDspSrc, nSrc); i++)
+            for (int i = g_clip.SrcOff; i < Math.Min(g_clip.SrcOff + maxDspSrc, nSrc); i++)
                 inst.Sources[i].DrawSource(sprites, x + sw, ref iy, w - sw, this);
 
-            if (CurSrc > -1 && nSrc > 8)
+            if (g_clip.CurSrc > -1 && nSrc > 8)
             {
                 var bh = h / (float)nSrc;
-                FillRect(sprites, x, y + bh * CurSrc, sw, bh, color6);
+                FillRect(sprites, x, y + bh * g_clip.CurSrc, sw, bh, color6);
             }
         }
     }

@@ -82,7 +82,7 @@ namespace IngameScript
 
 
             public virtual void Randomize(Program prog) {}
-            public virtual void AdjustFromController(Song song, Program prog) {}
+            public virtual void AdjustFromController(Clip song, Program prog) {}
 
 
             public virtual string GetLabel(out float width) 
@@ -168,7 +168,7 @@ namespace IngameScript
 
         static Parameter GetCurrentParam(Instrument inst)
         {
-            return (Parameter)GetSettingFromPath(inst, CurSetting.GetPath(CurSrc));
+            return (Parameter)GetSettingFromPath(inst, CurSetting.GetPath(g_clip.CurSrc));
         }
 
 

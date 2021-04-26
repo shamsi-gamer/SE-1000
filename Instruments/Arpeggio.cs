@@ -8,7 +8,7 @@ namespace IngameScript
     {
         public class Arpeggio : Setting
         {
-            public Song      Song;
+            public Clip      Clip;
 
             public Parameter Length,
                              Scale;
@@ -17,9 +17,9 @@ namespace IngameScript
             public Arpeggio(Instrument inst) 
                 : base(strArp, null, null, inst, null)
             {
-                Song = new Song("");
-                Song.Arpeggio = this;
-                Song.Patterns.Add(new Pattern(Song));
+                Clip = new Clip("");
+                Clip.Arpeggio = this;
+                Clip.Patterns.Add(new Pattern(Clip));
                 
                 SetInstrument(inst);
 
@@ -31,12 +31,12 @@ namespace IngameScript
             public Arpeggio(Arpeggio arp) 
                 : base(arp.Tag, null, arp.Prototype, arp.Instrument, arp.Source)
             {
-                Song   = new Song(arp.Song);
+                Clip   = new Clip(arp.Clip);
 
                 Length = new Parameter(arp.Length, this);
                 Scale  = new Parameter(arp.Scale,  this);
 
-                //if (arp.Song != null)
+                //if (arp.Clip != null)
                 //{ 
                 //    Notes = new List<Note>();
 
@@ -77,7 +77,7 @@ namespace IngameScript
 
             public void SetInstrument(Instrument inst)
             {
-                foreach (var pat in Song.Patterns)
+                foreach (var pat in Clip.Patterns)
                     pat.Channels[0].Instrument = inst;
             }
 
@@ -103,7 +103,7 @@ namespace IngameScript
             }
 
 
-            public void Delete(Song song, int iSrc)
+            public void Delete(Clip song, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
@@ -147,8 +147,8 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Length.HasDeepParams(CurrentChannel, CurSrc)) Length.DrawLabels(sprites, x, y, dp);
-                if (Scale .HasDeepParams(CurrentChannel, CurSrc)) Scale .DrawLabels(sprites, x, y, dp);
+                if (Length.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Length.DrawLabels(sprites, x, y, dp);
+                if (Scale .HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Scale .DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }
@@ -158,7 +158,7 @@ namespace IngameScript
             {
                 DrawFuncButton(sprites, strLen, 1, w, h, true, Length.HasDeepParams(chan, -1));
                 DrawFuncButton(sprites, strScl, 2, w, h, true, Scale .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "X",   5, w, h, false, false, mainPressed.Contains(5));                
+                DrawFuncButton(sprites, "X",   5, w, h, false, false, g_mainPressed.Contains(5));                
             }
 
 
@@ -167,14 +167,14 @@ namespace IngameScript
                 switch (func)
                 { 
                 case 1:
-                    Song.EditPos = -1;
+                    Clip.EditPos = -1;
                     UpdateEditLight(lblEdit, false);
 
                     AddNextSetting(strLen);
                     break;
 
                 case 2:
-                    Song.EditPos = -1;
+                    Clip.EditPos = -1;
                     UpdateEditLight(lblEdit, false);
 
                     AddNextSetting(strScl);

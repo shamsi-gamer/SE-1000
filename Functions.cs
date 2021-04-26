@@ -22,31 +22,31 @@ namespace IngameScript
 
         void SetFunc(int func)
         {
-            if (SelChan > -1)
+            if (g_clip.SelChan > -1)
             {
-                if (CurSet > -1)
+                if (g_clip.CurSet > -1)
                 {
                     CurSetting.Func(func);
                 }
                 else 
                 {
-                    if (CurSrc < 0) SetInstFunc(SelectedInstrument, func);
-                    else            SetSrcFunc (SelectedSource,     func);
+                    if (g_clip.CurSrc < 0) SetInstFunc(g_clip.SelectedInstrument, func);
+                    else                   SetSrcFunc (g_clip.SelectedSource,     func);
                 }
             }
             else
             {
                 switch (func)
                 {
-                case 2: ToggleNote(g_song); break;
-                case 3: CutNotes(g_song);   break;
+                case 2: ToggleNote(g_clip); break;
+                case 3: CutNotes(g_clip);   break;
                 }
             }
 
-            mainPressed.Add(func);
+            g_mainPressed.Add(func);
 
             UpdateEnterLight();
-            UpdateAdjustLights(g_song);
+            UpdateAdjustLights(g_clip);
         }
 
 
@@ -60,14 +60,14 @@ namespace IngameScript
         {
             BackOut();
 
-            CurSrc = iSrc;
+            g_clip.CurSrc = iSrc;
 
-            CurChan =
-            SelChan = Array.FindIndex(
-                CurrentPattern.Channels, 
+            g_clip.CurChan =
+            g_clip.SelChan = Array.FindIndex(
+                g_clip.CurrentPattern.Channels, 
                 ch => ch.Instrument == inst);
 
-            UpdateInstOff(SelChan);
+            UpdateInstOff(g_clip.SelChan);
 
             UpdateInstName(true);
             g_inputValid = false;
@@ -93,21 +93,21 @@ namespace IngameScript
 
         static void AddNextSetting(string tag, Instrument inst = null, int iSrc = -2)
         {
-            if (inst == null) inst = SelectedInstrument;
-            if (iSrc == -2)   iSrc = CurSrc;
+            if (inst == null) inst = g_clip.SelectedInstrument;
+            if (iSrc == -2)   iSrc = g_clip.CurSrc;
 
-            if (CurSet > -1)
+            if (g_clip.CurSet > -1)
                 CurSetting._IsCurrent = false;
 
             Setting setting;
 
-                 if (CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
-            else if (iSrc   > -1) setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
-            else                  setting = inst.GetOrAddSettingFromTag(tag);
+                 if (g_clip.CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
+            else if (iSrc          > -1) setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
+            else                         setting = inst.GetOrAddSettingFromTag(tag);
 
             g_settings.Add(setting);
 
-            CurSet++;
+            g_clip.CurSet++;
 
             if (IsCurParam())
                 CurSetting._IsCurrent = true;
@@ -116,7 +116,7 @@ namespace IngameScript
 
         static void RemoveSetting(Setting setting)
         {
-            int set = CurSet;
+            int set = g_clip.CurSet;
 
             if (   HasTag(setting, strAtt)
                 || HasTag(setting, strDec)
@@ -124,12 +124,12 @@ namespace IngameScript
                 || HasTag(setting, strRel))
                 set--;
 
-            if (CurSet > 0)
-                g_settings[CurSet-1].Remove(setting);
+            if (g_clip.CurSet > 0)
+                g_settings[g_clip.CurSet -1].Remove(setting);
             else 
             {
-                var inst = SelectedInstrument;
-                var src  = SelectedSource;
+                var inst = g_clip.SelectedInstrument;
+                var src  = g_clip.SelectedSource;
 
                 switch (setting.Tag)
                 {
@@ -144,7 +144,7 @@ namespace IngameScript
 
             g_settings.RemoveAt(set);
 
-            CurSet -= CurSet - set + 1;
+            g_clip.CurSet -= g_clip.CurSet - set + 1;
         }
 
 

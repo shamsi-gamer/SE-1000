@@ -33,36 +33,36 @@ namespace IngameScript
             lblFold, lblGyro, lblNoise;
 
 
-        List<IMyTextPanel> lblHigh,
-                           lblLow;
+        List<IMyTextPanel>        lblHigh,
+                                  lblLow;
 
-        List<IMyTextPanel> lblMem;
-        IMyTextPanel[]     lblMems = new IMyTextPanel[nMems];
+        static List<IMyTextPanel> lblMem;
+        static IMyTextPanel[]     lblMems = new IMyTextPanel[nMems];
 
 
         IMyInteriorLight warningLight;
 
 
-        static List<int>   mixerPressed   = new List<int>();
-        static List<int>   mixerPressed_  = new List<int>();
+        static List<int>   g_mixerPressed = new List<int>();
+        static List<int>    _mixerPressed = new List<int>();
                                    
-        static List<int>   infoPressed    = new List<int>();
-        static List<int>   infoPressed_   = new List<int>();
+        static List<int>   g_infoPressed  = new List<int>();
+        static List<int>    _infoPressed  = new List<int>();
 
-        static List<int>   songPressed    = new List<int>();
-        static List<int>   mainPressed    = new List<int>();
+        static List<int>   g_clipPressed  = new List<int>();
+        static List<int>   g_mainPressed  = new List<int>();
 
-        static List<IMyTextPanel> lightsPressed  = new List<IMyTextPanel>();
-        static List<IMyTextPanel> lightsPressed_ = new List<IMyTextPanel>();
+        static List<IMyTextPanel> g_lightsPressed = new List<IMyTextPanel>();
+        static List<IMyTextPanel>  _lightsPressed = new List<IMyTextPanel>();
 
         IMyReflectorLight frontLight;
 
 
         void SetLightColor(int iCol)
         {
-            g_iCol = MinMax(0, iCol, 6);
+            g_clip.ColorIndex = MinMax(0, iCol, 6);
 
-            switch (g_iCol)
+            switch (g_clip.ColorIndex)
             {
                 case 0: SetLightColor(new Color(255,   0,   0), 0.35f); break;
                 case 1: SetLightColor(new Color(255,  92,   0), 0.35f); break;
@@ -208,8 +208,8 @@ namespace IngameScript
                 color6.B / max * 0xFF);
 
 
-                 if (g_iCol == 1) lightColor = new Color(0xFF, 0x50, 0);
-            else if (g_iCol == 5) lightColor = new Color(0xAA, 0, 0xFF);
+                 if (g_clip.ColorIndex == 1) lightColor = new Color(0xFF, 0x50, 0);
+            else if (g_clip.ColorIndex == 5) lightColor = new Color(0xAA, 0, 0xFF);
 
 
             var lights = new List<IMyInteriorLight>();
@@ -227,7 +227,7 @@ namespace IngameScript
                 lightColor.B + (int)((0xFF - lightColor.B) * 0.23f));
 
 
-            switch (g_iCol)
+            switch (g_clip.ColorIndex)
             {
             case 0: warningLight.Color = new Color(0,    0,    0xFF); break;
             case 1: warningLight.Color = new Color(0,    0,    0xFF); break;
@@ -244,9 +244,9 @@ namespace IngameScript
 
 
 
-        void MarkLight(IMyTextPanel light, bool on = true)
+        static void MarkLight(IMyTextPanel light, bool on = true)
         {
-            lightsPressed.Add(light);
+            g_lightsPressed.Add(light);
             UpdateLight(light, on);
         }
 
@@ -254,63 +254,63 @@ namespace IngameScript
         void UnmarkLight(IMyTextPanel light, bool on = false, bool half = false)
         {
             UpdateLight(light, on, half);
-            lightsPressed_.Remove(light);
+            _lightsPressed.Remove(light);
         }
 
 
         void UnmarkAllLights()
         {
-            var be = g_song.EditNotes.Count > 0;
+            var be = g_clip.EditNotes.Count > 0;
 
-            if (lightsPressed_.Contains(lblLeft))      UnmarkLight(lblLeft,  false, be);
-            if (lightsPressed_.Contains(lblRight))     UnmarkLight(lblRight, false, be);
+            if (_lightsPressed.Contains(lblLeft))      UnmarkLight(lblLeft,  false, be);
+            if (_lightsPressed.Contains(lblRight))     UnmarkLight(lblRight, false, be);
 
-            if (lightsPressed_.Contains(lblUp))        UnmarkLight(lblUp,   g_shift);
-            if (lightsPressed_.Contains(lblDown))      UnmarkLight(lblDown, g_shift);
+            if (_lightsPressed.Contains(lblUp))        UnmarkLight(lblUp,   g_clip.Shift);
+            if (_lightsPressed.Contains(lblDown))      UnmarkLight(lblDown, g_clip.Shift);
 
-            if (lightsPressed_.Contains(lblNextPat))   UnmarkLight(lblNextPat, g_movePat);
-            if (lightsPressed_.Contains(lblPrevPat))   UnmarkLight(lblPrevPat, g_movePat);
+            if (_lightsPressed.Contains(lblNextPat))   UnmarkLight(lblNextPat, g_clip.MovePat);
+            if (_lightsPressed.Contains(lblPrevPat))   UnmarkLight(lblPrevPat, g_clip.MovePat);
 
-            if (lightsPressed_.Contains(lblNext))      UnmarkLight(lblNext, g_move || CurSrc > -1, SelChan > -1);
-            if (lightsPressed_.Contains(lblPrev))      UnmarkLight(lblPrev, g_move || CurSrc > -1, SelChan > -1);
+            if (_lightsPressed.Contains(lblNext))      UnmarkLight(lblNext, g_move || g_clip.CurSrc > -1, g_clip.SelChan > -1);
+            if (_lightsPressed.Contains(lblPrev))      UnmarkLight(lblPrev, g_move || g_clip.CurSrc > -1, g_clip.SelChan > -1);
 
-            if (lightsPressed_.Contains(lblBackOut))   UnmarkLight(lblBack,  CurSrc > -1, SelChan > -1);
-            if (lightsPressed_.Contains(lblBack))      UnmarkLight(lblBack,  CurSrc > -1, SelChan > -1);
-            if (lightsPressed_.Contains(lblEnter))     UnmarkLight(lblEnter, CurSrc > -1 && CurSet < 0, SelChan > -1 && CurSet < 0);
+            if (_lightsPressed.Contains(lblBackOut))   UnmarkLight(lblBack,  g_clip.CurSrc > -1, g_clip.SelChan > -1);
+            if (_lightsPressed.Contains(lblBack))      UnmarkLight(lblBack,  g_clip.CurSrc > -1, g_clip.SelChan > -1);
+            if (_lightsPressed.Contains(lblEnter))     UnmarkLight(lblEnter, g_clip.CurSrc > -1 && g_clip.CurSet < 0, g_clip.SelChan > -1 && g_clip.CurSet < 0);
 
-            if (lightsPressed_.Contains(lblNew))       UnmarkLight(lblNew,       CurSrc > -1, SelChan > -1);
-            if (lightsPressed_.Contains(lblDuplicate)) UnmarkLight(lblDuplicate, CurSrc > -1, SelChan > -1);
-            if (lightsPressed_.Contains(lblDelete))    UnmarkLight(lblDelete,    CurSrc > -1, SelChan > -1);
+            if (_lightsPressed.Contains(lblNew))       UnmarkLight(lblNew,       g_clip.CurSrc > -1, g_clip.SelChan > -1);
+            if (_lightsPressed.Contains(lblDuplicate)) UnmarkLight(lblDuplicate, g_clip.CurSrc > -1, g_clip.SelChan > -1);
+            if (_lightsPressed.Contains(lblDelete))    UnmarkLight(lblDelete,    g_clip.CurSrc > -1, g_clip.SelChan > -1);
 
-            if (lightsPressed_.Contains(lblChord1))    UnmarkLight(lblChord1, g_chordEdit && g_chord == 0, g_chords[0].Count > 0);
-            if (lightsPressed_.Contains(lblChord2))    UnmarkLight(lblChord2, g_chordEdit && g_chord == 1, g_chords[1].Count > 0);
-            if (lightsPressed_.Contains(lblChord3))    UnmarkLight(lblChord3, g_chordEdit && g_chord == 2, g_chords[2].Count > 0);
-            if (lightsPressed_.Contains(lblChord4))    UnmarkLight(lblChord4, g_chordEdit && g_chord == 3, g_chords[3].Count > 0);
+            if (_lightsPressed.Contains(lblChord1))    UnmarkLight(lblChord1, g_clip.ChordEdit && g_clip.Chord == 0, g_clip.Chords[0].Count > 0);
+            if (_lightsPressed.Contains(lblChord2))    UnmarkLight(lblChord2, g_clip.ChordEdit && g_clip.Chord == 1, g_clip.Chords[1].Count > 0);
+            if (_lightsPressed.Contains(lblChord3))    UnmarkLight(lblChord3, g_clip.ChordEdit && g_clip.Chord == 2, g_clip.Chords[2].Count > 0);
+            if (_lightsPressed.Contains(lblChord4))    UnmarkLight(lblChord4, g_clip.ChordEdit && g_clip.Chord == 3, g_clip.Chords[3].Count > 0);
 
-            if (lightsPressed_.Contains(lblCmd2))      UnmarkLight(lblCmd2, false, copyChan != null);
+            if (_lightsPressed.Contains(lblCmd2))      UnmarkLight(lblCmd2, false, copyChan != null);
 
-            foreach (var lbl in lightsPressed_)
+            foreach (var lbl in _lightsPressed)
                 UpdateLight(lbl, false);
 
 
-            mixerPressed_.Clear();
-            infoPressed_  .Clear();
-            lightsPressed_.Clear();
+            _mixerPressed.Clear();
+            _infoPressed  .Clear();
+            _lightsPressed.Clear();
 
 
             // mark for next cycle and clear pressed list
 
-            mixerPressed_.AddRange(mixerPressed);
-            mixerPressed.Clear();
+            _mixerPressed.AddRange(g_mixerPressed);
+            g_mixerPressed.Clear();
 
-            infoPressed_.AddRange(infoPressed);
-            infoPressed.Clear();
+            _infoPressed.AddRange(g_infoPressed);
+            g_infoPressed.Clear();
 
-            songPressed.Clear();
-            mainPressed.Clear();
+            g_clipPressed.Clear();
+            g_mainPressed.Clear();
 
-            lightsPressed_.AddRange(lightsPressed);
-            lightsPressed.Clear();
+            _lightsPressed.AddRange(g_lightsPressed);
+            g_lightsPressed.Clear();
         }
 
 
@@ -318,14 +318,14 @@ namespace IngameScript
         {
             if (TooComplex) return;
 
-            UpdateLight(lblFollow,      g_follow);
-            UpdateLight(lblLoop,        g_loop);
-            UpdateLight(lblBlock,       g_block);
-            UpdateLight(lblAllPatterns, g_allPats);
-            UpdateLight(lblMovePat,     g_movePat);
-            UpdateLight(lblAutoCue,     g_autoCue);
+            UpdateLight(lblFollow,      g_clip.Follow);
+            UpdateLight(lblLoop,        g_clip.Loop);
+            UpdateLight(lblBlock,       g_clip.Block);
+            UpdateLight(lblAllPatterns, g_clip.AllPats);
+            UpdateLight(lblMovePat,     g_clip.MovePat);
+            UpdateLight(lblAutoCue,     g_clip.AutoCue);
 
-            UpdateEditLight(lblEdit, OK(g_song.EditPos));
+            UpdateEditLight(lblEdit, OK(g_clip.EditPos));
             UpdateHoldLight();
 
             UpdateChordLights();
@@ -337,7 +337,7 @@ namespace IngameScript
             UpdateMemoryLights();
             UpdateEditLights();
             UpdateNewLights();
-            UpdateAdjustLights(g_song);
+            UpdateAdjustLights(g_clip);
 
             UpdateLockLights();
             UpdateGyroLight();
@@ -352,9 +352,9 @@ namespace IngameScript
             //if (TooComplex) return;
 
             if (    IsCurParam(strTune)
-                && !(g_paramKeys || g_paramAuto))
+                && !(g_clip.ParamKeys || g_clip.ParamAuto))
             {
-                var inst = SelectedInstrument;
+                var inst = g_clip.SelectedInstrument;
                 var tune = (Tune)GetCurrentParam(inst);
 
                 UpdateLight(lblChord, tune.UseChord);
@@ -365,18 +365,18 @@ namespace IngameScript
             }
             else
             {
-                UpdateLight(lblChord, g_chordEdit ? " " : "Chord", 9, 12);
-                UpdateLight(lblChord, g_chordMode);
+                UpdateLight(lblChord, g_clip.ChordEdit ? " " : "Chord", 9, 12);
+                UpdateLight(lblChord, g_clip.ChordMode);
 
-                if (g_chordMode)
+                if (g_clip.ChordMode)
                 {
                     UpdateLight(lblChordEdit, strAll, 10, 10);
-                    UpdateLight(lblChordEdit, g_chordAll);
+                    UpdateLight(lblChordEdit, g_clip.ChordAll);
                 }
                 else
                 {
                     UpdateLight(lblChordEdit, "Edit", 10, 10);
-                    UpdateLight(lblChordEdit, g_chordEdit);
+                    UpdateLight(lblChordEdit, g_clip.ChordEdit);
                 }
             }
 
@@ -391,7 +391,7 @@ namespace IngameScript
         {
             //if (TooComplex) return;
 
-            var c = g_chords[chord-1];
+            var c = g_clip.Chords[chord-1];
 
             string chordName = GetChordName(c, S(chord));
 
@@ -399,29 +399,29 @@ namespace IngameScript
 
             UpdateLight(
                 lbl,
-                      g_chord == chord-1
-                   && (   g_chordEdit
-                       || g_chordMode)
+                      g_clip.Chord == chord-1
+                   && (   g_clip.ChordEdit
+                       || g_clip.ChordMode)
                    && !IsCurParam(strTune)
-                || lightsPressed.Contains(lbl),
-                      g_chordMode
-                   && g_chord == chord-1 
+                || g_lightsPressed.Contains(lbl),
+                      g_clip.ChordMode
+                   && g_clip.Chord == chord-1 
                 || c.Count > 0);
         }
 
 
         void MarkChordLight(int chord)
         {
-                 if (chord == 1 && g_chords[0].Count > 0) MarkLight(lblChord1);
-            else if (chord == 2 && g_chords[1].Count > 0) MarkLight(lblChord2);
-            else if (chord == 3 && g_chords[2].Count > 0) MarkLight(lblChord3);
-            else if (chord == 4 && g_chords[3].Count > 0) MarkLight(lblChord4);
+                 if (chord == 1 && g_clip.Chords[0].Count > 0) MarkLight(lblChord1);
+            else if (chord == 2 && g_clip.Chords[1].Count > 0) MarkLight(lblChord2);
+            else if (chord == 3 && g_clip.Chords[2].Count > 0) MarkLight(lblChord3);
+            else if (chord == 4 && g_clip.Chords[3].Count > 0) MarkLight(lblChord4);
         }
 
 
         void UpdateShuffleLight()
         {
-            if (g_spread)
+            if (g_clip.Spread)
             {
                 UpdateLight(lblShuffle, "Sprd", 10, 10);
             }
@@ -449,9 +449,9 @@ namespace IngameScript
             int val;
 
                 //if (g_chordMode) 
-                 if (g_spread)  val = g_chordSpread;
-            else if (ShowPiano) val = CurrentChannel.Transpose;
-            else                val = CurrentChannel.Shuffle;
+                 if (g_clip.Spread) val = g_clip.ChordSpread;
+            else if (ShowPiano)     val = g_clip.CurrentChannel.Transpose;
+            else                    val = g_clip.CurrentChannel.Shuffle;
 
             lblOctave.WriteText((val > 0 ? "+" : "") + S(val), false);
         }
@@ -459,20 +459,20 @@ namespace IngameScript
 
         void UpdatePlayStopLights()
         {
-            UpdateLight(lblPlay, OK(g_song.PlayTime));
-            UpdateLight(lblStop, OK(g_song.PlayTime));
+            UpdateLight(lblPlay, OK(g_clip.PlayTime));
+            UpdateLight(lblStop, OK(g_clip.PlayTime));
         }
 
 
-        void UpdateMemoryLights()
+        static void UpdateMemoryLights()
         {
-            UpdateLight(lblMemory, g_setMem);
+            UpdateLight(lblMemory, g_clip.MemSet);
 
             for (int m = 0; m < nMems; m++)
             {
                 lblMems[m].WriteText(
                       S((char)(65 + m)) + " "
-                    + (g_mem[m] > -1 ? S(g_mem[m] + 1).PadLeft(3) : " "));
+                    + (g_clip.Mems[m] > -1 ? S(g_clip.Mems[m] + 1).PadLeft(3) : " "));
             }
         }
 
@@ -508,24 +508,24 @@ namespace IngameScript
             UpdateLabelColor(lblDuplicate);
             UpdateLabelColor(lblDelete);
 
-            UpdateLight(lblMove, g_move ^ (CurSrc > -1), SelChan > -1 && !g_move);
+            UpdateLight(lblMove, g_move ^ (g_clip.CurSrc > -1), g_clip.SelChan > -1 && !g_move);
         }
 
 
         void UpdateLabelColor(IMyTextPanel lbl) 
         {
-            UpdateLight(lbl, CurSrc > -1, SelChan > -1); 
+            UpdateLight(lbl, g_clip.CurSrc > -1, g_clip.SelChan > -1); 
         }
 
 
         void UpdateEnterLight()
         {
-            UpdateLight(lblEnter, CurSet < 0 && CurSrc < 0 ? "└►" : " ", 10, 10);
-            UpdateLight(lblEnter, CurSet < 0 && CurSrc > -1, SelChan > -1 && CurSet < 0);
+            UpdateLight(lblEnter, g_clip.CurSet < 0 && g_clip.CurSrc < 0 ? "└►" : " ", 10, 10);
+            UpdateLight(lblEnter, g_clip.CurSet < 0 && g_clip.CurSrc > -1, g_clip.SelChan > -1 && g_clip.CurSet < 0);
         }
 
 
-        void UpdateAdjustLights(Song song)
+        void UpdateAdjustLights(Clip song)
         {
             if (ModDestConnecting != null)
             {
@@ -535,17 +535,17 @@ namespace IngameScript
             }
 
 
-            if (CurSet > -1)
+            if (g_clip.CurSet > -1)
             {
-                var path = g_settings.Last().GetPath(CurSrc);
+                var path = g_settings.Last().GetPath(g_clip.CurSrc);
 
-                if (g_paramKeys)
+                if (g_clip.ParamKeys)
                 {
                     UpdateLight(lblCmd1, "Inter", 10, 10);
 
                     UpdateLight(
                         lblCmd3,
-                        SelectedChannel.Notes.Find(n =>
+                        g_clip.SelectedChannel.Notes.Find(n =>
                                n.SongStep >= song.EditPos
                             && n.SongStep <  song.EditPos+1
                             && n.Keys.Find(k => k.Path == path) != null) != null
@@ -554,11 +554,11 @@ namespace IngameScript
                         10, 
                         10);
                 }
-                else if (g_paramAuto)
+                else if (g_clip.ParamAuto)
                 {
                     if (OK(song.EditPos))
                     { 
-                        if (SelectedChannel.AutoKeys.Find(k =>
+                        if (g_clip.SelectedChannel.AutoKeys.Find(k =>
                                 k.Path == path
                                 && k.StepTime >= (song.EditPos % g_nSteps)
                                 && k.StepTime <  (song.EditPos % g_nSteps) + 1) != null)
@@ -588,25 +588,25 @@ namespace IngameScript
             }
             else
             {
-                if (CurSrc > -1)
+                if (g_clip.CurSrc > -1)
                 {
                     UpdateLight(lblCmd1, "On",    10, 10);
-                    UpdateLight(lblCmd1, SelectedSource.On);
+                    UpdateLight(lblCmd1, g_clip.SelectedSource.On);
                     UpdateLight(lblCmd2, "Osc ↕", 10, 10);
                     UpdateLight(lblCmd3, " ",     10, 10);
                     UpdateLight(lblCmd3, false);
                 }
                 else
                 { 
-                    UpdateLight(lblCmd1, SelChan < 0 ? "Copy" : " ", 10, 10);
+                    UpdateLight(lblCmd1, g_clip.SelChan < 0 ? "Copy" : " ", 10, 10);
                     UpdateLight(lblCmd1, false);
 
-                    UpdateLight(lblCmd2, SelChan < 0 ? "Paste" : " ", 10, 10);
+                    UpdateLight(lblCmd2, g_clip.SelChan < 0 ? "Paste" : " ", 10, 10);
                     UpdatePasteLight();
 
                     UpdateLight(
                         lblCmd3,     
-                        SelChan < 0 
+                        g_clip.SelChan < 0 
                         ? " ▄█   █ █ ██ █ █ █   █▄ \n" +
                          " ▀██   █▄█▄██▄█▄█▄█   ██▀ \n" +  
                            " ▀   ▀▀▀▀▀▀▀▀▀▀▀▀   ▀ " 
@@ -616,9 +616,9 @@ namespace IngameScript
 
                     UpdateLight(
                         lblCmd3, 
-                           SelChan < 0 
-                        && g_transpose, 
-                        g_song.EditNotes.Count > 0);
+                           g_clip.SelChan < 0 
+                        && g_clip.Transpose, 
+                        g_clip.EditNotes.Count > 0);
                 }
             }
 
@@ -626,8 +626,8 @@ namespace IngameScript
             bool canAdjust = 
                    IsCurParam()
                 || IsCurSetting(typeof(Harmonics))
-                ||    g_transpose 
-                   && SelChan < 0;
+                ||    g_clip.Transpose 
+                   && g_clip.SelChan < 0;
 
 
             var _strUp   = strRight;
@@ -641,9 +641,9 @@ namespace IngameScript
                        || IsCurParam(strLvl)
                        || IsCurParam(strPow)
                        ||     IsCurParam(strCnt)
-                          && (g_paramKeys || g_paramAuto)
+                          && (g_clip.ParamKeys || g_clip.ParamAuto)
                        || IsCurSetting(typeof(Harmonics)))
-                || g_transpose)
+                || g_clip.Transpose)
             {
                 _strUp   = strUp;
                 _strDown = strDown;
@@ -653,12 +653,12 @@ namespace IngameScript
             UpdateLight(lblDown,  canAdjust ? _strDown : " ", 10, 10);
             UpdateLight(lblUp,    canAdjust ? _strUp   : " ", 10, 10);
             
-            UpdateLight(lblShift, canAdjust && g_shift);
-            UpdateLight(lblDown,  canAdjust && g_shift);
-            UpdateLight(lblUp,    canAdjust && g_shift);
+            UpdateLight(lblShift, canAdjust && g_clip.Shift);
+            UpdateLight(lblDown,  canAdjust && g_clip.Shift);
+            UpdateLight(lblUp,    canAdjust && g_clip.Shift);
 
-            UpdateLight(lblLeft,  lightsPressed.Contains(lblLeft),  g_song.EditNotes.Count > 0);
-            UpdateLight(lblRight, lightsPressed.Contains(lblRight), g_song.EditNotes.Count > 0);
+            UpdateLight(lblLeft,  g_lightsPressed.Contains(lblLeft),  g_clip.EditNotes.Count > 0);
+            UpdateLight(lblRight, g_lightsPressed.Contains(lblRight), g_clip.EditNotes.Count > 0);
         }
 
 
@@ -666,8 +666,8 @@ namespace IngameScript
         {
             UpdateLight(
                 lblCmd2,
-                lightsPressed_.Contains(lblCmd2),
-                copyChan != null);//g_shift && bc);
+                _lightsPressed.Contains(lblCmd2),
+                copyChan != null);//g_clip.Shift && bc);
         }
 
 
@@ -714,10 +714,10 @@ namespace IngameScript
                     17);
 
                 for (int h = 0; h < lblHigh.Count-1; h++)
-                    UpdateLight(lblHigh[h], HighNoteName(h, g_halfSharp), 10, 10);
+                    UpdateLight(lblHigh[h], HighNoteName(h, g_clip.HalfSharp), 10, 10);
 
                 for (int l = 0; l < lblLow.Count-1; l++)
-                    UpdateLight(lblLow[l], LowNoteName(l, g_halfSharp), 10, 10);
+                    UpdateLight(lblLow[l], LowNoteName(l, g_clip.HalfSharp), 10, 10);
 
                 UpdatePianoLights();
             }
@@ -738,11 +738,11 @@ namespace IngameScript
                 lblHigh[1].WriteText("∙∙►");
 
                 lblHigh[2].WriteText("Pick");
-                UpdateLight(lblHigh[2], g_pick);
+                UpdateLight(lblHigh[2], g_clip.Pick);
                 UpdateLight(lblHigh[3], "All Ch", 7.6f, 19.5f);
-                UpdateLight(lblHigh[3], g_allChan);
+                UpdateLight(lblHigh[3], g_clip.AllChan);
                 lblHigh[4].WriteText("Inst");
-                UpdateLight(lblHigh[4], g_rndInst);
+                UpdateLight(lblHigh[4], g_clip.RndInst);
 
                 lblHigh[5].WriteText("Rnd");
                 lblHigh[6].WriteText("Clr");
@@ -761,8 +761,8 @@ namespace IngameScript
 
         void UpdatePianoLights()
         {
-            UpdateHighLights(CurrentPattern, CurrentChannel);
-            UpdateLowLights (CurrentPattern, CurrentChannel);
+            UpdateHighLights(g_clip.CurrentPattern, g_clip.CurrentChannel);
+            UpdateLowLights (g_clip.CurrentPattern, g_clip.CurrentChannel);
         }
 
 
@@ -778,7 +778,7 @@ namespace IngameScript
             UpdateLight(lblLow[15], ShowPiano ? "‡" : " ", 8, 17);
             
             if (ShowPiano)
-                UpdateLight(lblLow[15], g_halfSharp);
+                UpdateLight(lblLow[15], g_clip.HalfSharp);
 
             for (int l = 0; l < lblLow.Count-1; l++)
                 UpdateLight(pat, chan, lblLow[l], LowToNote(l));//num);
@@ -787,17 +787,17 @@ namespace IngameScript
 
         void UpdateLight(Pattern pat, Channel chan, IMyTextPanel light, int num)
         {
-            var step = g_song.PlayStep % g_nSteps;
+            var step = g_clip.PlayStep % g_nSteps;
 
-            var p = g_song.Patterns.IndexOf(pat);
+            var p = g_clip.Patterns.IndexOf(pat);
 
 
             if (IsCurParam(strTune))
             {
                 var tune =
-                    CurSrc > -1
-                    ? SelectedSource    .Tune
-                    : SelectedInstrument.Tune;
+                    g_clip.CurSrc > -1
+                    ? g_clip.SelectedSource    .Tune
+                    : g_clip.SelectedInstrument.Tune;
 
                 if (tune.UseChord)
                 { 
@@ -807,25 +807,25 @@ namespace IngameScript
                         tune.FinalChord.Contains(num));
                 }
             }
-            else if (g_chord > -1
-                  && g_chordEdit)
+            else if (g_clip.Chord > -1
+                  && g_clip.ChordEdit)
             {
-                UpdateLight(light, g_chords[g_chord].Contains(num));
+                UpdateLight(light, g_clip.Chords[g_clip.Chord].Contains(num));
             }
             else
             {
                 var thisChan =
                        chan.Notes.FindIndex(n =>
                               num == n.Number
-                           && (      g_song.PlayStep >= p * g_nSteps + n.PatStep + n.ShOffset
-                                  && g_song.PlayStep <  p * g_nSteps + n.PatStep + n.ShOffset + n.StepLength
-                               ||    p * g_nSteps + n.PatStep >= g_song.EditPos 
-                                  && p * g_nSteps + n.PatStep <  g_song.EditPos + EditStep)) > -1
-                    ||    g_hold
+                           && (      g_clip.PlayStep >= p * g_nSteps + n.PatStep + n.ShOffset
+                                  && g_clip.PlayStep <  p * g_nSteps + n.PatStep + n.ShOffset + n.StepLength
+                               ||    p * g_nSteps + n.PatStep >= g_clip.EditPos 
+                                  && p * g_nSteps + n.PatStep <  g_clip.EditPos + EditStep)) > -1
+                    ||    g_clip.Hold
                        && g_notes.FindIndex(n =>
                                  num == n.Number
-                              && g_song.PlayStep >= n.PatStep
-                              && g_song.PlayStep <  n.PatStep + n.StepLength) > -1;
+                              && g_clip.PlayStep >= n.PatStep
+                              && g_clip.PlayStep <  n.PatStep + n.StepLength) > -1;
 
 
                 var otherChans = false;
@@ -839,17 +839,17 @@ namespace IngameScript
                         otherChans |= _chan.Notes.FindIndex(n =>
                                   num == n.Number
                                && ch  == n.iChan
-                               && (   g_song.PlayStep >= p * g_nSteps + n.PatStep + n.ShOffset
-                                   && g_song.PlayStep <  p * g_nSteps + n.PatStep + n.ShOffset + n.StepLength
-                            ||    p * g_nSteps + n.PatStep >= g_song.EditPos 
-                               && p * g_nSteps + n.PatStep <  g_song.EditPos + EditStep)) > -1;
+                               && (   g_clip.PlayStep >= p * g_nSteps + n.PatStep + n.ShOffset
+                                   && g_clip.PlayStep <  p * g_nSteps + n.PatStep + n.ShOffset + n.StepLength
+                            ||    p * g_nSteps + n.PatStep >= g_clip.EditPos 
+                               && p * g_nSteps + n.PatStep <  g_clip.EditPos + EditStep)) > -1;
                     }
                 }
 
 
                 var down = false;
 
-                if (lightsPressed.Contains(light))
+                if (g_lightsPressed.Contains(light))
                     down = true;
 
                 UpdateLight(light, thisChan || down, otherChans);
@@ -863,20 +863,20 @@ namespace IngameScript
             {
                 var light = lblLow[step];
 
-                var _step = step + CurPat * g_nSteps;
+                var _step = step + g_clip.CurPat * g_nSteps;
 
-                var on = CurrentChannel.Notes.Find(n => 
+                var on = g_clip.CurrentChannel.Notes.Find(n => 
                        n.PatStep >= step
                     && n.PatStep <  step+1) != null;
 
                 Color c;
 
-                if (   OK(g_song.PlayStep)
-                    && _step  == (int)g_song.PlayStep
-                    && CurPat == g_song.PlayPat)  c = on ? color0 : color6;
-                else if (on)                      c = color6;
-                else if (g_song.EditPos == _step) c = color3;
-                else                              c = step % 4 == 0 ? color2 : color0;
+                if (   OK(g_clip.PlayStep)
+                    && _step == (int)g_clip.PlayStep
+                    && g_clip.CurPat == g_clip.PlayPat) c = on ? color0 : color6;
+                else if (on)                            c = color6;
+                else if (g_clip.EditPos == _step)       c = color3;
+                else                                    c = step % 4 == 0 ? color2 : color0;
 
                 light.BackgroundColor = c;
             }
@@ -927,9 +927,9 @@ namespace IngameScript
         }
 
 
-        void UpdateHoldLight() 
+        static void UpdateHoldLight() 
         { 
-            UpdateLight(lblHold, g_hold && (!OK(g_song.EditPos) || g_song.EditNotes.Count > 0)); 
+            UpdateLight(lblHold, g_clip.Hold && (!OK(g_clip.EditPos) || g_clip.EditNotes.Count > 0)); 
         }
     }
 }

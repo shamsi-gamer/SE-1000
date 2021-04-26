@@ -8,14 +8,14 @@ namespace IngameScript
     {
         public class Pattern
         {
-            public Song      Song;
+            public Clip      Clip;
 
             public Channel[] Channels = new Channel[g_nChans];
 
 
-            public Pattern(Song song = null)
+            public Pattern(Clip song = null)
             {
-                Song = song;
+                Clip = song;
                 
                 for (int i = 0; i < g_nChans; i++)
                     Channels[i] = new Channel(this);
@@ -24,14 +24,14 @@ namespace IngameScript
 
             public Pattern(Pattern pat)
             {
-                Song = pat.Song;
+                Clip = pat.Clip;
                 
                 for (int i = 0; i < g_nChans; i++)
                     Channels[i] = new Channel(pat.Channels[i], this);
             }
 
 
-            public Pattern(Song song, Instrument inst) : this(song)
+            public Pattern(Clip song, Instrument inst) : this(song)
             {
                 foreach (var chan in Channels)
                     chan.Instrument = inst;

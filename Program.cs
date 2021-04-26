@@ -8,12 +8,12 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        Display
+        static Display
             dspMixer1, dspMixer2,
             dspVol1, dspVol2, dspVol3,
             dspInfo,
             dspIO,
-            dspSong1, dspSong2,
+            dspClip1, dspClip2,
             dspMain;
 
 
@@ -55,7 +55,7 @@ namespace IngameScript
         static List<LFO>        g_lfo = new List<LFO>();
         static List<Modulate>   g_mod = new List<Modulate>();
                                 
-        static Song             g_song = new Song();
+        static Clip             g_clip = new Clip();
                                 
                                 
         
@@ -144,7 +144,7 @@ namespace IngameScript
                 Load();
 
                 //UpdateLights();
-                SetLightColor(g_iCol);
+                SetLightColor(g_clip.ColorIndex);
 
                 _loadStep++;
             }
@@ -155,8 +155,8 @@ namespace IngameScript
         {
             dspIO     = new Display(Dsp("IO"      ));
             dspInfo   = new Display(Dsp("Info"    ));
-            dspSong1  = new Display(Dsp("Song",  1));
-            dspSong2  = new Display(Dsp("Song",  2));
+            dspClip1  = new Display(Dsp("Clip",  1));
+            dspClip2  = new Display(Dsp("Clip",  2));
             dspMixer1 = new Display(Dsp("Mixer", 1));
             dspMixer2 = new Display(Dsp("Mixer", 2));
             dspVol1   = new Display(Dsp(strVol,   1));
@@ -187,23 +187,23 @@ namespace IngameScript
                 case "bpm up":     SetStepLength(-1);               break;
                 case "bpm down":   SetStepLength(1);                break;
                                                                         
-                case "del pat":    DeletePattern();                 break;
-                case "dup pat":    DuplicatePattern();              break;
-                case "new pat":    NewPattern();                    break;
-                case "move pat":   ToggleMovePattern();             break;
-                case "prev pat":   PrevPattern(g_movePat);          break;
-                case "next pat":   NextPattern(g_movePat);          break;
+                case "del pat":    g_clip.DeletePattern();          break;
+                case "dup pat":    g_clip.DuplicatePattern();       break;
+                case "new pat":    g_clip.NewPattern();             break;
+                case "move pat":   g_clip.ToggleMovePattern();      break;
+                case "prev pat":   g_clip.PrevPattern(g_clip.MovePat); break;
+                case "next pat":   g_clip.NextPattern(g_clip.MovePat); break;
                                                                     
-                case "loop":       ToogleLoop();                    break;
-                case "block":      ToggleBlock();                   break;
-                case "all pat":    ToggleAllPatterns();             break;
-                case "auto cue":   ToggleAutoCue();                 break;
-                case "follow":     ToggleFollow();                  break;
+                case "loop":       g_clip.ToogleLoop();             break;
+                case "block":      g_clip.ToggleBlock();            break;
+                case "all pat":    g_clip.ToggleAllPatterns();      break;
+                case "auto cue":   g_clip.ToggleAutoCue();          break;
+                case "follow":     g_clip.ToggleFollow();           break;
                                                                         
                 case "new":        New();                           break;
                 case "dup":        Duplicate();                     break;
                 case "del":        Delete();                        break;
-                case "move":       ToggleMove();                    break;
+                case "move":       g_clip.ToggleMove();             break;
                 case "prev":       Move(-1);                        break;
                 case "next":       Move( 1);                        break;
                                                                     
@@ -220,17 +220,17 @@ namespace IngameScript
                                                                     
                 case "cmd1":       Command1();                      break;
                 case "cmd2":       Command2();                      break;
-                case "up":         Adjust(g_song, CurSetting,  1);  break;
-                case "down":       Adjust(g_song, CurSetting, -1);  break;
+                case "up":         Adjust(g_clip, CurSetting,  1);  break;
+                case "down":       Adjust(g_clip, CurSetting, -1);  break;
                 case "shift":      Shift();                         break;
                 case "cmd3":       Command3();                      break;
                                                                     
-                case "tr up":      SetTranspose(g_song,  1);        break;
-                case "tr down":    SetTranspose(g_song, -1);        break;
+                case "tr up":      SetTranspose(g_clip,  1);        break;
+                case "tr down":    SetTranspose(g_clip, -1);        break;
                                                                     
                 case "spread":     Spread();                        break;
 
-                case "rnd snd":    RandomSound(g_inst.IndexOf(CurrentInstrument)); break;
+                case "rnd snd":    RandomSound(g_inst.IndexOf(g_clip.CurrentInstrument)); break;
                                        
                 case "up all":     SetVolumeAll( 1);                break;
                 case "down all":   SetVolumeAll(-1);                break;
@@ -254,11 +254,11 @@ namespace IngameScript
                 case "edit step":  ChangeEditStep();                break;
                 case "edit len":   ChangeEditLength();              break;
                                                                     
-                case "step":       Step(g_song, CurChan);           break;
-                case "hold":       Hold(g_song);                    break;
+                case "step":       Step(g_clip, g_clip.CurChan);    break;
+                case "hold":       Hold(g_clip);                    break;
                                                                      
-                case "left":       Left(g_song);                    break;
-                case "right":      Right(g_song);                   break;
+                case "left":       Left(g_clip);                    break;
+                case "right":      Right(g_clip);                   break;
                                                              
                 case "random":     Random();                        break;
                                                                     
@@ -268,9 +268,9 @@ namespace IngameScript
                 case "gyro":       Gyro();                          break;
                 case "noise":      NoiseEmitters();                 break;
                                                                     
-                case "sb":         StartBlock();                    break;
-                case "eb":         EndBlock();                      break;
-                case "cb":         ClearBlock();                    break;
+                case "sb":         g_clip.StartBlock(); g_clip.MovePatternOff(); break;
+                case "eb":         g_clip.EndBlock();                            break;
+                case "cb":         g_clip.ClearBlock(); g_clip.MovePatternOff(); break;
                                                                         
                 case "rl":         SetLightColor(0);                break;
                 case "ol":         SetLightColor(1);                break;
@@ -283,21 +283,21 @@ namespace IngameScript
                 case "light":      ToggleLight();                   break;
                 case "fold":       ToggleFold();                    break;
                                                                     
-                case "cue":        Cue();                           break;
-                case "mem":        Mem();                           break;
+                case "cue":        g_clip.Cue();                    break;
+                case "mem":        g_clip.Mem();                    break;
                                                                    
 
                 default:
                          if (arg.Length > 5 && arg.Substring(0, 5) == "high ") { int h; if (int.TryParse(arg.Substring(5), out h)) High(h); }
                     else if (arg.Length > 4 && arg.Substring(0, 4) == "low " ) { int l; if (int.TryParse(arg.Substring(4), out l)) Low (l); }
 
-                    else if ((val = GetInt(arg, "up "  )) > -1) SetVolume(g_song, val,  1);
-                    else if ((val = GetInt(arg, "down ")) > -1) SetVolume(g_song, val, -1);
+                    else if ((val = GetInt(arg, "up "  )) > -1) g_clip.SetVolume(val,  1);
+                    else if ((val = GetInt(arg, "down ")) > -1) g_clip.SetVolume(val, -1);
 
                     else if ((val = GetInt(arg, "solo ")) > -1) Solo(val);
                     else if ((val = GetInt(arg, "mute ")) > -1) Mute(val);
 
-                    else if ((val = GetInt(arg, "mem " )) > -1) Mem(val);
+                    else if ((val = GetInt(arg, "mem " )) > -1) g_clip.SetMem(val);
 
                     break;
             }

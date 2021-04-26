@@ -180,7 +180,7 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Song song, Program prog)
+            public override void AdjustFromController(Clip song, Program prog)
             {
                 if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(song, Amount,  -g_remote.MoveIndicator    .Z/ControlSensitivity);
 
@@ -202,7 +202,7 @@ namespace IngameScript
             }
 
 
-            public void Delete(Song song, int iSrc)
+            public void Delete(Clip song, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
@@ -294,9 +294,9 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Amount .HasDeepParams(CurrentChannel, CurSrc)) Amount .DrawLabels(sprites, x, y, dp);
-                if (Attack .HasDeepParams(CurrentChannel, CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
-                if (Release.HasDeepParams(CurrentChannel, CurSrc)) Release.DrawLabels(sprites, x, y, dp);
+                if (Amount .HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Amount .DrawLabels(sprites, x, y, dp);
+                if (Attack .HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
+                if (Release.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }
@@ -305,8 +305,8 @@ namespace IngameScript
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
                 var sTime = 
-                    OK(g_song.PlayTime)
-                    ? g_time - g_song.StartTime
+                    OK(g_clip.PlayTime)
+                    ? g_time - g_clip.StartTime
                     : 0;
 
                 var tp = new TimeParams(g_time, 0, sTime, null, EditLength, -1, _triggerDummy, dp.Program);
@@ -449,7 +449,7 @@ namespace IngameScript
                         var newOp = (int)Op + 1;
                         if (newOp > (int)ModOp.Add) newOp = 0;
                         Op = (ModOp)newOp;
-                        mainPressed.Add(func);
+                        g_mainPressed.Add(func);
                         break;
                     }
                     case 1: AddNextSetting(strAmt); break;
@@ -475,7 +475,7 @@ namespace IngameScript
             ModSelChan        = -1;
             ModDestChannel    = null;
 
-            UpdateAdjustLights(g_song);
+            UpdateAdjustLights(g_clip);
         }
     }
 }

@@ -21,44 +21,44 @@ namespace IngameScript
             var sprites = new List<MySprite>();
 
 
-            if (   SelChan > -1
+            if (   g_clip.SelChan > -1
                 && IsCurParam()
-                && (   g_paramKeys
-                    || g_paramAuto))
+                && (   g_clip.ParamKeys
+                    || g_clip.ParamAuto))
             {
-                if (g_piano)  DrawPianoDisplay  (sprites, x, y, w, h, g_song, CurPat, true, null);
-                else          DrawPatternDisplay(sprites, x, y, w, h, g_song, CurPat, true);
+                if (g_clip.Piano)  DrawPianoDisplay  (sprites, x, y, w, h, g_clip, g_clip.CurPat, true, null);
+                else          DrawPatternDisplay(sprites, x, y, w, h, g_clip, g_clip.CurPat, true);
             }
-            else if (SelChan > -1)
+            else if (g_clip.SelChan > -1)
             {
                 if (IsCurSetting(typeof(Harmonics)))
                 {
                               var hrm = CurOrParentHarmonics;
-                              hrm.DrawSetting(sprites, x, y, w, h, g_song, CurrentChannel, this);
+                              hrm.DrawSetting(sprites, x, y, w, h, g_clip, g_clip.CurrentChannel, this);
                 }
                 else if (IsCurOrParentSetting(typeof(Arpeggio)))
                 {
                               var arp = CurOrParentArpeggio;
-                              DrawPianoDisplay  (sprites, x, y, w, h, arp.Song, CurPat, true, arp);
+                              DrawPianoDisplay  (sprites, x, y, w, h, arp.Clip, g_clip.CurPat, true, arp);
                 }
                 else          DrawInstrument    (sprites, x, y, w, h);
             }
-            else if (g_piano) DrawPianoDisplay  (sprites, x, y, w, h, g_song, CurPat, true, null);
-            else              DrawPatternDisplay(sprites, x, y, w, h, g_song, CurPat, true);
+            else if (g_clip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, g_clip, g_clip.CurPat, true, null);
+            else              DrawPatternDisplay(sprites, x, y, w, h, g_clip, g_clip.CurPat, true);
 
             dsp.Draw(sprites);
         }
 
 
-        void DrawFuncButtons(List<MySprite> sprites, float w, float y, Song song)
+        void DrawFuncButtons(List<MySprite> sprites, float w, float y, Clip song)
         {
             var bw =  w/6;
             var x0 = bw/2;
 
-            if (SelChan > -1)
+            if (g_clip.SelChan > -1)
             {
-                if (CurSrc < 0) SelectedInstrument.DrawFuncButtons(sprites, w, y, SelectedChannel);
-                else            SelectedSource    .DrawFuncButtons(sprites, w, y, SelectedChannel);
+                if (g_clip.CurSrc < 0) g_clip.SelectedInstrument.DrawFuncButtons(sprites, w, y, g_clip.SelectedChannel);
+                else                   g_clip.SelectedSource    .DrawFuncButtons(sprites, w, y, g_clip.SelectedChannel);
             }
             else
             {

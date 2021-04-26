@@ -7,59 +7,59 @@ namespace IngameScript
 {
     partial class Program
     {
-        void CopyChan(Song song, int p, int ch)
+        void CopyChan(Clip song, int p, int ch)
         {
             copyChan = new Channel(song.Patterns[p].Channels[ch]);
         }
 
 
-        void PasteChan(Song song, int p, int ch)
+        void PasteChan(Clip clip, int p, int ch)
         {
             if (copyChan == null)
                 return;
 
             int f, l;
-            GetPatterns(song, p, out f, out l);
+            clip.GetPatterns(p, out f, out l);
 
             for (int i = f; i <= l; i++)
-                song.Patterns[i].Channels[ch] = new Channel(copyChan);
+                clip.Patterns[i].Channels[ch] = new Channel(copyChan);
 
-            UpdateInstOff(CurChan);
+            UpdateInstOff(clip.CurChan);
         }
 
 
-        void Step(Song song, int ch)
+        void Step(Clip clip, int ch)
         {
-            if (OK(song.EditPos))
+            if (OK(clip.EditPos))
             {
-                if (   !g_chordMode 
-                    || g_chord > -1)
+                if (  !clip.ChordMode 
+                    || clip.Chord > -1)
                 {
-                    var chan = CurrentPattern.Channels[ch];
+                    var chan = g_clip.CurrentPattern.Channels[ch];
 
                     int found;
                     while ((found = chan.Notes.FindIndex(n => 
-                               CurPat * g_nSteps + n.PatStep >= song.EditPos 
-                            && CurPat * g_nSteps + n.PatStep <  song.EditPos + 1)) > -1)
+                               g_clip.CurPat * g_nSteps + n.PatStep >= clip.EditPos 
+                            && g_clip.CurPat * g_nSteps + n.PatStep <  clip.EditPos + 1)) > -1)
                         chan.Notes.RemoveAt(found);
 
                     lastNotes.Clear();
                 }
 
-                MoveEdit(song, 1, true);
+                MoveEdit(clip, 1, true);
 
                 MarkLight(lblStep);
             }
         }
 
 
-        void Hold(Song song)
+        void Hold(Clip song)
         {
             if (OK(song.EditPos))
             {
                 if (song.EditNotes.Count > 0)
                 {
-                    g_hold = !g_hold;
+                    g_clip.Hold = !g_clip.Hold;
                     UpdateHoldLight();
                 }
                 else
@@ -86,50 +86,50 @@ namespace IngameScript
             }
             else
             {
-                g_hold = !g_hold;
+                g_clip.Hold = !g_clip.Hold;
                 UpdateHoldLight();
 
-                //if (!g_hold)
+                //if (!g_clip.Hold)
                 //    StopCurrentNotes(song.CurChan);
             }
         }
 
 
-        void Interpolate(Song song)
+        void Interpolate(Clip clip)
         {
-            if (!OK(song.EditPos))
+            if (!OK(clip.EditPos))
                 return;
 
-            if (   CurSet < 0
-                || !(   g_paramKeys 
-                     || g_paramAuto))
+            if (   clip.CurSet < 0
+                || !(   g_clip.ParamKeys 
+                     || g_clip.ParamAuto))
                 return;
 
 
-            if (song.Inter == null)
+            if (clip.Inter == null)
             {
-                StopEdit(song);
+                clip.StopEdit();
 
-                song.Inter = CurrentChannel.Notes.Find(n =>
-                       n.SongStep >= song.EditPos
-                    && n.SongStep <  song.EditPos + EditStep);
+                clip.Inter = clip.CurrentChannel.Notes.Find(n =>
+                       n.SongStep >= clip.EditPos
+                    && n.SongStep <  clip.EditPos + EditStep);
             }
             else
             {
-                var note = CurrentChannel.Notes.Find(n =>
-                       n.SongStep >= song.EditPos
-                    && n.SongStep <  song.EditPos + EditStep);
+                var note = clip.CurrentChannel.Notes.Find(n =>
+                       n.SongStep >= clip.EditPos
+                    && n.SongStep <  clip.EditPos + EditStep);
 
                 if (note != null)
                 {
-                    var si = song.Inter.SongStep;
+                    var si = clip.Inter.SongStep;
                     var sn = note      .SongStep;
 
-                    var path  = g_settings.Last().GetPath(CurSrc);
+                    var path  = g_settings.Last().GetPath(g_clip.CurSrc);
                     var param = (Parameter)GetSettingFromPath(note.Instrument, path);
 
-                    var start = param.GetKeyValue(song.Inter, CurSrc);
-                    var end   = param.GetKeyValue(note,       CurSrc);
+                    var start = param.GetKeyValue(clip.Inter, g_clip.CurSrc);
+                    var end   = param.GetKeyValue(note,       g_clip.CurSrc);
 
                     int f = (int)(si / g_nSteps);
                     int l = (int)(sn / g_nSteps);
@@ -137,7 +137,7 @@ namespace IngameScript
 
                     for (int p = f; f < l ? (p <= l) : (p >= l); p += d)
                     {
-                        foreach (var n in song.Patterns[p].Channels[CurChan].Notes)
+                        foreach (var n in clip.Patterns[p].Channels[clip.CurChan].Notes)
                         {
                             if (   n.SongStep <  Math.Min(si, sn)
                                 || n.SongStep >= Math.Max(si, sn))
@@ -152,30 +152,30 @@ namespace IngameScript
                                 SetKeyValue(key, val);
                             else
                             {
-                                n.Keys.Add(new Key(CurSrc, param, nParam.Value, n.SongStep));
+                                n.Keys.Add(new Key(g_clip.CurSrc, param, nParam.Value, n.SongStep));
                                 SetKeyValue(n.Keys.Last(), val);
                             }
                         }
                     }
                 }
 
-                song.Inter = null;
+                clip.Inter = null;
             }
 
-            UpdateLight(lblCmd1, song.Inter != null);
-            UpdateAdjustLights(g_song);
+            UpdateLight(lblCmd1, clip.Inter != null);
+            UpdateAdjustLights(g_clip);
         }
 
 
-        void EnableKeyMove(Song song)
+        void EnableKeyMove(Clip clip)
         {
             if (   IsCurParam()
-                && OK(song.EditPos)
-                && g_paramAuto)
+                && OK(clip.EditPos)
+                && clip.ParamAuto)
             {
-                var key = SelectedChannel.AutoKeys.Find(k => 
-                         k.StepTime >= (song.EditPos % g_nSteps)
-                      && k.StepTime <  (song.EditPos % g_nSteps) + 1);
+                var key = clip.SelectedChannel.AutoKeys.Find(k => 
+                         k.StepTime >= (clip.EditPos % g_nSteps)
+                      && k.StepTime <  (clip.EditPos % g_nSteps) + 1);
 
                 g_editKey = g_editKey ?? key;
 
@@ -209,37 +209,37 @@ namespace IngameScript
 
         void Edit()
         {
-            if (OK(g_song.EditPos))
-                g_song.LastEditPos = g_song.EditPos;
+            if (OK(g_clip.EditPos))
+                g_clip.LastEditPos = g_clip.EditPos;
 
-            g_song.EditPos =
-                OK(g_song.EditPos)
+            g_clip.EditPos =
+                OK(g_clip.EditPos)
                 ? float.NaN
-                : (OK(g_song.LastEditPos) ? g_song.LastEditPos : CurPat * g_nSteps);
+                : (OK(g_clip.LastEditPos) ? g_clip.LastEditPos : g_clip.CurPat * g_nSteps);
 
-            StopEdit(g_song);
+            g_clip.StopEdit();
 
-            UpdateAdjustLights(g_song);
+            UpdateAdjustLights(g_clip);
 
-            if (g_hold)
-                g_song.TrimCurrentNotes(CurChan);
+            if (g_clip.Hold)
+                g_clip.TrimCurrentNotes(g_clip.CurChan);
 
-            g_hold = false;
+            g_clip.Hold = false;
             UpdateLight(lblHold, false);
 
-            if (!OK(g_song.EditPos))
+            if (!OK(g_clip.EditPos))
             {
-                g_song.Inter = null;
+                g_clip.Inter = null;
                 UpdateLight(lblCmd1, false);
             }
 
-            UpdateEditLight(lblEdit, OK(g_song.EditPos));
+            UpdateEditLight(lblEdit, OK(g_clip.EditPos));
         }
 
 
         static Key PrevSongAutoKey(float pos, int p, int ch, string path)
         {
-            var prevKeys = g_song.ChannelAutoKeys[ch]
+            var prevKeys = g_clip.ChannelAutoKeys[ch]
                 .Where(k => 
                        (   path == ""
                         || k.Path == path)
@@ -255,7 +255,7 @@ namespace IngameScript
 
         static Key NextSongAutoKey(float pos, int p, int ch, string path)
         {
-            var nextKeys = g_song.ChannelAutoKeys[ch]
+            var nextKeys = g_clip.ChannelAutoKeys[ch]
                 .Where(k =>
                        (   path == ""
                         || k.Path == path)
@@ -269,7 +269,7 @@ namespace IngameScript
         }
 
 
-        void ToggleNote(Song song)
+        void ToggleNote(Clip song)
         {
             if (OK(song.EditPos))
             { 
@@ -293,19 +293,19 @@ namespace IngameScript
             }
 
             UpdateHoldLight();
-            UpdateAdjustLights(g_song);
+            UpdateAdjustLights(g_clip);
         }
 
 
-        void CutNotes(Song song)
+        void CutNotes(Clip song)
         {
-            for (int p = 0; p <= CurPat; p++)
+            for (int p = 0; p <= g_clip.CurPat; p++)
             {
-                var patStart =  CurPat   *g_nSteps;
-                var patEnd   = (CurPat+1)*g_nSteps;
+                var patStart =  g_clip.CurPat   *g_nSteps;
+                var patEnd   = (g_clip.CurPat +1)*g_nSteps;
 
                 var pat  = song.Patterns[p];
-                var chan = pat.Channels[CurChan];
+                var chan = pat.Channels[g_clip.CurChan];
 
                 var min  = (60 + chan.Transpose*12) * NoteScale;
                 var max  = (84 + chan.Transpose*12) * NoteScale;
@@ -318,13 +318,13 @@ namespace IngameScript
                 }
             }
 
-            mainPressed.Add(3);
+            g_mainPressed.Add(3);
         }
 
 
-        List<Note> GetEditNotes(Song song, bool onlyEdit = false)
+        List<Note> GetEditNotes(Clip song, bool onlyEdit = false)
         {
-            var chan = CurrentChannel;
+            var chan = g_clip.CurrentChannel;
 
             if (OK(song.EditPos))
             { 
@@ -346,27 +346,27 @@ namespace IngameScript
         }
 
 
-        List<Note> GetLongNotes(Song song)
+        List<Note> GetLongNotes(Clip clip)
         {
-            if (OK(song.EditPos))
+            if (OK(clip.EditPos))
             {
                 var notes = new List<Note>();
 
-                for (int p = 0; p <= CurPat; p++)
+                for (int p = 0; p <= g_clip.CurPat; p++)
                 {
-                    var patStart =  CurPat   *g_nSteps;
-                    var patEnd   = (CurPat+1)*g_nSteps;
+                    var patStart =  clip.CurPat   *g_nSteps;
+                    var patEnd   = (clip.CurPat+1)*g_nSteps;
 
-                    var pat  = song.Patterns[p];
-                    var chan = pat.Channels[CurChan];
+                    var pat  = clip.Patterns[p];
+                    var chan = pat.Channels[clip.CurChan];
 
                     var min  = (60 + chan.Transpose*12) * NoteScale;
                     var max  = (84 + chan.Transpose*12) * NoteScale;
 
                     foreach (var note in chan.Notes)
                     {
-                        if (   song.EditPos > note.SongStep
-                            && song.EditPos < note.SongStep + note.StepLength - 1)
+                        if (   clip.EditPos > note.SongStep
+                            && clip.EditPos < note.SongStep + note.StepLength - 1)
                             notes.Add(note);
                     }
                 }
@@ -378,15 +378,15 @@ namespace IngameScript
         }
 
 
-        List<Note> GetChannelNotes(Song song)
+        List<Note> GetChannelNotes(Clip clip)
         {
             var notes = new List<Note>();
 
             int first, last;
-            GetPatterns(song, CurPat, out first, out last);
+            clip.GetPatterns(clip.CurPat, out first, out last);
 
             for (int pat = first; pat <= last; pat++)
-                notes.AddRange(song.Patterns[pat].Channels[CurChan].Notes);
+                notes.AddRange(clip.Patterns[pat].Channels[clip.CurChan].Notes);
 
             return notes;
         }
@@ -399,22 +399,22 @@ namespace IngameScript
 
             g_ticksPerStep = len;
 
-            foreach (var pat in g_song.Patterns)
+            foreach (var pat in g_clip.Patterns)
             {
                 foreach (var chan in pat.Channels)
                     chan.Shuffle = Math.Min(chan.Shuffle, g_ticksPerStep - 1);
             }
 
-            infoPressed.Add(d > 0 ? 2 : 3);
+            g_infoPressed.Add(d > 0 ? 2 : 3);
         }
 
 
         void ChangeEditStep()
         {
-            g_editStep++;
+            g_clip.EditStep++;
 
-            if (g_editStep >= g_steps.Length - 1) // ignore the super long step
-                g_editStep = 1;
+            if (g_clip.EditStep >= g_steps.Length - 1) // ignore the super long step
+                g_clip.EditStep = 1;
 
             MarkLight(lblEditStep);
             UpdateEditLights();
@@ -423,10 +423,10 @@ namespace IngameScript
 
         void ChangeEditLength()
         {
-            g_editLength++;
+            g_clip.EditLength++;
 
-            if (g_editLength >= g_steps.Length)
-                g_editLength = 0;
+            if (g_clip.EditLength >= g_steps.Length)
+                g_clip.EditLength = 0;
 
             MarkLight(lblEditLength);
             UpdateEditLights();
@@ -435,7 +435,7 @@ namespace IngameScript
         }
 
 
-        void Left(Song song)
+        void Left(Clip song)
         {
             MoveEdit(song, -1);
 
@@ -444,7 +444,7 @@ namespace IngameScript
         }
 
 
-        void Right(Song song)
+        void Right(Clip song)
         {
             MoveEdit(song, 1);
 
@@ -454,19 +454,19 @@ namespace IngameScript
         }
 
 
-        void MoveEdit(Song song, int move, bool create = false)
+        void MoveEdit(Clip clip, int move, bool create = false)
         {
-            var chan = SelectedChannel;
+            var chan = clip.SelectedChannel;
 
             if (IsCurSetting(typeof(Harmonics)))
             {
                 CurHarmonics.MoveEdit(move);
             }
-            else if (song.EditNotes.Count > 0)
+            else if (clip.EditNotes.Count > 0)
             {
-                if (g_hold)
+                if (g_clip.Hold)
                 {
-                    foreach (var n in song.EditNotes)
+                    foreach (var n in clip.EditNotes)
                     {
                         var is05 = n.StepLength == 0.5f && EditStepLength >= 1;
                         n.StepLength = MinMax(0.5f, n.StepLength + move * EditStepLength, 10f * FPS / g_ticksPerStep);
@@ -475,13 +475,12 @@ namespace IngameScript
                 }
                 else
                 {
-                    var oldCur = CurPat;
+                    var oldCur = clip.CurPat;
 
-                    song.EditPos += move * EditStep;
+                    clip.EditPos += move * EditStep;
+                    clip.LimitRecPosition();
 
-                    LimitRecPosition(song);
-
-                    foreach (var n in song.EditNotes)
+                    foreach (var n in clip.EditNotes)
                     {
                         n.PatStep += move * EditStep;
 
@@ -500,9 +499,9 @@ namespace IngameScript
             else if (g_editKey != null)
             {
                 g_editKey.StepTime += move * EditStep;
-                song.EditPos       += move * EditStep;
+                clip.EditPos       += move * EditStep;
 
-                LimitRecPosition(song);
+                clip.LimitRecPosition();
 
                 if (   g_editKey.StepTime < 0
                     || g_editKey.StepTime >= g_nSteps)
@@ -514,60 +513,60 @@ namespace IngameScript
                     g_editKey.Channel = chan;
                 }
 
-                song.UpdateAutoKeys();
+                clip.UpdateAutoKeys();
             }
-            else if (OK(song.EditPos))
+            else if (OK(clip.EditPos))
             {
-                song.EditPos += move * EditStep;
+                clip.EditPos += move * EditStep;
 
-                if (g_follow)
+                if (clip.Follow)
                 {
-                    if (song.EditPos >= (CurPat + 1) * g_nSteps) // TODO blocks
+                    if (clip.EditPos >= (clip.CurPat + 1) * g_nSteps) // TODO blocks
                     {
-                        if (song.EditPos >= song.Patterns.Count * g_nSteps)
+                        if (clip.EditPos >= clip.Patterns.Count * g_nSteps)
                         {
                             if (create)
                             {
-                                var pat = new Pattern(CurrentPattern);
-                                pat.Channels[CurChan].Notes.Clear();
+                                var pat = new Pattern(clip.CurrentPattern);
+                                pat.Channels[clip.CurChan].Notes.Clear();
 
-                                song.Patterns.Insert(CurPat + 1, pat);
+                                clip.Patterns.Insert(clip.CurPat + 1, pat);
                             }
                             else
-                                song.EditPos -= song.Patterns.Count * g_nSteps;
+                                clip.EditPos -= clip.Patterns.Count * g_nSteps;
                         }
                     }
-                    else if (!OK(song.EditPos))
-                        song.EditPos += song.Patterns.Count * g_nSteps;
+                    else if (!OK(clip.EditPos))
+                        clip.EditPos += clip.Patterns.Count * g_nSteps;
                 }
 
-                LimitRecPosition(song);
-                UpdateAdjustLights(g_song);
+                clip.LimitRecPosition();
+                UpdateAdjustLights(g_clip);
             }
         }
 
 
-        void Transpose(Song song, int ch, float tr)
+        void Transpose(Clip clip, int ch, float tr)
         {
-            if (song.EditNotes.Count > 0)
+            if (clip.EditNotes.Count > 0)
             {
-                foreach (var note in song.EditNotes)
+                foreach (var note in clip.EditNotes)
                     Transpose(note, tr);
             }
             else
             {
                 int first, last;
-                GetPatterns(song, CurPat, out first, out last);
+                clip.GetPatterns(clip.CurPat, out first, out last);
 
                 for (int pat = first; pat <= last; pat++)
-                    Transpose(song, pat, ch, tr);
+                    Transpose(clip, pat, ch, tr);
             }
         }
 
 
-        void Transpose(Song song, int pat, int ch, float tr)
+        void Transpose(Clip clip, int pat, int ch, float tr)
         {
-            var chan = song.Patterns[pat].Channels[ch];
+            var chan = clip.Patterns[pat].Channels[ch];
 
             foreach (var note in chan.Notes)
                 Transpose(note, tr);
@@ -576,20 +575,20 @@ namespace IngameScript
 
         void Transpose(Note note, float tr)
         {
-            note.Number = (int)Math.Round(note.Number + tr * (g_shift ? 12 : 1) * (g_halfSharp ? 1 : 2));
+            note.Number = (int)Math.Round(note.Number + tr * (g_clip.Shift ? 12 : 1) * (g_clip.HalfSharp ? 1 : 2));
         }
 
 
-        void SetTranspose(Song song, int d)
+        void SetTranspose(Clip clip, int d)
         {
-            var tune = SelectedSource    ?.Tune
-                    ?? SelectedInstrument?.Tune;
+            var tune = clip.SelectedSource    ?.Tune
+                    ?? clip.SelectedInstrument?.Tune;
 
-            if (g_spread)
-                g_chordSpread = MinMax(0, g_chordSpread + d, 16);
+            if (clip.Spread)
+                clip.ChordSpread = MinMax(0, clip.ChordSpread + d, 16);
             
-            else if (ShowPiano) SetTranspose(song, CurChan, d);
-            else                SetShuffle(CurChan, d);
+            else if (ShowPiano) SetTranspose(clip, clip.CurChan, d);
+            else                SetShuffle(clip.CurChan, d);
 
             MarkLight(
                 d > 0
@@ -600,16 +599,16 @@ namespace IngameScript
         }
 
 
-        void SetTranspose(Song song, int ch, int tr)
+        void SetTranspose(Clip clip, int ch, int tr)
         {
-            tr += CurrentPattern.Channels[ch].Transpose;
+            tr += clip.CurrentPattern.Channels[ch].Transpose;
 
             int first, last;
-            GetPatterns(song, CurPat, out first, out last);
+            clip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
             {
-                var pat  = song.Patterns[p];
+                var pat  = clip.Patterns[p];
                 var chan = pat.Channels[ch];
 
                 chan.Transpose = MinMax(-3, tr, 4);
@@ -619,8 +618,8 @@ namespace IngameScript
 
         void Spread()
         {
-            g_spread = !g_spread;
-            UpdateLight(lblSpread, g_spread);
+            g_clip.Spread = !g_clip.Spread;
+            UpdateLight(lblSpread, g_clip.Spread);
             UpdateOctaveLight();
             UpdateShuffleLight();
         }
