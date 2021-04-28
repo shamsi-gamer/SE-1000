@@ -462,6 +462,8 @@ namespace IngameScript
                     ModDestConnecting.SrcSources    .Add(g_clip.SelectedSource);
                     ModDestConnecting.SrcInstruments.Add(g_clip.SelectedInstrument);
 
+                    SetClip(ModDestClip);
+
                     SwitchToSetting(
                         ModDestChannel.Instrument,
                         ModDestSrcIndex, 
@@ -485,8 +487,10 @@ namespace IngameScript
                     ModDestConnecting = CurModulate;
                     ModCurChan        = g_clip.CurChan;
                     ModSelChan        = g_clip.SelChan;
+                    ModCurPat         = g_clip.CurPat;
                     ModDestSrcIndex   = g_clip.CurSrc;
                     ModDestChannel    = g_clip.SelectedChannel;
+                    ModDestClip       = g_clip;
 
                     UpdateAdjustLights(g_clip);
                 }

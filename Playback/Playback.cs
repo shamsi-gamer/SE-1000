@@ -27,7 +27,7 @@ namespace IngameScript
         {
             UpdateTime();
 
-            StopNotes(g_clip.PlayStep);
+            StopNotes(g_clip?.PlayStep ?? 0);
             DeleteSounds(StopSounds());
 
             UpdateSounds();
@@ -39,15 +39,22 @@ namespace IngameScript
 
         void UpdateTime()
         {
-            if (!OK(g_clip.PlayTime))
-                return;
+            foreach (var track in g_tracks)
+            {
+                foreach (var clip in track.Clips)
+                {
+                    if (!OK(clip.PlayTime))
+                        return;
 
-            g_clip.CueNextPattern();
+                    clip.CueNextPattern();
             
-            if (g_clip.Follow) 
-                g_clip.SetCurrentPattern(g_clip.PlayPat);
+                    if (   clip == g_clip
+                        && clip.Follow) 
+                        clip.SetCurrentPattern(clip.PlayPat);
 
-            AddPlaybackNotes();
+                    AddPlaybackNotes(clip);
+                }
+            }
 
             UpdateOctaveLight();
         }

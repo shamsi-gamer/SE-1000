@@ -55,8 +55,9 @@ namespace IngameScript
         static List<LFO>        g_lfo = new List<LFO>();
         static List<Modulate>   g_mod = new List<Modulate>();
                                 
-        static Clip             g_clip = new Clip();
-                                
+
+        static Track[]          g_tracks = new Track[4];
+        static Clip             g_clip   = null;
                                 
         
         Key                     g_editKey = null;
@@ -129,6 +130,10 @@ namespace IngameScript
             //SetTranspose(g_song, g_song.CurChan, 0);
 
 
+            for (int i = 0; i < g_tracks.Length; i++)
+                g_tracks[i] = new Track();
+
+
             g_init = true;
         }
 
@@ -141,12 +146,12 @@ namespace IngameScript
 
             if (_loadStep == 10)
             {
+                _loadStep++;
+
                 Load();
 
                 //UpdateLights();
                 SetLightColor(g_clip.ColorIndex);
-
-                _loadStep++;
             }
         }
 
@@ -159,9 +164,9 @@ namespace IngameScript
             dspClip2  = new Display(Dsp("Clip",  2));
             dspMixer1 = new Display(Dsp("Mixer", 1));
             dspMixer2 = new Display(Dsp("Mixer", 2));
-            dspVol1   = new Display(Dsp(strVol,   1));
-            dspVol2   = new Display(Dsp(strVol,   2));
-            dspVol3   = new Display(Dsp(strVol,   3));
+            dspVol1   = new Display(Dsp(strVol,  1));
+            dspVol2   = new Display(Dsp(strVol,  2));
+            dspVol3   = new Display(Dsp(strVol,  3));
         }
 
 
@@ -291,8 +296,8 @@ namespace IngameScript
                          if (arg.Length > 5 && arg.Substring(0, 5) == "high ") { int h; if (int.TryParse(arg.Substring(5), out h)) High(h); }
                     else if (arg.Length > 4 && arg.Substring(0, 4) == "low " ) { int l; if (int.TryParse(arg.Substring(4), out l)) Low (l); }
 
-                    else if ((val = GetInt(arg, "up "  )) > -1) g_clip.SetVolume(val,  1);
-                    else if ((val = GetInt(arg, "down ")) > -1) g_clip.SetVolume(val, -1);
+                    else if ((val = GetInt(arg, "up "  )) > -1) SetVolume(val,  1);
+                    else if ((val = GetInt(arg, "down ")) > -1) SetVolume(val, -1);
 
                     else if ((val = GetInt(arg, "solo ")) > -1) Solo(val);
                     else if ((val = GetInt(arg, "mute ")) > -1) Mute(val);

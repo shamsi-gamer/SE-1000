@@ -1,24 +1,4 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
-
-
-namespace IngameScript
+﻿namespace IngameScript
 {
     partial class Program
     {
@@ -113,11 +93,6 @@ namespace IngameScript
                     + WS(Solo)
 
                     + WS(Volume)
-
-                    + W (ModDestConnecting != null ? ModDestConnecting.GetPath(ModDestSrcIndex) : "")
-                    + WS(ModDestSrcIndex)
-                    + WS(ModDestChannel != null ? Patterns.IndexOf(ModDestChannel.Pattern) : -1)
-                    + WS(ModDestChannel != null ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)
 
                     +  S(ColorIndex);
             }

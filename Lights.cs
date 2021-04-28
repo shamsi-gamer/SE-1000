@@ -43,14 +43,14 @@ namespace IngameScript
         IMyInteriorLight warningLight;
 
 
-        static List<int>   g_mixerPressed = new List<int>();
-        static List<int>    _mixerPressed = new List<int>();
-                                   
-        static List<int>   g_infoPressed  = new List<int>();
-        static List<int>    _infoPressed  = new List<int>();
-
-        static List<int>   g_clipPressed  = new List<int>();
-        static List<int>   g_mainPressed  = new List<int>();
+        static List<int>          g_mixerPressed  = new List<int>();
+        static List<int>           _mixerPressed  = new List<int>();
+                                                  
+        static List<int>          g_infoPressed   = new List<int>();
+        static List<int>           _infoPressed   = new List<int>();
+                                                  
+        static List<int>          g_clipPressed   = new List<int>();
+        static List<int>          g_mainPressed   = new List<int>();
 
         static List<IMyTextPanel> g_lightsPressed = new List<IMyTextPanel>();
         static List<IMyTextPanel>  _lightsPressed = new List<IMyTextPanel>();
@@ -111,7 +111,7 @@ namespace IngameScript
             lblFollow          = Lbl("Follow");
 
             lblMixerShift      = Lbl("M Shift");
-            lblClips           = Lbl("M Clips");
+            lblClips           = Lbl("Clips");
 
             lblMemSet          = Lbl("MemSet");
             lblMemory          = Lbl("Mem");
@@ -195,7 +195,7 @@ namespace IngameScript
 
             foreach (var l in labels)
             {
-                l.FontColor = color6;
+                l.FontColor       = color6;
                 l.BackgroundColor = color0;
             }
 
@@ -260,32 +260,39 @@ namespace IngameScript
 
         void UnmarkAllLights()
         {
-            var be = g_clip.EditNotes.Count > 0;
+            var be  = g_clip.EditNotes.Count > 0;
+            var cur = g_clip.CurSrc > -1;
+            var crd = g_clip.ChordEdit;
+            var ch  = g_clip.SelChan > -1;
+            var mov = g_clip.MovePat;
+            var sh  = g_clip.Shift;
+            var set = g_clip.CurSet < 0;
+
 
             if (_lightsPressed.Contains(lblLeft))      UnmarkLight(lblLeft,  false, be);
             if (_lightsPressed.Contains(lblRight))     UnmarkLight(lblRight, false, be);
 
-            if (_lightsPressed.Contains(lblUp))        UnmarkLight(lblUp,   g_clip.Shift);
-            if (_lightsPressed.Contains(lblDown))      UnmarkLight(lblDown, g_clip.Shift);
+            if (_lightsPressed.Contains(lblUp))        UnmarkLight(lblUp,   sh);
+            if (_lightsPressed.Contains(lblDown))      UnmarkLight(lblDown, sh);
 
-            if (_lightsPressed.Contains(lblNextPat))   UnmarkLight(lblNextPat, g_clip.MovePat);
-            if (_lightsPressed.Contains(lblPrevPat))   UnmarkLight(lblPrevPat, g_clip.MovePat);
+            if (_lightsPressed.Contains(lblNextPat))   UnmarkLight(lblNextPat, mov);
+            if (_lightsPressed.Contains(lblPrevPat))   UnmarkLight(lblPrevPat, mov);
 
-            if (_lightsPressed.Contains(lblNext))      UnmarkLight(lblNext, g_move || g_clip.CurSrc > -1, g_clip.SelChan > -1);
-            if (_lightsPressed.Contains(lblPrev))      UnmarkLight(lblPrev, g_move || g_clip.CurSrc > -1, g_clip.SelChan > -1);
+            if (_lightsPressed.Contains(lblNext))      UnmarkLight(lblNext, g_move || cur, ch);
+            if (_lightsPressed.Contains(lblPrev))      UnmarkLight(lblPrev, g_move || cur, ch);
 
-            if (_lightsPressed.Contains(lblBackOut))   UnmarkLight(lblBack,  g_clip.CurSrc > -1, g_clip.SelChan > -1);
-            if (_lightsPressed.Contains(lblBack))      UnmarkLight(lblBack,  g_clip.CurSrc > -1, g_clip.SelChan > -1);
-            if (_lightsPressed.Contains(lblEnter))     UnmarkLight(lblEnter, g_clip.CurSrc > -1 && g_clip.CurSet < 0, g_clip.SelChan > -1 && g_clip.CurSet < 0);
+            if (_lightsPressed.Contains(lblBackOut))   UnmarkLight(lblBack,  cur, ch);
+            if (_lightsPressed.Contains(lblBack))      UnmarkLight(lblBack,  cur, ch);
+            if (_lightsPressed.Contains(lblEnter))     UnmarkLight(lblEnter, cur && set, ch && set);
 
-            if (_lightsPressed.Contains(lblNew))       UnmarkLight(lblNew,       g_clip.CurSrc > -1, g_clip.SelChan > -1);
-            if (_lightsPressed.Contains(lblDuplicate)) UnmarkLight(lblDuplicate, g_clip.CurSrc > -1, g_clip.SelChan > -1);
-            if (_lightsPressed.Contains(lblDelete))    UnmarkLight(lblDelete,    g_clip.CurSrc > -1, g_clip.SelChan > -1);
+            if (_lightsPressed.Contains(lblNew))       UnmarkLight(lblNew,       cur, ch);
+            if (_lightsPressed.Contains(lblDuplicate)) UnmarkLight(lblDuplicate, cur, ch);
+            if (_lightsPressed.Contains(lblDelete))    UnmarkLight(lblDelete,    cur, ch);
 
-            if (_lightsPressed.Contains(lblChord1))    UnmarkLight(lblChord1, g_clip.ChordEdit && g_clip.Chord == 0, g_clip.Chords[0].Count > 0);
-            if (_lightsPressed.Contains(lblChord2))    UnmarkLight(lblChord2, g_clip.ChordEdit && g_clip.Chord == 1, g_clip.Chords[1].Count > 0);
-            if (_lightsPressed.Contains(lblChord3))    UnmarkLight(lblChord3, g_clip.ChordEdit && g_clip.Chord == 2, g_clip.Chords[2].Count > 0);
-            if (_lightsPressed.Contains(lblChord4))    UnmarkLight(lblChord4, g_clip.ChordEdit && g_clip.Chord == 3, g_clip.Chords[3].Count > 0);
+            if (_lightsPressed.Contains(lblChord1))    UnmarkLight(lblChord1, crd && g_clip.Chord == 0, g_clip.Chords[0].Count > 0);
+            if (_lightsPressed.Contains(lblChord2))    UnmarkLight(lblChord2, crd && g_clip.Chord == 1, g_clip.Chords[1].Count > 0);
+            if (_lightsPressed.Contains(lblChord3))    UnmarkLight(lblChord3, crd && g_clip.Chord == 2, g_clip.Chords[2].Count > 0);
+            if (_lightsPressed.Contains(lblChord4))    UnmarkLight(lblChord4, crd && g_clip.Chord == 3, g_clip.Chords[3].Count > 0);
 
             if (_lightsPressed.Contains(lblCmd2))      UnmarkLight(lblCmd2, false, copyChan != null);
 
@@ -318,12 +325,12 @@ namespace IngameScript
         {
             if (TooComplex) return;
 
-            UpdateLight(lblFollow,      g_clip.Follow);
-            UpdateLight(lblLoop,        g_clip.Loop);
-            UpdateLight(lblBlock,       g_clip.Block);
-            UpdateLight(lblAllPatterns, g_clip.AllPats);
-            UpdateLight(lblMovePat,     g_clip.MovePat);
-            UpdateLight(lblAutoCue,     g_clip.AutoCue);
+            UpdateLight(lblFollow,      g_clip?.Follow  ?? false);
+            UpdateLight(lblLoop,        g_clip?.Loop    ?? false);
+            UpdateLight(lblBlock,       g_clip?.Block   ?? false);
+            UpdateLight(lblAllPatterns, g_clip?.AllPats ?? false);
+            UpdateLight(lblMovePat,     g_clip?.MovePat ?? false);
+            UpdateLight(lblAutoCue,     g_clip?.AutoCue ?? false);
 
             UpdateEditLight(lblEdit, OK(g_clip.EditPos));
             UpdateHoldLight();
@@ -337,6 +344,7 @@ namespace IngameScript
             UpdateMemoryLights();
             UpdateEditLights();
             UpdateNewLights();
+
             UpdateAdjustLights(g_clip);
 
             UpdateLockLights();
@@ -446,10 +454,10 @@ namespace IngameScript
         {
             if (TooComplex) return;
             
-            int val;
+            int val = 0;
 
                 //if (g_chordMode) 
-                 if (g_clip.Spread) val = g_clip.ChordSpread;
+                    if (g_clip.Spread) val = g_clip.ChordSpread;
             else if (ShowPiano)     val = g_clip.CurrentChannel.Transpose;
             else                    val = g_clip.CurrentChannel.Shuffle;
 
@@ -686,7 +694,8 @@ namespace IngameScript
 
         void UpdateClipsLight()
         {
-            UpdateLight(lblClips, g_session ? "Clips" : "Blocks", 8, 18);
+            UpdateLight(lblClips, g_session ? "Set" : "Clips", 8, 18);
+            UpdateLight(lblClips, false);
         }
 
 
@@ -929,7 +938,11 @@ namespace IngameScript
 
         static void UpdateHoldLight() 
         { 
-            UpdateLight(lblHold, g_clip.Hold && (!OK(g_clip.EditPos) || g_clip.EditNotes.Count > 0)); 
+            UpdateLight(
+                lblHold, 
+                   g_clip.Hold 
+                && (  !OK(g_clip.EditPos) 
+                    || g_clip.EditNotes.Count > 0)); 
         }
     }
 }

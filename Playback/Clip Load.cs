@@ -1,21 +1,5 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
 
 
 namespace IngameScript
@@ -24,26 +8,23 @@ namespace IngameScript
     {
         public partial class Clip
         {
-            public static Clip Load(string[] lines, ref int line, out string curPath, out string modConnPath, out int modPat, out int modChan)
+            public static Clip Load(string[] lines, ref int line, out string curPath)
             { 
                 curPath     = "";
-                modConnPath = "";
-                modPat      = -1;
-                modChan     = -1;
 
                 if (lines.Length < 3)
                     return null;
 
-                var clip = new Clip();
+                var clip = new Clip(null);
 
                 clip.Name = lines[line++].Replace("\u0085", "\n");
 
                 var cfg = lines[line++].Split(';');
-                if (!clip.LoadConfig  (cfg, out curPath, out modConnPath, out modPat, out modChan))   return null;
-                if (!clip.LoadChords  (lines[line++]))   return null;
-                if (!clip.LoadMems    (lines[line++]))   return null;
-                if (!clip.LoadPatterns(lines, ref line)) return null;
-                if (!clip.LoadBlocks  (lines[line++]))   return null;
+                if (!clip.LoadConfig  (cfg, out curPath)) return null;
+                if (!clip.LoadChords  (lines[line++]))    return null;
+                if (!clip.LoadMems    (lines[line++]))    return null;
+                if (!clip.LoadPatterns(lines, ref line))  return null;
+                if (!clip.LoadBlocks  (lines[line++]))    return null;
 
                 clip.UpdateAutoKeys();
 
@@ -98,12 +79,9 @@ namespace IngameScript
             }
 
 
-            bool LoadConfig(string[] cfg, out string curPath, out string modConnPath, out int modPat, out int modChan)
+            bool LoadConfig(string[] cfg, out string curPath)
             {
-                curPath     = "";
-                modConnPath = "";
-                modPat      = -1;
-                modChan     = -1;
+                curPath = "";
 
                 int c = 0;
 
@@ -137,12 +115,6 @@ namespace IngameScript
                                                            
                 if (!float.TryParse(cfg[c++], out Volume     )) return false;
 
-                modConnPath = cfg[c++];
-
-                if (!int  .TryParse(cfg[c++], out ModDestSrcIndex)) return false;
-                if (!int  .TryParse(cfg[c++], out modPat     )) return false;
-                if (!int  .TryParse(cfg[c++], out modChan    )) return false;
-                                                             
                 if (!int  .TryParse(cfg[c++], out ColorIndex )) return false;
 
                 return true;

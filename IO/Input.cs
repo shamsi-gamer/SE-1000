@@ -33,7 +33,7 @@ namespace IngameScript
         }
 
 
-        void UpdateSongDsp()
+        void UpdateClipDsp()
         {
             dspInfo.Panel.WriteText(g_clip.Name.Replace("\u0085", "\n"));
         }

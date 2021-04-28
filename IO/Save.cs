@@ -7,11 +7,21 @@ namespace IngameScript
 {
     partial class Program
     {
+        void SaveSongExt()
+        {
+            SaveClips();
+
+            dspIO.Panel.WriteText(lblNext.CustomData);
+
+            g_infoPressed.Add(1);
+        }
+
+
         public void Save()
         {
             SaveMachineState();
             SaveInstruments();
-            SaveSong();
+            SaveClips();
         }
 
 
@@ -36,8 +46,15 @@ namespace IngameScript
         string SaveConfig(uint f)
         {
             return
-                  WS(f)              
-                + WS(g_ticksPerStep);
+                   S(f)              
+                + PS(g_ticksPerStep);
+                 
+                //+   (ModDestConnecting != null ? ModDestConnecting.GetPath(ModDestSrcIndex) : "")
+                //+ PS(ModDestSrcIndex)
+                //+ PS(ModDestChannel != null ? Patterns.IndexOf(ModDestChannel.Pattern) : -1)
+                //+ PS(ModDestChannel != null ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)
+                //+ PS(ModCurPat)
+                //+ PS(ModDestClip)
         }
 
 
@@ -66,20 +83,26 @@ namespace IngameScript
         }
 
 
-        void SaveSongExt()
+        void SaveClips()
         {
-            SaveSong();
+            var clips = "";
 
-            dspIO.Panel.WriteText(lblNext.CustomData);
+            for (int t = 0; t < g_tracks.Length; t++)
+            {
+                var track = g_tracks[t];
 
-            g_infoPressed.Add(1);
-        }
+                var strTrack = S(track.Clips.Count);
 
+                foreach (var i in track.Indices)
+                    strTrack += PS(i);
 
-        void SaveSong()
-        {
-            lblNext.CustomData = g_clip.Save();
-            //sb.AppendLine(SaveEdit());
+                clips += N(strTrack);
+
+                foreach (var clip in track.Clips)
+                    clips += PN(clip.Save());
+            }
+
+            lblNext.CustomData = clips;
         }
 
 

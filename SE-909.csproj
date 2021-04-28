@@ -98,6 +98,7 @@
     <Compile Include="Piano.cs" />
     <Compile Include="Playback\Playback Notes.cs" />
     <Compile Include="Playback\TimeParams.cs" />
+    <Compile Include="Playback\Track.cs" />
     <Compile Include="Program.cs" />
     <AdditionalFiles Include="thumb.png" />
     <AdditionalFiles Include="MDK\whitelist.cache" />

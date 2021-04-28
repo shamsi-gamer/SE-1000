@@ -34,22 +34,30 @@ namespace IngameScript
             
             for (int iy = 0; iy < 4; iy++)
             {
-                for (int ix = 0; ix < 6; ix++)
+                var track = g_tracks[iy];
+
+                for (int ix = nDsp*6 + 0; ix < nDsp*6 + 6; ix++)
                 {
+                    var iClip = track.Indices.FindIndex(i => i == iy);
+                    var col   = iClip < 0 ? color1 : (track.CurIndex == iy ? color5 : color3);
+
                     FillRect(
                         sprites, 
                         x + w/6*ix + gap/2, 
                         y + h/4*iy + gap/2, 
                         w/6 - gap,
                         h/4 - gap, 
-                        color3); 
+                        col); 
 
-                    var clipName = "Clip\nName";
-                    var nNameLines = clipName.Split('\n').Length;
+                    if (iClip < 0) continue;
+                    var clip = track.Clips[iClip];
+
+                    var name = clip.Name.Split('\n')[0];
+                    var nNameLines = clip.Name.Split(' ').Length;
 
                     DrawString(
                         sprites,
-                        clipName,
+                        name.Replace(' ', '\n'),
                         x + w/6*ix + w/12,
                         y + h/4*iy + h/8 - 15 - (nNameLines-1)*20,
                         1,

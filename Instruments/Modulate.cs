@@ -11,7 +11,9 @@ namespace IngameScript
         static Modulate ModDestConnecting =  null;
         static int      ModDestSrcIndex   = -1,
                         ModCurChan        = -1,
-                        ModSelChan        = -1;
+                        ModSelChan        = -1,
+                        ModCurPat         = -1;
+        static Clip     ModDestClip       =  null;
         static Channel  ModDestChannel    =  null;
 
 
@@ -473,6 +475,8 @@ namespace IngameScript
             ModDestSrcIndex   = -1;
             ModCurChan        = -1;
             ModSelChan        = -1;
+            ModCurPat         = -1;
+            ModDestClip       = null;
             ModDestChannel    = null;
 
             UpdateAdjustLights(g_clip);

@@ -22,7 +22,8 @@ namespace IngameScript
         static string PS<T>(T    val) { return P(S(val)); }
         static string WB   (bool b  ) { return W(B(b));   }
 
-        static string N(string s, bool newLine = true) { return s + (newLine ? "\n" : ""); }
+        static string  N(string s, bool newLine = true) { return s + (newLine ? "\n" : ""); }
+        static string PN(string s)                      { return "\n" + s; }
 
         const TextAlignment TaC = TextAlignment.CENTER;
     }

@@ -1,31 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-
-namespace IngameScript
+﻿namespace IngameScript
 {
     partial class Program
     {
         void Load()
         {
-            string curPath, 
-                   modConnPath;
-            int    modPat,
-                   modChan;
+            string curPath;
+            //       modConnPath;
+            //int    modPat,
+            //       modChan;
 
             LoadMachineState();
             LoadInstruments();
-            LoadSong(out curPath, out modConnPath, out modPat, out modChan);
+            LoadClips(out curPath);
 
             if (curPath != "")
                 SwitchToSetting(g_clip.CurrentInstrument, g_clip.CurSrc, curPath);
 
-            if (modConnPath != "")
-            {
-                ModDestChannel    = g_clip.Patterns[modPat].Channels[modChan];
-                ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
-            }
+            //if (modConnPath != "")
+            //{
+            //    ModDestChannel    = g_clip.Patterns[modPat].Channels[modChan];
+            //    ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
+            //}
         }
 
 
@@ -133,26 +128,33 @@ namespace IngameScript
         }
 
 
-        void LoadSong(out string curPath, out string modConnPath, out int modPat, out int modChan)
+        void LoadClips(out string curPath)
         {
-            Stop();
-            ClearSong();
+            if (g_clip != null) 
+                Stop();
+            
+            ClearClips();
 
             var lines = lblNext.CustomData.Split('\n');
             var line  = 0;
 
-            g_clip = Clip.Load(
-                lines, 
-                ref line, 
-                out curPath, 
-                out modConnPath, 
-                out modPat, 
-                out modChan);
+            curPath = "";
+
+            g_clip = Clip.Load(lines, ref line, out curPath);
 
             if (g_clip == null)
                 CreateDefaultClip();
+            //else
+            //{
+            //    g_tracks[0].Clips.Add(g_clip);
+            //    g_tracks[0].Indices.Add(index);
+            //    g_tracks[0].CurIndex = index;
+            //}
 
             InitPlaybackAfterLoad(g_clip.PlayTime);
+
+            SetLightColor(g_clip.ColorIndex);
+            UpdateLights();
         }
 
 
@@ -172,9 +174,10 @@ namespace IngameScript
 
         void CreateDefaultClip()
         {
-            g_clip = new Clip();
-            g_clip.Patterns.Add(new Pattern(g_clip, g_inst[0]));
-            g_clip.Name = "New Clip";
+            g_setClip = true;
+            SetClip(0, 0);
+
+            //UpdateClipDsp();
         }
 
 

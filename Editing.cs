@@ -53,11 +53,11 @@ namespace IngameScript
         }
 
 
-        void Hold(Clip song)
+        void Hold(Clip clip)
         {
-            if (OK(song.EditPos))
+            if (OK(clip.EditPos))
             {
-                if (song.EditNotes.Count > 0)
+                if (clip.EditNotes.Count > 0)
                 {
                     g_clip.Hold = !g_clip.Hold;
                     UpdateHoldLight();
@@ -70,17 +70,17 @@ namespace IngameScript
                         { 
                             var lastNote = lastNotes[i];
 
-                            var pat = song.Patterns.FindIndex(p => p.Channels.Contains(lastNote.Channel));
+                            var pat = clip.Patterns.FindIndex(p => p.Channels.Contains(lastNote.Channel));
                             if (pat < 0) return;
 
                             lastNote.StepLength = Math.Min(
-                                song.EditPos - (pat * g_nSteps + lastNote.PatStep) + EditStep + ChordSpread(i),
+                                clip.EditPos - (pat * g_nSteps + lastNote.PatStep) + EditStep + ChordSpread(i),
                                 10f * FPS / g_ticksPerStep);
 
-                            TriggerNote(lastNote.Number, lastNote.iChan, EditStep, ChordSpread(i));
+                            TriggerNote(clip, lastNote.Number, lastNote.iChan, EditStep, ChordSpread(i));
                         }
 
-                        MoveEdit(song, 1);
+                        MoveEdit(clip, 1);
                     }
                 }
             }

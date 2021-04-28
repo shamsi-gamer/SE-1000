@@ -192,6 +192,7 @@ namespace IngameScript
                 g_clip.Pick = false;
 
                 TriggerNote(
+                    g_clip,
                     found[0].Number, 
                     ch, 
                     found[0].StepLength,

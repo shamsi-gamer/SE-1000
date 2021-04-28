@@ -9,6 +9,7 @@ namespace IngameScript
         public partial class Clip
         {
             public string        Name;
+            public Track         Track;
 
             public Arpeggio      Arpeggio; // indicates that this song is an arpeggio
 
@@ -114,14 +115,16 @@ namespace IngameScript
             public Source        SelectedSource     { get { return CurSrc > -1 ? SelectedInstrument.Sources[CurSrc] : null; } }
 
 
-            public Clip(string name = "Clip 1")
+            public Clip(Track track, string name = "Clip 1")
             {
                 Name        = name;
+                Track       = track;
                             
                 Arpeggio    = null;
                 Length      = -1;
                             
-                Patterns    = new List<Pattern>();
+                Patterns = new List<Pattern>();
+
                 Blocks      = new List<Block>();
 
                 for (int i = 0; i < ChannelAutoKeys.Length; i++)
@@ -141,7 +144,6 @@ namespace IngameScript
                 AllPats     =
                 Follow      =
                 AutoCue     = false;
-
 
                 MovePat     = 
                          
@@ -192,7 +194,7 @@ namespace IngameScript
                            
                 Volume      = 1;
                            
-                ColorIndex  = 0;
+                ColorIndex  = 4;
 
 
                 for (int m = 0; m < nMems; m++)
@@ -212,6 +214,7 @@ namespace IngameScript
             public Clip(Clip clip)
             {
                 Name     = clip.Name;
+                Track    = clip.Track;
 
                 Arpeggio = clip.Arpeggio;
                 Length   = clip.Length;
@@ -723,24 +726,6 @@ namespace IngameScript
             }
 
 
-            public void SetVolume(int ch, float dv)
-            {
-                var vol = CurrentPattern.Channels[ch].Volume;
-                var mod = (MixerShift ? 10 : 1) * dv;
-
-                int first, last;
-                GetPatterns(CurPat, out first, out last);
-
-                for (int p = first; p <= last; p++)
-                {
-                    var chan = Patterns[p].Channels[ch];
-                    chan.Volume = MinMax(0, vol + dVol * mod, 2);
-                }
-
-                g_mixerPressed.Add(ch);
-            }
-
-
             public void StopEdit()
             {
                 if (EditNotes.Count > 0)
@@ -766,14 +751,19 @@ namespace IngameScript
         }
 
 
-        void ClearSong()
+        void ClearClips()
         {
             g_sm    .StopAll();
 
             g_notes .Clear();
             g_sounds.Clear();
 
-            g_clip  .Clear();
+            foreach (var track in g_tracks)
+            {
+                track.Clips  .Clear();
+                track.Indices.Clear();
+                track.CurIndex = -1;
+            }
         }
     }
 }

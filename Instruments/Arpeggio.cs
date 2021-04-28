@@ -17,7 +17,7 @@ namespace IngameScript
             public Arpeggio(Instrument inst) 
                 : base(strArp, null, null, inst, null)
             {
-                Clip = new Clip("");
+                Clip = new Clip(null, "");
                 Clip.Arpeggio = this;
                 Clip.Patterns.Add(new Pattern(Clip));
                 
