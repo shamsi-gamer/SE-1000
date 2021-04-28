@@ -12,7 +12,6 @@
             else           g_session = true;   
 
             UpdateClipsLight();
-            MarkLight(lblClips, g_setClip);
         }
     }
 }

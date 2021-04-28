@@ -695,7 +695,7 @@ namespace IngameScript
         void UpdateClipsLight()
         {
             UpdateLight(lblClips, g_session ? "Set" : "Clips", 8, 18);
-            UpdateLight(lblClips, false);
+            UpdateLight(lblClips, g_setClip);
         }
 
 
