@@ -5,36 +5,56 @@ namespace IngameScript
 {
     partial class Program
     {
-        bool[] g_on = new bool[g_nChans];
+        const  float    float_Inf = 65536f;
+        static float[]  g_steps = { 0.25f, 0.5f, 1, 2, 4, 8, 16, float_Inf };
 
 
-        static long    g_time         = -1; // in ticks
-        static int     g_ticksPerStep = 7;
-
-        static bool    g_move = false;
-
- 
-        static float   TimeStep { get { return (float)g_time / g_ticksPerStep; } }
+        static long     g_time = -1; // in ticks
+        static float    TimeStep { get { return (float)g_time / g_session.TicksPerStep; } }
 
 
-        const  float   float_Inf = 65536f;
-        static float[] g_steps = { 0.25f, 0.5f, 1, 2, 4, 8, 16, float_Inf };
+        static bool     g_started          = false,
+                        g_init             = false;
+                                           
+        static int      g_curRuntimeTick   = 0;
+        static float[]  g_runtimeMs        = new float[6];
+        static float    g_maxRuntimeMs     = 0;
+                                           
+        float           g_instCount        = 0,
+                        g_dspCount         = 0;
 
-        static float   EditStep       { get { return g_steps[g_clip.EditStep  ]; } }
-        static float   EditStepLength { get { return g_steps[g_clip.EditLength]; } }
-        static int     EditLength     { get { return (int)(EditStepLength * g_ticksPerStep); } }
+
+        static bool     g_showSession      = true;
+        static bool     g_setClip          = false;
+                                           
+        static bool     g_move             = false;
+
+                                           
+        static Session  g_session          = null;
+        //static Clip   g_session.CurClip             = null;
+
+                                           
+        Key             g_editKey          = null;
 
 
-        void SetDefaultMachineState()
+        static void SetDefaultMachineState()
         {
-            ClearClips();
+            ClearMachineState();
 
-            g_ticksPerStep = 7;
             g_move = false;
 
-            g_inst.Clear();
-            g_inst.Add(new Instrument());
-            g_inst[0].Sources.Add(new Source(g_inst[0]));
+            g_session.Instruments.Clear();
+            g_session.Instruments.Add(new Instrument());
+            g_session.Instruments[0].Sources.Add(new Source(g_session.Instruments[0]));
+        }
+
+
+        static void ClearMachineState()
+        {
+            g_sm    .StopAll();
+
+            g_notes .Clear();
+            g_sounds.Clear();
         }
     }
 }

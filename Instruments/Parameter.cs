@@ -383,10 +383,10 @@ namespace IngameScript
                     + WS(m_value.ToString("0.######")) 
                     +  S(nSettings)
 
-                    + Program.Save(Trigger)
-                    + Program.Save(Envelope)
-                    + Program.Save(Lfo)
-                    + Program.Save(Modulate);
+                    + Program.SaveSetting(Trigger)
+                    + Program.SaveSetting(Envelope)
+                    + Program.SaveSetting(Lfo)
+                    + Program.SaveSetting(Modulate);
             }
 
 
@@ -553,8 +553,8 @@ namespace IngameScript
 
                 DrawFuncButton(sprites, strLfo, 2, w, h, true, Lfo      != null);
                 DrawFuncButton(sprites, strMod, 3, w, h, true, Modulate != null);
-                DrawFuncButton(sprites, "Key",  4, w, h, true, chan.HasNoteKeys(GetPath(g_clip.CurSrc)));
-                DrawFuncButton(sprites, "Auto", 5, w, h, true, chan.HasAutoKeys(GetPath(g_clip.CurSrc)));
+                DrawFuncButton(sprites, "Key",  4, w, h, true, chan.HasNoteKeys(GetPath(g_session.CurClip.CurSrc)));
+                DrawFuncButton(sprites, "Auto", 5, w, h, true, chan.HasAutoKeys(GetPath(g_session.CurClip.CurSrc)));
             }
 
 
@@ -576,8 +576,8 @@ namespace IngameScript
                 case 2: AddNextSetting(strLfo); break;
                 case 3: AddNextSetting(strMod); break;
 
-                case 4: g_clip.ParamKeys = true; UpdateChordLights(); break;
-                case 5: g_clip.ParamAuto = true; UpdateChordLights(); break;
+                case 4: g_session.CurClip.ParamKeys = true; /*UpdateChordLabels();*/ break;
+                case 5: g_session.CurClip.ParamAuto = true; /*UpdateChordLabels();*/ break;
                 }
             }
 
@@ -586,7 +586,7 @@ namespace IngameScript
             {
                 return 
                           Tag == strVol
-                       && g_clip.CurSrc > -1
+                       && g_session.CurClip.CurSrc > -1
 
                     ||    Parent != null
                        && Tag == strOff;

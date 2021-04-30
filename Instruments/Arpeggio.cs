@@ -147,8 +147,8 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Length.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Length.DrawLabels(sprites, x, y, dp);
-                if (Scale .HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Scale .DrawLabels(sprites, x, y, dp);
+                if (Length.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Length.DrawLabels(sprites, x, y, dp);
+                if (Scale .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Scale .DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }
@@ -168,14 +168,14 @@ namespace IngameScript
                 { 
                 case 1:
                     Clip.EditPos = -1;
-                    UpdateEditLight(lblEdit, false);
+                    //UpdateEditLabel(lblEdit, false);
 
                     AddNextSetting(strLen);
                     break;
 
                 case 2:
                     Clip.EditPos = -1;
-                    UpdateEditLight(lblEdit, false);
+                    //UpdateEditLabel(lblEdit, false);
 
                     AddNextSetting(strScl);
                     break;

@@ -259,7 +259,7 @@ namespace IngameScript
                     var modSrcIndex = int.Parse(data[d++]);
                     var modInst     = data[d++];
 
-                    var _inst = g_inst.Find(_i => _i.Name == modInst);
+                    var _inst = g_session.Instruments.Find(_i => _i.Name == modInst);
 
                     mod.SrcInstruments.Add(_inst);
                     mod.SrcSources    .Add(modSrcIndex > -1 ? _inst.Sources[modSrcIndex] : null);
@@ -296,9 +296,9 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Amount .HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Amount .DrawLabels(sprites, x, y, dp);
-                if (Attack .HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
-                if (Release.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
+                if (Amount .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Amount .DrawLabels(sprites, x, y, dp);
+                if (Attack .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
+                if (Release.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }
@@ -307,11 +307,11 @@ namespace IngameScript
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
                 var sTime = 
-                    OK(g_clip.PlayTime)
-                    ? g_time - g_clip.StartTime
+                    OK(g_session.CurClip.PlayTime)
+                    ? g_time - g_session.CurClip.StartTime
                     : 0;
 
-                var tp = new TimeParams(g_time, 0, sTime, null, EditLength, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, sTime, null, g_session.CurClip.EditLength, -1, _triggerDummy, dp.Program);
 
                 Amount .UpdateValue(tp);
                 Attack .UpdateValue(tp);
@@ -479,7 +479,7 @@ namespace IngameScript
             ModDestClip       = null;
             ModDestChannel    = null;
 
-            UpdateAdjustLights(g_clip);
+            //UpdateAdjustLabels(g_session.CurClip);
         }
     }
 }

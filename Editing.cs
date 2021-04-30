@@ -35,12 +35,12 @@ namespace IngameScript
                 if (  !clip.ChordMode 
                     || clip.Chord > -1)
                 {
-                    var chan = g_clip.CurrentPattern.Channels[ch];
+                    var chan = g_session.CurClip.CurrentPattern.Channels[ch];
 
                     int found;
                     while ((found = chan.Notes.FindIndex(n => 
-                               g_clip.CurPat * g_nSteps + n.PatStep >= clip.EditPos 
-                            && g_clip.CurPat * g_nSteps + n.PatStep <  clip.EditPos + 1)) > -1)
+                               g_session.CurClip.CurPat * g_nSteps + n.PatStep >= clip.EditPos 
+                            && g_session.CurClip.CurPat * g_nSteps + n.PatStep <  clip.EditPos + 1)) > -1)
                         chan.Notes.RemoveAt(found);
 
                     lastNotes.Clear();
@@ -48,7 +48,7 @@ namespace IngameScript
 
                 MoveEdit(clip, 1, true);
 
-                MarkLight(lblStep);
+                //MarkLabel(lblStep);
             }
         }
 
@@ -59,8 +59,8 @@ namespace IngameScript
             {
                 if (clip.EditNotes.Count > 0)
                 {
-                    g_clip.Hold = !g_clip.Hold;
-                    UpdateHoldLight();
+                    g_session.CurClip.Hold = !g_session.CurClip.Hold;
+                    //UpdateHoldLabel();
                 }
                 else
                 {
@@ -74,10 +74,10 @@ namespace IngameScript
                             if (pat < 0) return;
 
                             lastNote.StepLength = Math.Min(
-                                clip.EditPos - (pat * g_nSteps + lastNote.PatStep) + EditStep + ChordSpread(i),
-                                10f * FPS / g_ticksPerStep);
+                                clip.EditPos - (pat * g_nSteps + lastNote.PatStep) + g_session.CurClip.EditStep + ChordSpread(i),
+                                10f * FPS / g_session.TicksPerStep);
 
-                            TriggerNote(clip, lastNote.Number, lastNote.iChan, EditStep, ChordSpread(i));
+                            TriggerNote(clip, lastNote.Number, lastNote.iChan, g_session.CurClip.EditStep, ChordSpread(i));
                         }
 
                         MoveEdit(clip, 1);
@@ -86,10 +86,10 @@ namespace IngameScript
             }
             else
             {
-                g_clip.Hold = !g_clip.Hold;
-                UpdateHoldLight();
+                g_session.CurClip.Hold = !g_session.CurClip.Hold;
+                //UpdateHoldLabel();
 
-                //if (!g_clip.Hold)
+                //if (!g_session.CurClip.Hold)
                 //    StopCurrentNotes(song.CurChan);
             }
         }
@@ -101,8 +101,8 @@ namespace IngameScript
                 return;
 
             if (   clip.CurSet < 0
-                || !(   g_clip.ParamKeys 
-                     || g_clip.ParamAuto))
+                || !(   g_session.CurClip.ParamKeys 
+                     || g_session.CurClip.ParamAuto))
                 return;
 
 
@@ -112,24 +112,24 @@ namespace IngameScript
 
                 clip.Inter = clip.CurrentChannel.Notes.Find(n =>
                        n.SongStep >= clip.EditPos
-                    && n.SongStep <  clip.EditPos + EditStep);
+                    && n.SongStep <  clip.EditPos + g_session.CurClip.EditStep);
             }
             else
             {
                 var note = clip.CurrentChannel.Notes.Find(n =>
                        n.SongStep >= clip.EditPos
-                    && n.SongStep <  clip.EditPos + EditStep);
+                    && n.SongStep <  clip.EditPos + g_session.CurClip.EditStep);
 
                 if (note != null)
                 {
                     var si = clip.Inter.SongStep;
                     var sn = note      .SongStep;
 
-                    var path  = g_settings.Last().GetPath(g_clip.CurSrc);
+                    var path  = g_settings.Last().GetPath(g_session.CurClip.CurSrc);
                     var param = (Parameter)GetSettingFromPath(note.Instrument, path);
 
-                    var start = param.GetKeyValue(clip.Inter, g_clip.CurSrc);
-                    var end   = param.GetKeyValue(note,       g_clip.CurSrc);
+                    var start = param.GetKeyValue(clip.Inter, g_session.CurClip.CurSrc);
+                    var end   = param.GetKeyValue(note,       g_session.CurClip.CurSrc);
 
                     int f = (int)(si / g_nSteps);
                     int l = (int)(sn / g_nSteps);
@@ -152,7 +152,7 @@ namespace IngameScript
                                 SetKeyValue(key, val);
                             else
                             {
-                                n.Keys.Add(new Key(g_clip.CurSrc, param, nParam.Value, n.SongStep));
+                                n.Keys.Add(new Key(g_session.CurClip.CurSrc, param, nParam.Value, n.SongStep));
                                 SetKeyValue(n.Keys.Last(), val);
                             }
                         }
@@ -162,8 +162,8 @@ namespace IngameScript
                 clip.Inter = null;
             }
 
-            UpdateLight(lblCmd1, clip.Inter != null);
-            UpdateAdjustLights(g_clip);
+            //UpdateLabel(lblCmd1, clip.Inter != null);
+            //UpdateAdjustLabels(g_session.CurClip);
         }
 
 
@@ -179,7 +179,7 @@ namespace IngameScript
 
                 g_editKey = g_editKey ?? key;
 
-                UpdateLight(lblCmd1, g_editKey != null);
+                //(lblCmd1, g_editKey != null);
             }
         }
 
@@ -209,37 +209,37 @@ namespace IngameScript
 
         void Edit()
         {
-            if (OK(g_clip.EditPos))
-                g_clip.LastEditPos = g_clip.EditPos;
+            if (OK(g_session.CurClip.EditPos))
+                g_session.CurClip.LastEditPos = g_session.CurClip.EditPos;
 
-            g_clip.EditPos =
-                OK(g_clip.EditPos)
+            g_session.CurClip.EditPos =
+                OK(g_session.CurClip.EditPos)
                 ? float.NaN
-                : (OK(g_clip.LastEditPos) ? g_clip.LastEditPos : g_clip.CurPat * g_nSteps);
+                : (OK(g_session.CurClip.LastEditPos) ? g_session.CurClip.LastEditPos : g_session.CurClip.CurPat * g_nSteps);
 
-            g_clip.StopEdit();
+            g_session.CurClip.StopEdit();
 
-            UpdateAdjustLights(g_clip);
+            //UpdateAdjustLabels(g_session.CurClip);
 
-            if (g_clip.Hold)
-                g_clip.TrimCurrentNotes(g_clip.CurChan);
+            if (g_session.CurClip.Hold)
+                g_session.CurClip.TrimCurrentNotes(g_session.CurClip.CurChan);
 
-            g_clip.Hold = false;
-            UpdateLight(lblHold, false);
+            g_session.CurClip.Hold = false;
+            //UpdateLabel(lblHold, false);
 
-            if (!OK(g_clip.EditPos))
+            if (!OK(g_session.CurClip.EditPos))
             {
-                g_clip.Inter = null;
-                UpdateLight(lblCmd1, false);
+                g_session.CurClip.Inter = null;
+                //UpdateLabel(lblCmd1, false);
             }
 
-            UpdateEditLight(lblEdit, OK(g_clip.EditPos));
+            //UpdateEditLabel(lblEdit, OK(g_session.CurClip.EditPos));
         }
 
 
         static Key PrevSongAutoKey(float pos, int p, int ch, string path)
         {
-            var prevKeys = g_clip.ChannelAutoKeys[ch]
+            var prevKeys = g_session.CurClip.ChannelAutoKeys[ch]
                 .Where(k => 
                        (   path == ""
                         || k.Path == path)
@@ -255,7 +255,7 @@ namespace IngameScript
 
         static Key NextSongAutoKey(float pos, int p, int ch, string path)
         {
-            var nextKeys = g_clip.ChannelAutoKeys[ch]
+            var nextKeys = g_session.CurClip.ChannelAutoKeys[ch]
                 .Where(k =>
                        (   path == ""
                         || k.Path == path)
@@ -274,12 +274,12 @@ namespace IngameScript
             if (OK(song.EditPos))
             { 
                 song.Inter = null;
-                UpdateLight(lblCmd1, false);
+                //UpdateLabel(lblCmd1, false);
 
                 if (song.EditNotes.Count > 0) song.EditNotes.Clear();
                 else                          song.EditNotes.AddRange(GetEditNotes(song));
 
-                UpdateEditLight(lblEdit, OK(song.EditPos));
+                //UpdateEditLabel(lblEdit, OK(song.EditPos));
             }
             else
             {
@@ -292,20 +292,20 @@ namespace IngameScript
                 }
             }
 
-            UpdateHoldLight();
-            UpdateAdjustLights(g_clip);
+            //UpdateHoldLabel();
+            //UpdateAdjustLabels(g_session.CurClip);
         }
 
 
         void CutNotes(Clip song)
         {
-            for (int p = 0; p <= g_clip.CurPat; p++)
+            for (int p = 0; p <= g_session.CurClip.CurPat; p++)
             {
-                var patStart =  g_clip.CurPat   *g_nSteps;
-                var patEnd   = (g_clip.CurPat +1)*g_nSteps;
+                var patStart =  g_session.CurClip.CurPat   *g_nSteps;
+                var patEnd   = (g_session.CurClip.CurPat +1)*g_nSteps;
 
                 var pat  = song.Patterns[p];
-                var chan = pat.Channels[g_clip.CurChan];
+                var chan = pat.Channels[g_session.CurClip.CurChan];
 
                 var min  = (60 + chan.Transpose*12) * NoteScale;
                 var max  = (84 + chan.Transpose*12) * NoteScale;
@@ -324,7 +324,7 @@ namespace IngameScript
 
         List<Note> GetEditNotes(Clip song, bool onlyEdit = false)
         {
-            var chan = g_clip.CurrentChannel;
+            var chan = g_session.CurClip.CurrentChannel;
 
             if (OK(song.EditPos))
             { 
@@ -333,7 +333,7 @@ namespace IngameScript
                 foreach (var note in chan.Notes)
                 {
                     if (   note.SongStep >= song.EditPos
-                        && note.SongStep <  song.EditPos + EditStep)
+                        && note.SongStep <  song.EditPos + g_session.CurClip.EditStep)
                         notes.Add(note);
                 }
 
@@ -352,7 +352,7 @@ namespace IngameScript
             {
                 var notes = new List<Note>();
 
-                for (int p = 0; p <= g_clip.CurPat; p++)
+                for (int p = 0; p <= g_session.CurClip.CurPat; p++)
                 {
                     var patStart =  clip.CurPat   *g_nSteps;
                     var patEnd   = (clip.CurPat+1)*g_nSteps;
@@ -394,15 +394,15 @@ namespace IngameScript
 
         void SetStepLength(int d)
         {
-            var len = MinMax(4, g_ticksPerStep + d, 15);
+            var len = MinMax(4, g_session.TicksPerStep + d, 15);
             var newTime = (float)g_time / len;
 
-            g_ticksPerStep = len;
+            g_session.TicksPerStep = len;
 
-            foreach (var pat in g_clip.Patterns)
+            foreach (var pat in g_session.CurClip.Patterns)
             {
                 foreach (var chan in pat.Channels)
-                    chan.Shuffle = Math.Min(chan.Shuffle, g_ticksPerStep - 1);
+                    chan.Shuffle = Math.Min(chan.Shuffle, g_session.TicksPerStep - 1);
             }
 
             g_infoPressed.Add(d > 0 ? 2 : 3);
@@ -411,25 +411,25 @@ namespace IngameScript
 
         void ChangeEditStep()
         {
-            g_clip.EditStep++;
+            g_session.CurClip.EditStep++;
 
-            if (g_clip.EditStep >= g_steps.Length - 1) // ignore the super long step
-                g_clip.EditStep = 1;
+            if (g_session.CurClip.EditStep >= g_steps.Length - 1) // ignore the super long step
+                g_session.CurClip.EditStep = 1;
 
-            MarkLight(lblEditStep);
-            UpdateEditLights();
+            //MarkLabel(lblEditStep);
+            //UpdateEditLabels();
         }
 
 
         void ChangeEditLength()
         {
-            g_clip.EditLength++;
+            g_session.CurClip.EditLength++;
 
-            if (g_clip.EditLength >= g_steps.Length)
-                g_clip.EditLength = 0;
+            if (g_session.CurClip.EditLength >= g_steps.Length)
+                g_session.CurClip.EditLength = 0;
 
-            MarkLight(lblEditLength);
-            UpdateEditLights();
+            //MarkLabel(lblEditLength);
+            //UpdateEditLabels();
 
             //g_sampleValid = F;
         }
@@ -439,8 +439,8 @@ namespace IngameScript
         {
             MoveEdit(song, -1);
 
-            if (OK(song.EditPos))
-                MarkLight(lblLeft);
+            //if (OK(song.EditPos))
+            //    MarkLabel(lblLeft);
         }
 
 
@@ -448,9 +448,9 @@ namespace IngameScript
         {
             MoveEdit(song, 1);
 
-            if (   OK(song.EditPos)
-                || IsCurSetting(typeof(Harmonics)))
-                MarkLight(lblRight);
+            //if (   OK(song.EditPos)
+            //    || IsCurSetting(typeof(Harmonics)))
+            //    MarkLabel(lblRight);
         }
 
 
@@ -464,12 +464,12 @@ namespace IngameScript
             }
             else if (clip.EditNotes.Count > 0)
             {
-                if (g_clip.Hold)
+                if (g_session.CurClip.Hold)
                 {
                     foreach (var n in clip.EditNotes)
                     {
-                        var is05 = n.StepLength == 0.5f && EditStepLength >= 1;
-                        n.StepLength = MinMax(0.5f, n.StepLength + move * EditStepLength, 10f * FPS / g_ticksPerStep);
+                        var is05 = n.StepLength == 0.5f && g_session.CurClip.EditLength >= 1;
+                        n.StepLength = MinMax(0.5f, n.StepLength + move * g_session.CurClip.EditLength, 10f * FPS / g_session.TicksPerStep);
                         if (is05) n.StepLength -= 0.5f;
                     }
                 }
@@ -477,12 +477,12 @@ namespace IngameScript
                 {
                     var oldCur = clip.CurPat;
 
-                    clip.EditPos += move * EditStep;
+                    clip.EditPos += move * g_session.CurClip.EditStep;
                     clip.LimitRecPosition();
 
                     foreach (var n in clip.EditNotes)
                     {
-                        n.PatStep += move * EditStep;
+                        n.PatStep += move * g_session.CurClip.EditStep;
 
                         if (   n.PatStep < 0
                             || n.PatStep >= g_nSteps)
@@ -498,8 +498,8 @@ namespace IngameScript
             }
             else if (g_editKey != null)
             {
-                g_editKey.StepTime += move * EditStep;
-                clip.EditPos       += move * EditStep;
+                g_editKey.StepTime += move * g_session.CurClip.EditStep;
+                clip.EditPos       += move * g_session.CurClip.EditStep;
 
                 clip.LimitRecPosition();
 
@@ -517,7 +517,7 @@ namespace IngameScript
             }
             else if (OK(clip.EditPos))
             {
-                clip.EditPos += move * EditStep;
+                clip.EditPos += move * g_session.CurClip.EditStep;
 
                 if (clip.Follow)
                 {
@@ -541,7 +541,7 @@ namespace IngameScript
                 }
 
                 clip.LimitRecPosition();
-                UpdateAdjustLights(g_clip);
+                //UpdateAdjustLabels(g_session.CurClip);
             }
         }
 
@@ -575,7 +575,7 @@ namespace IngameScript
 
         void Transpose(Note note, float tr)
         {
-            note.Number = (int)Math.Round(note.Number + tr * (g_clip.Shift ? 12 : 1) * (g_clip.HalfSharp ? 1 : 2));
+            note.Number = (int)Math.Round(note.Number + tr * (g_session.CurClip.Shift ? 12 : 1) * (g_session.CurClip.HalfSharp ? 1 : 2));
         }
 
 
@@ -590,12 +590,12 @@ namespace IngameScript
             else if (ShowPiano) SetTranspose(clip, clip.CurChan, d);
             else                SetShuffle(clip.CurChan, d);
 
-            MarkLight(
-                d > 0
-                ? lblTransposeUp
-                : lblTransposeDown);
+            //MarkLabel(
+            //    d > 0
+            //    ? lblTransposeUp
+            //    : lblTransposeDown);
 
-            UpdateOctaveLight();
+            //UpdateOctaveLabel();
         }
 
 
@@ -618,10 +618,10 @@ namespace IngameScript
 
         void Spread()
         {
-            g_clip.Spread = !g_clip.Spread;
-            UpdateLight(lblSpread, g_clip.Spread);
-            UpdateOctaveLight();
-            UpdateShuffleLight();
+            g_session.CurClip.Spread = !g_session.CurClip.Spread;
+            //UpdateLabel(lblSpread, g_session.CurClip.Spread);
+            //UpdateOctaveLabel();
+            //UpdateShuffleLabel();
         }
     }
 }

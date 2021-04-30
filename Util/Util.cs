@@ -33,7 +33,7 @@ namespace IngameScript
         static Setting       LastSetting  { get { return g_settings.Count > 0 ? g_settings.Last() : null; } }
                              
                              
-        static Setting       CurSetting   { get { return g_clip.CurSet > -1 ? g_settings[g_clip.CurSet] : null; } }
+        static Setting       CurSetting   { get { return g_session.CurClip.CurSet > -1 ? g_settings[g_session.CurClip.CurSet] : null; } }
         static Parameter     CurParam     { get { return (Parameter)CurSetting; } }
         static Modulate      CurModulate  { get { return (Modulate) CurSetting; } }
 
@@ -63,6 +63,7 @@ namespace IngameScript
             }
         }
         
+
         //Arpeggio CurOrAnyParentArpeggio
         //{
         //    get
@@ -106,7 +107,7 @@ namespace IngameScript
         bool IsCurOrParentSetting(Type type)
         {
             return
-                   g_clip.CurSet > -1
+                   g_session.CurClip.CurSet > -1
                 && (   IsCurSetting(type)
                     ||    CurSetting.Parent != null
                        && CurSetting.Parent.GetType() == type);
@@ -115,7 +116,7 @@ namespace IngameScript
 
         //bool IsCurOrAnyParent(Type type)
         //{
-        //    if (g_clip.CurSet < 0) return false;
+        //    if (g_session.CurClip.CurSet < 0) return false;
 
         //    var setting = CurSetting;
 
@@ -164,9 +165,9 @@ namespace IngameScript
         static void UpdateSongOff()
         {
             UpdateDspOffset(
-                ref g_clip.SongOff, 
-                g_clip.CurPat, 
-                g_clip.Patterns.Count, 
+                ref g_session.CurClip.SongOff, 
+                g_session.CurClip.CurPat, 
+                g_session.CurClip.Patterns.Count, 
                 maxDspPats, 
                 1,
                 1);
@@ -175,17 +176,17 @@ namespace IngameScript
 
         void UpdateInstOff(int ch)
         {
-            var curInst = g_inst.IndexOf(g_clip.CurrentPattern.Channels[ch].Instrument);
-            UpdateDspOffset(ref g_clip.InstOff, curInst, g_inst.Count, maxDspInst, 0, 1);
+            var curInst = g_session.Instruments.IndexOf(g_session.CurClip.CurrentPattern.Channels[ch].Instrument);
+            UpdateDspOffset(ref g_session.CurClip.InstOff, curInst, g_session.Instruments.Count, maxDspInst, 0, 1);
         }
 
 
         void UpdateSrcOff()
         {
             UpdateDspOffset(
-                ref g_clip.SrcOff, 
-                g_clip.CurSrc, 
-                g_clip.CurrentInstrument.Sources.Count, 
+                ref g_session.CurClip.SrcOff, 
+                g_session.CurClip.CurSrc, 
+                g_session.CurClip.CurrentInstrument.Sources.Count, 
                 maxDspSrc, 
                 0,
                 0);
@@ -194,14 +195,14 @@ namespace IngameScript
 
         //void UpdateInstOff(int ch)
         //{
-        //    var inst = g_inst.IndexOf(CurrentPattern(g_song).Channels[ch].Instrument);
+        //    var inst = g_session.Instruments.IndexOf(CurrentPattern(g_song).Channels[ch].Instrument);
 
         //    if (   inst >= maxDspInst/2 + instOff
         //        || inst <  maxDspInst/2 + instOff)
         //        instOff = inst - maxDspInst/2 + 1;
 
-        //         if (maxDspInst >= g_inst.Count)           instOff = 0;
-        //    else if (instOff >  g_inst.Count - maxDspInst) instOff = g_inst.Count - maxDspInst;
+        //         if (maxDspInst >= g_session.Instruments.Count)           instOff = 0;
+        //    else if (instOff >  g_session.Instruments.Count - maxDspInst) instOff = g_session.Instruments.Count - maxDspInst;
         //    else if (inst    >= maxDspInst + instOff)      instOff = Math.Max(0, inst - maxDspInst + 1);
         //    else if (inst    <  instOff)                   instOff = inst;
         //    else if (instOff <  0)                         instOff = 0;
@@ -218,8 +219,8 @@ namespace IngameScript
 
         //         if (maxDspSrc        >= nSrc           ) srcOff = 0;
         //    else if (srcOff        >  nSrc - maxDspSrc  ) srcOff = nSrc - maxDspSrc;
-        //    else if (g_song.g_clip.CurSrc >= maxDspSrc + srcOff) srcOff = Math.Max(0, g_song.g_clip.CurSrc - maxDspSrc + 1);
-        //    else if (g_song.g_clip.CurSrc <  srcOff            ) srcOff = g_song.g_clip.CurSrc;
+        //    else if (g_song.g_session.CurClip.CurSrc >= maxDspSrc + srcOff) srcOff = Math.Max(0, g_song.g_session.CurClip.CurSrc - maxDspSrc + 1);
+        //    else if (g_song.g_session.CurClip.CurSrc <  srcOff            ) srcOff = g_song.g_session.CurClip.CurSrc;
         //    else if (srcOff        <  0                 ) srcOff = 0;
         //}
 
@@ -227,10 +228,10 @@ namespace IngameScript
         void SetCurInst(Instrument inst)
         {
             int first, last;
-            g_clip.GetCurPatterns(out first, out last);
+            g_session.CurClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
-                g_clip.Patterns[p].Channels[g_clip.CurChan].Instrument = inst;
+                g_session.CurClip.Patterns[p].Channels[g_session.CurClip.CurChan].Instrument = inst;
         }
 
 
@@ -278,56 +279,56 @@ namespace IngameScript
 
         bool ShowPiano { get 
         {
-            var tune = g_clip.SelectedSource    ?.Tune
-                    ?? g_clip.SelectedInstrument?.Tune;
+            var tune = g_session.CurClip.SelectedSource    ?.Tune
+                    ?? g_session.CurClip.SelectedInstrument?.Tune;
 
             return
-                   g_clip.Piano
-                ||    g_clip.ChordEdit 
-                   && g_clip.Chord > -1
+                   g_session.CurClip.Piano
+                ||    g_session.CurClip.ChordEdit 
+                   && g_session.CurClip.Chord > -1
                 ||    IsCurParam(strTune)
                    && (tune?.UseChord ?? false)
-                   && !(   g_clip.ParamKeys 
-                        || g_clip.ParamAuto)
+                   && !(   g_session.CurClip.ParamKeys 
+                        || g_session.CurClip.ParamAuto)
                 ||    IsCurOrParentSetting(typeof(Arpeggio));
         }}
 
 
-        IMyTextPanel GetLightFromNote(int num)
+        IMyTextPanel GetLabelFromNote(int num)
         {
             num /= NoteScale;
             num -= 60;
-            num -= g_clip.CurrentChannel.Transpose * 12;
+            num -= g_session.CurClip.CurrentChannel.Transpose * 12;
 
-            switch (num)
-            {
-                case  0: return lblLow[ 0];
-                case  2: return lblLow[ 1];
-                case  4: return lblLow[ 2];
-                case  5: return lblLow[ 3];
-                case  7: return lblLow[ 4];
-                case  9: return lblLow[ 5];
-                case 11: return lblLow[ 6];
-                case 12: return lblLow[ 7];
-                case 14: return lblLow[ 8];
-                case 16: return lblLow[ 9];
-                case 17: return lblLow[10];
-                case 19: return lblLow[11];
-                case 21: return lblLow[12];
-                case 23: return lblLow[13];
-                case 24: return lblLow[14];
+            //switch (num)
+            //{
+            //    case  0: return lblLow[ 0];
+            //    case  2: return lblLow[ 1];
+            //    case  4: return lblLow[ 2];
+            //    case  5: return lblLow[ 3];
+            //    case  7: return lblLow[ 4];
+            //    case  9: return lblLow[ 5];
+            //    case 11: return lblLow[ 6];
+            //    case 12: return lblLow[ 7];
+            //    case 14: return lblLow[ 8];
+            //    case 16: return lblLow[ 9];
+            //    case 17: return lblLow[10];
+            //    case 19: return lblLow[11];
+            //    case 21: return lblLow[12];
+            //    case 23: return lblLow[13];
+            //    case 24: return lblLow[14];
 
-                case  1: return lblHigh[0];
-                case  3: return lblHigh[1];
-                case  6: return lblHigh[2];
-                case  8: return lblHigh[3];
-                case 10: return lblHigh[4];
-                case 13: return lblHigh[5];
-                case 15: return lblHigh[6];
-                case 18: return lblHigh[7];
-                case 20: return lblHigh[8];
-                case 22: return lblHigh[9];
-            }
+            //    case  1: return lblHigh[0];
+            //    case  3: return lblHigh[1];
+            //    case  6: return lblHigh[2];
+            //    case  8: return lblHigh[3];
+            //    case 10: return lblHigh[4];
+            //    case 13: return lblHigh[5];
+            //    case 15: return lblHigh[6];
+            //    case 18: return lblHigh[7];
+            //    case 20: return lblHigh[8];
+            //    case 22: return lblHigh[9];
+            //}
 
             return null;
         }
@@ -335,27 +336,27 @@ namespace IngameScript
 
         void SetVolumeAll(float dv)
         {
-            var mod = (g_clip.MixerShift ? 10 : 1) * dv;
-            g_clip.Volume = MinMax(0, g_clip.Volume + dVol * mod, 2);
+            var mod = (g_session.CurClip.MixerShift ? 10 : 1) * dv;
+            g_session.CurClip.Volume = MinMax(0, g_session.CurClip.Volume + dVol * mod, 2);
 
-            MarkLight(
-                dv > 0 
-                ? lblMixerVolumeUp 
-                : lblMixerVolumeDown);
+            //MarkLabel(
+            //    dv > 0 
+            //    ? lblMixerVolumeUp 
+            //    : lblMixerVolumeDown);
         }
 
 
         static void UpdateInstName(bool add = true)
         {
-            if (   g_clip.CurPat  > -1
-                && g_clip.SelChan > -1)
-                dspMain.Panel.WriteText(add ? g_clip.SelectedChannel.Instrument.Name : "", false);
+            if (   g_session.CurClip.CurPat  > -1
+                && g_session.CurClip.SelChan > -1)
+                dspMain.Panel.WriteText(add ? g_session.CurClip.SelectedChannel.Instrument.Name : "", false);
         }
 
 
         float GetBPM()
         {
-            return 120f / (g_ticksPerStep * g_nSteps) * 120f;
+            return 120f / (g_session.TicksPerStep * g_nSteps) * 120f;
         }
 
 
@@ -364,7 +365,7 @@ namespace IngameScript
             foreach (var l in g_locks)
                 l.ToggleLock();
 
-            UpdateLockLights();
+            //UpdateLockLabels();
         }
 
 
@@ -383,7 +384,7 @@ namespace IngameScript
             foreach (var timer in g_timers)
                 timer.Enabled = on;
 
-            UpdateTimerLight();
+            //UpdateTimerLabel();
         }
 
 
@@ -394,7 +395,7 @@ namespace IngameScript
             foreach (var gyro in g_gyros)
                 gyro.Enabled = !on;
 
-            UpdateGyroLight();
+            //UpdateGyroLabel();
         }
 
 
@@ -405,11 +406,11 @@ namespace IngameScript
             foreach (var l in g_locks) auto |= l.AutoLock;
             foreach (var l in g_locks) l.AutoLock = !auto;
 
-            UpdateLight(lblAutoLock, g_locks.Find(l => l.AutoLock) != null);
+            //UpdateLabel(lblAutoLock, g_locks.Find(l => l.AutoLock) != null);
         }
 
 
-        void ToggleLight()
+        void ToggleLabel()
         {
             var open  = Get("Timer Open 1")  as IMyTimerBlock;
             var close = Get("Timer Close 1") as IMyTimerBlock;
@@ -444,13 +445,13 @@ namespace IngameScript
             if (hinge.Angle > (hinge.LowerLimitRad + hinge.UpperLimitRad) / 2) fold.Trigger();
             else                                                               recl.Trigger();
 
-            MarkLight(lblFold);
+            //MarkLabel(lblFold);
         }
 
 
         static long GetPatTime(int pat) 
         {
-            return pat * g_nSteps * g_ticksPerStep; 
+            return pat * g_nSteps * g_session.TicksPerStep; 
         } 
 
 

@@ -1,39 +1,54 @@
-﻿namespace IngameScript
+﻿using System.Text;
+
+
+namespace IngameScript
 {
     partial class Program
     {
         void Load()
         {
-            string curPath;
+            Stop();
+
+
+            //string curPath;
             //       modConnPath;
             //int    modPat,
             //       modChan;
 
             LoadMachineState();
-            LoadInstruments();
-            LoadClips(out curPath);
+            //LoadInstruments();
+            //LoadClips(out curPath);
 
-            if (curPath != "")
-                SwitchToSetting(g_clip.CurrentInstrument, g_clip.CurSrc, curPath);
+            g_session = Session.Load();
+
+            //if (curPath != "")
+            //    SwitchToSetting(g_session.CurClip.CurrentInstrument, g_session.CurClip.CurSrc, curPath);
 
             //if (modConnPath != "")
             //{
-            //    ModDestChannel    = g_clip.Patterns[modPat].Channels[modChan];
+            //    ModDestChannel    = g_session.CurClip.Patterns[modPat].Channels[modChan];
             //    ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
             //}
+
+            InitPlaybackAfterLoad(g_session.CurClip.PlayTime);
+
+            SetLabelColor(g_session.CurClip.ColorIndex);
+            //UpdateLabels();
         }
 
 
         void LoadMachineState()
         {
-            var state = lblMove.CustomData;
+            var sb = new StringBuilder();
+            pnlStorageState.ReadText(sb);
+            var state = sb.ToString();
 
             var lines = state.Split('\n');
             var line  = 0;
 
             var cfg = lines[line++].Split(';');
             if (!LoadToggles(cfg[0])) goto NothingLoaded;
-            if (!LoadConfig(cfg))     goto NothingLoaded;
+            //if (!LoadConfig(cfg))     goto NothingLoaded;
 
             return;
 
@@ -50,69 +65,10 @@
 
             var i = 0;
 
-            g_session = ReadBit(f, i++);
-            g_move    = ReadBit(f, i++);
+            g_showSession = ReadBit(f, i++);
+            g_move        = ReadBit(f, i++);
 
             return true;
-        }
-
-
-        bool LoadConfig(string[] cfg)
-        {
-            int c = 1; // 0 holds the toggles, loaded in LoadToggles()
-
-            if (!int.TryParse(cfg[c++], out g_ticksPerStep)) return false;
-                                                             
-            return true;
-        }
-
-
-        void LoadInstruments()
-        {
-            var lines = lblPrev.CustomData.Split('\n');
-            var line = 0;
-
-            g_inst.Clear();
-
-            while (line < lines.Length)
-            {
-                while (line < lines.Length
-                    && lines[line].Trim() == "") line++; // white space
-
-                if (line < lines.Length)
-                    g_inst.Add(Instrument.Load(lines, ref line));
-            }
-
-            
-            if (g_inst.Count == 0) // nothing was loaded
-                CreateDefaultInstruments();
-        }
-
-
-        void ImportInstruments()
-        {
-            LoadInstruments();
-
-            // set all instruments to first
-            
-            int first, last;
-            g_clip.GetCurPatterns(out first, out last);
-
-            for (int p = first; p <= last; p++)
-            { 
-                for (int ch = 0; ch < g_nChans; ch++)
-                    g_clip.Patterns[p].Channels[ch].Instrument = g_inst[0]; 
-            }
-        }
-
-
-        void CreateDefaultInstruments()
-        {
-            if (g_inst.Count == 0)
-            {
-                g_inst.Add(new Instrument());
-                g_inst[0].Sources.Add(new Source(g_inst[0]));
-            }
         }
 
 
@@ -128,57 +84,18 @@
         }
 
 
-        void LoadClips(out string curPath)
-        {
-            if (g_clip != null) 
-                Stop();
-            
-            ClearClips();
-
-            var lines = lblNext.CustomData.Split('\n');
-            var line  = 0;
-
-            curPath = "";
-
-            g_clip = Clip.Load(lines, ref line, out curPath);
-
-            if (g_clip == null)
-                CreateDefaultClip();
-            //else
-            //{
-            //    g_tracks[0].Clips.Add(g_clip);
-            //    g_tracks[0].Indices.Add(index);
-            //    g_tracks[0].CurIndex = index;
-            //}
-
-            InitPlaybackAfterLoad(g_clip.PlayTime);
-
-            SetLightColor(g_clip.ColorIndex);
-            UpdateLights();
-        }
-
-
         //bool Finalize(List<Instrument> loadedInst)
         //{
         //    foreach (var l in loadedInst)
         //    {
-        //        var f = g_inst.FindIndex(i => i.Name == l.Name);
+        //        var f = g_session.Instruments.FindIndex(i => i.Name == l.Name);
 
-        //        if (f > -1) g_inst[f] = l;
-        //        else g_inst.Add(l);
+        //        if (f > -1) g_session.Instruments[f] = l;
+        //        else g_session.Instruments.Add(l);
         //    }
 
         //    return true;
         //}
-
-
-        void CreateDefaultClip()
-        {
-            g_setClip = true;
-            SetClip(0, 0);
-
-            //UpdateClipDsp();
-        }
 
 
         //bool LoadEdit(string[] lines, ref int line)

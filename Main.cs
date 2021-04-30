@@ -33,7 +33,7 @@ namespace IngameScript
                 foreach (var lfo in g_lfo) lfo.AdvanceTime();
                 foreach (var mod in g_mod) mod.AdvanceTime();
 
-                g_clip.FinalizePlayback();
+                g_session.CurClip.FinalizePlayback();
             }
 
             UpdateRuntimeInfo();
@@ -45,22 +45,22 @@ namespace IngameScript
 
         void Update1()
         {
-            CurSetting?.AdjustFromController(g_clip, this);
+            CurSetting?.AdjustFromController(g_session.CurClip, this);
 
             if (!TooComplex) 
                 UpdatePlayback();
 
-            if (OK(g_clip.PlayTime)) 
-                UpdateKeyLights();
+            //if (OK(g_session.CurClip.PlayTime)) 
+            //    UpdateKeyLabels();
         }
 
 
         void Update10()
         { 
-            if (   g_clip.PlayTime < 0
-                && _loadStep > 10
-                && !TooComplex)
-                UpdateKeyLights();
+            //if (   g_session.CurClip.PlayTime < 0
+            //    && _loadStep > 10
+            //    && !TooComplex)
+            //    UpdateKeyLabels();
 
 
             if (g_started)
@@ -85,8 +85,8 @@ namespace IngameScript
             g_dspCount = g_instCount;
             g_instCount = 0;
 
-            UpdateLockLights(); // catch the locks being set by autolock
-            UnmarkAllLights();  // by this point they have been visually marked at a previous cycle
+
+
 
 
             warningLight.Enabled = g_sm.UsedRatio > 0.9f;

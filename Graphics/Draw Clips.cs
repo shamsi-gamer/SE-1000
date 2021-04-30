@@ -32,9 +32,9 @@ namespace IngameScript
             FillRect(sprites, x, y, w, h, color0);
 
             
-            for (int iy = 0; iy < 4; iy++)
+            for (int iy = 0; iy < Math.Min(g_session.Tracks.Count, 4); iy++)
             {
-                var track = g_tracks[iy];
+                var track = g_session.Tracks[iy];
 
                 for (int ix = nDsp*6 + 0; ix < nDsp*6 + 6; ix++)
                 {

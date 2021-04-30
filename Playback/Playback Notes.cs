@@ -56,13 +56,13 @@ namespace IngameScript
                                   && clip.Chord > -1))
                             {
                                 var noteStep = clip.EditPos % g_nSteps + ChordSpread(i);
-                                var lastNote = new Note(chan, ch, 1, note, noteStep, EditStepLength);
+                                var lastNote = new Note(chan, ch, 1, note, noteStep, g_session.CurClip.EditLength);
                     
                                 lastNotes.Add(lastNote);
                                 chan.AddNote(lastNote);
                             }
 
-                            TriggerNote(clip, note, ch, EditStepLength, ChordSpread(i));
+                            TriggerNote(clip, note, ch, g_session.CurClip.EditLength, ChordSpread(i));
                         }
                     }
                 }
@@ -97,13 +97,13 @@ namespace IngameScript
                               && clip.Chord > -1))
                         {
                             var noteStep = clip.EditPos % g_nSteps + ChordSpread(i);
-                            var lastNote = new Note(chan, ch, 1, note, noteStep, EditStepLength);
+                            var lastNote = new Note(chan, ch, 1, note, noteStep, g_session.CurClip.EditLength);
                     
                             lastNotes.Add(lastNote);
                             chan.AddNote(lastNote);
                         }
 
-                        TriggerNote(clip, note, ch, EditStepLength, ChordSpread(i));
+                        TriggerNote(clip, note, ch, g_session.CurClip.EditLength, ChordSpread(i));
                     }
                 }
 
@@ -126,7 +126,7 @@ namespace IngameScript
                     clip.TrimCurrentNotes(ch);
 
                 for (int i = 0; i < notes.Count; i++)
-                    TriggerNote(clip, notes[i], ch, EditStepLength, ChordSpread(i));
+                    TriggerNote(clip, notes[i], ch, g_session.CurClip.EditLength, ChordSpread(i));
             }
 
 
@@ -148,8 +148,8 @@ namespace IngameScript
 
             AddNoteAndSounds(new Note(chan, ch, 1, num, patStep, len));
 
-            if (clip.Piano)
-                MarkLight(GetLightFromNote(num));
+            //if (clip.Piano)
+            //    MarkLabel(GetLabelFromNote(num));
         }
 
 
@@ -173,7 +173,7 @@ namespace IngameScript
                 {
                     var note = new Note(n);
 
-                    note.PatStep += (float)sh / g_ticksPerStep;
+                    note.PatStep += (float)sh / g_session.TicksPerStep;
 
                     if (note.Instrument.Arpeggio != null)
                         note.ArpPlayTime = 0;
@@ -198,8 +198,8 @@ namespace IngameScript
             {
                 var notes = note.Channel.Notes.FindAll(n =>
                           n.Instrument.Arpeggio != null
-                       && clip.PlayTime >= clip.PlayPat*g_nSteps*g_ticksPerStep + n.PatTime
-                       && clip.PlayTime <  clip.PlayPat*g_nSteps*g_ticksPerStep + n.PatTime + n.FrameLength);
+                       && clip.PlayTime >= clip.PlayPat*g_nSteps*g_session.TicksPerStep + n.PatTime
+                       && clip.PlayTime <  clip.PlayPat*g_nSteps*g_session.TicksPerStep + n.PatTime + n.FrameLength);
 
                 foreach (var n in notes)
                 {
@@ -208,11 +208,11 @@ namespace IngameScript
                     var arp = n.Instrument.Arpeggio;
 
                     var arpNotes = arp.Clip.Patterns[0].Channels[0].Notes.FindAll(_n =>
-                        clip.PlayTime == (n.PatStep + sh)*g_ticksPerStep + _n.ArpPlayTime);
+                        clip.PlayTime == (n.PatStep + sh)*g_session.TicksPerStep + _n.ArpPlayTime);
 
                     foreach (var nn in arpNotes)
                     {
-                        nn.PatStep = n.PatStep + (n.ArpPlayTime + sh) / g_ticksPerStep;
+                        nn.PatStep = n.PatStep + (n.ArpPlayTime + sh) / g_session.TicksPerStep;
 
                         g_notes.Add(nn);
                         g_sounds.AddRange(nn.Sounds);
@@ -269,7 +269,7 @@ namespace IngameScript
         //void StopNote(Clip song, Note note)
         //{
         //    var step = OK(PlayTime) ? PlayStep : TimeStep;
-        //    //note.UpdateStepLength(step - note.PatStep, g_ticksPerStep);
+        //    //note.UpdateStepLength(step - note.PatStep, g_session.TicksPerStep);
         //}
 
 

@@ -39,7 +39,7 @@ namespace IngameScript
             {
                 if (TooComplex) break;
                     
-                var chan = g_clip.CurrentPattern.Channels[ch];
+                var chan = g_session.CurClip.CurrentPattern.Channels[ch];
 
                 var xc = x + bb/2 + (ch - first) * (bw + bb);
 

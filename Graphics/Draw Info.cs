@@ -29,9 +29,9 @@ namespace IngameScript
 
             FillRect(sprites, x, y, w, h, color0);
 
-            if (OK(g_clip.PlayTime))
+            if (OK(g_session.CurClip.PlayTime))
             {
-                var sec = (int)(g_clip.PlayStep * g_ticksPerStep / FPS);
+                var sec = (int)(g_session.CurClip.PlayStep * g_session.TicksPerStep / FPS);
                 var min = sec / 60;
                 sec %= 60;
 
@@ -59,7 +59,7 @@ namespace IngameScript
             DrawString(sprites, strUp,    x + 415, y + h - 51, 1.5f, prBpmUp   ? color0 : color6);
 
 
-            var nameLines = g_clip.Name.Split('\n');
+            var nameLines = g_session.CurClip.Name.Split('\n');
 
             if (nameLines.Length > 0) 
                 DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TaC);

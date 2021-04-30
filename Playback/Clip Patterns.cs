@@ -15,7 +15,7 @@ namespace IngameScript
                     Mems[m] = Mems[m] < 0 || Mems[m] != CurPat ? CurPat : -1;
                     MemSet = false;
 
-                    UpdateMemoryLights();
+                    //UpdateMemoryLabels();
                 }
                 else if (Mems[m] > -1)
                 {
@@ -23,7 +23,7 @@ namespace IngameScript
                     else              SetCurrentPattern(Mems[m]);
                 }
 
-                MarkLight(lblMem[m]);
+                //MarkLabel(lblMem[m]);
             }
 
 
@@ -36,7 +36,7 @@ namespace IngameScript
             public void Mem()
             {
                 MemSet = !MemSet;
-                UpdateLight(lblMemory, MemSet);
+                //UpdateLabel(lblMemory, MemSet);
             }
 
 
@@ -45,7 +45,7 @@ namespace IngameScript
                 for (int m = 0; m < nMems; m++)
                     if (Mems[m] >= Patterns.Count) Mems[m] = -1;
 
-                UpdateMemoryLights();
+                //UpdateMemoryLabels();
             }
 
 
@@ -54,7 +54,7 @@ namespace IngameScript
                 if (movePat) MovePatterns(CurPat - 1);
                 else SetCurrentPattern(CurPat - 1);
 
-                MarkLight(lblPrevPat, !movePat);
+                //MarkLabel(lblPrevPat, !movePat);
                 g_clipPressed.Add(5);
             }
 
@@ -64,7 +64,7 @@ namespace IngameScript
                 if (movePat) MovePatterns(CurPat + 1);
                 else SetCurrentPattern(CurPat + 1);
 
-                MarkLight(lblNextPat, !movePat);
+                //MarkLabel(lblNextPat, !movePat);
                 g_clipPressed.Add(6);
             }
 
@@ -207,12 +207,12 @@ namespace IngameScript
 
                 //if (OK(PlayTime))
                 //{
-                //         if (CurPat > oldPat) StartTime -= nSteps * g_ticksPerStep;
-                //    else if (CurPat < oldPat) StartTime += nSteps * g_ticksPerStep;
+                //         if (CurPat > oldPat) StartTime -= nSteps * g_session.TicksPerStep;
+                //    else if (CurPat < oldPat) StartTime += nSteps * g_session.TicksPerStep;
                 //}
 
 
-                //UpdateOctaveLight();
+                //UpdateOctaveLabel();
                 UpdateSongOff();//g_song.CurPat);
             
                 UpdateInstName();
@@ -234,7 +234,7 @@ namespace IngameScript
                     EditPos = 0;
 
                 //if (OK(PlayTime))
-                //    StartTime -= nSteps * g_ticksPerStep;
+                //    StartTime -= nSteps * g_session.TicksPerStep;
 
                 UpdateAutoKeys();
 
@@ -296,7 +296,7 @@ namespace IngameScript
 
 
                 //if (OK(g_song.PlayTime))
-                //    g_song.StartTime += nSteps * g_ticksPerStep;
+                //    g_song.StartTime += nSteps * g_session.TicksPerStep;
 
                 if (PlayPat >= Patterns.Count)
                     PlayPat  = Patterns.Count - 1;
@@ -343,7 +343,7 @@ namespace IngameScript
                 // recordPosition = 0;
 
                 //if (OK(PlayTime))
-                //    StartTime -= nSteps * g_ticksPerStep;
+                //    StartTime -= nSteps * g_session.TicksPerStep;
 
                 UpdateAutoKeys();
 

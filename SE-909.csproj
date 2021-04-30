@@ -38,12 +38,14 @@
   <Import Project="MDK/MDK.options.props" />
   <Import Project="MDK/MDK.paths.props" Condition="exists('MDK/MDK.paths.props')" />
   <ItemGroup>
-    <Compile Include="Chords.cs" />
+    <Compile Include="Controls\Button.cs" />
+    <Compile Include="Controls\Label.cs" />
+    <Compile Include="Util\Chords.cs" />
     <Compile Include="Graphics\Draw Clips.cs" />
     <Compile Include="Graphics\Draw Volume.cs" />
     <Compile Include="Graphics\DrawParams.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Minify.cs" />
+    <Compile Include="Util\Minify.cs" />
     <Compile Include="IO\Save.cs" />
     <Compile Include="Instruments\Filter.cs" />
     <Compile Include="Instruments\Harmonics.cs" />
@@ -54,7 +56,7 @@
     <Compile Include="Instruments\Tune.cs" />
     <Compile Include="Playback\Channel.cs" />
     <Compile Include="Commands.cs" />
-    <Compile Include="Def.cs" />
+    <Compile Include="Util\Def.cs" />
     <Compile Include="Instruments\Delay.cs" />
     <Compile Include="Instruments\Envelope.cs" />
     <Compile Include="Functions.cs" />
@@ -69,18 +71,20 @@
     <Compile Include="Graphics\Draw Mixer.cs" />
     <Compile Include="Graphics\Draw Info.cs" />
     <Compile Include="IO\Input.cs" />
+    <Compile Include="Playback\Session Load.cs" />
+    <Compile Include="Playback\Session Save.cs" />
+    <Compile Include="Playback\Session.cs" />
     <Compile Include="Playback\Clip Load.cs" />
     <Compile Include="Playback\Clip Patterns.cs" />
     <Compile Include="Playback\Clip Save.cs" />
-    <Compile Include="Playback\Session.cs" />
     <Compile Include="Playback\Playback.cs" />
     <Compile Include="Instruments\Instrument.cs" />
     <Compile Include="IO\Load.cs" />
     <Compile Include="Instruments\LFO.cs" />
-    <Compile Include="Lib.cs" />
-    <Compile Include="Display.cs" />
-    <Compile Include="Lights.cs" />
-    <Compile Include="Log.cs" />
+    <Compile Include="Util\Lib.cs" />
+    <Compile Include="Controls\Display.cs" />
+    <Compile Include="Controls\Labels.cs" />
+    <Compile Include="Util\Log.cs" />
     <Compile Include="MDK\Bootstrapper.cs" />
     <AdditionalFiles Include="MDK\MDK.options.props">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -102,7 +106,7 @@
     <Compile Include="Program.cs" />
     <AdditionalFiles Include="thumb.png" />
     <AdditionalFiles Include="MDK\whitelist.cache" />
-    <Compile Include="Random.cs" />
+    <Compile Include="Util\Random.cs" />
     <Compile Include="Graphics\Draw Sample.cs" />
     <Compile Include="Playback\Playback Sounds.cs" />
     <Compile Include="Playback\Clip.cs" />
@@ -112,8 +116,8 @@
     <Compile Include="Playback\SpeakerManager.cs" />
     <Compile Include="Instruments\TriggerValue.cs" />
     <Compile Include="State.cs" />
-    <Compile Include="Strings.cs" />
-    <Compile Include="Util.cs" />
+    <Compile Include="Util\Strings.cs" />
+    <Compile Include="Util\Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />

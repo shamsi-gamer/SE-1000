@@ -17,7 +17,7 @@ namespace IngameScript
 
             if (!TooComplex)
             { 
-                if (g_session) DrawClips();
+                if (g_showSession) DrawClips();
                 else           DrawMixer();
             }
 

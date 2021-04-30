@@ -165,7 +165,7 @@ namespace IngameScript
                 index           = int.Parse(data[i++]);
 
                 var instName    = data[i++];
-                chan.Instrument = g_inst.Find(inst => inst.Name == instName);
+                chan.Instrument = g_session.Instruments.Find(inst => inst.Name == instName);
 
                 chan.On         = int  .Parse(data[i++]) > 0;
                 chan.Volume     = float.Parse(data[i++]);

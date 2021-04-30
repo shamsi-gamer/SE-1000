@@ -233,10 +233,10 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Attack .HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
-                if (Decay  .HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Decay  .DrawLabels(sprites, x, y, dp);
-                if (Sustain.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Sustain.DrawLabels(sprites, x, y, dp);
-                if (Release.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
+                if (Attack .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
+                if (Decay  .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Decay  .DrawLabels(sprites, x, y, dp);
+                if (Sustain.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Sustain.DrawLabels(sprites, x, y, dp);
+                if (Release.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }
@@ -245,11 +245,11 @@ namespace IngameScript
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
                 var sTime = 
-                    OK(g_clip.PlayTime)
-                    ? g_time - g_clip.StartTime
+                    OK(g_session.CurClip.PlayTime)
+                    ? g_time - g_session.CurClip.StartTime
                     : 0;
 
-                var tp = new TimeParams(g_time, 0, sTime, null, EditLength, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, sTime, null, g_session.CurClip.EditLength, -1, _triggerDummy, dp.Program);
 
                 Attack .UpdateValue(tp);
                 Decay  .UpdateValue(tp);

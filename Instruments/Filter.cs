@@ -157,8 +157,8 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Cutoff   .HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Cutoff   .DrawLabels(sprites, x, y, dp);
-                if (Resonance.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Resonance.DrawLabels(sprites, x, y, dp);
+                if (Cutoff   .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Cutoff   .DrawLabels(sprites, x, y, dp);
+                if (Resonance.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Resonance.DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }

@@ -9,9 +9,12 @@ namespace IngameScript
     {
         void SaveSongExt()
         {
-            SaveClips();
+            g_session.Save();
 
-            dspIO.Panel.WriteText(lblNext.CustomData);
+            //dspIO.Panel.WriteText(
+            //         lblPrev.CustomData 
+            //    + PN(lblNext.CustomData));
+
 
             g_infoPressed.Add(1);
         }
@@ -20,14 +23,20 @@ namespace IngameScript
         public void Save()
         {
             SaveMachineState();
-            SaveInstruments();
-            SaveClips();
+            g_session.Save();
         }
 
 
         void SaveMachineState()
         {
-            lblMove.CustomData = N(SaveConfig(SaveToggles()));
+            //+   (ModDestConnecting != null ? ModDestConnecting.GetPath(ModDestSrcIndex) : "")
+            //+ PS(ModDestSrcIndex)
+            //+ PS(ModDestChannel != null ? Patterns.IndexOf(ModDestChannel.Pattern) : -1)
+            //+ PS(ModDestChannel != null ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)
+            //+ PS(ModCurPat)
+            //+ PS(ModDestClip)
+
+            pnlStorageState.WriteText(S(SaveToggles()));
         }
 
 
@@ -36,73 +45,19 @@ namespace IngameScript
             uint f = 0;
             var  i = 0;
 
-            WriteBit(ref f, g_session, i++);
+            WriteBit(ref f, g_showSession, i++);
             WriteBit(ref f, g_move,    i++);
 
             return f;
         }
 
 
-        string SaveConfig(uint f)
+        static string SaveSetting(Setting setting)
         {
             return
-                   S(f)              
-                + PS(g_ticksPerStep);
-                 
-                //+   (ModDestConnecting != null ? ModDestConnecting.GetPath(ModDestSrcIndex) : "")
-                //+ PS(ModDestSrcIndex)
-                //+ PS(ModDestChannel != null ? Patterns.IndexOf(ModDestChannel.Pattern) : -1)
-                //+ PS(ModDestChannel != null ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)
-                //+ PS(ModCurPat)
-                //+ PS(ModDestClip)
-        }
-
-
-        static string Save(Setting setting)
-        {
-            return 
-                setting != null 
+                setting != null
                 ? P(setting.Save())
                 : "";
-        }
-
-
-        void SaveInstruments()
-        {
-            var sbInst = new StringBuilder();
-
-            for (int i = 0; i < g_inst.Count; i++)
-            { 
-                sbInst.Append(g_inst[i].Save());
-
-                if (i < g_inst.Count-1)
-                    sbInst.Append("\n");
-            }
-
-            lblPrev.CustomData = sbInst.ToString();
-        }
-
-
-        void SaveClips()
-        {
-            var clips = "";
-
-            for (int t = 0; t < g_tracks.Length; t++)
-            {
-                var track = g_tracks[t];
-
-                var strTrack = S(track.Clips.Count);
-
-                foreach (var i in track.Indices)
-                    strTrack += PS(i);
-
-                clips += N(strTrack);
-
-                foreach (var clip in track.Clips)
-                    clips += PN(clip.Save());
-            }
-
-            lblNext.CustomData = clips;
         }
 
 

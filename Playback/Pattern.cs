@@ -72,7 +72,7 @@ namespace IngameScript
                 var pat = new Pattern();
 
                 foreach (var chan in pat.Channels)
-                    chan.Instrument = g_inst[0];
+                    chan.Instrument = g_session.Instruments[0];
 
                 var nChans = int.Parse(data[i++]);
 

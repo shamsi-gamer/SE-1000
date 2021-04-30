@@ -28,12 +28,15 @@ namespace IngameScript
             public Note          Inter;
 
 
+            public bool[]        ChanOn = new bool[g_nChans];
+
+
             public long          StartTime, // in ticks
                                  PlayTime;
 
             public int           PlayPat; // this can't be a property because it must sometimes be separate from PlayTime, for queueing
 
-            public float         PlayStep { get { return OK(PlayTime) ? PlayTime / (float)g_ticksPerStep : fN; } }
+            public float         PlayStep { get { return OK(PlayTime) ? PlayTime / (float)Track.Session.TicksPerStep : fN; } }
 
 
             public int           CueNext;
@@ -113,6 +116,11 @@ namespace IngameScript
             public Channel       SelectedChannel    { get { return SelChan > -1 ? CurrentPattern.Channels[SelChan] : null; } }
             public Instrument    SelectedInstrument { get { return SelectedChannel?.Instrument ?? null; } }
             public Source        SelectedSource     { get { return CurSrc > -1 ? SelectedInstrument.Sources[CurSrc] : null; } }
+
+
+            public float         GetEditStep()       { return g_steps[EditStep  ]; }
+            public float         GetEditStepLength() { return g_steps[EditLength]; }
+            public int           GetEditLength()     { return (int)(GetEditStepLength() * g_session.TicksPerStep); }
 
 
             public Clip(Track track, string name = "Clip 1")
@@ -426,8 +434,8 @@ namespace IngameScript
                     {
                         WrapCurrentNotes(end - start);
 
-                        PlayTime  -= (end - start) * g_ticksPerStep;
-                        StartTime += (end - start) * g_ticksPerStep;
+                        PlayTime  -= (end - start) * g_session.TicksPerStep;
+                        StartTime += (end - start) * g_session.TicksPerStep;
                     }
                 }
 
@@ -514,10 +522,10 @@ namespace IngameScript
 
                 //    var arpNotes = chan.Notes.FindAll(n =>
                 //                n.Instrument.Arpeggio != null
-                //            && (int)(song.PlayStep * g_ticksPerStep) >= (int)((song.PlayPat * nSteps + n.StepTime               ) * g_ticksPerStep)
-                //            && (int)(song.PlayStep * g_ticksPerStep) <  (int)((song.PlayPat * nSteps + n.StepTime + n.StepLength) * g_ticksPerStep));
+                //            && (int)(song.PlayStep * g_session.TicksPerStep) >= (int)((song.PlayPat * nSteps + n.StepTime               ) * g_session.TicksPerStep)
+                //            && (int)(song.PlayStep * g_session.TicksPerStep) <  (int)((song.PlayPat * nSteps + n.StepTime + n.StepLength) * g_session.TicksPerStep));
 
-                //    var noteLen = (int)(EditLength * g_ticksPerStep);
+                //    var noteLen = (int)(EditLength * g_session.TicksPerStep);
 
                 //    foreach (var n in arpNotes)
                 //    {
@@ -526,8 +534,8 @@ namespace IngameScript
                 //        n.FramePlayTime += arp.Scale .UpdateValue(g_time, 0, song.StartTime, noteLen, n, -1);
                 //        var maxLength    = arp.Length.UpdateValue(g_time, 0, song.StartTime, noteLen, n, -1);
 
-                //        while (n.FramePlayTime >= maxLength * g_ticksPerStep)
-                //            n.FramePlayTime -= maxLength * g_ticksPerStep;
+                //        while (n.FramePlayTime >= maxLength * g_session.TicksPerStep)
+                //            n.FramePlayTime -= maxLength * g_session.TicksPerStep;
                 //    }
                 //}
 
@@ -548,7 +556,7 @@ namespace IngameScript
                     In     = true;
                     Follow = false;
 
-                    UpdateLight(lblFollow, false);
+                    //UpdateLabel(lblFollow, false);
                 }
                 else
                 {
@@ -559,7 +567,7 @@ namespace IngameScript
                         Out    = false;
                         Follow = false;
 
-                        UpdateLight(lblFollow, false);
+                        //UpdateLabel(lblFollow, false);
                     }
                 }
             }
@@ -576,7 +584,7 @@ namespace IngameScript
                     Out    = true;
                     Follow = false;
 
-                    UpdateLight(lblFollow, false);
+                    //UpdateLabel(lblFollow, false);
                 }
                 else
                 {
@@ -587,7 +595,7 @@ namespace IngameScript
                         In     = false;
                         Follow = false;
 
-                        UpdateLight(lblFollow, false);
+                        //UpdateLabel(lblFollow, false);
                     }
 
                     //g_blocks[b].Next = currentPattern + 1;
@@ -618,14 +626,14 @@ namespace IngameScript
             public void MovePatternOff()
             {
                 MovePat = false;
-                UpdateLight(lblMovePat, false);
+                //UpdateLabel(lblMovePat, false);
             }
 
 
             public void ToogleLoop()
             {
                 Loop = !Loop;
-                UpdateLight(lblLoop, Loop);
+                //UpdateLabel(lblLoop, Loop);
             }
 
 
@@ -635,9 +643,9 @@ namespace IngameScript
 
                 g_move = !g_move;
 
-                UpdateLight(lblMove, g_move ^ (CurSrc > -1), SelChan > -1 && !g_move);
-                UpdateLight(lblPrev, g_move || CurSrc > -1,  SelChan > -1);
-                UpdateLight(lblNext, g_move || CurSrc > -1,  SelChan > -1);
+                //UpdateLabel(lblMove, g_move ^ (CurSrc > -1), SelChan > -1 && !g_move);
+                //UpdateLabel(lblPrev, g_move || CurSrc > -1,  SelChan > -1);
+                //UpdateLabel(lblNext, g_move || CurSrc > -1,  SelChan > -1);
             }
 
 
@@ -645,9 +653,9 @@ namespace IngameScript
             {
                 MovePat = !MovePat;
 
-                UpdateLight(lblPrevPat, MovePat);
-                UpdateLight(lblNextPat, MovePat);
-                UpdateLight(lblMovePat, MovePat);
+                //(lblPrevPat, MovePat);
+                //UpdateLabel(lblNextPat, MovePat);
+                //UpdateLabel(lblMovePat, MovePat);
 
                 if (MovePat)
                     DisableBlock();
@@ -657,26 +665,26 @@ namespace IngameScript
             public void ToggleBlock()
             {
                 Block = !Block;
-                UpdateLight(lblBlock, Block);
+                //UpdateLabel(lblBlock, Block);
             }
 
 
             public void ToggleAllPatterns()
             {
                 AllPats = !AllPats;
-                UpdateLight(lblAllPatterns, AllPats);
+                //UpdateLabel(lblAllPatterns, AllPats);
             }
 
 
             public void ToggleFollow()
             {
                 Follow = !Follow;
-                UpdateLight(lblFollow, Follow);
+                //UpdateLabel(lblFollow, Follow);
 
                 if (Follow)
                 {
                     AutoCue = false;
-                    UpdateLight(lblAutoCue, false);
+                    //UpdateLabel(lblAutoCue, false);
                 }
             }
 
@@ -684,14 +692,14 @@ namespace IngameScript
             public void ToggleAutoCue()
             {
                 AutoCue = !AutoCue;
-                UpdateLight(lblAutoCue, AutoCue);
+                //UpdateLabel(lblAutoCue, AutoCue);
 
                 if (AutoCue)
                 {
                     Cue();
 
                     Follow = false;
-                    UpdateLight(lblFollow, false);
+                    //UpdateLabel(lblFollow, false);
                 }
             }
 
@@ -733,7 +741,7 @@ namespace IngameScript
 
                 EditNotes.Clear();
 
-                UpdateHoldLight();
+                //UpdateHoldLabel();
             }
 
 
@@ -747,22 +755,6 @@ namespace IngameScript
 
                 var cp = (int)(EditPos / g_nSteps);
                 if (cp != CurPat) SetCurrentPattern(cp);
-            }
-        }
-
-
-        void ClearClips()
-        {
-            g_sm    .StopAll();
-
-            g_notes .Clear();
-            g_sounds.Clear();
-
-            foreach (var track in g_tracks)
-            {
-                track.Clips  .Clear();
-                track.Indices.Clear();
-                track.CurIndex = -1;
             }
         }
     }

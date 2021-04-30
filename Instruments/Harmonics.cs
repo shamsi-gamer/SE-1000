@@ -172,7 +172,7 @@ namespace IngameScript
                     if (i == 0) snd0 = snd;
 
                     var lTime = g_time - sndTime;
-                    var sTime = OK(g_clip.PlayTime) ? g_time - g_clip.StartTime : lTime;
+                    var sTime = OK(g_session.CurClip.PlayTime) ? g_time - g_session.CurClip.StartTime : lTime;
 
                     if (!prog.TooComplex)
                     { 
@@ -222,12 +222,12 @@ namespace IngameScript
                 if (CurTone > -1)
                 {
                     var tone = Tones[CurTone];
-                    tone.SetValue(tone.AdjustValue(tone.Value, delta, g_clip.Shift), null, -1);
+                    tone.SetValue(tone.AdjustValue(tone.Value, delta, g_session.CurClip.Shift), null, -1);
                 }
                 else
                 {
                     foreach (var tone in Tones)
-                        tone.SetValue(tone.AdjustValue(tone.Value, delta, g_clip.Shift, true), null, -1);
+                        tone.SetValue(tone.AdjustValue(tone.Value, delta, g_session.CurClip.Shift, true), null, -1);
                 }
             }
 
@@ -306,7 +306,7 @@ namespace IngameScript
 
                 for (int i = 0; i < Tones.Length; i++)
                 { 
-                    if (Tones[i].HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) 
+                    if (Tones[i].HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) 
                         Tones[i].DrawLabels(sprites, x, y, dp); 
                 }
 
@@ -331,7 +331,7 @@ namespace IngameScript
                 var wc  = wt / Tones.Length;
 
                 var dp = new DrawParams(false, prog);
-                g_clip.SelectedSource.DrawLabels(sprites, x + 5, y + 10, dp);
+                g_session.CurClip.SelectedSource.DrawLabels(sprites, x + 5, y + 10, dp);
 
                 DrawSample(sprites, x + 100, y + 150, 100, 60);
 

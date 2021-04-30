@@ -203,10 +203,10 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Count.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Count.DrawLabels(sprites, x, y, dp);
-                if (Time .HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Time .DrawLabels(sprites, x, y, dp);
-                if (Level.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Level.DrawLabels(sprites, x, y, dp);
-                if (Power.HasDeepParams(g_clip.CurrentChannel, g_clip.CurSrc)) Power.DrawLabels(sprites, x, y, dp);
+                if (Count.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Count.DrawLabels(sprites, x, y, dp);
+                if (Time .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Time .DrawLabels(sprites, x, y, dp);
+                if (Level.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Level.DrawLabels(sprites, x, y, dp);
+                if (Power.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Power.DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }
@@ -237,7 +237,7 @@ namespace IngameScript
                 var dx = 0f;
 
 
-                var tpSet = new TimeParams(g_time, 0, 0, null, EditLength, g_clip.CurSrc, _triggerDummy, _dp.Program);
+                var tpSet = new TimeParams(g_time, 0, 0, null, g_session.CurClip.EditLength, g_session.CurClip.CurSrc, _triggerDummy, _dp.Program);
 
                 for (int i = 0; i < (int)dc && dx < w - dt; i++)
                 {
@@ -302,7 +302,7 @@ namespace IngameScript
                     var px  = x0 + MinMax(90, dt*(dc-1)/2, w0);
                     var dim = dc > 1 && Math.Abs(px - lx) > 20 ? color6 : color3;
 
-                    var tp  = new TimeParams(0, 0, 0, null, EditLength, g_clip.CurSrc, _triggerDummy, _dp.Program);
+                    var tp  = new TimeParams(0, 0, 0, null, g_session.CurClip.EditLength, g_session.CurClip.CurSrc, _triggerDummy, _dp.Program);
                     var vol = GetVolume(Math.Max(0, (int)dc / 2 - 1), tp);
 
                     DrawString(

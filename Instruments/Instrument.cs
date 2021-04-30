@@ -182,10 +182,10 @@ namespace IngameScript
 
                     + Volume.Save()
 
-                    + Program.Save(Tune)
-                    + Program.Save(Filter)
-                    + Program.Save(Delay)
-                    + Program.Save(Arpeggio));
+                    + Program.SaveSetting(Tune)
+                    + Program.SaveSetting(Filter)
+                    + Program.SaveSetting(Delay)
+                    + Program.SaveSetting(Arpeggio));
 
                 for (int i = 0; i < Sources.Count; i++)
                     inst += N(Sources[i].Save());
@@ -241,9 +241,9 @@ namespace IngameScript
 
             public void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                if (g_clip.CurSet > -1)
+                if (g_session.CurClip.CurSet > -1)
                 { 
-                    var setting = g_settings[g_clip.CurSet];
+                    var setting = g_settings[g_session.CurClip.CurSet];
                     setting.DrawFuncButtons(sprites, w, h, chan);
                 }
                 else

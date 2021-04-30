@@ -9,50 +9,50 @@ namespace IngameScript
     {
         void Play()
         {
-            if (OK(g_clip.PlayTime))
+            if (OK(g_session.CurClip.PlayTime))
                 return;
 
-            if (g_clip.CueNext > -1)
+            if (g_session.CurClip.CueNext > -1)
             {
-                g_clip.PlayTime = GetPatTime(g_clip.CueNext);
-                g_clip.CueNext = -1;
+                g_session.CurClip.PlayTime = GetPatTime(g_session.CurClip.CueNext);
+                g_session.CurClip.CueNext = -1;
             }
             else
-                g_clip.PlayTime = GetPatTime(g_clip.CurPat);
+                g_session.CurClip.PlayTime = GetPatTime(g_session.CurClip.CurPat);
 
-            g_clip.StartTime = g_time - g_clip.PlayTime;
+            g_session.CurClip.StartTime = g_time - g_session.CurClip.PlayTime;
 
-            UpdatePlayStopLights();
+            //UpdatePlayStopLabels();
         }
 
 
-        void Stop()
+        static void Stop()
         {
-            if (g_clip.PlayTime < 0)
+            if (g_session.CurClip.PlayTime < 0)
             {
-                var b = g_clip.GetBlock(g_clip.CurPat);
+                var b = g_session.CurClip.GetBlock(g_session.CurClip.CurPat);
 
                 var _block =
-                       g_clip.Block
+                       g_session.CurClip.Block
                     && b != null
-                    && g_clip.CurPat > b.First;
+                    && g_session.CurClip.CurPat > b.First;
 
-                g_clip.SetCurrentPattern(_block ? b.First : 0);
+                g_session.CurClip.SetCurrentPattern(_block ? b.First : 0);
 
-                g_clip.CueNext = -1;
+                g_session.CurClip.CueNext = -1;
             }
 
 
-            g_clip.TrimCurrentNotes();
+            g_session.CurClip.TrimCurrentNotes();
 
 
-            g_clip.PlayTime  = long_NaN;
-            g_clip.StartTime = long_NaN;
+            g_session.CurClip.PlayTime  = long_NaN;
+            g_session.CurClip.StartTime = long_NaN;
 
 
             lastNotes.Clear();
 
-            UpdatePlayStopLights();
+            //UpdatePlayStopLabels();
         }
     }
 }

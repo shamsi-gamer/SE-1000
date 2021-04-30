@@ -8,9 +8,9 @@ namespace IngameScript
     {
         public partial class Clip
         {
-            public static Clip Load(string[] lines, ref int line, out string curPath)
+            public static Clip Load(string[] lines, ref int line)//, out string curPath)
             { 
-                curPath     = "";
+                //curPath     = "";
 
                 if (lines.Length < 3)
                     return null;
@@ -20,7 +20,7 @@ namespace IngameScript
                 clip.Name = lines[line++].Replace("\u0085", "\n");
 
                 var cfg = lines[line++].Split(';');
-                if (!clip.LoadConfig  (cfg, out curPath)) return null;
+                if (!clip.LoadConfig  (cfg)) return null;//, out curPath)) return null;
                 if (!clip.LoadChords  (lines[line++]))    return null;
                 if (!clip.LoadMems    (lines[line++]))    return null;
                 if (!clip.LoadPatterns(lines, ref line))  return null;
@@ -79,9 +79,9 @@ namespace IngameScript
             }
 
 
-            bool LoadConfig(string[] cfg, out string curPath)
+            bool LoadConfig(string[] cfg)//, out string curPath)
             {
-                curPath = "";
+                //curPath = "";
 
                 int c = 0;
 
@@ -97,7 +97,7 @@ namespace IngameScript
                 if (!int  .TryParse(cfg[c++], out SelChan    )) return false;
                 if (!int  .TryParse(cfg[c++], out CurSrc     )) return false;
                                                              
-                curPath = cfg[c++];                              
+                //curPath = cfg[c++];                              
                                                              
                 if (!int  .TryParse(cfg[c++], out EditStep   )) return false;
                 if (!int  .TryParse(cfg[c++], out EditLength )) return false;

@@ -41,7 +41,7 @@ namespace IngameScript
             FillRect(sprites, x, Volume.Y, w, Volume.Height, color0);
 
             var xc = x + bb/2;
-            DrawSoundLevel(sprites, xc, y - i * Volume.Height, bw, h - 295, g_clip.Volume, vol, null, 6.5f);
+            DrawSoundLevel(sprites, xc, y - i * Volume.Height, bw, h - 295, g_session.CurClip.Volume, vol, null, 6.5f);
 
             dsp.Draw(sprites);
         }
@@ -108,8 +108,8 @@ namespace IngameScript
 
 
             var brightCol = 
-                      g_clip.SelChan > -1 
-                   && LastSetting == g_clip.SelectedInstrument.Volume 
+                      g_session.CurClip.SelChan > -1 
+                   && LastSetting == g_session.CurClip.SelectedInstrument.Volume 
                 || scale != 1 
                 ? color6 
                 : color4;

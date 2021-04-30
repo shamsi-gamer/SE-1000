@@ -22,31 +22,31 @@ namespace IngameScript
 
         void SetFunc(int func)
         {
-            if (g_clip.SelChan > -1)
+            if (g_session.CurClip.SelChan > -1)
             {
-                if (g_clip.CurSet > -1)
+                if (g_session.CurClip.CurSet > -1)
                 {
                     CurSetting.Func(func);
                 }
                 else 
                 {
-                    if (g_clip.CurSrc < 0) SetInstFunc(g_clip.SelectedInstrument, func);
-                    else                   SetSrcFunc (g_clip.SelectedSource,     func);
+                    if (g_session.CurClip.CurSrc < 0) SetInstFunc(g_session.CurClip.SelectedInstrument, func);
+                    else                   SetSrcFunc (g_session.CurClip.SelectedSource,     func);
                 }
             }
             else
             {
                 switch (func)
                 {
-                case 2: ToggleNote(g_clip); break;
-                case 3: CutNotes(g_clip);   break;
+                case 2: ToggleNote(g_session.CurClip); break;
+                case 3: CutNotes(g_session.CurClip);   break;
                 }
             }
 
             g_mainPressed.Add(func);
 
-            UpdateEnterLight();
-            UpdateAdjustLights(g_clip);
+            //UpdateEnterLabel();
+            //UpdateAdjustLabels(g_session.CurClip);
         }
 
 
@@ -60,14 +60,14 @@ namespace IngameScript
         {
             BackOut();
 
-            g_clip.CurSrc = iSrc;
+            g_session.CurClip.CurSrc = iSrc;
 
-            g_clip.CurChan =
-            g_clip.SelChan = Array.FindIndex(
-                g_clip.CurrentPattern.Channels, 
+            g_session.CurClip.CurChan =
+            g_session.CurClip.SelChan = Array.FindIndex(
+                g_session.CurClip.CurrentPattern.Channels, 
                 ch => ch.Instrument == inst);
 
-            UpdateInstOff(g_clip.SelChan);
+            UpdateInstOff(g_session.CurClip.SelChan);
 
             UpdateInstName(true);
             g_inputValid = false;
@@ -93,21 +93,21 @@ namespace IngameScript
 
         static void AddNextSetting(string tag, Instrument inst = null, int iSrc = -2)
         {
-            if (inst == null) inst = g_clip.SelectedInstrument;
-            if (iSrc == -2)   iSrc = g_clip.CurSrc;
+            if (inst == null) inst = g_session.CurClip.SelectedInstrument;
+            if (iSrc == -2)   iSrc = g_session.CurClip.CurSrc;
 
-            if (g_clip.CurSet > -1)
+            if (g_session.CurClip.CurSet > -1)
                 CurSetting._IsCurrent = false;
 
             Setting setting;
 
-                 if (g_clip.CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
+                 if (g_session.CurClip.CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
             else if (iSrc          > -1) setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
             else                         setting = inst.GetOrAddSettingFromTag(tag);
 
             g_settings.Add(setting);
 
-            g_clip.CurSet++;
+            g_session.CurClip.CurSet++;
 
             if (IsCurParam())
                 CurSetting._IsCurrent = true;
@@ -116,7 +116,7 @@ namespace IngameScript
 
         static void RemoveSetting(Setting setting)
         {
-            int set = g_clip.CurSet;
+            int set = g_session.CurClip.CurSet;
 
             if (   HasTag(setting, strAtt)
                 || HasTag(setting, strDec)
@@ -124,12 +124,12 @@ namespace IngameScript
                 || HasTag(setting, strRel))
                 set--;
 
-            if (g_clip.CurSet > 0)
-                g_settings[g_clip.CurSet -1].Remove(setting);
+            if (g_session.CurClip.CurSet > 0)
+                g_settings[g_session.CurClip.CurSet -1].Remove(setting);
             else 
             {
-                var inst = g_clip.SelectedInstrument;
-                var src  = g_clip.SelectedSource;
+                var inst = g_session.CurClip.SelectedInstrument;
+                var src  = g_session.CurClip.SelectedSource;
 
                 switch (setting.Tag)
                 {
@@ -144,7 +144,7 @@ namespace IngameScript
 
             g_settings.RemoveAt(set);
 
-            g_clip.CurSet -= g_clip.CurSet - set + 1;
+            g_session.CurClip.CurSet -= g_session.CurClip.CurSet - set + 1;
         }
 
 
@@ -155,9 +155,9 @@ namespace IngameScript
             case 1: AddNextSetting(strVol, inst, -1); break;
             case 2: 
                 AddNextSetting(strTune, inst, -1);
-                UpdateKeyLights();
-                UpdateChordLights();
-                UpdateShuffleLight();
+                //UpdateKeyLabels();
+                //UpdateChordLabels();
+                //UpdateShuffleLabel();
                 break;
 
             case 3: AddNextSetting(strFlt, inst, -1); break;
@@ -175,9 +175,9 @@ namespace IngameScript
             case 1: AddNextSetting(strVol, src.Instrument, src.Index); break;
             case 2: 
                 AddNextSetting(strTune, src.Instrument, src.Index);
-                UpdateKeyLights();
-                UpdateChordLights();
-                UpdateShuffleLight();
+                //UpdateKeyLabels();
+                //UpdateChordLabels();
+                //UpdateShuffleLabel();
                 break;
 
             case 3: AddNextSetting(strHrm, src.Instrument, src.Index);  break;

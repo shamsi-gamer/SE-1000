@@ -21,30 +21,30 @@ namespace IngameScript
             var sprites = new List<MySprite>();
 
 
-            if (   g_clip.SelChan > -1
+            if (   g_session.CurClip.SelChan > -1
                 && IsCurParam()
-                && (   g_clip.ParamKeys
-                    || g_clip.ParamAuto))
+                && (   g_session.CurClip.ParamKeys
+                    || g_session.CurClip.ParamAuto))
             {
-                if (g_clip.Piano)  DrawPianoDisplay  (sprites, x, y, w, h, g_clip, g_clip.CurPat, true, null);
-                else          DrawPatternDisplay(sprites, x, y, w, h, g_clip, g_clip.CurPat, true);
+                if (g_session.CurClip.Piano)  DrawPianoDisplay  (sprites, x, y, w, h, g_session.CurClip, g_session.CurClip.CurPat, true, null);
+                else          DrawPatternDisplay(sprites, x, y, w, h, g_session.CurClip, g_session.CurClip.CurPat, true);
             }
-            else if (g_clip.SelChan > -1)
+            else if (g_session.CurClip.SelChan > -1)
             {
                 if (IsCurSetting(typeof(Harmonics)))
                 {
                               var hrm = CurOrParentHarmonics;
-                              hrm.DrawSetting(sprites, x, y, w, h, g_clip, g_clip.CurrentChannel, this);
+                              hrm.DrawSetting(sprites, x, y, w, h, g_session.CurClip, g_session.CurClip.CurrentChannel, this);
                 }
                 else if (IsCurOrParentSetting(typeof(Arpeggio)))
                 {
                               var arp = CurOrParentArpeggio;
-                              DrawPianoDisplay  (sprites, x, y, w, h, arp.Clip, g_clip.CurPat, true, arp);
+                              DrawPianoDisplay  (sprites, x, y, w, h, arp.Clip, g_session.CurClip.CurPat, true, arp);
                 }
                 else          DrawInstrument    (sprites, x, y, w, h);
             }
-            else if (g_clip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, g_clip, g_clip.CurPat, true, null);
-            else              DrawPatternDisplay(sprites, x, y, w, h, g_clip, g_clip.CurPat, true);
+            else if (g_session.CurClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, g_session.CurClip, g_session.CurClip.CurPat, true, null);
+            else              DrawPatternDisplay(sprites, x, y, w, h, g_session.CurClip, g_session.CurClip.CurPat, true);
 
             dsp.Draw(sprites);
         }
@@ -55,10 +55,10 @@ namespace IngameScript
             var bw =  w/6;
             var x0 = bw/2;
 
-            if (g_clip.SelChan > -1)
+            if (g_session.CurClip.SelChan > -1)
             {
-                if (g_clip.CurSrc < 0) g_clip.SelectedInstrument.DrawFuncButtons(sprites, w, y, g_clip.SelectedChannel);
-                else                   g_clip.SelectedSource    .DrawFuncButtons(sprites, w, y, g_clip.SelectedChannel);
+                if (g_session.CurClip.CurSrc < 0) g_session.CurClip.SelectedInstrument.DrawFuncButtons(sprites, w, y, g_session.CurClip.SelectedChannel);
+                else                   g_session.CurClip.SelectedSource    .DrawFuncButtons(sprites, w, y, g_session.CurClip.SelectedChannel);
             }
             else
             {

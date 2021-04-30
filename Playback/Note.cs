@@ -23,10 +23,10 @@ namespace IngameScript
             //public Clip        Clip        { get { return Channel.Pattern.Clip; } }
             public float       SongStep    { get { return PatIndex * g_nSteps + PatStep; } }
 
-            public long        PatTime     { get { return (long)(PatStep * g_ticksPerStep); } }
+            public long        PatTime     { get { return (long)(PatStep * g_session.TicksPerStep); } }
             public long        SongTime    { get { return GetPatTime(PatIndex) + PatTime; } }
 
-            public int         FrameLength { get { return (int)(StepLength * g_ticksPerStep); } }
+            public int         FrameLength { get { return (int)(StepLength * g_session.TicksPerStep); } }
 
             public List<Sound> Sounds;
 
@@ -101,8 +101,8 @@ namespace IngameScript
             {
                 get
                 {
-                         if (PatStep % 2 == 1   ) return (float)Channel.Shuffle / g_ticksPerStep;
-                    else if (PatStep % 2 == 1.5f) return (float)Channel.Shuffle / g_ticksPerStep;
+                         if (PatStep % 2 == 1   ) return (float)Channel.Shuffle / g_session.TicksPerStep;
+                    else if (PatStep % 2 == 1.5f) return (float)Channel.Shuffle / g_session.TicksPerStep;
                     else                          return 0;
                 }
             }
@@ -113,7 +113,7 @@ namespace IngameScript
                 PatStep += dStep;
 
                 //foreach (var snd in Sounds)
-                //    snd.Time += (int)(dStep * g_ticksPerStep);
+                //    snd.Time += (int)(dStep * g_session.TicksPerStep);
             }
 
 
@@ -122,7 +122,7 @@ namespace IngameScript
                 StepLength = len;
 
                 foreach (var snd in Sounds)
-                    snd.Length = (int)(StepLength * g_ticksPerStep);
+                    snd.Length = (int)(StepLength * g_session.TicksPerStep);
             }
 
 

@@ -7,19 +7,19 @@ namespace IngameScript
     {
         void InitPlaybackAfterLoad(long playTime)
         {
-            g_clip.SetCurrentPattern(g_clip.CurPat);
+            g_session.CurClip.SetCurrentPattern(g_session.CurClip.CurPat);
 
-            g_clip.PlayTime = playTime % (g_clip.Patterns.Count * g_nSteps * g_ticksPerStep);
+            g_session.CurClip.PlayTime = playTime % (g_session.CurClip.Patterns.Count * g_nSteps * g_session.TicksPerStep);
 
-            g_clip.StartTime =
-                OK(g_clip.PlayTime)
-                ? g_time - g_clip.PlayTime        
+            g_session.CurClip.StartTime =
+                OK(g_session.CurClip.PlayTime)
+                ? g_time - g_session.CurClip.PlayTime        
                 : long_NaN;
 
-            if (g_clip.AutoCue)
-                g_clip.SetCue();
+            if (g_session.CurClip.AutoCue)
+                g_session.CurClip.SetCue();
 
-            g_clip.CueNextPattern();
+            g_session.CurClip.CueNextPattern();
         }
 
 
@@ -27,7 +27,7 @@ namespace IngameScript
         {
             UpdateTime();
 
-            StopNotes(g_clip?.PlayStep ?? 0);
+            StopNotes(g_session.CurClip?.PlayStep ?? 0);
             DeleteSounds(StopSounds());
 
             UpdateSounds();
@@ -39,7 +39,7 @@ namespace IngameScript
 
         void UpdateTime()
         {
-            foreach (var track in g_tracks)
+            foreach (var track in g_session.Tracks)
             {
                 foreach (var clip in track.Clips)
                 {
@@ -48,7 +48,7 @@ namespace IngameScript
 
                     clip.CueNextPattern();
             
-                    if (   clip == g_clip
+                    if (   clip == g_session.CurClip
                         && clip.Follow) 
                         clip.SetCurrentPattern(clip.PlayPat);
 
@@ -56,7 +56,7 @@ namespace IngameScript
                 }
             }
 
-            UpdateOctaveLight();
+            //UpdateOctaveLabel();
         }
 
 
@@ -78,7 +78,7 @@ namespace IngameScript
                         g_dspVol[snd.iChan],
                           instVol
                         * snd.Channel.Volume
-                        * g_clip.Volume);
+                        * g_session.CurClip.Volume);
                 }
             }
         }
@@ -86,7 +86,7 @@ namespace IngameScript
 
         void ResetValues()
         {
-            foreach (var inst in g_inst)
+            foreach (var inst in g_session.Instruments)
                 inst.ResetValues();
         }
 
