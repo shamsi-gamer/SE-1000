@@ -139,7 +139,7 @@ namespace IngameScript
             var chan = clip.CurrentPattern.Channels[ch];
 
             var patStep = 
-                 (OK(clip.PlayTime) ? (clip.PlayPat - clip.CurPat) * g_nSteps + (clip.PlayStep % g_nSteps) : 0) 
+                 (g_playing ? (clip.PlayPat - clip.CurPat) * g_nSteps + (clip.PlayStep % g_nSteps) : 0) 
                 + chordSpread;
 
             var found = g_notes.Find(n =>
@@ -268,7 +268,7 @@ namespace IngameScript
 
         //void StopNote(Clip clip, Note note)
         //{
-        //    var step = OK(PlayTime) ? PlayStep : TimeStep;
+        //    var step = g_playing ? PlayStep : TimeStep;
         //    //note.UpdateStepLength(step - note.PatStep, g_session.TicksPerStep);
         //}
 

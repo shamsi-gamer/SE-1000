@@ -10,7 +10,8 @@ namespace IngameScript
 {
     partial class Program
     {
-        //static Label              lblOctave, lblShuffle,
+        static Label                lblPlay, lblStop;
+        //                          lblOctave, lblShuffle,
         //                          lblMixerVolumeUp, lblMixerVolumeDown, lblMixerAll, lblMixerMuteAll,
         //                          lblPlay, lblStop,
         //                          lblStep, lblHold, 
@@ -55,6 +56,8 @@ namespace IngameScript
         static List<IMyTextPanel> g_lightsPressed = new List<IMyTextPanel>();
         static List<IMyTextPanel>  _lightsPressed = new List<IMyTextPanel>();
 
+        static List<Label>        g_fastLabels    = new List<Label>();
+        static List<Label>        g_slowLabels    = new List<Label>();
 
 
         void SetLabelColor(int iCol)
@@ -82,6 +85,9 @@ namespace IngameScript
 
         void InitLabels()
         {
+            lblPlay = new Label(Lbl("Play"), () => g_playing, () => g_playing);
+            lblStop = new Label(Lbl("Stop"), () => g_playing, () => g_playing);
+
             //lblOctave          = Lbl("Octave");
             //lblShuffle         = Lbl("Shuffle");
             //lblMixerVolumeUp   = Lbl("M Up R");
@@ -172,7 +178,7 @@ namespace IngameScript
             //lblMem = lblMem.OrderBy(l => int.Parse(l.CustomName.Substring(10))).ToList();
 
 
-            frontLight   = Get("Front Light") as IMyReflectorLight;
+            frontLight = Get("Front Light") as IMyReflectorLight;
             warningLight = Get("Saturation Warning Light") as IMyInteriorLight;
         }
 
@@ -451,8 +457,8 @@ namespace IngameScript
 
         //void UpdatePlayStopLabels()
         //{
-        //    UpdateLabel(lblPlay, OK(g_session.CurClip.PlayTime));
-        //    UpdateLabel(lblStop, OK(g_session.CurClip.PlayTime));
+        //    UpdateLabel(lblPlay, g_playing);
+        //    UpdateLabel(lblStop, g_playing);
         //}
 
 

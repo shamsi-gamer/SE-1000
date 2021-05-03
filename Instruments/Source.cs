@@ -124,12 +124,12 @@ namespace IngameScript
 
 
                 var sndTime = 
-                    OK(g_session.CurClip.PlayTime)
+                    g_playing
                     ? g_session.CurClip.StartTime + note.SongTime + 1
                     : g_time + 1;
 
                 var lTime = g_time - g_session.CurClip.StartTime - note.SongTime;
-                var sTime = OK(g_session.CurClip.PlayTime) ? g_time - g_session.CurClip.StartTime : lTime;
+                var sTime = g_playing ? g_time - g_session.CurClip.StartTime : lTime;
 
                 var tp = new TimeParams(sndTime, lTime, sTime, note, note.FrameLength, Index, triggerValues, prog);
 

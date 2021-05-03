@@ -29,7 +29,7 @@ namespace IngameScript
 
             FillRect(sprites, x, y, w, h, color0);
 
-            if (OK(g_session.CurClip.PlayTime))
+            if (g_playing)
             {
                 var sec = (int)(g_session.CurClip.PlayStep * g_session.TicksPerStep / FPS);
                 var min = sec / 60;

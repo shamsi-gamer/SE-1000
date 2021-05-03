@@ -36,7 +36,7 @@ namespace IngameScript
 
             public int           PlayPat; // this can't be a property because it must sometimes be separate from PlayTime, for queueing
 
-            public float         PlayStep { get { return OK(PlayTime) ? PlayTime / (float)Track.Session.TicksPerStep : fN; } }
+            public float         PlayStep { get { return g_playing ? PlayTime / (float)Track.Session.TicksPerStep : fN; } }
 
 
             public int           CueNext;
@@ -441,7 +441,7 @@ namespace IngameScript
 
 
                 PlayPat =
-                    OK(PlayTime)
+                    g_playing
                     ? (int)(PlayStep / g_nSteps)
                     : -1;
             }
@@ -483,14 +483,14 @@ namespace IngameScript
 
             public void TrimCurrentNotes(int ch = -1)
             {
-                var timeStep = OK(PlayTime) ? PlayStep : TimeStep;
+                var timeStep = g_playing ? PlayStep : TimeStep;
 
                 foreach (var note in g_notes)
                 {
                     if (   ch < 0
                         || note.iChan == ch)
                     { 
-                        var noteStep = OK(PlayTime) ? note.SongStep : note.PatStep;
+                        var noteStep = g_playing ? note.SongStep : note.PatStep;
                         note.UpdateStepLength(timeStep - noteStep);
                     }
                 }
@@ -499,11 +499,11 @@ namespace IngameScript
 
             public void WrapCurrentNotes(int nWrapSteps)
             {
-                var timeStep = OK(PlayTime) ? PlayStep : TimeStep;
+                var timeStep = g_playing ? PlayStep : TimeStep;
 
                 foreach (var note in g_notes)
                 {
-                    var noteStep = OK(PlayTime) ? note.SongStep : note.PatStep;
+                    var noteStep = g_playing ? note.SongStep : note.PatStep;
 
                     if (   timeStep >= noteStep
                         && timeStep <  noteStep + note.StepLength)
@@ -540,7 +540,7 @@ namespace IngameScript
                 //}
 
 
-                if (OK(PlayTime))
+                if (g_playing)
                     PlayTime++;
             }
 

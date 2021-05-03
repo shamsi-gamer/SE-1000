@@ -92,8 +92,6 @@ namespace IngameScript
 
             InitDisplays();
             InitLabels();
-            
-            
             InitFuncButtons(); 
 
 

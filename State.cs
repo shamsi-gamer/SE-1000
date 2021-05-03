@@ -9,9 +9,10 @@ namespace IngameScript
         static float[]  g_steps = { 0.25f, 0.5f, 1, 2, 4, 8, 16, float_Inf };
 
 
-        static long     g_time = -1; // in ticks
+        static long     g_time            = -1; // in ticks
         static float    TimeStep { get { return (float)g_time / g_session.TicksPerStep; } }
 
+        static bool     g_playing         = false;
 
         static bool     g_started         = false,
                         g_init            = false;

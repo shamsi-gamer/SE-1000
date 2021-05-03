@@ -18,7 +18,6 @@ namespace IngameScript
             }
 
             if (!g_init) return;
-
             FinishStartup();
 
             _triggerDummy.Clear();
@@ -47,10 +46,16 @@ namespace IngameScript
         {
             CurSetting?.AdjustFromController(g_session.CurClip, this);
 
-            if (!TooComplex) 
+            if (!TooComplex)
                 UpdatePlayback();
 
-            //if (OK(g_session.CurClip.PlayTime)) 
+            if (!TooComplex)
+            { 
+                foreach (var lbl in g_fastLabels)
+                    lbl.Update();
+            }
+
+            //if (g_playing) 
             //    UpdateKeyLabels();
         }
 
@@ -76,17 +81,20 @@ namespace IngameScript
             {
                 DrawDisplays();
                 DampenDisplayVolumes();
+
+                if (!TooComplex)
+                { 
+                    foreach (var lbl in g_slowLabels)
+                        lbl.Update();
+                }
             }
 
 
             ResetRuntimeInfo();
 
 
-            g_dspCount = g_instCount;
+            g_dspCount  = g_instCount;
             g_instCount = 0;
-
-
-
 
 
             warningLight.Enabled = g_sm.UsedRatio > 0.9f;

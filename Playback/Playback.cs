@@ -12,7 +12,7 @@ namespace IngameScript
             g_session.CurClip.PlayTime = playTime % (g_session.CurClip.Patterns.Count * g_nSteps * g_session.TicksPerStep);
 
             g_session.CurClip.StartTime =
-                OK(g_session.CurClip.PlayTime)
+                g_playing
                 ? g_time - g_session.CurClip.PlayTime        
                 : long_NaN;
 
@@ -43,7 +43,7 @@ namespace IngameScript
             {
                 foreach (var clip in track.Clips)
                 {
-                    if (!OK(clip.PlayTime))
+                    if (!g_playing)
                         return;
 
                     clip.CueNextPattern();

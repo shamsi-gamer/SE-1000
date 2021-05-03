@@ -14,17 +14,20 @@ namespace IngameScript
             public CondFunc     BrightCondition,
                                 DimCondition;
 
-            public bool         NeedsUpdate;
+          //public bool         NeedsUpdate;
 
 
-            public Label(IMyTextPanel panel, CondFunc condBright, CondFunc condDim)
+            public Label(IMyTextPanel panel, CondFunc condBright, CondFunc condDim, bool fast = false)
             {
                 Panel           = panel;
 
                 BrightCondition = condBright;
                 DimCondition    = condDim;
 
-                NeedsUpdate     = true;
+              //NeedsUpdate     = true;
+
+                if (fast) g_fastLabels.Add(this);
+                else      g_slowLabels.Add(this);
             }
 
 

@@ -69,7 +69,7 @@ namespace IngameScript
 
 
             // draw position line/s
-            if (   OK(g_session.CurClip.PlayTime)
+            if (   g_playing
                 && g_session.CurClip.PlayPat == pat)
             {
                 if (IsCurOrParentSetting(typeof(Arpeggio)))
