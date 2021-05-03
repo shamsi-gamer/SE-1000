@@ -76,12 +76,12 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Clip song, Program prog)
+            public override void AdjustFromController(Clip clip, Program prog)
             {
-                if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(song, Sharpness, -g_remote.MoveIndicator    .Z/ControlSensitivity);
+                if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(clip, Sharpness, -g_remote.MoveIndicator    .Z/ControlSensitivity);
 
-                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(song, Cutoff,     g_remote.RotationIndicator.Y/ControlSensitivity);
-                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(song, Resonance, -g_remote.RotationIndicator.X/ControlSensitivity);
+                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(clip, Cutoff,     g_remote.RotationIndicator.Y/ControlSensitivity);
+                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(clip, Resonance, -g_remote.RotationIndicator.X/ControlSensitivity);
             }
 
 
@@ -98,13 +98,13 @@ namespace IngameScript
             }
 
 
-            public void Delete(Clip song, int iSrc)
+            public void Delete(Clip clip, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
-                Cutoff   ?.Delete(song, iSrc);
-                Resonance?.Delete(song, iSrc);
-                Sharpness?.Delete(song, iSrc);
+                Cutoff   ?.Delete(clip, iSrc);
+                Resonance?.Delete(clip, iSrc);
+                Sharpness?.Delete(clip, iSrc);
             }
 
 

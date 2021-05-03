@@ -26,6 +26,13 @@ namespace IngameScript
             }
 
 
+            public void Add(Clip clip, int index)
+            {
+                Clips  .Add(clip);
+                Indices.Add(index);
+            }
+
+
             public string Save()
             {
                 var save = S(Clips.Count);

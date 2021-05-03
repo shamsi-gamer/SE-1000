@@ -22,12 +22,12 @@ namespace IngameScript
             public List<Key>  AutoKeys;
 
 
-            public Channel(Pattern pat = null)
+            public Channel(Pattern pat, Instrument inst)
             {
                 Pattern    = pat;
 
                 On         = true;
-                Instrument = null;
+                Instrument = inst;
                 Volume     = 1;
                 Shuffle    = 0;
                 Transpose  = 0;
@@ -160,13 +160,13 @@ namespace IngameScript
 
             public static Channel Load(string[] data, ref int i, out int index, Pattern pat)
             {
-                var chan = new Channel(pat);
-                
                 index           = int.Parse(data[i++]);
 
                 var instName    = data[i++];
-                chan.Instrument = g_session.Instruments.Find(inst => inst.Name == instName);
+                var inst        = g_session.Instruments.Find(_inst => _inst.Name == instName);
 
+                var chan = new Channel(pat, inst);
+                
                 chan.On         = int  .Parse(data[i++]) > 0;
                 chan.Volume     = float.Parse(data[i++]);
                 chan.Shuffle    = int  .Parse(data[i++]);

@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Collections.Generic;
 
 
 namespace IngameScript
@@ -7,38 +8,39 @@ namespace IngameScript
     {
         public partial class Session
         {
-            public static Session Load()
+            public static Session Load(out int curClipTrack, out int curClipIndex)
             {
                 var session = new Session();
 
-                int curClipTrack, curClipIndex;
-                session.LoadSession    (out curClipTrack, out curClipIndex);
-                session.LoadInstruments();
-                session.LoadTracks     ();
-
-                g_setClip = true;
-                g_session.SetClip(curClipTrack, curClipIndex);
+                if (!session.LoadSession    (out curClipTrack, out curClipIndex)) return null;
+                if (!session.LoadInstruments()) session.CreateDefaultInstruments();
+                if (!session.LoadTracks     ()) session.CreateDefaultTracks();
 
                 return session;
             }
 
 
-            void LoadSession(out int curClipTrack, out int curClipIndex)
+            bool LoadSession(out int curClipTrack, out int curClipIndex)
             {
+                curClipTrack = -1;
+                curClipIndex = -1;
+
                 var sb = new StringBuilder();
                 pnlStorageSession.ReadText(sb);
 
                 var state = sb.ToString().Split(';');
-                var s = 0;
+                var s     = 0;
 
-                TicksPerStep = int.Parse(state[s++]);
+                if (!int.TryParse(state[s++], out TicksPerStep)) return false;
 
-                curClipTrack = int.Parse(state[s++]);
-                curClipIndex = int.Parse(state[s++]);
+                if (!int.TryParse(state[s++], out curClipTrack)) return false;
+                if (!int.TryParse(state[s++], out curClipIndex)) return false;
+
+                return true;
             }
 
 
-            void LoadInstruments()
+            bool LoadInstruments()
             {
                 Instruments.Clear();
 
@@ -52,16 +54,14 @@ namespace IngameScript
 
                 while (line < lines.Length)
                 {
-                    while (line < lines.Length
-                        && lines[line].Trim() == "") line++; // white space
+                    SkipWhiteSpace(lines, ref line);
 
                     if (line < lines.Length)
                         Instruments.Add(Instrument.Load(lines, ref line));
                 }
 
             
-                if (Instruments.Count == 0) // nothing was loaded
-                    CreateDefaultInstruments();
+                return Instruments.Count > 0;
             }
 
 
@@ -82,17 +82,7 @@ namespace IngameScript
             //}
 
 
-            void CreateDefaultInstruments()
-            {
-                if (Instruments.Count == 0)
-                {
-                    Instruments.Add(new Instrument());
-                    Instruments[0].Sources.Add(new Source(Instruments[0]));
-                }
-            }
-
-
-            void LoadTracks()
+            bool LoadTracks()
             {
                 Tracks.Clear();
 
@@ -106,17 +96,13 @@ namespace IngameScript
                 var nTracks = int.Parse(lines[line++]);
 
                 for (int t = 0; t < nTracks; t++)
+                {
+                    SkipWhiteSpace(lines, ref line);
                     Tracks.Add(Track.Load(this, lines, ref line));
+                }
 
 
-                //curPath = "";
-
-                //else
-                //{
-                //    g_session.Tracks[0].Clips.Add(g_session.CurClip);
-                //    g_session.Tracks[0].Indices.Add(index);
-                //    g_session.Tracks[0].CurIndex = index;
-                //}
+                return Tracks.Count > 0;
             }
         }
     }

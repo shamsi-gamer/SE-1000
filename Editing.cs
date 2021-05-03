@@ -7,9 +7,9 @@ namespace IngameScript
 {
     partial class Program
     {
-        void CopyChan(Clip song, int p, int ch)
+        void CopyChan(Clip clip, int p, int ch)
         {
-            copyChan = new Channel(song.Patterns[p].Channels[ch]);
+            copyChan = new Channel(clip.Patterns[p].Channels[ch]);
         }
 
 
@@ -90,7 +90,7 @@ namespace IngameScript
                 //UpdateHoldLabel();
 
                 //if (!g_session.CurClip.Hold)
-                //    StopCurrentNotes(song.CurChan);
+                //    StopCurrentNotes(clip.CurChan);
             }
         }
 
@@ -269,26 +269,26 @@ namespace IngameScript
         }
 
 
-        void ToggleNote(Clip song)
+        void ToggleNote(Clip clip)
         {
-            if (OK(song.EditPos))
+            if (OK(clip.EditPos))
             { 
-                song.Inter = null;
+                clip.Inter = null;
                 //UpdateLabel(lblCmd1, false);
 
-                if (song.EditNotes.Count > 0) song.EditNotes.Clear();
-                else                          song.EditNotes.AddRange(GetEditNotes(song));
+                if (clip.EditNotes.Count > 0) clip.EditNotes.Clear();
+                else                          clip.EditNotes.AddRange(GetEditNotes(clip));
 
-                //UpdateEditLabel(lblEdit, OK(song.EditPos));
+                //UpdateEditLabel(lblEdit, OK(clip.EditPos));
             }
             else
             {
-                if (song.EditNotes.Count > 0)
-                    song.EditNotes.Clear();
+                if (clip.EditNotes.Count > 0)
+                    clip.EditNotes.Clear();
                 else 
                 { 
-                    song.EditNotes.Clear();
-                    song.EditNotes.AddRange(GetChannelNotes(song));
+                    clip.EditNotes.Clear();
+                    clip.EditNotes.AddRange(GetChannelNotes(clip));
                 }
             }
 
@@ -297,14 +297,14 @@ namespace IngameScript
         }
 
 
-        void CutNotes(Clip song)
+        void CutNotes(Clip clip)
         {
             for (int p = 0; p <= g_session.CurClip.CurPat; p++)
             {
                 var patStart =  g_session.CurClip.CurPat   *g_nSteps;
                 var patEnd   = (g_session.CurClip.CurPat +1)*g_nSteps;
 
-                var pat  = song.Patterns[p];
+                var pat  = clip.Patterns[p];
                 var chan = pat.Channels[g_session.CurClip.CurChan];
 
                 var min  = (60 + chan.Transpose*12) * NoteScale;
@@ -312,9 +312,9 @@ namespace IngameScript
 
                 foreach (var note in chan.Notes)
                 {
-                    if (   song.EditPos > note.SongStep
-                        && song.EditPos < note.SongStep + note.StepLength)
-                        note.StepLength = song.EditPos - note.SongStep + 1;
+                    if (   clip.EditPos > note.SongStep
+                        && clip.EditPos < note.SongStep + note.StepLength)
+                        note.StepLength = clip.EditPos - note.SongStep + 1;
                 }
             }
 
@@ -322,18 +322,18 @@ namespace IngameScript
         }
 
 
-        List<Note> GetEditNotes(Clip song, bool onlyEdit = false)
+        List<Note> GetEditNotes(Clip clip, bool onlyEdit = false)
         {
             var chan = g_session.CurClip.CurrentChannel;
 
-            if (OK(song.EditPos))
+            if (OK(clip.EditPos))
             { 
                 var notes = new List<Note>();
                 
                 foreach (var note in chan.Notes)
                 {
-                    if (   note.SongStep >= song.EditPos
-                        && note.SongStep <  song.EditPos + g_session.CurClip.EditStep)
+                    if (   note.SongStep >= clip.EditPos
+                        && note.SongStep <  clip.EditPos + g_session.CurClip.EditStep)
                         notes.Add(note);
                 }
 
@@ -435,20 +435,20 @@ namespace IngameScript
         }
 
 
-        void Left(Clip song)
+        void Left(Clip clip)
         {
-            MoveEdit(song, -1);
+            MoveEdit(clip, -1);
 
-            //if (OK(song.EditPos))
+            //if (OK(clip.EditPos))
             //    MarkLabel(lblLeft);
         }
 
 
-        void Right(Clip song)
+        void Right(Clip clip)
         {
-            MoveEdit(song, 1);
+            MoveEdit(clip, 1);
 
-            //if (   OK(song.EditPos)
+            //if (   OK(clip.EditPos)
             //    || IsCurSetting(typeof(Harmonics)))
             //    MarkLabel(lblRight);
         }

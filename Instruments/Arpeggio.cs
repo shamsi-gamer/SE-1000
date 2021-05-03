@@ -19,7 +19,7 @@ namespace IngameScript
             {
                 Clip = new Clip(null, "");
                 Clip.Arpeggio = this;
-                Clip.Patterns.Add(new Pattern(Clip));
+                Clip.Patterns.Add(new Pattern(inst, Clip));
                 
                 SetInstrument(inst);
 
@@ -103,12 +103,12 @@ namespace IngameScript
             }
 
 
-            public void Delete(Clip song, int iSrc)
+            public void Delete(Clip clip, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
-                Length.Delete(song, iSrc);
-                Scale .Delete(song, iSrc);
+                Length.Delete(clip, iSrc);
+                Scale .Delete(clip, iSrc);
             }
 
 
@@ -116,7 +116,7 @@ namespace IngameScript
             {
                 var arp = W(Tag);
 
-                // save song here
+                // save clip here
 
                 arp += W(Length.Save());
                 arp +=   Scale .Save();

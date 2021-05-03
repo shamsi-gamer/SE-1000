@@ -18,16 +18,12 @@ namespace IngameScript
 
             public Session()
             {
-                Name         = "Untitled";
-                Instruments  = new List<Instrument>();
+                Name        = "Untitled";
+                Instruments = new List<Instrument>();
 
-                Tracks = new List<Track>(new Track[4]);
-                for (int i = 0; i < Tracks.Count; i++)
-                    Tracks[i] = new Track(this);
-
-                TicksPerStep = 7;
-
-                CurClip         = null;
+                CreateDefaultSession();
+                CreateDefaultInstruments();
+                CreateDefaultTracks();
             }
 
 
@@ -54,7 +50,7 @@ namespace IngameScript
                     if (found < 0)
                     {
                         CurClip = new Clip(track);
-                        CurClip.Patterns.Add(new Pattern(CurClip, Instruments[0]));
+                        CurClip.Patterns.Add(new Pattern(Instruments[0], CurClip));
                         CurClip.Name = "New Clip";
 
                         track.Clips  .Add(CurClip);
@@ -81,16 +77,45 @@ namespace IngameScript
             }
 
 
-            void SetClip(Clip clip)
-            { 
-                clip.Track.CurIndex = clip.Track.Clips.IndexOf(clip);
+            //void SetClip(Clip clip)
+            //{ 
+            //    clip.Track.CurIndex = clip.Track.Clips.IndexOf(clip);
 
-                CurClip = clip;
+            //    CurClip = clip;
 
-                g_setClip = false;
-                g_showSession = false;
+            //    g_setClip = false;
+            //    g_showSession = false;
 
-                //UpdateLabels();
+            //    //UpdateLabels();
+            //}
+
+
+            public void CreateDefaultSession()
+            {
+                TicksPerStep = 7;
+            }
+
+
+            void CreateDefaultInstruments()
+            {
+                Instruments.Add(new Instrument());
+                Instruments[0].Sources.Add(new Source(Instruments[0]));
+            }
+
+
+            void CreateDefaultTracks()
+            {
+                Tracks = new List<Track>(new Track[4]);
+
+                for (int i = 0; i < Tracks.Count; i++)
+                    Tracks[i] = new Track(this);
+
+                var clip = new Clip(Tracks[0]);
+                clip.Patterns.Add(new Pattern(Instruments[0], clip));
+
+                Tracks[0].Add(clip, 0);
+
+                CurClip = Tracks[0].Clips[0];
             }
         }
 

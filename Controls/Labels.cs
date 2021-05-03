@@ -517,7 +517,7 @@ namespace IngameScript
         //}
 
 
-        //void UpdateAdjustLabels(Clip song)
+        //void UpdateAdjustLabels(Clip clip)
         //{
         //    if (ModDestConnecting != null)
         //    {
@@ -538,8 +538,8 @@ namespace IngameScript
         //            UpdateLabel(
         //                lblCmd3,
         //                g_session.CurClip.SelectedChannel.Notes.Find(n =>
-        //                       n.SongStep >= song.EditPos
-        //                    && n.SongStep <  song.EditPos+1
+        //                       n.SongStep >= clip.EditPos
+        //                    && n.SongStep <  clip.EditPos+1
         //                    && n.Keys.Find(k => k.Path == path) != null) != null
         //                ? "X"
         //                : " ",
@@ -548,12 +548,12 @@ namespace IngameScript
         //        }
         //        else if (g_session.CurClip.ParamAuto)
         //        {
-        //            if (OK(song.EditPos))
+        //            if (OK(clip.EditPos))
         //            { 
         //                if (g_session.CurClip.SelectedChannel.AutoKeys.Find(k =>
         //                        k.Path == path
-        //                        && k.StepTime >= (song.EditPos % g_nSteps)
-        //                        && k.StepTime <  (song.EditPos % g_nSteps) + 1) != null)
+        //                        && k.StepTime >= (clip.EditPos % g_nSteps)
+        //                        && k.StepTime <  (clip.EditPos % g_nSteps) + 1) != null)
         //                {
         //                    UpdateLabel(lblCmd1, "Move", 10, 10);
         //                    UpdateLabel(lblCmd3, "X",    10, 10);

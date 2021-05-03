@@ -50,7 +50,7 @@ namespace IngameScript
         }
 
 
-        void DrawFuncButtons(List<MySprite> sprites, float w, float y, Clip song)
+        void DrawFuncButtons(List<MySprite> sprites, float w, float y, Clip clip)
         {
             var bw =  w/6;
             var x0 = bw/2;
@@ -62,10 +62,10 @@ namespace IngameScript
             }
             else
             {
-                if (GetEditNotes(song, true).Count > 0)
-                    DrawFuncButton(sprites, "Note", 2, w, y, false, false, song.EditNotes.Count > 0);
+                if (GetEditNotes(clip, true).Count > 0)
+                    DrawFuncButton(sprites, "Note", 2, w, y, false, false, clip.EditNotes.Count > 0);
 
-                if (GetLongNotes(song).Count > 0)
+                if (GetLongNotes(clip).Count > 0)
                     DrawFuncButton(sprites, strCut,  3, w, y, false, false);
             }
         }

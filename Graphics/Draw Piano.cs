@@ -9,7 +9,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        void DrawPianoDisplay(List<MySprite> sprites, float x, float y, float w, float h, Clip song, int pat, bool isolated, Arpeggio arp)
+        void DrawPianoDisplay(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int pat, bool isolated, Arpeggio arp)
         {
             FillRect(sprites, x, y, w, h, color0);
 
@@ -18,7 +18,7 @@ namespace IngameScript
 
 
             if (arp == null)
-                DrawChannelList(sprites, x, y, 340, rh, song);
+                DrawChannelList(sprites, x, y, 340, rh, clip);
             else
             {
                 var dp = new DrawParams(this);
@@ -51,13 +51,13 @@ namespace IngameScript
 
 
             // draw edit position
-            if (   OK(song.EditPos)
-                && song.EditPos >= g_session.CurClip.CurPat      * g_nSteps
-                && song.EditPos < (g_session.CurClip.CurPat + 1) * g_nSteps)
+            if (   OK(clip.EditPos)
+                && clip.EditPos >= g_session.CurClip.CurPat      * g_nSteps
+                && clip.EditPos < (g_session.CurClip.CurPat + 1) * g_nSteps)
             { 
                 FillRect(
                     sprites, 
-                    x + xt + wt * (song.EditPos % g_nSteps), 
+                    x + xt + wt * (clip.EditPos % g_nSteps), 
                     y, 
                     wt / (g_session.CurClip.EditLength == 0.5f ? 2 : 1), 
                     g_session.CurClip.ParamKeys || g_session.CurClip.ParamAuto ? h : rh, 
@@ -65,7 +65,7 @@ namespace IngameScript
             }
 
 
-            DrawPianoRoll(sprites, x + xt, y, w - xt, rh, song, pat, 2, arp != null, songSteps);
+            DrawPianoRoll(sprites, x + xt, y, w - xt, rh, clip, pat, 2, arp != null, songSteps);
 
 
             // draw position line/s
@@ -92,7 +92,7 @@ namespace IngameScript
                         var ft = (int)((an.ArpPlayTime / g_session.TicksPerStep) % g_nSteps);
 
                         FillRect(sprites, x + xt + wt * ft, y, wt, rh, color6);
-                        DrawPianoNeg(sprites, x + xt, y, w - xt, rh, song, pat, ft, true);
+                        DrawPianoNeg(sprites, x + xt, y, w - xt, rh, clip, pat, ft, true);
                     }
                 }
                 else
@@ -106,10 +106,10 @@ namespace IngameScript
             FillRect(sprites, x, y + (arp != null ? irh : rh), w, 1, color6);
 
             if (IsCurParam())
-                DrawValueLegend(sprites, CurParam, x, y, w, h, xt, rh, song, pat);
+                DrawValueLegend(sprites, CurParam, x, y, w, h, xt, rh, clip, pat);
 
             if (g_session.CurClip.SelChan < 0 || arp != null)
-                DrawFuncButtons(sprites, w, h, song);
+                DrawFuncButtons(sprites, w, h, clip);
         }
 
 
@@ -134,22 +134,22 @@ namespace IngameScript
         }
 
 
-        void DrawPianoRoll(List<MySprite> sprites, float x, float y, float w, float h, Clip song, int p, int gs, bool arpeggio, int songSteps)
+        void DrawPianoRoll(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int p, int gs, bool arpeggio, int songSteps)
         {
             if (!arpeggio)
             { 
                 for (int ch = 0; ch < g_nChans; ch++)
                 {
                     if (ch != g_session.CurClip.CurChan)
-                        DrawChanNotes(sprites, x, y, w, h, song, p, gs, ch, color3);
+                        DrawChanNotes(sprites, x, y, w, h, clip, p, gs, ch, color3);
                 }
             }
 
-            DrawChanNotes(sprites, x, y, w, h, song, p, gs, g_session.CurClip.CurChan, color6, songSteps);
+            DrawChanNotes(sprites, x, y, w, h, clip, p, gs, g_session.CurClip.CurChan, color6, songSteps);
         }
 
 
-        void DrawChanNotes(List<MySprite> sprites, float x, float y, float w, float h, Clip song, int p, int gs, int ch, Color col, int songSteps = g_nSteps)
+        void DrawChanNotes(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int p, int gs, int ch, Color col, int songSteps = g_nSteps)
         {
             var wt = w/g_nSteps;
             var ht = h/25;
@@ -163,7 +163,7 @@ namespace IngameScript
                 var patStart = p * g_nSteps;
                 var patEnd   = patStart + songSteps;
 
-                var pat  = song.Patterns[_p];
+                var pat  = clip.Patterns[_p];
                 var chan = pat.Channels[ch];
 
                 var min  = (60 + chan.Transpose*12) * NoteScale;
@@ -204,7 +204,7 @@ namespace IngameScript
         }
 
 
-        void DrawPianoNeg(List<MySprite> sprites, float x, float y, float w, float h, Clip song, int p, float step, bool isolated)
+        void DrawPianoNeg(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int p, float step, bool isolated)
         {
             for (int ch = 0; ch < g_nChans; ch++)
             {
@@ -227,7 +227,7 @@ namespace IngameScript
                     var patStart =  p   *g_nSteps;
                     var patEnd   = (p+1)*g_nSteps;
 
-                    var chan = song.Patterns[_p].Channels[ch];
+                    var chan = clip.Patterns[_p].Channels[ch];
 
 
                     var min = (60 + chan.Transpose*12) * NoteScale;

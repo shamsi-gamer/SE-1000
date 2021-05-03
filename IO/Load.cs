@@ -19,7 +19,18 @@ namespace IngameScript
             //LoadInstruments();
             //LoadClips(out curPath);
 
-            g_session = Session.Load();
+            int curClipTrack, curClipIndex;
+            g_session = Session.Load(out curClipTrack, out curClipIndex);
+
+            if (g_session != null)
+            {
+                g_setClip = true;
+                g_session.SetClip(curClipTrack, curClipIndex);
+                InitPlaybackAfterLoad(g_session.CurClip.PlayTime);
+            }
+            else
+                g_session = new Session();
+
 
             //if (curPath != "")
             //    SwitchToSetting(g_session.CurClip.CurrentInstrument, g_session.CurClip.CurSrc, curPath);
@@ -29,8 +40,6 @@ namespace IngameScript
             //    ModDestChannel    = g_session.CurClip.Patterns[modPat].Channels[modChan];
             //    ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
             //}
-
-            InitPlaybackAfterLoad(g_session.CurClip.PlayTime);
 
             SetLabelColor(g_session.CurClip.ColorIndex);
             //UpdateLabels();
@@ -74,10 +83,10 @@ namespace IngameScript
 
         void LoadSongExt()
         {
-            //var song = new StringBuilder();
-            //dspIO.Surface.ReadText(song, F);
+            //var clip = new StringBuilder();
+            //dspIO.Surface.ReadText(clip, F);
 
-            //if (!LoadSong(S(song)))
+            //if (!LoadSong(S(clip)))
             //    NewSong();
 
             g_infoPressed.Add(0);

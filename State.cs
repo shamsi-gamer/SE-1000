@@ -13,28 +13,28 @@ namespace IngameScript
         static float    TimeStep { get { return (float)g_time / g_session.TicksPerStep; } }
 
 
-        static bool     g_started          = false,
-                        g_init             = false;
-                                           
-        static int      g_curRuntimeTick   = 0;
-        static float[]  g_runtimeMs        = new float[6];
-        static float    g_maxRuntimeMs     = 0;
-                                           
-        float           g_instCount        = 0,
-                        g_dspCount         = 0;
+        static bool     g_started         = false,
+                        g_init            = false;
+                                          
+        static int      g_curRuntimeTick  = 0;
+        static float[]  g_runtimeMs       = new float[6];
+        static float    g_maxRuntimeMs    = 0;
+                                          
+        float           g_instCount       = 0,
+                        g_dspCount        = 0;
 
 
-        static bool     g_showSession      = true;
-        static bool     g_setClip          = false;
-                                           
-        static bool     g_move             = false;
+        static bool     g_showSession     = true;
+        static bool     g_setClip         = false;
+                                          
+        static bool     g_move            = false;
 
-                                           
-        static Session  g_session          = null;
-        //static Clip   g_session.CurClip             = null;
+                                          
+        static Session  g_session         = null;
+        //static Clip   g_session.CurClip = null;
 
-                                           
-        Key             g_editKey          = null;
+                                          
+        Key             g_editKey         = null;
 
 
         static void SetDefaultMachineState()
@@ -42,10 +42,6 @@ namespace IngameScript
             ClearMachineState();
 
             g_move = false;
-
-            g_session.Instruments.Clear();
-            g_session.Instruments.Add(new Instrument());
-            g_session.Instruments[0].Sources.Add(new Source(g_session.Instruments[0]));
         }
 
 

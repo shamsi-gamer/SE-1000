@@ -34,7 +34,7 @@ namespace IngameScript
             }
         }
 
-
+            
         void RandomPatternNotes()
         {
             var nChannels = g_rnd.Next(1, g_nChans/2);

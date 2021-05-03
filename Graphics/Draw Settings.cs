@@ -144,7 +144,7 @@ namespace IngameScript
         }
 
 
-        void DrawValueLegend(List<MySprite> sprites, Parameter param, float x, float y, float w, float h, float xt, float rh, Clip song, int pat)
+        void DrawValueLegend(List<MySprite> sprites, Parameter param, float x, float y, float w, float h, float xt, float rh, Clip clip, int pat)
         {
             var path  = param.GetPath(g_session.CurClip.CurSrc);
 
@@ -162,7 +162,7 @@ namespace IngameScript
                 { 
                     for (float f = 0; f <= 1; f += 0.1f)
                     { 
-                        var y0 = KeyPos(x, y + rh, w, h - rh, 0, new Key(g_session.CurClip.CurSrc, param, (float)Math.Pow(f, pow) * 2, fN), song).Y;
+                        var y0 = KeyPos(x, y + rh, w, h - rh, 0, new Key(g_session.CurClip.CurSrc, param, (float)Math.Pow(f, pow) * 2, fN), clip).Y;
                         var db = printValue(Math.Abs(100 * (float)Math.Log10(f * extra)), 0, true, 2);
 
                         DrawLine(sprites, x + xt, y0, x+w, y0, color2);
@@ -175,7 +175,7 @@ namespace IngameScript
                 {
                     for (int i = 0; i <= 20; i += 5)
                     { 
-                        var y0  = KeyPos(x, y + rh, w, h - rh, 0, new Key(g_session.CurClip.CurSrc, param, i, fN), song).Y;
+                        var y0  = KeyPos(x, y + rh, w, h - rh, 0, new Key(g_session.CurClip.CurSrc, param, i, fN), clip).Y;
                         var val = printValue(i, 0, false, 0);
 
                         DrawLine(sprites, x+xt, y0, x+w, y0, color2);
@@ -191,7 +191,7 @@ namespace IngameScript
                         var val = param.Min + i * (param.Max - param.Min)/4;
                         var f   = (val - param.Min) / (param.Max - param.Min);
                         var key = new Key(g_session.CurClip.CurSrc, param, f, fN);
-                        var y0  = KeyPos(x, y + rh, w, h - rh, 0, key, song).Y;
+                        var y0  = KeyPos(x, y + rh, w, h - rh, 0, key, clip).Y;
                         var str = printValue(val, -2, param.Max - param.Min > 1, 0);
 
                             
@@ -205,8 +205,8 @@ namespace IngameScript
 
 
             // draw values
-                 if (g_session.CurClip.ParamKeys) DrawParamKeys(sprites, x + xt, y + rh, w-xt, h-rh,       song, pat, g_session.CurClip.CurChan);
-            else if (g_session.CurClip.ParamAuto) DrawParamAuto(sprites, x + xt, y + rh, w-xt, h-rh, w-xt, song, pat, g_session.CurClip.CurChan);
+                 if (g_session.CurClip.ParamKeys) DrawParamKeys(sprites, x + xt, y + rh, w-xt, h-rh,       clip, pat, g_session.CurClip.CurChan);
+            else if (g_session.CurClip.ParamAuto) DrawParamAuto(sprites, x + xt, y + rh, w-xt, h-rh, w-xt, clip, pat, g_session.CurClip.CurChan);
 
 
             if (   g_session.CurClip.ParamKeys
@@ -223,8 +223,8 @@ namespace IngameScript
             {
                 var key = g_session.CurClip.SelectedChannel.AutoKeys.Find(
                        k => k.Path == path
-                    && k.StepTime >= (song.EditPos % g_nSteps) 
-                    && k.StepTime <  (song.EditPos % g_nSteps) + 1);
+                    && k.StepTime >= (clip.EditPos % g_nSteps) 
+                    && k.StepTime <  (clip.EditPos % g_nSteps) + 1);
 
                 var strVal = "";
                     
@@ -258,13 +258,13 @@ namespace IngameScript
         }
 
 
-        void DrawParamKeys(List<MySprite> sprites, float x, float y, float w, float h, Clip song, int p, int ch)
+        void DrawParamKeys(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int p, int ch)
         {
             var wt   = w / g_nSteps;
             var cd   = w/ 65; // circle diameter
             var dr   = w/250;
 
-            var pat  = song.Patterns[p];
+            var pat  = clip.Patterns[p];
             var chan = pat.Channels[ch];
 
             var path = g_settings.Last().GetPath(g_session.CurClip.CurSrc);
@@ -278,14 +278,14 @@ namespace IngameScript
                     x + wt * (note.PatStep + note.ShOffset) + wt/2,
                     y + h);
 
-                var p0 = KeyPos(x, y, w, h, p, AltChanKey(key ?? new Key(g_session.CurClip.CurSrc, param, param.GetKeyValue(note, g_session.CurClip.CurSrc), note.PatStep)), song);
+                var p0 = KeyPos(x, y, w, h, p, AltChanKey(key ?? new Key(g_session.CurClip.CurSrc, param, param.GetKeyValue(note, g_session.CurClip.CurSrc), note.PatStep)), clip);
 
 
                 // draw interpolation circle
-                if (   note == song.Inter
-                    ||    song.Inter != null
-                       && note.SongStep >= song.EditPos
-                       && note.SongStep <  song.EditPos+1)
+                if (   note == clip.Inter
+                    ||    clip.Inter != null
+                       && note.SongStep >= clip.EditPos
+                       && note.SongStep <  clip.EditPos+1)
                 {      
                     FillCircle(sprites, p0.X, p0.Y, cd/2+dr,   color0);
                     FillCircle(sprites, p0.X, p0.Y, cd/2+dr*2, color6);
@@ -296,8 +296,8 @@ namespace IngameScript
 
 
                 // draw shadow
-                if (   note.SongStep >= song.EditPos
-                    && note.SongStep <  song.EditPos+1)
+                if (   note.SongStep >= clip.EditPos
+                    && note.SongStep <  clip.EditPos+1)
                 {
                     DrawLine  (sprites, pt.X, pt.Y, p0.X, p0.Y, color0, w/250+2);
                     FillCircle(sprites, p0.X, p0.Y, cd/2+1, color0);
@@ -312,36 +312,36 @@ namespace IngameScript
 
 
             var curNote = chan.Notes.Find(n =>
-                   n.SongStep >= song.EditPos
-                && n.SongStep <  song.EditPos+1);
+                   n.SongStep >= clip.EditPos
+                && n.SongStep <  clip.EditPos+1);
 
             // draw interpolation line
-            if (   song.Inter != null
+            if (   clip.Inter != null
                 && curNote != null
-                && (   song.Inter.PatIndex == p
+                && (   clip.Inter.PatIndex == p
                     || curNote   .PatIndex == p))
             {
-                var pi = ValuePos(x, y, w, h, p, song.Inter, path, song);
-                var pc = ValuePos(x, y, w, h, p, curNote,    path, song);
+                var pi = ValuePos(x, y, w, h, p, clip.Inter, path, clip);
+                var pc = ValuePos(x, y, w, h, p, curNote,    path, clip);
 
                 DrawLine(sprites, pi, pc, color5);
             }
         }
 
 
-        void DrawParamAuto(List<MySprite> sprites, float x, float y, float w, float h, float wTotal, Clip song, int p, int ch)
+        void DrawParamAuto(List<MySprite> sprites, float x, float y, float w, float h, float wTotal, Clip clip, int p, int ch)
         {
             var wt = w/g_nSteps;
             var cd = w/ 65; // circle diameter
             var dr = w/250;
 
-            var pat   = song.Patterns[p];
+            var pat   = clip.Patterns[p];
             var chan  = pat.Channels[ch];
             
             var param = CurParam;
             var path  = param.GetPath(g_session.CurClip.CurSrc);
 
-            var songKeys = song.ChannelAutoKeys[ch].Where(k => k.Path == path).ToList();
+            var songKeys = clip.ChannelAutoKeys[ch].Where(k => k.Path == path).ToList();
 
             songKeys.Sort((a, b) => a.StepTime.CompareTo(b.StepTime));
 
@@ -351,8 +351,8 @@ namespace IngameScript
                 // draw middle sections
                 for (int i = 0; i < songKeys.Count-1; i++)
                 {
-                    var p0 = KeyPos(x, y, w, h, p, AltChanKey(songKeys[i  ]), song);
-                    var p1 = KeyPos(x, y, w, h, p, AltChanKey(songKeys[i+1]), song);
+                    var p0 = KeyPos(x, y, w, h, p, AltChanKey(songKeys[i  ]), clip);
+                    var p1 = KeyPos(x, y, w, h, p, AltChanKey(songKeys[i+1]), clip);
                     DrawLine(sprites, p0, p1, color6);
                 }
 
@@ -360,7 +360,7 @@ namespace IngameScript
                 // draw key points
                 for (int i = 0; i < songKeys.Count; i++)
                 {
-                    var pc = KeyPos(x, y, w, h, p, AltChanKey(songKeys[i]), song);
+                    var pc = KeyPos(x, y, w, h, p, AltChanKey(songKeys[i]), clip);
 
                     // draw move circle
                     if (songKeys[i] == g_editKey)
@@ -375,22 +375,22 @@ namespace IngameScript
 
 
                 // draw first section
-                var f1 = KeyPos(x, y, w, h, p, AltChanKey(songKeys[0]), song);
+                var f1 = KeyPos(x, y, w, h, p, AltChanKey(songKeys[0]), clip);
                 var prevKey = PrevSongAutoKey(songKeys[0].StepTime, p, ch, path);
-                var f0 = prevKey != null ? KeyPos(x, y, w, h, p, prevKey, song) : new Vector2(x, f1.Y);
+                var f0 = prevKey != null ? KeyPos(x, y, w, h, p, prevKey, clip) : new Vector2(x, f1.Y);
                 DrawLine(sprites, f0, f1, color6);
 
 
                 // draw last section
-                var l0 = KeyPos(x, y, w, h, p, AltChanKey(songKeys.Last()), song);
+                var l0 = KeyPos(x, y, w, h, p, AltChanKey(songKeys.Last()), clip);
                 var nextKey = NextSongAutoKey(songKeys.Last().StepTime, p, ch, path);
-                var l1 = nextKey != null ? KeyPos(x, y, w, h, p, nextKey, song) : new Vector2(x + wTotal, l0.Y);
+                var l1 = nextKey != null ? KeyPos(x, y, w, h, p, nextKey, clip) : new Vector2(x + wTotal, l0.Y);
                 DrawLine(sprites, l0, l1, color6);
             }
             else
             {
                 var key = AltChanKey(new Key(g_session.CurClip.CurSrc, param, param.Value, fN));
-                var pk  = KeyPos(x, y, w, h, p, key, song);
+                var pk  = KeyPos(x, y, w, h, p, key, clip);
 
                 var p0 = new Vector2(x,        pk.Y);
                 var p1 = new Vector2(x+wTotal, pk.Y);
@@ -413,7 +413,7 @@ namespace IngameScript
         }
 
 
-        Vector2 ValuePos(float x, float y, float w, float h, int p, Note note, string path, Clip song)
+        Vector2 ValuePos(float x, float y, float w, float h, int p, Note note, string path, Clip clip)
         {
             var param = (Parameter)GetSettingFromPath(note.Instrument, path);
             var val   = param.GetKeyValue(note, g_session.CurClip.CurSrc);
@@ -434,7 +434,7 @@ namespace IngameScript
         }
 
 
-        Vector2 KeyPos(float x, float y, float w, float h, int p, Key key, Clip song)
+        Vector2 KeyPos(float x, float y, float w, float h, int p, Key key, Clip clip)
         {
             var chan    = g_session.CurClip.SelectedChannel;
             var inst    = chan.Instrument;

@@ -491,5 +491,12 @@ namespace IngameScript
         IMyTextPanel     GetLcd(string s)             { return Get(s) as IMyTextPanel; }
         IMyTextPanel     Lbl   (string s)             { return GetLcd("Label " + s); }
         IMyTextPanel     Dsp   (string s, int i = -1) { return GetLcd(s + " Display" + (i > -1 ? " " + S(i) : "")); }
+
+
+        static void SkipWhiteSpace(string[] lines, ref int line)
+        {
+            while (line < lines.Length
+                && lines[line].Trim() == "") line++;
+        }
     }
 }

@@ -266,7 +266,7 @@ namespace IngameScript
         }
 
 
-        //void StopNote(Clip song, Note note)
+        //void StopNote(Clip clip, Note note)
         //{
         //    var step = OK(PlayTime) ? PlayStep : TimeStep;
         //    //note.UpdateStepLength(step - note.PatStep, g_session.TicksPerStep);

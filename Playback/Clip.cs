@@ -11,7 +11,7 @@ namespace IngameScript
             public string        Name;
             public Track         Track;
 
-            public Arpeggio      Arpeggio; // indicates that this song is an arpeggio
+            public Arpeggio      Arpeggio; // indicates that this clip is an arpeggio
 
             public List<Pattern> Patterns;
             public List<Block>   Blocks;
@@ -131,7 +131,7 @@ namespace IngameScript
                 Arpeggio    = null;
                 Length      = -1;
                             
-                Patterns = new List<Pattern>();
+                Patterns    = new List<Pattern>();
 
                 Blocks      = new List<Block>();
 
@@ -514,7 +514,7 @@ namespace IngameScript
 
             public void FinalizePlayback()
             {
-                //var pat = song.Patterns[song.PlayPat];
+                //var pat = clip.Patterns[clip.PlayPat];
 
                 //for (int ch = 0; ch < nChans; ch++)
                 //{
@@ -522,8 +522,8 @@ namespace IngameScript
 
                 //    var arpNotes = chan.Notes.FindAll(n =>
                 //                n.Instrument.Arpeggio != null
-                //            && (int)(song.PlayStep * g_session.TicksPerStep) >= (int)((song.PlayPat * nSteps + n.StepTime               ) * g_session.TicksPerStep)
-                //            && (int)(song.PlayStep * g_session.TicksPerStep) <  (int)((song.PlayPat * nSteps + n.StepTime + n.StepLength) * g_session.TicksPerStep));
+                //            && (int)(clip.PlayStep * g_session.TicksPerStep) >= (int)((clip.PlayPat * nSteps + n.StepTime               ) * g_session.TicksPerStep)
+                //            && (int)(clip.PlayStep * g_session.TicksPerStep) <  (int)((clip.PlayPat * nSteps + n.StepTime + n.StepLength) * g_session.TicksPerStep));
 
                 //    var noteLen = (int)(EditLength * g_session.TicksPerStep);
 
@@ -531,8 +531,8 @@ namespace IngameScript
                 //    {
                 //        var arp = n.Instrument.Arpeggio;
 
-                //        n.FramePlayTime += arp.Scale .UpdateValue(g_time, 0, song.StartTime, noteLen, n, -1);
-                //        var maxLength    = arp.Length.UpdateValue(g_time, 0, song.StartTime, noteLen, n, -1);
+                //        n.FramePlayTime += arp.Scale .UpdateValue(g_time, 0, clip.StartTime, noteLen, n, -1);
+                //        var maxLength    = arp.Length.UpdateValue(g_time, 0, clip.StartTime, noteLen, n, -1);
 
                 //        while (n.FramePlayTime >= maxLength * g_session.TicksPerStep)
                 //            n.FramePlayTime -= maxLength * g_session.TicksPerStep;

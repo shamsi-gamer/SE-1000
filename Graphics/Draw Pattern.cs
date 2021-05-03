@@ -8,14 +8,14 @@ namespace IngameScript
 {
     partial class Program
     {
-        void DrawPatternDisplay(List<MySprite> sprites, float x, float y, float w, float h, Clip song, int pat, bool isolated)
+        void DrawPatternDisplay(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int pat, bool isolated)
         {
             FillRect(sprites, x, y, w, h, color0);
 
             var rh = h - 90;
 
 
-            DrawChannelList(sprites, x, y, 340, rh, song);
+            DrawChannelList(sprites, x, y, 340, rh, clip);
 
 
             var xt = 340;
@@ -34,12 +34,12 @@ namespace IngameScript
 
 
             // edit position
-            if (   song.EditPos >= g_session.CurClip.CurPat      * g_nSteps
-                && song.EditPos < (g_session.CurClip.CurPat + 1) * g_nSteps)
+            if (   clip.EditPos >= g_session.CurClip.CurPat      * g_nSteps
+                && clip.EditPos < (g_session.CurClip.CurPat + 1) * g_nSteps)
             {
                 FillRect(
                     sprites, 
-                    x + xt + wt * (song.EditPos % g_nSteps), 
+                    x + xt + wt * (clip.EditPos % g_nSteps), 
                     y, 
                     wt,
                     g_session.CurClip.ParamKeys || g_session.CurClip.ParamAuto ? h : rh,
@@ -47,27 +47,27 @@ namespace IngameScript
             }
 
 
-            DrawPattern(sprites, x + xt, y, w - xt, rh, song, pat, 2, isolated);
+            DrawPattern(sprites, x + xt, y, w - xt, rh, clip, pat, 2, isolated);
 
             if (   OK(g_session.CurClip.PlayTime)
                 && g_session.CurClip.PlayPat == pat)
             {
                 FillRect(sprites, x + xt + wt * ((int)g_session.CurClip.PlayStep % g_nSteps), y, wt, rh, color6);
-                DrawPatNeg(sprites, x + xt, y, w - xt, rh, song, pat, (int)g_session.CurClip.PlayStep, isolated);
+                DrawPatNeg(sprites, x + xt, y, w - xt, rh, clip, pat, (int)g_session.CurClip.PlayStep, isolated);
             }
 
 
             FillRect(sprites, x, y + rh, w, 1, color6);
 
             if (IsCurParam())
-                DrawValueLegend(sprites, CurParam, x, y, w, h, xt, rh, song, pat);
+                DrawValueLegend(sprites, CurParam, x, y, w, h, xt, rh, clip, pat);
 
             if (g_session.CurClip.SelChan < 0)
-                DrawFuncButtons(sprites, w, h, song);
+                DrawFuncButtons(sprites, w, h, clip);
         }
 
 
-        void DrawChannelList(List<MySprite> sprites, float x, float y, float w, float h, Clip song)
+        void DrawChannelList(List<MySprite> sprites, float x, float y, float w, float h, Clip clip)
         {
             var ch = h / g_nChans;
 
@@ -106,7 +106,7 @@ namespace IngameScript
         }
 
 
-        void DrawPattern(List<MySprite> sprites, float x, float y, float w, float h, Clip song, int pat, int gs, bool isolated, int songSteps = g_nSteps)
+        void DrawPattern(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int pat, int gs, bool isolated, int songSteps = g_nSteps)
         {
             var wt = w/g_nSteps;
             var ht = h/g_nChans;
@@ -124,7 +124,7 @@ namespace IngameScript
                     var patStart = pat * g_nSteps;
                     var patEnd   = patStart + songSteps;
 
-                    var chan = song.Patterns[p].Channels[ch];
+                    var chan = clip.Patterns[p].Channels[ch];
 
 
                     foreach (var n in chan.Notes)
@@ -162,7 +162,7 @@ namespace IngameScript
         }
 
 
-        void DrawPatNeg(List<MySprite> sprites, float x, float y, float w, float h, Clip song, int pat, float step, bool isolated)
+        void DrawPatNeg(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int pat, float step, bool isolated)
         {
             var wt = w/g_nSteps;
             var ht = h/g_nChans;
@@ -181,7 +181,7 @@ namespace IngameScript
                     var patStart =  pat   *g_nSteps;
                     var patEnd   = (pat+1)*g_nSteps;
 
-                    var chan = song.Patterns[p].Channels[ch];
+                    var chan = clip.Patterns[p].Channels[ch];
 
                     foreach (var n in chan.Notes)
                     {

@@ -13,12 +13,12 @@ namespace IngameScript
             public Channel[] Channels = new Channel[g_nChans];
 
 
-            public Pattern(Clip song = null)
+            public Pattern(Instrument defInst, Clip clip = null)
             {
-                Clip = song;
+                Clip = clip;
                 
                 for (int i = 0; i < g_nChans; i++)
-                    Channels[i] = new Channel(this);
+                    Channels[i] = new Channel(this, defInst);
             }
 
 
@@ -28,13 +28,6 @@ namespace IngameScript
                 
                 for (int i = 0; i < g_nChans; i++)
                     Channels[i] = new Channel(pat.Channels[i], this);
-            }
-
-
-            public Pattern(Clip song, Instrument inst) : this(song)
-            {
-                foreach (var chan in Channels)
-                    chan.Instrument = inst;
             }
 
 
@@ -69,7 +62,7 @@ namespace IngameScript
 
             public static Pattern Load(string[] data, ref int i)
             {
-                var pat = new Pattern();
+                var pat = new Pattern(g_session.Instruments[0]);
 
                 foreach (var chan in pat.Channels)
                     chan.Instrument = g_session.Instruments[0];

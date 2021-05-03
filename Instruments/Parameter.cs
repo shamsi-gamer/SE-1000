@@ -233,10 +233,10 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Clip song, Program prog)
+            public override void AdjustFromController(Clip clip, Program prog)
             {
                 if (g_remote.RotationIndicator.X != 0) 
-                    prog.AdjustFromController(song, this, -g_remote.RotationIndicator.X/ControlSensitivity);
+                    prog.AdjustFromController(clip, this, -g_remote.RotationIndicator.X/ControlSensitivity);
             }
 
 
@@ -346,11 +346,11 @@ namespace IngameScript
             }
 
 
-            public void Delete(Clip song, int iSrc)
+            public void Delete(Clip clip, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
-                foreach (var pat in song.Patterns)
+                foreach (var pat in clip.Patterns)
                 {
                     foreach (var chan in pat.Channels)
                     {
@@ -361,10 +361,10 @@ namespace IngameScript
                     }
                 }
 
-                Trigger ?.Delete(song, iSrc);
-                Envelope?.Delete(song, iSrc);
-                Lfo     ?.Delete(song, iSrc);
-                Modulate?.Delete(song, iSrc);
+                Trigger ?.Delete(clip, iSrc);
+                Envelope?.Delete(clip, iSrc);
+                Lfo     ?.Delete(clip, iSrc);
+                Modulate?.Delete(clip, iSrc);
             }
 
 

@@ -82,7 +82,7 @@ namespace IngameScript
 
 
             public virtual void Randomize(Program prog) {}
-            public virtual void AdjustFromController(Clip song, Program prog) {}
+            public virtual void AdjustFromController(Clip clip, Program prog) {}
 
 
             public virtual string GetLabel(out float width) 

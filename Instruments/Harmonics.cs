@@ -254,12 +254,12 @@ namespace IngameScript
             }
 
 
-            public void Delete(Clip song, int iSrc)
+            public void Delete(Clip clip, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
                 foreach (var tone in Tones)
-                    tone.Delete(song, iSrc);
+                    tone.Delete(clip, iSrc);
             }
 
 
@@ -314,7 +314,7 @@ namespace IngameScript
             }
 
 
-            public void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, Clip song, Channel chan, Program prog)
+            public void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, Channel chan, Program prog)
             {
                 FillRect(sprites, x, y, w, h, color0);
 

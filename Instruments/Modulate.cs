@@ -182,12 +182,12 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Clip song, Program prog)
+            public override void AdjustFromController(Clip clip, Program prog)
             {
-                if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(song, Amount,  -g_remote.MoveIndicator    .Z/ControlSensitivity);
+                if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(clip, Amount,  -g_remote.MoveIndicator    .Z/ControlSensitivity);
 
-                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(song, Attack,  -g_remote.RotationIndicator.X/ControlSensitivity);
-                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(song, Release,  g_remote.RotationIndicator.Y/ControlSensitivity);
+                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(clip, Attack,  -g_remote.RotationIndicator.X/ControlSensitivity);
+                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(clip, Release,  g_remote.RotationIndicator.Y/ControlSensitivity);
             }
 
 
@@ -204,13 +204,13 @@ namespace IngameScript
             }
 
 
-            public void Delete(Clip song, int iSrc)
+            public void Delete(Clip clip, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
-                Amount .Delete(song, iSrc);
-                Attack .Delete(song, iSrc);
-                Release.Delete(song, iSrc);
+                Amount .Delete(clip, iSrc);
+                Attack .Delete(clip, iSrc);
+                Release.Delete(clip, iSrc);
             }
 
 

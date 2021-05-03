@@ -115,13 +115,13 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Clip song, Program prog)
+            public override void AdjustFromController(Clip clip, Program prog)
             {
-                if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(song, Count, -g_remote.MoveIndicator    .Z/ControlSensitivity);
-                if (g_remote.MoveIndicator    .X != 0) prog.AdjustFromController(song, Time,   g_remote.MoveIndicator    .X/ControlSensitivity);
+                if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(clip, Count, -g_remote.MoveIndicator    .Z/ControlSensitivity);
+                if (g_remote.MoveIndicator    .X != 0) prog.AdjustFromController(clip, Time,   g_remote.MoveIndicator    .X/ControlSensitivity);
 
-                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(song, Level, -g_remote.RotationIndicator.X/ControlSensitivity);
-                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(song, Power,  g_remote.RotationIndicator.Y/ControlSensitivity);
+                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(clip, Level, -g_remote.RotationIndicator.X/ControlSensitivity);
+                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(clip, Power,  g_remote.RotationIndicator.Y/ControlSensitivity);
             }
 
 
@@ -140,14 +140,14 @@ namespace IngameScript
             }
 
 
-            public void Delete(Clip song, int iSrc)
+            public void Delete(Clip clip, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
-                Count.Delete(song, iSrc);
-                Time .Delete(song, iSrc);
-                Level.Delete(song, iSrc);
-                Power.Delete(song, iSrc);
+                Count.Delete(clip, iSrc);
+                Time .Delete(clip, iSrc);
+                Level.Delete(clip, iSrc);
+                Power.Delete(clip, iSrc);
             }
 
 

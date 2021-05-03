@@ -150,13 +150,13 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Clip song, Program prog)
+            public override void AdjustFromController(Clip clip, Program prog)
             {
-                if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(song, Attack,  -g_remote.MoveIndicator    .Z/ControlSensitivity);
-                if (g_remote.MoveIndicator    .X != 0) prog.AdjustFromController(song, Decay,    g_remote.MoveIndicator    .X/ControlSensitivity);
+                if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(clip, Attack,  -g_remote.MoveIndicator    .Z/ControlSensitivity);
+                if (g_remote.MoveIndicator    .X != 0) prog.AdjustFromController(clip, Decay,    g_remote.MoveIndicator    .X/ControlSensitivity);
 
-                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(song, Sustain, -g_remote.RotationIndicator.X/ControlSensitivity);
-                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(song, Release,  g_remote.RotationIndicator.Y/ControlSensitivity);
+                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(clip, Sustain, -g_remote.RotationIndicator.X/ControlSensitivity);
+                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(clip, Release,  g_remote.RotationIndicator.Y/ControlSensitivity);
             }
 
 
@@ -174,14 +174,14 @@ namespace IngameScript
             }
 
 
-            public void Delete(Clip song, int iSrc)
+            public void Delete(Clip clip, int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
-                Attack .Delete(song, iSrc);
-                Decay  .Delete(song, iSrc);
-                Sustain.Delete(song, iSrc);
-                Release.Delete(song, iSrc);
+                Attack .Delete(clip, iSrc);
+                Decay  .Delete(clip, iSrc);
+                Sustain.Delete(clip, iSrc);
+                Release.Delete(clip, iSrc);
             }
 
 
