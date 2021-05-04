@@ -41,7 +41,7 @@ namespace IngameScript
                     save += PS(i);
 
                 foreach (var clip in Clips)
-                    save += PN(g_session.CurClip.Save());
+                    save += PN(clip.Save());
 
                 return save;
             }
@@ -52,18 +52,23 @@ namespace IngameScript
                 var track = new Track(session);
 
                 var indices = lines[line++].Split(';');
-                var nClips  = int.Parse(indices[0]);
+
+                int nClips;
+                if (!int.TryParse(indices[0], out nClips)) return null;
 
                 //curPath = "";
 
                 for (int i = 0; i < nClips; i++)
                 {
-                    track.Clips.Add(Clip.Load(
-                        lines, 
-                        ref line));//, 
-                        //out curPath));
+                    int index;
+                    if (!int.TryParse(indices[i+1], out index)) return null;
 
-                    track.Indices.Add(int.Parse(indices[i+1]));
+                    track.Indices.Add(line);
+                
+                    var clip = Clip.Load(lines, ref line);
+
+                    if (clip != null) track.Clips.Add(clip); //, out curPath));
+                    else              return null;
                 }
 
                 return track;

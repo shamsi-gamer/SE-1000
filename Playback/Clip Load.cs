@@ -17,8 +17,6 @@ namespace IngameScript
 
                 var clip = new Clip(null);
 
-                clip.Name = lines[line++].Replace("\u0085", "\n");
-
                 var cfg = lines[line++].Split(';');
                 if (!clip.LoadConfig  (cfg)) return null;//, out curPath)) return null;
                 if (!clip.LoadChords  (lines[line++]))    return null;
@@ -85,9 +83,11 @@ namespace IngameScript
 
                 int c = 0;
 
+                Name = cfg[c++].Replace("\u0085", "\n");
+
                 LoadToggles(cfg[c++]);
 
-                if (!long .TryParse(cfg[c++], out PlayTime   )) return false;
+                if (! long_TryParse(cfg[c++], out PlayTime   )) return false;
                 if (!int  .TryParse(cfg[c++], out PlayPat    )) return false;
                 if (!int  .TryParse(cfg[c++], out CueNext    )) return false;
 

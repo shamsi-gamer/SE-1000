@@ -498,5 +498,17 @@ namespace IngameScript
             while (line < lines.Length
                 && lines[line].Trim() == "") line++;
         }
+
+
+        static bool long_TryParse(string str, out long val)
+        {
+            if (str == "?")
+            { 
+                val = long_NaN;
+                return true;
+            }
+            else
+                return long.TryParse(str, out val);
+        }
     }
 }

@@ -28,8 +28,13 @@ namespace IngameScript
                 var sb = new StringBuilder();
                 pnlStorageSession.ReadText(sb);
 
+                if (!sb.ToString().Contains(";"))
+                    return false;
+
                 var state = sb.ToString().Split(';');
                 var s     = 0;
+
+                Name = state[s++];
 
                 if (!int.TryParse(state[s++], out TicksPerStep)) return false;
 
@@ -92,13 +97,16 @@ namespace IngameScript
                 var lines = sb.ToString().Split('\n');
                 var line  = 0;
 
-
-                var nTracks = int.Parse(lines[line++]);
+                int nTracks;
+                if (!int.TryParse(lines[line++], out nTracks)) return false;
 
                 for (int t = 0; t < nTracks; t++)
                 {
                     SkipWhiteSpace(lines, ref line);
-                    Tracks.Add(Track.Load(this, lines, ref line));
+                    var track = Track.Load(this, lines, ref line);
+
+                    if (track != null) Tracks.Add(track);
+                    else               return false;
                 }
 
 

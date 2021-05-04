@@ -10,12 +10,12 @@ namespace IngameScript
 {
     partial class Program
     {
-        static Label                lblPlay, lblStop;
+        static Label                lblPlay, lblStop,
+                                    lblEdit;
         //                          lblOctave, lblShuffle,
         //                          lblMixerVolumeUp, lblMixerVolumeDown, lblMixerAll, lblMixerMuteAll,
         //                          lblPlay, lblStop,
         //                          lblStep, lblHold, 
-        //                          lblEdit, 
         //                          lblChord, lblChord1, lblChord2, lblChord3, lblChord4, lblChordEdit,
         //                          lblEditStep, lblEditLength,
         //                          lblLeft, lblRight,
@@ -33,8 +33,8 @@ namespace IngameScript
         //                          lblFold, lblGyro, lblNoise;
 
 
-        //List<Label>               lblHigh,
-        //                          lblLow;
+        List<Label>                 lblHigh,
+                                    lblLow;
 
         //static List<IMyTextPanel> lblMem;
         //static IMyTextPanel[]     lblMems = new IMyTextPanel[nMems];
@@ -85,8 +85,84 @@ namespace IngameScript
 
         void InitLabels()
         {
-            lblPlay = new Label(Lbl("Play"), () => g_playing, () => g_playing);
-            lblStop = new Label(Lbl("Stop"), () => g_playing, () => g_playing);
+            lblPlay = new Label(false, Lbl("Play"), 
+                () => g_playing, 
+                () => g_playing);
+
+            lblStop = new Label(false, Lbl("Stop"), 
+                () => g_playing, 
+                () => g_playing);
+
+            lblEdit = new Label(false, Lbl("Edit"), 
+                () => OK(g_session.CurClip.EditPos), 
+                () => false,
+                (l, b) => 
+                {
+                    l.Panel.FontColor       = b ? redColor6 : redColor0;
+                    l.Panel.BackgroundColor = b ? redColor0 : redColor6;
+                });
+
+
+
+            lblHigh = new List<Label>();
+
+            var high = new List<IMyTextPanel>();
+            Get(high, l => l.CustomName.Length >= 11 && l.CustomName.Substring(0, 11) == "Label High ");
+            high = high.OrderBy(l => int.Parse(l.CustomName.Substring(11))).ToList();
+
+            for (int h = 0; h < high.Count-1; h++)
+            {
+                lblHigh.Add(new Label(true, high[h], 
+                    () => NoteIsBright(HighToNote(h), true),
+                    () => NoteIsDim   (HighToNote(h), true)));
+            }
+
+            lblHigh.Add(new Label(false, high[10],
+                () => g_lightsPressed.Contains(high[10]),
+                () => false,
+                (l, b) => 
+                {
+                    if (ShowPiano)
+                    {
+                        l.Update(
+                              "     ║  ███  ║       ║  ███\n"
+                            + "     ║       ║       ║     \n"
+                            + "═════╬═══════╬═══════╬═════\n"
+                            + "     ║       ║       ║     \n"
+                            + " ███ ║  ███  ║  ███  ║  ███\n",
+                            1.7f,
+                            17);
+                    }
+                    else
+                    {
+                        l.Update(
+                              "█ █ ██ █ █ █\n"
+                            + "█▄█▄██▄█▄█▄█\n"
+                            + "▀▀▀▀▀▀▀▀▀▀▀▀\n",
+                            3.7f,
+                            10);
+                    }
+                }));
+
+
+            lblLow  = new List<Label>();
+
+            var low = new List<IMyTextPanel>();
+            Get(low, l => l.CustomName.Length >= 10 && l.CustomName.Substring(0, 10) == "Label Low ");
+            low = low.OrderBy(l => int.Parse(l.CustomName.Substring(10))).ToList();
+
+            for (int l = 0; l < low.Count-1; l++)
+            {
+                lblLow.Add(new Label(true, low[l], 
+                    () => NoteIsBright(LowToNote(l), false),
+                    () => NoteIsDim   (LowToNote(l), false)));
+            }
+
+            lblLow.Add(new Label(false, low[15],
+                () => g_lightsPressed.Contains(low[15]),
+                () => false,
+                (l, b) => { l.Update(ShowPiano ? "‡" : " ", 8, 17); }));
+
 
             //lblOctave          = Lbl("Octave");
             //lblShuffle         = Lbl("Shuffle");
@@ -162,17 +238,6 @@ namespace IngameScript
             //for (int m = 0; m < nMems; m++)
             //    lblMems[m] = Lbl("Mem " + S(m));
 
-
-            //lblHigh = new List<IMyTextPanel>();
-            //lblLow  = new List<IMyTextPanel>();
-
-            //Get(lblHigh, l => l.CustomName.Length >= 11 && l.CustomName.Substring(0, 11) == "Label High ");
-            //lblHigh = lblHigh.OrderBy(l => int.Parse(l.CustomName.Substring(11))).ToList();
-
-            //Get(lblLow, l => l.CustomName.Length >= 10 && l.CustomName.Substring(0, 10) == "Label Low ");
-            //lblLow = lblLow.OrderBy(l => int.Parse(l.CustomName.Substring(10))).ToList();
-
-
             //lblMem = new List<IMyTextPanel>();
             //Get(lblMem, l => l.CustomName.Length >= 10 && l.CustomName.Substring(0, 10) == "Label Mem ");
             //lblMem = lblMem.OrderBy(l => int.Parse(l.CustomName.Substring(10))).ToList();
@@ -246,6 +311,89 @@ namespace IngameScript
             //UpdateLabels();
         }
 
+
+
+        bool NoteIsBright(int note, bool high, int l = -1)
+        {
+            var clip = g_session.CurClip;
+
+            if (ShowPiano)
+            { 
+                var chan = clip.CurrentChannel;
+                var pat  = clip.Patterns.IndexOf(clip.CurrentPattern);
+                var step = pat * g_nSteps;
+                        
+                if (chan.Notes.FindIndex(n =>
+                            note == n.Number
+                        && (      clip.PlayStep >= step + n.PatStep + n.ShOffset
+                               && clip.PlayStep <  step + n.PatStep + n.ShOffset + n.StepLength
+                            ||    step + n.PatStep >= clip.EditPos 
+                               && step + n.PatStep <  clip.EditPos + clip.EditStep)) > -1)
+                    return true;
+
+                if (   clip.Hold
+                    && g_notes.FindIndex(n =>
+                               note == n.Number
+                            && clip.PlayStep >= n.PatStep
+                            && clip.PlayStep <  n.PatStep + n.StepLength) > -1)
+                    return true;
+            }
+            else if (!high)
+            {
+                var step = l + clip.CurPat * g_nSteps;
+
+                var on = clip.CurrentChannel.Notes.Find(n => 
+                       n.PatStep >= l
+                    && n.PatStep <  l+1) != null;
+
+                if (   OK(clip.PlayStep)
+                    && step == (int)clip.PlayStep
+                    && clip.CurPat == clip.PlayPat) return !on;
+                else if (on)                        return true;
+            }
+
+            return false;
+        }
+
+
+        bool NoteIsDim(int note, bool high, int l = -1)
+        {
+            var clip = g_session.CurClip;
+            
+            if (ShowPiano)
+            { 
+                var chan = clip.CurrentChannel;
+                var pat  = clip.Patterns.IndexOf(clip.CurrentPattern);
+                var step = pat * g_nSteps;
+
+                for (int ch = 0; ch < g_nChans; ch++)
+                {
+                    var _chan = clip.CurrentPattern.Channels[ch];
+
+                    if (_chan.Notes.FindIndex(n =>
+                              note == n.Number
+                           && ch   == n.iChan
+                           && (   clip.PlayStep >= step + n.PatStep + n.ShOffset
+                               && clip.PlayStep <  step + n.PatStep + n.ShOffset + n.StepLength
+                        ||    step + n.PatStep >= clip.EditPos 
+                           && step + n.PatStep <  clip.EditPos + clip.EditStep)) > -1)
+                        return true;
+                }
+            }
+            else if (!high)
+            {
+                var step = l + clip.CurPat * g_nSteps;
+
+                var on = clip.CurrentChannel.Notes.Find(n => 
+                       n.PatStep >= l
+                    && n.PatStep <  l+1) != null;
+
+                if (clip.EditPos == step) return true;
+                //else c = l % 4 == 0 ? color2 : color0;
+            }
+
+            return false;
+        }
 
 
         //void UnmarkAllLabels()
@@ -768,7 +916,7 @@ namespace IngameScript
         //void UpdateHighLabels(Pattern pat, Channel chan)
         //{
         //    for (int h = 0; h < lblHigh.Count-1; h++)
-        //        UpdateLabel(pat, chan, lblHigh[h], HighToNote(h));//num);
+        //        UpdateLabel(pat, chan, lblHigh[h], HighToNote(h));
         //}
 
 
@@ -780,7 +928,7 @@ namespace IngameScript
         //        UpdateLabel(lblLow[15], g_session.CurClip.HalfSharp);
 
         //    for (int l = 0; l < lblLow.Count-1; l++)
-        //        UpdateLabel(pat, chan, lblLow[l], LowToNote(l));//num);
+        //        UpdateLabel(pat, chan, lblLow[l], LowToNote(l));
         //}
 
 
@@ -882,21 +1030,21 @@ namespace IngameScript
         //}
 
 
-        //static void UpdateEditLabel(IMyTextPanel light, bool b)
-        //{
-        //    if (light == null) return;
+        static void UpdateEditLabel(IMyTextPanel light, bool b)
+        {
+            if (light == null) return;
 
-        //    if (b)
-        //    {
-        //        light.FontColor       = redColor0;
-        //        light.BackgroundColor = redColor6;
-        //    }
-        //    else
-        //    {
-        //        light.FontColor       = redColor6;
-        //        light.BackgroundColor = redColor0;
-        //    }
-        //}
+            if (b)
+            {
+                light.FontColor       = redColor0;
+                light.BackgroundColor = redColor6;
+            }
+            else
+            {
+                light.FontColor       = redColor6;
+                light.BackgroundColor = redColor0;
+            }
+        }
 
 
         //static void UpdateHoldLabel() 

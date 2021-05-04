@@ -1,4 +1,6 @@
-﻿using Sandbox.ModAPI.Ingame;
+﻿using System;
+using VRageMath;
+using Sandbox.ModAPI.Ingame;
 
 
 namespace IngameScript
@@ -9,20 +11,24 @@ namespace IngameScript
         {
             public delegate bool CondFunc();
 
-            public IMyTextPanel Panel;
+            public IMyTextPanel        Panel;
+                                        
+            public CondFunc            BrightCondition,
+                                       DimCondition;
 
-            public CondFunc     BrightCondition,
-                                DimCondition;
+            public Action<Label, bool> UpdateFunc;
 
-          //public bool         NeedsUpdate;
+          //public bool                NeedsUpdate;
 
 
-            public Label(IMyTextPanel panel, CondFunc condBright, CondFunc condDim, bool fast = false)
+            public Label(bool fast, IMyTextPanel panel, CondFunc condBright, CondFunc condDim, Action<Label, bool> updateFunc = null)
             {
                 Panel           = panel;
 
                 BrightCondition = condBright;
                 DimCondition    = condDim;
+
+                UpdateFunc      = updateFunc;
 
               //NeedsUpdate     = true;
 
@@ -33,9 +39,11 @@ namespace IngameScript
 
             public void Update()
             {
-                Update(
-                    BrightCondition(), 
-                    DimCondition());
+                var bCond = BrightCondition();
+                var dCond = bCond ? false : DimCondition();
+
+                if (UpdateFunc != null) UpdateFunc(this, bCond);
+                else                    Update(bCond, dCond);
             }
 
 

@@ -7,8 +7,7 @@
             public string Save()
             {
                 return
-                      N(Name.Replace("\n", "\u0085"))
-                    + N(SaveConfig())
+                        SaveConfig()
                     + N(SaveChords())
                     + N(SaveMems())
                     + N(SavePatterns())
@@ -64,37 +63,38 @@
             string SaveConfig()
             {
                 return
-                      WS(SaveToggles())
+                      Name.Replace("\n", "\u0085")
+                    + PS(SaveToggles())
 
-                    + WS(PlayTime)
-                    + WS(PlayPat)
-                    + WS(CueNext)
+                    + P (PlayTime == long_NaN ? "?" : S(PlayTime))
+                    + PS(PlayPat)
+                    + PS(CueNext)
 
-                    + WS(CurPat)         
-                    + WS(CurChan)        
+                    + PS(CurPat)         
+                    + PS(CurChan)        
 
-                    + WS(SelChan)        
-                    + WS(CurSrc)
+                    + PS(SelChan)        
+                    + PS(CurSrc)
 
                     + W (CurSet > -1 ? CurSetting.GetPath(CurSrc) : "")
 
-                    + WS(EditStep)
-                    + WS(EditLength)     
+                    + PS(EditStep)
+                    + PS(EditLength)     
 
-                    + WS(CurNote)      
+                    + PS(CurNote)      
 
-                    + WS(Chord)        
-                    + WS(ChordSpread)
+                    + PS(Chord)        
+                    + PS(ChordSpread)
                 
-                    + WS(SongOff)        
-                    + WS(InstOff)        
-                    + WS(SrcOff )
+                    + PS(SongOff)        
+                    + PS(InstOff)        
+                    + PS(SrcOff )
 
-                    + WS(Solo)
+                    + PS(Solo)
 
-                    + WS(Volume)
+                    + PS(Volume)
 
-                    +  S(ColorIndex);
+                    + PS(ColorIndex);
             }
 
 

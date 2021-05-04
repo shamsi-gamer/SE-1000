@@ -15,7 +15,8 @@
             public void SaveSession()
             {
                 var state = 
-                       S(TicksPerStep)
+                      Name
+                    + PS(TicksPerStep)
                     + PS(Tracks.IndexOf(CurClip.Track))
                     + PS(CurClip.Track.Clips.IndexOf(CurClip));
 
@@ -43,30 +44,23 @@
 
                 for (int t = 0; t < Tracks.Count; t++)
                 {
-                    var track = Tracks[t];
-
-                    var strTrack = S(track.Clips.Count);
-
-                    foreach (var i in track.Indices)
-                        strTrack += PS(i);
-
-                    tracks += PN(N(strTrack));
-                    tracks += SaveClips(track);
+                    if (t > 0) tracks += "\n";
+                    tracks += Tracks[t].Save();
                 }
 
                 pnlStorageTracks.WriteText(tracks);
             }
 
 
-            string SaveClips(Track track)
-            {
-                var clips = "";
+            //string SaveClips(Track track)
+            //{
+            //    var clips = "";
 
-                foreach (var clip in track.Clips)
-                    clips += PN(clip.Save());
+            //    foreach (var clip in track.Clips)
+            //        clips += PN(clip.Save());
 
-                return clips;
-            }
+            //    return clips;
+            //}
         }
     }
 }
