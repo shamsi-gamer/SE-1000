@@ -158,7 +158,7 @@ namespace IngameScript
             }
 
 
-            public static Channel Load(string[] data, ref int i, out int index, Pattern pat)
+            public static Channel Load(Session session, string[] data, ref int i, out int index, Pattern pat)
             {
                 index           = int.Parse(data[i++]);
 

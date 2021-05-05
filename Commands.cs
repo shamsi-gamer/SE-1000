@@ -86,7 +86,7 @@ namespace IngameScript
 
                 //g_sampleValid = F; 
                 
-                //MarkLabel(lblDuplicate, false);
+                ////MarkLabel(lblDuplicate, false);
             }
             else if (g_session.CurClip.SelChan > -1)
             {
@@ -109,7 +109,7 @@ namespace IngameScript
 
                 //g_sampleValid = F; 
                 
-                //MarkLabel(lblDuplicate);
+                ////MarkLabel(lblDuplicate);
             }
         }
 

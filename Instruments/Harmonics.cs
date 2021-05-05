@@ -277,7 +277,7 @@ namespace IngameScript
             }
 
 
-            public static Harmonics Load(string[] data, ref int i, Instrument inst, int iSrc)
+            public static Harmonics Load(Session session, string[] data, ref int i, Instrument inst, int iSrc)
             {
                 var tag = data[i++];
 
@@ -286,7 +286,7 @@ namespace IngameScript
                     iSrc > -1 ? inst.Sources[iSrc] : null);
 
                 for (int j = 0; j < hrm.Tones.Length; j++)
-                    hrm.Tones[j] = Parameter.Load(data, ref i, inst, iSrc, hrm, hrm.Tones[j]);
+                    hrm.Tones[j] = Parameter.Load(session, data, ref i, inst, iSrc, hrm, hrm.Tones[j]);
                 
                 hrm.CurPreset = (Preset)int.Parse(data[i++]);
                 hrm.CurTone   =         int.Parse(data[i++]);

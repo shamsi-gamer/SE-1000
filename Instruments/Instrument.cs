@@ -194,7 +194,7 @@ namespace IngameScript
             }
 
 
-            public static Instrument Load(string[] lines, ref int line)
+            public static Instrument Load(Session session, string[] lines, ref int line)
             {
                 var data = lines[line++].Split(';');
                 var i    = 0;
@@ -205,7 +205,7 @@ namespace IngameScript
 
                 var nSources = int.Parse(data[i++]);
 
-                inst.Volume = Parameter.Load(data, ref i, inst, -1, null);
+                inst.Volume = Parameter.Load(session, data, ref i, inst, -1, null);
 
                 while (i < data.Length
                     && (   data[i] == strTune 
@@ -215,15 +215,15 @@ namespace IngameScript
                 {
                     switch (data[i])
                     { 
-                        case strTune: inst.Tune     = Tune    .Load(data, ref i, inst, -1); break;
-                        case strFlt:  inst.Filter   = Filter  .Load(data, ref i, inst, -1); break;
-                        case strDel:  inst.Delay    = Delay   .Load(data, ref i, inst, -1); break;
-                        case strArp:  inst.Arpeggio = Arpeggio.Load(data, ref i, inst, -1); break;
+                        case strTune: inst.Tune     = Tune    .Load(session, data, ref i, inst, -1); break;
+                        case strFlt:  inst.Filter   = Filter  .Load(session, data, ref i, inst, -1); break;
+                        case strDel:  inst.Delay    = Delay   .Load(session, data, ref i, inst, -1); break;
+                        case strArp:  inst.Arpeggio = Arpeggio.Load(session, data, ref i, inst, -1); break;
                     }
                 }
 
                 for (int j = 0; j < nSources; j++)
-                    Source.Load(lines, ref line, inst, j);
+                    Source.Load(session, lines, ref line, inst, j);
 
                 return inst;
             }

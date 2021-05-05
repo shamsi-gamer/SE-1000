@@ -162,7 +162,7 @@ namespace IngameScript
                 case "load all":   Load();                          break;
                 case "save all":   Save();                          break;
                                                                     
-                //case "import":     ImportInstruments();             break;
+                case "import inst": g_session.ImportInstruments();  break;
                                                                     
                 case "play":       Play();                          break;
                 case "stop":       Stop();                          break;
@@ -170,23 +170,23 @@ namespace IngameScript
                 case "bpm up":     SetStepLength(-1);               break;
                 case "bpm down":   SetStepLength(1);                break;
                                                                         
-                case "del pat":    g_session.CurClip.DeletePattern();          break;
-                case "dup pat":    g_session.CurClip.DuplicatePattern();       break;
-                case "new pat":    g_session.CurClip.NewPattern();             break;
-                case "move pat":   g_session.CurClip.ToggleMovePattern();      break;
+                case "del pat":    g_session.CurClip.DeletePattern();     break;
+                case "dup pat":    g_session.CurClip.DuplicatePattern();  break;
+                case "new pat":    g_session.CurClip.NewPattern();        break;
+                case "move pat":   g_session.CurClip.ToggleMovePattern(); break;
                 case "prev pat":   g_session.CurClip.PrevPattern(g_session.CurClip.MovePat); break;
                 case "next pat":   g_session.CurClip.NextPattern(g_session.CurClip.MovePat); break;
                                                                     
-                case "loop":       g_session.CurClip.ToogleLoop();             break;
-                case "block":      g_session.CurClip.ToggleBlock();            break;
-                case "all pat":    g_session.CurClip.ToggleAllPatterns();      break;
-                case "auto cue":   g_session.CurClip.ToggleAutoCue();          break;
-                case "follow":     g_session.CurClip.ToggleFollow();           break;
+                case "loop":       g_session.CurClip.ToogleLoop();        break;
+                case "block":      g_session.CurClip.ToggleBlock();       break;
+                case "all pat":    g_session.CurClip.ToggleAllPatterns(); break;
+                case "auto cue":   g_session.CurClip.ToggleAutoCue();     break;
+                case "follow":     g_session.CurClip.ToggleFollow();      break;
                                                                         
                 case "new":        New();                           break;
                 case "dup":        Duplicate();                     break;
                 case "del":        Delete();                        break;
-                case "move":       g_session.CurClip.ToggleMove();             break;
+                case "move":       g_session.CurClip.ToggleMove();  break;
                 case "prev":       Move(-1);                        break;
                 case "next":       Move( 1);                        break;
                                                                     
@@ -203,13 +203,13 @@ namespace IngameScript
                                                                     
                 case "cmd1":       Command1();                      break;
                 case "cmd2":       Command2();                      break;
-                case "up":         Adjust(g_session.CurClip, CurSetting,  1);  break;
-                case "down":       Adjust(g_session.CurClip, CurSetting, -1);  break;
+                case "up":         Adjust(g_session.CurClip, CurSetting,  1); break;
+                case "down":       Adjust(g_session.CurClip, CurSetting, -1); break;
                 case "shift":      Shift();                         break;
                 case "cmd3":       Command3();                      break;
                                                                     
-                case "tr up":      SetTranspose(g_session.CurClip,  1);        break;
-                case "tr down":    SetTranspose(g_session.CurClip, -1);        break;
+                case "tr up":      SetTranspose(g_session.CurClip,  1);       break;
+                case "tr down":    SetTranspose(g_session.CurClip, -1);       break;
                                                                     
                 case "spread":     Spread();                        break;
 
@@ -237,11 +237,11 @@ namespace IngameScript
                 case "edit step":  ChangeEditStep();                break;
                 case "edit len":   ChangeEditLength();              break;
                                                                     
-                case "step":       Step(g_session.CurClip, g_session.CurClip.CurChan);    break;
-                case "hold":       Hold(g_session.CurClip);                    break;
-                                                                     
-                case "left":       Left(g_session.CurClip);                    break;
-                case "right":      Right(g_session.CurClip);                   break;
+                case "step":       Step(g_session.CurClip, g_session.CurClip.CurChan); break;
+                case "hold":       Hold(g_session.CurClip);         break;
+                                                                    
+                case "left":       Left(g_session.CurClip);         break;
+                case "right":      Right(g_session.CurClip);        break;
                                                              
                 case "random":     Random();                        break;
                                                                     
@@ -252,7 +252,7 @@ namespace IngameScript
                 case "noise":      NoiseEmitters();                 break;
                                                                     
                 case "sb":         g_session.CurClip.StartBlock(); g_session.CurClip.MovePatternOff(); break;
-                case "eb":         g_session.CurClip.EndBlock();                            break;
+                case "eb":         g_session.CurClip.EndBlock();    break;
                 case "cb":         g_session.CurClip.ClearBlock(); g_session.CurClip.MovePatternOff(); break;
                                                                         
                 case "rl":         SetLabelColor(0);                break;
@@ -266,8 +266,8 @@ namespace IngameScript
                 case "light":      ToggleLabel();                   break;
                 case "fold":       ToggleFold();                    break;
                                                                     
-                case "cue":        g_session.CurClip.Cue();                    break;
-                case "mem":        g_session.CurClip.Mem();                    break;
+                case "cue":        g_session.CurClip.Cue();         break;
+                case "mem":        g_session.CurClip.Mem();         break;
                                                                    
 
                 default:

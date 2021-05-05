@@ -65,7 +65,7 @@ namespace IngameScript
 
                     track.Indices.Add(line);
                 
-                    var clip = Clip.Load(lines, ref line);
+                    var clip = Clip.Load(session, lines, ref line);
 
                     if (clip != null) track.Clips.Add(clip); //, out curPath));
                     else              return null;

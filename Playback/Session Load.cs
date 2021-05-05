@@ -62,7 +62,7 @@ namespace IngameScript
                     SkipWhiteSpace(lines, ref line);
 
                     if (line < lines.Length)
-                        Instruments.Add(Instrument.Load(lines, ref line));
+                        Instruments.Add(Instrument.Load(this, lines, ref line));
                 }
 
             
@@ -70,21 +70,27 @@ namespace IngameScript
             }
 
 
-            //void ImportInstruments()
-            //{
-            //    LoadInstruments();
+            public void ImportInstruments()
+            {
+                LoadInstruments();
 
-            //    // set all instruments to first
-            
-            //    int first, last;
-            //    g_session.CurClip.GetCurPatterns(out first, out last);
+                // set all instruments to first
 
-            //    for (int p = first; p <= last; p++)
-            //    { 
-            //        for (int ch = 0; ch < g_nChans; ch++)
-            //            g_session.CurClip.Patterns[p].Channels[ch].Instrument = g_session.Instruments[0]; 
-            //    }
-            //}
+                foreach (var track in g_session.Tracks)
+                {
+                    foreach (var clip in track.Clips)
+                    { 
+                        int first, last;
+                        clip.GetCurPatterns(out first, out last);
+
+                        for (int p = first; p <= last; p++)
+                        {
+                            for (int ch = 0; ch < g_nChans; ch++)
+                                clip.Patterns[p].Channels[ch].Instrument = g_session.Instruments[0];
+                        }
+                    }
+                }
+            }
 
 
             bool LoadTracks()

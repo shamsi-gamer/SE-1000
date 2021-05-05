@@ -294,41 +294,41 @@ namespace IngameScript
         }}
 
 
-        IMyTextPanel GetLabelFromNote(int num)
+        Label GetLabelFromNote(int num)
         {
             num /= NoteScale;
             num -= 60;
             num -= g_session.CurClip.CurrentChannel.Transpose * 12;
 
-            //switch (num)
-            //{
-            //    case  0: return lblLow[ 0];
-            //    case  2: return lblLow[ 1];
-            //    case  4: return lblLow[ 2];
-            //    case  5: return lblLow[ 3];
-            //    case  7: return lblLow[ 4];
-            //    case  9: return lblLow[ 5];
-            //    case 11: return lblLow[ 6];
-            //    case 12: return lblLow[ 7];
-            //    case 14: return lblLow[ 8];
-            //    case 16: return lblLow[ 9];
-            //    case 17: return lblLow[10];
-            //    case 19: return lblLow[11];
-            //    case 21: return lblLow[12];
-            //    case 23: return lblLow[13];
-            //    case 24: return lblLow[14];
+            switch (num)
+            {
+                case  0: return lblLow[ 0];
+                case  2: return lblLow[ 1];
+                case  4: return lblLow[ 2];
+                case  5: return lblLow[ 3];
+                case  7: return lblLow[ 4];
+                case  9: return lblLow[ 5];
+                case 11: return lblLow[ 6];
+                case 12: return lblLow[ 7];
+                case 14: return lblLow[ 8];
+                case 16: return lblLow[ 9];
+                case 17: return lblLow[10];
+                case 19: return lblLow[11];
+                case 21: return lblLow[12];
+                case 23: return lblLow[13];
+                case 24: return lblLow[14];
 
-            //    case  1: return lblHigh[0];
-            //    case  3: return lblHigh[1];
-            //    case  6: return lblHigh[2];
-            //    case  8: return lblHigh[3];
-            //    case 10: return lblHigh[4];
-            //    case 13: return lblHigh[5];
-            //    case 15: return lblHigh[6];
-            //    case 18: return lblHigh[7];
-            //    case 20: return lblHigh[8];
-            //    case 22: return lblHigh[9];
-            //}
+                case  1: return lblHigh[0];
+                case  3: return lblHigh[1];
+                case  6: return lblHigh[2];
+                case  8: return lblHigh[3];
+                case 10: return lblHigh[4];
+                case 13: return lblHigh[5];
+                case 15: return lblHigh[6];
+                case 18: return lblHigh[7];
+                case 20: return lblHigh[8];
+                case 22: return lblHigh[9];
+            }
 
             return null;
         }
@@ -340,9 +340,9 @@ namespace IngameScript
             g_session.CurClip.Volume = MinMax(0, g_session.CurClip.Volume + dVol * mod, 2);
 
             //MarkLabel(
-            //    dv > 0 
-            //    ? lblMixerVolumeUp 
-            //    : lblMixerVolumeDown);
+                //dv > 0
+                //? lblMixerVolumeUp
+                //: lblMixerVolumeDown);
         }
 
 

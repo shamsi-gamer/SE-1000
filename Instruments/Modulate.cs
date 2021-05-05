@@ -241,9 +241,9 @@ namespace IngameScript
             }
 
 
-            public static Modulate Load(string[] data, ref int d, Instrument inst, int iSrc, Setting parent)
+            public static Modulate Load(Session session, string[] data, ref int d, Instrument inst, int iSrc, Setting parent)
             {
-                var tag         = data[d++];
+                var tag = data[d++];
 
                 var mod = new Modulate(
                     parent, 
@@ -259,7 +259,7 @@ namespace IngameScript
                     var modSrcIndex = int.Parse(data[d++]);
                     var modInst     = data[d++];
 
-                    var _inst = g_session.Instruments.Find(_i => _i.Name == modInst);
+                    var _inst = session.Instruments.Find(_i => _i.Name == modInst);
 
                     mod.SrcInstruments.Add(_inst);
                     mod.SrcSources    .Add(modSrcIndex > -1 ? _inst.Sources[modSrcIndex] : null);
@@ -267,9 +267,9 @@ namespace IngameScript
                 }
 
                 
-                mod.Amount  = Parameter.Load(data, ref d, inst, iSrc, mod, mod.Amount );
-                mod.Attack  = Parameter.Load(data, ref d, inst, iSrc, mod, mod.Attack );
-                mod.Release = Parameter.Load(data, ref d, inst, iSrc, mod, mod.Release);
+                mod.Amount  = Parameter.Load(session, data, ref d, inst, iSrc, mod, mod.Amount );
+                mod.Attack  = Parameter.Load(session, data, ref d, inst, iSrc, mod, mod.Attack );
+                mod.Release = Parameter.Load(session, data, ref d, inst, iSrc, mod, mod.Release);
 
                 return mod;
             }

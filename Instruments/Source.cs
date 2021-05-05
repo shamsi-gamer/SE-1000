@@ -329,7 +329,7 @@ namespace IngameScript
             }
 
 
-            public static void Load(string[] lines, ref int line, Instrument inst, int iSrc)
+            public static void Load(Session session, string[] lines, ref int line, Instrument inst, int iSrc)
             {
                 var data = lines[line++].Split(';');
                 var i    = 0;
@@ -340,7 +340,7 @@ namespace IngameScript
                 src.Oscillator = OscillatorFromType((OscType)int.Parse(data[i++]));
                 src.On         = data[i++] == "1";
 
-                src.Volume = Parameter.Load(data, ref i, inst, iSrc, null);
+                src.Volume = Parameter.Load(session, data, ref i, inst, iSrc, null);
 
                 while (i < data.Length
                     && (   data[i] == strOff
@@ -351,11 +351,11 @@ namespace IngameScript
                 { 
                     switch (data[i])
                     { 
-                        case strOff:  src.Offset    = Parameter.Load(data, ref i, inst, iSrc, null); break;
-                        case strTune: src.Tune      = Tune     .Load(data, ref i, inst, iSrc);       break;
-                        case strHrm:  src.Harmonics = Harmonics.Load(data, ref i, inst, iSrc);       break;
-                        case strFlt:  src.Filter    = Filter   .Load(data, ref i, inst, iSrc);       break;
-                        case strDel:  src.Delay     = Delay    .Load(data, ref i, inst, iSrc);       break;
+                        case strOff:  src.Offset    = Parameter.Load(session, data, ref i, inst, iSrc, null); break;
+                        case strTune: src.Tune      = Tune     .Load(session, data, ref i, inst, iSrc);       break;
+                        case strHrm:  src.Harmonics = Harmonics.Load(session, data, ref i, inst, iSrc);       break;
+                        case strFlt:  src.Filter    = Filter   .Load(session, data, ref i, inst, iSrc);       break;
+                        case strDel:  src.Delay     = Delay    .Load(session, data, ref i, inst, iSrc);       break;
                     }
                 }
             }

@@ -55,6 +55,9 @@ namespace IngameScript
                     lbl.Update();
             }
 
+            if (!TooComplex)
+                UnmarkAllLabels();
+
             //if (g_playing) 
             //    UpdateKeyLabels();
         }

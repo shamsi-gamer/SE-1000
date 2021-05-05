@@ -89,10 +89,10 @@ namespace IngameScript
                 else if (h == 8) Flip(g_session.CurClip.CurChan, 8); 
                 else if (h == 9) Flip(g_session.CurClip.CurChan, 16);
 
-                //if (   h != 2
-                //    && h != 3
-                //    && h != 4)
-                //    MarkLabel(lblHigh[h]);
+                if (   h != 2
+                    && h != 3
+                    && h != 4)
+                    lblHigh[h].Mark();
             }
         }
 

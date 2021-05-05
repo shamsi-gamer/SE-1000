@@ -8,7 +8,7 @@ namespace IngameScript
     {
         public partial class Clip
         {
-            public static Clip Load(string[] lines, ref int line)//, out string curPath)
+            public static Clip Load(Session session, string[] lines, ref int line)//, out string curPath)
             { 
                 //curPath     = "";
 
@@ -18,11 +18,11 @@ namespace IngameScript
                 var clip = new Clip(null);
 
                 var cfg = lines[line++].Split(';');
-                if (!clip.LoadConfig  (cfg)) return null;//, out curPath)) return null;
-                if (!clip.LoadChords  (lines[line++]))    return null;
-                if (!clip.LoadMems    (lines[line++]))    return null;
-                if (!clip.LoadPatterns(lines, ref line))  return null;
-                if (!clip.LoadBlocks  (lines[line++]))    return null;
+                if (!clip.LoadConfig  (cfg))                      return null;//, out curPath)) return null;
+                if (!clip.LoadChords  (lines[line++]))            return null;
+                if (!clip.LoadMems    (lines[line++]))            return null;
+                if (!clip.LoadPatterns(session, lines, ref line)) return null;
+                if (!clip.LoadBlocks  (lines[line++]))            return null;
 
                 clip.UpdateAutoKeys();
 
@@ -121,14 +121,14 @@ namespace IngameScript
             }
 
 
-            bool LoadPatterns(string[] lines, ref int line)
+            bool LoadPatterns(Session session, string[] lines, ref int line)
             {
                 int nPats = int.Parse(lines[line++]);
 
                 for (int p = 0; p < nPats; p++)
                 {
                     int i = 0;
-                    var pat = Pattern.Load(lines[line++].Split(';'), ref i);
+                    var pat = Pattern.Load(session, lines[line++].Split(';'), ref i);
                     if (pat == null) return false;
 
                     pat.Clip = this;

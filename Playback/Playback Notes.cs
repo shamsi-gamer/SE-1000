@@ -148,8 +148,8 @@ namespace IngameScript
 
             AddNoteAndSounds(new Note(chan, ch, 1, num, patStep, len));
 
-            //if (clip.Piano)
-            //    MarkLabel(GetLabelFromNote(num));
+            if (clip.Piano)
+                GetLabelFromNote(num).Mark();
         }
 
 
@@ -157,7 +157,6 @@ namespace IngameScript
         {
             if (TooComplex)
                 return;
-
 
             var pat = clip.Patterns[clip.PlayPat];
 

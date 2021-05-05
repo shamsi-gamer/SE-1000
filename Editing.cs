@@ -48,7 +48,7 @@ namespace IngameScript
 
                 MoveEdit(clip, 1, true);
 
-                //MarkLabel(lblStep);
+                ////MarkLabel(lblStep);
             }
         }
 
@@ -416,7 +416,7 @@ namespace IngameScript
             if (g_session.CurClip.EditStep >= g_steps.Length - 1) // ignore the super long step
                 g_session.CurClip.EditStep = 1;
 
-            //MarkLabel(lblEditStep);
+            ////MarkLabel(lblEditStep);
             //UpdateEditLabels();
         }
 
@@ -428,7 +428,7 @@ namespace IngameScript
             if (g_session.CurClip.EditLength >= g_steps.Length)
                 g_session.CurClip.EditLength = 0;
 
-            //MarkLabel(lblEditLength);
+            ////MarkLabel(lblEditLength);
             //UpdateEditLabels();
 
             //g_sampleValid = F;
@@ -440,7 +440,7 @@ namespace IngameScript
             MoveEdit(clip, -1);
 
             //if (OK(clip.EditPos))
-            //    MarkLabel(lblLeft);
+            //    //MarkLabel(lblLeft);
         }
 
 
@@ -450,7 +450,7 @@ namespace IngameScript
 
             //if (   OK(clip.EditPos)
             //    || IsCurSetting(typeof(Harmonics)))
-            //    MarkLabel(lblRight);
+                //MarkLabel(lblRight);
         }
 
 
@@ -591,9 +591,9 @@ namespace IngameScript
             else                SetShuffle(clip.CurChan, d);
 
             //MarkLabel(
-            //    d > 0
-            //    ? lblTransposeUp
-            //    : lblTransposeDown);
+                //d > 0
+                //? lblTransposeUp
+                //: lblTransposeDown);
 
             //UpdateOctaveLabel();
         }

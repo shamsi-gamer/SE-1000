@@ -9,7 +9,7 @@ namespace IngameScript
     {
         public class Label
         {
-            public delegate bool CondFunc();
+            public delegate bool CondFunc(Label label);
 
             public IMyTextPanel        Panel;
                                         
@@ -18,10 +18,12 @@ namespace IngameScript
 
             public Action<Label, bool> UpdateFunc;
 
+            public int                 Data;
+
           //public bool                NeedsUpdate;
 
 
-            public Label(bool fast, IMyTextPanel panel, CondFunc condBright, CondFunc condDim, Action<Label, bool> updateFunc = null)
+            public Label(bool fast, IMyTextPanel panel, CondFunc condBright, CondFunc condDim, Action<Label, bool> updateFunc = null, int data = 0)
             {
                 Panel           = panel;
 
@@ -29,6 +31,8 @@ namespace IngameScript
                 DimCondition    = condDim;
 
                 UpdateFunc      = updateFunc;
+
+                Data            = data;
 
               //NeedsUpdate     = true;
 
@@ -39,15 +43,15 @@ namespace IngameScript
 
             public void Update()
             {
-                var bCond = BrightCondition();
-                var dCond = bCond ? false : DimCondition();
+                var bCond = BrightCondition(this);
+                var dCond = bCond ? false : DimCondition(this);
 
                 if (UpdateFunc != null) UpdateFunc(this, bCond);
                 else                    Update(bCond, dCond);
             }
 
 
-            public void Update(string text, float size, float pad)
+            public void Update(string text, float size = 10, float pad = 10)
             {
                 Panel.WriteText(" ");
 
@@ -75,7 +79,7 @@ namespace IngameScript
 
             public void Mark(bool on = true)
             {
-                g_lightsPressed.Add(Panel);
+                g_labelsPressed.Add(this);
                 Update(on);
             }
 
@@ -83,7 +87,7 @@ namespace IngameScript
             public void Unmark(bool on = false, bool half = false)
             {
                 Update(on, half);
-                _lightsPressed.Remove(Panel);
+                _labelsPressed.Remove(this);
             }
         }
     }

@@ -53,8 +53,8 @@ namespace IngameScript
         static List<int>          g_clipPressed   = new List<int>();
         static List<int>          g_mainPressed   = new List<int>();
 
-        static List<IMyTextPanel> g_lightsPressed = new List<IMyTextPanel>();
-        static List<IMyTextPanel>  _lightsPressed = new List<IMyTextPanel>();
+        static List<Label>        g_labelsPressed = new List<Label>();
+        static List<Label>         _labelsPressed = new List<Label>();
 
         static List<Label>        g_fastLabels    = new List<Label>();
         static List<Label>        g_slowLabels    = new List<Label>();
@@ -85,83 +85,8 @@ namespace IngameScript
 
         void InitLabels()
         {
-            lblPlay = new Label(false, Lbl("Play"), 
-                () => g_playing, 
-                () => g_playing);
-
-            lblStop = new Label(false, Lbl("Stop"), 
-                () => g_playing, 
-                () => g_playing);
-
-            lblEdit = new Label(false, Lbl("Edit"), 
-                () => OK(g_session.CurClip.EditPos), 
-                () => false,
-                (l, b) => 
-                {
-                    l.Panel.FontColor       = b ? redColor6 : redColor0;
-                    l.Panel.BackgroundColor = b ? redColor0 : redColor6;
-                });
-
-
-
-            lblHigh = new List<Label>();
-
-            var high = new List<IMyTextPanel>();
-            Get(high, l => l.CustomName.Length >= 11 && l.CustomName.Substring(0, 11) == "Label High ");
-            high = high.OrderBy(l => int.Parse(l.CustomName.Substring(11))).ToList();
-
-            for (int h = 0; h < high.Count-1; h++)
-            {
-                lblHigh.Add(new Label(true, high[h], 
-                    () => NoteIsBright(HighToNote(h), true),
-                    () => NoteIsDim   (HighToNote(h), true)));
-            }
-
-            lblHigh.Add(new Label(false, high[10],
-                () => g_lightsPressed.Contains(high[10]),
-                () => false,
-                (l, b) => 
-                {
-                    if (ShowPiano)
-                    {
-                        l.Update(
-                              "     ║  ███  ║       ║  ███\n"
-                            + "     ║       ║       ║     \n"
-                            + "═════╬═══════╬═══════╬═════\n"
-                            + "     ║       ║       ║     \n"
-                            + " ███ ║  ███  ║  ███  ║  ███\n",
-                            1.7f,
-                            17);
-                    }
-                    else
-                    {
-                        l.Update(
-                              "█ █ ██ █ █ █\n"
-                            + "█▄█▄██▄█▄█▄█\n"
-                            + "▀▀▀▀▀▀▀▀▀▀▀▀\n",
-                            3.7f,
-                            10);
-                    }
-                }));
-
-
-            lblLow  = new List<Label>();
-
-            var low = new List<IMyTextPanel>();
-            Get(low, l => l.CustomName.Length >= 10 && l.CustomName.Substring(0, 10) == "Label Low ");
-            low = low.OrderBy(l => int.Parse(l.CustomName.Substring(10))).ToList();
-
-            for (int l = 0; l < low.Count-1; l++)
-            {
-                lblLow.Add(new Label(true, low[l], 
-                    () => NoteIsBright(LowToNote(l), false),
-                    () => NoteIsDim   (LowToNote(l), false)));
-            }
-
-            lblLow.Add(new Label(false, low[15],
-                () => g_lightsPressed.Contains(low[15]),
-                () => false,
-                (l, b) => { l.Update(ShowPiano ? "‡" : " ", 8, 17); }));
+            InitTransportLabels();
+            InitPianoLabels();
 
 
             //lblOctave          = Lbl("Octave");
@@ -243,8 +168,155 @@ namespace IngameScript
             //lblMem = lblMem.OrderBy(l => int.Parse(l.CustomName.Substring(10))).ToList();
 
 
-            frontLight = Get("Front Light") as IMyReflectorLight;
+            frontLight   = Get("Front Light")              as IMyReflectorLight;
             warningLight = Get("Saturation Warning Light") as IMyInteriorLight;
+        }
+
+
+        void InitTransportLabels()
+        {
+            lblPlay = new Label(false, Lbl("Play"), 
+                lbl => g_playing, 
+                lbl => g_playing);
+
+            lblStop = new Label(false, Lbl("Stop"), 
+                lbl => g_playing, 
+                lbl => g_playing);
+
+            lblEdit = new Label(false, Lbl("Edit"), 
+                lbl => OK(g_session.CurClip.EditPos), 
+                lbl => false,
+                (lbl, b) => 
+                {
+                    lbl.Panel.FontColor       = b ? redColor0 : redColor6;
+                    lbl.Panel.BackgroundColor = b ? redColor6 : redColor0;
+                });
+        }
+
+
+        void InitPianoLabels()
+        {
+            InitPianoLabelsHigh();
+            InitPianoLabelsLow();
+        }
+
+
+        void InitPianoLabelsHigh()
+        {
+            lblHigh = new List<Label>();
+
+            var high = new List<IMyTextPanel>();
+            Get(high, l => l.CustomName.Length >= 11 && l.CustomName.Substring(0, 11) == "Label High ");
+            high = high.OrderBy(l => int.Parse(l.CustomName.Substring(11))).ToList();
+
+            for (int h = 0; h < high.Count-1; h++)
+            {
+                lblHigh.Add(new Label(true, high[h], 
+                    lbl => 
+                           g_labelsPressed.Contains(lbl) 
+                        || HighIsBright(lbl),
+                    lbl => NoteIsDim(HighToNote(lbl.Data), true),
+                    HighUpdateFunc, 
+                    h));
+            }
+
+            lblHigh.Add(new Label(false, high[10],
+                lbl => g_labelsPressed.Contains(lbl),
+                lbl => false,
+                PianoToggleFunc));
+        }
+
+
+        bool HighIsBright(Label lbl)
+        {
+            if (ShowPiano)
+                return NoteIsBright(HighToNote(lbl.Data), true);
+                        
+            else
+            { 
+                return 
+                       lbl.Data == 2 && g_session.CurClip.Pick
+                    || lbl.Data == 3 && g_session.CurClip.AllChan
+                    || lbl.Data == 4 && g_session.CurClip.RndInst;
+            }
+        }
+
+
+        void HighUpdateFunc(Label lbl, bool b)
+        {
+            if (ShowPiano)
+                lbl.Update(HighNoteName(lbl.Data, g_session.CurClip.HalfSharp), 10, 10); 
+
+            else
+            { 
+                switch (lbl.Data)
+                { 
+                case 0: lbl.Update("◄∙∙");                 break;
+                case 1: lbl.Update("∙∙►");                 break;
+                                                                       
+                case 2: lbl.Update("Pick");                break;
+                case 3: lbl.Update("All Ch", 7.6f, 19.5f); break;
+                case 4: lbl.Update("Inst");                break;
+                                                                       
+                case 5: lbl.Update("Rnd");                 break;
+                case 6: lbl.Update("Clr");                 break;
+                                                                       
+                case 7: lbl.Update("1/4");                 break;
+                case 8: lbl.Update("1/8");                 break;
+                case 9: lbl.Update("Flip");                break;
+                }
+            }
+        }
+
+
+        void PianoToggleFunc(Label lbl, bool b)
+        {
+            if (ShowPiano)
+            {
+                lbl.Update(
+                      "     ║  ███  ║       ║  ███\n"
+                    + "     ║       ║       ║     \n"
+                    + "═════╬═══════╬═══════╬═════\n"
+                    + "     ║       ║       ║     \n"
+                    + " ███ ║  ███  ║  ███  ║  ███\n",
+                    1.7f,
+                    17);
+            }
+            else
+            {
+                lbl.Update(
+                      "█ █ ██ █ █ █\n"
+                    + "█▄█▄██▄█▄█▄█\n"
+                    + "▀▀▀▀▀▀▀▀▀▀▀▀\n",
+                    3.7f,
+                    10);
+            }
+        }
+
+
+        void InitPianoLabelsLow()
+        {
+            lblLow = new List<Label>();
+
+            var low = new List<IMyTextPanel>();
+            Get(low, l => l.CustomName.Length >= 10 && l.CustomName.Substring(0, 10) == "Label Low ");
+            low = low.OrderBy(l => int.Parse(l.CustomName.Substring(10))).ToList();
+
+            for (int l = 0; l < low.Count-1; l++)
+            {
+                lblLow.Add(new Label(true, low[l],
+                    lbl => 
+                           g_labelsPressed.Contains(lbl)
+                        || NoteIsBright(LowToNote(-lbl.Data), false),
+                    lbl => NoteIsDim(LowToNote(-lbl.Data), false),
+                    (lbl, b) => { lbl.Update(ShowPiano ? LowNoteName(-lbl.Data, g_session.CurClip.HalfSharp) : " ", 10, 10); },
+                    -l));
+            }
+
+            lblLow.Add(new Label(false, low[15],
+                lbl => g_session.CurClip.HalfSharp,
+                lbl => false,
+                (lbl, b) => { lbl.Update(ShowPiano ? "‡" : " ", 8, 17); }));
         }
 
 
@@ -310,7 +382,6 @@ namespace IngameScript
 
             //UpdateLabels();
         }
-
 
 
         bool NoteIsBright(int note, bool high, int l = -1)
@@ -396,67 +467,68 @@ namespace IngameScript
         }
 
 
-        //void UnmarkAllLabels()
-        //{
-        //    var be  = g_session.CurClip.EditNotes.Count > 0;
-        //    var cur = g_session.CurClip.CurSrc > -1;
-        //    var crd = g_session.CurClip.ChordEdit;
-        //    var ch  = g_session.CurClip.SelChan > -1;
-        //    var mov = g_session.CurClip.MovePat;
-        //    var sh  = g_session.CurClip.Shift;
-        //    var set = g_session.CurClip.CurSet < 0;
+        void UnmarkAllLabels()
+        {
+            //var be  = g_session.CurClip.EditNotes.Count > 0;
+            //var cur = g_session.CurClip.CurSrc > -1;
+            //var crd = g_session.CurClip.ChordEdit;
+            //var ch  = g_session.CurClip.SelChan > -1;
+            //var mov = g_session.CurClip.MovePat;
+            //var sh  = g_session.CurClip.Shift;
+            //var set = g_session.CurClip.CurSet < 0;
 
 
-        //    if (_lightsPressed.Contains(lblLeft))      UnmarkLabel(lblLeft,  false, be);
-        //    if (_lightsPressed.Contains(lblRight))     UnmarkLabel(lblRight, false, be);
+            //if (_lightsPressed.Contains(lblLeft))      UnmarkLabel(lblLeft,  false, be);
+            //if (_lightsPressed.Contains(lblRight))     UnmarkLabel(lblRight, false, be);
 
-        //    if (_lightsPressed.Contains(lblUp))        UnmarkLabel(lblUp,   sh);
-        //    if (_lightsPressed.Contains(lblDown))      UnmarkLabel(lblDown, sh);
+            //if (_lightsPressed.Contains(lblUp))        UnmarkLabel(lblUp,   sh);
+            //if (_lightsPressed.Contains(lblDown))      UnmarkLabel(lblDown, sh);
 
-        //    if (_lightsPressed.Contains(lblNextPat))   UnmarkLabel(lblNextPat, mov);
-        //    if (_lightsPressed.Contains(lblPrevPat))   UnmarkLabel(lblPrevPat, mov);
+            //if (_lightsPressed.Contains(lblNextPat))   UnmarkLabel(lblNextPat, mov);
+            //if (_lightsPressed.Contains(lblPrevPat))   UnmarkLabel(lblPrevPat, mov);
 
-        //    if (_lightsPressed.Contains(lblNext))      UnmarkLabel(lblNext, g_move || cur, ch);
-        //    if (_lightsPressed.Contains(lblPrev))      UnmarkLabel(lblPrev, g_move || cur, ch);
+            //if (_lightsPressed.Contains(lblNext))      UnmarkLabel(lblNext, g_move || cur, ch);
+            //if (_lightsPressed.Contains(lblPrev))      UnmarkLabel(lblPrev, g_move || cur, ch);
 
-        //    if (_lightsPressed.Contains(lblBackOut))   UnmarkLabel(lblBack,  cur, ch);
-        //    if (_lightsPressed.Contains(lblBack))      UnmarkLabel(lblBack,  cur, ch);
-        //    if (_lightsPressed.Contains(lblEnter))     UnmarkLabel(lblEnter, cur && set, ch && set);
+            //if (_lightsPressed.Contains(lblBackOut))   UnmarkLabel(lblBack,  cur, ch);
+            //if (_lightsPressed.Contains(lblBack))      UnmarkLabel(lblBack,  cur, ch);
+            //if (_lightsPressed.Contains(lblEnter))     UnmarkLabel(lblEnter, cur && set, ch && set);
 
-        //    if (_lightsPressed.Contains(lblNew))       UnmarkLabel(lblNew,       cur, ch);
-        //    if (_lightsPressed.Contains(lblDuplicate)) UnmarkLabel(lblDuplicate, cur, ch);
-        //    if (_lightsPressed.Contains(lblDelete))    UnmarkLabel(lblDelete,    cur, ch);
+            //if (_lightsPressed.Contains(lblNew))       UnmarkLabel(lblNew,       cur, ch);
+            //if (_lightsPressed.Contains(lblDuplicate)) UnmarkLabel(lblDuplicate, cur, ch);
+            //if (_lightsPressed.Contains(lblDelete))    UnmarkLabel(lblDelete,    cur, ch);
 
-        //    if (_lightsPressed.Contains(lblChord1))    UnmarkLabel(lblChord1, crd && g_session.CurClip.Chord == 0, g_session.CurClip.Chords[0].Count > 0);
-        //    if (_lightsPressed.Contains(lblChord2))    UnmarkLabel(lblChord2, crd && g_session.CurClip.Chord == 1, g_session.CurClip.Chords[1].Count > 0);
-        //    if (_lightsPressed.Contains(lblChord3))    UnmarkLabel(lblChord3, crd && g_session.CurClip.Chord == 2, g_session.CurClip.Chords[2].Count > 0);
-        //    if (_lightsPressed.Contains(lblChord4))    UnmarkLabel(lblChord4, crd && g_session.CurClip.Chord == 3, g_session.CurClip.Chords[3].Count > 0);
+            //if (_lightsPressed.Contains(lblChord1))    UnmarkLabel(lblChord1, crd && g_session.CurClip.Chord == 0, g_session.CurClip.Chords[0].Count > 0);
+            //if (_lightsPressed.Contains(lblChord2))    UnmarkLabel(lblChord2, crd && g_session.CurClip.Chord == 1, g_session.CurClip.Chords[1].Count > 0);
+            //if (_lightsPressed.Contains(lblChord3))    UnmarkLabel(lblChord3, crd && g_session.CurClip.Chord == 2, g_session.CurClip.Chords[2].Count > 0);
+            //if (_lightsPressed.Contains(lblChord4))    UnmarkLabel(lblChord4, crd && g_session.CurClip.Chord == 3, g_session.CurClip.Chords[3].Count > 0);
 
-        //    if (_lightsPressed.Contains(lblCmd2))      UnmarkLabel(lblCmd2, false, copyChan != null);
-
-        //    foreach (var lbl in _lightsPressed)
-        //        UpdateLabel(lbl, false);
+            //if (_lightsPressed.Contains(lblCmd2))      UnmarkLabel(lblCmd2, false, copyChan != null);
 
 
-        //    _mixerPressed.Clear();
-        //    _infoPressed  .Clear();
-        //    _lightsPressed.Clear();
+            foreach (var lbl in _labelsPressed)
+                lbl.Update(false);
 
 
-        //    // mark for next cycle and clear pressed list
+            _mixerPressed .Clear();
+            _infoPressed  .Clear();
+            _labelsPressed.Clear();
 
-        //    _mixerPressed.AddRange(g_mixerPressed);
-        //    g_mixerPressed.Clear();
 
-        //    _infoPressed.AddRange(g_infoPressed);
-        //    g_infoPressed.Clear();
+            // mark for next cycle and clear pressed list
 
-        //    g_clipPressed.Clear();
-        //    g_mainPressed.Clear();
+            _mixerPressed.AddRange(g_mixerPressed);
+            g_mixerPressed.Clear();
 
-        //    _lightsPressed.AddRange(g_lightsPressed);
-        //    g_lightsPressed.Clear();
-        //}
+            _infoPressed.AddRange(g_infoPressed);
+            g_infoPressed.Clear();
+
+            g_clipPressed.Clear();
+            g_mainPressed.Clear();
+
+            _labelsPressed.AddRange(g_labelsPressed);
+            g_labelsPressed.Clear();
+        }
 
 
         //void UpdateLabels()
@@ -558,10 +630,10 @@ namespace IngameScript
 
         //void MarkChordLabel(int chord)
         //{
-        //         if (chord == 1 && g_session.CurClip.Chords[0].Count > 0) MarkLabel(lblChord1);
-        //    else if (chord == 2 && g_session.CurClip.Chords[1].Count > 0) MarkLabel(lblChord2);
-        //    else if (chord == 3 && g_session.CurClip.Chords[2].Count > 0) MarkLabel(lblChord3);
-        //    else if (chord == 4 && g_session.CurClip.Chords[3].Count > 0) MarkLabel(lblChord4);
+        //         if (chord == 1 && g_session.CurClip.Chords[0].Count > 0) //MarkLabel(lblChord1);
+        //    else if (chord == 2 && g_session.CurClip.Chords[1].Count > 0) //MarkLabel(lblChord2);
+        //    else if (chord == 3 && g_session.CurClip.Chords[2].Count > 0) //MarkLabel(lblChord3);
+        //    else if (chord == 4 && g_session.CurClip.Chords[3].Count > 0) //MarkLabel(lblChord4);
         //}
 
 

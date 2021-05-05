@@ -14,7 +14,7 @@
             for (int ch = 0; ch < g_nChans; ch++)
                 EnableChannel(ch, on);
 
-            //MarkLabel(
+            ////MarkLabel(
             //    on
             //    ? lblMixerAll
             //    : lblMixerMuteAll);
