@@ -60,10 +60,10 @@ namespace IngameScript
                 {
                     chord.Sort();
 
-                    var oldLength = clip.EditLength;
-                    clip.EditLength = Math.Min(clip.EditLength, g_steps.Length-2);
+                    var oldLength = clip.EditLengthIndex;
+                    clip.EditLengthIndex = Math.Min(clip.EditLengthIndex, g_steps.Length-2);
                     PlayNote(clip, chord[0], chord, clip.CurChan);
-                    clip.EditLength = oldLength;
+                    clip.EditLengthIndex = oldLength;
                 }
             }
             else if (clip.Piano)
@@ -127,10 +127,10 @@ namespace IngameScript
                 {
                     chord.Sort();
 
-                    var oldLength = g_session.CurClip.EditLength;
-                    g_session.CurClip.EditLength = Math.Min(g_session.CurClip.EditLength, g_steps.Length-2);
+                    var oldLength = g_session.CurClip.EditLengthIndex;
+                    g_session.CurClip.EditLengthIndex = Math.Min(g_session.CurClip.EditLengthIndex, g_steps.Length-2);
                     PlayNote(g_session.CurClip, chord[0], chord, g_session.CurClip.CurChan);
-                    g_session.CurClip.EditLength = oldLength;
+                    g_session.CurClip.EditLengthIndex = oldLength;
                 }
 
                 //UpdateChordLabels();
@@ -182,7 +182,7 @@ namespace IngameScript
                     var notes = GetChordNotes(g_session.CurClip.CurNote);
 
                     for (int n = 0; n < notes.Count; n++)
-                        chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordSpread(n), g_session.CurClip.EditLength));
+                        chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordSpread(n), g_session.CurClip.EditLengthIndex));
                 }
             }
             else if (g_session.CurClip.Pick)
@@ -240,7 +240,7 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.PatStep += Math.Min(g_session.CurClip.EditStep, 1);
+                        note.PatStep += Math.Min(g_session.CurClip.EditStepIndex, 1);
 
                         if (note.PatStep >= g_nSteps)
                             spill.Add(note);
@@ -265,7 +265,7 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.PatStep -= Math.Min(g_session.CurClip.EditStep, 1);
+                        note.PatStep -= Math.Min(g_session.CurClip.EditStepIndex, 1);
 
                         if (note.PatStep < 0)
                             spill.Add(note);

@@ -16,15 +16,17 @@ namespace IngameScript
                                     lblOctaveUp, lblOctaveDown,
                                     lblLeft, lblRight,
                                     lblStep, lblHold, 
-                                    lblEditStep, lblEditLength;
+                                    lblEditStep, lblEditLength,
+                                    lblLoop, lblBlock, lblAllPatterns, lblFollow, lblAutoCue,
+                                    lblNew, lblDuplicate, lblDelete,
+                                    lblMove, lblPrev, lblNext, 
+                                    lblEnter, lblBack, lblBackOut;
+
+        //                          lblMovePat, 
         //                          lblMixerVolumeUp, lblMixerVolumeDown, lblMixerAll, lblMixerMuteAll,
         //                          lblPlay, lblStop,
         //                          lblChord, lblChord1, lblChord2, lblChord3, lblChord4, lblChordEdit,
-        //                          lblLoop, lblBlock, 
-        //                          lblAllPatterns, lblMovePat, lblFollow,
-        //                          lblMixerShift, lblClips, lblMemSet, lblAutoCue, lblMemory,
-        //                          lblPrev, lblNext, lblMove, lblEnter, lblBack, lblBackOut,
-        //                          lblNew, lblDuplicate, lblDelete,
+        //                          lblMixerShift, lblClips, lblMemSet, lblMemory,
         //                          lblCmd1, lblCmd2, lblCmd3,
         //                          lblSpread, lblRandom,
         //                          lblUp, lblDown, lblShift, 
@@ -62,9 +64,9 @@ namespace IngameScript
 
         void SetLabelColor(int iCol)
         {
-            g_session.CurClip.ColorIndex = MinMax(0, iCol, 6);
+            CurClip.ColorIndex = MinMax(0, iCol, 6);
 
-            switch (g_session.CurClip.ColorIndex)
+            switch (CurClip.ColorIndex)
             {
                 case 0: SetLabelColor(new Color(255,   0,   0), 0.35f); break;
                 case 1: SetLabelColor(new Color(255,  92,   0), 0.35f); break;
@@ -88,6 +90,8 @@ namespace IngameScript
             InitTransportLabels();
             InitEditLabels();
             InitPianoLabels();
+            InitToggleLabels();
+            InitNavigationLabels();
 
             //lblOctave          = Lbl("Octave");
             //lblShuffle         = Lbl("Shuffle");
@@ -96,35 +100,17 @@ namespace IngameScript
             //lblMixerAll        = Lbl("M Solo R");
             //lblMixerMuteAll    = Lbl("M Mute R");
 
-            //lblEdit            = Lbl("Edit");
-
-            //lblPlay            = Lbl("Play");
-            //lblStop            = Lbl("Stop");
-
             //lblPrevPat         = Lbl("Prev Pattern");
             //lblNextPat         = Lbl("Next Pattern");
 
-            //lblLeft            = Lbl("Left");
-            //lblRight           = Lbl("Right");
-            //lblEditStep        = Lbl("Edit Step");
-            //lblEditLength      = Lbl("Edit Length");
 
-            //lblLoop            = Lbl("Loop");
-            //lblBlock           = Lbl("Block");
-            //lblAllPatterns     = Lbl("All Patterns");
             //lblMovePat         = Lbl("Move Pattern");
-            //lblAutoCue         = Lbl("Auto Cue");
-            //lblFollow          = Lbl("Follow");
 
             //lblMixerShift      = Lbl("M Shift");
             //lblClips           = Lbl("Clips");
 
             //lblMemSet          = Lbl("MemSet");
             //lblMemory          = Lbl("Mem");
-            //lblStep            = Lbl("Step");
-            //lblHold            = Lbl("Hold");
-            //lblTransposeUp     = Lbl("Transpose Up");
-            //lblTransposeDown   = Lbl("Transpose Down");
 
             //lblChord           = Lbl("Chord");
             //lblChord1          = Lbl("Chord 1");
@@ -132,16 +118,6 @@ namespace IngameScript
             //lblChord3          = Lbl("Chord 3");
             //lblChord4          = Lbl("Chord 4");
             //lblChordEdit       = Lbl("Chord Edit");
-
-            //lblPrev            = Lbl("Prev");
-            //lblNext            = Lbl("Next");
-            //lblEnter           = Lbl("Enter");
-            //lblBack            = Lbl("Back");
-            //lblBackOut         = Lbl("Back Out");
-            //lblMove            = Lbl("Move");
-            //lblNew             = Lbl("New");
-            //lblDuplicate       = Lbl("Dup");
-            //lblDelete          = Lbl(strDel);
 
             //lblCmd1            = Lbl("Command 1");
             //lblCmd2            = Lbl("Command 2");
@@ -179,7 +155,7 @@ namespace IngameScript
             lblStop = new Label(false, Lbl("Stop"), lbl => g_playing, lbl => g_playing);
 
             lblEdit = new Label(false, Lbl("Edit"),
-                lbl => OK(g_session.CurClip.EditPos), 
+                lbl => OK(CurClip.EditPos), 
                 null,
                 (lbl, b) => 
                 {
@@ -188,7 +164,7 @@ namespace IngameScript
                 });
 
             lblRec = new Label(false, Lbl("Rec"),
-                lbl => g_session.CurClip.Recording, 
+                lbl => CurClip.Recording, 
                 null,
                 (lbl, b) => 
                 {
@@ -205,42 +181,14 @@ namespace IngameScript
 
             lblStep  = new Label(false, Lbl("Step"));
 
-            lblHold = new Label(false, Lbl("Hold"),
+            lblHold  = new Label(false, Lbl("Hold"),
                 lbl =>    
-                       g_session.CurClip.Hold 
-                    && (  !OK(g_session.CurClip.EditPos) 
-                        || g_session.CurClip.EditNotes.Count > 0));
+                       CurClip.Hold 
+                    && (  !OK(CurClip.EditPos) 
+                        || CurClip.EditNotes.Count > 0));
 
             lblEditStep   = new Label(false, Lbl("Edit Step"),   UpdateEditStepLabel);
             lblEditLength = new Label(false, Lbl("Edit Length"), UpdateEditLengthLabel);
-        }
-
-
-        void UpdateEditStepLabel(Label lbl, bool b) 
-        {
-            var clip = g_session.CurClip;
-
-            var strStep = 
-                clip.EditStep == 0.5f
-                ? "½"
-                : S0(clip.EditStep);
-
-            lbl.Update("·· " + strStep);
-        }
-
-
-        void UpdateEditLengthLabel(Label lbl, bool b) 
-        {
-            var clip = g_session.CurClip;
-
-            string strLength;
-
-                 if (clip.EditLength == 0.25f )    strLength = "¼";
-            else if (clip.EditLength == 0.5f  )    strLength = "½";
-            else if (clip.EditLength == float_Inf) strLength = "∞";
-            else                                   strLength = S0(clip.EditLength);
-
-            lbl.Update("─ " + strLength);
         }
 
 
@@ -256,6 +204,63 @@ namespace IngameScript
         }
 
 
+        void InitToggleLabels()
+        {
+            lblLoop        = new Label(false, Lbl("Loop"),         lbl => CurClip.Loop);
+            lblBlock       = new Label(false, Lbl("Block"),        lbl => CurClip.Block);
+            lblAllPatterns = new Label(false, Lbl("All Patterns"), lbl => CurClip.AllPats);
+            lblFollow      = new Label(false, Lbl("Follow"),       lbl => CurClip.Follow);
+            lblAutoCue     = new Label(false, Lbl("Auto Cue"),     lbl => CurClip.AutoCue);
+        }
+
+
+        void InitNavigationLabels()
+        {
+            lblNew       = new Label(false, Lbl("New"),      NavIsBright, NavIsDim);
+            lblDuplicate = new Label(false, Lbl("Dup"),      NavIsBright, NavIsDim);
+            lblDelete    = new Label(false, Lbl(strDel),     NavIsBright, NavIsDim);
+
+            //UpdateLabel(lblMove, );
+            //UpdateLabel(lblPrev, g_move || CurSrc > -1,  SelChan > -1);
+            //UpdateLabel(lblNext, g_move || CurSrc > -1,  SelChan > -1);
+
+            lblMove      = new Label(false, Lbl("Move"),
+                lbl => g_move ^ (CurClip.CurSrc > -1), 
+                lbl => CurClip.SelChan > -1 && !g_move);
+
+            lblPrev      = new Label(false, Lbl("Prev"),     MoveIsBright, NavIsDim);
+            lblNext      = new Label(false, Lbl("Next"),     MoveIsBright, NavIsDim);
+
+            lblBackOut   = new Label(false, Lbl("Back Out"), NavIsBright, NavIsDim);
+            lblBack      = new Label(false, Lbl("Back"),     NavIsBright, NavIsDim);
+            lblEnter     = new Label(false, Lbl("Enter"),    NavIsBright, NavIsDim);
+        }
+
+
+        void UpdateEditStepLabel(Label lbl, bool b) 
+        {
+            var strStep = 
+                CurClip.EditStep == 0.5f
+                ? "½"
+                : S0(CurClip.EditStep);
+
+            lbl.Update("·· " + strStep);
+        }
+
+
+        void UpdateEditLengthLabel(Label lbl, bool b) 
+        {
+            string strLength;
+
+                 if (CurClip.EditStepLength == 0.25f )    strLength = "¼";
+            else if (CurClip.EditStepLength == 0.5f  )    strLength = "½";
+            else if (CurClip.EditStepLength == float_Inf) strLength = "∞";
+            else                                       strLength = S0(CurClip.EditStepLength);
+
+            lbl.Update("─ " + strLength);
+        }
+
+
         void InitPianoLabelsHigh()
         {
             lblHigh = new List<Label>();
@@ -265,7 +270,7 @@ namespace IngameScript
             high = high.OrderBy(l => int.Parse(l.CustomName.Substring(11))).ToList();
 
             for (int h = 0; h < 10; h++)
-                lblHigh.Add(new Label(true, high[h], IsPianoHighBright, IsPianoHighDim, UpdatePianoHigh, h));
+                lblHigh.Add(new Label(true, high[h], PianoHighIsBright, PianoHighIsDim, UpdatePianoHigh, h));
 
             lblHigh.Add(new Label(false, high[10],
                 lbl => IsPressed(lbl),
@@ -274,7 +279,7 @@ namespace IngameScript
         }
 
 
-        bool IsPianoHighBright(Label lbl)
+        bool PianoHighIsBright(Label lbl)
         {
             return
                 ShowPiano
@@ -283,7 +288,7 @@ namespace IngameScript
         }
 
 
-        bool IsPianoHighDim(Label lbl)
+        bool PianoHighIsDim(Label lbl)
         {
             return 
                    ShowPiano 
@@ -300,21 +305,21 @@ namespace IngameScript
             low = low.OrderBy(l => int.Parse(l.CustomName.Substring(10))).ToList();
 
             for (int l = 0; l < low.Count; l++)
-                lblLow.Add(new Label(true, low[l], IsPianoLowBright, IsPianoLowDim, UpdatePianoLow, -l));
+                lblLow.Add(new Label(true, low[l], PianoLowIsBright, PianoLowIsDim, UpdatePianoLow, -l));
         }
 
 
-        bool IsPianoLowBright(Label lbl)
+        bool PianoLowIsBright(Label lbl)
         {
             return
                 ShowPiano
-                ?    -lbl.Data == 15 && g_session.CurClip.HalfSharp
+                ?    -lbl.Data == 15 && CurClip.HalfSharp
                   || NoteIsBright(LowToNote(-lbl.Data), false)
                 : StepIsBright(lbl);
         }
 
 
-        bool IsPianoLowDim(Label lbl)
+        bool PianoLowIsDim(Label lbl)
         {
             return
                 ShowPiano
@@ -327,7 +332,7 @@ namespace IngameScript
         {
             if (ShowPiano)
             {
-                if (-lbl.Data < 15) lbl.Update(LowNoteName(-lbl.Data, g_session.CurClip.HalfSharp));
+                if (-lbl.Data < 15) lbl.Update(LowNoteName(-lbl.Data, CurClip.HalfSharp));
                 else                lbl.Update("‡", 8, 17);
             }
             else                    lbl.Update(" ");
@@ -336,29 +341,26 @@ namespace IngameScript
 
         bool ToggleIsBright(Label lbl)
         {
-            var clip = g_session.CurClip;
-
             return 
-                   lbl.Data == 2 && clip.Pick
-                || lbl.Data == 3 && clip.AllChan
-                || lbl.Data == 4 && clip.RndInst;
+                   lbl.Data == 2 && CurClip.Pick
+                || lbl.Data == 3 && CurClip.AllChan
+                || lbl.Data == 4 && CurClip.RndInst;
         }
 
 
         bool StepIsBright(Label lbl)
         {
-            var clip =  g_session.CurClip;
             var step = -lbl.Data;
 
-            var _step = step + clip.CurPat * g_nSteps;
+            var _step = step + CurClip.CurPat * g_nSteps;
 
-            var on = clip.CurrentChannel.Notes.Find(n => 
+            var on = CurClip.CurrentChannel.Notes.Find(n => 
                    n.PatStep >= step
                 && n.PatStep <  step+1) != null;
 
-            if (   OK(clip.PlayStep)
-                && _step == (int)clip.PlayStep
-                && clip.CurPat == clip.PlayPat)
+            if (   OK(CurClip.PlayStep)
+                && _step == (int)CurClip.PlayStep
+                && CurClip.CurPat == CurClip.PlayPat)
                 // else c = step % 4 == 0 ? color2 : color0;
                 return on;
             else if (on)
@@ -368,10 +370,17 @@ namespace IngameScript
         }
 
 
+        bool NavIsBright (Label lbl) { return CurSrc  > -1 && !g_labelsPressed.Contains(lbl); }
+        bool NavIsDim    (Label lbl) { return SelChan > -1; }
+
+        bool MoveIsBright(Label lbl) { return g_move ^ (CurSrc > -1); }
+        bool MoveIsDim   (Label lbl) { return SelChan > -1 && !g_move; }
+
+
         void UpdatePianoHigh(Label lbl, bool b)
         {
             if (ShowPiano)
-                lbl.Update(HighNoteName(lbl.Data, g_session.CurClip.HalfSharp)); 
+                lbl.Update(HighNoteName(lbl.Data, CurClip.HalfSharp)); 
 
             else
             { 
@@ -450,8 +459,8 @@ namespace IngameScript
                 color6.B / max * 0xFF);
 
 
-                 if (g_session.CurClip.ColorIndex == 1) lightColor = new Color(0xFF, 0x50, 0);
-            else if (g_session.CurClip.ColorIndex == 5) lightColor = new Color(0xAA, 0, 0xFF);
+                 if (CurClip.ColorIndex == 1) lightColor = new Color(0xFF, 0x50, 0);
+            else if (CurClip.ColorIndex == 5) lightColor = new Color(0xAA, 0, 0xFF);
 
 
             var lights = new List<IMyInteriorLight>();
@@ -469,7 +478,7 @@ namespace IngameScript
                 lightColor.B + (int)((0xFF - lightColor.B) * 0.23f));
 
 
-            switch (g_session.CurClip.ColorIndex)
+            switch (CurClip.ColorIndex)
             {
             case 0: warningLight.Color = new Color(0,    0,    0xFF); break;
             case 1: warningLight.Color = new Color(0,    0,    0xFF); break;
@@ -485,52 +494,47 @@ namespace IngameScript
         }
 
 
-        bool NoteIsBright(int note, bool high, int l = -1)
+        bool NoteIsBright(int noteNum, bool high, int l = -1)
         {
-            var clip = g_session.CurClip;
-
-            var chan = clip.CurrentChannel;
-            var pat  = clip.Patterns.IndexOf(clip.CurrentPattern);
-            var step = pat * g_nSteps;
+            var chan    = CurClip.CurrentChannel;
+            var pat     = CurClip.Patterns.IndexOf(CurClip.CurrentPattern);
+            var patStep = pat * g_nSteps;
                         
             if (chan.Notes.FindIndex(n =>
-                        note == n.Number
-                    && (      clip.PlayStep >= step + n.PatStep + n.ShOffset
-                            && clip.PlayStep <  step + n.PatStep + n.ShOffset + n.StepLength
-                        ||    step + n.PatStep >= clip.EditPos 
-                            && step + n.PatStep <  clip.EditPos + clip.EditStep)) > -1)
+                        noteNum == n.Number
+                    && (      CurClip.PlayStep >= n.SongStep + n.ShOffset
+                           && CurClip.PlayStep <  n.SongStep + n.ShOffset + n.StepLength
+                        ||    patStep + n.PatStep >= CurClip.EditPos 
+                           && patStep + n.PatStep <  CurClip.EditPos + CurClip.EditStep)) > -1)
                 return true;
 
-            if (   clip.Hold
-                && g_notes.FindIndex(n =>
-                            note == n.Number
-                        && clip.PlayStep >= n.PatStep
-                        && clip.PlayStep <  n.PatStep + n.StepLength) > -1)
-                return true;
+            //if (g_notes.FindIndex(n =>
+            //           noteNum == n.Number
+            //        && CurClip.PlayStep >= /*n.PatStep*/n.SongStep
+            //        && CurClip.PlayStep <  /*n.PatStep*/n.SongStep + n.StepLength) > -1)
+            //    return true;
 
             return false;
         }
 
 
-        bool NoteIsDim(int note, bool high, int l = -1)
+        bool NoteIsDim(int num, bool high, int l = -1)
         {
-            var clip = g_session.CurClip;
-            
-            var chan = clip.CurrentChannel;
-            var pat  = clip.Patterns.IndexOf(clip.CurrentPattern);
+            var chan = CurClip.CurrentChannel;
+            var pat  = CurClip.Patterns.IndexOf(CurClip.CurrentPattern);
             var step = pat * g_nSteps;
 
             for (int ch = 0; ch < g_nChans; ch++)
             {
-                var _chan = clip.CurrentPattern.Channels[ch];
+                var _chan = CurClip.CurrentPattern.Channels[ch];
 
                 if (_chan.Notes.FindIndex(n =>
-                            note == n.Number
-                        && ch   == n.iChan
-                        && (   clip.PlayStep >= step + n.PatStep + n.ShOffset
-                            && clip.PlayStep <  step + n.PatStep + n.ShOffset + n.StepLength
-                    ||    step + n.PatStep >= clip.EditPos 
-                        && step + n.PatStep <  clip.EditPos + clip.EditStep)) > -1)
+                          num == n.Number
+                       && ch  == n.iChan
+                       && (   CurClip.PlayStep >= step + n.PatStep + n.ShOffset
+                           && CurClip.PlayStep <  step + n.PatStep + n.ShOffset + n.StepLength
+                    ||    step + n.PatStep >= CurClip.EditPos 
+                       && step + n.PatStep <  CurClip.EditPos + CurClip.EditStepIndex)) > -1)
                     return true;
             }
 
@@ -542,12 +546,11 @@ namespace IngameScript
         {
             if (TooComplex) return;
 
-            var clip = g_session.CurClip;
             int val;
 
-                 if (clip.Spread) val = clip.ChordSpread;
-            else if (ShowPiano)   val = clip.CurrentChannel.Transpose;
-            else                  val = clip.CurrentChannel.Shuffle;
+                 if (CurClip.Spread) val = CurClip.ChordSpread;
+            else if (ShowPiano)      val = CurClip.CurrentChannel.Transpose;
+            else                     val = CurClip.CurrentChannel.Shuffle;
 
             lbl.Update((val > 0 ? "+" : "") + S(val));
         }
@@ -555,7 +558,7 @@ namespace IngameScript
 
         void UpdateShuffleLabel(Label lbl, bool b)
         {
-            if (g_session.CurClip.Spread)
+            if (CurClip.Spread)
             {
                 lbl.Update("Sprd");
             }
@@ -578,8 +581,8 @@ namespace IngameScript
         void UnmarkAllLabels()
         {
             //var be  = g_session.CurClip.EditNotes.Count > 0;
-            //var cur = g_session.CurClip.CurSrc > -1;
             //var crd = g_session.CurClip.ChordEdit;
+            //var cur = g_session.CurClip.CurSrc > -1;
             //var ch  = g_session.CurClip.SelChan > -1;
             //var mov = g_session.CurClip.MovePat;
             //var sh  = g_session.CurClip.Shift;

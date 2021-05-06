@@ -29,9 +29,6 @@ namespace IngameScript
                 //UpdateDspOffset(ref srcOff, g_song.g_session.CurClip.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
                 //UpdateSrcOff(CurrentInstrument(g_song), g_song.g_session.CurClip.CurSrc);
                 UpdateSrcOff();
-
-
-                //MarkLabel(lblNew, false);
             }
             else if (g_session.CurClip.SelChan > -1)
             {
@@ -53,9 +50,10 @@ namespace IngameScript
 
                 UpdateInstName();
                 g_inputValid = false;
-
-                //MarkLabel(lblNew);
             }
+
+
+            lblNew.Mark();
         }
 
 
@@ -83,10 +81,6 @@ namespace IngameScript
                 //UpdateDspOffset(ref srcOff, g_song.g_session.CurClip.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
                 //UpdateSrcOff(CurrentInstrument(g_song), g_song.g_session.CurClip.CurSrc);
                 UpdateSrcOff();
-
-                //g_sampleValid = F; 
-                
-                ////MarkLabel(lblDuplicate, false);
             }
             else if (g_session.CurClip.SelChan > -1)
             {
@@ -106,11 +100,10 @@ namespace IngameScript
 
                 //UpdateDspOffset(ref instOff, g_song.g_session.CurClip.CurSrc, g_session.Instruments.Count, maxDspSrc, 0, 1);
                 UpdateInstOff(g_session.CurClip.CurChan);
-
-                //g_sampleValid = F; 
-                
-                ////MarkLabel(lblDuplicate);
             }
+
+
+            lblDuplicate.Mark();
         }
 
 
@@ -144,8 +137,6 @@ namespace IngameScript
                 UpdateSrcOff();
 
                 //g_sampleValid = F; 
-                
-                //MarkLabel(lblDelete, false);
             }
             else if (g_session.CurClip.SelChan > -1)
             {
@@ -180,9 +171,17 @@ namespace IngameScript
                 UpdateInstName();
 
                 //g_sampleValid = F; 
-                
-                //MarkLabel(lblDelete);
             }
+
+            lblDelete.Mark();
+        }
+
+
+        public void ToggleMove()
+        {
+            if (g_session.CurClip.CurSet > -1) return;
+
+            g_move = !g_move;
         }
 
 
@@ -256,9 +255,8 @@ namespace IngameScript
             }
 
 
-            //MarkLabel(
-            //    move >= 0 ? lblNext : lblPrev, 
-            //    !g_move && g_session.CurClip.CurSrc < 0);
+            if (move >= 0) lblNext.Mark();
+            else           lblPrev.Mark();
         }
 
 
@@ -322,8 +320,8 @@ namespace IngameScript
 
             //UpdateAdjustLabels(g_session.CurClip);
             //UpdateNewLabels();
-            //
-            //MarkLabel(lblBackOut, g_session.CurClip.CurSrc < 0);
+            
+            lblBackOut.Mark();
 
             g_session.SaveInstruments();
         }
@@ -399,7 +397,7 @@ namespace IngameScript
                 g_session.CurClip.ParamAuto = false;
             }
 
-            //MarkLabel(lblBack, g_session.CurClip.CurSrc < 0);
+            lblBack.Mark();
 
             //UpdateNewLabels();
             //UpdateAdjustLabels(g_session.CurClip);
@@ -444,7 +442,7 @@ namespace IngameScript
 
                 UpdateInstName(false);
 
-                //MarkLabel(lblEnter, g_session.CurClip.CurSrc < 0);
+                lblEnter.Mark();
             }
         }
 

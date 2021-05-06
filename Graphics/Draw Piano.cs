@@ -36,7 +36,7 @@ namespace IngameScript
 
             var _dummy = new List<TriggerValue>();
 
-            var tp = new TimeParams(g_time, 0, g_time - g_session.CurClip.StartTime, null, g_session.CurClip.EditLength, g_session.CurClip.CurSrc, _dummy, this);
+            var tp = new TimeParams(g_time, 0, g_time - g_session.CurClip.StartTime, null, g_session.CurClip.EditLengthIndex, g_session.CurClip.CurSrc, _dummy, this);
 
             var songSteps =
                 arp != null
@@ -59,7 +59,7 @@ namespace IngameScript
                     sprites, 
                     x + xt + wt * (clip.EditPos % g_nSteps), 
                     y, 
-                    wt / (g_session.CurClip.EditLength == 0.5f ? 2 : 1), 
+                    wt / (g_session.CurClip.EditLengthIndex == 0.5f ? 2 : 1), 
                     g_session.CurClip.ParamKeys || g_session.CurClip.ParamAuto ? h : rh, 
                     color3);
             }

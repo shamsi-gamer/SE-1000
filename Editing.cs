@@ -48,7 +48,7 @@ namespace IngameScript
 
                 MoveEdit(clip, 1, true);
 
-                ////MarkLabel(lblStep);
+                lblStep.Mark();
             }
         }
 
@@ -74,10 +74,10 @@ namespace IngameScript
                             if (pat < 0) return;
 
                             lastNote.StepLength = Math.Min(
-                                clip.EditPos - (pat * g_nSteps + lastNote.PatStep) + g_session.CurClip.EditStep + ChordSpread(i),
+                                clip.EditPos - (pat * g_nSteps + lastNote.PatStep) + g_session.CurClip.EditStepIndex + ChordSpread(i),
                                 10f * FPS / g_session.TicksPerStep);
 
-                            TriggerNote(clip, lastNote.Number, lastNote.iChan, g_session.CurClip.EditStep, ChordSpread(i));
+                            TriggerNote(clip, lastNote.Number, lastNote.iChan, g_session.CurClip.EditStepIndex, ChordSpread(i));
                         }
 
                         MoveEdit(clip, 1);
@@ -112,13 +112,13 @@ namespace IngameScript
 
                 clip.Inter = clip.CurrentChannel.Notes.Find(n =>
                        n.SongStep >= clip.EditPos
-                    && n.SongStep <  clip.EditPos + g_session.CurClip.EditStep);
+                    && n.SongStep <  clip.EditPos + g_session.CurClip.EditStepIndex);
             }
             else
             {
                 var note = clip.CurrentChannel.Notes.Find(n =>
                        n.SongStep >= clip.EditPos
-                    && n.SongStep <  clip.EditPos + g_session.CurClip.EditStep);
+                    && n.SongStep <  clip.EditPos + g_session.CurClip.EditStepIndex);
 
                 if (note != null)
                 {
@@ -339,7 +339,7 @@ namespace IngameScript
                 foreach (var note in chan.Notes)
                 {
                     if (   note.SongStep >= clip.EditPos
-                        && note.SongStep <  clip.EditPos + g_session.CurClip.EditStep)
+                        && note.SongStep <  clip.EditPos + g_session.CurClip.EditStepIndex)
                         notes.Add(note);
                 }
 
@@ -417,24 +417,24 @@ namespace IngameScript
 
         void ChangeEditStep()
         {
-            g_session.CurClip.EditStep++;
+            g_session.CurClip.EditStepIndex++;
 
-            if (g_session.CurClip.EditStep >= g_steps.Length - 1) // ignore the super long step
-                g_session.CurClip.EditStep = 1;
+            if (g_session.CurClip.EditStepIndex >= g_steps.Length - 1) // ignore the super long step
+                g_session.CurClip.EditStepIndex = 1;
 
-            ////MarkLabel(lblEditStep);
+            lblEditStep.Mark();
             //UpdateEditLabels();
         }
 
 
         void ChangeEditLength()
         {
-            g_session.CurClip.EditLength++;
+            g_session.CurClip.EditLengthIndex++;
 
-            if (g_session.CurClip.EditLength >= g_steps.Length)
-                g_session.CurClip.EditLength = 0;
+            if (g_session.CurClip.EditLengthIndex >= g_steps.Length)
+                g_session.CurClip.EditLengthIndex = 0;
 
-            ////MarkLabel(lblEditLength);
+            lblEditLength.Mark();
             //UpdateEditLabels();
 
             //g_sampleValid = F;
@@ -445,8 +445,8 @@ namespace IngameScript
         {
             MoveEdit(clip, -1);
 
-            //if (OK(clip.EditPos))
-            //    //MarkLabel(lblLeft);
+            if (OK(clip.EditPos))
+                lblLeft.Mark();
         }
 
 
@@ -454,9 +454,10 @@ namespace IngameScript
         {
             MoveEdit(clip, 1);
 
-            //if (   OK(clip.EditPos)
-            //    || IsCurSetting(typeof(Harmonics)))
-                //MarkLabel(lblRight);
+            //if (OK(clip.EditPos)
+                //    || IsCurSetting(typeof(Harmonics)))
+            if (OK(clip.EditPos))
+                lblRight.Mark();
         }
 
 
@@ -474,8 +475,8 @@ namespace IngameScript
                 {
                     foreach (var n in clip.EditNotes)
                     {
-                        var is05 = n.StepLength == 0.5f && g_session.CurClip.EditLength >= 1;
-                        n.StepLength = MinMax(0.5f, n.StepLength + move * g_session.CurClip.EditLength, 10f * FPS / g_session.TicksPerStep);
+                        var is05 = n.StepLength == 0.5f && g_session.CurClip.EditLengthIndex >= 1;
+                        n.StepLength = MinMax(0.5f, n.StepLength + move * g_session.CurClip.EditLengthIndex, 10f * FPS / g_session.TicksPerStep);
                         if (is05) n.StepLength -= 0.5f;
                     }
                 }
@@ -483,12 +484,12 @@ namespace IngameScript
                 {
                     var oldCur = clip.CurPat;
 
-                    clip.EditPos += move * g_session.CurClip.EditStep;
+                    clip.EditPos += move * g_session.CurClip.EditStepIndex;
                     clip.LimitRecPosition();
 
                     foreach (var n in clip.EditNotes)
                     {
-                        n.PatStep += move * g_session.CurClip.EditStep;
+                        n.PatStep += move * g_session.CurClip.EditStepIndex;
 
                         if (   n.PatStep < 0
                             || n.PatStep >= g_nSteps)
@@ -504,8 +505,8 @@ namespace IngameScript
             }
             else if (g_editKey != null)
             {
-                g_editKey.StepTime += move * g_session.CurClip.EditStep;
-                clip.EditPos       += move * g_session.CurClip.EditStep;
+                g_editKey.StepTime += move * g_session.CurClip.EditStepIndex;
+                clip.EditPos       += move * g_session.CurClip.EditStepIndex;
 
                 clip.LimitRecPosition();
 
@@ -523,7 +524,7 @@ namespace IngameScript
             }
             else if (OK(clip.EditPos))
             {
-                clip.EditPos += move * g_session.CurClip.EditStep;
+                clip.EditPos += move * g_session.CurClip.EditStepIndex;
 
                 if (clip.Follow)
                 {

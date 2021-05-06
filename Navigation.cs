@@ -16,17 +16,15 @@ namespace IngameScript
             g_playing = true;
 
 
-            var clip = g_session.CurClip;
-
-            if (clip.CueNext > -1)
+            if (CurClip.CueNext > -1)
             {
-                clip.PlayTime = GetPatTime(clip.CueNext);
-                clip.CueNext  = -1;
+                CurClip.PlayTime = GetPatTime(CurClip.CueNext);
+                CurClip.CueNext  = -1;
             }
             else
-                clip.PlayTime = GetPatTime(clip.CurPat);
+                CurClip.PlayTime = GetPatTime(CurClip.CurPat);
 
-            clip.StartTime = g_time - clip.PlayTime;
+            CurClip.StartTime = g_time - CurClip.PlayTime;
 
             //UpdatePlayStopLabels();
         }
@@ -40,28 +38,25 @@ namespace IngameScript
             g_playing = false;
 
 
-            var clip = g_session.CurClip;
-
-
-            if (clip.PlayTime < 0)
+            if (CurClip.PlayTime < 0)
             {
-                var b = clip.GetBlock(clip.CurPat);
+                var b = CurClip.GetBlock(CurClip.CurPat);
 
                 var _block =
-                       clip.Block
+                       CurClip.Block
                     && b != null
-                    && clip.CurPat > b.First;
+                    && CurClip.CurPat > b.First;
 
-                clip.SetCurrentPattern(_block ? b.First : 0);
-                clip.CueNext = -1;
+                CurClip.SetCurrentPattern(_block ? b.First : 0);
+                CurClip.CueNext = -1;
             }
 
 
-            clip.TrimCurrentNotes();
+            CurClip.TrimCurrentNotes();
 
 
-            clip.PlayTime  = long_NaN;
-            clip.StartTime = long_NaN;
+            CurClip.PlayTime  = long_NaN;
+            CurClip.StartTime = long_NaN;
 
 
             lastNotes.Clear();

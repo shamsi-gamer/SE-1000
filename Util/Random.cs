@@ -132,7 +132,7 @@ namespace IngameScript
                     if (found != null) chan.Notes.Remove(found);
                     else
                     { 
-                        var editLength = g_steps[g_rnd.Next(0, g_session.CurClip.EditLength + 1)];
+                        var editLength = g_steps[g_rnd.Next(0, g_session.CurClip.EditLengthIndex + 1)];
 
                         if (note < 0)
                         { 
@@ -196,7 +196,7 @@ namespace IngameScript
                     }
                 }
 
-                dStep = 1 + (int)Math.Round(Math.Pow(RND, 0.8f) * Math.Max(0, (g_steps[g_session.CurClip.EditStep] - 1)));
+                dStep = 1 + (int)Math.Round(Math.Pow(RND, 0.8f) * Math.Max(0, (g_steps[g_session.CurClip.EditStepIndex] - 1)));
                 step += dStep;
             }
         }

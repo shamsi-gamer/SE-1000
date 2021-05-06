@@ -56,13 +56,13 @@ namespace IngameScript
                                   && clip.Chord > -1))
                             {
                                 var noteStep = clip.EditPos % g_nSteps + ChordSpread(i);
-                                var lastNote = new Note(chan, ch, 1, note, noteStep, g_session.CurClip.EditLength);
+                                var lastNote = new Note(chan, ch, 1, note, noteStep, g_session.CurClip.EditLengthIndex);
                     
                                 lastNotes.Add(lastNote);
                                 chan.AddNote(lastNote);
                             }
 
-                            TriggerNote(clip, note, ch, g_session.CurClip.EditLength, ChordSpread(i));
+                            TriggerNote(clip, note, ch, g_session.CurClip.EditLengthIndex, ChordSpread(i));
                         }
                     }
                 }
@@ -97,13 +97,13 @@ namespace IngameScript
                               && clip.Chord > -1))
                         {
                             var noteStep = clip.EditPos % g_nSteps + ChordSpread(i);
-                            var lastNote = new Note(chan, ch, 1, note, noteStep, g_session.CurClip.EditLength);
+                            var lastNote = new Note(chan, ch, 1, note, noteStep, g_session.CurClip.EditLengthIndex);
                     
                             lastNotes.Add(lastNote);
                             chan.AddNote(lastNote);
                         }
 
-                        TriggerNote(clip, note, ch, g_session.CurClip.EditLength, ChordSpread(i));
+                        TriggerNote(clip, note, ch, g_session.CurClip.EditLengthIndex, ChordSpread(i));
                     }
                 }
 
@@ -126,7 +126,7 @@ namespace IngameScript
                     clip.TrimCurrentNotes(ch);
 
                 for (int i = 0; i < notes.Count; i++)
-                    TriggerNote(clip, notes[i], ch, g_session.CurClip.EditLength, ChordSpread(i));
+                    TriggerNote(clip, notes[i], ch, g_session.CurClip.EditLengthIndex, ChordSpread(i));
             }
 
 
@@ -139,7 +139,7 @@ namespace IngameScript
             var chan = clip.CurrentPattern.Channels[ch];
 
             var patStep = 
-                 (g_playing ? (clip.PlayPat - clip.CurPat) * g_nSteps + (clip.PlayStep % g_nSteps) : 0) 
+                  (g_playing ? (clip.PlayPat - clip.CurPat) * g_nSteps + (clip.PlayStep % g_nSteps) : 0) 
                 + chordSpread;
 
             var found = g_notes.Find(n =>
@@ -148,8 +148,8 @@ namespace IngameScript
 
             AddNoteAndSounds(new Note(chan, ch, 1, num, patStep, len));
 
-            if (clip.Piano)
-                GetLabelFromNote(num).Mark();
+            //if (clip.Piano)
+            //    GetLabelFromNote(num).Mark();
         }
 
 

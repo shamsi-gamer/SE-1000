@@ -249,7 +249,7 @@ namespace IngameScript
                     ? g_time - g_session.CurClip.StartTime
                     : 0;
 
-                var tp = new TimeParams(g_time, 0, sTime, null, g_session.CurClip.EditLength, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, sTime, null, g_session.CurClip.EditLengthIndex, -1, _triggerDummy, dp.Program);
 
                 Attack .UpdateValue(tp);
                 Decay  .UpdateValue(tp);

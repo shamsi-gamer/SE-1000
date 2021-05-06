@@ -78,8 +78,8 @@
 
                     + W (CurSet > -1 ? CurSetting.GetPath(CurSrc) : "")
 
-                    + PS(EditStep)
-                    + PS(EditLength)     
+                    + PS(EditStepIndex)
+                    + PS(EditLengthIndex)     
 
                     + PS(CurNote)      
 

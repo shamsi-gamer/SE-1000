@@ -99,8 +99,8 @@ namespace IngameScript
                                                              
                 //curPath = cfg[c++];                              
                                                              
-                if (!int  .TryParse(cfg[c++], out EditStep   )) return false;
-                if (!int  .TryParse(cfg[c++], out EditLength )) return false;
+                if (!int  .TryParse(cfg[c++], out EditStepIndex   )) return false;
+                if (!int  .TryParse(cfg[c++], out EditLengthIndex )) return false;
                                                            
                 if (!int  .TryParse(cfg[c++], out CurNote    )) return false;
                                                              

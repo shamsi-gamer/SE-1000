@@ -36,7 +36,7 @@ namespace IngameScript
 
             public int           PlayPat; // this can't be a property because it must sometimes be separate from PlayTime, for queueing
 
-            public float         PlayStep { get { return g_playing ? PlayTime / (float)Track.Session.TicksPerStep : fN; } }
+            public float         PlayStep { get { return (g_playing ? PlayTime : g_time) / (float)Track.Session.TicksPerStep; } }
 
 
             public int           CueNext;
@@ -90,8 +90,8 @@ namespace IngameScript
                                  CurSrc  = -1,
                                  CurSet  = -1;
                                  
-            public int           EditStep   = 2;
-            public int           EditLength = 2;
+            public int           EditStepIndex   = 2;
+            public int           EditLengthIndex = 2;
                                  
                                  
             public List<int>[]   Chords; // = new List<int>[4];
@@ -120,9 +120,9 @@ namespace IngameScript
             public Source        SelectedSource     { get { return CurSrc > -1 ? SelectedInstrument.Sources[CurSrc] : null; } }
 
 
-            public float         GetEditStep()       { return g_steps[EditStep  ]; }
-            public float         GetEditStepLength() { return g_steps[EditLength]; }
-            public int           GetEditLength()     { return (int)(GetEditStepLength() * g_session.TicksPerStep); }
+            public float         EditStep       { get { return g_steps[EditStepIndex  ]; } }
+            public float         EditStepLength { get { return g_steps[EditLengthIndex]; } }
+            public int           EditLength     { get { return (int)(EditStepLength * g_session.TicksPerStep); } }
 
 
             public Clip(Track track, string name = "Clip 1")
@@ -188,8 +188,8 @@ namespace IngameScript
                 CurSrc      = 
                 CurSet      = -1;
                            
-                EditStep    =  
-                EditLength  = 2;
+                EditStepIndex    =  
+                EditLengthIndex  = 2;
                          
                 CurNote     = 69 * NoteScale;
                          
@@ -291,8 +291,8 @@ namespace IngameScript
                 CurSrc      = clip.CurSrc;
                 CurSet      = clip.CurSet;
 
-                EditStep    = clip.EditStep;
-                EditLength  = clip.EditLength;
+                EditStepIndex    = clip.EditStepIndex;
+                EditLengthIndex  = clip.EditLengthIndex;
 
                 CurNote     = clip.CurNote;
 
@@ -557,8 +557,6 @@ namespace IngameScript
 
                     In     = true;
                     Follow = false;
-
-                    //UpdateLabel(lblFollow, false);
                 }
                 else
                 {
@@ -568,10 +566,10 @@ namespace IngameScript
                     {
                         Out    = false;
                         Follow = false;
-
-                        //UpdateLabel(lblFollow, false);
                     }
                 }
+
+                MovePatternOff();
             }
 
 
@@ -614,6 +612,7 @@ namespace IngameScript
             {
                 Blocks.Remove(GetBlock(CurPat));
                 DisableBlock();
+                MovePatternOff(); 
                 g_clipPressed.Add(11);
             }
 
@@ -636,18 +635,6 @@ namespace IngameScript
             {
                 Loop = !Loop;
                 //UpdateLabel(lblLoop, Loop);
-            }
-
-
-            public void ToggleMove()
-            {
-                if (CurSet > -1) return;
-
-                g_move = !g_move;
-
-                //UpdateLabel(lblMove, g_move ^ (CurSrc > -1), SelChan > -1 && !g_move);
-                //UpdateLabel(lblPrev, g_move || CurSrc > -1,  SelChan > -1);
-                //UpdateLabel(lblNext, g_move || CurSrc > -1,  SelChan > -1);
             }
 
 

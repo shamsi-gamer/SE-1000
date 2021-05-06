@@ -300,7 +300,7 @@ namespace IngameScript
 
 
                 var time = (long)(Phase * FPS);
-                var _tp  = new TimeParams(time, time, time, null, g_session.CurClip.EditLength, -1, _triggerDummy, dp.Program);
+                var _tp  = new TimeParams(time, time, time, null, g_session.CurClip.EditLengthIndex, -1, _triggerDummy, dp.Program);
 
                 var val  = UpdateValue(_tp);
 
