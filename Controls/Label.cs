@@ -44,10 +44,12 @@ namespace IngameScript
             public void Update()
             {
                 var bCond = BrightCondition(this);
-                var dCond = bCond ? false : DimCondition(this);
+                var dCond = DimCondition   (this);
 
-                if (UpdateFunc != null) UpdateFunc(this, bCond);
-                else                    Update(bCond, dCond);
+                if (UpdateFunc != null) 
+                    UpdateFunc(this, bCond);
+
+                Update(bCond, dCond);
             }
 
 

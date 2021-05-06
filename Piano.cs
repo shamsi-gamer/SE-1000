@@ -9,9 +9,10 @@ namespace IngameScript
     {
         void High(int h)
         {
-            var tune = g_session.CurClip.SelectedSource    ?.Tune
-                    ?? g_session.CurClip.SelectedInstrument?.Tune;
+            var clip = g_session.CurClip;
 
+            var tune = clip.SelectedSource    ?.Tune
+                    ?? clip.SelectedInstrument?.Tune;
 
             if (h == 10)
             {
@@ -19,22 +20,22 @@ namespace IngameScript
                     && (tune?.UseChord ?? false))
                 { 
                     g_settings.RemoveLast();
-                    g_session.CurClip.CurSet--;
-                    g_session.CurClip.Piano = false;
+                    clip.CurSet--;
+                    clip.Piano = false;
                     //UpdateChordLabels();
                 }
                 else
-                    g_session.CurClip.Piano = !g_session.CurClip.Piano;
+                    clip.Piano = !clip.Piano;
 
-                if (g_session.CurClip.Piano)
-                    g_session.CurClip.Pick = false;
+                if (clip.Piano)
+                    clip.Pick = false;
 
                 //UpdateShuffleLabel();
                 //UpdateOctaveLabel();
             }
             else if (IsCurParam(strTune)
                   && (tune?.UseChord ?? false)
-                  && !(g_session.CurClip.ParamKeys || g_session.CurClip.ParamAuto))
+                  && !(clip.ParamKeys || clip.ParamAuto))
             {
                 var chord = tune.Chord;
                 var note  = HighToNote(h);
@@ -44,11 +45,11 @@ namespace IngameScript
 
                 tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
             }
-            else if (g_session.CurClip.ChordEdit
-                  && g_session.CurClip.Chord > -1)
+            else if (clip.ChordEdit
+                  && clip.Chord > -1)
             { 
                 var note  = HighToNote(h);
-                var chord = g_session.CurClip.Chords[g_session.CurClip.Chord];
+                var chord = clip.Chords[clip.Chord];
 
                 if (chord.Contains(note)) chord.Remove(note);
                 else                      chord.Add   (note);
@@ -59,19 +60,19 @@ namespace IngameScript
                 {
                     chord.Sort();
 
-                    var oldLength = g_session.CurClip.EditLength;
-                    g_session.CurClip.EditLength = Math.Min(g_session.CurClip.EditLength, g_steps.Length-2);
-                    PlayNote(g_session.CurClip, chord[0], chord, g_session.CurClip.CurChan);
-                    g_session.CurClip.EditLength = oldLength;
+                    var oldLength = clip.EditLength;
+                    clip.EditLength = Math.Min(clip.EditLength, g_steps.Length-2);
+                    PlayNote(clip, chord[0], chord, clip.CurChan);
+                    clip.EditLength = oldLength;
                 }
             }
-            else if (g_session.CurClip.Piano)
+            else if (clip.Piano)
             {
                 PlayNote(
-                    g_session.CurClip,
+                    clip,
                     HighToNote(h), 
-                    g_session.CurClip.Chord > -1 && g_session.CurClip.ChordMode ? g_session.CurClip.Chords[g_session.CurClip.Chord] : null,
-                    g_session.CurClip.CurChan);
+                    clip.Chord > -1 && clip.ChordMode ? clip.Chords[clip.Chord] : null,
+                    clip.CurChan);
             }
             else
             {
@@ -85,9 +86,9 @@ namespace IngameScript
                 else if (h == 5) RandomChannelNotes();
                 else if (h == 6) ClearNotes();
                                    
-                else if (h == 7) Flip(g_session.CurClip.CurChan, 4); 
-                else if (h == 8) Flip(g_session.CurClip.CurChan, 8); 
-                else if (h == 9) Flip(g_session.CurClip.CurChan, 16);
+                else if (h == 7) Flip(clip.CurChan, 4); 
+                else if (h == 8) Flip(clip.CurChan, 8); 
+                else if (h == 9) Flip(clip.CurChan, 16);
 
                 if (   h != 2
                     && h != 3

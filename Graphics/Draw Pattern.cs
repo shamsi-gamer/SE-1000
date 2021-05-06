@@ -186,7 +186,7 @@ namespace IngameScript
                     foreach (var n in chan.Notes)
                     {
                         var noteStart = n.SongStep + n.ShOffset;
-                        var noteEnd   = noteStart + n.StepLength;
+                        var noteEnd   =  noteStart + n.StepLength;
 
                         if (   noteEnd   <= patStart
                             || noteStart >= patEnd)

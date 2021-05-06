@@ -23,16 +23,19 @@ namespace IngameScript
         static float[] g_random = new float[1000];
 
 
-        static Color
-            color6,
-            color5,
-            color4,
-            color3,
-            color2,
-            color1,
-            color0,
-            redColor6 = new Color(63, 0, 0),
-            redColor0 = new Color(1, 0, 0);
+        static Color   color6,
+                       color5,
+                       color4,
+                       color3,
+                       color2,
+                       color1,
+                       color0,
+
+                       recColor6  = new Color(63,  0, 0),
+                       recColor0  = new Color( 1,  0, 0),
+
+                       editColor6 = new Color(63, 25, 0),
+                       editColor0 = new Color( 1,  0, 0);
 
 
         const int MaxSources = 12;

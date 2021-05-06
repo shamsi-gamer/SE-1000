@@ -279,17 +279,22 @@ namespace IngameScript
 
         bool ShowPiano { get 
         {
-            var tune = g_session.CurClip.SelectedSource    ?.Tune
-                    ?? g_session.CurClip.SelectedInstrument?.Tune;
+            if (g_session == null)
+                return false;
+
+            var clip = g_session.CurClip;
+
+            var tune = clip.SelectedSource    ?.Tune
+                    ?? clip.SelectedInstrument?.Tune;
 
             return
-                   g_session.CurClip.Piano
-                ||    g_session.CurClip.ChordEdit 
-                   && g_session.CurClip.Chord > -1
+                   clip.Piano
+                ||    clip.ChordEdit 
+                   && clip.Chord > -1
                 ||    IsCurParam(strTune)
                    && (tune?.UseChord ?? false)
-                   && !(   g_session.CurClip.ParamKeys 
-                        || g_session.CurClip.ParamAuto)
+                   && !(   clip.ParamKeys 
+                        || clip.ParamAuto)
                 ||    IsCurOrParentSetting(typeof(Arpeggio));
         }}
 
@@ -510,5 +515,8 @@ namespace IngameScript
             else
                 return long.TryParse(str, out val);
         }
+
+
+        static bool IsPressed(Label lbl) { return g_labelsPressed.Contains(lbl); }
     }
 }

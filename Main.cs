@@ -55,9 +55,6 @@ namespace IngameScript
                     lbl.Update();
             }
 
-            if (!TooComplex)
-                UnmarkAllLabels();
-
             //if (g_playing) 
             //    UpdateKeyLabels();
         }
@@ -90,6 +87,9 @@ namespace IngameScript
                     foreach (var lbl in g_slowLabels)
                         lbl.Update();
                 }
+
+                if (!TooComplex)
+                    UnmarkAllLabels();
             }
 
 

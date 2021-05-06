@@ -41,6 +41,8 @@ namespace IngameScript
 
             public int           CueNext;
 
+            public bool          Recording;
+
             public bool          Loop,
                                  Block,
                                  AllPats,
@@ -144,9 +146,9 @@ namespace IngameScript
                 StartTime   = long_NaN;
                             
                 PlayPat     = -1;
-                            
                 CueNext     = -1;
                             
+                Recording   = 
                 Loop        =
                 Block       =
                 AllPats     =

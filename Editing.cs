@@ -237,6 +237,12 @@ namespace IngameScript
         }
 
 
+        void Record()
+        {
+            g_session.CurClip.Recording = !g_session.CurClip.Recording;
+        }
+
+
         static Key PrevSongAutoKey(float pos, int p, int ch, string path)
         {
             var prevKeys = g_session.CurClip.ChannelAutoKeys[ch]

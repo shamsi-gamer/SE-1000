@@ -1,6 +1,5 @@
 ﻿using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
 using System.Collections.Generic;
 
 
@@ -226,6 +225,7 @@ namespace IngameScript
                 case "clips":      Clips();                         break;
                                                                     
                 case "edit":       Edit();                          break;
+                case "rec":        Record();                        break;
                                                                     
                 case "chord":      ToggleChordMode();               break;
                 case "chord 1":    Chord(1);                        break;
@@ -243,7 +243,7 @@ namespace IngameScript
                 case "left":       Left(g_session.CurClip);         break;
                 case "right":      Right(g_session.CurClip);        break;
                                                              
-                case "random":     Random();                        break;
+                //case "random":     Random();                        break;
                                                                     
                 case "lock":       Lock();                          break;
                 case "auto lock":  AutoLock();                      break;

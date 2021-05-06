@@ -51,13 +51,8 @@ namespace IngameScript
 
         void RandomChannelNotes()
         {
-            if (g_session.CurClip.AllChan)
-            {
-                for (int ch = 0; ch < g_nChans; ch++)
-                    RandomNotes(ch, null);
-            }
-            else
-                RandomNotes(g_session.CurClip.CurChan, null);
+            if (g_session.CurClip.AllChan) Random();
+            else                           RandomNotes(g_session.CurClip.CurChan, null);
         }
 
 
