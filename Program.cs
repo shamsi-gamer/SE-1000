@@ -104,9 +104,9 @@ namespace IngameScript
             Get(g_timers);
 
 
-            g_lightPiston = Get("Label Piston")   as IMyPistonBase;
-            g_lightHinge1 = Get("Label Hinge 1")  as IMyMotorBase;
-            g_lightHinge2 = Get("Label Hinge 2")  as IMyMotorBase;
+            g_lightPiston = Get("Light Piston")   as IMyPistonBase;
+            g_lightHinge1 = Get("Light Hinge 1")  as IMyMotorBase;
+            g_lightHinge2 = Get("Light Hinge 2")  as IMyMotorBase;
 
             g_remote      = Get("Remote Control") as IMyRemoteControl;
 
@@ -207,8 +207,8 @@ namespace IngameScript
                 case "shift":      Shift();                         break;
                 case "cmd3":       Command3();                      break;
                                                                     
-                case "tr up":      SetTranspose(g_session.CurClip,  1);       break;
-                case "tr down":    SetTranspose(g_session.CurClip, -1);       break;
+                case "tr up":      SetTranspose(g_session.CurClip,  1); break;
+                case "tr down":    SetTranspose(g_session.CurClip, -1); break;
                                                                     
                 case "spread":     Spread();                        break;
 

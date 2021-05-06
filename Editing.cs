@@ -596,10 +596,8 @@ namespace IngameScript
             else if (ShowPiano) SetTranspose(clip, clip.CurChan, d);
             else                SetShuffle(clip.CurChan, d);
 
-            //MarkLabel(
-                //d > 0
-                //? lblTransposeUp
-                //: lblTransposeDown);
+            if (d > 0) lblOctaveUp  .Mark();
+            else       lblOctaveDown.Mark();
 
             //UpdateOctaveLabel();
         }

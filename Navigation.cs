@@ -12,18 +12,21 @@ namespace IngameScript
             if (g_playing)
                 return;
 
+
             g_playing = true;
 
 
-            if (g_session.CurClip.CueNext > -1)
+            var clip = g_session.CurClip;
+
+            if (clip.CueNext > -1)
             {
-                g_session.CurClip.PlayTime = GetPatTime(g_session.CurClip.CueNext);
-                g_session.CurClip.CueNext = -1;
+                clip.PlayTime = GetPatTime(clip.CueNext);
+                clip.CueNext  = -1;
             }
             else
-                g_session.CurClip.PlayTime = GetPatTime(g_session.CurClip.CurPat);
+                clip.PlayTime = GetPatTime(clip.CurPat);
 
-            g_session.CurClip.StartTime = g_time - g_session.CurClip.PlayTime;
+            clip.StartTime = g_time - clip.PlayTime;
 
             //UpdatePlayStopLabels();
         }
@@ -37,26 +40,28 @@ namespace IngameScript
             g_playing = false;
 
 
-            if (g_session.CurClip.PlayTime < 0)
+            var clip = g_session.CurClip;
+
+
+            if (clip.PlayTime < 0)
             {
-                var b = g_session.CurClip.GetBlock(g_session.CurClip.CurPat);
+                var b = clip.GetBlock(clip.CurPat);
 
                 var _block =
-                       g_session.CurClip.Block
+                       clip.Block
                     && b != null
-                    && g_session.CurClip.CurPat > b.First;
+                    && clip.CurPat > b.First;
 
-                g_session.CurClip.SetCurrentPattern(_block ? b.First : 0);
-
-                g_session.CurClip.CueNext = -1;
+                clip.SetCurrentPattern(_block ? b.First : 0);
+                clip.CueNext = -1;
             }
 
 
-            g_session.CurClip.TrimCurrentNotes();
+            clip.TrimCurrentNotes();
 
 
-            g_session.CurClip.PlayTime  = long_NaN;
-            g_session.CurClip.StartTime = long_NaN;
+            clip.PlayTime  = long_NaN;
+            clip.StartTime = long_NaN;
 
 
             lastNotes.Clear();

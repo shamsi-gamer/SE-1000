@@ -1,5 +1,4 @@
 ﻿using System;
-using VRageMath;
 using Sandbox.ModAPI.Ingame;
 
 
@@ -23,7 +22,7 @@ namespace IngameScript
           //public bool                NeedsUpdate;
 
 
-            public Label(bool fast, IMyTextPanel panel, CondFunc condBright, CondFunc condDim, Action<Label, bool> updateFunc = null, int data = 0)
+            public Label(bool fast, IMyTextPanel panel, CondFunc condBright = null, CondFunc condDim = null, Action<Label, bool> updateFunc = null, int data = 0)
             {
                 Panel           = panel;
 
@@ -41,15 +40,19 @@ namespace IngameScript
             }
 
 
+            public Label(bool fast, IMyTextPanel panel, Action<Label, bool> updateFunc, int data = 0)
+                : this(fast, panel, null, null, updateFunc, data) {}
+
+
             public void Update()
             {
-                var bCond = BrightCondition(this);
-                var dCond = DimCondition   (this);
+                var bCond = BrightCondition != null ? BrightCondition(this) : false;
+                var dCond = DimCondition    != null ? DimCondition   (this) : false;
 
                 if (UpdateFunc != null) 
                     UpdateFunc(this, bCond);
 
-                Update(bCond, dCond);
+                Update(IsPressed(this) || bCond, dCond);
             }
 
 
