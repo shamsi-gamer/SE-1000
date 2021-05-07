@@ -233,10 +233,10 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Attack .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
-                if (Decay  .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Decay  .DrawLabels(sprites, x, y, dp);
-                if (Sustain.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Sustain.DrawLabels(sprites, x, y, dp);
-                if (Release.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
+                if (Attack .HasDeepParams(CurChannel, CurClip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
+                if (Decay  .HasDeepParams(CurChannel, CurClip.CurSrc)) Decay  .DrawLabels(sprites, x, y, dp);
+                if (Sustain.HasDeepParams(CurChannel, CurClip.CurSrc)) Sustain.DrawLabels(sprites, x, y, dp);
+                if (Release.HasDeepParams(CurChannel, CurClip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }
@@ -246,10 +246,10 @@ namespace IngameScript
             {
                 var sTime = 
                     g_playing
-                    ? g_time - g_session.CurClip.StartTime
+                    ? g_time - CurClip.StartTime
                     : 0;
 
-                var tp = new TimeParams(g_time, 0, sTime, null, g_session.CurClip.EditLengthIndex, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, sTime, null, CurClip.EditLength, -1, _triggerDummy, dp.Program);
 
                 Attack .UpdateValue(tp);
                 Decay  .UpdateValue(tp);

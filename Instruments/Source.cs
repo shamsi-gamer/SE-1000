@@ -125,11 +125,11 @@ namespace IngameScript
 
                 var sndTime = 
                     g_playing
-                    ? g_session.CurClip.StartTime + note.SongTime + 1
+                    ? CurClip.StartTime + note.SongTime + 1
                     : g_time + 1;
 
-                var lTime = g_time - g_session.CurClip.StartTime - note.SongTime;
-                var sTime = g_playing ? g_time - g_session.CurClip.StartTime : lTime;
+                var lTime = g_time - CurClip.StartTime - note.SongTime;
+                var sTime = g_playing ? g_time - CurClip.StartTime : lTime;
 
                 var tp = new TimeParams(sndTime, lTime, sTime, note, note.FrameLength, Index, triggerValues, prog);
 
@@ -375,8 +375,8 @@ namespace IngameScript
             public void DrawSource(List<MySprite> sprites, float x, ref float y, float w, Program prog)
             {
                 var active = 
-                       g_session.CurClip.CurSrc == Index 
-                    && g_session.CurClip.CurSet <  0;
+                       CurClip.CurSrc == Index 
+                    && CurClip.CurSet <  0;
 
 
                 var dp1 = new DrawParams(active, prog);
@@ -384,20 +384,20 @@ namespace IngameScript
 
                 var sh = dp1.OffY + 20;
 
-                if (g_session.CurClip.CurSrc == Index)
-                    FillRect(sprites, x, y, w, sh, g_session.CurClip.CurSet < 0 ? color6 : color3);
+                if (CurClip.CurSrc == Index)
+                    FillRect(sprites, x, y, w, sh, CurClip.CurSet < 0 ? color6 : color3);
 
 
-                var col_0 = On && g_session.CurClip.CurSrc > -1 ? color6 : color4;
-                var col_1 = On && g_session.CurClip.CurSrc > -1 ? color0 : color5;
+                var col_0 = On && CurClip.CurSrc > -1 ? color6 : color4;
+                var col_1 = On && CurClip.CurSrc > -1 ? color0 : color5;
 
                 if (Oscillator == OscSample)
                 {
-                    DrawString(sprites, Oscillator.ShortName, x + 10, y + sh/2 - 10, 0.7f, g_session.CurClip.CurSrc == Index ? col_1 : col_0, TaC);
+                    DrawString(sprites, Oscillator.ShortName, x + 10, y + sh/2 - 10, 0.7f, CurClip.CurSrc == Index ? col_1 : col_0, TaC);
                 }
                 else
                 { 
-                    DrawSample(sprites,                       x +  10, y + sh/2 - 10, 50, 20, active, g_session.CurClip.CurSrc > -1);
+                    DrawSample(sprites,                       x +  10, y + sh/2 - 10, 50, 20, active, CurClip.CurSrc > -1);
                     DrawString(sprites, Oscillator.ShortName, x + 100, y + sh/2 - 10, 0.6f, active ? col_1 : col_0, TaC);
                 }
 
@@ -461,7 +461,7 @@ namespace IngameScript
 
             public void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                if (g_session.CurClip.CurSet > -1)
+                if (CurClip.CurSet > -1)
                 { 
                     CurSetting.DrawFuncButtons(sprites, w, y, chan);
                 }

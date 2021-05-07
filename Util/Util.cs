@@ -219,8 +219,8 @@ namespace IngameScript
 
         //         if (maxDspSrc        >= nSrc           ) srcOff = 0;
         //    else if (srcOff        >  nSrc - maxDspSrc  ) srcOff = nSrc - maxDspSrc;
-        //    else if (CurClip.CurSrc >= maxDspSrc + srcOff) srcOff = Math.Max(0, g_song.g_session.CurClip.CurSrc - maxDspSrc + 1);
-        //    else if (CurClip.CurSrc <  srcOff            ) srcOff = g_song.g_session.CurClip.CurSrc;
+        //    else if (CurClip.CurSrc >= maxDspSrc + srcOff) srcOff = Math.Max(0, g_song.CurClip.CurSrc - maxDspSrc + 1);
+        //    else if (CurClip.CurSrc <  srcOff            ) srcOff = g_song.CurClip.CurSrc;
         //    else if (srcOff        <  0                 ) srcOff = 0;
         //}
 
@@ -301,7 +301,7 @@ namespace IngameScript
         {
             num /= NoteScale;
             num -= 60;
-            num -= g_session.CurClip.CurrentChannel.Transpose * 12;
+            num -= CurChannel.Transpose * 12;
 
             switch (num)
             {
@@ -448,7 +448,7 @@ namespace IngameScript
             if (hinge.Angle > (hinge.LowerLimitRad + hinge.UpperLimitRad) / 2) fold.Trigger();
             else                                                               recl.Trigger();
 
-            //MarkLabel(lblFold);
+            lblFold.Mark();
         }
 
 
@@ -518,11 +518,17 @@ namespace IngameScript
         static bool IsPressed(Label lbl) { return g_labelsPressed.Contains(lbl); }
 
 
-        static Clip CurClip { get { return g_session.CurClip; } }
-        static int  CurPat  { get { return CurClip.CurPat;    } }
-        static int  CurChan { get { return CurClip.CurChan;   } }
-        static int  SelChan { get { return CurClip.SelChan;   } }
-        static int  CurSrc  { get { return CurClip.CurSrc;    } }
-        static int  CurSet  { get { return CurClip.CurSet;    } }
+        static Clip    CurClip    { get { return g_session.CurClip;      } }
+                                                                         
+        static int     CurPat     { get { return CurClip.CurPat;         } }
+        static int     CurChan    { get { return CurClip.CurChan;        } }
+        static int     SelChan    { get { return CurClip.SelChan;        } }
+        static int     CurSrc     { get { return CurClip.CurSrc;         } }
+        static int     CurSet     { get { return CurClip.CurSet;         } }
+
+        static float   PlayStep   { get { return CurClip.PlayStep;       } }
+        static int     PlayPat    { get { return CurClip.PlayPat;        } }
+
+        static Channel CurChannel { get { return CurClip.CurrentChannel; } }
     }
 }

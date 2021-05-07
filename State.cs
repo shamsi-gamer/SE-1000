@@ -32,7 +32,7 @@ namespace IngameScript
 
                                           
         static Session  g_session         = null;
-        //static Clip   g_session.CurClip = null;
+        //static Clip   CurClip = null;
 
                                           
         Key             g_editKey         = null;

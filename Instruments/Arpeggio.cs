@@ -147,8 +147,8 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Length.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Length.DrawLabels(sprites, x, y, dp);
-                if (Scale .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Scale .DrawLabels(sprites, x, y, dp);
+                if (Length.HasDeepParams(CurChannel, CurClip.CurSrc)) Length.DrawLabels(sprites, x, y, dp);
+                if (Scale .HasDeepParams(CurChannel, CurClip.CurSrc)) Scale .DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }

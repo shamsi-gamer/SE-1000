@@ -37,20 +37,20 @@ namespace IngameScript
             var pw = wt * g_nSteps;
             var ph = ht * g_nChans;
 
-            var pxCur = x - (nDsp*4 + g_session.CurClip.SongOff) * pw + g_session.CurClip.CurPat * pw;
+            var pxCur = x - (nDsp*4 + CurClip.SongOff) * pw + CurClip.CurPat * pw;
             var py = y + h/2 - ph/2;
 
-            var first = nDsp * 4 + g_session.CurClip.SongOff;
-            var next = Math.Min((nDsp + 1) * 4 + g_session.CurClip.SongOff, g_session.CurClip.Patterns.Count);
+            var first = nDsp * 4 + CurClip.SongOff;
+            var next = Math.Min((nDsp + 1) * 4 + CurClip.SongOff, CurClip.Patterns.Count);
 
-            var curBlock = g_session.CurClip.GetBlock(g_session.CurClip.CurPat);
+            var curBlock = CurClip.GetBlock(CurClip.CurPat);
 
-            var _f = first - g_session.CurClip.SongOff;
+            var _f = first - CurClip.SongOff;
 
 
             for (int p = first; p < next; p++)
             {
-                var _p = p - g_session.CurClip.SongOff;
+                var _p = p - CurClip.SongOff;
 
                 var px = x - _f * pw + _p * pw;
 
@@ -61,7 +61,7 @@ namespace IngameScript
 
                 var bo = 30;
 
-                var block = g_session.CurClip.GetBlock(p);
+                var block = CurClip.GetBlock(p);
                 if (block != null)
                 {
                     var c = curBlock == block ? color3 : color2;
@@ -74,13 +74,13 @@ namespace IngameScript
             }
 
 
-            if (!g_session.CurClip.Piano)
+            if (!CurClip.Piano)
             {
                 for (int p = first; p < next; p++)
                 {
-                    var px = x - (nDsp * 4 + g_session.CurClip.SongOff) * pw + p * pw;
+                    var px = x - (nDsp * 4 + CurClip.SongOff) * pw + p * pw;
                     var ch = ph / g_nChans;
-                    var cy = py + ph - (g_session.CurClip.CurChan + 1) * ch;
+                    var cy = py + ph - (CurClip.CurChan + 1) * ch;
 
                     FillRect(sprites, px, cy, pw, ch, color3);
                 }
@@ -88,18 +88,18 @@ namespace IngameScript
 
 
             // draw edit position
-            if (   g_session.CurClip.EditPos >= first * g_nSteps
-                && g_session.CurClip.EditPos <  next  * g_nSteps)
+            if (   CurClip.EditPos >= first * g_nSteps
+                && CurClip.EditPos <  next  * g_nSteps)
             {
-                var pl    = x - pw * (nDsp * 4 * pw + g_session.CurClip.CurPat + g_session.CurClip.SongOff);
-                var xTick = wt * g_session.CurClip.EditPos;
+                var pl    = x - pw * (nDsp * 4 * pw + CurClip.CurPat + CurClip.SongOff);
+                var xTick = wt * CurClip.EditPos;
 
                 FillRect(
                     sprites,
                     xTick + 2, 
                     py, 
                     wt - 4,
-                    ph + (g_session.CurClip.ParamKeys || g_session.CurClip.ParamAuto ? ph/5 : 0),
+                    ph + (CurClip.ParamKeys || CurClip.ParamAuto ? ph/5 : 0),
                     color3);
             }
 
@@ -107,29 +107,29 @@ namespace IngameScript
             // draw keys
             for (int p = first; p < next; p++)
             {
-                var _p = p - g_session.CurClip.SongOff;
+                var _p = p - CurClip.SongOff;
                 var px = x - _f * pw + _p * pw;
 
-                if (g_session.CurClip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, g_session.CurClip, p, 1, false, g_nSteps);
-                else         DrawPattern  (sprites, px, py, pw, ph, g_session.CurClip, p, 1, false);
+                if (CurClip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, CurClip, p, 1, false, g_nSteps);
+                else         DrawPattern  (sprites, px, py, pw, ph, CurClip, p, 1, false);
 
-                if (g_session.CurClip.ParamKeys)
+                if (CurClip.ParamKeys)
                 {
                     FillRect     (sprites, px, py+ph+ph/5, pw, 1,    color3);
-                    DrawParamKeys(sprites, px, py + ph,    pw, ph/5, g_session.CurClip, p, g_session.CurClip.CurChan);
+                    DrawParamKeys(sprites, px, py + ph,    pw, ph/5, CurClip, p, CurClip.CurChan);
                 }
-                else if (g_session.CurClip.ParamAuto)
+                else if (CurClip.ParamAuto)
                 {
                     FillRect(sprites, px, py + ph + ph/5, pw, 1, color3);
                 }
             }
 
-            if (g_session.CurClip.ParamAuto)
+            if (CurClip.ParamAuto)
             { 
                 var fx   = x - _f * pw;
-                var wMax = Math.Min(g_session.CurClip.Patterns.Count * pw, w * 2);
+                var wMax = Math.Min(CurClip.Patterns.Count * pw, w * 2);
 
-                DrawParamAuto(sprites, fx, py + ph, pw, ph/5, wMax, g_session.CurClip, 0, g_session.CurClip.CurChan);
+                DrawParamAuto(sprites, fx, py + ph, pw, ph/5, wMax, CurClip, 0, CurClip.CurChan);
             }
 
 
@@ -138,35 +138,35 @@ namespace IngameScript
 
 
             // draw play position
-            if (OK(g_session.CurClip.PlayStep))
+            if (g_playing)
             {
-                var pl    = x  - pw * (nDsp * 4 + g_session.CurClip.SongOff);
-                var xTick = pl + wt * (int)g_session.CurClip.PlayStep;
+                var pl    = x  - pw * (nDsp * 4 + CurClip.SongOff);
+                var xTick = pl + wt * (int)PlayStep;
 
                 FillRect(sprites, xTick, py, wt, ph, color6);
 
-                if (g_session.CurClip.Piano) DrawPianoNeg(sprites, pl, py, pw, ph, g_session.CurClip, g_session.CurClip.PlayPat, (int)g_session.CurClip.PlayStep, false);
-                else         DrawPatNeg  (sprites, pl, py, pw, ph, g_session.CurClip, g_session.CurClip.PlayPat, (int)g_session.CurClip.PlayStep, false);
+                if (CurClip.Piano) DrawPianoNeg(sprites, pl, py, pw, ph, CurClip, PlayPat, (int)PlayStep, false);
+                else                         DrawPatNeg  (sprites, pl, py, pw, ph, CurClip, PlayPat, (int)PlayStep, false);
             }
 
 
-            if (g_session.CurClip.Patterns.Count > maxDspPats)
+            if (CurClip.Patterns.Count > maxDspPats)
             {
-                var bw = (w * 2) / (float)g_session.CurClip.Patterns.Count;
+                var bw = (w * 2) / (float)CurClip.Patterns.Count;
                 var sh = 29;
 
                 var px = x - nDsp * 4 * pw;
                 var by = y + h - sh;
 
-                for (int p = 0; p < g_session.CurClip.Patterns.Count; p++)
+                for (int p = 0; p < CurClip.Patterns.Count; p++)
                 {
                     FillRect(sprites, px + bw * p + 1, by, 1, sh, color4);
 
-                    var m = Array.FindIndex(g_session.CurClip.Mems, _m => _m == p);
+                    var m = Array.FindIndex(CurClip.Mems, _m => _m == p);
                     if (m > -1) DrawString(sprites, S((char)(65 + m)), px + 5, by - 30, 0.7f, color4);
                 }
 
-                foreach (var b in g_session.CurClip.Blocks)
+                foreach (var b in CurClip.Blocks)
                 {
                     var bx = px + bw * b.First + 1;
                     var sw = bw * b.Len - 2;
@@ -180,25 +180,25 @@ namespace IngameScript
                     DrawRightBracket(sprites, bx + sw, by, 16, sh, 1);
                 }
 
-                FillRect(sprites, px + bw * g_session.CurClip.CurPat, by, bw, sh, color4);
+                FillRect(sprites, px + bw * CurClip.CurPat, by, bw, sh, color4);
 
-                if (OK(g_session.CurClip.PlayStep))
-                    FillRect(sprites, px + bw / g_nSteps * g_session.CurClip.PlayStep, by, 4, sh, color6);
+                if (OK(PlayStep))
+                    FillRect(sprites, px + bw / g_nSteps * PlayStep, by, 4, sh, color6);
             }
 
 
             for (int p = first; p < next; p++)
             {
-                var _p = p - g_session.CurClip.SongOff;
+                var _p = p - CurClip.SongOff;
 
                 var px = x - _f * pw + _p * pw;
 
-                var b = g_session.CurClip.GetBlock(p);
+                var b = CurClip.GetBlock(p);
                 var c = b != null && b == curBlock ? color5 : color4;
 
                 DrawString(sprites, S(p + 1), px + 8, py - 28, 0.8f, c);
 
-                var m = Array.FindIndex(g_session.CurClip.Mems, _m => _m == p);
+                var m = Array.FindIndex(CurClip.Mems, _m => _m == p);
                 if (m > -1) DrawString(sprites, S((char)(65 + m)), px + 8, py - 68, 1, color4);
             }
 
@@ -221,13 +221,13 @@ namespace IngameScript
                 DrawFuncButton(sprites, "Dup",  1, w, h, false, false, g_clipPressed.Contains(1));
                 DrawFuncButton(sprites, "New",  2, w, h, false, false, g_clipPressed.Contains(2));
 
-                DrawFuncButton(sprites, "Cue",  4, w, h, false, false, g_session.CurClip.CueNext > -1);
-                DrawFuncButton(sprites, "◄",    5, w, h, false, false, g_clipPressed.Contains(5) ^ g_session.CurClip.MovePat); }
-         else { DrawFuncButton(sprites, "►",    0, w, h, false, false, g_clipPressed.Contains(6) ^ g_session.CurClip.MovePat);
-                DrawFuncButton(sprites, "◄►",   1, w, h, false, false, g_session.CurClip.MovePat);
+                DrawFuncButton(sprites, "Cue",  4, w, h, false, false, CurClip.CueNext > -1);
+                DrawFuncButton(sprites, "◄",    5, w, h, false, false, g_clipPressed.Contains(5) ^ CurClip.MovePat); }
+         else { DrawFuncButton(sprites, "►",    0, w, h, false, false, g_clipPressed.Contains(6) ^ CurClip.MovePat);
+                DrawFuncButton(sprites, "◄►",   1, w, h, false, false, CurClip.MovePat);
                                                 
-                DrawFuncButton(sprites, "[",    3, w, h, false, false, g_session.CurClip.In);
-                DrawFuncButton(sprites, "]",    4, w, h, false, false, g_session.CurClip.Out);
+                DrawFuncButton(sprites, "[",    3, w, h, false, false, CurClip.In);
+                DrawFuncButton(sprites, "]",    4, w, h, false, false, CurClip.Out);
                 DrawFuncButton(sprites, "X",    5, w, h, false, false, g_clipPressed.Contains(11));
             }
         }
@@ -235,8 +235,8 @@ namespace IngameScript
 
         void DrawBrackets(List<MySprite> sprites, int p, float x, float y, float w, float h, float bw, float bh)
         {
-            if (g_session.CurClip.Blocks.Find(b => p == b.First) != null) DrawLeftBracket (sprites, x,     y, bw, h, bh);
-            if (g_session.CurClip.Blocks.Find(b => p == b.Last ) != null) DrawRightBracket(sprites, x + w, y, bw, h, bh);
+            if (CurClip.Blocks.Find(b => p == b.First) != null) DrawLeftBracket (sprites, x,     y, bw, h, bh);
+            if (CurClip.Blocks.Find(b => p == b.Last ) != null) DrawRightBracket(sprites, x + w, y, bw, h, bh);
         }
 
 

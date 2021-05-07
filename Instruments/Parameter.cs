@@ -553,8 +553,8 @@ namespace IngameScript
 
                 DrawFuncButton(sprites, strLfo, 2, w, h, true, Lfo      != null);
                 DrawFuncButton(sprites, strMod, 3, w, h, true, Modulate != null);
-                DrawFuncButton(sprites, "Key",  4, w, h, true, chan.HasNoteKeys(GetPath(g_session.CurClip.CurSrc)));
-                DrawFuncButton(sprites, "Auto", 5, w, h, true, chan.HasAutoKeys(GetPath(g_session.CurClip.CurSrc)));
+                DrawFuncButton(sprites, "Key",  4, w, h, true, chan.HasNoteKeys(GetPath(CurClip.CurSrc)));
+                DrawFuncButton(sprites, "Auto", 5, w, h, true, chan.HasAutoKeys(GetPath(CurClip.CurSrc)));
             }
 
 
@@ -576,8 +576,8 @@ namespace IngameScript
                 case 2: AddNextSetting(strLfo); break;
                 case 3: AddNextSetting(strMod); break;
 
-                case 4: g_session.CurClip.ParamKeys = true; /*UpdateChordLabels();*/ break;
-                case 5: g_session.CurClip.ParamAuto = true; /*UpdateChordLabels();*/ break;
+                case 4: CurClip.ParamKeys = true; /*UpdateChordLabels();*/ break;
+                case 5: CurClip.ParamAuto = true; /*UpdateChordLabels();*/ break;
                 }
             }
 
@@ -586,7 +586,7 @@ namespace IngameScript
             {
                 return 
                           Tag == strVol
-                       && g_session.CurClip.CurSrc > -1
+                       && CurClip.CurSrc > -1
 
                     ||    Parent != null
                        && Tag == strOff;

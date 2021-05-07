@@ -31,7 +31,7 @@ namespace IngameScript
 
             if (g_playing)
             {
-                var sec = (int)(g_session.CurClip.PlayStep * g_session.TicksPerStep / FPS);
+                var sec = (int)(PlayStep * g_session.TicksPerStep / FPS);
                 var min = sec / 60;
                 sec %= 60;
 
@@ -59,7 +59,7 @@ namespace IngameScript
             DrawString(sprites, strUp,    x + 415, y + h - 51, 1.5f, prBpmUp   ? color0 : color6);
 
 
-            var nameLines = g_session.CurClip.Name.Split('\n');
+            var nameLines = CurClip.Name.Split('\n');
 
             if (nameLines.Length > 0) 
                 DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TaC);

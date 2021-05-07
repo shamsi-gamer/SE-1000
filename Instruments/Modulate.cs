@@ -296,9 +296,9 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Amount .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Amount .DrawLabels(sprites, x, y, dp);
-                if (Attack .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
-                if (Release.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
+                if (Amount .HasDeepParams(CurChannel, CurClip.CurSrc)) Amount .DrawLabels(sprites, x, y, dp);
+                if (Attack .HasDeepParams(CurChannel, CurClip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
+                if (Release.HasDeepParams(CurChannel, CurClip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }
@@ -308,10 +308,10 @@ namespace IngameScript
             {
                 var sTime = 
                     g_playing
-                    ? g_time - g_session.CurClip.StartTime
+                    ? g_time - CurClip.StartTime
                     : 0;
 
-                var tp = new TimeParams(g_time, 0, sTime, null, g_session.CurClip.EditLengthIndex, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, sTime, null, CurClip.EditLength, -1, _triggerDummy, dp.Program);
 
                 Amount .UpdateValue(tp);
                 Attack .UpdateValue(tp);
@@ -479,7 +479,7 @@ namespace IngameScript
             ModDestClip       = null;
             ModDestChannel    = null;
 
-            //UpdateAdjustLabels(g_session.CurClip);
+            //UpdateAdjustLabels(CurClip);
         }
     }
 }

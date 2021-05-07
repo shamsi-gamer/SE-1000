@@ -168,7 +168,7 @@ namespace IngameScript
 
         static Parameter GetCurrentParam(Instrument inst)
         {
-            return (Parameter)GetSettingFromPath(inst, CurSetting.GetPath(g_session.CurClip.CurSrc));
+            return (Parameter)GetSettingFromPath(inst, CurSetting.GetPath(CurClip.CurSrc));
         }
 
 

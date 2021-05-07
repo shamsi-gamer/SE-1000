@@ -32,7 +32,7 @@ namespace IngameScript
                 foreach (var lfo in g_lfo) lfo.AdvanceTime();
                 foreach (var mod in g_mod) mod.AdvanceTime();
 
-                g_session.CurClip.FinalizePlayback();
+                CurClip.FinalizePlayback();
             }
 
             UpdateRuntimeInfo();
@@ -44,30 +44,19 @@ namespace IngameScript
 
         void Update1()
         {
-            CurSetting?.AdjustFromController(g_session.CurClip, this);
+            CurSetting?.AdjustFromController(CurClip, this);
 
             if (!TooComplex)
                 UpdatePlayback();
 
             if (!TooComplex)
-            { 
                 foreach (var lbl in g_fastLabels)
                     lbl.Update();
-            }
-
-            //if (g_playing) 
-            //    UpdateKeyLabels();
         }
 
 
         void Update10()
         { 
-            //if (   g_session.CurClip.PlayTime < 0
-            //    && _loadStep > 10
-            //    && !TooComplex)
-            //    UpdateKeyLabels();
-
-
             if (g_started)
             {
                 UpdateInst();
@@ -83,10 +72,8 @@ namespace IngameScript
                 DampenDisplayVolumes();
 
                 if (!TooComplex)
-                { 
                     foreach (var lbl in g_slowLabels)
                         lbl.Update();
-                }
 
                 if (!TooComplex)
                     UnmarkAllLabels();

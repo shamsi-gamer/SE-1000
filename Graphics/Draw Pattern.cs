@@ -21,11 +21,11 @@ namespace IngameScript
             var xt = 340;
             var wt = (w - xt) / g_nSteps;
 
-            DrawGrid(sprites, x + xt, y, w - xt, rh, g_session.CurClip.CurPat);
+            DrawGrid(sprites, x + xt, y, w - xt, rh, CurClip.CurPat);
 
 
             var ch = rh / g_nChans;
-            var cy = y + rh - (g_session.CurClip.CurChan + 1) * ch;
+            var cy = y + rh - (CurClip.CurChan + 1) * ch;
 
             FillRect(sprites, xt, cy, w - xt, ch, color3);
 
@@ -34,15 +34,15 @@ namespace IngameScript
 
 
             // edit position
-            if (   clip.EditPos >= g_session.CurClip.CurPat      * g_nSteps
-                && clip.EditPos < (g_session.CurClip.CurPat + 1) * g_nSteps)
+            if (   clip.EditPos >= CurClip.CurPat      * g_nSteps
+                && clip.EditPos < (CurClip.CurPat + 1) * g_nSteps)
             {
                 FillRect(
                     sprites, 
                     x + xt + wt * (clip.EditPos % g_nSteps), 
                     y, 
                     wt,
-                    g_session.CurClip.ParamKeys || g_session.CurClip.ParamAuto ? h : rh,
+                    CurClip.ParamKeys || CurClip.ParamAuto ? h : rh,
                     color3);
             }
 
@@ -50,10 +50,10 @@ namespace IngameScript
             DrawPattern(sprites, x + xt, y, w - xt, rh, clip, pat, 2, isolated);
 
             if (   g_playing
-                && g_session.CurClip.PlayPat == pat)
+                && PlayPat == pat)
             {
-                FillRect(sprites, x + xt + wt * ((int)g_session.CurClip.PlayStep % g_nSteps), y, wt, rh, color6);
-                DrawPatNeg(sprites, x + xt, y, w - xt, rh, clip, pat, (int)g_session.CurClip.PlayStep, isolated);
+                FillRect(sprites, x + xt + wt * ((int)PlayStep % g_nSteps), y, wt, rh, color6);
+                DrawPatNeg(sprites, x + xt, y, w - xt, rh, clip, pat, (int)PlayStep, isolated);
             }
 
 
@@ -62,7 +62,7 @@ namespace IngameScript
             if (IsCurParam())
                 DrawValueLegend(sprites, CurParam, x, y, w, h, xt, rh, clip, pat);
 
-            if (g_session.CurClip.SelChan < 0)
+            if (CurClip.SelChan < 0)
                 DrawFuncButtons(sprites, w, h, clip);
         }
 
@@ -71,12 +71,12 @@ namespace IngameScript
         {
             var ch = h / g_nChans;
 
-            FillRect(sprites, x, y + h - g_session.CurClip.CurChan * ch - 35, w, ch, g_session.CurClip.CurrentChannel.On ? color6 : color3);
+            FillRect(sprites, x, y + h - CurClip.CurChan * ch - 35, w, ch, CurChannel.On ? color6 : color3);
 
             for (int c = 0; c < g_nChans; c++)
             {
                 var yLine = y + h - c * ch - 40;
-                var chan  = g_session.CurClip.CurrentPattern.Channels[c];
+                var chan  = CurClip.CurrentPattern.Channels[c];
 
                 DrawString(sprites, 
                      S(c + 1).PadLeft(2)
@@ -85,7 +85,7 @@ namespace IngameScript
                     6,
                     yLine + 6,
                     1,
-                    c == g_session.CurClip.CurChan ? color0 : (chan.Notes.Count > 0 ? (chan.On ? color6 : color3) : color2));
+                    c == CurClip.CurChan ? color0 : (chan.Notes.Count > 0 ? (chan.On ? color6 : color3) : color2));
             }
         }
 

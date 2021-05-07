@@ -4,8 +4,8 @@
     {
         void MixerShift()
         {
-            g_session.CurClip.MixerShift = !g_session.CurClip.MixerShift;
-            //UpdateLabel(lblMixerShift, g_session.CurClip.MixerShift);
+            CurClip.MixerShift = !CurClip.MixerShift;
+            //UpdateLabel(lblMixerShift, CurClip.MixerShift);
         }
 
 
@@ -24,16 +24,16 @@
         void EnableChannel(int ch, bool on)
         {
             int first, last;
-            g_session.CurClip.GetCurPatterns(out first, out last);
+            CurClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
-                g_session.CurClip.Patterns[p].Channels[ch].On = on;
+                CurClip.Patterns[p].Channels[ch].On = on;
         }
 
 
         void EnableChannel(int pat, int ch, bool on)
         {
-            var chan = g_session.CurClip.Patterns[pat].Channels[ch];
+            var chan = CurClip.Patterns[pat].Channels[ch];
             chan.On = on;
         }
 
@@ -46,15 +46,15 @@
             }
             else
             { 
-                var vol = g_session.CurClip.CurrentPattern.Channels[ch].Volume;
-                var mod = (g_session.CurClip.MixerShift ? 10 : 1) * dv;
+                var vol = CurClip.CurrentPattern.Channels[ch].Volume;
+                var mod = (CurClip.MixerShift ? 10 : 1) * dv;
 
                 int first, last;
-                g_session.CurClip.GetPatterns(g_session.CurClip.CurPat, out first, out last);
+                CurClip.GetPatterns(CurClip.CurPat, out first, out last);
 
                 for (int p = first; p <= last; p++)
                 {
-                    var chan = g_session.CurClip.Patterns[p].Channels[ch];
+                    var chan = CurClip.Patterns[p].Channels[ch];
                     chan.Volume = MinMax(0, vol + dVol * mod, 2);
                 }
 
@@ -71,33 +71,33 @@
             }
             else
             {
-                if (g_session.CurClip.Solo >= 0)
+                if (CurClip.Solo >= 0)
                 {
                     int _first, _last;
-                    g_session.CurClip.GetCurPatterns(out _first, out _last);
+                    CurClip.GetCurPatterns(out _first, out _last);
 
                     for (int p = _first; p <= _last; p++)
                         UnsoloChannel(p, ch);
                 }
 
-                if (ch == g_session.CurClip.Solo)
+                if (ch == CurClip.Solo)
                 {
-                    g_session.CurClip.Solo = -1;
+                    CurClip.Solo = -1;
                     return;
                 }
 
 
                 for (int _ch = 0; _ch < g_nChans; _ch++)
-                    g_session.CurClip.ChanOn[_ch] = g_session.CurClip.CurrentPattern.Channels[_ch].On;
+                    CurClip.ChanOn[_ch] = CurClip.CurrentPattern.Channels[_ch].On;
 
 
                 int first, last;
-                g_session.CurClip.GetCurPatterns(out first, out last);
+                CurClip.GetCurPatterns(out first, out last);
 
                 for (int p = first; p <= last; p++)
                     SoloChannel(p, ch);
 
-                g_session.CurClip.Solo = g_session.CurClip.Solo == ch ? -1 : ch;
+                CurClip.Solo = CurClip.Solo == ch ? -1 : ch;
             }
         }
 
@@ -109,16 +109,16 @@
 
             else
             { 
-                var on = !g_session.CurClip.CurrentPattern.Channels[ch].On;
+                var on = !CurClip.CurrentPattern.Channels[ch].On;
 
                 int first, last;
-                g_session.CurClip.GetCurPatterns(out first, out last);
+                CurClip.GetCurPatterns(out first, out last);
 
                 for (int p = first; p <= last; p++)
-                    g_session.CurClip.Patterns[p].Channels[ch].On = on;
+                    CurClip.Patterns[p].Channels[ch].On = on;
 
                 if (!on)
-                    g_session.CurClip.TrimCurrentNotes(ch);
+                    CurClip.TrimCurrentNotes(ch);
             }
         }
 
@@ -129,7 +129,7 @@
             {
                 if (i == ch) continue;
                 EnableChannel(pat, i, false);
-                g_session.CurClip.TrimCurrentNotes(i);
+                CurClip.TrimCurrentNotes(i);
             }
 
             EnableChannel(pat, ch, true);
@@ -138,10 +138,10 @@
 
         void UnsoloChannel(int pat, int ch)
         {
-            if (g_session.CurClip.Solo >= 0)
+            if (CurClip.Solo >= 0)
             {
                 for (int i = 0; i < g_nChans; i++)
-                    EnableChannel(pat, i, g_session.CurClip.ChanOn[i]);
+                    EnableChannel(pat, i, CurClip.ChanOn[i]);
             }
         }
     }

@@ -56,13 +56,13 @@ namespace IngameScript
                                   && clip.Chord > -1))
                             {
                                 var noteStep = clip.EditPos % g_nSteps + ChordSpread(i);
-                                var lastNote = new Note(chan, ch, 1, note, noteStep, g_session.CurClip.EditLengthIndex);
+                                var lastNote = new Note(chan, ch, 1, note, noteStep, CurClip.EditStepLength);
                     
                                 lastNotes.Add(lastNote);
                                 chan.AddNote(lastNote);
                             }
 
-                            TriggerNote(clip, note, ch, g_session.CurClip.EditLengthIndex, ChordSpread(i));
+                            TriggerNote(clip, note, ch, CurClip.EditStepLength, ChordSpread(i));
                         }
                     }
                 }
@@ -97,13 +97,13 @@ namespace IngameScript
                               && clip.Chord > -1))
                         {
                             var noteStep = clip.EditPos % g_nSteps + ChordSpread(i);
-                            var lastNote = new Note(chan, ch, 1, note, noteStep, g_session.CurClip.EditLengthIndex);
+                            var lastNote = new Note(chan, ch, 1, note, noteStep, CurClip.EditStepLength);
                     
                             lastNotes.Add(lastNote);
                             chan.AddNote(lastNote);
                         }
 
-                        TriggerNote(clip, note, ch, g_session.CurClip.EditLengthIndex, ChordSpread(i));
+                        TriggerNote(clip, note, ch, CurClip.EditStepLength, ChordSpread(i));
                     }
                 }
 
@@ -126,7 +126,7 @@ namespace IngameScript
                     clip.TrimCurrentNotes(ch);
 
                 for (int i = 0; i < notes.Count; i++)
-                    TriggerNote(clip, notes[i], ch, g_session.CurClip.EditLengthIndex, ChordSpread(i));
+                    TriggerNote(clip, notes[i], ch, CurClip.EditStepLength, ChordSpread(i));
             }
 
 

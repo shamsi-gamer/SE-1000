@@ -26,22 +26,22 @@ namespace IngameScript
             {
                 g_setClip = true;
                 g_session.SetClip(curClipTrack, curClipIndex);
-                InitPlaybackAfterLoad(g_session.CurClip.PlayTime);
+                InitPlaybackAfterLoad(CurClip.PlayTime);
             }
             else
                 g_session = new Session();
 
 
             //if (curPath != "")
-            //    SwitchToSetting(g_session.CurClip.CurrentInstrument, g_session.CurClip.CurSrc, curPath);
+            //    SwitchToSetting(CurClip.CurrentInstrument, CurClip.CurSrc, curPath);
 
             //if (modConnPath != "")
             //{
-            //    ModDestChannel    = g_session.CurClip.Patterns[modPat].Channels[modChan];
+            //    ModDestChannel    = CurClip.Patterns[modPat].Channels[modChan];
             //    ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
             //}
 
-            SetLabelColor(g_session.CurClip.ColorIndex);
+            SetLabelColor(CurClip.ColorIndex);
             //UpdateLabels();
         }
 

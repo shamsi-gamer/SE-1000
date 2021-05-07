@@ -1,5 +1,6 @@
 ﻿using System;
 using Sandbox.ModAPI.Ingame;
+using VRageMath;
 
 
 namespace IngameScript
@@ -10,26 +11,42 @@ namespace IngameScript
         {
             public delegate bool CondFunc(Label label);
 
-            public IMyTextPanel        Panel;
+            public IMyTextPanel  Panel;
                                         
-            public CondFunc            BrightCondition,
-                                       DimCondition;
+            public Color         ForeColor,
+                                 HalfColor,
+                                 BackColor;
 
-            public Action<Label, bool> UpdateFunc;
+            public CondFunc      BrightCondition,
+                                 DimCondition;
 
-            public int                 Data;
+            public Action<Label> UpdateFunc;
+            public Action<Label> ColorFunc;
 
-          //public bool                NeedsUpdate;
+            public int           Data;
+
+          //public bool          NeedsUpdate;
 
 
-            public Label(bool fast, IMyTextPanel panel, CondFunc condBright = null, CondFunc condDim = null, Action<Label, bool> updateFunc = null, int data = 0)
+            public Label(bool          fast, 
+                         IMyTextPanel  panel, 
+                         CondFunc      condBright = null, 
+                         CondFunc      condDim    = null, 
+                         Action<Label> updateFunc = null, 
+                         Action<Label> colorFunc  = null, 
+                         int           data = 0)
             {
                 Panel           = panel;
+
+                ForeColor       = color6;
+                HalfColor       = color3;
+                BackColor       = color0;
 
                 BrightCondition = condBright;
                 DimCondition    = condDim;
 
                 UpdateFunc      = updateFunc;
+                ColorFunc       = colorFunc;
 
                 Data            = data;
 
@@ -40,17 +57,31 @@ namespace IngameScript
             }
 
 
-            public Label(bool fast, IMyTextPanel panel, Action<Label, bool> updateFunc, int data = 0)
-                : this(fast, panel, null, null, updateFunc, data) {}
+            //public Label(bool          fast, 
+            //             IMyTextPanel  panel, 
+            //             Action<Label> updateFunc, 
+            //             Action<Label> colorFunc = null, 
+            //             int           data = 0)
+            //    : this(fast, 
+            //           panel, 
+            //           null, 
+            //           null, 
+            //           updateFunc, 
+            //           colorFunc, 
+            //           data) 
+            //{}
 
 
             public void Update()
             {
+                ForeColor = color6;
+                BackColor = color0;
+
+                if (ColorFunc  != null) ColorFunc(this);
+                if (UpdateFunc != null) UpdateFunc(this);
+
                 var bCond = BrightCondition != null ? BrightCondition(this) : false;
                 var dCond = DimCondition    != null ? DimCondition   (this) : false;
-
-                if (UpdateFunc != null) 
-                    UpdateFunc(this, bCond);
 
                 Update(IsPressed(this) || bCond, dCond);
             }
@@ -67,17 +98,17 @@ namespace IngameScript
             }
 
 
-            public void Update(bool b, bool b2 = false)
+            public void Update(bool full, bool half = false)
             {
-                if (b)
+                if (full)
                 {
-                    Panel.FontColor       = color0;
-                    Panel.BackgroundColor = color6;
+                    Panel.FontColor       = BackColor;
+                    Panel.BackgroundColor = ForeColor;
                 }
                 else
                 {
-                    Panel.FontColor       = color6;
-                    Panel.BackgroundColor = b2 ? color3 : color0;
+                    Panel.FontColor       = ForeColor;
+                    Panel.BackgroundColor = half ? HalfColor : BackColor;
                 }
             }
 

@@ -9,7 +9,7 @@ namespace IngameScript
     {
         void High(int h)
         {
-            var clip = g_session.CurClip;
+            var clip = CurClip;
 
             var tune = clip.SelectedSource    ?.Tune
                     ?? clip.SelectedInstrument?.Tune;
@@ -60,10 +60,10 @@ namespace IngameScript
                 {
                     chord.Sort();
 
-                    var oldLength = clip.EditLengthIndex;
+                    var oldIndex = clip.EditLengthIndex;
                     clip.EditLengthIndex = Math.Min(clip.EditLengthIndex, g_steps.Length-2);
                     PlayNote(clip, chord[0], chord, clip.CurChan);
-                    clip.EditLengthIndex = oldLength;
+                    clip.EditLengthIndex = oldIndex;
                 }
             }
             else if (clip.Piano)
@@ -100,8 +100,8 @@ namespace IngameScript
 
         void Low(int l)
         {
-            var tune = g_session.CurClip.SelectedSource    ?.Tune
-                    ?? g_session.CurClip.SelectedInstrument?.Tune;
+            var tune = CurClip.SelectedSource    ?.Tune
+                    ?? CurClip.SelectedInstrument?.Tune;
 
             if (   IsCurParam(strTune)
                 && (tune?.UseChord ?? false))
@@ -114,11 +114,11 @@ namespace IngameScript
 
                 tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
             }
-            else if (g_session.CurClip.ChordEdit
-                  && g_session.CurClip.Chord > -1)
+            else if (CurClip.ChordEdit
+                  && CurClip.Chord > -1)
             {
                 var note  = LowToNote(l);
-                var chord = g_session.CurClip.Chords[g_session.CurClip.Chord];
+                var chord = CurClip.Chords[CurClip.Chord];
 
                 if (chord.Contains(note)) chord.Remove(note);
                 else                      chord.Add   (note);
@@ -127,39 +127,39 @@ namespace IngameScript
                 {
                     chord.Sort();
 
-                    var oldLength = g_session.CurClip.EditLengthIndex;
-                    g_session.CurClip.EditLengthIndex = Math.Min(g_session.CurClip.EditLengthIndex, g_steps.Length-2);
-                    PlayNote(g_session.CurClip, chord[0], chord, g_session.CurClip.CurChan);
-                    g_session.CurClip.EditLengthIndex = oldLength;
+                    var oldIndex = CurClip.EditLengthIndex;
+                    CurClip.EditLengthIndex = Math.Min(CurClip.EditLengthIndex, g_steps.Length-2);
+                    PlayNote(CurClip, chord[0], chord, CurClip.CurChan);
+                    CurClip.EditLengthIndex = oldIndex;
                 }
 
                 //UpdateChordLabels();
             }
-            else if (g_session.CurClip.Piano)
+            else if (CurClip.Piano)
             {
                 if (l == 15)
                 {
-                    g_session.CurClip.HalfSharp = !g_session.CurClip.HalfSharp;
-                    //UpdateLabel(lblLow[15], g_session.CurClip.HalfSharp);
+                    CurClip.HalfSharp = !CurClip.HalfSharp;
+                    //UpdateLabel(lblLow[15], CurClip.HalfSharp);
                 }
                 else // l < 15
                 {
                     PlayNote(
-                        g_session.CurClip,
+                        CurClip,
                         LowToNote(l),
-                        g_session.CurClip.Chord > -1 && g_session.CurClip.ChordMode ? g_session.CurClip.Chords[g_session.CurClip.Chord] : null,
-                        g_session.CurClip.CurChan);
+                        CurClip.Chord > -1 && CurClip.ChordMode ? CurClip.Chords[CurClip.Chord] : null,
+                        CurClip.CurChan);
                 }
             }
             else
-                Tick(g_session.CurClip.CurChan, l);
+                Tick(CurClip.CurChan, l);
         }
 
 
         void Tick(int ch, int step)
         {
             int first, last;
-            g_session.CurClip.GetCurPatterns(out first, out last);
+            CurClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
                 Tick(p, ch, step);
@@ -168,8 +168,8 @@ namespace IngameScript
 
         void Tick(int pat, int ch, int step)
         {
-            var _chan = g_session.CurClip.Patterns[pat].Channels[ch];
-            var  chan = g_session.CurClip.Patterns[pat].Channels[ch];
+            var _chan = CurClip.Patterns[pat].Channels[ch];
+            var  chan = CurClip.Patterns[pat].Channels[ch];
 
             var found = chan.Notes.Where(n => 
                    n.PatStep >= step
@@ -177,23 +177,23 @@ namespace IngameScript
 
             if (found.Length == 0)
             {
-                if (!g_session.CurClip.Pick)
+                if (!CurClip.Pick)
                 {
-                    var notes = GetChordNotes(g_session.CurClip.CurNote);
+                    var notes = GetChordNotes(CurClip.CurNote);
 
                     for (int n = 0; n < notes.Count; n++)
-                        chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordSpread(n), g_session.CurClip.EditLengthIndex));
+                        chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordSpread(n), CurClip.EditStepLength));
                 }
             }
-            else if (g_session.CurClip.Pick)
+            else if (CurClip.Pick)
             {
-                g_session.CurClip.CurNote = found[0].Number;
-                //g_showNote = g_session.CurClip.CurNote;
+                CurClip.CurNote = found[0].Number;
+                //g_showNote = CurClip.CurNote;
 
-                g_session.CurClip.Pick = false;
+                CurClip.Pick = false;
 
                 TriggerNote(
-                    g_session.CurClip,
+                    CurClip,
                     found[0].Number, 
                     ch, 
                     found[0].StepLength,
@@ -201,7 +201,7 @@ namespace IngameScript
             }
             else
             {
-                g_session.CurClip.Pick = false;
+                CurClip.Pick = false;
                 
                 foreach (var n in found)
                     chan.Notes.Remove(n);
@@ -211,24 +211,24 @@ namespace IngameScript
 
         void Shift(bool fwd)
         {
-            if (g_session.CurClip.AllChan)
+            if (CurClip.AllChan)
             {
                 for (int i = 0; i < g_nChans; i++)
                     Shift(i, fwd);
             }
             else
-                Shift(g_session.CurClip.CurChan, fwd);
+                Shift(CurClip.CurChan, fwd);
         }
 
 
         void Shift(int ch, bool fwd)
         {
-            var pats = g_session.CurClip.Patterns;
+            var pats = CurClip.Patterns;
 
             var spill = new List<Note>();
 
             int first, last;
-            g_session.CurClip.GetCurPatterns(out first, out last);
+            CurClip.GetCurPatterns(out first, out last);
 
             if (fwd)
             {
@@ -240,7 +240,7 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.PatStep += Math.Min(g_session.CurClip.EditStepIndex, 1);
+                        note.PatStep += Math.Min(CurClip.EditStepIndex, 1);
 
                         if (note.PatStep >= g_nSteps)
                             spill.Add(note);
@@ -265,7 +265,7 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.PatStep -= Math.Min(g_session.CurClip.EditStepIndex, 1);
+                        note.PatStep -= Math.Min(CurClip.EditStepIndex, 1);
 
                         if (note.PatStep < 0)
                             spill.Add(note);
@@ -295,22 +295,22 @@ namespace IngameScript
 
         void RandomInstrument()
         {
-            g_session.CurClip.RndInst = !g_session.CurClip.RndInst;
-            //UpdateHighLabels(g_session.CurClip.CurrentPattern, g_session.CurClip.CurrentChannel);
+            CurClip.RndInst = !CurClip.RndInst;
+            //UpdateHighLabels(CurClip.CurrentPattern, CurChannel);
         }
 
 
         void ToggleAllChannels()
         {
-            g_session.CurClip.AllChan = !g_session.CurClip.AllChan;
-            //UpdateHighLabels(g_session.CurClip.CurrentPattern, g_session.CurClip.CurrentChannel);
+            CurClip.AllChan = !CurClip.AllChan;
+            //UpdateHighLabels(CurClip.CurrentPattern, CurChannel);
         }
 
 
         void Flip(int ch, int frac)
         {
             int first, last;
-            g_session.CurClip.GetCurPatterns(out first, out last);
+            CurClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
             { 
@@ -329,42 +329,42 @@ namespace IngameScript
 
         void ClearNotes()
         {
-            if (g_session.CurClip.AllChan)
+            if (CurClip.AllChan)
             {
                 for (int i = 0; i < g_nChans; i++)
                     ClearNotes(i);
             }
             else
-                ClearNotes(g_session.CurClip.CurChan);
+                ClearNotes(CurClip.CurChan);
         }
 
 
         void ClearNotes(int ch)
         {
             int first, last;
-            g_session.CurClip.GetCurPatterns(out first, out last);
+            CurClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
             { 
-                var chan = g_session.CurClip.Patterns[p].Channels[ch];
+                var chan = CurClip.Patterns[p].Channels[ch];
 
-                if (g_session.CurClip.ParamKeys)
+                if (CurClip.ParamKeys)
                 {
                     foreach (var note in chan.Notes)
                     { 
                         var param = GetCurrentParam(note.Instrument);
 
                         var index = 0;
-                        while ((index = note.Keys.FindIndex(k => k.Path == param.GetPath(g_session.CurClip.CurSrc))) > -1)
+                        while ((index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurClip.CurSrc))) > -1)
                             note.Keys.RemoveAt(index);
                     }
                 }
-                else if (g_session.CurClip.ParamAuto)
+                else if (CurClip.ParamAuto)
                 {
                     var param = GetCurrentParam(chan.Instrument);
                     var index = 0;
                         
-                    while ((index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(g_session.CurClip.CurSrc))) > -1)
+                    while ((index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(CurClip.CurSrc))) > -1)
                         chan.AutoKeys.RemoveAt(index);
                 }
                 else
@@ -373,15 +373,15 @@ namespace IngameScript
                 }
             }
 
-            if (g_session.CurClip.ParamAuto)
-                g_session.CurClip.UpdateAutoKeys();
+            if (CurClip.ParamAuto)
+                CurClip.UpdateAutoKeys();
         }
 
 
         void PickNote()
         {
-            g_session.CurClip.Pick = !g_session.CurClip.Pick;
-            //UpdateLabel(lblHigh[7], g_session.CurClip.Pick);
+            CurClip.Pick = !CurClip.Pick;
+            //UpdateLabel(lblHigh[7], CurClip.Pick);
         }
 
 
@@ -394,8 +394,8 @@ namespace IngameScript
             if (high > 6) h++;
 
             return 
-                  (60 + g_session.CurClip.CurrentChannel.Transpose * 12 + h) * NoteScale 
-                + (g_session.CurClip.HalfSharp ? 1 : 0);
+                  (60 + CurChannel.Transpose * 12 + h) * NoteScale 
+                + (CurClip.HalfSharp ? 1 : 0);
         }
 
 
@@ -409,8 +409,8 @@ namespace IngameScript
             if (low > 13) l--;
 
             return 
-                  (60 + g_session.CurClip.CurrentChannel.Transpose * 12 + l) * NoteScale
-                + (g_session.CurClip.HalfSharp ? 1 : 0);
+                  (60 + CurChannel.Transpose * 12 + l) * NoteScale
+                + (CurClip.HalfSharp ? 1 : 0);
         }
 
 
@@ -438,7 +438,7 @@ namespace IngameScript
         {
             return
                   S((char)(65 + (low+2) % 7)) 
-                + (g_session.CurClip.HalfSharp ? "‡" : "");
+                + (CurClip.HalfSharp ? "‡" : "");
         }
     }
 }

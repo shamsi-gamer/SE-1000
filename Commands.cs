@@ -8,31 +8,31 @@ namespace IngameScript
     {
         void New()
         {
-            if (g_session.CurClip.CurSrc > -1)
+            if (CurClip.CurSrc > -1)
             {
-                g_session.CurClip.CurSet = -1;
+                CurClip.CurSet = -1;
                 g_settings.Clear();
 
 
-                var inst = g_session.CurClip.CurrentInstrument;
+                var inst = CurClip.CurrentInstrument;
 
                 if (inst.Sources.Count < maxDspSrc)
                 { 
-                    //for (int i = g_song.g_session.CurClip.CurSrc+1; i < inst.Sources.Count; i++)
+                    //for (int i = g_song.CurClip.CurSrc+1; i < inst.Sources.Count; i++)
                     //    inst.Sources[i].Index++;
 
-                    inst.Sources.Insert(g_session.CurClip.CurSrc+1, new Source(inst));
+                    inst.Sources.Insert(CurClip.CurSrc+1, new Source(inst));
 
-                    g_session.CurClip.CurSrc++;
+                    CurClip.CurSrc++;
                 }
 
-                //UpdateDspOffset(ref srcOff, g_song.g_session.CurClip.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
-                //UpdateSrcOff(CurrentInstrument(g_song), g_song.g_session.CurClip.CurSrc);
+                //UpdateDspOffset(ref srcOff, g_song.CurClip.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
+                //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurClip.CurSrc);
                 UpdateSrcOff();
             }
-            else if (g_session.CurClip.SelChan > -1)
+            else if (CurClip.SelChan > -1)
             {
-                g_session.CurClip.CurSet = -1;
+                CurClip.CurSet = -1;
                 g_settings.Clear();
 
 
@@ -41,12 +41,12 @@ namespace IngameScript
 
                 inst.Name = GetNewName(inst.Name, str => g_session.Instruments.Exists(_s => _s.Name == str));
 
-                g_session.Instruments.Insert(g_session.Instruments.IndexOf(g_session.CurClip.CurrentInstrument) + 1, inst);
+                g_session.Instruments.Insert(g_session.Instruments.IndexOf(CurClip.CurrentInstrument) + 1, inst);
                 SetCurInst(inst);
 
                 //UpdateOctaveLabel();
-                //UpdateDspOffset(ref instOff, g_song.g_session.CurClip.CurSrc, g_session.Instruments.Count, maxDspSrc, 0, 1);
-                UpdateInstOff(g_session.CurClip.CurChan);
+                //UpdateDspOffset(ref instOff, g_song.CurClip.CurSrc, g_session.Instruments.Count, maxDspSrc, 0, 1);
+                UpdateInstOff(CurClip.CurChan);
 
                 UpdateInstName();
                 g_inputValid = false;
@@ -59,96 +59,96 @@ namespace IngameScript
 
         void Duplicate()
         {
-            if (g_session.CurClip.CurSrc > -1)
+            if (CurClip.CurSrc > -1)
             {
-                g_session.CurClip.CurSet = -1;
+                CurClip.CurSet = -1;
                 g_settings.Clear();
 
 
-                var inst = g_session.CurClip.CurrentInstrument;
+                var inst = CurClip.CurrentInstrument;
 
                 if (inst.Sources.Count < 8)
                 {
-                    //for (int i = g_song.g_session.CurClip.CurSrc+1; i < inst.Sources.Count; i++)
+                    //for (int i = g_song.CurClip.CurSrc+1; i < inst.Sources.Count; i++)
                     //    inst.Sources[i].Index++;
 
-                    var src = new Source(inst.Sources[g_session.CurClip.CurSrc], inst);
-                    inst.Sources.Insert(g_session.CurClip.CurSrc+1, src);
+                    var src = new Source(inst.Sources[CurClip.CurSrc], inst);
+                    inst.Sources.Insert(CurClip.CurSrc+1, src);
 
-                    g_session.CurClip.CurSrc++;
+                    CurClip.CurSrc++;
                 }
 
-                //UpdateDspOffset(ref srcOff, g_song.g_session.CurClip.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
-                //UpdateSrcOff(CurrentInstrument(g_song), g_song.g_session.CurClip.CurSrc);
+                //UpdateDspOffset(ref srcOff, g_song.CurClip.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
+                //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurClip.CurSrc);
                 UpdateSrcOff();
             }
-            else if (g_session.CurClip.SelChan > -1)
+            else if (CurClip.SelChan > -1)
             {
-                g_session.CurClip.CurSet = -1;
+                CurClip.CurSet = -1;
                 g_settings.Clear();
 
 
-                var inst = new Instrument(g_session.CurClip.CurrentInstrument);
+                var inst = new Instrument(CurClip.CurrentInstrument);
                 inst.Name = GetNewName(inst.Name, newName => g_session.Instruments.Exists(s => s.Name == newName));
 
-                g_session.Instruments.Insert(g_session.Instruments.IndexOf(g_session.CurClip.CurrentInstrument) + 1, inst);
+                g_session.Instruments.Insert(g_session.Instruments.IndexOf(CurClip.CurrentInstrument) + 1, inst);
                 SetCurInst(inst);
-                g_session.CurClip.SrcOff = 0;
+                CurClip.SrcOff = 0;
 
                 //UpdateOctaveLabel();
                 UpdateInstName();
 
-                //UpdateDspOffset(ref instOff, g_song.g_session.CurClip.CurSrc, g_session.Instruments.Count, maxDspSrc, 0, 1);
-                UpdateInstOff(g_session.CurClip.CurChan);
+                //UpdateDspOffset(ref instOff, g_song.CurClip.CurSrc, g_session.Instruments.Count, maxDspSrc, 0, 1);
+                UpdateInstOff(CurClip.CurChan);
             }
 
 
-            lblDuplicate.Mark();
+            lblDup.Mark();
         }
 
 
         void Delete()
         {
-            if (g_session.CurClip.CurSrc > -1)
+            if (CurClip.CurSrc > -1)
             {
-                g_session.CurClip.CurSet = -1;
+                CurClip.CurSet = -1;
                 g_settings.Clear();
 
 
-                var inst = g_session.CurClip.CurrentInstrument;
+                var inst = CurClip.CurrentInstrument;
 
-                inst.Sources[g_session.CurClip.CurSrc].Delete(g_session.CurClip);
-                inst.Sources.RemoveAt(g_session.CurClip.CurSrc);
+                inst.Sources[CurClip.CurSrc].Delete(CurClip);
+                inst.Sources.RemoveAt(CurClip.CurSrc);
 
-                //for (int i = g_song.g_session.CurClip.CurSrc; i < inst.Sources.Count; i++)
+                //for (int i = g_song.CurClip.CurSrc; i < inst.Sources.Count; i++)
                 //    inst.Sources[i].Index--;
 
                 if (inst.Sources.Count == 0)
                 {
                     inst.Sources.Add(new Source(inst));
-                    g_session.CurClip.CurSrc = 0;
+                    CurClip.CurSrc = 0;
                 }
 
-                if (g_session.CurClip.CurSrc >= inst.Sources.Count)
-                    g_session.CurClip.CurSrc = inst.Sources.Count - 1;
+                if (CurClip.CurSrc >= inst.Sources.Count)
+                    CurClip.CurSrc = inst.Sources.Count - 1;
 
-                //UpdateDspOffset(ref srcOff, g_song.g_session.CurClip.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
-                //UpdateSrcOff(CurrentInstrument(g_song), g_song.g_session.CurClip.CurSrc);
+                //UpdateDspOffset(ref srcOff, g_song.CurClip.CurSrc, inst.Sources.Count, maxDspSrc, 0, 0);
+                //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurClip.CurSrc);
                 UpdateSrcOff();
 
                 //g_sampleValid = F; 
             }
-            else if (g_session.CurClip.SelChan > -1)
+            else if (CurClip.SelChan > -1)
             {
-                g_session.CurClip.CurSet = -1;
+                CurClip.CurSet = -1;
                 g_settings.Clear();
 
 
-                var i = g_session.Instruments.IndexOf(g_session.CurClip.CurrentInstrument);
-                var inst = g_session.CurClip.CurrentInstrument;
+                var i = g_session.Instruments.IndexOf(CurClip.CurrentInstrument);
+                var inst = CurClip.CurrentInstrument;
 
-                g_session.CurClip.CurrentInstrument.Delete(g_session.CurClip);
-                g_session.Instruments.Remove(g_session.CurClip.CurrentInstrument);
+                CurClip.CurrentInstrument.Delete(CurClip);
+                g_session.Instruments.Remove(CurClip.CurrentInstrument);
 
                 if (g_session.Instruments.Count == 0)
                 {
@@ -158,14 +158,14 @@ namespace IngameScript
 
                 i = MinMax(0, i - 1, g_session.Instruments.Count - 1);
 
-                foreach (var p in g_session.CurClip.Patterns)
+                foreach (var p in CurClip.Patterns)
                     foreach (var c in p.Channels)
                         if (c.Instrument == inst) c.Instrument = g_session.Instruments[i];
 
-                g_session.CurClip.SrcOff = 0;
+                CurClip.SrcOff = 0;
 
-                //UpdateDspOffset(ref instOff, g_song.g_session.CurClip.CurSrc, g_session.Instruments.Count, maxDspSrc, 0, 1);
-                UpdateInstOff(g_session.CurClip.CurChan);
+                //UpdateDspOffset(ref instOff, g_song.CurClip.CurSrc, g_session.Instruments.Count, maxDspSrc, 0, 1);
+                UpdateInstOff(CurClip.CurChan);
 
                 //UpdateOctaveLabel();
                 UpdateInstName();
@@ -179,7 +179,7 @@ namespace IngameScript
 
         public void ToggleMove()
         {
-            if (g_session.CurClip.CurSet > -1) return;
+            if (CurClip.CurSet > -1) return;
 
             g_move = !g_move;
         }
@@ -187,17 +187,17 @@ namespace IngameScript
 
         void Move(int move)
         {
-            if (g_session.CurClip.CurSet > -1)
+            if (CurClip.CurSet > -1)
                 return;
 
 
-            if (g_session.CurClip.SelChan < 0)
+            if (CurClip.SelChan < 0)
             {
                 SetChan(-move);
             }
-            else if (g_session.CurClip.CurSrc < 0) // instrument
+            else if (CurClip.CurSrc < 0) // instrument
             {
-                var i = g_session.Instruments.IndexOf(g_session.CurClip.CurrentInstrument);
+                var i = g_session.Instruments.IndexOf(CurClip.CurrentInstrument);
                 var n = i + move;
 
                 if (n >= g_session.Instruments.Count) n = 0;
@@ -213,10 +213,10 @@ namespace IngameScript
                 else
                 {
                     int first, last;
-                    g_session.CurClip.GetCurPatterns(out first, out last);
+                    CurClip.GetCurPatterns(out first, out last);
 
                     for (int p = first; p <= last; p++)
-                        g_session.CurClip.Patterns[p].Channels[g_session.CurClip.CurChan].Instrument = g_session.Instruments[n];
+                        CurClip.Patterns[p].Channels[CurClip.CurChan].Instrument = g_session.Instruments[n];
 
                     //UpdateOctaveLabel();
                 }
@@ -225,33 +225,33 @@ namespace IngameScript
                 UpdateInstName();
                 g_inputValid = false;
 
-                UpdateInstOff(g_session.CurClip.CurChan);
+                UpdateInstOff(CurClip.CurChan);
 
-                g_session.CurClip.SrcOff = 0;
+                CurClip.SrcOff = 0;
             }
             else // source
             {
-                var inst = g_session.CurClip.CurrentInstrument;
-                var next = g_session.CurClip.CurSrc + move;
+                var inst = CurClip.CurrentInstrument;
+                var next = CurClip.CurSrc + move;
 
                 if (next >= inst.Sources.Count) next = 0;
                 if (next < 0) next = inst.Sources.Count - 1;
 
                 if (g_move)
                 {
-                    var src = inst.Sources[g_session.CurClip.CurSrc];
-                    inst.Sources.RemoveAt(g_session.CurClip.CurSrc);
+                    var src = inst.Sources[CurClip.CurSrc];
+                    inst.Sources.RemoveAt(CurClip.CurSrc);
                     inst.Sources.Insert(next, src);
                 }
 
-                g_session.CurClip.CurSrc = next;
+                CurClip.CurSrc = next;
 
                 dspMain.Panel.WriteText("", false);
 
                 UpdateSrcOff();
 
                 //UpdateLabel(lblCmd1, "On", 10, 10);
-                //UpdateLabel(lblCmd1, inst.Sources[g_session.CurClip.CurSrc].On);
+                //UpdateLabel(lblCmd1, inst.Sources[CurClip.CurSrc].On);
             }
 
 
@@ -264,13 +264,13 @@ namespace IngameScript
         {
             g_move = false;
 
-            g_session.CurClip.ParamKeys = false;
-            g_session.CurClip.ParamAuto = false;
+            CurClip.ParamKeys = false;
+            CurClip.ParamAuto = false;
 
             var _curSet = false;
 
 
-            if (g_session.CurClip.CurSet > -1)
+            if (CurClip.CurSet > -1)
             {
                 bool ucl = false;
 
@@ -280,7 +280,7 @@ namespace IngameScript
                     if (IsCurParam(strTune)) ucl = true;
                 }
 
-                g_session.CurClip.CurSet = -1;
+                CurClip.CurSet = -1;
                 g_settings.Clear();
                     
                 if (ucl)
@@ -294,34 +294,34 @@ namespace IngameScript
             }
 
 
-            if (     g_session.CurClip.CurSrc > -1
+            if (     CurClip.CurSrc > -1
                 && !_curSet)
             {
-                g_session.CurClip.CurSrc = -1;
-                g_session.CurClip.SrcOff =  0;
+                CurClip.CurSrc = -1;
+                CurClip.SrcOff =  0;
 
-                g_session.CurClip.Shift  = false;
+                CurClip.Shift  = false;
 
                 UpdateInstName(true);
                 g_inputValid = false;
             }
             
 
-            if (     g_session.CurClip.SelChan > -1
+            if (     CurClip.SelChan > -1
                 && !_curSet)
             {
-                g_session.CurClip.SelChan = -1;
+                CurClip.SelChan = -1;
 
-                g_session.CurClip.Shift = false;
+                CurClip.Shift = false;
                 g_move  = false;
 
                 UpdateInstName(false);
             }
 
-            //UpdateAdjustLabels(g_session.CurClip);
+            //UpdateAdjustLabels(CurClip);
             //UpdateNewLabels();
             
-            lblBackOut.Mark();
+            lblOut.Mark();
 
             g_session.SaveInstruments();
         }
@@ -331,18 +331,18 @@ namespace IngameScript
         {
             g_move = false;
 
-            if (g_session.CurClip.CurSet > -1)
+            if (CurClip.CurSet > -1)
             {
-                if (g_session.CurClip.ParamKeys)
+                if (CurClip.ParamKeys)
                 {
-                    g_session.CurClip.ParamKeys = false;
-                    g_session.CurClip.EditPos   = fN;
+                    CurClip.ParamKeys = false;
+                    CurClip.EditPos   = fN;
                     //UpdateEditLabel(lblEdit, false);
                 }
-                else if (g_session.CurClip.ParamAuto)
+                else if (CurClip.ParamAuto)
                 {
-                    g_session.CurClip.ParamAuto = false;
-                    g_session.CurClip.EditPos   = fN;
+                    CurClip.ParamAuto = false;
+                    CurClip.EditPos   = fN;
                     //UpdateEditLabel(lblEdit, false);
                 }
                 else
@@ -360,7 +360,7 @@ namespace IngameScript
                         if (IsCurParam(strTune)) ucl = true;
                     }
 
-                    g_session.CurClip.CurSet--;
+                    CurClip.CurSet--;
                     g_settings.RemoveAt(g_settings.Count-1);
                     
                     if (ucl)
@@ -371,36 +371,36 @@ namespace IngameScript
                     }
                 }
             }
-            else if (g_session.CurClip.CurSrc > -1)
+            else if (CurClip.CurSrc > -1)
             {
-                g_session.CurClip.CurSrc = -1;
-                g_session.CurClip.SrcOff =  0;
+                CurClip.CurSrc = -1;
+                CurClip.SrcOff =  0;
 
-                g_session.CurClip.Shift = false;
+                CurClip.Shift = false;
 
                 UpdateInstName(true);
                 g_inputValid = false;
             }
-            else if (g_session.CurClip.SelChan > -1)
+            else if (CurClip.SelChan > -1)
             {
-                g_session.CurClip.SelChan = -1;
+                CurClip.SelChan = -1;
 
-                g_session.CurClip.Shift = false;
+                CurClip.Shift = false;
                 g_move  = false;
 
-                g_session.CurClip.EditPos = fN;
+                CurClip.EditPos = fN;
                 //UpdateEditLabel(lblEdit, false);
 
                 UpdateInstName(false);
 
-                g_session.CurClip.ParamKeys = false;
-                g_session.CurClip.ParamAuto = false;
+                CurClip.ParamKeys = false;
+                CurClip.ParamAuto = false;
             }
 
             lblBack.Mark();
 
             //UpdateNewLabels();
-            //UpdateAdjustLabels(g_session.CurClip);
+            //UpdateAdjustLabels(CurClip);
 
             g_session.SaveInstruments();
         }
@@ -408,37 +408,37 @@ namespace IngameScript
 
         void Enter()
         {
-            if (g_session.CurClip.CurSet > -1)
+            if (CurClip.CurSet > -1)
                 return;
 
             g_move = false;
 
-            if (g_session.CurClip.SelChan < 0)
+            if (CurClip.SelChan < 0)
             {
-                g_session.CurClip.EditPos = fN;
+                CurClip.EditPos = fN;
                 //UpdateEditLabel(lblEdit, false);
 
-                g_session.CurClip.SelChan = g_session.CurClip.CurChan;
+                CurClip.SelChan = CurClip.CurChan;
 
                 //UpdateNewLabels();
-                //UpdateAdjustLabels(g_session.CurClip);
+                //UpdateAdjustLabels(CurClip);
 
-                UpdateInstOff(g_session.CurClip.SelChan);
+                UpdateInstOff(CurClip.SelChan);
 
                 UpdateInstName(true);
                 g_inputValid = false;
 
-                //MarkLabel(lblEnter, g_session.CurClip.CurSrc < 0);
+                //MarkLabel(lblEnter, CurClip.CurSrc < 0);
                 //UpdateLabel(lblCmd3, false);
             }
-            else if (g_session.CurClip.CurSrc < 0)
+            else if (CurClip.CurSrc < 0)
             {
-                g_session.CurClip.CurSrc = 0;
+                CurClip.CurSrc = 0;
 
-                g_session.CurClip.Shift = false;
+                CurClip.Shift = false;
 
                 //UpdateNewLabels();
-                //UpdateAdjustLabels(g_session.CurClip);
+                //UpdateAdjustLabels(CurClip);
 
                 UpdateInstName(false);
 
@@ -456,9 +456,9 @@ namespace IngameScript
 
                 else
                 { 
-                    ModDestConnecting.SrcSettings   .Add(g_session.CurClip.CurSet > -1 ? CurSetting : null);
-                    ModDestConnecting.SrcSources    .Add(g_session.CurClip.SelectedSource);
-                    ModDestConnecting.SrcInstruments.Add(g_session.CurClip.SelectedInstrument);
+                    ModDestConnecting.SrcSettings   .Add(CurClip.CurSet > -1 ? CurSetting : null);
+                    ModDestConnecting.SrcSources    .Add(CurClip.SelectedSource);
+                    ModDestConnecting.SrcInstruments.Add(CurClip.SelectedInstrument);
 
                     //g_session.SetClip(ModDestClip);
 
@@ -472,10 +472,10 @@ namespace IngameScript
             }
             else if (IsCurParam())
             {
-                if (OK(g_session.CurClip.EditPos))
+                if (OK(CurClip.EditPos))
                 {
-                         if (g_session.CurClip.ParamKeys) Interpolate(g_session.CurClip);
-                    else if (g_session.CurClip.ParamAuto) EnableKeyMove(g_session.CurClip);
+                         if (CurClip.ParamKeys) Interpolate(CurClip);
+                    else if (CurClip.ParamAuto) EnableKeyMove(CurClip);
                 }
             }
             else if (IsCurSetting(typeof(Modulate)))
@@ -483,42 +483,42 @@ namespace IngameScript
                 if (ModDestConnecting == null)
                 {
                     ModDestConnecting = CurModulate;
-                    ModCurChan        = g_session.CurClip.CurChan;
-                    ModSelChan        = g_session.CurClip.SelChan;
-                    ModCurPat         = g_session.CurClip.CurPat;
-                    ModDestSrcIndex   = g_session.CurClip.CurSrc;
-                    ModDestChannel    = g_session.CurClip.SelectedChannel;
-                    ModDestClip       = g_session.CurClip;
+                    ModCurChan        = CurClip.CurChan;
+                    ModSelChan        = CurClip.SelChan;
+                    ModCurPat         = CurClip.CurPat;
+                    ModDestSrcIndex   = CurClip.CurSrc;
+                    ModDestChannel    = CurClip.SelectedChannel;
+                    ModDestClip       = CurClip;
 
-                    //UpdateAdjustLabels(g_session.CurClip);
+                    //UpdateAdjustLabels(CurClip);
                 }
             }
             else if (IsCurSetting(typeof(Arpeggio))
                   && OK(CurArpeggio.Clip.EditPos))
             {
-                     if (g_session.CurClip.ParamKeys) Interpolate  (CurArpeggio.Clip);
-                else if (g_session.CurClip.ParamAuto) EnableKeyMove(CurArpeggio.Clip);
+                     if (CurClip.ParamKeys) Interpolate  (CurArpeggio.Clip);
+                else if (CurClip.ParamAuto) EnableKeyMove(CurArpeggio.Clip);
             }
             else
             {
-                if (g_session.CurClip.CurSrc > -1)
+                if (CurClip.CurSrc > -1)
                 {
-                    var src = g_session.CurClip.SelectedSource;
+                    var src = CurClip.SelectedSource;
                     src.On = !src.On;
                     //UpdateLabel(lblCmd1, src.On);
                 }
                 else
                 { 
-                    var inst = g_session.CurClip.CurrentInstrument;
+                    var inst = CurClip.CurrentInstrument;
 
                     var src =
-                        g_session.CurClip.CurSrc > -1
-                        ? inst.Sources[g_session.CurClip.CurSrc]
+                        CurClip.CurSrc > -1
+                        ? inst.Sources[CurClip.CurSrc]
                         : null;
 
-                    if (g_session.CurClip.SelChan < 0)
+                    if (CurClip.SelChan < 0)
                     { 
-                        CopyChan(g_session.CurClip, g_session.CurClip.CurPat, g_session.CurClip.CurChan);
+                        CopyChan(CurClip, CurClip.CurPat, CurClip.CurChan);
                         //MarkLabel(lblCmd1);
                     }
 
@@ -530,9 +530,9 @@ namespace IngameScript
 
         void Command2()
         {
-            if (g_session.CurClip.CurSrc > -1)
+            if (CurClip.CurSrc > -1)
             {
-                var src = g_session.CurClip.SelectedSource;
+                var src = CurClip.SelectedSource;
 
                 var newOsc = (int)src.Oscillator.Type + 1;
                 if (newOsc > (int)OscType.Crunch) newOsc = 0;
@@ -542,17 +542,17 @@ namespace IngameScript
             else
             { 
                 var src =
-                    g_session.CurClip.CurSrc > -1
-                    ? g_session.CurClip.CurrentInstrument.Sources[g_session.CurClip.CurSrc]
+                    CurClip.CurSrc > -1
+                    ? CurClip.CurrentInstrument.Sources[CurClip.CurSrc]
                     : null;
 
-                if (g_session.CurClip.SelChan < 0)
+                if (CurClip.SelChan < 0)
                 {
                     int f, l;
-                    g_session.CurClip.GetCurPatterns(out f, out l);
+                    CurClip.GetCurPatterns(out f, out l);
 
                     for (int p = f; p <= l; p++)
-                        PasteChan(g_session.CurClip, p, g_session.CurClip.CurChan);
+                        PasteChan(CurClip, p, CurClip.CurChan);
 
                     copyChan = null;
 
@@ -567,13 +567,13 @@ namespace IngameScript
             if (IsCurParam())
             {
                 var param = CurParam;
-                var path  = g_settings.Last().GetPath(g_session.CurClip.CurSrc);
+                var path  = g_settings.Last().GetPath(CurClip.CurSrc);
 
                 
-                if (   g_session.CurClip.ParamKeys
-                    && OK(g_session.CurClip.EditPos))
+                if (   CurClip.ParamKeys
+                    && OK(CurClip.EditPos))
                 { 
-                    var notes = GetEditNotes(g_session.CurClip);
+                    var notes = GetEditNotes(CurClip);
 
                     foreach (var note in notes)
                     { 
@@ -581,60 +581,60 @@ namespace IngameScript
                         if (iKey > -1) note.Keys.RemoveAt(iKey);
                     }
                 }
-                else if (g_session.CurClip.ParamAuto
-                      && OK(g_session.CurClip.EditPos))
+                else if (CurClip.ParamAuto
+                      && OK(CurClip.EditPos))
                 {
-                    var chan = g_session.CurClip.SelectedChannel;
+                    var chan = CurClip.SelectedChannel;
 
                     var key = chan.AutoKeys.Find(k =>
                            k.Path == path
-                        && k.StepTime >= (g_session.CurClip.EditPos % g_nSteps)
-                        && k.StepTime <  (g_session.CurClip.EditPos % g_nSteps) + 1);
+                        && k.StepTime >= (CurClip.EditPos % g_nSteps)
+                        && k.StepTime <  (CurClip.EditPos % g_nSteps) + 1);
 
                     if (key == null) // create
                     {
-                        var val = Parameter.GetAutoValue(g_session.CurClip.EditPos, g_session.CurClip.CurPat, g_session.CurClip.SelChan, path);
+                        var val = Parameter.GetAutoValue(CurClip.EditPos, CurClip.CurPat, CurClip.SelChan, path);
 
                         var newKey = new Key(
-                            g_session.CurClip.CurSrc,
+                            CurClip.CurSrc,
                             param,
                             OK(val) ? val : param.Value,
-                            g_session.CurClip.EditPos % g_nSteps,
-                            g_session.CurClip.SelectedChannel);
+                            CurClip.EditPos % g_nSteps,
+                            CurClip.SelectedChannel);
 
                         chan.AutoKeys.Add(newKey);
-                        g_session.CurClip.UpdateAutoKeys();
+                        CurClip.UpdateAutoKeys();
                     }
                     else // delete
                     {
                         chan.AutoKeys.Remove(key);
-                        g_session.CurClip.UpdateAutoKeys();
+                        CurClip.UpdateAutoKeys();
                     }
                 }
 
-                //UpdateAdjustLabels(g_session.CurClip);
+                //UpdateAdjustLabels(CurClip);
                 //MarkLabel(lblCmd3);
             }
-            else if (g_session.CurClip.CurSet > -1)
+            else if (CurClip.CurSet > -1)
             {
                 if (CurSetting.CanDelete())
                     RemoveSetting(CurSetting);
 
-                //UpdateAdjustLabels(g_session.CurClip);
+                //UpdateAdjustLabels(CurClip);
                 //MarkLabel(lblCmd3);
             }
-            else if (g_session.CurClip.SelChan < 0)
+            else if (CurClip.SelChan < 0)
             { 
-                g_session.CurClip.Transpose = !g_session.CurClip.Transpose;
-                //UpdateAdjustLabels(g_session.CurClip);
+                CurClip.Transpose = !CurClip.Transpose;
+                //UpdateAdjustLabels(CurClip);
             }
         }
 
 
         void Shift()
         {
-            g_session.CurClip.Shift = !g_session.CurClip.Shift;
-            //UpdateAdjustLabels(g_session.CurClip);
+            CurClip.Shift = !CurClip.Shift;
+            //UpdateAdjustLabels(CurClip);
         }
 
 
@@ -648,7 +648,7 @@ namespace IngameScript
                      && (   clip.ParamKeys 
                          || clip.ParamAuto))
             {
-                var chan = g_session.CurClip.SelectedChannel;
+                var chan = CurClip.SelectedChannel;
                 var path = g_settings.Last().GetPath(clip.CurSrc);
 
                 if (clip.ParamKeys)
@@ -664,12 +664,12 @@ namespace IngameScript
                         else
                         {
                             var param = (Parameter)GetSettingFromPath(chan.Instrument, path);
-                            note.Keys.Add(new Key(g_session.CurClip.CurSrc, param, param.Value, note.SongStep));
+                            note.Keys.Add(new Key(CurClip.CurSrc, param, param.Value, note.SongStep));
                             AdjustKey(note.Keys.Last(), delta);
                         }
                     }
                 }
-                else if (g_session.CurClip.ParamAuto)
+                else if (CurClip.ParamAuto)
                 {
                     if (OK(clip.EditPos))
                     { 
@@ -715,8 +715,8 @@ namespace IngameScript
         {
             if (IsParam(setting))
             {
-                AdjustParam(g_session.CurClip, (Parameter)setting, delta);
-                //MarkLabel(delta >= 0 ? lblUp : lblDown, !g_session.CurClip.Shift);
+                AdjustParam(CurClip, (Parameter)setting, delta);
+                //MarkLabel(delta >= 0 ? lblUp : lblDown, !CurClip.Shift);
                 //g_sampleValid = F;
             }
         }
@@ -727,10 +727,10 @@ namespace IngameScript
             param.SetValue(
                 MinMax(
                     param.Min, 
-                    param.AdjustValue(param.Value, delta, g_session.CurClip.Shift),
+                    param.AdjustValue(param.Value, delta, CurClip.Shift),
                     param.Max),
                 null,
-                g_session.CurClip.CurSrc);
+                CurClip.CurSrc);
         }
 
 
@@ -738,7 +738,7 @@ namespace IngameScript
         {
             key.Value = MinMax(
                 key.Parameter.Min,
-                key.Parameter.AdjustValue(key.Value, delta, g_session.CurClip.Shift),
+                key.Parameter.AdjustValue(key.Value, delta, CurClip.Shift),
                 key.Parameter.Max);
         }
 
@@ -746,48 +746,48 @@ namespace IngameScript
         void SetChan(int ch)
         {
             int first, last;
-            g_session.CurClip.GetCurPatterns(out first, out last);
+            CurClip.GetCurPatterns(out first, out last);
 
-            ch += g_session.CurClip.CurChan;
+            ch += CurClip.CurChan;
 
             for (int p = first; p <= last; p++)
             { 
-                var pat = g_session.CurClip.Patterns[p];
+                var pat = CurClip.Patterns[p];
 
                 if (ch >= g_nChans) ch = 0;
                 if (ch < 0) ch = g_nChans - 1;
 
                 if (g_move)
                 {
-                    var temp = pat.Channels[g_session.CurClip.CurChan];
-                    pat.Channels[g_session.CurClip.CurChan] = pat.Channels[ch];
+                    var temp = pat.Channels[CurClip.CurChan];
+                    pat.Channels[CurClip.CurChan] = pat.Channels[ch];
                     pat.Channels[ch]      = temp;
 
-                    pat.Channels[g_session.CurClip.CurChan].UpdateNotes();
+                    pat.Channels[CurClip.CurChan].UpdateNotes();
                     pat.Channels[ch]     .UpdateNotes();
                 }
             }
 
-            g_session.CurClip.CurChan = ch;
+            CurClip.CurChan = ch;
 
-            if (g_session.CurClip.CurSrc > -1)
-                g_session.CurClip.CurSrc = 0;
+            if (CurClip.CurSrc > -1)
+                CurClip.CurSrc = 0;
 
             //UpdateOctaveLabel();
-            UpdateInstOff(g_session.CurClip.CurChan);
+            UpdateInstOff(CurClip.CurChan);
         }
 
 
         void SetShuffle(int ch, int sh)
         {
-            sh += g_session.CurClip.CurrentPattern.Channels[ch].Shuffle;
+            sh += CurClip.CurrentPattern.Channels[ch].Shuffle;
 
             int first, last;
-            g_session.CurClip.GetCurPatterns(out first, out last);
+            CurClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
             {
-                var pat  = g_session.CurClip.Patterns[p];
+                var pat  = CurClip.Patterns[p];
                 var chan = pat.Channels[ch];
 
                 chan.Shuffle = MinMax(0, sh, g_session.TicksPerStep - 1);

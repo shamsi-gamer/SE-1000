@@ -7,19 +7,19 @@ namespace IngameScript
     {
         void InitPlaybackAfterLoad(long playTime)
         {
-            g_session.CurClip.SetCurrentPattern(g_session.CurClip.CurPat);
+            CurClip.SetCurrentPattern(CurClip.CurPat);
 
-            g_session.CurClip.PlayTime = playTime % (g_session.CurClip.Patterns.Count * g_nSteps * g_session.TicksPerStep);
+            CurClip.PlayTime = playTime % (CurClip.Patterns.Count * g_nSteps * g_session.TicksPerStep);
 
-            g_session.CurClip.StartTime =
+            CurClip.StartTime =
                 g_playing
-                ? g_time - g_session.CurClip.PlayTime        
+                ? g_time - CurClip.PlayTime        
                 : long_NaN;
 
-            if (g_session.CurClip.AutoCue)
-                g_session.CurClip.SetCue();
+            if (CurClip.AutoCue)
+                CurClip.SetCue();
 
-            g_session.CurClip.CueNextPattern();
+            CurClip.CueNextPattern();
         }
 
 
@@ -27,7 +27,7 @@ namespace IngameScript
         {
             UpdateTime();
 
-            StopNotes(g_session.CurClip?.PlayStep ?? 0);
+            StopNotes(CurClip?.PlayStep ?? 0);
             DeleteSounds(StopSounds());
 
             UpdateSounds();
@@ -48,7 +48,7 @@ namespace IngameScript
 
                     clip.CueNextPattern();
             
-                    if (   clip == g_session.CurClip
+                    if (   clip == CurClip
                         && clip.Follow) 
                         clip.SetCurrentPattern(clip.PlayPat);
 
@@ -78,7 +78,7 @@ namespace IngameScript
                         g_dspVol[snd.iChan],
                           instVol
                         * snd.Channel.Volume
-                        * g_session.CurClip.Volume);
+                        * CurClip.Volume);
                 }
             }
         }

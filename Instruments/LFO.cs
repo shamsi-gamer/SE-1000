@@ -267,9 +267,9 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Frequency.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Frequency.DrawLabels(sprites, x, y, dp);                
-                if (Amplitude.HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Amplitude.DrawLabels(sprites, x, y, dp);
-                if (Offset   .HasDeepParams(g_session.CurClip.CurrentChannel, g_session.CurClip.CurSrc)) Offset   .DrawLabels(sprites, x, y, dp);
+                if (Frequency.HasDeepParams(CurChannel, CurClip.CurSrc)) Frequency.DrawLabels(sprites, x, y, dp);                
+                if (Amplitude.HasDeepParams(CurChannel, CurClip.CurSrc)) Amplitude.DrawLabels(sprites, x, y, dp);
+                if (Offset   .HasDeepParams(CurChannel, CurClip.CurSrc)) Offset   .DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }
@@ -300,7 +300,7 @@ namespace IngameScript
 
 
                 var time = (long)(Phase * FPS);
-                var _tp  = new TimeParams(time, time, time, null, g_session.CurClip.EditLengthIndex, -1, _triggerDummy, dp.Program);
+                var _tp  = new TimeParams(time, time, time, null, CurClip.EditLength, -1, _triggerDummy, dp.Program);
 
                 var val  = UpdateValue(_tp);
 

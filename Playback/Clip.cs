@@ -36,7 +36,7 @@ namespace IngameScript
 
             public int           PlayPat; // this can't be a property because it must sometimes be separate from PlayTime, for queueing
 
-            public float         PlayStep { get { return (g_playing ? PlayTime : g_time) / (float)Track.Session.TicksPerStep; } }
+            public float         PlayStep { get { return g_playing ? PlayTime / (float)Track.Session.TicksPerStep : fN; } }
 
 
             public int           CueNext;
@@ -243,71 +243,71 @@ namespace IngameScript
                 for (int i = 0; i < ChannelAutoKeys.Length; i++)
                     ChannelAutoKeys[i] = new List<Key>(clip.ChannelAutoKeys[i]);
 
-                EditNotes   = new List<Note>();
-                            
-                PlayTime    = clip.PlayTime;
-                StartTime   = clip.StartTime;
-                            
-                PlayPat     = clip.PlayPat;
-                            
-                CueNext     = clip.CueNext;
-                            
-                Loop        = clip.Loop;
-                Block       = clip.Block;
-                AllPats     = clip.AllPats;
-                Follow      = clip.Follow;
-                AutoCue     = clip.AutoCue;
+                EditNotes       = new List<Note>();
+                                
+                PlayTime        = clip.PlayTime;
+                StartTime       = clip.StartTime;
+                                
+                PlayPat         = clip.PlayPat;
+                                
+                CueNext         = clip.CueNext;
+                                
+                Loop            = clip.Loop;
+                Block           = clip.Block;
+                AllPats         = clip.AllPats;
+                Follow          = clip.Follow;
+                AutoCue         = clip.AutoCue;
+                                
+                MovePat         = clip.MovePat;
+                                
+                In              = clip.In;
+                Out             = clip.Out;
+                                
+                AllChan         = clip.AllChan;
+                RndInst         = clip.RndInst;
+                                
+                Piano           = clip.Piano;
+                                
+                Shift           = clip.Shift;
+                MixerShift      = clip.MixerShift;
+                                
+                Hold            = clip.Hold;
+                Pick            = clip.Pick;
+                                
+                ChordMode       = clip.ChordMode;
+                ChordEdit       = clip.ChordEdit;
+                ChordAll        = clip.ChordAll;
+                                
+                HalfSharp       = clip.HalfSharp;
+                                
+                ParamKeys       = clip.ParamKeys;
+                ParamAuto       = clip.ParamAuto;
+                                
+                MemSet          = clip.MemSet;
+                                
+                CurPat          = clip.CurPat;
+                CurChan         = clip.CurChan;
+                SelChan         = clip.SelChan;
+                CurSrc          = clip.CurSrc;
+                CurSet          = clip.CurSet;
 
-                MovePat     = clip.MovePat;
+                EditStepIndex   = clip.EditStepIndex;
+                EditLengthIndex = clip.EditLengthIndex;
 
-                In          = clip.In;
-                Out         = clip.Out;
-
-                AllChan     = clip.AllChan;
-                RndInst     = clip.RndInst;
-
-                Piano       = clip.Piano;
-
-                Shift       = clip.Shift;
-                MixerShift  = clip.MixerShift;
-
-                Hold        = clip.Hold;
-                Pick        = clip.Pick;
-
-                ChordMode   = clip.ChordMode;
-                ChordEdit   = clip.ChordEdit;
-                ChordAll    = clip.ChordAll;
-
-                HalfSharp   = clip.HalfSharp;
-
-                ParamKeys   = clip.ParamKeys;
-                ParamAuto   = clip.ParamAuto;
-
-                MemSet      = clip.MemSet;
-
-                CurPat      = clip.CurPat;
-                CurChan     = clip.CurChan;
-                SelChan     = clip.SelChan;
-                CurSrc      = clip.CurSrc;
-                CurSet      = clip.CurSet;
-
-                EditStepIndex    = clip.EditStepIndex;
-                EditLengthIndex  = clip.EditLengthIndex;
-
-                CurNote     = clip.CurNote;
-
-                Chord       = clip.Chord;
-                ChordSpread = clip.ChordSpread;
-
-                SongOff     = clip.SongOff;
-                InstOff     = clip.InstOff;
-                SrcOff      = clip.SrcOff;
-
-                Solo        = clip.Solo;
-
-                Volume      = clip.Volume;
-
-                ColorIndex  = clip.ColorIndex;
+                CurNote         = clip.CurNote;
+                                
+                Chord           = clip.Chord;
+                ChordSpread     = clip.ChordSpread;
+                                
+                SongOff         = clip.SongOff;
+                InstOff         = clip.InstOff;
+                SrcOff          = clip.SrcOff;
+                                
+                Solo            = clip.Solo;
+                                
+                Volume          = clip.Volume;
+                                
+                ColorIndex      = clip.ColorIndex;
 
 
                 for (int m = 0; m < nMems; m++)
