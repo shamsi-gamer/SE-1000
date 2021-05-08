@@ -18,101 +18,21 @@ namespace IngameScript
             var notes = GetChordNotes(num);
 
 
-            if (OK(clip.EditPos))
+            if (   OK(clip.EditPos)
+                || clip.Recording)
             {
                 if (   clip.ChordMode
-                    && clip.Chord < 0)
-                {
-                    var _found = false;
+                    && clip.Chord < 0) PlayChord(clip, notes, ch);
+                else                   PlayNote (clip, notes, ch);
 
-                    for (int i = 0; i < notes.Count; i++)
-                    {
-                        var note = notes[i];
-
-                        int found;
-                        do
-                        { 
-                            found = chan.Notes.FindIndex(n => 
-                                   note == n.Number
-                                && clip.EditPos == clip.CurPat*g_nSteps + n.PatStep + ChordSpread(i));
-
-                            if (found > -1) 
-                            {
-                                chan.Notes.RemoveAt(found);
-                                _found = true;
-                            }
-                        } 
-                        while (found > -1);
-                    }
-
-
-                    if (!_found)
-                    {
-                        for (int i = 0; i < notes.Count; i++)
-                        {
-                            var note = notes[i];
-
-                            if (!(   clip.ChordEdit
-                                  && clip.Chord > -1))
-                            {
-                                var noteStep = clip.EditPos % g_nSteps + ChordSpread(i);
-                                var lastNote = new Note(chan, ch, 1, note, noteStep, CurClip.EditStepLength);
-                    
-                                lastNotes.Add(lastNote);
-                                chan.AddNote(lastNote);
-                            }
-
-                            TriggerNote(clip, note, ch, CurClip.EditStepLength, ChordSpread(i));
-                        }
-                    }
+                if (!clip.Recording)
+                { 
+                    if (    (  !clip.ChordMode
+                             || clip.Chord > -1)
+                        && !(   clip.ChordEdit 
+                             && clip.Chord > -1))
+                        MoveEdit(clip, 1, true);
                 }
-                else
-                {
-                    for (int i = 0; i < notes.Count; i++)
-                    {
-                        if (TooComplex) return;
-
-                        var note = notes[i];
-                        int found;
-
-                        do
-                        { 
-                            found = chan.Notes.FindIndex(n => 
-                                clip.EditPos == clip.CurPat*g_nSteps + n.PatStep + ChordSpread(i));
-
-                            if (found > -1) 
-                                chan.Notes.RemoveAt(found);
-                        } 
-                        while (found > -1);
-                    }
-
-
-                    for (int i = 0; i < notes.Count; i++)
-                    {
-                        if (TooComplex) return;
-
-                        var note = notes[i];
-
-                        if (!(   clip.ChordEdit
-                              && clip.Chord > -1))
-                        {
-                            var noteStep = clip.EditPos % g_nSteps + ChordSpread(i);
-                            var lastNote = new Note(chan, ch, 1, note, noteStep, CurClip.EditStepLength);
-                    
-                            lastNotes.Add(lastNote);
-                            chan.AddNote(lastNote);
-                        }
-
-                        TriggerNote(clip, note, ch, CurClip.EditStepLength, ChordSpread(i));
-                    }
-                }
-
-                
-                if (    (  !clip.ChordMode
-                         || clip.Chord > -1)
-                    && !(   clip.ChordEdit 
-                         && clip.Chord > -1))
-                    MoveEdit(clip, 1, true);
             }
             else
             {
@@ -131,6 +51,99 @@ namespace IngameScript
 
 
             clip.CurNote = num;
+        }
+
+
+        void PlayChord(Clip clip, List<int> notes, int ch)
+        {
+            var chan = clip.CurrentPattern.Channels[ch];
+
+            var _found = false;
+
+            for (int i = 0; i < notes.Count; i++)
+            {
+                var note = notes[i];
+
+                int found;
+                do
+                { 
+                    found = chan.Notes.FindIndex(n => 
+                            note == n.Number
+                        && clip.EditPos == clip.CurPat*g_nSteps + n.PatStep + ChordSpread(i));
+
+                    if (found > -1) 
+                    {
+                        chan.Notes.RemoveAt(found);
+                        _found = true;
+                    }
+                } 
+                while (found > -1);
+            }
+
+
+            if (!_found)
+            {
+                for (int i = 0; i < notes.Count; i++)
+                {
+                    var note = notes[i];
+
+                    if (!(   clip.ChordEdit
+                            && clip.Chord > -1))
+                    {
+                        var noteStep = clip.EditPos % g_nSteps + ChordSpread(i);
+                        var lastNote = new Note(chan, ch, 1, note, noteStep, CurClip.EditStepLength);
+                    
+                        lastNotes.Add(lastNote);
+                        chan.AddNote(lastNote);
+                    }
+
+                    TriggerNote(clip, note, ch, CurClip.EditStepLength, ChordSpread(i));
+                }
+            }
+        }
+
+
+        void PlayNote(Clip clip, List<int> notes, int ch)
+        {
+            var chan = clip.CurrentPattern.Channels[ch];
+
+            for (int i = 0; i < notes.Count; i++)
+            {
+                if (TooComplex) return;
+
+                var note = notes[i];
+                int found;
+
+                do
+                { 
+                    found = chan.Notes.FindIndex(n => 
+                        clip.EditPos == clip.CurPat*g_nSteps + n.PatStep + ChordSpread(i));
+
+                    if (found > -1) 
+                        chan.Notes.RemoveAt(found);
+                } 
+                while (found > -1);
+            }
+
+
+            for (int i = 0; i < notes.Count; i++)
+            {
+                if (TooComplex) return;
+
+                var note = notes[i];
+
+                if (!(   clip.ChordEdit
+                      && clip.Chord > -1))
+                {
+                    var noteStep = clip.EditPos % g_nSteps + ChordSpread(i);
+                    var lastNote = new Note(chan, ch, 1, note, noteStep, CurClip.EditStepLength);
+                    
+                    lastNotes.Add(lastNote);
+                    chan.AddNote(lastNote);
+                }
+
+                TriggerNote(clip, note, ch, CurClip.EditStepLength, ChordSpread(i));
+            }
         }
 
 

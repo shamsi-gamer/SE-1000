@@ -538,18 +538,23 @@ namespace IngameScript
 
         bool NoteIsBright(int noteNum, bool high, int l = -1)
         {
-            var chan    = CurChannel;
-            var pat     = CurClip.Patterns.IndexOf(CurClip.CurrentPattern);
-            var patStep = pat * g_nSteps;
+            var chan = CurChannel;
+            var pat  = CurClip.Patterns.IndexOf(CurClip.CurrentPattern);
                         
             return chan.Notes.FindIndex(n =>
             { 
-                return
-                        noteNum == n.Number
-                    && (      PlayStep >= n.SongStep + n.ShOffset
-                           && PlayStep <  n.SongStep + n.ShOffset + n.StepLength
-                        ||    patStep + n.PatStep >= CurClip.EditPos 
-                           && patStep + n.PatStep <  CurClip.EditPos + CurClip.EditStep); 
+                if (noteNum != n.Number)
+                    return false;
+
+                if (   PlayStep >= n.SongStep + n.ShOffset
+                    && PlayStep <  n.SongStep + n.ShOffset + n.StepLength)
+                    return true;
+
+                if (   n.SongStep >= CurClip.EditPos 
+                    && n.SongStep <  CurClip.EditPos + CurClip.EditStep)
+                    return true;
+
+                return false;
             }) > -1;
 
                //return true;

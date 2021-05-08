@@ -52,7 +52,7 @@ namespace IngameScript
         void RandomChannelNotes()
         {
             if (CurClip.AllChan) Random();
-            else                           RandomNotes(CurClip.CurChan, null);
+            else                 RandomNotes(CurClip.CurChan, null);
         }
 
 
@@ -63,23 +63,21 @@ namespace IngameScript
             int first, last;
             CurClip.GetCurPatterns(out first, out last);
 
+            var inst = g_session.Instruments[g_rnd.Next(0, g_session.Instruments.Count)];
+
+            if (rndInst != null)
+            { 
+                if (rndInst.Contains(inst))
+                    return;
+
+                rndInst.Add(inst);
+            }
+
             for (int p = first; p <= last; p++)
             {
-                var chan = CurClip.Patterns[p].Channels[ch];
-                var inst = g_session.Instruments[g_rnd.Next(0, g_session.Instruments.Count)];
-
-                if (rndInst != null)
-                { 
-                    if (rndInst.Contains(inst))
-                        return;
-
-                    rndInst.Add(inst);
-                }
-
                 if (   rndInst != null
                     || CurClip.RndInst)
-                    chan.Instrument = inst;
-
+                    CurClip.Patterns[p].Channels[ch].Instrument = inst;
 
                 if (RND > 0.6  ) Flip(p, ch,  1);
                 if (RND > 0.8  ) Flip(p, ch,  2);

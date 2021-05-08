@@ -57,21 +57,6 @@ namespace IngameScript
             }
 
 
-            //public Label(bool          fast, 
-            //             IMyTextPanel  panel, 
-            //             Action<Label> updateFunc, 
-            //             Action<Label> colorFunc = null, 
-            //             int           data = 0)
-            //    : this(fast, 
-            //           panel, 
-            //           null, 
-            //           null, 
-            //           updateFunc, 
-            //           colorFunc, 
-            //           data) 
-            //{}
-
-
             public void Update()
             {
                 ForeColor = color6;
@@ -100,16 +85,8 @@ namespace IngameScript
 
             public void Update(bool full, bool half = false)
             {
-                if (full)
-                {
-                    Panel.FontColor       = BackColor;
-                    Panel.BackgroundColor = ForeColor;
-                }
-                else
-                {
-                    Panel.FontColor       = ForeColor;
-                    Panel.BackgroundColor = half ? HalfColor : BackColor;
-                }
+                Panel.FontColor       = full ? BackColor : ForeColor;
+                Panel.BackgroundColor = full ? ForeColor : (half ? HalfColor : BackColor);
             }
 
 
