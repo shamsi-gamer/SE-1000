@@ -64,7 +64,7 @@ namespace IngameScript
 
             CurClip.CurChan =
             CurClip.SelChan = Array.FindIndex(
-                CurClip.CurrentPattern.Channels, 
+                CurPattern.Channels, 
                 ch => ch.Instrument == inst);
 
             UpdateInstOff(CurClip.SelChan);

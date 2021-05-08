@@ -296,14 +296,14 @@ namespace IngameScript
         void RandomInstrument()
         {
             CurClip.RndInst = !CurClip.RndInst;
-            //UpdateHighLabels(CurClip.CurrentPattern, CurChannel);
+            //UpdateHighLabels(CurPattern, CurChannel);
         }
 
 
         void ToggleAllChannels()
         {
             CurClip.AllChan = !CurClip.AllChan;
-            //UpdateHighLabels(CurClip.CurrentPattern, CurChannel);
+            //UpdateHighLabels(CurPattern, CurChannel);
         }
 
 

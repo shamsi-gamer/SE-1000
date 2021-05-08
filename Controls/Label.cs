@@ -60,6 +60,7 @@ namespace IngameScript
             public void Update()
             {
                 ForeColor = color6;
+                HalfColor = color3;
                 BackColor = color0;
 
                 if (ColorFunc  != null) ColorFunc(this);

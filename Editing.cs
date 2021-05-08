@@ -35,7 +35,7 @@ namespace IngameScript
                 if (  !clip.ChordMode 
                     || clip.Chord > -1)
                 {
-                    var chan = CurClip.CurrentPattern.Channels[ch];
+                    var chan = CurPattern.Channels[ch];
 
                     int found;
                     while ((found = chan.Notes.FindIndex(n => 

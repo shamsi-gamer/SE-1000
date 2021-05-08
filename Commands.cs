@@ -416,11 +416,9 @@ namespace IngameScript
             if (CurClip.SelChan < 0)
             {
                 CurClip.EditPos = fN;
-                //UpdateEditLabel(lblEdit, false);
 
                 CurClip.SelChan = CurClip.CurChan;
 
-                //UpdateNewLabels();
                 //UpdateAdjustLabels(CurClip);
 
                 UpdateInstOff(CurClip.SelChan);
@@ -429,7 +427,6 @@ namespace IngameScript
                 g_inputValid = false;
 
                 //MarkLabel(lblEnter, CurClip.CurSrc < 0);
-                //UpdateLabel(lblCmd3, false);
             }
             else if (CurClip.CurSrc < 0)
             {
@@ -437,7 +434,6 @@ namespace IngameScript
 
                 CurClip.Shift = false;
 
-                //UpdateNewLabels();
                 //UpdateAdjustLabels(CurClip);
 
                 UpdateInstName(false);
@@ -505,7 +501,6 @@ namespace IngameScript
                 {
                     var src = CurClip.SelectedSource;
                     src.On = !src.On;
-                    //UpdateLabel(lblCmd1, src.On);
                 }
                 else
                 { 
@@ -780,7 +775,7 @@ namespace IngameScript
 
         void SetShuffle(int ch, int sh)
         {
-            sh += CurClip.CurrentPattern.Channels[ch].Shuffle;
+            sh += CurPattern.Channels[ch].Shuffle;
 
             int first, last;
             CurClip.GetCurPatterns(out first, out last);

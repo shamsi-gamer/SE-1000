@@ -583,8 +583,6 @@ namespace IngameScript
 
                     Out    = true;
                     Follow = false;
-
-                    //UpdateLabel(lblFollow, false);
                 }
                 else
                 {
@@ -594,8 +592,6 @@ namespace IngameScript
                     {
                         In     = false;
                         Follow = false;
-
-                        //UpdateLabel(lblFollow, false);
                     }
 
                     //g_blocks[b].Next = currentPattern + 1;
@@ -627,24 +623,18 @@ namespace IngameScript
             public void MovePatternOff()
             {
                 MovePat = false;
-                //UpdateLabel(lblMovePat, false);
             }
 
 
             public void ToogleLoop()
             {
                 Loop = !Loop;
-                //UpdateLabel(lblLoop, Loop);
             }
 
 
             public void ToggleMovePattern()
             {
                 MovePat = !MovePat;
-
-                //(lblPrevPat, MovePat);
-                //UpdateLabel(lblNextPat, MovePat);
-                //UpdateLabel(lblMovePat, MovePat);
 
                 if (MovePat)
                     DisableBlock();
@@ -654,26 +644,22 @@ namespace IngameScript
             public void ToggleBlock()
             {
                 Block = !Block;
-                //UpdateLabel(lblBlock, Block);
             }
 
 
             public void ToggleAllPatterns()
             {
                 AllPats = !AllPats;
-                //UpdateLabel(lblAllPatterns, AllPats);
             }
 
 
             public void ToggleFollow()
             {
                 Follow = !Follow;
-                //UpdateLabel(lblFollow, Follow);
 
                 if (Follow)
                 {
                     AutoCue = false;
-                    //UpdateLabel(lblAutoCue, false);
                 }
             }
 
@@ -681,14 +667,11 @@ namespace IngameScript
             public void ToggleAutoCue()
             {
                 AutoCue = !AutoCue;
-                //UpdateLabel(lblAutoCue, AutoCue);
 
                 if (AutoCue)
                 {
                     Cue();
-
                     Follow = false;
-                    //UpdateLabel(lblFollow, false);
                 }
             }
 

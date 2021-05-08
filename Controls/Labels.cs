@@ -299,7 +299,7 @@ namespace IngameScript
         {
             return
                 ShowPiano
-                ? NoteIsBright(HighToNote(lbl.Data), true)
+                ? NoteIsBright(HighToNote(lbl.Data))
                 : ToggleIsBright(lbl);
         }
 
@@ -308,7 +308,7 @@ namespace IngameScript
         {
             return 
                    ShowPiano 
-                && NoteIsDim(HighToNote(lbl.Data), true);
+                && NoteIsDim(HighToNote(lbl.Data));
         }
 
 
@@ -339,7 +339,7 @@ namespace IngameScript
             return
                 ShowPiano
                 ?    -lbl.Data == 15 && CurClip.HalfSharp
-                  || NoteIsBright(LowToNote(-lbl.Data), false)
+                  || NoteIsBright(LowToNote(-lbl.Data))
                 : StepIsBright(lbl);
         }
 
@@ -348,7 +348,7 @@ namespace IngameScript
         {
             return
                 ShowPiano
-                ? NoteIsDim(LowToNote(-lbl.Data), false)
+                ? NoteIsDim(LowToNote(-lbl.Data))
                 : false;
         }
 
@@ -536,56 +536,55 @@ namespace IngameScript
         }
 
 
-        bool NoteIsBright(int noteNum, bool high, int l = -1)
-        {
-            var chan = CurChannel;
-            var pat  = CurClip.Patterns.IndexOf(CurClip.CurrentPattern);
-                        
-            return chan.Notes.FindIndex(n =>
-            { 
-                if (noteNum != n.Number)
+        bool NoteIsBright(int noteNum)
+        { 
+            if (PlayChannel.Notes.FindIndex(n =>
+                { 
+                    if (noteNum != n.Number)
+                        return false;
+
+                    // note is at the playback position
+                    if (   PlayStep >= n.SongStep + n.ShOffset
+                        && PlayStep <  n.SongStep + n.ShOffset + n.StepLength)
+                        return true;
+
+                    // note is at edit position
+                    if (   n.SongStep >= CurClip.EditPos 
+                        && n.SongStep <  CurClip.EditPos + CurClip.EditStepLength)
+                        return true;
+
                     return false;
+                }) > -1)
+                return true;
 
-                if (   PlayStep >= n.SongStep + n.ShOffset
-                    && PlayStep <  n.SongStep + n.ShOffset + n.StepLength)
-                    return true;
-
-                if (   n.SongStep >= CurClip.EditPos 
-                    && n.SongStep <  CurClip.EditPos + CurClip.EditStep)
-                    return true;
-
-                return false;
-            }) > -1;
-
-               //return true;
-
-            //if (g_notes.FindIndex(n =>
-            //           noteNum == n.Number
-            //        && PlayStep >= /*n.PatStep*/n.SongStep
-            //        && PlayStep <  /*n.PatStep*/n.SongStep + n.StepLength) > -1)
-            //    return true;
-
-            //return false;
+            return false;
         }
 
 
-        bool NoteIsDim(int num, bool high, int l = -1)
+        bool NoteIsDim(int noteNum)
         {
-            var chan    = CurChannel;
-            var pat     = CurClip.Patterns.IndexOf(CurClip.CurrentPattern);
-            var patStep = pat * g_nSteps;
-
             for (int ch = 0; ch < g_nChans; ch++)
             {
-                var _chan = CurClip.CurrentPattern.Channels[ch];
+                if (ch == CurChan)
+                    continue;
 
-                if (_chan.Notes.FindIndex(n =>
-                          num == n.Number
-                       && ch  == n.iChan
-                       && (   PlayStep >= patStep + n.PatStep + n.ShOffset
-                           && PlayStep <  patStep + n.PatStep + n.ShOffset + n.StepLength
-                    ||    patStep + n.PatStep >= CurClip.EditPos 
-                       && patStep + n.PatStep <  CurClip.EditPos + CurClip.EditStepIndex)) > -1)
+                if (PlayPattern.Channels[ch].Notes.FindIndex(n =>
+                    { 
+                        if (noteNum != n.Number)
+                            return false;
+
+                        // note is at the playback position
+                        if (   PlayStep >= n.SongStep + n.ShOffset
+                            && PlayStep <  n.SongStep + n.ShOffset + n.StepLength)
+                            return true;
+
+                        // note is at edit position
+                        if (   n.SongStep >= CurClip.EditPos 
+                            && n.SongStep <  CurClip.EditPos + CurClip.EditStepLength)
+                            return true;
+                        
+                        return false;
+                    }) > -1)
                     return true;
             }
 
@@ -1085,8 +1084,8 @@ namespace IngameScript
 
         //void UpdatePianoLabels()
         //{
-        //    UpdateHighLabels(CurClip.CurrentPattern, CurChannel);
-        //    UpdateLowLabels (CurClip.CurrentPattern, CurChannel);
+        //    UpdateHighLabels(CurPattern, CurChannel);
+        //    UpdateLowLabels (CurPattern, CurChannel);
         //}
 
 

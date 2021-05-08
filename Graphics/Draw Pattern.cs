@@ -76,7 +76,7 @@ namespace IngameScript
             for (int c = 0; c < g_nChans; c++)
             {
                 var yLine = y + h - c * ch - 40;
-                var chan  = CurClip.CurrentPattern.Channels[c];
+                var chan  = CurPattern.Channels[c];
 
                 DrawString(sprites, 
                      S(c + 1).PadLeft(2)

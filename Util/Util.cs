@@ -176,7 +176,7 @@ namespace IngameScript
 
         void UpdateInstOff(int ch)
         {
-            var curInst = g_session.Instruments.IndexOf(CurClip.CurrentPattern.Channels[ch].Instrument);
+            var curInst = g_session.Instruments.IndexOf(CurPattern.Channels[ch].Instrument);
             UpdateDspOffset(ref CurClip.InstOff, curInst, g_session.Instruments.Count, maxDspInst, 0, 1);
         }
 
@@ -518,17 +518,20 @@ namespace IngameScript
         static bool IsPressed(Label lbl) { return g_labelsPressed.Contains(lbl); }
 
 
-        static Clip    CurClip    { get { return g_session.CurClip;      } }
-                                                                         
-        static int     CurPat     { get { return CurClip.CurPat;         } }
-        static int     CurChan    { get { return CurClip.CurChan;        } }
-        static int     SelChan    { get { return CurClip.SelChan;        } }
-        static int     CurSrc     { get { return CurClip.CurSrc;         } }
-        static int     CurSet     { get { return CurClip.CurSet;         } }
-
-        static float   PlayStep   { get { return CurClip.PlayStep;       } }
-        static int     PlayPat    { get { return CurClip.PlayPat;        } }
-
-        static Channel CurChannel { get { return CurClip.CurrentChannel; } }
+        static Clip    CurClip     { get { return g_session.CurClip;      } }
+                                                                          
+        static int     CurPat      { get { return CurClip.CurPat;         } }
+        static int     CurChan     { get { return CurClip.CurChan;        } }
+        static int     SelChan     { get { return CurClip.SelChan;        } }
+        static int     CurSrc      { get { return CurClip.CurSrc;         } }
+        static int     CurSet      { get { return CurClip.CurSet;         } }
+                                   
+        static float   PlayStep    { get { return CurClip.PlayStep;       } }
+        static int     PlayPat     { get { return CurClip.PlayPat;        } }
+                                   
+        static Pattern CurPattern  { get { return CurClip.CurrentPattern; } }
+        static Channel CurChannel  { get { return CurClip.CurrentChannel; } }
+        static Pattern PlayPattern { get { return CurClip.Patterns[CurClip.PlayPat]; } }
+        static Channel PlayChannel { get { return PlayPattern.Channels[CurClip.CurChan]; } }
     }
 }

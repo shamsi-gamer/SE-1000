@@ -46,7 +46,7 @@
             }
             else
             { 
-                var vol = CurClip.CurrentPattern.Channels[ch].Volume;
+                var vol = CurPattern.Channels[ch].Volume;
                 var mod = (CurClip.MixerShift ? 10 : 1) * dv;
 
                 int first, last;
@@ -88,7 +88,7 @@
 
 
                 for (int _ch = 0; _ch < g_nChans; _ch++)
-                    CurClip.ChanOn[_ch] = CurClip.CurrentPattern.Channels[_ch].On;
+                    CurClip.ChanOn[_ch] = CurPattern.Channels[_ch].On;
 
 
                 int first, last;
@@ -109,7 +109,7 @@
 
             else
             { 
-                var on = !CurClip.CurrentPattern.Channels[ch].On;
+                var on = !CurPattern.Channels[ch].On;
 
                 int first, last;
                 CurClip.GetCurPatterns(out first, out last);
