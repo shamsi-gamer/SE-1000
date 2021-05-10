@@ -27,7 +27,7 @@ namespace IngameScript
         {
             UpdateTime();
 
-            StopNotes(CurClip?.PlayStep ?? 0);
+            StopNotes(g_playing ? CurClip.PlayStep : 0);
             DeleteSounds(StopSounds());
 
             UpdateSounds();

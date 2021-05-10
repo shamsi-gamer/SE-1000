@@ -39,6 +39,7 @@
   <Import Project="MDK/MDK.paths.props" Condition="exists('MDK/MDK.paths.props')" />
   <ItemGroup>
     <Compile Include="Controls\Label.cs" />
+    <Compile Include="Labels\Piano Labels.cs" />
     <Compile Include="Util\Chords.cs" />
     <Compile Include="Graphics\Draw Clips.cs" />
     <Compile Include="Graphics\Draw Volume.cs" />
@@ -82,7 +83,7 @@
     <Compile Include="Instruments\LFO.cs" />
     <Compile Include="Util\Lib.cs" />
     <Compile Include="Controls\Display.cs" />
-    <Compile Include="Controls\Labels.cs" />
+    <Compile Include="Labels\Labels.cs" />
     <Compile Include="Util\Log.cs" />
     <Compile Include="MDK\Bootstrapper.cs" />
     <AdditionalFiles Include="MDK\MDK.options.props">
