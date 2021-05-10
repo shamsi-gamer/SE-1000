@@ -159,7 +159,7 @@ namespace IngameScript
                     PlayTime += GetPatTime(CurPat - destPat);
 
                 if (OK(EditPos))
-                    EditPos = CurPat * g_nSteps + EditPos % g_nSteps;
+                    EditPos = CurPat * g_patSteps + EditPos % g_patSteps;
 
 
                 UpdateAutoKeys();
@@ -202,7 +202,7 @@ namespace IngameScript
                 }
 
                 if (OK(EditPos))
-                    EditPos = CurPat * g_nSteps + EditPos % g_nSteps;
+                    EditPos = CurPat * g_patSteps + EditPos % g_patSteps;
 
 
                 //if (g_playing)
@@ -292,7 +292,7 @@ namespace IngameScript
 
 
                 if (OK(EditPos))
-                    EditPos = Math.Min(EditPos, Patterns.Count * g_nSteps);
+                    EditPos = Math.Min(EditPos, Patterns.Count * g_patSteps);
 
 
                 //if (OK(g_song.PlayTime))

@@ -223,8 +223,8 @@ namespace IngameScript
             {
                 var key = CurClip.SelectedChannel.AutoKeys.Find(
                        k => k.Path == path
-                    && k.StepTime >= (clip.EditPos % g_nSteps) 
-                    && k.StepTime <  (clip.EditPos % g_nSteps) + 1);
+                    && k.StepTime >= (clip.EditPos % g_patSteps) 
+                    && k.StepTime <  (clip.EditPos % g_patSteps) + 1);
 
                 var strVal = "";
                     
@@ -260,7 +260,7 @@ namespace IngameScript
 
         void DrawParamKeys(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int p, int ch)
         {
-            var wt   = w / g_nSteps;
+            var wt   = w / g_patSteps;
             var cd   = w/ 65; // circle diameter
             var dr   = w/250;
 
@@ -331,7 +331,7 @@ namespace IngameScript
 
         void DrawParamAuto(List<MySprite> sprites, float x, float y, float w, float h, float wTotal, Clip clip, int p, int ch)
         {
-            var wt = w/g_nSteps;
+            var wt = w/g_patSteps;
             var cd = w/ 65; // circle diameter
             var dr = w/250;
 
@@ -418,7 +418,7 @@ namespace IngameScript
             var param = (Parameter)GetSettingFromPath(note.Instrument, path);
             var val   = param.GetKeyValue(note, CurClip.CurSrc);
 
-            var wt    = w/g_nSteps;
+            var wt    = w/g_patSteps;
             var cd    = w/65; // circle diameter
 
             switch (param.Tag)
@@ -429,7 +429,7 @@ namespace IngameScript
             }
 
             return new Vector2(
-                x + wt * (note.PatStep + (note.PatIndex - p)*g_nSteps + note.ShOffset) + wt/2, 
+                x + wt * (note.PatStep + (note.PatIndex - p)*g_patSteps + note.ShOffset) + wt/2, 
                 y + h - h/2 * val - cd/2);
         }
 
@@ -440,7 +440,7 @@ namespace IngameScript
             var inst    = chan.Instrument;
             var setting = GetSettingFromPath(inst, key.Path);
             var val     = key.Value;
-            var wt      = w/g_nSteps;
+            var wt      = w/g_patSteps;
 
             switch (setting.Tag)
             {
@@ -456,7 +456,7 @@ namespace IngameScript
             else                       yo = h;
 
             var kp = new Vector2(
-                x + wt * (key.StepTime - p*g_nSteps) + wt/2, 
+                x + wt * (key.StepTime - p*g_patSteps) + wt/2, 
                 y + yo - h * val);
 
             return kp;

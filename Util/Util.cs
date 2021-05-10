@@ -359,7 +359,7 @@ namespace IngameScript
 
         float GetBPM()
         {
-            return 120f / (g_session.TicksPerStep * g_nSteps) * 120f;
+            return 120f / (g_session.TicksPerStep * g_patSteps) * 120f;
         }
 
 
@@ -454,7 +454,7 @@ namespace IngameScript
 
         static long GetPatTime(int pat) 
         {
-            return pat * g_nSteps * g_session.TicksPerStep; 
+            return pat * g_patSteps * g_session.TicksPerStep; 
         } 
 
 
@@ -529,9 +529,9 @@ namespace IngameScript
         static float   PlayStep    { get { return CurClip.PlayStep;       } }
         static int     PlayPat     { get { return CurClip.PlayPat;        } }
                                    
-        static Pattern CurPattern  { get { return CurClip.CurrentPattern; } }
-        static Channel CurChannel  { get { return CurClip.CurrentChannel; } }
-        static Pattern PlayPattern { get { return CurClip.Patterns[CurClip.PlayPat]; } }
+        static Pattern CurPattern  { get { return CurClip.CurrentPattern;                } }
+        static Channel CurChannel  { get { return CurClip.CurrentChannel;                } }
+        static Pattern PlayPattern { get { return CurClip.Patterns[CurClip.PlayPat];     } }
         static Channel PlayChannel { get { return PlayPattern.Channels[CurClip.CurChan]; } }
     }
 }

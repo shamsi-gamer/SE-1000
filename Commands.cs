@@ -583,8 +583,8 @@ namespace IngameScript
 
                     var key = chan.AutoKeys.Find(k =>
                            k.Path == path
-                        && k.StepTime >= (CurClip.EditPos % g_nSteps)
-                        && k.StepTime <  (CurClip.EditPos % g_nSteps) + 1);
+                        && k.StepTime >= (CurClip.EditPos % g_patSteps)
+                        && k.StepTime <  (CurClip.EditPos % g_patSteps) + 1);
 
                     if (key == null) // create
                     {
@@ -594,7 +594,7 @@ namespace IngameScript
                             CurClip.CurSrc,
                             param,
                             OK(val) ? val : param.Value,
-                            CurClip.EditPos % g_nSteps,
+                            CurClip.EditPos % g_patSteps,
                             CurClip.SelectedChannel);
 
                         chan.AutoKeys.Add(newKey);
@@ -670,8 +670,8 @@ namespace IngameScript
                     { 
                         var key = chan.AutoKeys.Find(
                                k => k.Path == path
-                            && k.StepTime >= (clip.EditPos % g_nSteps) 
-                            && k.StepTime <  (clip.EditPos % g_nSteps) + 1);
+                            && k.StepTime >= (clip.EditPos % g_patSteps) 
+                            && k.StepTime <  (clip.EditPos % g_patSteps) + 1);
 
                         if (key != null)
                             AdjustKey(key, delta);

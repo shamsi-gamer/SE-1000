@@ -119,7 +119,7 @@ namespace IngameScript
             var note  = -1;
 
 
-            while (step < g_nSteps)
+            while (step < g_patSteps)
             {
                 if (TooComplex) return;
 
@@ -224,7 +224,7 @@ namespace IngameScript
             var chan  = CurClip.Patterns[pat].Channels[ch];
             var param = GetCurrentParam(chan.Instrument);
 
-            for (int step = 0; step < g_nSteps; step++)
+            for (int step = 0; step < g_patSteps; step++)
             { 
                 if (RND < 0.5)
                     continue;

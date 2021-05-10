@@ -13,7 +13,7 @@ namespace IngameScript
         const int   FPS = 60;
 
         const int   g_nChans = 12;
-        const int   g_nSteps = 16;
+        const int   g_patSteps = 16;
 
 
         const float dVol = 0.01f;

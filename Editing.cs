@@ -39,8 +39,8 @@ namespace IngameScript
 
                     int found;
                     while ((found = chan.Notes.FindIndex(n => 
-                               CurClip.CurPat * g_nSteps + n.PatStep >= clip.EditPos 
-                            && CurClip.CurPat * g_nSteps + n.PatStep <  clip.EditPos + 1)) > -1)
+                               CurClip.CurPat * g_patSteps + n.PatStep >= clip.EditPos 
+                            && CurClip.CurPat * g_patSteps + n.PatStep <  clip.EditPos + 1)) > -1)
                         chan.Notes.RemoveAt(found);
 
                     lastNotes.Clear();
@@ -74,7 +74,7 @@ namespace IngameScript
                             if (pat < 0) return;
 
                             lastNote.StepLength = Math.Min(
-                                clip.EditPos - (pat * g_nSteps + lastNote.PatStep) + CurClip.EditStepIndex + ChordSpread(i),
+                                clip.EditPos - (pat * g_patSteps + lastNote.PatStep) + CurClip.EditStepIndex + ChordSpread(i),
                                 10f * FPS / g_session.TicksPerStep);
 
                             TriggerNote(clip, lastNote.Number, lastNote.iChan, CurClip.EditStepIndex, ChordSpread(i));
@@ -131,8 +131,8 @@ namespace IngameScript
                     var start = param.GetKeyValue(clip.Inter, CurClip.CurSrc);
                     var end   = param.GetKeyValue(note,       CurClip.CurSrc);
 
-                    int f = (int)(si / g_nSteps);
-                    int l = (int)(sn / g_nSteps);
+                    int f = (int)(si / g_patSteps);
+                    int l = (int)(sn / g_patSteps);
                     int d = f < l ? 1 : -1;
 
                     for (int p = f; f < l ? (p <= l) : (p >= l); p += d)
@@ -174,8 +174,8 @@ namespace IngameScript
                 && clip.ParamAuto)
             {
                 var key = clip.SelectedChannel.AutoKeys.Find(k => 
-                         k.StepTime >= (clip.EditPos % g_nSteps)
-                      && k.StepTime <  (clip.EditPos % g_nSteps) + 1);
+                         k.StepTime >= (clip.EditPos % g_patSteps)
+                      && k.StepTime <  (clip.EditPos % g_patSteps) + 1);
 
                 g_editKey = g_editKey ?? key;
 
@@ -215,7 +215,7 @@ namespace IngameScript
             CurClip.EditPos =
                 OK(CurClip.EditPos)
                 ? float.NaN
-                : (OK(CurClip.LastEditPos) ? CurClip.LastEditPos : CurClip.CurPat * g_nSteps);
+                : (OK(CurClip.LastEditPos) ? CurClip.LastEditPos : CurClip.CurPat * g_patSteps);
 
             CurClip.StopEdit();
 
@@ -307,8 +307,8 @@ namespace IngameScript
         {
             for (int p = 0; p <= CurClip.CurPat; p++)
             {
-                var patStart =  CurClip.CurPat   *g_nSteps;
-                var patEnd   = (CurClip.CurPat +1)*g_nSteps;
+                var patStart =  CurClip.CurPat   *g_patSteps;
+                var patEnd   = (CurClip.CurPat +1)*g_patSteps;
 
                 var pat  = clip.Patterns[p];
                 var chan = pat.Channels[CurClip.CurChan];
@@ -360,8 +360,8 @@ namespace IngameScript
 
                 for (int p = 0; p <= CurClip.CurPat; p++)
                 {
-                    var patStart =  clip.CurPat   *g_nSteps;
-                    var patEnd   = (clip.CurPat+1)*g_nSteps;
+                    var patStart =  clip.CurPat   *g_patSteps;
+                    var patEnd   = (clip.CurPat+1)*g_patSteps;
 
                     var pat  = clip.Patterns[p];
                     var chan = pat.Channels[clip.CurChan];
@@ -492,10 +492,10 @@ namespace IngameScript
                         n.PatStep += move * CurClip.EditStep;
 
                         if (   n.PatStep < 0
-                            || n.PatStep >= g_nSteps)
+                            || n.PatStep >= g_patSteps)
                         {
                             n.Channel.Notes.Remove(n);
-                            n.PatStep -= move * g_nSteps;
+                            n.PatStep -= move * g_patSteps;
 
                             chan.Notes.Add(n);
                             n.Channel = chan;
@@ -511,10 +511,10 @@ namespace IngameScript
                 clip.LimitRecPosition();
 
                 if (   g_editKey.StepTime < 0
-                    || g_editKey.StepTime >= g_nSteps)
+                    || g_editKey.StepTime >= g_patSteps)
                 { 
                     g_editKey.Channel.AutoKeys.Remove(g_editKey);
-                    g_editKey.StepTime -= move * g_nSteps;
+                    g_editKey.StepTime -= move * g_patSteps;
 
                     chan.AutoKeys.Add(g_editKey);
                     g_editKey.Channel = chan;
@@ -528,9 +528,9 @@ namespace IngameScript
 
                 if (clip.Follow)
                 {
-                    if (clip.EditPos >= (clip.CurPat + 1) * g_nSteps) // TODO blocks
+                    if (clip.EditPos >= (clip.CurPat + 1) * g_patSteps) // TODO blocks
                     {
-                        if (clip.EditPos >= clip.Patterns.Count * g_nSteps)
+                        if (clip.EditPos >= clip.Patterns.Count * g_patSteps)
                         {
                             if (create)
                             {
@@ -540,11 +540,11 @@ namespace IngameScript
                                 clip.Patterns.Insert(clip.CurPat + 1, pat);
                             }
                             else
-                                clip.EditPos -= clip.Patterns.Count * g_nSteps;
+                                clip.EditPos -= clip.Patterns.Count * g_patSteps;
                         }
                     }
                     else if (!OK(clip.EditPos))
-                        clip.EditPos += clip.Patterns.Count * g_nSteps;
+                        clip.EditPos += clip.Patterns.Count * g_patSteps;
                 }
 
                 clip.LimitRecPosition();

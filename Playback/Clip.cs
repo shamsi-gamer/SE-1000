@@ -37,6 +37,7 @@ namespace IngameScript
             public int           PlayPat; // this can't be a property because it must sometimes be separate from PlayTime, for queueing
 
             public float         PlayStep { get { return g_playing ? PlayTime / (float)Track.Session.TicksPerStep : fN; } }
+          //public float         PlayStep { get { return (g_playing ? PlayTime : g_time) / (float)Track.Session.TicksPerStep; } }
 
 
             public int           CueNext;
@@ -349,7 +350,7 @@ namespace IngameScript
                                 keys[k].SourceIndex,
                                 keys[k].Parameter,
                                 keys[k].Value, 
-                                keys[k].StepTime + p*g_nSteps,
+                                keys[k].StepTime + p*g_patSteps,
                                 keys[k].Channel));
                         }
                     }
@@ -384,7 +385,7 @@ namespace IngameScript
 
 
             public int   GetKeyPat(Key key) { return Patterns.FindIndex(p => Array.Find(p.Channels, c => c.AutoKeys.Contains(key)) != null); }
-            public float GetStep  (Key key) { return GetKeyPat(key) * g_nSteps + key.StepTime; }
+            public float GetStep  (Key key) { return GetKeyPat(key) * g_patSteps + key.StepTime; }
 
 
             public Block GetBlock(int pat)
@@ -403,7 +404,7 @@ namespace IngameScript
 
             public void CueNextPattern()
             {
-                Length = Patterns.Count * g_nSteps;
+                Length = Patterns.Count * g_patSteps;
 
 
                 if (CueNext > -1)
@@ -415,7 +416,7 @@ namespace IngameScript
                 }
 
 
-                if (PlayStep >= (PlayPat + 1) * g_nSteps)
+                if (PlayStep >= (PlayPat + 1) * g_patSteps)
                 { 
                     int start, end;
                     GetPosLimits(PlayPat, out start, out end);
@@ -444,7 +445,7 @@ namespace IngameScript
 
                 PlayPat =
                     g_playing
-                    ? (int)(PlayStep / g_nSteps)
+                    ? (int)(PlayStep / g_patSteps)
                     : -1;
             }
 
@@ -454,8 +455,8 @@ namespace IngameScript
                 int first, last;
                 GetPlayPatterns(pat, out first, out last);
 
-                start =  first     * g_nSteps;
-                end   = (last + 1) * g_nSteps;
+                start =  first     * g_patSteps;
+                end   = (last + 1) * g_patSteps;
             }
 
 
@@ -725,7 +726,7 @@ namespace IngameScript
                      if (EditPos >= nx) EditPos -= nx - st;
                 else if (EditPos <  st) EditPos += nx - st;
 
-                var cp = (int)(EditPos / g_nSteps);
+                var cp = (int)(EditPos / g_patSteps);
                 if (cp != CurPat) SetCurrentPattern(cp);
             }
         }

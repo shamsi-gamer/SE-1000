@@ -9,92 +9,73 @@ namespace IngameScript
     {
         void High(int h)
         {
-            var clip = CurClip;
+            var tune = CurClip.SelectedSource    ?.Tune
+                    ?? CurClip.SelectedInstrument?.Tune;
 
-            var tune = clip.SelectedSource    ?.Tune
-                    ?? clip.SelectedInstrument?.Tune;
+            if (h == 10) // here and not in BeatHigh() because TogglePiano() needs to know about tune
+                TogglePiano(tune);
 
-            if (h == 10)
-            {
-                if (   IsCurParam(strTune)
-                    && (tune?.UseChord ?? false))
-                { 
-                    g_settings.RemoveLast();
-                    clip.CurSet--;
-                    clip.Piano = false;
-                    //UpdateChordLabels();
-                }
-                else
-                    clip.Piano = !clip.Piano;
-
-                if (clip.Piano)
-                    clip.Pick = false;
-
-                //UpdateShuffleLabel();
-                //UpdateOctaveLabel();
-            }
             else if (IsCurParam(strTune)
                   && (tune?.UseChord ?? false)
-                  && !(clip.ParamKeys || clip.ParamAuto))
-            {
-                var chord = tune.Chord;
-                var note  = HighToNote(h);
+                  && !(CurClip.ParamKeys || CurClip.ParamAuto))
+                UpdateFinalTuneChord(tune, HighToNote(h));
 
-                if (chord.Contains(note)) chord.Remove(note);
-                else                      chord.Add   (note);
+            else if (CurClip.ChordEdit
+                  && CurClip.Chord > -1)
+                EditChord(HighToNote(h));
 
-                tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
-            }
-            else if (clip.ChordEdit
-                  && clip.Chord > -1)
-            { 
-                var note  = HighToNote(h);
-                var chord = clip.Chords[clip.Chord];
-
-                if (chord.Contains(note)) chord.Remove(note);
-                else                      chord.Add   (note);
-
-                //UpdateChordLabels();
-
-                if (chord.Count > 0)
-                {
-                    chord.Sort();
-
-                    var oldIndex = clip.EditLengthIndex;
-                    clip.EditLengthIndex = Math.Min(clip.EditLengthIndex, g_steps.Length-2);
-                    PlayNote(clip, chord[0], chord, clip.CurChan);
-                    clip.EditLengthIndex = oldIndex;
-                }
-            }
-            else if (clip.Piano)
-            {
+            else if (CurClip.Piano)
                 PlayNote(
-                    clip,
+                    CurClip,
                     HighToNote(h), 
-                    clip.Chord > -1 && clip.ChordMode ? clip.Chords[clip.Chord] : null,
-                    clip.CurChan);
+                       CurClip.Chord > -1 
+                    && CurClip.ChordMode 
+                    ? CurClip.Chords[CurClip.Chord] 
+                    : null,
+                    CurClip.CurChan);
+            else
+                BeatHigh(h);
+        }
+
+
+        void BeatHigh(int h)
+        {
+                 if (h == 0) Shift(false);
+            else if (h == 1) Shift(true); 
+
+            else if (h == 2) PickNote();  
+            else if (h == 3) ToggleAllChannels();
+            else if (h == 4) RandomInstrument();
+
+            else if (h == 5) RandomChannelNotes();
+            else if (h == 6) ClearNotes();
+                                   
+            else if (h == 7) Flip(CurClip.CurChan, 4); 
+            else if (h == 8) Flip(CurClip.CurChan, 8); 
+            else if (h == 9) Flip(CurClip.CurChan, 16);
+
+            if (   h != 2
+                && h != 3
+                && h != 4)
+                lblHigh[h].Mark();
+        }
+
+
+        void TogglePiano(Tune tune)
+        { 
+            if (   IsCurParam(strTune)
+                && (tune?.UseChord ?? false))
+            { 
+                g_settings.RemoveLast();
+                CurClip.CurSet--;
+                CurClip.Piano = false;
+                //UpdateChordLabels();
             }
             else
-            {
-                     if (h == 0) Shift(false);
-                else if (h == 1) Shift(true); 
+                CurClip.Piano = !CurClip.Piano;
 
-                else if (h == 2) PickNote();  
-                else if (h == 3) ToggleAllChannels();
-                else if (h == 4) RandomInstrument();
-
-                else if (h == 5) RandomChannelNotes();
-                else if (h == 6) ClearNotes();
-                                   
-                else if (h == 7) Flip(clip.CurChan, 4); 
-                else if (h == 8) Flip(clip.CurChan, 8); 
-                else if (h == 9) Flip(clip.CurChan, 16);
-
-                if (   h != 2
-                    && h != 3
-                    && h != 4)
-                    lblHigh[h].Mark();
-            }
+            if (CurClip.Piano)
+                CurClip.Pick = false;
         }
 
 
@@ -105,51 +86,25 @@ namespace IngameScript
 
             if (   IsCurParam(strTune)
                 && (tune?.UseChord ?? false))
-            {
-                var chord = tune.Chord;
-                var note  = LowToNote(l);
+                UpdateFinalTuneChord(tune, LowToNote(l));
 
-                if (chord.Contains(note)) chord.Remove(note);
-                else                      chord.Add   (note);
-
-                tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
-            }
             else if (CurClip.ChordEdit
                   && CurClip.Chord > -1)
-            {
-                var note  = LowToNote(l);
-                var chord = CurClip.Chords[CurClip.Chord];
+                EditChord(LowToNote(l));
 
-                if (chord.Contains(note)) chord.Remove(note);
-                else                      chord.Add   (note);
-
-                if (chord.Count > 0)
-                {
-                    chord.Sort();
-
-                    var oldIndex = CurClip.EditLengthIndex;
-                    CurClip.EditLengthIndex = Math.Min(CurClip.EditLengthIndex, g_steps.Length-2);
-                    PlayNote(CurClip, chord[0], chord, CurClip.CurChan);
-                    CurClip.EditLengthIndex = oldIndex;
-                }
-
-                //UpdateChordLabels();
-            }
             else if (CurClip.Piano)
             {
                 if (l == 15)
-                {
                     CurClip.HalfSharp = !CurClip.HalfSharp;
-                    //UpdateLabel(lblLow[15], CurClip.HalfSharp);
-                }
-                else // l < 15
-                {
-                    PlayNote(
-                        CurClip,
-                        LowToNote(l),
-                        CurClip.Chord > -1 && CurClip.ChordMode ? CurClip.Chords[CurClip.Chord] : null,
-                        CurClip.CurChan);
-                }
+
+                else PlayNote( // l < 15
+                    CurClip,
+                    LowToNote(l),
+                       CurClip.Chord > -1 
+                    && CurClip.ChordMode 
+                    ? CurClip.Chords[CurClip.Chord]
+                    : null,
+                    CurClip.CurChan);
             }
             else
                 Tick(CurClip.CurChan, l);
@@ -242,7 +197,7 @@ namespace IngameScript
 
                         note.PatStep += Math.Min(CurClip.EditStepIndex, 1);
 
-                        if (note.PatStep >= g_nSteps)
+                        if (note.PatStep >= g_patSteps)
                             spill.Add(note);
                     }
                 }
@@ -252,7 +207,7 @@ namespace IngameScript
                     var spillPat  = n.PatIndex == last ? first : n.PatIndex+1;
                     var spillChan = pats[spillPat].Channels[ch];
 
-                    MoveSpillNotes(n, spillChan, -g_nSteps);
+                    MoveSpillNotes(n, spillChan, -g_patSteps);
                 }
             }
             else
@@ -277,7 +232,7 @@ namespace IngameScript
                     var spillPat  = n.PatIndex == first ? last : n.PatIndex-1;
                     var spillChan = pats[spillPat].Channels[ch];
 
-                    MoveSpillNotes(n, spillChan, g_nSteps);
+                    MoveSpillNotes(n, spillChan, g_patSteps);
                 }
             }
         }
@@ -314,7 +269,7 @@ namespace IngameScript
 
             for (int p = first; p <= last; p++)
             { 
-                for (int step = 0; step < g_nSteps; step += g_nSteps / frac)
+                for (int step = 0; step < g_patSteps; step += g_patSteps / frac)
                     Tick(p, ch, step);
             }
         }
@@ -322,7 +277,7 @@ namespace IngameScript
 
         void Flip(int pat, int ch, int frac)
         {
-            for (int step = 0; step < g_nSteps; step += g_nSteps / frac)
+            for (int step = 0; step < g_patSteps; step += g_patSteps / frac)
                 Tick(pat, ch, step);
         }
 

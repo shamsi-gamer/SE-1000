@@ -31,10 +31,10 @@ namespace IngameScript
 
 
             var xt = 256f;
-            var wt = xt / g_nSteps;
+            var wt = xt / g_patSteps;
             var ht = wt;
 
-            var pw = wt * g_nSteps;
+            var pw = wt * g_patSteps;
             var ph = ht * g_nChans;
 
             var pxCur = x - (nDsp*4 + CurClip.SongOff) * pw + CurClip.CurPat * pw;
@@ -88,8 +88,8 @@ namespace IngameScript
 
 
             // draw edit position
-            if (   CurClip.EditPos >= first * g_nSteps
-                && CurClip.EditPos <  next  * g_nSteps)
+            if (   CurClip.EditPos >= first * g_patSteps
+                && CurClip.EditPos <  next  * g_patSteps)
             {
                 var pl    = x - pw * (nDsp * 4 * pw + CurClip.CurPat + CurClip.SongOff);
                 var xTick = wt * CurClip.EditPos;
@@ -110,7 +110,7 @@ namespace IngameScript
                 var _p = p - CurClip.SongOff;
                 var px = x - _f * pw + _p * pw;
 
-                if (CurClip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, CurClip, p, 1, false, g_nSteps);
+                if (CurClip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, CurClip, p, 1, false, g_patSteps);
                 else         DrawPattern  (sprites, px, py, pw, ph, CurClip, p, 1, false);
 
                 if (CurClip.ParamKeys)
@@ -134,7 +134,7 @@ namespace IngameScript
 
 
             // draw current pattern box
-            DrawRect(sprites, pxCur + 1, py, wt * g_nSteps - 2, ph, color6, 2);
+            DrawRect(sprites, pxCur + 1, py, wt * g_patSteps - 2, ph, color6, 2);
 
 
             // draw play position
@@ -183,7 +183,7 @@ namespace IngameScript
                 FillRect(sprites, px + bw * CurClip.CurPat, by, bw, sh, color4);
 
                 if (OK(PlayStep))
-                    FillRect(sprites, px + bw / g_nSteps * PlayStep, by, 4, sh, color6);
+                    FillRect(sprites, px + bw / g_patSteps * PlayStep, by, 4, sh, color6);
             }
 
 

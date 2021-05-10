@@ -38,7 +38,7 @@ namespace IngameScript
             g_playing = false;
 
 
-            if (CurClip.PlayTime < 0)
+            if (!g_playing)//CurClip.PlayTime < 0)
             {
                 var b = CurClip.GetBlock(CurClip.CurPat);
 

@@ -41,23 +41,23 @@ namespace IngameScript
             var songSteps =
                 arp != null
                 ? (int)Math.Round(arp.Length.UpdateValue(tp))
-                : g_nSteps;
+                : g_patSteps;
 
 
             var xt = 340;
-            var wt = (float)(w - xt) / g_nSteps;
+            var wt = (float)(w - xt) / g_patSteps;
 
             DrawPianoGrid(sprites, x + xt, y, w - xt, rh, CurClip.CurChan, songSteps);
 
 
             // draw edit position
             if (   OK(clip.EditPos)
-                && clip.EditPos >= CurClip.CurPat      * g_nSteps
-                && clip.EditPos < (CurClip.CurPat + 1) * g_nSteps)
+                && clip.EditPos >= CurClip.CurPat      * g_patSteps
+                && clip.EditPos < (CurClip.CurPat + 1) * g_patSteps)
             { 
                 FillRect(
                     sprites, 
-                    x + xt + wt * (clip.EditPos % g_nSteps), 
+                    x + xt + wt * (clip.EditPos % g_patSteps), 
                     y, 
                     wt / (CurClip.EditStepLength == 0.5f ? 2 : 1), 
                     CurClip.ParamKeys || CurClip.ParamAuto ? h : rh, 
@@ -89,7 +89,7 @@ namespace IngameScript
 
                     foreach (var an in arpNotes)
                     {
-                        var ft = (int)((an.ArpPlayTime / g_session.TicksPerStep) % g_nSteps);
+                        var ft = (int)((an.ArpPlayTime / g_session.TicksPerStep) % g_patSteps);
 
                         FillRect(sprites, x + xt + wt * ft, y, wt, rh, color6);
                         DrawPianoNeg(sprites, x + xt, y, w - xt, rh, clip, pat, ft, true);
@@ -97,7 +97,7 @@ namespace IngameScript
                 }
                 else
                 { 
-                    FillRect(sprites, x + xt + wt * ((int)PlayStep % g_nSteps), y, wt, rh, color6);
+                    FillRect(sprites, x + xt + wt * ((int)PlayStep % g_patSteps), y, wt, rh, color6);
                     DrawPianoNeg(sprites, x + xt, y, w - xt, rh, CurClip, pat, (int)PlayStep, true);
                 }
             }
@@ -115,7 +115,7 @@ namespace IngameScript
 
         void DrawPianoGrid(List<MySprite> sprites, float x, float y, float w, float h, int ch, int songSteps)
         {
-            var wt = w/g_nSteps;
+            var wt = w/g_patSteps;
             var ht = h/25;
 
             for (int t = 0; t < songSteps; t += 4)
@@ -149,9 +149,9 @@ namespace IngameScript
         }
 
 
-        void DrawChanNotes(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int p, int gs, int ch, Color col, int songSteps = g_nSteps)
+        void DrawChanNotes(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int p, int gs, int ch, Color col, int songSteps = g_patSteps)
         {
-            var wt = w/g_nSteps;
+            var wt = w/g_patSteps;
             var ht = h/25;
                      
             var bw = w/76;
@@ -160,7 +160,7 @@ namespace IngameScript
 
             for (int _p = 0; _p <= p; _p++)
             {
-                var patStart = p * g_nSteps;
+                var patStart = p * g_patSteps;
                 var patEnd   = patStart + songSteps;
 
                 var pat  = clip.Patterns[_p];
@@ -208,10 +208,10 @@ namespace IngameScript
         {
             for (int ch = 0; ch < g_nChans; ch++)
             {
-                var wt = w/g_nSteps;
+                var wt = w/g_patSteps;
                 var ht = h/25;
 
-                var _step = step % g_nSteps;
+                var _step = step % g_patSteps;
 
                 var bh = h/200;
                 var th = ht - bh*2;
@@ -224,8 +224,8 @@ namespace IngameScript
 
                 for (int _p = 0; _p <= p; _p++)
                 {
-                    var patStart =  p   *g_nSteps;
-                    var patEnd   = (p+1)*g_nSteps;
+                    var patStart =  p   *g_patSteps;
+                    var patEnd   = (p+1)*g_patSteps;
 
                     var chan = clip.Patterns[_p].Channels[ch];
 

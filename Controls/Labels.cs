@@ -129,7 +129,6 @@ namespace IngameScript
             //lblCmd3            = Lbl("Command 3");
 
             //lblSpread          = Lbl("Spread");
-            //lblRandom          = Lbl("Random");
 
             //for (int m = 0; m < nMems; m++)
             //    lblMems[m] = Lbl("Mem " + S(m));
@@ -157,7 +156,7 @@ namespace IngameScript
                 {
                     lbl.ForeColor = editColor6;
                     lbl.HalfColor = 
-                    lbl.BackColor   = editColor0;
+                    lbl.BackColor = editColor0;
                 });
 
             lblRec = new Label(false, Lbl("Rec"),
@@ -168,7 +167,7 @@ namespace IngameScript
                 {
                     lbl.ForeColor = recColor6;
                     lbl.HalfColor = 
-                    lbl.BackColor   = recColor0;
+                    lbl.BackColor = recColor0;
                 });
         }
 
@@ -306,9 +305,36 @@ namespace IngameScript
 
         bool PianoHighIsDim(Label lbl)
         {
-            return 
+            return
                    ShowPiano 
                 && NoteIsDim(HighToNote(lbl.Data));
+        }
+
+
+        void UpdatePianoHigh(Label lbl)
+        {
+            if (ShowPiano)
+                lbl.Update(HighNoteName(lbl.Data, CurClip.HalfSharp)); 
+
+            else
+            { 
+                switch (lbl.Data)
+                { 
+                case 0: lbl.Update("◄∙∙");                 break;
+                case 1: lbl.Update("∙∙►");                 break;
+                                                                       
+                case 2: lbl.Update("Pick");                break;
+                case 3: lbl.Update("All Ch", 7.6f, 19.5f); break;
+                case 4: lbl.Update("Inst");                break;
+                                                                       
+                case 5: lbl.Update("Rnd");                 break;
+                case 6: lbl.Update("Clr");                 break;
+                                                                       
+                case 7: lbl.Update("1/4");                 break;
+                case 8: lbl.Update("1/8");                 break;
+                case 9: lbl.Update("Flip");                break;
+                }
+            }
         }
 
 
@@ -386,14 +412,14 @@ namespace IngameScript
         bool StepIsBright(Label lbl)
         {
             var patStep  = -lbl.Data;
-            var songStep =  CurPat * g_nSteps + patStep;
+            var songStep =  CurPat * g_patSteps + patStep;
 
             var on = CurChannel.Notes.Find(n => 
                    n.PatStep >= patStep
                 && n.PatStep <  patStep+1) != null;
 
             if (   g_playing
-                && (int)PlayStep == songStep
+                && (int)PlayStep  == songStep
                 && CurClip.CurPat == PlayPat)
                 return !on;
             else if (on)
@@ -417,33 +443,6 @@ namespace IngameScript
 
         bool MoveIsBright(Label lbl) { return g_move ^ (CurSrc > -1); }
         bool MoveIsDim   (Label lbl) { return SelChan > -1 && !g_move; }
-
-
-        void UpdatePianoHigh(Label lbl)
-        {
-            if (ShowPiano)
-                lbl.Update(HighNoteName(lbl.Data, CurClip.HalfSharp)); 
-
-            else
-            { 
-                switch (lbl.Data)
-                { 
-                case 0: lbl.Update("◄∙∙");                 break;
-                case 1: lbl.Update("∙∙►");                 break;
-                                                                       
-                case 2: lbl.Update("Pick");                break;
-                case 3: lbl.Update("All Ch", 7.6f, 19.5f); break;
-                case 4: lbl.Update("Inst");                break;
-                                                                       
-                case 5: lbl.Update("Rnd");                 break;
-                case 6: lbl.Update("Clr");                 break;
-                                                                       
-                case 7: lbl.Update("1/4");                 break;
-                case 8: lbl.Update("1/8");                 break;
-                case 9: lbl.Update("Flip");                break;
-                }
-            }
-        }
 
 
         void UpdatePianoToggle(Label lbl)
@@ -538,15 +537,16 @@ namespace IngameScript
 
         bool NoteIsBright(int noteNum)
         { 
-            if (PlayChannel.Notes.FindIndex(n =>
-                { 
+            if (   g_playing 
+                && PlayChannel.Notes.FindIndex(n =>
+                {
                     if (noteNum != n.Number)
                         return false;
 
-                    // note is at the playback position
-                    if (   PlayStep >= n.SongStep + n.ShOffset
-                        && PlayStep <  n.SongStep + n.ShOffset + n.StepLength)
-                        return true;
+                    //// note is at the playback position
+                    //if (   PlayStep >= n.SongStep + n.ShOffset
+                    //    && PlayStep <  n.SongStep + n.ShOffset + n.StepLength)
+                    //    return true;
 
                     // note is at edit position
                     if (   n.SongStep >= CurClip.EditPos 
@@ -555,6 +555,16 @@ namespace IngameScript
 
                     return false;
                 }) > -1)
+                return true;
+
+            // note is being played on the piano
+            if (g_notes.FindIndex(n =>
+            {
+                return
+                       noteNum == n.Number
+                    && PlayStep - CurPat * g_patSteps >= n.PatStep
+                    && PlayStep - CurPat * g_patSteps <  n.PatStep + n.StepLength;
+            }) > -1)
                 return true;
 
             return false;
@@ -568,7 +578,8 @@ namespace IngameScript
                 if (ch == CurChan)
                     continue;
 
-                if (PlayPattern.Channels[ch].Notes.FindIndex(n =>
+                if (   g_playing
+                    && PlayPattern.Channels[ch].Notes.FindIndex(n =>
                     { 
                         if (noteNum != n.Number)
                             return false;

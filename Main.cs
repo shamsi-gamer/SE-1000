@@ -8,7 +8,7 @@ namespace IngameScript
     {
         public void Main(string arg, UpdateType update)
         {
-            //pnlInfoLog.CustomData = "";
+            pnlInfoLog.CustomData = "";
 
 
             if (arg.Length > 0)
@@ -24,7 +24,7 @@ namespace IngameScript
 
             if (_loadStep > 10)
             {
-                if ((update & UpdateType.Update1)  != 0) Update1 ();
+                if ((update & UpdateType.Update1)  != 0) Update1();
                 if ((update & UpdateType.Update10) != 0) Update10();
 
                 g_time++;

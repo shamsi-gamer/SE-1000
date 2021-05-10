@@ -256,7 +256,6 @@ namespace IngameScript
             }
 
             //UpdateChordLabels();
-            //UpdateShuffleLabel();
         }
 
 
@@ -288,6 +287,38 @@ namespace IngameScript
             }
 
             //UpdateChordLabels();
+        }
+
+
+        void EditChord(int noteNum)
+        {
+            var chord = CurClip.Chords[CurClip.Chord];
+
+            if (chord.Contains(noteNum)) chord.Remove(noteNum);
+            else                         chord.Add   (noteNum);
+
+            if (chord.Count > 0)
+            {
+                chord.Sort();
+
+                var oldIndex = CurClip.EditLengthIndex;
+                CurClip.EditLengthIndex = Math.Min(CurClip.EditLengthIndex, g_steps.Length-2);
+                PlayNote(CurClip, chord[0], chord, CurClip.CurChan);
+                CurClip.EditLengthIndex = oldIndex;
+            }
+
+            //UpdateChordLabels();
+        }
+
+
+        void UpdateFinalTuneChord(Tune tune, int noteNum)
+        {
+            var chord = tune.Chord;
+
+            if (chord.Contains(noteNum)) chord.Remove(noteNum);
+            else                         chord.Add   (noteNum);
+
+            tune.FinalChord = UpdateFinalTuneChord(chord, tune.AllOctaves);
         }
 
 
