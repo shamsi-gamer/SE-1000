@@ -108,8 +108,8 @@ namespace IngameScript
 
 
             var brightCol = 
-                      CurClip.SelChan > -1 
-                   && LastSetting == CurClip.SelectedInstrument.Volume 
+                      SelChan > -1 
+                   && LastSetting == SelInstrument.Volume 
                 || scale != 1 
                 ? color6 
                 : color4;

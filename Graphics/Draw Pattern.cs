@@ -21,11 +21,11 @@ namespace IngameScript
             var xt = 340;
             var wt = (w - xt) / g_patSteps;
 
-            DrawGrid(sprites, x + xt, y, w - xt, rh, CurClip.CurPat);
+            DrawGrid(sprites, x + xt, y, w - xt, rh, CurPat);
 
 
             var ch = rh / g_nChans;
-            var cy = y + rh - (CurClip.CurChan + 1) * ch;
+            var cy = y + rh - (CurChan + 1) * ch;
 
             FillRect(sprites, xt, cy, w - xt, ch, color3);
 
@@ -34,8 +34,8 @@ namespace IngameScript
 
 
             // edit position
-            if (   clip.EditPos >= CurClip.CurPat      * g_patSteps
-                && clip.EditPos < (CurClip.CurPat + 1) * g_patSteps)
+            if (   clip.EditPos >= CurPat      * g_patSteps
+                && clip.EditPos < (CurPat + 1) * g_patSteps)
             {
                 FillRect(
                     sprites, 
@@ -62,7 +62,7 @@ namespace IngameScript
             if (IsCurParam())
                 DrawValueLegend(sprites, CurParam, x, y, w, h, xt, rh, clip, pat);
 
-            if (CurClip.SelChan < 0)
+            if (SelChan < 0)
                 DrawFuncButtons(sprites, w, h, clip);
         }
 
@@ -71,7 +71,7 @@ namespace IngameScript
         {
             var ch = h / g_nChans;
 
-            FillRect(sprites, x, y + h - CurClip.CurChan * ch - 35, w, ch, CurChannel.On ? color6 : color3);
+            FillRect(sprites, x, y + h - CurChan * ch - 35, w, ch, CurChannel.On ? color6 : color3);
 
             for (int c = 0; c < g_nChans; c++)
             {
@@ -85,7 +85,7 @@ namespace IngameScript
                     6,
                     yLine + 6,
                     1,
-                    c == CurClip.CurChan ? color0 : (chan.Notes.Count > 0 ? (chan.On ? color6 : color3) : color2));
+                    c == CurChan ? color0 : (chan.Notes.Count > 0 ? (chan.On ? color6 : color3) : color2));
             }
         }
 

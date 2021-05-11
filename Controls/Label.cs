@@ -73,7 +73,7 @@ namespace IngameScript
             }
 
 
-            public void Update(string text, float size = 10, float pad = 10)
+            public void SetText(string text, float size = 10, float pad = 10)
             {
                 Panel.WriteText(" ");
 

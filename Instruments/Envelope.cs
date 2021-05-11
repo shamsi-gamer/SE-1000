@@ -233,10 +233,10 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Attack .HasDeepParams(CurChannel, CurClip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
-                if (Decay  .HasDeepParams(CurChannel, CurClip.CurSrc)) Decay  .DrawLabels(sprites, x, y, dp);
-                if (Sustain.HasDeepParams(CurChannel, CurClip.CurSrc)) Sustain.DrawLabels(sprites, x, y, dp);
-                if (Release.HasDeepParams(CurChannel, CurClip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
+                if (Attack .HasDeepParams(CurChannel, CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
+                if (Decay  .HasDeepParams(CurChannel, CurSrc)) Decay  .DrawLabels(sprites, x, y, dp);
+                if (Sustain.HasDeepParams(CurChannel, CurSrc)) Sustain.DrawLabels(sprites, x, y, dp);
+                if (Release.HasDeepParams(CurChannel, CurSrc)) Release.DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }

@@ -296,9 +296,9 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Amount .HasDeepParams(CurChannel, CurClip.CurSrc)) Amount .DrawLabels(sprites, x, y, dp);
-                if (Attack .HasDeepParams(CurChannel, CurClip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
-                if (Release.HasDeepParams(CurChannel, CurClip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
+                if (Amount .HasDeepParams(CurChannel, CurSrc)) Amount .DrawLabels(sprites, x, y, dp);
+                if (Attack .HasDeepParams(CurChannel, CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
+                if (Release.HasDeepParams(CurChannel, CurSrc)) Release.DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }

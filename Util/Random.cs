@@ -11,12 +11,12 @@ namespace IngameScript
 
         void Random()
         {
-                 if (CurClip.SelChan < 0)  RandomPatternNotes();
+                 if (SelChan < 0)  RandomPatternNotes();
             else if (CurClip.ParamKeys
-                  || CurClip.ParamAuto)    RandomValues(CurClip.CurChan);
-            else if (CurClip.CurSet  > -1) CurSetting               .Randomize(this);
-            else if (CurClip.CurSrc  > -1) CurClip.SelectedSource    .Randomize(new List<Oscillator>(), this);
-            else if (CurClip.SelChan > -1) CurClip.SelectedInstrument.Randomize(this);
+                  || CurClip.ParamAuto)    RandomValues(CurChan);
+            else if (CurSet  > -1) CurSetting               .Randomize(this);
+            else if (CurSrc  > -1) SelSource    .Randomize(new List<Oscillator>(), this);
+            else if (SelChan > -1) SelInstrument.Randomize(this);
 
             //MarkLabel(lblRandom);
         }
@@ -52,7 +52,7 @@ namespace IngameScript
         void RandomChannelNotes()
         {
             if (CurClip.AllChan) Random();
-            else                 RandomNotes(CurClip.CurChan, null);
+            else                 RandomNotes(CurChan, null);
         }
 
 
@@ -207,14 +207,14 @@ namespace IngameScript
             foreach (var note in chan.Notes)
             {
                 var param = GetCurrentParam(note.Instrument);
-                var index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurClip.CurSrc));
+                var index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSrc));
 
                 var rndValue = (float)(param.NormalMin + RND * (param.NormalMax - param.NormalMin));
 
                 if (index > -1)
                     note.Keys[index].Value = rndValue;
                 else
-                    note.Keys.Add(new Key(CurClip.CurSrc, param, rndValue, note.PatStep, chan));
+                    note.Keys.Add(new Key(CurSrc, param, rndValue, note.PatStep, chan));
             }
         }
 
@@ -232,13 +232,13 @@ namespace IngameScript
                 var rndValue = (float)(param.NormalMin + RND * (param.NormalMax - param.NormalMin));
 
                 var index = chan.AutoKeys.FindIndex(k => 
-                       k.Path == param.GetPath(CurClip.CurSrc) 
+                       k.Path == param.GetPath(CurSrc) 
                     && k.StepTime == step);
 
                 if (index > -1)
                     chan.AutoKeys[index].Value = rndValue;
                 else
-                    chan.AutoKeys.Add(new Key(CurClip.CurSrc, param, rndValue, step, chan));
+                    chan.AutoKeys.Add(new Key(CurSrc, param, rndValue, step, chan));
             }
 
             CurClip.UpdateAutoKeys();
@@ -307,8 +307,8 @@ namespace IngameScript
             //inst.DelayLevel = Rnd;
             //inst.DelayPower = Math.Max(0.01f, Rnd * 5);
 
-            //if (g_song.CurClip.CurSrc > -1)
-            //    UpdateSrcOff(inst, g_song.CurClip.CurSrc);
+            //if (g_song.CurSrc > -1)
+            //    UpdateSrcOff(inst, g_song.CurSrc);
 
             //TriggerNote(curNote > 1 ? curNote : 69, g_song.CurChan, stepLen);
         }

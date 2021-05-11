@@ -33,7 +33,7 @@ namespace IngameScript
 
 
             //if (curPath != "")
-            //    SwitchToSetting(CurClip.CurrentInstrument, CurClip.CurSrc, curPath);
+            //    SwitchToSetting(CurClip.CurrentInstrument, CurSrc, curPath);
 
             //if (modConnPath != "")
             //{

@@ -14,7 +14,7 @@ namespace IngameScript
             clip.TrimCurrentNotes(ch);
             lastNotes.Clear();
 
-            var chan  = clip.CurrentPattern.Channels[ch];
+            var chan  = clip.CurPattern.Channels[ch];
             var notes = GetChordNotes(num);
 
 
@@ -56,7 +56,7 @@ namespace IngameScript
 
         void PlayChord(Clip clip, List<int> notes, int ch)
         {
-            var chan = clip.CurrentPattern.Channels[ch];
+            var chan = clip.CurPattern.Channels[ch];
 
             var _found = false;
 
@@ -105,7 +105,7 @@ namespace IngameScript
 
         void PlayNote(Clip clip, List<int> notes, int ch)
         {
-            var chan = clip.CurrentPattern.Channels[ch];
+            var chan = clip.CurPattern.Channels[ch];
 
             for (int i = 0; i < notes.Count; i++)
             {
@@ -149,7 +149,7 @@ namespace IngameScript
 
         void TriggerNote(Clip clip, int num, int ch, float len, float chordSpreadOffset)
         {
-            var chan = clip.CurrentPattern.Channels[ch];
+            var chan = clip.CurPattern.Channels[ch];
 
             var patStep = 
                   (g_playing 

@@ -306,7 +306,7 @@ namespace IngameScript
 
                 for (int i = 0; i < Tones.Length; i++)
                 { 
-                    if (Tones[i].HasDeepParams(CurChannel, CurClip.CurSrc)) 
+                    if (Tones[i].HasDeepParams(CurChannel, CurSrc)) 
                         Tones[i].DrawLabels(sprites, x, y, dp); 
                 }
 
@@ -331,7 +331,7 @@ namespace IngameScript
                 var wc  = wt / Tones.Length;
 
                 var dp = new DrawParams(false, prog);
-                CurClip.SelectedSource.DrawLabels(sprites, x + 5, y + 10, dp);
+                SelSource.DrawLabels(sprites, x + 5, y + 10, dp);
 
                 DrawSample(sprites, x + 100, y + 150, 100, 60);
 

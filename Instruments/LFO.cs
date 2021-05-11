@@ -267,9 +267,9 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                if (Frequency.HasDeepParams(CurChannel, CurClip.CurSrc)) Frequency.DrawLabels(sprites, x, y, dp);                
-                if (Amplitude.HasDeepParams(CurChannel, CurClip.CurSrc)) Amplitude.DrawLabels(sprites, x, y, dp);
-                if (Offset   .HasDeepParams(CurChannel, CurClip.CurSrc)) Offset   .DrawLabels(sprites, x, y, dp);
+                if (Frequency.HasDeepParams(CurChannel, CurSrc)) Frequency.DrawLabels(sprites, x, y, dp);                
+                if (Amplitude.HasDeepParams(CurChannel, CurSrc)) Amplitude.DrawLabels(sprites, x, y, dp);
+                if (Offset   .HasDeepParams(CurChannel, CurSrc)) Offset   .DrawLabels(sprites, x, y, dp);
 
                 _dp.Next(dp);
             }

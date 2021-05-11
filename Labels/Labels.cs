@@ -22,17 +22,13 @@ namespace IngameScript
                                     lblMove, lblPrev, lblNext, 
                                     lblEnter, lblBack, lblOut,
                                     lblLock, lblAutoLock,
-                                    lblFold, lblGyro, lblNoise;
+                                    lblFold, lblGyro, lblNoise,
+                                    lblCmd1, lblCmd2, lblCmd3,
+                                    lblUp, lblDown, lblShift,
+                                    lblChord, lblChord1, lblChord2, lblChord3, lblChord4, lblChordEdit, lblSpread;
 
-        //                          lblMovePat, 
         //                          lblMixerVolumeUp, lblMixerVolumeDown, lblMixerAll, lblMixerMuteAll,
-        //                          lblPlay, lblStop,
-        //                          lblChord, lblChord1, lblChord2, lblChord3, lblChord4, lblChordEdit,
         //                          lblMixerShift, lblClips, lblMemSet, lblMemory,
-        //                          lblCmd1, lblCmd2, lblCmd3,
-        //                          lblSpread, lblRandom,
-        //                          lblUp, lblDown, lblShift, 
-        //                          lblPrevPat, lblNextPat,
 
 
         List<Label>                 lblHigh,
@@ -91,44 +87,22 @@ namespace IngameScript
             InitEditLabels();
             InitPianoLabels();
             InitToggleLabels();
+            InitChordLabels();
             InitNavigationLabels();
+            InitAdjustLabels();
             InitSideLabels();
 
 
-            //lblOctave          = Lbl("Octave");
-            //lblShuffle         = Lbl("Shuffle");
             //lblMixerVolumeUp   = Lbl("M Up R");
             //lblMixerVolumeDown = Lbl("M Down R");
             //lblMixerAll        = Lbl("M Solo R");
             //lblMixerMuteAll    = Lbl("M Mute R");
 
-            //lblPrevPat         = Lbl("Prev Pattern");
-            //lblNextPat         = Lbl("Next Pattern");
-
-
-            //lblMovePat         = Lbl("Move Pattern");
-
             //lblMixerShift      = Lbl("M Shift");
-            //lblClips           = Lbl("Clips");
 
+            //lblClips           = Lbl("Clips");
             //lblMemSet          = Lbl("MemSet");
             //lblMemory          = Lbl("Mem");
-
-            //lblChord           = Lbl("Chord");
-            //lblChord1          = Lbl("Chord 1");
-            //lblChord2          = Lbl("Chord 2");
-            //lblChord3          = Lbl("Chord 3");
-            //lblChord4          = Lbl("Chord 4");
-            //lblChordEdit       = Lbl("Chord Edit");
-
-            //lblCmd1            = Lbl("Command 1");
-            //lblCmd2            = Lbl("Command 2");
-            //lblUp              = Lbl("Up");
-            //lblDown            = Lbl("Down");
-            //lblShift           = Lbl("Shift");
-            //lblCmd3            = Lbl("Command 3");
-
-            //lblSpread          = Lbl("Spread");
 
             //for (int m = 0; m < nMems; m++)
             //    lblMems[m] = Lbl("Mem " + S(m));
@@ -172,24 +146,6 @@ namespace IngameScript
         }
 
 
-        void InitEditLabels()
-        {
-            lblLeft  = new Label(false, Lbl("Left"));
-            lblRight = new Label(false, Lbl("Right"));
-
-            lblStep  = new Label(false, Lbl("Step"));
-
-            lblHold  = new Label(false, Lbl("Hold"),
-                lbl =>    
-                       CurClip.Hold 
-                    && (  !OK(CurClip.EditPos) 
-                        || CurClip.EditNotes.Count > 0));
-
-            lblEditStep   = new Label(false, Lbl("Edit Step"),   null, null, UpdateEditStepLabel);
-            lblEditLength = new Label(false, Lbl("Edit Length"), null, null, UpdateEditLengthLabel);
-        }
-
-
         void InitToggleLabels()
         {
             lblLoop        = new Label(false, Lbl("Loop"),         lbl => CurClip.Loop);
@@ -207,8 +163,8 @@ namespace IngameScript
             lblDelete = new Label(false, Lbl(strDel),  NavIsBright,  NavIsDim);
 
             lblMove   = new Label(false, Lbl("Move"),
-                lbl => g_move ^ (CurClip.CurSrc > -1), 
-                lbl => CurClip.SelChan > -1 && !g_move);
+                lbl => g_move ^ (CurSrc > -1), 
+                lbl => SelChan > -1 && !g_move);
 
             lblPrev   = new Label(false, Lbl("Prev"),  MoveIsBright, NavIsDim);
             lblNext   = new Label(false, Lbl("Next"),  MoveIsBright, NavIsDim);
@@ -231,30 +187,6 @@ namespace IngameScript
         }
 
 
-        void UpdateEditStepLabel(Label lbl) 
-        {
-            var strStep = 
-                CurClip.EditStep == 0.5f
-                ? "½"
-                : S0(CurClip.EditStep);
-
-            lbl.Update("·· " + strStep);
-        }
-
-
-        void UpdateEditLengthLabel(Label lbl) 
-        {
-            string strLength;
-
-                 if (CurClip.EditStepLength == 0.25f )    strLength = "¼";
-            else if (CurClip.EditStepLength == 0.5f  )    strLength = "½";
-            else if (CurClip.EditStepLength == float_Inf) strLength = "∞";
-            else                                          strLength = S0(CurClip.EditStepLength);
-
-            lbl.Update("─ " + strLength);
-        }
-
-
         bool NavIsBright (Label lbl) { return CurSrc  > -1 && !g_labelsPressed.Contains(lbl); }
         bool NavIsDim    (Label lbl) { return SelChan > -1; }
 
@@ -266,7 +198,7 @@ namespace IngameScript
         {
             if (ShowPiano)
             {
-                lbl.Update(
+                lbl.SetText(
                       "     ║  ███  ║       ║  ███\n"
                     + "     ║       ║       ║     \n"
                     + "═════╬═══════╬═══════╬═════\n"
@@ -277,7 +209,7 @@ namespace IngameScript
             }
             else
             {
-                lbl.Update(
+                lbl.SetText(
                       "█ █ ██ █ █ █\n"
                     + "█▄█▄██▄█▄█▄█\n"
                     + "▀▀▀▀▀▀▀▀▀▀▀▀\n",
@@ -356,11 +288,11 @@ namespace IngameScript
         {
             //var be  = CurClip.EditNotes.Count > 0;
             //var crd = CurClip.ChordEdit;
-            //var cur = CurClip.CurSrc > -1;
-            //var ch  = CurClip.SelChan > -1;
+            //var cur = CurSrc > -1;
+            //var ch  = SelChan > -1;
             //var mov = CurClip.MovePat;
             //var sh  = CurClip.Shift;
-            //var set = CurClip.CurSet < 0;
+            //var set = CurSet < 0;
 
 
             //if (_lightsPressed.Contains(lblLeft))      UnmarkLabel(lblLeft,  false, be);
@@ -450,78 +382,6 @@ namespace IngameScript
         //}
 
 
-        //static void UpdateChordLabels()
-        //{
-        //    //if (TooComplex) return;
-
-        //    if (    IsCurParam(strTune)
-        //        && !(CurClip.ParamKeys || CurClip.ParamAuto))
-        //    {
-        //        var inst = CurClip.SelectedInstrument;
-        //        var tune = (Tune)GetCurrentParam(inst);
-
-        //        UpdateLabel(lblChord, tune.UseChord);
-
-        //        UpdateLabel(lblChordEdit, tune.UseChord ? strAll : " ");
-        //        UpdateLabel(lblChordEdit, tune.AllOctaves);
-        //        // TODO same for source or anything else that needs Tune
-        //    }
-        //    else
-        //    {
-        //        UpdateLabel(lblChord, CurClip.ChordEdit ? " " : "Chord", 9, 12);
-        //        UpdateLabel(lblChord, CurClip.ChordMode);
-
-        //        if (CurClip.ChordMode)
-        //        {
-        //            UpdateLabel(lblChordEdit, strAll, 10, 10);
-        //            UpdateLabel(lblChordEdit, CurClip.ChordAll);
-        //        }
-        //        else
-        //        {
-        //            UpdateLabel(lblChordEdit, "Edit", 10, 10);
-        //            UpdateLabel(lblChordEdit, CurClip.ChordEdit);
-        //        }
-        //    }
-
-        //    UpdateChordLabel(lblChord1, 1);
-        //    UpdateChordLabel(lblChord2, 2);
-        //    UpdateChordLabel(lblChord3, 3);
-        //    UpdateChordLabel(lblChord4, 4);
-        //}
-
-
-        //static void UpdateChordLabel(IMyTextPanel lbl, int chord)
-        //{
-        //    //if (TooComplex) return;
-
-        //    var c = CurClip.Chords[chord-1];
-
-        //    string chordName = GetChordName(c, S(chord));
-
-        //    lbl.WriteText(chordName);
-
-        //    UpdateLabel(
-        //        lbl,
-        //              CurClip.Chord == chord-1
-        //           && (   CurClip.ChordEdit
-        //               || CurClip.ChordMode)
-        //           && !IsCurParam(strTune)
-        //        || g_lightsPressed.Contains(lbl),
-        //              CurClip.ChordMode
-        //           && CurClip.Chord == chord-1 
-        //        || c.Count > 0);
-        //}
-
-
-        //void MarkChordLabel(int chord)
-        //{
-        //         if (chord == 1 && CurClip.Chords[0].Count > 0) //MarkLabel(lblChord1);
-        //    else if (chord == 2 && CurClip.Chords[1].Count > 0) //MarkLabel(lblChord2);
-        //    else if (chord == 3 && CurClip.Chords[2].Count > 0) //MarkLabel(lblChord3);
-        //    else if (chord == 4 && CurClip.Chords[3].Count > 0) //MarkLabel(lblChord4);
-        //}
-
-
         //void UpdatePlayStopLabels()
         //{
         //    UpdateLabel(lblPlay, g_playing);
@@ -554,157 +414,20 @@ namespace IngameScript
         //    UpdateLabelColor(lblDuplicate);
         //    UpdateLabelColor(lblDelete);
 
-        //    UpdateLabel(lblMove, g_move ^ (CurClip.CurSrc > -1), CurClip.SelChan > -1 && !g_move);
+        //    UpdateLabel(lblMove, g_move ^ (CurSrc > -1), SelChan > -1 && !g_move);
         //}
 
 
         //void UpdateLabelColor(IMyTextPanel lbl) 
         //{
-        //    UpdateLabel(lbl, CurClip.CurSrc > -1, CurClip.SelChan > -1); 
+        //    UpdateLabel(lbl, CurSrc > -1, SelChan > -1); 
         //}
 
 
         //void UpdateEnterLabel()
         //{
-        //    UpdateLabel(lblEnter, CurClip.CurSet < 0 && CurClip.CurSrc < 0 ? "└►" : " ", 10, 10);
-        //    UpdateLabel(lblEnter, CurClip.CurSet < 0 && CurClip.CurSrc > -1, CurClip.SelChan > -1 && CurClip.CurSet < 0);
-        //}
-
-
-        //void UpdateAdjustLabels(Clip clip)
-        //{
-        //    if (ModDestConnecting != null)
-        //    {
-        //        UpdateLabel(lblCmd1, "Conn", 10, 10);
-        //        UpdateLabel(lblCmd1, true);
-        //        return;
-        //    }
-
-
-        //    if (CurClip.CurSet > -1)
-        //    {
-        //        var path = g_settings.Last().GetPath(CurClip.CurSrc);
-
-        //        if (CurClip.ParamKeys)
-        //        {
-        //            UpdateLabel(lblCmd1, "Inter", 10, 10);
-
-        //            UpdateLabel(
-        //                lblCmd3,
-        //                CurClip.SelectedChannel.Notes.Find(n =>
-        //                       n.SongStep >= clip.EditPos
-        //                    && n.SongStep <  clip.EditPos+1
-        //                    && n.Keys.Find(k => k.Path == path) != null) != null
-        //                ? "X"
-        //                : " ",
-        //                10, 
-        //                10);
-        //        }
-        //        else if (CurClip.ParamAuto)
-        //        {
-        //            if (OK(clip.EditPos))
-        //            { 
-        //                if (CurClip.SelectedChannel.AutoKeys.Find(k =>
-        //                        k.Path == path
-        //                        && k.StepTime >= (clip.EditPos % g_nSteps)
-        //                        && k.StepTime <  (clip.EditPos % g_nSteps) + 1) != null)
-        //                {
-        //                    UpdateLabel(lblCmd1, "Move", 10, 10);
-        //                    UpdateLabel(lblCmd3, "X",    10, 10);
-        //                }
-        //                else
-        //                {
-        //                    UpdateLabel(lblCmd1, " ", 10, 10);
-        //                    UpdateLabel(lblCmd3, "+", 10, 10);
-        //                }
-        //            }
-        //            else
-        //                UpdateLabel(lblCmd3, " ", 10, 10);
-        //        }
-        //        else
-        //        {
-        //            UpdateLabel(lblCmd1, HasTag(CurSetting, strMod) ? "Conn" : " ", 10, 10);
-        //            UpdateLabel(lblCmd1, false);
-
-        //            UpdateLabel(lblCmd3, CurSetting.CanDelete() ? "X" : " ", 10, 10);
-        //            UpdateLabel(lblCmd3, false);
-        //        }
-
-        //        UpdateLabel(lblCmd2, " ", 10, 10);
-        //    }
-        //    else
-        //    {
-        //        if (CurClip.CurSrc > -1)
-        //        {
-        //            UpdateLabel(lblCmd1, "On",    10, 10);
-        //            UpdateLabel(lblCmd1, CurClip.SelectedSource.On);
-        //            UpdateLabel(lblCmd2, "Osc ↕", 10, 10);
-        //            UpdateLabel(lblCmd3, " ",     10, 10);
-        //            UpdateLabel(lblCmd3, false);
-        //        }
-        //        else
-        //        { 
-        //            UpdateLabel(lblCmd1, CurClip.SelChan < 0 ? "Copy" : " ", 10, 10);
-        //            UpdateLabel(lblCmd1, false);
-
-        //            UpdateLabel(lblCmd2, CurClip.SelChan < 0 ? "Paste" : " ", 10, 10);
-        //            UpdatePasteLabel();
-
-        //            UpdateLabel(
-        //                lblCmd3,     
-        //                CurClip.SelChan < 0 
-        //                ? " ▄█   █ █ ██ █ █ █   █▄ \n" +
-        //                 " ▀██   █▄█▄██▄█▄█▄█   ██▀ \n" +  
-        //                   " ▀   ▀▀▀▀▀▀▀▀▀▀▀▀   ▀ " 
-        //                : " ", 
-        //                2, 
-        //                32);
-
-        //            UpdateLabel(
-        //                lblCmd3, 
-        //                   CurClip.SelChan < 0 
-        //                && CurClip.Transpose, 
-        //                CurClip.EditNotes.Count > 0);
-        //        }
-        //    }
-
-
-        //    bool canAdjust = 
-        //           IsCurParam()
-        //        || IsCurSetting(typeof(Harmonics))
-        //        ||    CurClip.Transpose 
-        //           && CurClip.SelChan < 0;
-
-
-        //    var _strUp   = strRight;
-        //    var _strDown = strLeft;
-
-        //    if (      canAdjust
-        //           && (   IsCurParam(strVol)
-        //               || IsCurParam(strTune)
-        //               || IsCurParam(strSus)
-        //               || IsCurParam(strAmp)
-        //               || IsCurParam(strLvl)
-        //               || IsCurParam(strPow)
-        //               ||     IsCurParam(strCnt)
-        //                  && (CurClip.ParamKeys || CurClip.ParamAuto)
-        //               || IsCurSetting(typeof(Harmonics)))
-        //        || CurClip.Transpose)
-        //    {
-        //        _strUp   = strUp;
-        //        _strDown = strDown;
-        //    }
-
-        //    UpdateLabel(lblShift, canAdjust ?  strShft : " ", 10, 10);
-        //    UpdateLabel(lblDown,  canAdjust ? _strDown : " ", 10, 10);
-        //    UpdateLabel(lblUp,    canAdjust ? _strUp   : " ", 10, 10);
-
-        //    UpdateLabel(lblShift, canAdjust && CurClip.Shift);
-        //    UpdateLabel(lblDown,  canAdjust && CurClip.Shift);
-        //    UpdateLabel(lblUp,    canAdjust && CurClip.Shift);
-
-        //    UpdateLabel(lblLeft,  g_lightsPressed.Contains(lblLeft),  CurClip.EditNotes.Count > 0);
-        //    UpdateLabel(lblRight, g_lightsPressed.Contains(lblRight), CurClip.EditNotes.Count > 0);
+        //    UpdateLabel(lblEnter, CurSet < 0 && CurSrc < 0 ? "└►" : " ", 10, 10);
+        //    UpdateLabel(lblEnter, CurSet < 0 && CurSrc > -1, SelChan > -1 && CurSet < 0);
         //}
 
 
@@ -842,7 +565,7 @@ namespace IngameScript
         //    if (IsCurParam(strTune))
         //    {
         //        var tune =
-        //            CurClip.CurSrc > -1
+        //            CurSrc > -1
         //            ? CurClip.SelectedSource    .Tune
         //            : CurClip.SelectedInstrument.Tune;
 

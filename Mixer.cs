@@ -50,7 +50,7 @@
                 var mod = (CurClip.MixerShift ? 10 : 1) * dv;
 
                 int first, last;
-                CurClip.GetPatterns(CurClip.CurPat, out first, out last);
+                CurClip.GetPatterns(CurPat, out first, out last);
 
                 for (int p = first; p <= last; p++)
                 {

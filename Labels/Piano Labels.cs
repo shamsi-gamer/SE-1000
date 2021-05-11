@@ -66,25 +66,25 @@ namespace IngameScript
         void UpdatePianoHigh(Label lbl)
         {
             if (ShowPiano)
-                lbl.Update(" ");//HighNoteName(lbl.Data, CurClip.HalfSharp)); 
+                lbl.SetText(" ");//HighNoteName(lbl.Data, CurClip.HalfSharp)); 
 
             else
             { 
                 switch (lbl.Data)
                 { 
-                case 0: lbl.Update("◄∙∙");                 break;
-                case 1: lbl.Update("∙∙►");                 break;
+                case 0: lbl.SetText("◄∙∙");                 break;
+                case 1: lbl.SetText("∙∙►");                 break;
                                                                        
-                case 2: lbl.Update("Pick");                break;
-                case 3: lbl.Update("All Ch", 7.6f, 19.5f); break;
-                case 4: lbl.Update("Inst");                break;
+                case 2: lbl.SetText("Pick");                break;
+                case 3: lbl.SetText("All Ch", 7.6f, 19.5f); break;
+                case 4: lbl.SetText("Inst");                break;
                                                                        
-                case 5: lbl.Update("Rnd");                 break;
-                case 6: lbl.Update("Clr");                 break;
+                case 5: lbl.SetText("Rnd");                 break;
+                case 6: lbl.SetText("Clr");                 break;
                                                                        
-                case 7: lbl.Update("1/4");                 break;
-                case 8: lbl.Update("1/8");                 break;
-                case 9: lbl.Update("Flip");                break;
+                case 7: lbl.SetText("1/4");                 break;
+                case 8: lbl.SetText("1/8");                 break;
+                case 9: lbl.SetText("Flip");                break;
                 }
             }
         }
@@ -141,10 +141,10 @@ namespace IngameScript
         {
             if (ShowPiano)
             {
-                if (-lbl.Data < 15) lbl.Update(" ");//LowNoteName(-lbl.Data, CurClip.HalfSharp));
-                else                lbl.Update("‡", 8, 17);
+                if (-lbl.Data < 15) lbl.SetText(" ");//LowNoteName(-lbl.Data, CurClip.HalfSharp));
+                else                lbl.SetText("‡", 8, 17);
             }
-            else                    lbl.Update(" ");
+            else                    lbl.SetText(" ");
         }
 
 
@@ -163,11 +163,25 @@ namespace IngameScript
 
         bool NoteIsBright(int noteNum)
         { 
-            if (   g_playing 
-                && PlayChannel.Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
+            if (IsCurParam(strTune))
+            {
+                var tune =
+                    CurSrc > -1
+                    ? SelSource    .Tune
+                    : SelInstrument.Tune;
+
+                return tune.Chord.Contains(noteNum);
+            }
+
+            else if (CurClip.Chord > -1
+                  && CurClip.ChordEdit)
+                return CurClip.Chords[CurClip.Chord].Contains(noteNum);
+
+            else if (g_playing 
+                  && PlayChannel.Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
                 return true; // note is in the currently played channel
 
-            if (g_notes.FindIndex(n => NoteIsTriggered(noteNum, n)) > -1)
+            else if (g_notes.FindIndex(n => NoteIsTriggered(noteNum, n)) > -1)
                 return true; // note is being played on the piano
 
             return false;
@@ -176,14 +190,26 @@ namespace IngameScript
 
         bool NoteIsDim(int noteNum)
         {
-            for (int ch = 0; ch < g_nChans; ch++)
+            if (IsCurParam(strTune))
             {
-                if (ch == CurChan)
-                    continue;
+                var tune =
+                    CurSrc > -1
+                    ? SelSource    .Tune
+                    : SelInstrument.Tune;
 
-                if (   g_playing
-                    && PlayPattern.Channels[ch].Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
-                    return true;
+                return tune.FinalChord.Contains(noteNum);
+            }
+            else
+            { 
+                for (int ch = 0; ch < g_nChans; ch++)
+                {
+                    if (ch == CurChan)
+                        continue;
+
+                    if (   g_playing
+                        && PlayPattern.Channels[ch].Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
+                        return true;
+                }
             }
 
             return false;
@@ -240,7 +266,7 @@ namespace IngameScript
 
             if (   g_playing
                 && (int)PlayStep  == songStep
-                && CurClip.CurPat == PlayPat)
+                && CurPat == PlayPat)
                 return !on;
             else if (on)
                 return true;
@@ -259,17 +285,17 @@ namespace IngameScript
             else if (ShowPiano)      val = CurChannel.Transpose;
             else                     val = CurChannel.Shuffle;
 
-            lbl.Update((val > 0 ? "+" : "") + S(val));
+            lbl.SetText((val > 0 ? "+" : "") + S(val));
         }
 
 
         void UpdateShuffleLabel(Label lbl)
         {
             if (CurClip.Spread)
-                lbl.Update("Sprd");
+                lbl.SetText("Sprd");
 
             else if (ShowPiano)
-                lbl.Update(
+                lbl.SetText(
                     " ▄█   █ █ ██ █ █ █   █▄ \n" +
                    " ▀██   █▄█▄██▄█▄█▄█   ██▀ \n" +
                      " ▀   ▀▀▀▀▀▀▀▀▀▀▀▀   ▀ ",
@@ -277,7 +303,7 @@ namespace IngameScript
                     32);
 
             else
-                lbl.Update("Shuf");
+                lbl.SetText("Shuf");
         }
     }
 }

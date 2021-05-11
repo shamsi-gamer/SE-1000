@@ -39,6 +39,9 @@
   <Import Project="MDK/MDK.paths.props" Condition="exists('MDK/MDK.paths.props')" />
   <ItemGroup>
     <Compile Include="Controls\Label.cs" />
+    <Compile Include="Labels\Adjust Labels.cs" />
+    <Compile Include="Labels\Chord Labels.cs" />
+    <Compile Include="Labels\Edit Labels.cs" />
     <Compile Include="Labels\Piano Labels.cs" />
     <Compile Include="Util\Chords.cs" />
     <Compile Include="Graphics\Draw Clips.cs" />

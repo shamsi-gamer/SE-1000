@@ -151,8 +151,8 @@ namespace IngameScript
 
             if (IsCurParam(strTune))
             {
-                var tune = CurClip.SelectedSource    ?.Tune
-                        ?? CurClip.SelectedInstrument?.Tune;
+                var tune = SelSource    ?.Tune
+                        ?? SelInstrument?.Tune;
 
                 tune.UseChord = !tune.UseChord;
             }
@@ -180,8 +180,8 @@ namespace IngameScript
 
         void Chord(int chord)
         {
-            var tune = CurClip.SelectedSource    ?.Tune
-                    ?? CurClip.SelectedInstrument?.Tune;
+            var tune = SelSource    ?.Tune
+                    ?? SelInstrument?.Tune;
 
 
             if (   IsCurParam(strTune)
@@ -212,8 +212,8 @@ namespace IngameScript
                         if (tc.Contains(n)) tc.Remove(n);
                 }
 
-                var inst = CurClip.SelectedInstrument;
-                var src  = CurClip.CurSrc > -1 ? inst.Sources[CurClip.CurSrc] : null;
+                var inst = SelInstrument;
+                var src  = CurSrc > -1 ? inst.Sources[CurSrc] : null;
 
                 tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
 
@@ -247,7 +247,7 @@ namespace IngameScript
                 if (_chord.Count > 0)
                 {
                     _chord.Sort();
-                    PlayNote(CurClip, _chord[0], _chord, CurClip.CurChan);
+                    PlayNote(CurClip, _chord[0], _chord, CurChan);
                 }
 
                 //MarkChordLabel(chord);            
@@ -263,11 +263,11 @@ namespace IngameScript
         {
             if (IsCurParam(strTune))
             {
-                var inst = CurClip.SelectedInstrument;
-                var src  = CurClip.SelectedSource;
+                var inst = SelInstrument;
+                var src  = SelSource;
 
-                var tune = CurClip.SelectedSource    ?.Tune
-                        ?? CurClip.SelectedInstrument?.Tune;
+                var tune = SelSource    ?.Tune
+                        ?? SelInstrument?.Tune;
 
                 if (tune.UseChord)
                 { 
@@ -303,7 +303,7 @@ namespace IngameScript
 
                 var oldIndex = CurClip.EditLengthIndex;
                 CurClip.EditLengthIndex = Math.Min(CurClip.EditLengthIndex, g_steps.Length-2);
-                PlayNote(CurClip, chord[0], chord, CurClip.CurChan);
+                PlayNote(CurClip, chord[0], chord, CurChan);
                 CurClip.EditLengthIndex = oldIndex;
             }
 

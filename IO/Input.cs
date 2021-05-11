@@ -11,13 +11,13 @@ namespace IngameScript
         void UpdateInst()
         {
             if (   g_inputValid
-                && CurClip.SelChan > -1
-                && CurClip.CurSrc < 0)
+                && SelChan > -1
+                && CurSrc < 0)
             {
                 var sb = new StringBuilder();
                 dspMain.Panel.ReadText(sb, false);
 
-                CurClip.CurrentInstrument.Name = S(sb).Trim().Trim(new char[] {';'});
+                CurClip.CurInstrument.Name = S(sb).Trim().Trim(new char[] {';'});
             }
 
             g_inputValid = true;

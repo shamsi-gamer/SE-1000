@@ -22,16 +22,16 @@ namespace IngameScript
 
         void SetFunc(int func)
         {
-            if (CurClip.SelChan > -1)
+            if (SelChan > -1)
             {
-                if (CurClip.CurSet > -1)
+                if (CurSet > -1)
                 {
                     CurSetting.Func(func);
                 }
                 else 
                 {
-                    if (CurClip.CurSrc < 0) SetInstFunc(CurClip.SelectedInstrument, func);
-                    else                   SetSrcFunc (CurClip.SelectedSource,     func);
+                    if (CurSrc < 0) SetInstFunc(SelInstrument, func);
+                    else                   SetSrcFunc (SelSource,     func);
                 }
             }
             else
@@ -60,14 +60,14 @@ namespace IngameScript
         {
             BackOut();
 
-            CurClip.CurSrc = iSrc;
+            CurSrc = iSrc;
 
-            CurClip.CurChan =
-            CurClip.SelChan = Array.FindIndex(
+            CurChan =
+            SelChan = Array.FindIndex(
                 CurPattern.Channels, 
                 ch => ch.Instrument == inst);
 
-            UpdateInstOff(CurClip.SelChan);
+            UpdateInstOff(SelChan);
 
             UpdateInstName(true);
             g_inputValid = false;
@@ -93,21 +93,21 @@ namespace IngameScript
 
         static void AddNextSetting(string tag, Instrument inst = null, int iSrc = -2)
         {
-            if (inst == null) inst = CurClip.SelectedInstrument;
-            if (iSrc == -2)   iSrc = CurClip.CurSrc;
+            if (inst == null) inst = SelInstrument;
+            if (iSrc == -2)   iSrc = CurSrc;
 
-            if (CurClip.CurSet > -1)
+            if (CurSet > -1)
                 CurSetting._IsCurrent = false;
 
             Setting setting;
 
-                 if (CurClip.CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
+                 if (CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
             else if (iSrc          > -1) setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
             else                         setting = inst.GetOrAddSettingFromTag(tag);
 
             g_settings.Add(setting);
 
-            CurClip.CurSet++;
+            CurSet++;
 
             if (IsCurParam())
                 CurSetting._IsCurrent = true;
@@ -116,7 +116,7 @@ namespace IngameScript
 
         static void RemoveSetting(Setting setting)
         {
-            int set = CurClip.CurSet;
+            int set = CurSet;
 
             if (   HasTag(setting, strAtt)
                 || HasTag(setting, strDec)
@@ -124,12 +124,12 @@ namespace IngameScript
                 || HasTag(setting, strRel))
                 set--;
 
-            if (CurClip.CurSet > 0)
-                g_settings[CurClip.CurSet -1].Remove(setting);
+            if (CurSet > 0)
+                g_settings[CurSet -1].Remove(setting);
             else 
             {
-                var inst = CurClip.SelectedInstrument;
-                var src  = CurClip.SelectedSource;
+                var inst = SelInstrument;
+                var src  = SelSource;
 
                 switch (setting.Tag)
                 {
@@ -144,7 +144,7 @@ namespace IngameScript
 
             g_settings.RemoveAt(set);
 
-            CurClip.CurSet -= CurClip.CurSet - set + 1;
+            CurSet -= CurSet - set + 1;
         }
 
 

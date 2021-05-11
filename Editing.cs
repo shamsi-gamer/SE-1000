@@ -39,8 +39,8 @@ namespace IngameScript
 
                     int found;
                     while ((found = chan.Notes.FindIndex(n => 
-                               CurClip.CurPat * g_patSteps + n.PatStep >= clip.EditPos 
-                            && CurClip.CurPat * g_patSteps + n.PatStep <  clip.EditPos + 1)) > -1)
+                               CurPat * g_patSteps + n.PatStep >= clip.EditPos 
+                            && CurPat * g_patSteps + n.PatStep <  clip.EditPos + 1)) > -1)
                         chan.Notes.RemoveAt(found);
 
                     lastNotes.Clear();
@@ -110,13 +110,13 @@ namespace IngameScript
             {
                 clip.StopEdit();
 
-                clip.Inter = clip.CurrentChannel.Notes.Find(n =>
+                clip.Inter = clip.CurChannel.Notes.Find(n =>
                        n.SongStep >= clip.EditPos
                     && n.SongStep <  clip.EditPos + CurClip.EditStepIndex);
             }
             else
             {
-                var note = clip.CurrentChannel.Notes.Find(n =>
+                var note = clip.CurChannel.Notes.Find(n =>
                        n.SongStep >= clip.EditPos
                     && n.SongStep <  clip.EditPos + CurClip.EditStepIndex);
 
@@ -125,11 +125,11 @@ namespace IngameScript
                     var si = clip.Inter.SongStep;
                     var sn = note      .SongStep;
 
-                    var path  = g_settings.Last().GetPath(CurClip.CurSrc);
+                    var path  = g_settings.Last().GetPath(CurSrc);
                     var param = (Parameter)GetSettingFromPath(note.Instrument, path);
 
-                    var start = param.GetKeyValue(clip.Inter, CurClip.CurSrc);
-                    var end   = param.GetKeyValue(note,       CurClip.CurSrc);
+                    var start = param.GetKeyValue(clip.Inter, CurSrc);
+                    var end   = param.GetKeyValue(note,       CurSrc);
 
                     int f = (int)(si / g_patSteps);
                     int l = (int)(sn / g_patSteps);
@@ -152,7 +152,7 @@ namespace IngameScript
                                 SetKeyValue(key, val);
                             else
                             {
-                                n.Keys.Add(new Key(CurClip.CurSrc, param, nParam.Value, n.SongStep));
+                                n.Keys.Add(new Key(CurSrc, param, nParam.Value, n.SongStep));
                                 SetKeyValue(n.Keys.Last(), val);
                             }
                         }
@@ -173,7 +173,7 @@ namespace IngameScript
                 && OK(clip.EditPos)
                 && clip.ParamAuto)
             {
-                var key = clip.SelectedChannel.AutoKeys.Find(k => 
+                var key = clip.SelChannel.AutoKeys.Find(k => 
                          k.StepTime >= (clip.EditPos % g_patSteps)
                       && k.StepTime <  (clip.EditPos % g_patSteps) + 1);
 
@@ -215,14 +215,14 @@ namespace IngameScript
             CurClip.EditPos =
                 OK(CurClip.EditPos)
                 ? float.NaN
-                : (OK(CurClip.LastEditPos) ? CurClip.LastEditPos : CurClip.CurPat * g_patSteps);
+                : (OK(CurClip.LastEditPos) ? CurClip.LastEditPos : CurPat * g_patSteps);
 
             CurClip.StopEdit();
 
             //UpdateAdjustLabels(CurClip);
 
             if (CurClip.Hold)
-                CurClip.TrimCurrentNotes(CurClip.CurChan);
+                CurClip.TrimCurrentNotes(CurChan);
 
             CurClip.Hold = false;
             //UpdateLabel(lblHold, false);
@@ -305,13 +305,13 @@ namespace IngameScript
 
         void CutNotes(Clip clip)
         {
-            for (int p = 0; p <= CurClip.CurPat; p++)
+            for (int p = 0; p <= CurPat; p++)
             {
-                var patStart =  CurClip.CurPat   *g_patSteps;
-                var patEnd   = (CurClip.CurPat +1)*g_patSteps;
+                var patStart =  CurPat   *g_patSteps;
+                var patEnd   = (CurPat +1)*g_patSteps;
 
                 var pat  = clip.Patterns[p];
-                var chan = pat.Channels[CurClip.CurChan];
+                var chan = pat.Channels[CurChan];
 
                 var min  = (60 + chan.Transpose*12) * NoteScale;
                 var max  = (84 + chan.Transpose*12) * NoteScale;
@@ -358,7 +358,7 @@ namespace IngameScript
             {
                 var notes = new List<Note>();
 
-                for (int p = 0; p <= CurClip.CurPat; p++)
+                for (int p = 0; p <= CurPat; p++)
                 {
                     var patStart =  clip.CurPat   *g_patSteps;
                     var patEnd   = (clip.CurPat+1)*g_patSteps;
@@ -463,7 +463,7 @@ namespace IngameScript
 
         void MoveEdit(Clip clip, int move, bool create = false)
         {
-            var chan = clip.SelectedChannel;
+            var chan = clip.SelChannel;
 
             if (IsCurSetting(typeof(Harmonics)))
             {
@@ -534,7 +534,7 @@ namespace IngameScript
                         {
                             if (create)
                             {
-                                var pat = new Pattern(clip.CurrentPattern);
+                                var pat = new Pattern(clip.CurPattern);
                                 pat.Channels[clip.CurChan].Notes.Clear();
 
                                 clip.Patterns.Insert(clip.CurPat + 1, pat);
@@ -588,8 +588,8 @@ namespace IngameScript
 
         void SetTranspose(Clip clip, int d)
         {
-            var tune = clip.SelectedSource    ?.Tune
-                    ?? clip.SelectedInstrument?.Tune;
+            var tune = clip.SelSource    ?.Tune
+                    ?? clip.SelInstrument?.Tune;
 
             if (clip.Spread)
                 clip.ChordSpread = MinMax(0, clip.ChordSpread + d, 16);
@@ -606,7 +606,7 @@ namespace IngameScript
 
         void SetTranspose(Clip clip, int ch, int tr)
         {
-            tr += clip.CurrentPattern.Channels[ch].Transpose;
+            tr += clip.CurPattern.Channels[ch].Transpose;
 
             int first, last;
             clip.GetCurPatterns(out first, out last);
@@ -624,9 +624,6 @@ namespace IngameScript
         void Spread()
         {
             CurClip.Spread = !CurClip.Spread;
-            //UpdateLabel(lblSpread, CurClip.Spread);
-            //UpdateOctaveLabel();
-            //UpdateShuffleLabel();
         }
     }
 }

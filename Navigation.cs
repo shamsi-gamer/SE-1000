@@ -22,7 +22,7 @@ namespace IngameScript
                 CurClip.CueNext  = -1;
             }
             else
-                CurClip.PlayTime = GetPatTime(CurClip.CurPat);
+                CurClip.PlayTime = GetPatTime(CurPat);
 
             CurClip.StartTime = g_time - CurClip.PlayTime;
 
@@ -40,12 +40,12 @@ namespace IngameScript
 
             if (!g_playing)//CurClip.PlayTime < 0)
             {
-                var b = CurClip.GetBlock(CurClip.CurPat);
+                var b = CurClip.GetBlock(CurPat);
 
                 var _block =
                        CurClip.Block
                     && b != null
-                    && CurClip.CurPat > b.First;
+                    && CurPat > b.First;
 
                 CurClip.SetCurrentPattern(_block ? b.First : 0);
                 CurClip.CueNext = -1;

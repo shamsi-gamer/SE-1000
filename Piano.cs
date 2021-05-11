@@ -9,8 +9,8 @@ namespace IngameScript
     {
         void High(int h)
         {
-            var tune = CurClip.SelectedSource    ?.Tune
-                    ?? CurClip.SelectedInstrument?.Tune;
+            var tune = SelSource    ?.Tune
+                    ?? SelInstrument?.Tune;
 
             if (h == 10) // here and not in BeatHigh() because TogglePiano() needs to know about tune
                 TogglePiano(tune);
@@ -32,7 +32,7 @@ namespace IngameScript
                     && CurClip.ChordMode 
                     ? CurClip.Chords[CurClip.Chord] 
                     : null,
-                    CurClip.CurChan);
+                    CurChan);
             else
                 BeatHigh(h);
         }
@@ -50,9 +50,9 @@ namespace IngameScript
             else if (h == 5) RandomChannelNotes();
             else if (h == 6) ClearNotes();
                                    
-            else if (h == 7) Flip(CurClip.CurChan, 4); 
-            else if (h == 8) Flip(CurClip.CurChan, 8); 
-            else if (h == 9) Flip(CurClip.CurChan, 16);
+            else if (h == 7) Flip(CurChan, 4); 
+            else if (h == 8) Flip(CurChan, 8); 
+            else if (h == 9) Flip(CurChan, 16);
 
             if (   h != 2
                 && h != 3
@@ -67,7 +67,7 @@ namespace IngameScript
                 && (tune?.UseChord ?? false))
             { 
                 g_settings.RemoveLast();
-                CurClip.CurSet--;
+                CurSet--;
                 CurClip.Piano = false;
                 //UpdateChordLabels();
             }
@@ -81,8 +81,8 @@ namespace IngameScript
 
         void Low(int l)
         {
-            var tune = CurClip.SelectedSource    ?.Tune
-                    ?? CurClip.SelectedInstrument?.Tune;
+            var tune = SelSource    ?.Tune
+                    ?? SelInstrument?.Tune;
 
             if (   IsCurParam(strTune)
                 && (tune?.UseChord ?? false))
@@ -104,10 +104,10 @@ namespace IngameScript
                     && CurClip.ChordMode 
                     ? CurClip.Chords[CurClip.Chord]
                     : null,
-                    CurClip.CurChan);
+                    CurChan);
             }
             else
-                Tick(CurClip.CurChan, l);
+                Tick(CurChan, l);
         }
 
 
@@ -172,7 +172,7 @@ namespace IngameScript
                     Shift(i, fwd);
             }
             else
-                Shift(CurClip.CurChan, fwd);
+                Shift(CurChan, fwd);
         }
 
 
@@ -290,7 +290,7 @@ namespace IngameScript
                     ClearNotes(i);
             }
             else
-                ClearNotes(CurClip.CurChan);
+                ClearNotes(CurChan);
         }
 
 
@@ -310,7 +310,7 @@ namespace IngameScript
                         var param = GetCurrentParam(note.Instrument);
 
                         var index = 0;
-                        while ((index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurClip.CurSrc))) > -1)
+                        while ((index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSrc))) > -1)
                             note.Keys.RemoveAt(index);
                     }
                 }
@@ -319,7 +319,7 @@ namespace IngameScript
                     var param = GetCurrentParam(chan.Instrument);
                     var index = 0;
                         
-                    while ((index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(CurClip.CurSrc))) > -1)
+                    while ((index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(CurSrc))) > -1)
                         chan.AutoKeys.RemoveAt(index);
                 }
                 else

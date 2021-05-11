@@ -12,7 +12,7 @@ namespace IngameScript
             var rh         = h - 50;
             var instHeight = h - 80;
 
-            var inst = CurClip.SelectedInstrument;
+            var inst = SelInstrument;
 
             var lw = 196;
 
@@ -27,7 +27,7 @@ namespace IngameScript
             FillRect(sprites, x + lw, y, w-lw, instHeight, color2);
 
 
-            DrawInstrumentList(sprites, x, y, lw, instHeight, CurClip.SelectedChannel);
+            DrawInstrumentList(sprites, x, y, lw, instHeight, SelChannel);
 
 
             FillRect(sprites, x + lw,      0,    w2, rh/4, color3);
@@ -77,7 +77,7 @@ namespace IngameScript
 
 
             var dpInst = new DrawParams(this);
-            CurClip.SelectedInstrument.DrawLabels(sprites, x + lw + w2 + 21, y + 5, dpInst);
+            SelInstrument.DrawLabels(sprites, x + lw + w2 + 21, y + 5, dpInst);
 
 
             DrawCurrentSetting(
@@ -111,7 +111,7 @@ namespace IngameScript
             var iInst = g_session.Instruments.IndexOf(chan.Instrument);
             var step  = 28.5f;
 
-            if (CurClip.SelChan > -1 && CurClip.CurSrc < 0)
+            if (SelChan > -1 && CurSrc < 0)
                 FillRect(sprites, x + sw, y + (iInst - CurClip.InstOff) * step, w - sw, step, color6);
 
             for (int i = CurClip.InstOff; i < Math.Min(CurClip.InstOff + maxDspInst, g_session.Instruments.Count); i++)
@@ -125,13 +125,13 @@ namespace IngameScript
                     y + (i - CurClip.InstOff) * step,
                     0.7f,
                     inst == chan.Instrument 
-                    ? (CurClip.CurSrc > -1 ? color6 : color0) 
-                    : (CurClip.CurSrc > -1 ? color3 : color6));
+                    ? (CurSrc > -1 ? color6 : color0) 
+                    : (CurSrc > -1 ? color3 : color6));
             }
 
             FillRect(sprites, x + w - 4, y, 4, h, color6);
 
-            if (CurClip.SelChan > -1 && g_session.Instruments.Count > maxDspInst)
+            if (SelChan > -1 && g_session.Instruments.Count > maxDspInst)
             {
                 var bh = h / (float)g_session.Instruments.Count;
                 FillRect(sprites, x, y + bh * iInst, sw, bh, color6);
@@ -149,10 +149,10 @@ namespace IngameScript
             for (int i = CurClip.SrcOff; i < Math.Min(CurClip.SrcOff + maxDspSrc, nSrc); i++)
                 inst.Sources[i].DrawSource(sprites, x + sw, ref iy, w - sw, this);
 
-            if (CurClip.CurSrc > -1 && nSrc > 8)
+            if (CurSrc > -1 && nSrc > 8)
             {
                 var bh = h / (float)nSrc;
-                FillRect(sprites, x, y + bh * CurClip.CurSrc, sw, bh, color6);
+                FillRect(sprites, x, y + bh * CurSrc, sw, bh, color6);
             }
         }
     }

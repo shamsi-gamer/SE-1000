@@ -113,12 +113,12 @@ namespace IngameScript
             public int[]         Mems = new int[nMems];
                                  
 
-            public Pattern       CurrentPattern     { get { return Patterns[CurPat]; } }
-            public Channel       CurrentChannel     { get { return CurrentPattern.Channels[CurChan]; } }
-            public Instrument    CurrentInstrument  { get { return CurrentChannel.Instrument; } }
-            public Channel       SelectedChannel    { get { return SelChan > -1 ? CurrentPattern.Channels[SelChan] : null; } }
-            public Instrument    SelectedInstrument { get { return SelectedChannel?.Instrument ?? null; } }
-            public Source        SelectedSource     { get { return CurSrc > -1 ? SelectedInstrument.Sources[CurSrc] : null; } }
+            public Pattern       CurPattern     { get { return Patterns[CurPat]; } }
+            public Channel       CurChannel     { get { return CurPattern.Channels[CurChan]; } }
+            public Instrument    CurInstrument  { get { return CurChannel.Instrument; } }
+            public Channel       SelChannel    { get { return SelChan > -1 ? CurPattern.Channels[SelChan] : null; } }
+            public Instrument    SelInstrument { get { return SelChannel?.Instrument ?? null; } }
+            public Source        SelSource     { get { return CurSrc > -1 ? SelInstrument.Sources[CurSrc] : null; } }
 
 
             public float         EditStep       { get { return g_steps[EditStepIndex  ]; } }

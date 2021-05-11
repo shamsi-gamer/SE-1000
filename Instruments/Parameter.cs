@@ -553,8 +553,8 @@ namespace IngameScript
 
                 DrawFuncButton(sprites, strLfo, 2, w, h, true, Lfo      != null);
                 DrawFuncButton(sprites, strMod, 3, w, h, true, Modulate != null);
-                DrawFuncButton(sprites, "Key",  4, w, h, true, chan.HasNoteKeys(GetPath(CurClip.CurSrc)));
-                DrawFuncButton(sprites, "Auto", 5, w, h, true, chan.HasAutoKeys(GetPath(CurClip.CurSrc)));
+                DrawFuncButton(sprites, "Key",  4, w, h, true, chan.HasNoteKeys(GetPath(CurSrc)));
+                DrawFuncButton(sprites, "Auto", 5, w, h, true, chan.HasAutoKeys(GetPath(CurSrc)));
             }
 
 
@@ -585,11 +585,8 @@ namespace IngameScript
             public override bool CanDelete()
             {
                 return 
-                          Tag == strVol
-                       && CurClip.CurSrc > -1
-
-                    ||    Parent != null
-                       && Tag == strOff;
+                       Parent != null
+                    && Tag == strOff;
             }
 
 

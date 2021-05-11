@@ -21,15 +21,15 @@ namespace IngameScript
             var sprites = new List<MySprite>();
 
 
-            if (   CurClip.SelChan > -1
+            if (   SelChan > -1
                 && IsCurParam()
                 && (   CurClip.ParamKeys
                     || CurClip.ParamAuto))
             {
-                if (CurClip.Piano)  DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurClip.CurPat, true, null);
-                else          DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurClip.CurPat, true);
+                if (CurClip.Piano)  DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, true, null);
+                else          DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, true);
             }
-            else if (CurClip.SelChan > -1)
+            else if (SelChan > -1)
             {
                 if (IsCurSetting(typeof(Harmonics)))
                 {
@@ -39,12 +39,12 @@ namespace IngameScript
                 else if (IsCurOrParentSetting(typeof(Arpeggio)))
                 {
                               var arp = CurOrParentArpeggio;
-                              DrawPianoDisplay  (sprites, x, y, w, h, arp.Clip, CurClip.CurPat, true, arp);
+                              DrawPianoDisplay  (sprites, x, y, w, h, arp.Clip, CurPat, true, arp);
                 }
                 else          DrawInstrument    (sprites, x, y, w, h);
             }
-            else if (CurClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurClip.CurPat, true, null);
-            else              DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurClip.CurPat, true);
+            else if (CurClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, true, null);
+            else              DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, true);
 
             dsp.Draw(sprites);
         }
@@ -55,10 +55,10 @@ namespace IngameScript
             var bw =  w/6;
             var x0 = bw/2;
 
-            if (CurClip.SelChan > -1)
+            if (SelChan > -1)
             {
-                if (CurClip.CurSrc < 0) CurClip.SelectedInstrument.DrawFuncButtons(sprites, w, y, CurClip.SelectedChannel);
-                else                   CurClip.SelectedSource    .DrawFuncButtons(sprites, w, y, CurClip.SelectedChannel);
+                if (CurSrc < 0) SelInstrument.DrawFuncButtons(sprites, w, y, SelChannel);
+                else                   SelSource    .DrawFuncButtons(sprites, w, y, SelChannel);
             }
             else
             {

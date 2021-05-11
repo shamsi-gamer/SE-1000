@@ -7,7 +7,7 @@ namespace IngameScript
     {
         void InitPlaybackAfterLoad(long playTime)
         {
-            CurClip.SetCurrentPattern(CurClip.CurPat);
+            CurClip.SetCurrentPattern(CurPat);
 
             CurClip.PlayTime = playTime % (CurClip.Patterns.Count * g_patSteps * g_session.TicksPerStep);
 

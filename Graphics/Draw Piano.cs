@@ -22,7 +22,7 @@ namespace IngameScript
             else
             {
                 var dp = new DrawParams(this);
-                CurClip.SelectedInstrument.DrawLabels(sprites, x + 5, y + 10, dp);
+                SelInstrument.DrawLabels(sprites, x + 5, y + 10, dp);
 
                 var lenCol = CurSetting == arp.Length ? color6 : color3;
                 DrawString(sprites, "Length",                                 x + 30, y + 160, 1f,   lenCol);
@@ -36,7 +36,7 @@ namespace IngameScript
 
             var _dummy = new List<TriggerValue>();
 
-            var tp = new TimeParams(g_time, 0, g_time - CurClip.StartTime, null, CurClip.EditLength, CurClip.CurSrc, _dummy, this);
+            var tp = new TimeParams(g_time, 0, g_time - CurClip.StartTime, null, CurClip.EditLength, CurSrc, _dummy, this);
 
             var songSteps =
                 arp != null
@@ -47,13 +47,13 @@ namespace IngameScript
             var xt = 340;
             var wt = (float)(w - xt) / g_patSteps;
 
-            DrawPianoGrid(sprites, x + xt, y, w - xt, rh, CurClip.CurChan, songSteps);
+            DrawPianoGrid(sprites, x + xt, y, w - xt, rh, CurChan, songSteps);
 
 
             // draw edit position
             if (   OK(clip.EditPos)
-                && clip.EditPos >= CurClip.CurPat      * g_patSteps
-                && clip.EditPos < (CurClip.CurPat + 1) * g_patSteps)
+                && clip.EditPos >= CurPat      * g_patSteps
+                && clip.EditPos < (CurPat + 1) * g_patSteps)
             { 
                 FillRect(
                     sprites, 
@@ -76,9 +76,9 @@ namespace IngameScript
                 { 
                     var arpNotes = new List<Note>();
 
-                    for (int p = 0; p <= CurClip.CurPat; p++)
+                    for (int p = 0; p <= CurPat; p++)
                     { 
-                        var notes = CurClip.Patterns[p].Channels[CurClip.SelChan].Notes.FindAll(n => 
+                        var notes = CurClip.Patterns[p].Channels[SelChan].Notes.FindAll(n => 
                                   n.Instrument.Arpeggio != null
                                && CurClip.PlayTime >= n.PatStep*g_session.TicksPerStep + n.PatTime                
                                && CurClip.PlayTime <  n.PatStep*g_session.TicksPerStep + n.PatTime + n.FrameLength);
@@ -108,7 +108,7 @@ namespace IngameScript
             if (IsCurParam())
                 DrawValueLegend(sprites, CurParam, x, y, w, h, xt, rh, clip, pat);
 
-            if (CurClip.SelChan < 0 || arp != null)
+            if (SelChan < 0 || arp != null)
                 DrawFuncButtons(sprites, w, h, clip);
         }
 
@@ -140,12 +140,12 @@ namespace IngameScript
             { 
                 for (int ch = 0; ch < g_nChans; ch++)
                 {
-                    if (ch != CurClip.CurChan)
+                    if (ch != CurChan)
                         DrawChanNotes(sprites, x, y, w, h, clip, p, gs, ch, color3);
                 }
             }
 
-            DrawChanNotes(sprites, x, y, w, h, clip, p, gs, CurClip.CurChan, color6, songSteps);
+            DrawChanNotes(sprites, x, y, w, h, clip, p, gs, CurChan, color6, songSteps);
         }
 
 
@@ -217,7 +217,7 @@ namespace IngameScript
                 var th = ht - bh*2;
 
                 var col =
-                    ch == CurClip.CurChan
+                    ch == CurChan
                     ? color2
                     : color5;
 
