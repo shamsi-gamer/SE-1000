@@ -342,10 +342,9 @@ namespace IngameScript
             var mod = (CurClip.MixerShift ? 10 : 1) * dv;
             CurClip.Volume = MinMax(0, CurClip.Volume + dVol * mod, 2);
 
-            //MarkLabel(
-                //dv > 0
-                //? lblMixerVolumeUp
-                //: lblMixerVolumeDown);
+            (dv > 0
+             ? lblMixerVolumeUp
+             : lblMixerVolumeDown).Mark();
         }
 
 

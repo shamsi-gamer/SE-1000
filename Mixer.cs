@@ -14,10 +14,9 @@
             for (int ch = 0; ch < g_nChans; ch++)
                 EnableChannel(ch, on);
 
-            ////MarkLabel(
-            //    on
-            //    ? lblMixerAll
-            //    : lblMixerMuteAll);
+            (on
+             ? lblMixerAll
+             : lblMixerMuteAll).Mark();
         }
 
 
@@ -42,7 +41,7 @@
         {
             if (g_showSession)
             { 
-                //SetClip(dv > 0 ? 0 : 1, ch);
+                g_session.SetClip(dv > 0 ? 0 : 1, ch);
             }
             else
             { 

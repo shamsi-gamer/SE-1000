@@ -1,35 +1,16 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
-
-namespace IngameScript
+﻿namespace IngameScript
 {
     partial class Program
     {
         void InitChordLabels()
         {
-            lblChord     = new Label(false, Lbl("Chord"),      ChordIsBright,     null,          UpdateChord);
-            lblChord1    = new Label(false, Lbl("Chord 1"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 1);
-            lblChord2    = new Label(false, Lbl("Chord 2"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 2);
-            lblChord3    = new Label(false, Lbl("Chord 3"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 3);
-            lblChord4    = new Label(false, Lbl("Chord 4"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 4);
-            lblChordEdit = new Label(false, Lbl("Chord Edit"), ChordEditIsBright, null,          UpdateChordEdit);
-            lblSpread    = new Label(false, Lbl("Spread"),     lbl => CurClip.Spread);
+            lblChord     = new Label(Lbl("Chord"),      ChordIsBright,     null,          UpdateChord);
+            lblChord1    = new Label(Lbl("Chord 1"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 1);
+            lblChord2    = new Label(Lbl("Chord 2"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 2);
+            lblChord3    = new Label(Lbl("Chord 3"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 3);
+            lblChord4    = new Label(Lbl("Chord 4"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 4);
+            lblChordEdit = new Label(Lbl("Chord Edit"), ChordEditIsBright, null,          UpdateChordEdit);
+            lblSpread    = new Label(Lbl("Spread"),     lbl => CurClip.Spread);
         }
 
 

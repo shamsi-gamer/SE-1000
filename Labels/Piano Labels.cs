@@ -12,10 +12,10 @@ namespace IngameScript
             InitPianoLabelsHigh();
             InitPianoLabelsLow();
 
-            lblOctave     = new Label(false, Lbl("Octave"),  null, null, UpdateOctaveLabel);
-            lblShuffle    = new Label(false, Lbl("Shuffle"), null, null, UpdateShuffleLabel);
-            lblOctaveUp   = new Label(false, Lbl("Octave Up"));
-            lblOctaveDown = new Label(false, Lbl("Octave Down"));
+            lblOctave     = new Label(Lbl("Octave"),  null, null, UpdateOctaveLabel);
+            lblShuffle    = new Label(Lbl("Shuffle"), null, null, UpdateShuffleLabel);
+            lblOctaveUp   = new Label(Lbl("Octave Up"));
+            lblOctaveDown = new Label(Lbl("Octave Down"));
         }
 
 
@@ -30,16 +30,16 @@ namespace IngameScript
             for (int h = 0; h < 10; h++)
             { 
                 lblHigh.Add(new Label(
-                    true, 
                     high[h], 
                     PianoHighIsBright, 
                     PianoHighIsDim, 
                     UpdatePianoHigh, 
                     UpdatePianoHighColor, 
-                    h));
+                    h,
+                    true));
             }
 
-            lblHigh.Add(new Label(false, high[10],
+            lblHigh.Add(new Label(high[10],
                 lbl => IsPressed(lbl),
                 null,
                 UpdatePianoToggle));
@@ -107,13 +107,13 @@ namespace IngameScript
             for (int l = 0; l < low.Count; l++)
             { 
                 lblLow.Add(new Label(
-                    true, 
                     low[l], 
                     PianoLowIsBright, 
                     PianoLowIsDim, 
                     UpdatePianoLow, 
                     UpdatePianoLowColor, 
-                    -l));
+                    -l,
+                    true));
             }
         }
 

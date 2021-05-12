@@ -4,19 +4,19 @@
     {
         void InitEditLabels()
         {
-            lblLeft  = new Label(false, Lbl("Left"),  null, lbl => CurClip.EditNotes.Count > 0);
-            lblRight = new Label(false, Lbl("Right"), null, lbl => CurClip.EditNotes.Count > 0);
+            lblLeft  = new Label(Lbl("Left"),  null, lbl => CurClip.EditNotes.Count > 0);
+            lblRight = new Label(Lbl("Right"), null, lbl => CurClip.EditNotes.Count > 0);
 
-            lblStep  = new Label(false, Lbl("Step"));
+            lblStep  = new Label(Lbl("Step"));
 
-            lblHold  = new Label(false, Lbl("Hold"),
+            lblHold  = new Label(Lbl("Hold"),
                 lbl =>    
                        CurClip.Hold 
                     && (  !OK(CurClip.EditPos) 
                         || CurClip.EditNotes.Count > 0));
 
-            lblEditStep   = new Label(false, Lbl("Edit Step"),   null, null, UpdateEditStepLabel);
-            lblEditLength = new Label(false, Lbl("Edit Length"), null, null, UpdateEditLengthLabel);
+            lblEditStep   = new Label(Lbl("Edit Step"),   null, null, UpdateEditStepLabel);
+            lblEditLength = new Label(Lbl("Edit Length"), null, null, UpdateEditLengthLabel);
         }
 
 

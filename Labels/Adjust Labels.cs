@@ -4,14 +4,14 @@
     {
         void InitAdjustLabels()
         {
-            lblCmd1  = new Label(false, Lbl("Command 1"), Cmd1IsBright, null, UpdateCmd1);
-            lblCmd2  = new Label(false, Lbl("Command 2"), null,         null, UpdateCmd2);
+            lblCmd1  = new Label(Lbl("Command 1"), Cmd1IsBright, null, UpdateCmd1);
+            lblCmd2  = new Label(Lbl("Command 2"), null,         null, UpdateCmd2);
             
-            lblUp    = new Label(false, Lbl("Up"),    AdjustIsBright, null, UpdateAdjustUp);
-            lblDown  = new Label(false, Lbl("Down"),  AdjustIsBright, null, UpdateAdjustDown);
-            lblShift = new Label(false, Lbl("Shift"), AdjustIsBright, null, UpdateAdjustShift);
+            lblUp    = new Label(Lbl("Up"),    AdjustIsBright, null, UpdateAdjustUp);
+            lblDown  = new Label(Lbl("Down"),  AdjustIsBright, null, UpdateAdjustDown);
+            lblShift = new Label(Lbl("Shift"), AdjustIsBright, null, UpdateAdjustShift);
             
-            lblCmd3  = new Label(false, Lbl("Command 3"), Cmd3IsBright, Cmd3IsDim, UpdateCmd3);
+            lblCmd3  = new Label(Lbl("Command 3"), Cmd3IsBright, Cmd3IsDim, UpdateCmd3);
         }
 
 

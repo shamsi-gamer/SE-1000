@@ -28,13 +28,13 @@ namespace IngameScript
           //public bool          NeedsUpdate;
 
 
-            public Label(bool          fast, 
-                         IMyTextPanel  panel, 
+            public Label(IMyTextPanel  panel,
                          CondFunc      condBright = null, 
                          CondFunc      condDim    = null, 
                          Action<Label> updateFunc = null, 
                          Action<Label> colorFunc  = null, 
-                         int           data = 0)
+                         int           data       = 0,
+                         bool          fast       = false)
             {
                 Panel           = panel;
 
