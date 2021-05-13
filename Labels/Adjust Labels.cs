@@ -57,7 +57,7 @@
             else
             {
                 if (CurSrc > -1) lbl.SetText("On");
-                else                     lbl.SetText(SelChan < 0 ? "Copy" : " ");
+                else             lbl.SetText(SelChan < 0 ? "Copy" : " ");
             }
         }
 

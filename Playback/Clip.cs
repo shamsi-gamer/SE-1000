@@ -36,8 +36,20 @@ namespace IngameScript
 
             public int           PlayPat; // this can't be a property because it must sometimes be separate from PlayTime, for queueing
 
-            public float         PlayStep { get { return g_playing ? PlayTime / (float)Track.Session.TicksPerStep : fN; } }
-          //public float         PlayStep { get { return (g_playing ? PlayTime : g_time) / (float)Track.Session.TicksPerStep; } }
+            public float         PlayStep { get 
+                                 { 
+                                     return 
+                                         g_playing 
+                                         ? PlayTime / (float)Track.Session.TicksPerStep 
+                                         : fN; 
+                                 } }
+
+          //public float         PlayStep { get
+          //                     {
+          //                         return
+          //                               (g_playing ? PlayTime : g_time)
+          //                             / (float)Track.Session.TicksPerStep;
+          //                     } }
 
 
             public int           CueNext;

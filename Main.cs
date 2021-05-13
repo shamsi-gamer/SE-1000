@@ -11,14 +11,14 @@ namespace IngameScript
             pnlInfoLog.CustomData = "";
 
 
+            if (!g_init) return;
+            FinishStartup();
+
             if (arg.Length > 0)
-            { 
+            {
                 ProcessArg(arg);
                 return;
             }
-
-            if (!g_init) return;
-            FinishStartup();
 
             _triggerDummy.Clear();
 

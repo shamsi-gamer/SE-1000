@@ -39,24 +39,24 @@ namespace IngameScript
 
         void UpdateTime()
         {
+            if (!g_playing)
+                return;
+
             foreach (var track in g_session.Tracks)
             {
-                foreach (var clip in track.Clips)
-                {
-                    if (!g_playing)
-                        return;
+                if (track.CurIndex < 0)
+                    continue;
 
-                    clip.CueNextPattern();
-            
-                    if (   clip == CurClip
-                        && clip.Follow) 
-                        clip.SetCurrentPattern(clip.PlayPat);
+                var clip = track.Clips[track.CurIndex];
 
-                    AddPlaybackNotes(clip);
-                }
+                clip.CueNextPattern();
+
+                if (   clip == CurClip
+                    && clip.Follow) 
+                    clip.SetCurrentPattern(clip.PlayPat);
+
+                AddPlaybackNotes(clip);
             }
-
-            //UpdateOctaveLabel();
         }
 
 
