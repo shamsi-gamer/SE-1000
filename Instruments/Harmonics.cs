@@ -345,15 +345,14 @@ namespace IngameScript
 
                     FillRect(sprites, xh + gap/2,                yt + ht, wc - gap,     -ht,          color2);
                     FillRect(sprites, xh + gap/2,                yt + ht, wc - gap - 8, -ht * curVal, color4);
-
                     FillRect(sprites, xh + gap/2 + (wc-gap) - 7, yt + ht, 7,            -ht * val,    color6);
-                }
 
+                    DrawString(sprites, S(i+1), xt + i*wc + wc/2 - 4, yt + ht - 15, 0.4f, color3, TaC);
+                }
 
                 // current tone
                 if (CurTone > -1) FillRect(sprites, xt + CurTone * wc, yt + ht + 10, wc,    20, color5);
                 else              FillRect(sprites, xt,                yt + ht + 10, wc*24, 20, color5);
-
 
                 // has param marks
                 for (int i = 0; i < Tones.Length; i++)
@@ -362,8 +361,6 @@ namespace IngameScript
                         DrawString(sprites, strUp, xt + i*wc + wc/2, yt + ht + 10, 0.6f, color3, TaC);
                 }
 
-
-                // draw sample curve
 
                 var bw = w/6;
                 var be = 0f;

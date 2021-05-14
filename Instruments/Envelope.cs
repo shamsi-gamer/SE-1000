@@ -88,6 +88,9 @@ namespace IngameScript
                 var lt = lTime  /(float)FPS;
                 var nl = noteLen/(float)FPS;
 
+                if (nl < a + d)
+                    nl = a + d;
+
                 if (lt >= nl + r)
                     return 0;
                 

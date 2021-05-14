@@ -39,7 +39,7 @@ namespace IngameScript
             var hk = h/50;
             var sy = 10;
 
-            var zy = y+h - h*(value-min)/(max-min);
+            var zy = y + h/2;
 
 
             // value marks
@@ -58,23 +58,9 @@ namespace IngameScript
             }
 
 
-            // current value bar
-            FillRect(
-                sprites, 
-                x + ws,          
-                zy, 
-                wl - ws, 
-                -h/2 * v/64, 
-                color4);
-
-            // set value bar
-            FillRect(
-                sprites, 
-                x + w - wb, 
-                zy, 
-                wb,
-                -h/2 * value/64,
-                color6);
+            
+            FillRect(sprites, x     + ws, zy, wl - ws, -h/2 * v/64,     color4); // current value bar
+            FillRect(sprites, x + w - wb, zy, wb,      -h/2 * value/64, color6); // set value bar
 
 
             // set value number

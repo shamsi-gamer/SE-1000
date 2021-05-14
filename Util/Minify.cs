@@ -13,7 +13,7 @@ namespace IngameScript
         const TextAlignment TaC = TextAlignment.CENTER;
 
         static string W(string str, bool semi = T) { return str + (semi ? ";" : ""); }
-        static string P(string str)                   { return ";" + str; }
+        static string P(string str)                { return ";" + str; }
 
         static string  S<T> (T      val) { return val.ToString();       }
         static string  S0   (double val) { return val.ToString("0");    }
@@ -27,6 +27,6 @@ namespace IngameScript
         static string WB   (bool b  ) { return W(B(b));   }
 
         static string  N(string s, bool newLine = T) { return s + (newLine ? "\n" : ""); }
-        static string PN(string s)                      { return "\n" + s; }
+        static string PN(string s)                   { return "\n" + s; }
     }
 }
