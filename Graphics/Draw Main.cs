@@ -42,8 +42,10 @@ namespace IngameScript
                 }
                 else DrawInstrument  (sprites, x, y, w, h);
             }
-            else if (CurClip.Piano || g_lockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, true, null);
-            else                                       DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, true);
+            else if (CurClip.Piano 
+                  && g_lockView != 1
+               || g_lockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, true, null);
+            else                   DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, true);
 
             dsp.Draw(sprites);
         }
