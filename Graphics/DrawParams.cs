@@ -17,9 +17,9 @@
             public DrawParams(Program prog)
             {
                 Volume   = 1;
-                Active   = true;
-                On       = true;
-                Children = false;
+                Active   = T;
+                On       = T;
+                Children = F;
                 Program  = prog;
                 OffX     = 0;
                 OffY     = 0;
@@ -62,7 +62,7 @@
                 Volume   = dp.Volume;
                 Active   = dp.Active;
                 On       = dp.On;
-                Children = false;
+                Children = F;
                 Program  = dp.Program;
                 OffX     = dp.OffX;
                 OffY     = 0;
@@ -88,7 +88,7 @@
 
                 TopY = OffY;
 
-                Children = true;
+                Children = T;
             }
         }
     }

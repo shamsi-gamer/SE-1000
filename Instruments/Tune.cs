@@ -17,8 +17,8 @@ namespace IngameScript
             public Tune(Instrument inst, Source src) 
                 : base(strTune, -240, 240, -12, 12, 0.5f, 12, 0, null, inst, src)
             {
-                UseChord   = false;
-                AllOctaves = false;
+                UseChord   = F;
+                AllOctaves = F;
 
                 Chord      = new List<int>();
                 FinalChord = new List<int>();
@@ -85,7 +85,7 @@ namespace IngameScript
             public override string GetLabel(out float width)
             {
                 width = 90f; 
-                return printValue(Value, 2, true, 1).PadLeft(5);
+                return printValue(Value, 2, T, 1).PadLeft(5);
             }
 
 
@@ -127,7 +127,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return true;
+                return T;
             }
         }
     }

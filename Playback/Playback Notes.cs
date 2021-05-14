@@ -31,7 +31,7 @@ namespace IngameScript
                              || clip.Chord > -1)
                         && !(   clip.ChordEdit 
                              && clip.Chord > -1))
-                        MoveEdit(clip, 1, true);
+                        MoveEdit(clip, 1, T);
                 }
             }
             else
@@ -58,7 +58,7 @@ namespace IngameScript
         {
             var chan = clip.CurPattern.Channels[ch];
 
-            var _found = false;
+            var _found = F;
 
             for (int i = 0; i < notes.Count; i++)
             {
@@ -74,7 +74,7 @@ namespace IngameScript
                     if (found > -1) 
                     {
                         chan.Notes.RemoveAt(found);
-                        _found = true;
+                        _found = T;
                     }
                 } 
                 while (found > -1);

@@ -24,7 +24,7 @@ namespace IngameScript
 
             if (g_session != null)
             {
-                g_setClip = true;
+                g_setClip = T;
                 g_session.SetClip(curClipTrack, curClipIndex);
                 InitPlaybackAfterLoad(CurClip.PlayTime);
             }
@@ -71,14 +71,14 @@ namespace IngameScript
         bool LoadToggles(string toggles)
         {
             uint f;
-            if (!uint.TryParse(toggles, out f)) return false;
+            if (!uint.TryParse(toggles, out f)) return F;
 
             var i = 0;
 
             g_showSession = ReadBit(f, i++);
             g_move        = ReadBit(f, i++);
 
-            return true;
+            return T;
         }
 
 
@@ -104,7 +104,7 @@ namespace IngameScript
         //        else g_session.Instruments.Add(l);
         //    }
 
-        //    return true;
+        //    return T;
         //}
 
 
@@ -113,24 +113,24 @@ namespace IngameScript
         //    g_song.EditNotes.Clear();
 
         //    var cfg = lines[line++].Split(';');
-        //    if (cfg.Length == 0) return false;
+        //    if (cfg.Length == 0) return F;
 
         //    var c = 0;
 
         //    int nNotes;
-        //    if (!int.TryParse(cfg[c++], out nNotes)) return false;
+        //    if (!int.TryParse(cfg[c++], out nNotes)) return F;
 
         //    for (int i = 0; i < nNotes; i++)
         //    {
         //        int p, ch, n;
-        //        if (!int.TryParse(cfg[c++], out p )) return false;
-        //        if (!int.TryParse(cfg[c++], out ch)) return false;
-        //        if (!int.TryParse(cfg[c++], out n )) return false;
+        //        if (!int.TryParse(cfg[c++], out p )) return F;
+        //        if (!int.TryParse(cfg[c++], out ch)) return F;
+        //        if (!int.TryParse(cfg[c++], out n )) return F;
 
         //        g_song.EditNotes.Add(g_song.Patterns[p].Channels[ch].Notes[n]);
         //    }
 
-        //    return true;
+        //    return T;
         //}
     }
 }

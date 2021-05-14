@@ -8,7 +8,9 @@ namespace IngameScript
     partial class Program : MyGridProgram
     {
         const int                 NoteScale          = 2;
-        const float               ControlSensitivity = 12;                                
+        const float               ControlSensitivity = 12;
+
+        const int                 OscCount           = 13;
                                   
                                   
         static List<string>       g_samples          = new List<string>();
@@ -111,17 +113,17 @@ namespace IngameScript
             g_remote      = Get("Remote Control") as IMyRemoteControl;
 
 
-            g_init = true;
+            g_init = T;
         }
 
 
         void FinishStartup()
         {
             // load oscillators one by one to avoid complexity hang
-            if (_loadStep < 10)
+            if (_loadStep < OscCount)
                 LoadOscillatorSamples(_loadStep++);
 
-            if (_loadStep == 10)
+            if (_loadStep == OscCount)
             {
                 _loadStep++;
 

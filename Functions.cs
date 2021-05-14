@@ -69,8 +69,8 @@ namespace IngameScript
 
             UpdateInstOff(SelChan);
 
-            UpdateInstName(true);
-            g_inputValid = false;
+            UpdateInstName(T);
+            g_inputValid = F;
 
 
             var tags = path.Split('/');
@@ -97,7 +97,7 @@ namespace IngameScript
             if (iSrc == -2)   iSrc = CurSrc;
 
             if (CurSet > -1)
-                CurSetting._IsCurrent = false;
+                CurSetting._IsCurrent = F;
 
             Setting setting;
 
@@ -110,24 +110,25 @@ namespace IngameScript
             CurSet++;
 
             if (IsCurParam())
-                CurSetting._IsCurrent = true;
+                CurSetting._IsCurrent = T;
         }
 
 
         static void DeleteCurSetting()
         {
-            //int set     = CurSet;
+            var set     = CurSet;
             var setting = CurSetting;
 
-            if (CurSetting.Parent != null)
+            if (   HasTag(setting, strAtt)
+                || HasTag(setting, strDec)
+                || HasTag(setting, strSus)
+                || HasTag(setting, strRel))
+                set--;
+
+            Log($"CurSet = {CurSet}");
+            if (CurSet > 0)
             { 
-                //if (   HasTag(setting, strAtt)
-                //    || HasTag(setting, strDec)
-                //    || HasTag(setting, strSus)
-                //    || HasTag(setting, strRel))
-                //    set--;
-                
-                g_settings[CurSet--].DeleteSetting(setting);
+                g_settings[CurSet-1].DeleteSetting(setting);
             }
             else 
             {
@@ -143,12 +144,11 @@ namespace IngameScript
                     case strFlt:  if (src != null) src.Filter    = null; else inst.Filter   = null; break;
                     case strArp:  if (src == null)                            inst.Arpeggio = null; break;
                 }
-
-                g_settings.RemoveAt(CurSet--);
             }
 
+            g_settings.RemoveAt(set);
 
-            //CurSet -= CurSet - set + 1;
+            CurSet -= CurSet - set + 1;
         }
 
 

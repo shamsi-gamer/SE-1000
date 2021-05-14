@@ -110,8 +110,8 @@ namespace IngameScript
                 var _p = p - CurClip.SongOff;
                 var px = x - _f * pw + _p * pw;
 
-                if (CurClip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, CurClip, p, 1, false, g_patSteps);
-                else         DrawPattern  (sprites, px, py, pw, ph, CurClip, p, 1, false);
+                if (CurClip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, CurClip, p, 1, F, g_patSteps);
+                else         DrawPattern  (sprites, px, py, pw, ph, CurClip, p, 1, F);
 
                 if (CurClip.ParamKeys)
                 {
@@ -145,8 +145,8 @@ namespace IngameScript
 
                 FillRect(sprites, xTick, py, wt, ph, color6);
 
-                if (CurClip.Piano) DrawPianoNeg(sprites, pl, py, pw, ph, CurClip, PlayPat, (int)PlayStep, false);
-                else                         DrawPatNeg  (sprites, pl, py, pw, ph, CurClip, PlayPat, (int)PlayStep, false);
+                if (CurClip.Piano) DrawPianoNeg(sprites, pl, py, pw, ph, CurClip, PlayPat, (int)PlayStep, F);
+                else                         DrawPatNeg  (sprites, pl, py, pw, ph, CurClip, PlayPat, (int)PlayStep, F);
             }
 
 
@@ -217,18 +217,18 @@ namespace IngameScript
 
             if (nDsp == 0)
             {
-                DrawFuncButton(sprites, strDel, 0, w, h, false, false, g_clipPressed.Contains(0));
-                DrawFuncButton(sprites, "Dup",  1, w, h, false, false, g_clipPressed.Contains(1));
-                DrawFuncButton(sprites, "New",  2, w, h, false, false, g_clipPressed.Contains(2));
+                DrawFuncButton(sprites, strDel, 0, w, h, F, F, g_clipPressed.Contains(0));
+                DrawFuncButton(sprites, "Dup",  1, w, h, F, F, g_clipPressed.Contains(1));
+                DrawFuncButton(sprites, "New",  2, w, h, F, F, g_clipPressed.Contains(2));
 
-                DrawFuncButton(sprites, "Cue",  4, w, h, false, false, CurClip.CueNext > -1);
-                DrawFuncButton(sprites, "◄",    5, w, h, false, false, g_clipPressed.Contains(5) ^ CurClip.MovePat); }
-         else { DrawFuncButton(sprites, "►",    0, w, h, false, false, g_clipPressed.Contains(6) ^ CurClip.MovePat);
-                DrawFuncButton(sprites, "◄►",   1, w, h, false, false, CurClip.MovePat);
+                DrawFuncButton(sprites, "Cue",  4, w, h, F, F, CurClip.CueNext > -1);
+                DrawFuncButton(sprites, "◄",    5, w, h, F, F, g_clipPressed.Contains(5) ^ CurClip.MovePat); }
+         else { DrawFuncButton(sprites, "►",    0, w, h, F, F, g_clipPressed.Contains(6) ^ CurClip.MovePat);
+                DrawFuncButton(sprites, "◄►",   1, w, h, F, F, CurClip.MovePat);
                                                 
-                DrawFuncButton(sprites, "[",    3, w, h, false, false, CurClip.In);
-                DrawFuncButton(sprites, "]",    4, w, h, false, false, CurClip.Out);
-                DrawFuncButton(sprites, "X",    5, w, h, false, false, g_clipPressed.Contains(11));
+                DrawFuncButton(sprites, "[",    3, w, h, F, F, CurClip.In);
+                DrawFuncButton(sprites, "]",    4, w, h, F, F, CurClip.Out);
+                DrawFuncButton(sprites, "X",    5, w, h, F, F, g_clipPressed.Contains(11));
             }
         }
 

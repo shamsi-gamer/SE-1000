@@ -2,7 +2,9 @@
 {
     partial class Program
     {                         
-        const string strVol      = "Vol",
+        const string strSE       = "SE-909_",
+
+                     strVol      = "Vol",
                                  
                      strTune     = "Tune",
                                  

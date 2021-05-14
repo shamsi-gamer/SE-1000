@@ -154,7 +154,7 @@ namespace IngameScript
                                     var chord = CurClip.Chords[CurClip.Chord];
 
                                     if (CurClip.ChordAll)
-                                        chord = UpdateFinalTuneChord(chord, true);
+                                        chord = UpdateFinalTuneChord(chord, T);
                                     
                                     note = chord[g_rnd.Next(0, chord.Count)];
                                     chan.AddNote(new Note(chan, ch, 1, note, step, editLength));

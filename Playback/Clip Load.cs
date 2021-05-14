@@ -33,7 +33,7 @@ namespace IngameScript
             bool LoadToggles(string toggles)
             {
                 uint f;
-                if (!uint.TryParse(toggles, out f)) return false;
+                if (!uint.TryParse(toggles, out f)) return F;
 
                 var i = 0;
 
@@ -73,7 +73,7 @@ namespace IngameScript
                        
                 MemSet     = ReadBit(f, i++);
 
-                return true;
+                return T;
             }
 
 
@@ -87,37 +87,37 @@ namespace IngameScript
 
                 LoadToggles(cfg[c++]);
 
-                if (! long_TryParse(cfg[c++], out PlayTime   )) return false;
-                if (!int  .TryParse(cfg[c++], out PlayPat    )) return false;
-                if (!int  .TryParse(cfg[c++], out CueNext    )) return false;
+                if (! long_TryParse(cfg[c++], out PlayTime   )) return F;
+                if (!int  .TryParse(cfg[c++], out PlayPat    )) return F;
+                if (!int  .TryParse(cfg[c++], out CueNext    )) return F;
 
-                if (!int  .TryParse(cfg[c++], out CurPat     )) return false;
-                if (!int  .TryParse(cfg[c++], out CurChan    )) return false;
+                if (!int  .TryParse(cfg[c++], out CurPat     )) return F;
+                if (!int  .TryParse(cfg[c++], out CurChan    )) return F;
                                                              
-                if (!int  .TryParse(cfg[c++], out SelChan    )) return false;
-                if (!int  .TryParse(cfg[c++], out CurSrc     )) return false;
+                if (!int  .TryParse(cfg[c++], out SelChan    )) return F;
+                if (!int  .TryParse(cfg[c++], out CurSrc     )) return F;
                                                              
                 //curPath = cfg[c++];                              
                                                              
-                if (!int  .TryParse(cfg[c++], out EditStepIndex   )) return false;
-                if (!int  .TryParse(cfg[c++], out EditLengthIndex )) return false;
+                if (!int  .TryParse(cfg[c++], out EditStepIndex   )) return F;
+                if (!int  .TryParse(cfg[c++], out EditLengthIndex )) return F;
                                                            
-                if (!int  .TryParse(cfg[c++], out CurNote    )) return false;
+                if (!int  .TryParse(cfg[c++], out CurNote    )) return F;
                                                              
-                if (!int  .TryParse(cfg[c++], out Chord      )) return false;
-                if (!int  .TryParse(cfg[c++], out ChordSpread)) return false;
+                if (!int  .TryParse(cfg[c++], out Chord      )) return F;
+                if (!int  .TryParse(cfg[c++], out ChordSpread)) return F;
                                                            
-                if (!int  .TryParse(cfg[c++], out SongOff    )) return false;
-                if (!int  .TryParse(cfg[c++], out InstOff    )) return false;
-                if (!int  .TryParse(cfg[c++], out SrcOff     )) return false;
+                if (!int  .TryParse(cfg[c++], out SongOff    )) return F;
+                if (!int  .TryParse(cfg[c++], out InstOff    )) return F;
+                if (!int  .TryParse(cfg[c++], out SrcOff     )) return F;
                                                              
-                if (!int  .TryParse(cfg[c++], out Solo       )) return false;
+                if (!int  .TryParse(cfg[c++], out Solo       )) return F;
                                                            
-                if (!float.TryParse(cfg[c++], out Volume     )) return false;
+                if (!float.TryParse(cfg[c++], out Volume     )) return F;
 
-                if (!int  .TryParse(cfg[c++], out ColorIndex )) return false;
+                if (!int  .TryParse(cfg[c++], out ColorIndex )) return F;
 
-                return true;
+                return T;
             }
 
 
@@ -129,14 +129,14 @@ namespace IngameScript
                 {
                     int i = 0;
                     var pat = Pattern.Load(session, lines[line++].Split(';'), ref i);
-                    if (pat == null) return false;
+                    if (pat == null) return F;
 
                     pat.Clip = this;
 
                     Patterns.Add(pat);
                 }
 
-                return true;
+                return T;
             }
 
 
@@ -157,7 +157,7 @@ namespace IngameScript
                     Blocks.Add(new Block(first, last));
                 }
 
-                return true;
+                return T;
             }
 
 
@@ -166,9 +166,9 @@ namespace IngameScript
                 var mems = line.Split(';');
 
                 for (int m = 0; m < nMems; m++)
-                    if (!int.TryParse(mems[m], out Mems[m])) return false;
+                    if (!int.TryParse(mems[m], out Mems[m])) return F;
 
-                return true;
+                return T;
             }
 
 
@@ -191,13 +191,13 @@ namespace IngameScript
                     int key;
                     foreach (var k in _keys)
                     {
-                        if (!int.TryParse(k, out key)) return false;
+                        if (!int.TryParse(k, out key)) return F;
                         Chords[_c].Add(key);
                     }
                 }
 
 
-                return true;
+                return T;
             }
         }
     }

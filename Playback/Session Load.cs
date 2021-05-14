@@ -29,19 +29,19 @@ namespace IngameScript
                 pnlStorageSession.ReadText(sb);
 
                 if (!sb.ToString().Contains(";"))
-                    return false;
+                    return F;
 
                 var state = sb.ToString().Split(';');
                 var s     = 0;
 
                 Name = state[s++];
 
-                if (!int.TryParse(state[s++], out TicksPerStep)) return false;
+                if (!int.TryParse(state[s++], out TicksPerStep)) return F;
 
-                if (!int.TryParse(state[s++], out curClipTrack)) return false;
-                if (!int.TryParse(state[s++], out curClipIndex)) return false;
+                if (!int.TryParse(state[s++], out curClipTrack)) return F;
+                if (!int.TryParse(state[s++], out curClipIndex)) return F;
 
-                return true;
+                return T;
             }
 
 
@@ -104,7 +104,7 @@ namespace IngameScript
                 var line  = 0;
 
                 int nTracks;
-                if (!int.TryParse(lines[line++], out nTracks)) return false;
+                if (!int.TryParse(lines[line++], out nTracks)) return F;
 
                 for (int t = 0; t < nTracks; t++)
                 {
@@ -112,7 +112,7 @@ namespace IngameScript
                     var track = Track.Load(this, lines, ref line);
 
                     if (track != null) Tracks.Add(track);
-                    else               return false;
+                    else               return F;
                 }
 
 

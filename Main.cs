@@ -22,7 +22,7 @@ namespace IngameScript
 
             _triggerDummy.Clear();
 
-            if (_loadStep > 10)
+            if (_loadStep > OscCount)
             {
                 if ((update & UpdateType.Update1)  != 0) Update1();
                 if ((update & UpdateType.Update10) != 0) Update10();
@@ -63,7 +63,7 @@ namespace IngameScript
                 UpdateSongName();
             }
             else
-                g_started = true;
+                g_started = T;
 
 
             if (_loadStep > 10)

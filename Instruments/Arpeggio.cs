@@ -156,9 +156,9 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                DrawFuncButton(sprites, strLen, 1, w, h, true, Length.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strScl, 2, w, h, true, Scale .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "X",   5, w, h, false, false, g_mainPressed.Contains(5));                
+                DrawFuncButton(sprites, strLen, 1, w, h, T, Length.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strScl, 2, w, h, T, Scale .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "X",   5, w, h, F, F, g_mainPressed.Contains(5));                
             }
 
 
@@ -168,14 +168,14 @@ namespace IngameScript
                 { 
                 case 1:
                     Clip.EditPos = -1;
-                    //UpdateEditLabel(lblEdit, false);
+                    //UpdateEditLabel(lblEdit, F);
 
                     AddNextSetting(strLen);
                     break;
 
                 case 2:
                     Clip.EditPos = -1;
-                    //UpdateEditLabel(lblEdit, false);
+                    //UpdateEditLabel(lblEdit, F);
 
                     AddNextSetting(strScl);
                     break;
@@ -185,7 +185,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return true;
+                return T;
             }
         }
     }

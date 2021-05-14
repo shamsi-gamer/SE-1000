@@ -12,10 +12,10 @@ namespace IngameScript
         static long     g_time           = -1; // in ticks
         static float    TimeStep { get { return (float)g_time / g_session.TicksPerStep; } }
 
-        static bool     g_playing        = false;
+        static bool     g_playing        = F;
 
-        static bool     g_started        = false,
-                        g_init           = false;
+        static bool     g_started        = F,
+                        g_init           = F;
                                          
         static int      g_curRuntimeTick = 0;
         static float[]  g_runtimeMs      = new float[6];
@@ -25,10 +25,10 @@ namespace IngameScript
                         g_dspCount       = 0;
 
 
-        static bool     g_showSession    = true;
-        static bool     g_setClip        = false;
+        static bool     g_showSession    = T;
+        static bool     g_setClip        = F;
                                          
-        static bool     g_move           = false;
+        static bool     g_move           = F;
         static int      g_lockView       = 0; // 1 = pattern, 2 = piano
                                          
         static Session  g_session        = null;
@@ -42,7 +42,7 @@ namespace IngameScript
         {
             ClearMachineState();
 
-            g_move = false;
+            g_move = F;
         }
 
 

@@ -283,7 +283,7 @@ namespace IngameScript
         void UnmarkAllLabels()
         {
             foreach (var lbl in _labelsPressed)
-                lbl.Update(false);
+                lbl.Update(F);
 
             _mixerPressed .Clear();
             _infoPressed  .Clear();

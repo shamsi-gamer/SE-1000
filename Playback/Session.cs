@@ -63,8 +63,8 @@ namespace IngameScript
                         CurClip = track.Clips[found];
                     }
 
-                    g_setClip     = false;
-                    g_showSession = false;
+                    g_setClip     = F;
+                    g_showSession = F;
 
                     //UpdateLabels();
                 }
@@ -84,8 +84,8 @@ namespace IngameScript
 
             //    CurClip = clip;
 
-            //    g_setClip = false;
-            //    g_showSession = false;
+            //    g_setClip = F;
+            //    g_showSession = F;
 
             //    //UpdateLabels();
             //}
@@ -126,8 +126,8 @@ namespace IngameScript
 
         void Clips()
         {
-            if (g_showSession) g_setClip     = true;
-            else               g_showSession = true;
+            if (g_showSession) g_setClip     = T;
+            else               g_showSession = T;
 
             //UpdateClipsLabel();
         }

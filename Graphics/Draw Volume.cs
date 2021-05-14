@@ -90,7 +90,7 @@ namespace IngameScript
                     var db = 100 * (float)Math.Log10(i / (float)nMarks * extra);
 
                     DrawString(sprites, 
-                        printValue(Math.Abs(db), 0, true, 2),
+                        printValue(Math.Abs(db), 0, T, 2),
                         x,
                         y - sy + h - (h - hk) * val,
                         0.25f * scale,

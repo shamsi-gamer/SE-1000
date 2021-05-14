@@ -29,7 +29,7 @@ namespace IngameScript
         }
 
 
-        static void DrawValueVertical(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag, bool mixer = true)
+        static void DrawValueVertical(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag, bool mixer = T)
         {
             var wb = w/10;
             var wg = w/20;
@@ -80,7 +80,7 @@ namespace IngameScript
             // set value number
             DrawString(
                 sprites, 
-                printValue(value, 3, true, 0), 
+                printValue(value, 3, T, 0), 
                 x + wl + 30, 
                 zy - sy - 10, 
                 1f, 
@@ -136,7 +136,7 @@ namespace IngameScript
             // set value number
             DrawString(
                 sprites, 
-                printValue(value, 3, true, 0), 
+                printValue(value, 3, T, 0), 
                 x + w/2 - 20, 
                 y + hl + 30, 
                 1f, 
@@ -163,7 +163,7 @@ namespace IngameScript
                     for (float f = 0; f <= 1; f += 0.1f)
                     { 
                         var y0 = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, (float)Math.Pow(f, pow) * 2, fN), clip).Y;
-                        var db = printValue(Math.Abs(100 * (float)Math.Log10(f * extra)), 0, true, 2);
+                        var db = printValue(Math.Abs(100 * (float)Math.Log10(f * extra)), 0, T, 2);
 
                         DrawLine(sprites, x + xt, y0, x+w, y0, color2);
                         DrawString(sprites, db, x + xt + 3, y0 + lf*2, lf, color2);
@@ -176,7 +176,7 @@ namespace IngameScript
                     for (int i = 0; i <= 20; i += 5)
                     { 
                         var y0  = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, i, fN), clip).Y;
-                        var val = printValue(i, 0, false, 0);
+                        var val = printValue(i, 0, F, 0);
 
                         DrawLine(sprites, x+xt, y0, x+w, y0, color2);
                         DrawString(sprites, val, x + xt + 3, y0 + lf*2, lf, color2);
@@ -251,9 +251,9 @@ namespace IngameScript
         {
             switch (paramTag)
             { 
-            case strVol: return printValue(100 * Math.Log10(val), 0, true, 0) + " dB";
-            case strCnt: return printValue(val, 0, true, 0);
-            default:     return printValue(val, 2, true, 0);
+            case strVol: return printValue(100 * Math.Log10(val), 0, T, 0) + " dB";
+            case strCnt: return printValue(val, 0, T, 0);
+            default:     return printValue(val, 2, T, 0);
             }
         }
 

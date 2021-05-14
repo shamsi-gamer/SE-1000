@@ -248,11 +248,11 @@ namespace IngameScript
                 }
                 else
                 {
-                    DrawFuncButton(sprites, strVol,  1, w, h, true, Volume.HasDeepParams(chan, -1));
-                    DrawFuncButton(sprites, strTune, 2, w, h, true, Tune     != null);
-                    DrawFuncButton(sprites, strFlt,  3, w, h, true, Filter   != null);
-                    DrawFuncButton(sprites, strDel,  4, w, h, true, Delay    != null);
-                    DrawFuncButton(sprites, strArp,  5, w, h, true, Arpeggio != null);
+                    DrawFuncButton(sprites, strVol,  1, w, h, T, Volume.HasDeepParams(chan, -1));
+                    DrawFuncButton(sprites, strTune, 2, w, h, T, Tune     != null);
+                    DrawFuncButton(sprites, strFlt,  3, w, h, T, Filter   != null);
+                    DrawFuncButton(sprites, strDel,  4, w, h, T, Delay    != null);
+                    DrawFuncButton(sprites, strArp,  5, w, h, T, Arpeggio != null);
                 }
             }
         }

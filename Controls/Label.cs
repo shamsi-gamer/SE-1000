@@ -34,7 +34,7 @@ namespace IngameScript
                          Action<Label> updateFunc = null, 
                          Action<Label> colorFunc  = null, 
                          int           data       = 0,
-                         bool          fast       = false)
+                         bool          fast       = F)
             {
                 Panel           = panel;
 
@@ -50,7 +50,7 @@ namespace IngameScript
 
                 Data            = data;
 
-              //NeedsUpdate     = true;
+              //NeedsUpdate     = T;
 
                 if (fast) g_fastLabels.Add(this);
                 else      g_slowLabels.Add(this);
@@ -66,8 +66,8 @@ namespace IngameScript
                 if (ColorFunc  != null) ColorFunc(this);
                 if (UpdateFunc != null) UpdateFunc(this);
 
-                var bCond = BrightCondition != null ? BrightCondition(this) : false;
-                var dCond = DimCondition    != null ? DimCondition   (this) : false;
+                var bCond = BrightCondition != null ? BrightCondition(this) : F;
+                var dCond = DimCondition    != null ? DimCondition   (this) : F;
 
                 Update(IsPressed(this) || bCond, dCond);
             }
@@ -84,21 +84,21 @@ namespace IngameScript
             }
 
 
-            public void Update(bool full, bool half = false)
+            public void Update(bool full, bool half = F)
             {
                 Panel.FontColor       = full ? BackColor : ForeColor;
                 Panel.BackgroundColor = full ? ForeColor : (half ? HalfColor : BackColor);
             }
 
 
-            public void Mark(bool on = true)
+            public void Mark(bool on = T)
             {
                 g_labelsPressed.Add(this);
                 Update(on);
             }
 
 
-            public void Unmark(bool on = false, bool half = false)
+            public void Unmark(bool on = F, bool half = F)
             {
                 Update(on, half);
                 _labelsPressed.Remove(this);

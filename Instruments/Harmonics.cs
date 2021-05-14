@@ -162,7 +162,7 @@ namespace IngameScript
                         iSrc,
                         note,
                         triggerValues,
-                        false,
+                        F,
                         null,
                         0,
                         Tones[i],
@@ -227,7 +227,7 @@ namespace IngameScript
                 else
                 {
                     foreach (var tone in Tones)
-                        tone.SetValue(tone.AdjustValue(tone.Value, delta, CurClip.Shift, true), null, -1);
+                        tone.SetValue(tone.AdjustValue(tone.Value, delta, CurClip.Shift, T), null, -1);
                 }
             }
 
@@ -330,7 +330,7 @@ namespace IngameScript
 
                 var wc  = wt / Tones.Length;
 
-                var dp = new DrawParams(false, prog);
+                var dp = new DrawParams(F, prog);
                 SelSource.DrawLabels(sprites, x + 5, y + 10, dp);
 
                 DrawSample(sprites, x + 100, y + 150, 100, 60);
@@ -443,12 +443,12 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                DrawFuncButton(sprites, "Smth",  1, w, h, false, false, g_mainPressed.Contains(1));
-                DrawFuncButton(sprites, "Pre ↕", 2, w, h, false, false, g_mainPressed.Contains(2));
-                DrawFuncButton(sprites, "Set",   3, w, h, false, false, g_mainPressed.Contains(3));
+                DrawFuncButton(sprites, "Smth",  1, w, h, F, F, g_mainPressed.Contains(1));
+                DrawFuncButton(sprites, "Pre ↕", 2, w, h, F, F, g_mainPressed.Contains(2));
+                DrawFuncButton(sprites, "Set",   3, w, h, F, F, g_mainPressed.Contains(3));
                 
                 if (CurTone > -1)
-                    DrawFuncButton(sprites, "Tone", 4, w, h, true, Tones[CurTone].HasDeepParams(chan, -1));
+                    DrawFuncButton(sprites, "Tone", 4, w, h, T, Tones[CurTone].HasDeepParams(chan, -1));
             }
 
 
@@ -489,7 +489,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return true;
+                return T;
             }
         }
     }

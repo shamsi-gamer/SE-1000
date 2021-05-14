@@ -56,7 +56,7 @@ namespace IngameScript
             }
 
 
-            public Parameter(Parameter param, Setting parent, string tag = "", bool copy = true) 
+            public Parameter(Parameter param, Setting parent, string tag = "", bool copy = T) 
                 : base(tag != "" ? tag : param.Tag, parent, param.Prototype, param.Instrument, param.Source)
             {
                 m_value   = param.m_value;
@@ -168,7 +168,7 @@ namespace IngameScript
                 }
 
                 CurValue = MinMax(Min, value, Max);
-                m_valid  = true;
+                m_valid  = T;
 
                 return CurValue;
             }
@@ -199,7 +199,7 @@ namespace IngameScript
             }
 
 
-            public float AdjustValue(float value, float delta, bool shift, bool scale = false)
+            public float AdjustValue(float value, float delta, bool shift, bool scale = F)
             {
                      if (Tag == strAtt
                       && HasTag(Parent, strEnv)) ((Envelope)Parent).TrigAttack  = fN;
@@ -261,7 +261,7 @@ namespace IngameScript
                     || Envelope != null
                     || Lfo      != null
                     || Modulate != null
-                    || (chan?.HasKeys(GetPath(src)) ?? false)
+                    || (chan?.HasKeys(GetPath(src)) ?? F)
                     || _IsCurrent;
             }
 
@@ -418,8 +418,8 @@ namespace IngameScript
                 
                 return
                     Tag == strVol
-                    ? printValue(100 * Math.Log10(Value), 0, true, 0).PadLeft(4)
-                    : printValue(CurValue, 2, true, 1).PadLeft(4);
+                    ? printValue(100 * Math.Log10(Value), 0, T, 0).PadLeft(4)
+                    : printValue(CurValue, 2, T, 1).PadLeft(4);
             }
 
 
@@ -479,7 +479,7 @@ namespace IngameScript
 
                     DrawString(
                         sprites,
-                        printValue(100 * Math.Log10(Value), 0, true, 0) + " dB", 
+                        printValue(100 * Math.Log10(Value), 0, T, 0) + " dB", 
                         x + w/2 + 10, 
                         y + h/2 + valHeight/2 - 30,
                         1f, 
@@ -509,7 +509,7 @@ namespace IngameScript
                         Min, Max, 
                         Value, CurValue, 
                         Tag, 
-                        false);
+                        F);
                 }
             }
 
@@ -523,14 +523,14 @@ namespace IngameScript
                 {
                     DrawSoundLevel(sprites, x + bx + 20, y + by + 90, 60, 120, Value, CurValue);
 
-                    var db = printValue(100 * Math.Log10(Value), 0, true, 0) + " dB";
+                    var db = printValue(100 * Math.Log10(Value), 0, T, 0) + " dB";
                     DrawString(sprites, db, x + bx + 100, y + by + 180, 1f, color6);
                 }
                 else if (Parent == null // source offset has no parent
                       && Tag    == strOff)
                     DrawValueHorizontal(sprites, x + bx +  5, y + by + 90, 180,  50, Min, Max, Value, CurValue, Tag);
                 else
-                    DrawValueVertical  (sprites, x + bx + 20, y + by + 90,  60, 120, Min, Max, Value, CurValue, Tag, false);
+                    DrawValueVertical  (sprites, x + bx + 20, y + by + 90,  60, 120, Min, Max, Value, CurValue, Tag, F);
             }
 
 
@@ -539,14 +539,14 @@ namespace IngameScript
                 if (   !AnyParentIsEnvelope
                     && !HasTagOrAnyParent(this,strTrig))
                 {
-                    DrawFuncButton(sprites, strTrig, 0, w, h, true, Trigger  != null);
-                    DrawFuncButton(sprites, strEnv,  1, w, h, true, Envelope != null);
+                    DrawFuncButton(sprites, strTrig, 0, w, h, T, Trigger  != null);
+                    DrawFuncButton(sprites, strEnv,  1, w, h, T, Envelope != null);
                 }
 
-                DrawFuncButton(sprites, strLfo, 2, w, h, true, Lfo      != null);
-                DrawFuncButton(sprites, strMod, 3, w, h, true, Modulate != null);
-                DrawFuncButton(sprites, "Key",  4, w, h, true, chan.HasNoteKeys(GetPath(CurSrc)));
-                DrawFuncButton(sprites, "Auto", 5, w, h, true, chan.HasAutoKeys(GetPath(CurSrc)));
+                DrawFuncButton(sprites, strLfo, 2, w, h, T, Lfo      != null);
+                DrawFuncButton(sprites, strMod, 3, w, h, T, Modulate != null);
+                DrawFuncButton(sprites, "Key",  4, w, h, T, chan.HasNoteKeys(GetPath(CurSrc)));
+                DrawFuncButton(sprites, "Auto", 5, w, h, T, chan.HasAutoKeys(GetPath(CurSrc)));
             }
 
 
@@ -568,8 +568,8 @@ namespace IngameScript
                 case 2: AddNextSetting(strLfo); break;
                 case 3: AddNextSetting(strMod); break;
 
-                case 4: CurClip.ParamKeys = true; /*UpdateChordLabels();*/ break;
-                case 5: CurClip.ParamAuto = true; /*UpdateChordLabels();*/ break;
+                case 4: CurClip.ParamKeys = T; break;
+                case 5: CurClip.ParamAuto = T; break;
                 }
             }
 
@@ -578,21 +578,6 @@ namespace IngameScript
             {
                 return Tag == strOff;
             }
-
-
-            //public Color ValueColor { get
-            //{
-            //    var color =
-            //        IsCurParam(Tag)
-            //        ? (Value != PrevValue
-            //           ? color6
-            //           : color5)
-            //        : color3;
-
-            //    PrevValue = Value;
-
-            //    return color;
-            //} }
         }
 
 

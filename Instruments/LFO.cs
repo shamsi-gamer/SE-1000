@@ -122,7 +122,7 @@ namespace IngameScript
                 }
 
                 CurValue *= amp;
-                m_valid = true;
+                m_valid = T;
 
                 return CurValue;
             }
@@ -252,9 +252,9 @@ namespace IngameScript
                 return
                      (Op == ModOp.Add ? "+ " : "* ")
                     + strOsc + " "
-                    + printValue(Amplitude.Value, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Frequency.Value, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Offset   .Value, 2, true, 0).PadLeft(4);
+                    + printValue(Amplitude.Value, 2, T, 0).PadLeft(4) + " "
+                    + printValue(Frequency.Value, 2, T, 0).PadLeft(4) + " "
+                    + printValue(Offset   .Value, 2, T, 0).PadLeft(4);
             }
 
 
@@ -377,11 +377,11 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, false, false);
-                DrawFuncButton(sprites, strAmp,  1, w, y, true, Amplitude.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strFreq, 2, w, y, true, Frequency.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strOff,  3, w, y, true, Offset   .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Osc ↕", 4, w, y, false, false);
+                DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, F, F);
+                DrawFuncButton(sprites, strAmp,  1, w, y, T, Amplitude.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strFreq, 2, w, y, T, Frequency.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strOff,  3, w, y, T, Offset   .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Osc ↕", 4, w, y, F, F);
             }
 
 
@@ -414,7 +414,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return true;
+                return T;
             }
         }
     }

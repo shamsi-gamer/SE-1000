@@ -140,7 +140,7 @@ namespace IngameScript
                 var d = Math.Max(0, cv -     _amt/FPS/(rel>0?rel:0.000001f));
 
                 CurValue = Math.Sign(amt) * (d + (a - d) * val);
-                m_valid = true;
+                m_valid = T;
 
                 return CurValue;
             }
@@ -281,9 +281,9 @@ namespace IngameScript
 
                 return
                       (Op == ModOp.Add ? "+ " : "* ")
-                    + printValue(Amount .Value, 2, true, 0).PadLeft(5) + " "
-                    + printValue(Attack .Value, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Release.Value, 2, true, 0).PadLeft(4);
+                    + printValue(Amount .Value, 2, T, 0).PadLeft(5) + " "
+                    + printValue(Attack .Value, 2, T, 0).PadLeft(4) + " "
+                    + printValue(Release.Value, 2, T, 0).PadLeft(4);
             }
 
 
@@ -330,13 +330,13 @@ namespace IngameScript
 
                 Vector2 p0, p1, p2;
 
-                GetEnvelopeCoords(x0, y0, w0, h0, false, out p0, out p1, out p2);
+                GetEnvelopeCoords(x0, y0, w0, h0, F, out p0, out p1, out p2);
                 DrawEnvelopeSupportsAndInfo(sprites, p0, p1, p2, w0, y0, h0, isAmt, isAtt, isRel);
 
-                GetEnvelopeCoords(x0, y0, w0, h0, true, out p0, out p1, out p2);
-                DrawEnvelope(sprites, p0, p1, p2, color3, false, false, false);
+                GetEnvelopeCoords(x0, y0, w0, h0, T, out p0, out p1, out p2);
+                DrawEnvelope(sprites, p0, p1, p2, color3, F, F, F);
 
-                GetEnvelopeCoords(x0, y0, w0, h0, false, out p0, out p1, out p2);
+                GetEnvelopeCoords(x0, y0, w0, h0, F, out p0, out p1, out p2);
                 DrawEnvelope(sprites, p0, p1, p2, color5, isAmt, isAtt, isRel);
 
 
@@ -435,10 +435,10 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, false, false);
-                DrawFuncButton(sprites, strAmt, 1, w, y, true, Amount .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "A",    2, w, y, true, Attack .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "R",    3, w, y, true, Release.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, F, F);
+                DrawFuncButton(sprites, strAmt, 1, w, y, T, Amount .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "A",    2, w, y, T, Attack .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "R",    3, w, y, T, Release.HasDeepParams(chan, -1));
             }
 
 
@@ -463,7 +463,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return true;
+                return T;
             }
         }
 

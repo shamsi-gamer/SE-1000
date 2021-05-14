@@ -113,8 +113,8 @@ namespace IngameScript
 
             for (int i = 0; i < g_samples.Count; i++)
             {
-                if (   g_samples[i].Length >= 7 + oscName.Length
-                    && g_samples[i].Substring(0, 7 + oscName.Length) == "SE-909_" + oscName)
+                if (   g_samples[i].Length >= strSE.Length + oscName.Length
+                    && g_samples[i].Substring(0, strSE.Length + oscName.Length) == strSE + oscName)
                     samples.Add(new Sample(i, 0, 0));
             }
 
@@ -135,9 +135,6 @@ namespace IngameScript
                     len > 0
                     ? int.Parse(suffix.Substring(0, len))
                     : 0;
-
-                if (name == oscName)
-                    Log("num");
 
                 smp.Note = num;
                 
@@ -167,8 +164,8 @@ namespace IngameScript
 
             for (int i = 0; i < g_samples.Count; i++)
             {
-                if (   g_samples[i].Length < 7
-                    || g_samples[i].Substring(0, 7) != "SE-909_")
+                if (   g_samples[i].Length < strSE.Length
+                    || g_samples[i].Substring(0, strSE.Length) != strSE)
                     samples.Add(new Sample(i, 0, 0));
             }
 

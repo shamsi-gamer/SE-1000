@@ -16,7 +16,7 @@ namespace IngameScript
                 TogglePiano(tune);
 
             else if (IsCurParam(strTune)
-                  && (tune?.UseChord ?? false)
+                  && (tune?.UseChord ?? F)
                   && !(CurClip.ParamKeys || CurClip.ParamAuto))
                 UpdateFinalTuneChord(tune, HighToNote(h));
 
@@ -40,8 +40,8 @@ namespace IngameScript
 
         void BeatHigh(int h)
         {
-                 if (h == 0) Shift(false);
-            else if (h == 1) Shift(true); 
+                 if (h == 0) Shift(F);
+            else if (h == 1) Shift(T); 
 
             else if (h == 2) PickNote();  
             else if (h == 3) ToggleAllChannels();
@@ -64,18 +64,18 @@ namespace IngameScript
         void TogglePiano(Tune tune)
         { 
             if (   IsCurParam(strTune)
-                && (tune?.UseChord ?? false))
+                && (tune?.UseChord ?? F))
             { 
                 g_settings.RemoveLast();
                 CurSet--;
-                CurClip.Piano = false;
+                CurClip.Piano = F;
                 //UpdateChordLabels();
             }
             else
                 CurClip.Piano = !CurClip.Piano;
 
             if (CurClip.Piano)
-                CurClip.Pick = false;
+                CurClip.Pick = F;
         }
 
 
@@ -85,7 +85,7 @@ namespace IngameScript
                     ?? SelInstrument?.Tune;
 
             if (   IsCurParam(strTune)
-                && (tune?.UseChord ?? false))
+                && (tune?.UseChord ?? F))
                 UpdateFinalTuneChord(tune, LowToNote(l));
 
             else if (CurClip.ChordEdit
@@ -145,7 +145,7 @@ namespace IngameScript
                 CurClip.CurNote = found[0].Number;
                 //g_showNote = CurClip.CurNote;
 
-                CurClip.Pick = false;
+                CurClip.Pick = F;
 
                 TriggerNote(
                     CurClip,
@@ -156,7 +156,7 @@ namespace IngameScript
             }
             else
             {
-                CurClip.Pick = false;
+                CurClip.Pick = F;
                 
                 foreach (var n in found)
                     chan.Notes.Remove(n);

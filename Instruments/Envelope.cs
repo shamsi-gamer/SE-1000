@@ -77,7 +77,7 @@ namespace IngameScript
                     tp.GetTriggerValue(Sustain),
                     tp.GetTriggerValue(Release));
 
-                m_valid = true;
+                m_valid = T;
 
                 return CurValue;
             }
@@ -217,10 +217,10 @@ namespace IngameScript
                 width = 174;
 
                 return
-                      printValue(Attack .Value, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Decay  .Value, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Sustain.Value, 2, true, 0).PadLeft(4) + " "
-                    + printValue(Release.Value, 2, true, 0).PadLeft(4);
+                      printValue(Attack .Value, 2, T, 0).PadLeft(4) + " "
+                    + printValue(Decay  .Value, 2, T, 0).PadLeft(4) + " "
+                    + printValue(Sustain.Value, 2, T, 0).PadLeft(4) + " "
+                    + printValue(Release.Value, 2, T, 0).PadLeft(4);
             }
 
 
@@ -270,13 +270,13 @@ namespace IngameScript
 
                 Vector2 p0, p1, p2, p3, p4;
 
-                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), false, out p0, out p1, out p2, out p3, out p4);
+                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), F, out p0, out p1, out p2, out p3, out p4);
                 DrawEnvelopeSupportsAndInfo(sprites, p0, p1, p2, p3, p4, y0, h0, isAtt, isDec, isSus, isRel);
 
-                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), true, out p0, out p1, out p2, out p3, out p4);
-                DrawEnvelope(sprites, p0, p1, p2, p3, p4, color3, false, false, false, false, Decay.CurValue);
+                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), T, out p0, out p1, out p2, out p3, out p4);
+                DrawEnvelope(sprites, p0, p1, p2, p3, p4, color3, F, F, F, F, Decay.CurValue);
 
-                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), false, out p0, out p1, out p2, out p3, out p4);
+                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), F, out p0, out p1, out p2, out p3, out p4);
                 DrawEnvelope(sprites, p0, p1, p2, p3, p4, color5, isAtt, isDec, isSus, isRel, Decay.Value);
             }
 
@@ -383,10 +383,10 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                DrawFuncButton(sprites, "A", 1, w, y, true, Attack .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "D", 2, w, y, true, Decay  .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "S", 3, w, y, true, Sustain.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "R", 4, w, y, true, Release.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "A", 1, w, y, T, Attack .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "D", 2, w, y, T, Decay  .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "S", 3, w, y, T, Sustain.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "R", 4, w, y, T, Release.HasDeepParams(chan, -1));
             }
 
 
@@ -404,7 +404,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return true;
+                return T;
             }
         }
     }

@@ -30,7 +30,7 @@ namespace IngameScript
             public Source(Instrument inst)
             {
                 Instrument = inst;
-                On         = true;
+                On         = T;
                            
                 Oscillator = OscSine;
 
@@ -189,7 +189,7 @@ namespace IngameScript
                         Index,
                         note,
                         triggerValues,
-                        false,
+                        F,
                         null,
                         0));
                 }
@@ -468,12 +468,12 @@ namespace IngameScript
                 }
                 else
                 {
-                    DrawFuncButton(sprites, strOff,  0, w, y, true, Offset    != null);
-                    DrawFuncButton(sprites, strVol,  1, w, y, true, Volume.HasDeepParams(chan, Index));
-                    DrawFuncButton(sprites, strTune, 2, w, y, true, Tune      != null);
-                    DrawFuncButton(sprites, strHrm,  3, w, y, true, Harmonics != null);
-                    DrawFuncButton(sprites, strFlt,  4, w, y, true, Filter    != null);
-                    DrawFuncButton(sprites, strDel,  5, w, y, true, Delay     != null);
+                    DrawFuncButton(sprites, strOff,  0, w, y, T, Offset    != null);
+                    DrawFuncButton(sprites, strVol,  1, w, y, T, Volume.HasDeepParams(chan, Index));
+                    DrawFuncButton(sprites, strTune, 2, w, y, T, Tune      != null);
+                    DrawFuncButton(sprites, strHrm,  3, w, y, T, Harmonics != null);
+                    DrawFuncButton(sprites, strFlt,  4, w, y, T, Filter    != null);
+                    DrawFuncButton(sprites, strDel,  5, w, y, T, Delay     != null);
                 }
             }
 

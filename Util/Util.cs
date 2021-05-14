@@ -116,19 +116,19 @@ namespace IngameScript
 
         //bool IsCurOrAnyParent(Type type)
         //{
-        //    if (CurSet < 0) return false;
+        //    if (CurSet < 0) return F;
 
         //    var setting = CurSetting;
 
         //    while (setting != null)
         //    {
         //        if (setting.GetType() == typeof(Arpeggio))
-        //            return true;
+        //            return T;
 
         //        setting = setting.Parent;
         //    }
 
-        //    return false;
+        //    return F;
         //}
 
 
@@ -282,7 +282,7 @@ namespace IngameScript
         bool ShowPiano { get 
         {
             if (g_session == null)
-                return false;
+                return F;
 
             var tune = SelSource    ?.Tune
                     ?? SelInstrument?.Tune;
@@ -292,7 +292,7 @@ namespace IngameScript
                 ||    CurClip.ChordEdit 
                    && CurClip.Chord > -1
                 ||    IsCurParam(strTune)
-                   && (tune?.UseChord ?? false)
+                   && (tune?.UseChord ?? F)
                    && !(   CurClip.ParamKeys 
                         || CurClip.ParamAuto)
                 ||    IsCurOrParentSetting(typeof(Arpeggio));
@@ -350,11 +350,11 @@ namespace IngameScript
         }
 
 
-        static void UpdateInstName(bool add = true)
+        static void UpdateInstName(bool add = T)
         {
             if (   CurPat  > -1
                 && SelChan > -1)
-                dspMain.Panel.WriteText(add ? SelChannel.Instrument.Name : "", false);
+                dspMain.Panel.WriteText(add ? SelChannel.Instrument.Name : "", F);
         }
 
 
@@ -405,7 +405,7 @@ namespace IngameScript
 
         void AutoLock()
         {
-            var auto = false;
+            var auto = F;
 
             foreach (var l in g_locks) auto |= l.AutoLock;
             foreach (var l in g_locks) l.AutoLock = !auto;
@@ -427,7 +427,7 @@ namespace IngameScript
                 return;
 
 
-            NoiseEmitters(true);
+            NoiseEmitters(T);
 
 
             if (p.CurrentPosition <= (p.MinLimit + p.MaxLimit) / 2) open .Trigger();
@@ -509,7 +509,7 @@ namespace IngameScript
             if (str == "?")
             { 
                 val = long_NaN;
-                return true;
+                return T;
             }
             else
                 return long.TryParse(str, out val);

@@ -67,11 +67,11 @@ namespace IngameScript
                                  
                                  Piano,
                                  
-                                 Transpose  = false,
-                                 Spread     = false,
+                                 Transpose  = F,
+                                 Spread     = F,
                                         
-                                 Shift      = false,
-                                 MixerShift = false,
+                                 Shift      = F,
+                                 MixerShift = F,
                                  
                                  Hold,
                                  Pick,
@@ -84,7 +84,7 @@ namespace IngameScript
                                  ParamKeys,
                                  ParamAuto,
                                  
-                                 MemSet = false;
+                                 MemSet = F;
                                  
                                  
             public int           ChordSpread;
@@ -166,7 +166,7 @@ namespace IngameScript
                 Block       =
                 AllPats     =
                 Follow      =
-                AutoCue     = false;
+                AutoCue     = F;
 
                 MovePat     = 
                          
@@ -193,7 +193,7 @@ namespace IngameScript
                 ParamKeys   = 
                 ParamAuto   =
                          
-                MemSet      = false;
+                MemSet      = F;
 
                 CurPat      =  
                 CurChan     = 0;
@@ -568,8 +568,8 @@ namespace IngameScript
                 {
                     Blocks.Add(new Block(CurPat));
 
-                    In     = true;
-                    Follow = false;
+                    In     = T;
+                    Follow = F;
                 }
                 else
                 {
@@ -577,8 +577,8 @@ namespace IngameScript
 
                     if (In)
                     {
-                        Out    = false;
-                        Follow = false;
+                        Out    = F;
+                        Follow = F;
                     }
                 }
 
@@ -594,8 +594,8 @@ namespace IngameScript
                 {
                     Blocks.Add(new Block(CurPat));
 
-                    Out    = true;
-                    Follow = false;
+                    Out    = T;
+                    Follow = F;
                 }
                 else
                 {
@@ -603,8 +603,8 @@ namespace IngameScript
 
                     if (Out)
                     {
-                        In     = false;
-                        Follow = false;
+                        In     = F;
+                        Follow = F;
                     }
 
                     //g_blocks[b].Next = currentPattern + 1;
@@ -628,14 +628,14 @@ namespace IngameScript
 
             public void DisableBlock()
             {
-                In  = false;
-                Out = false;
+                In  = F;
+                Out = F;
             }
 
 
             public void MovePatternOff()
             {
-                MovePat = false;
+                MovePat = F;
             }
 
 
@@ -672,7 +672,7 @@ namespace IngameScript
 
                 if (Follow)
                 {
-                    AutoCue = false;
+                    AutoCue = F;
                 }
             }
 
@@ -684,7 +684,7 @@ namespace IngameScript
                 if (AutoCue)
                 {
                     Cue();
-                    Follow = false;
+                    Follow = F;
                 }
             }
 
@@ -722,7 +722,7 @@ namespace IngameScript
             public void StopEdit()
             {
                 if (EditNotes.Count > 0)
-                    Hold = false;
+                    Hold = F;
 
                 EditNotes.Clear();
 

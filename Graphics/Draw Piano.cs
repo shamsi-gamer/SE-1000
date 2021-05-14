@@ -26,11 +26,11 @@ namespace IngameScript
 
                 var lenCol = CurSetting == arp.Length ? color6 : color3;
                 DrawString(sprites, "Length",                                 x + 30, y + 160, 1f,   lenCol);
-                DrawString(sprites, printValue(arp.Length.Value, 0, true, 0), x + 40, y + 200, 0.8f, lenCol);
+                DrawString(sprites, printValue(arp.Length.Value, 0, T, 0), x + 40, y + 200, 0.8f, lenCol);
 
                 var sclCol = CurSetting == arp.Scale ? color6 : color3;
                 DrawString(sprites, "Scale",                                  x + 30, y + 260, 1f,   sclCol);
-                DrawString(sprites, printValue(arp.Scale.Value, -3, true, 0), x + 40, y + 300, 0.8f, sclCol);
+                DrawString(sprites, printValue(arp.Scale.Value, -3, T, 0), x + 40, y + 300, 0.8f, sclCol);
             }
 
 
@@ -92,13 +92,13 @@ namespace IngameScript
                         var ft = (int)((an.ArpPlayTime / g_session.TicksPerStep) % g_patSteps);
 
                         FillRect(sprites, x + xt + wt * ft, y, wt, rh, color6);
-                        DrawPianoNeg(sprites, x + xt, y, w - xt, rh, clip, pat, ft, true);
+                        DrawPianoNeg(sprites, x + xt, y, w - xt, rh, clip, pat, ft, T);
                     }
                 }
                 else
                 { 
                     FillRect(sprites, x + xt + wt * ((int)PlayStep % g_patSteps), y, wt, rh, color6);
-                    DrawPianoNeg(sprites, x + xt, y, w - xt, rh, CurClip, pat, (int)PlayStep, true);
+                    DrawPianoNeg(sprites, x + xt, y, w - xt, rh, CurClip, pat, (int)PlayStep, T);
                 }
             }
 

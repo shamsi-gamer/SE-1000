@@ -13,7 +13,7 @@ namespace IngameScript
                 return;
 
 
-            g_playing = true;
+            g_playing = T;
 
 
             if (CurClip.CueNext > -1)
@@ -35,7 +35,7 @@ namespace IngameScript
             if (g_session == null)
                 return;
 
-            g_playing = false;
+            g_playing = F;
 
 
             if (!g_playing)//CurClip.PlayTime < 0)

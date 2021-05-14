@@ -49,7 +49,7 @@ namespace IngameScript
                 UpdateInstOff(CurChan);
 
                 UpdateInstName();
-                g_inputValid = false;
+                g_inputValid = F;
             }
 
 
@@ -216,7 +216,7 @@ namespace IngameScript
 
 
                 UpdateInstName();
-                g_inputValid = false;
+                g_inputValid = F;
 
                 UpdateInstOff(CurChan);
 
@@ -239,7 +239,7 @@ namespace IngameScript
 
                 CurSrc = next;
 
-                dspMain.Panel.WriteText("", false);
+                dspMain.Panel.WriteText("", F);
 
                 UpdateSrcOff();
             }
@@ -252,22 +252,22 @@ namespace IngameScript
 
         void BackOut()
         {
-            g_move = false;
+            g_move = F;
 
-            CurClip.ParamKeys = false;
-            CurClip.ParamAuto = false;
+            CurClip.ParamKeys = F;
+            CurClip.ParamAuto = F;
 
-            var _curSet = false;
+            var _curSet = F;
 
 
             if (CurSet > -1)
             {
-                bool ucl = false;
+                bool ucl = F;
 
                 if (IsCurParam())
                 { 
-                    CurSetting._IsCurrent = false;
-                    if (IsCurParam(strTune)) ucl = true;
+                    CurSetting._IsCurrent = F;
+                    if (IsCurParam(strTune)) ucl = T;
                 }
 
                 CurSet = -1;
@@ -280,7 +280,7 @@ namespace IngameScript
                     //UpdateShuffleLabel();
                 }
 
-                _curSet = true;
+                _curSet = T;
             }
 
 
@@ -290,10 +290,10 @@ namespace IngameScript
                 CurSrc = -1;
                 CurClip.SrcOff =  0;
 
-                CurClip.Shift  = false;
+                CurClip.Shift  = F;
 
-                UpdateInstName(true);
-                g_inputValid = false;
+                UpdateInstName(T);
+                g_inputValid = F;
             }
             
 
@@ -302,10 +302,10 @@ namespace IngameScript
             {
                 SelChan = -1;
 
-                CurClip.Shift = false;
-                g_move  = false;
+                CurClip.Shift = F;
+                g_move  = F;
 
-                UpdateInstName(false);
+                UpdateInstName(F);
             }
 
             lblOut.Mark();
@@ -316,18 +316,18 @@ namespace IngameScript
 
         void Back()
         {
-            g_move = false;
+            g_move = F;
 
             if (CurSet > -1)
             {
                 if (CurClip.ParamKeys)
                 {
-                    CurClip.ParamKeys = false;
+                    CurClip.ParamKeys = F;
                     CurClip.EditPos   = fN;
                 }
                 else if (CurClip.ParamAuto)
                 {
-                    CurClip.ParamAuto = false;
+                    CurClip.ParamAuto = F;
                     CurClip.EditPos   = fN;
                 }
                 else
@@ -335,7 +335,7 @@ namespace IngameScript
                     if (IsCurSetting(typeof(Arpeggio)))
                         CurArpeggio.Clip.EditPos = -Math.Abs(CurArpeggio.Clip.EditPos); // turn off but keep value
                     else if (IsCurParam())
-                        CurSetting._IsCurrent = false;
+                        CurSetting._IsCurrent = F;
 
                     CurSet--;
                     g_settings.RemoveAt(g_settings.Count-1);
@@ -346,24 +346,24 @@ namespace IngameScript
                 CurSrc = -1;
                 CurClip.SrcOff =  0;
 
-                CurClip.Shift = false;
+                CurClip.Shift = F;
 
-                UpdateInstName(true);
-                g_inputValid = false;
+                UpdateInstName(T);
+                g_inputValid = F;
             }
             else if (SelChan > -1)
             {
                 SelChan = -1;
 
-                CurClip.Shift = false;
-                g_move        = false;
+                CurClip.Shift = F;
+                g_move        = F;
 
                 CurClip.EditPos = fN;
 
-                UpdateInstName(false);
+                UpdateInstName(F);
 
-                CurClip.ParamKeys = false;
-                CurClip.ParamAuto = false;
+                CurClip.ParamKeys = F;
+                CurClip.ParamAuto = F;
             }
 
             lblBack.Mark();
@@ -377,7 +377,7 @@ namespace IngameScript
             if (CurSet > -1)
                 return;
 
-            g_move = false;
+            g_move = F;
 
             if (SelChan < 0)
             {
@@ -386,17 +386,17 @@ namespace IngameScript
 
                 UpdateInstOff(SelChan);
 
-                UpdateInstName(true);
-                g_inputValid = false;
+                UpdateInstName(T);
+                g_inputValid = F;
 
                 lblEnter.Mark(CurSrc < 0);
             }
             else if (CurSrc < 0)
             {
                 CurSrc = 0;
-                CurClip.Shift  = false;
+                CurClip.Shift  = F;
 
-                UpdateInstName(false);
+                UpdateInstName(F);
 
                 lblEnter.Mark();
             }
@@ -487,7 +487,7 @@ namespace IngameScript
                 var src = SelSource;
 
                 var newOsc = (int)src.Oscillator.Type + 1;
-                if (newOsc > (int)OscType.FastSweepUp) newOsc = 0;
+                if (newOsc > (int)OscType.Crunch) newOsc = 0;
                 src.Oscillator = OscillatorFromType((OscType)newOsc);
             }
             else
@@ -567,14 +567,21 @@ namespace IngameScript
                     if (CurSetting.CanDelete())
                         DeleteCurSetting();
                 }
+
+                lblCmd3.Mark();
+            }
+            else if (CurSet > -1)
+            { 
+                if (CurSetting.CanDelete())
+                { 
+                    DeleteCurSetting();
+                    lblCmd3.Mark();
+                }
             }
             else if (SelChan < 0)
             { 
                 CurClip.Transpose = !CurClip.Transpose;
             }
-
-
-            lblCmd3.Mark();
         }
 
 

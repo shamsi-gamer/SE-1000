@@ -127,7 +127,6 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="Instruments.txt" />
-    <Content Include="Strings.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

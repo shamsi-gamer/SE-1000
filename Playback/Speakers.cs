@@ -32,11 +32,11 @@ namespace IngameScript
             public Speaker(IMySoundBlock sb)
             {
                 Block = sb;
-                m_used = false;
+                m_used = F;
             }
 
-            public void SetUsed() { m_used = true; }
-            public void Free() { m_used = false; }
+            public void SetUsed() { m_used = T; }
+            public void Free() { m_used = F; }
         }
     }
 }

@@ -187,10 +187,10 @@ namespace IngameScript
                 width = 176;
 
                 return
-                      printValue(Count.Value, 0, true, 0).PadLeft(2) + "  "
-                    + printValue(Time .Value, 2, true, 0).PadLeft(4) + "  "
-                    + printValue(Level.Value, 2, true, 0).PadLeft(4) + "  "
-                    + printValue(Power.Value, 2, true, 0).PadLeft(4);
+                      printValue(Count.Value, 0, T, 0).PadLeft(2) + "  "
+                    + printValue(Time .Value, 2, T, 0).PadLeft(4) + "  "
+                    + printValue(Level.Value, 2, T, 0).PadLeft(4) + "  "
+                    + printValue(Power.Value, 2, T, 0).PadLeft(4);
             }
 
 
@@ -319,11 +319,11 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                DrawFuncButton(sprites, strDry,  0, w, h, true, Dry  .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strCnt,  1, w, h, true, Count.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strTime, 2, w, h, true, Time .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strLvl,  3, w, h, true, Level.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strPow,  4, w, h, true, Power.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strDry,  0, w, h, T, Dry  .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strCnt,  1, w, h, T, Count.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strTime, 2, w, h, T, Time .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strLvl,  3, w, h, T, Level.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strPow,  4, w, h, T, Power.HasDeepParams(chan, -1));
             }
 
 
@@ -342,7 +342,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return true;
+                return T;
             }
         }
     }

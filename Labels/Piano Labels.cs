@@ -36,7 +36,7 @@ namespace IngameScript
                     UpdatePianoHigh, 
                     UpdatePianoHighColor, 
                     h,
-                    true));
+                    T));
             }
 
             lblHigh.Add(new Label(high[10],
@@ -113,7 +113,7 @@ namespace IngameScript
                     UpdatePianoLow, 
                     UpdatePianoLowColor, 
                     -l,
-                    true));
+                    T));
             }
         }
 
@@ -133,7 +133,7 @@ namespace IngameScript
             return
                 ShowPiano
                 ? NoteIsDim(LowToNote(-lbl.Data))
-                : false;
+                : F;
         }
 
 
@@ -179,12 +179,12 @@ namespace IngameScript
 
             else if (g_playing 
                   && PlayChannel.Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
-                return true; // note is in the currently played channel
+                return T; // note is in the currently played channel
 
             else if (g_notes.FindIndex(n => NoteIsTriggered(noteNum, n)) > -1)
-                return true; // note is being played on the piano
+                return T; // note is being played on the piano
 
-            return false;
+            return F;
         }
 
 
@@ -208,30 +208,30 @@ namespace IngameScript
 
                     if (   g_playing
                         && PlayPattern.Channels[ch].Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
-                        return true;
+                        return T;
                 }
             }
 
-            return false;
+            return F;
         }
 
 
         bool NoteIsPlaying(int noteNum, Note note)
         {
             if (noteNum != note.Number)
-                return false;
+                return F;
 
             // note is at the playback position
             if (   PlayStep >= note.SongStep + note.ShOffset
                 && PlayStep <  note.SongStep + note.ShOffset + note.StepLength)
-                return true;
+                return T;
 
             // note is at edit position
             if (   note.SongStep >= CurClip.EditPos 
                 && note.SongStep <  CurClip.EditPos + CurClip.EditStepLength)
-                return true;
+                return T;
 
-            return false;
+            return F;
         }
         
         
@@ -269,9 +269,9 @@ namespace IngameScript
                 && CurPat == PlayPat)
                 return !on;
             else if (on)
-                return true;
+                return T;
 
-            return false;
+            return F;
         }
 
 
