@@ -65,7 +65,7 @@ namespace IngameScript
 
             public string GetSample(int note)
             {
-                return g_samples[Oscillator.Samples[note - 12*NoteScale]];
+                return g_samples[Oscillator.Samples[note - 12*NoteScale].Index];
             }
 
 
@@ -78,9 +78,12 @@ namespace IngameScript
                 else if (Oscillator == OscLowNoise ) return 0.5f;
                 else if (Oscillator == OscHighNoise) return 0.5f;
                 else if (Oscillator == OscBandNoise) return 0.5f;
-                else if (Oscillator == OscClick    ) return 1;
-                else if (Oscillator == OscCrunch   ) return 1;
-                else if (Oscillator == OscSample   ) return 1;
+                else if (Oscillator == OscSlowSweepDown
+                      || Oscillator == OscFastSweepDown
+                      || Oscillator == OscSlowSweepUp  
+                      || Oscillator == OscFastSweepUp  
+                      || Oscillator == OscCrunch       
+                      || Oscillator == OscSample)    return 1;
 
                 return fN;
             } }
@@ -170,11 +173,9 @@ namespace IngameScript
                 }
                 else
                 {
-                    if (   noteNum <  12 * NoteScale
-                        || noteNum > 150 * NoteScale)
+                    if (   noteNum <  12*NoteScale
+                        || noteNum > 150*NoteScale)
                         return;
-
-                    //vol = ApplyFilter(vol, this, 0, tp);
 
                     _sounds.Add(new Sound(
                         sample,
@@ -217,7 +218,7 @@ namespace IngameScript
                 if (prog.TooComplex) return;
 
 
-                Oscillator = OscillatorFromType((OscType)(int)(Math.Pow(RND, 2) * 9));
+                Oscillator = OscillatorFromType((OscType)(int)(Math.Pow(RND, 2) * (int)OscType.Sample));
 
 
                 if (   RND > 0.7f
@@ -425,14 +426,14 @@ namespace IngameScript
                 {
                     float wf;
                 
-                    if (Oscillator == OscClick)
+                    /*if (Oscillator == OscClick)
                     { 
                              if (f == 0   ) wf =  0;
                         else if (f == df  ) wf =  1;
                         else if (f == df*2) wf = -1;
                         else                wf =  0;
                     }
-                    else if (Oscillator == OscCrunch)
+                    else*/ if (Oscillator == OscCrunch)
                     { 
                         var _f = f % (1/4f);
 

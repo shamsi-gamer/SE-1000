@@ -102,8 +102,8 @@ namespace IngameScript
             Setting setting;
 
                  if (CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
-            else if (iSrc          > -1) setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
-            else                         setting = inst.GetOrAddSettingFromTag(tag);
+            else if (iSrc   > -1) setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
+            else                  setting = inst              .GetOrAddSettingFromTag(tag);
 
             g_settings.Add(setting);
 
@@ -114,18 +114,21 @@ namespace IngameScript
         }
 
 
-        static void RemoveSetting(Setting setting)
+        static void DeleteCurSetting()
         {
-            int set = CurSet;
+            //int set     = CurSet;
+            var setting = CurSetting;
 
-            if (   HasTag(setting, strAtt)
-                || HasTag(setting, strDec)
-                || HasTag(setting, strSus)
-                || HasTag(setting, strRel))
-                set--;
-
-            if (CurSet > 0)
-                g_settings[CurSet -1].Remove(setting);
+            if (CurSetting.Parent != null)
+            { 
+                //if (   HasTag(setting, strAtt)
+                //    || HasTag(setting, strDec)
+                //    || HasTag(setting, strSus)
+                //    || HasTag(setting, strRel))
+                //    set--;
+                
+                g_settings[CurSet--].DeleteSetting(setting);
+            }
             else 
             {
                 var inst = SelInstrument;
@@ -140,11 +143,12 @@ namespace IngameScript
                     case strFlt:  if (src != null) src.Filter    = null; else inst.Filter   = null; break;
                     case strArp:  if (src == null)                            inst.Arpeggio = null; break;
                 }
+
+                g_settings.RemoveAt(CurSet--);
             }
 
-            g_settings.RemoveAt(set);
 
-            CurSet -= CurSet - set + 1;
+            //CurSet -= CurSet - set + 1;
         }
 
 
@@ -152,17 +156,11 @@ namespace IngameScript
         {
             switch (func)
             {
-            case 1: AddNextSetting(strVol, inst, -1); break;
-            case 2: 
-                AddNextSetting(strTune, inst, -1);
-                //UpdateKeyLabels();
-                //UpdateChordLabels();
-                //UpdateShuffleLabel();
-                break;
-
-            case 3: AddNextSetting(strFlt, inst, -1); break;
-            case 4: AddNextSetting(strDel, inst, -1); break;
-            case 5: AddNextSetting(strArp, inst, -1); break;
+            case 1: AddNextSetting(strVol,  inst, -1); break;
+            case 2: AddNextSetting(strTune, inst, -1); break;
+            case 3: AddNextSetting(strFlt,  inst, -1); break;
+            case 4: AddNextSetting(strDel,  inst, -1); break;
+            case 5: AddNextSetting(strArp,  inst, -1); break;
             }
         }
 
@@ -171,18 +169,12 @@ namespace IngameScript
         {
             switch (func)
             {
-            case 0: AddNextSetting(strOff, src.Instrument, src.Index); break; 
-            case 1: AddNextSetting(strVol, src.Instrument, src.Index); break;
-            case 2: 
-                AddNextSetting(strTune, src.Instrument, src.Index);
-                //UpdateKeyLabels();
-                //UpdateChordLabels();
-                //UpdateShuffleLabel();
-                break;
-
-            case 3: AddNextSetting(strHrm, src.Instrument, src.Index);  break;
-            case 4: AddNextSetting(strFlt, src.Instrument, src.Index); break;
-            case 5: AddNextSetting(strDel, src.Instrument, src.Index); break;
+            case 0: AddNextSetting(strOff,  src.Instrument, src.Index); break; 
+            case 1: AddNextSetting(strVol,  src.Instrument, src.Index); break;
+            case 2: AddNextSetting(strTune, src.Instrument, src.Index); break;
+            case 3: AddNextSetting(strHrm,  src.Instrument, src.Index); break;
+            case 4: AddNextSetting(strFlt,  src.Instrument, src.Index); break;
+            case 5: AddNextSetting(strDel,  src.Instrument, src.Index); break;
             }
         }
     }

@@ -42,6 +42,7 @@ namespace IngameScript
             public float              EchoVolume;
             public bool               IsEcho;
 
+            public Sample             NoteSample { get { return Source.Oscillator.Samples[Note.Number-24*NoteScale]; } }
 
             public Sound(string sample, Channel chan, int ch, long frameTime, int frameLen, int releaseLen, float vol, Instrument inst, int iSrc, Note note, List<TriggerValue> triggerValues, bool isEcho, Sound echoSrc, float echoVol, Parameter harmonic = null, Sound hrmSound = null, float hrmPos = fN)
             {
@@ -182,8 +183,11 @@ namespace IngameScript
                         * CurClip.Volume;
 
                     // this is for the fake "current volume"
-                    if (   Source.Oscillator == OscClick
-                        && lTime > 1)
+                    if (   (   Source.Oscillator == OscSlowSweepDown
+                            || Source.Oscillator == OscFastSweepDown
+                            || Source.Oscillator == OscSlowSweepUp
+                            || Source.Oscillator == OscFastSweepUp)
+                        && lTime > NoteSample.Length * FPS)
                         vol = 0;
                     else if (Source.Oscillator == OscCrunch)
                         vol /= 2;
@@ -269,10 +273,13 @@ namespace IngameScript
                     spk.Block.Volume = Math.Min(v--, 1);
 
                     // if sample is ending, restart it 
-                    // TODO make this smooth
-                    if (   ElapsedTime >= (Source.Oscillator.Length - 0.1f) * FPS
-                        && Source.Oscillator != OscClick)
+                    if (   ElapsedTime >= (NoteSample.Length - 0.1f) * FPS
+                        && Source.Oscillator != OscSlowSweepDown
+                        && Source.Oscillator != OscSlowSweepUp
+                        && Source.Oscillator != OscFastSweepDown
+                        && Source.Oscillator != OscFastSweepUp)
                     {
+                        // TODO make this smooth
                         spk.Block.Stop();
                         spk.Block.Play();
                     }

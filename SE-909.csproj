@@ -38,14 +38,16 @@
   <Import Project="MDK/MDK.options.props" />
   <Import Project="MDK/MDK.paths.props" Condition="exists('MDK/MDK.paths.props')" />
   <ItemGroup>
+    <Compile Include="Args.cs" />
     <Compile Include="Controls\Label.cs" />
     <Compile Include="Labels\Adjust Labels.cs" />
     <Compile Include="Labels\Chord Labels.cs" />
     <Compile Include="Labels\Edit Labels.cs" />
     <Compile Include="Labels\Mem Labels.cs" />
     <Compile Include="Labels\Piano Labels.cs" />
+    <Compile Include="Playback\Sample.cs" />
     <Compile Include="Util\Chords.cs" />
-    <Compile Include="Graphics\Draw Clips.cs" />
+    <Compile Include="Graphics\Draw Session Clips.cs" />
     <Compile Include="Graphics\Draw Volume.cs" />
     <Compile Include="Graphics\DrawParams.cs" />
     <Compile Include="Main.cs" />
@@ -111,7 +113,6 @@
     <AdditionalFiles Include="thumb.png" />
     <AdditionalFiles Include="MDK\whitelist.cache" />
     <Compile Include="Util\Random.cs" />
-    <Compile Include="Graphics\Draw Sample.cs" />
     <Compile Include="Playback\Playback Sounds.cs" />
     <Compile Include="Playback\Clip.cs" />
     <Compile Include="Playback\Sound.cs" />

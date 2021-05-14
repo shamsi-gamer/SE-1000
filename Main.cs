@@ -8,7 +8,7 @@ namespace IngameScript
     {
         public void Main(string arg, UpdateType update)
         {
-            pnlInfoLog.CustomData = "";
+            //pnlInfoLog.CustomData = "";
 
 
             if (!g_init) return;
@@ -56,7 +56,7 @@ namespace IngameScript
 
 
         void Update10()
-        { 
+        {
             if (g_started)
             {
                 UpdateInst();
@@ -83,7 +83,7 @@ namespace IngameScript
             ResetRuntimeInfo();
 
 
-            g_dspCount  = g_instCount;
+            g_dspCount = g_instCount;
             g_instCount = 0;
 
 

@@ -20,31 +20,30 @@ namespace IngameScript
 
             var sprites = new List<MySprite>();
 
-
             if (   SelChan > -1
                 && IsCurParam()
                 && (   CurClip.ParamKeys
                     || CurClip.ParamAuto))
             {
-                if (CurClip.Piano)  DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, true, null);
-                else          DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, true);
+                if (CurClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, true, null);
+                else               DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, true);
             }
             else if (SelChan > -1)
             {
                 if (IsCurSetting(typeof(Harmonics)))
                 {
-                              var hrm = CurOrParentHarmonics;
-                              hrm.DrawSetting(sprites, x, y, w, h, CurClip, CurChannel, this);
+                     var hrm = CurOrParentHarmonics;
+                     hrm.DrawSetting(sprites, x, y, w, h, CurClip, CurChannel, this);
                 }
                 else if (IsCurOrParentSetting(typeof(Arpeggio)))
                 {
-                              var arp = CurOrParentArpeggio;
-                              DrawPianoDisplay  (sprites, x, y, w, h, arp.Clip, CurPat, true, arp);
+                     var arp = CurOrParentArpeggio;
+                     DrawPianoDisplay(sprites, x, y, w, h, arp.Clip, CurPat, true, arp);
                 }
-                else          DrawInstrument    (sprites, x, y, w, h);
+                else DrawInstrument  (sprites, x, y, w, h);
             }
-            else if (CurClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, true, null);
-            else              DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, true);
+            else if (CurClip.Piano || g_lockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, true, null);
+            else                                       DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, true);
 
             dsp.Draw(sprites);
         }

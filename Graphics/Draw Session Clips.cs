@@ -7,14 +7,14 @@ namespace IngameScript
 {
     partial class Program
     {
-        void DrawClips()
+        void DrawSessionClips()
         {
-            if (!TooComplex) DrawClips(dspMixer1, 0);
-            if (!TooComplex) DrawClips(dspMixer2, 1);
+            if (!TooComplex) DrawSessionClips(dspMixer1, 0);
+            if (!TooComplex) DrawSessionClips(dspMixer2, 1);
         }
 
 
-        void DrawClips(Display dsp, int nDsp)
+        void DrawSessionClips(Display dsp, int nDsp)
         {
             if (dsp == null) return;
 
@@ -39,7 +39,7 @@ namespace IngameScript
                 for (int ix = nDsp*6 + 0; ix < nDsp*6 + 6; ix++)
                 {
                     var iClip = track.Indices.FindIndex(i => i == ix);
-                    var col   = iClip < 0 ? color2 : (track.CurIndex == iy ? color5 : color3);
+                    var col   = iClip < 0 ? color2 : color4;
 
                     var cx = x + w/6*(ix - nDsp*6);
                     var cy = y + h/4*iy;
@@ -52,10 +52,32 @@ namespace IngameScript
                         h/4 - gap, 
                         col); 
 
-                    if (iClip < 0) continue;
+                    if (iClip != ix) continue;
                     var clip = track.Clips[iClip];
 
-                    var name = clip.Name.Split('\n')[0];
+                    // current clip of track
+                    if (iClip == track.CurIndex)
+                        DrawRect(
+                            sprites, 
+                            cx + gap/2 + 3, 
+                            cy + gap/2 + 3, 
+                            w/6 - gap - 6,
+                            h/4 - gap - 6, 
+                            color5,
+                            6); 
+
+                    // current clip of session
+                    if (clip == g_session.CurClip)
+                        DrawRect(
+                            sprites, 
+                            cx + gap/2 + 11, 
+                            cy + gap/2 + 11, 
+                            w/6 - gap - 22,
+                            h/4 - gap - 22, 
+                            color5,
+                            4); 
+
+                    var name       = clip.Name.Split('\n')[0];
                     var nNameLines = clip.Name.Split(' ').Length;
 
                     DrawString(
@@ -66,6 +88,16 @@ namespace IngameScript
                         1,
                         color0,
                         TaC);
+
+
+                    // debug
+                    DrawString(
+                        sprites,
+                        $"iClip = {iClip}",
+                        cx + 5,
+                        cy + 5,
+                        0.4f,
+                        color0);
                 }
             }
 

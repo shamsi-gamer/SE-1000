@@ -11,12 +11,12 @@ namespace IngameScript
 
         void Random()
         {
-                 if (SelChan < 0)  RandomPatternNotes();
+                 if (SelChan < 0)       RandomPatternNotes();
             else if (CurClip.ParamKeys
-                  || CurClip.ParamAuto)    RandomValues(CurChan);
-            else if (CurSet  > -1) CurSetting               .Randomize(this);
-            else if (CurSrc  > -1) SelSource    .Randomize(new List<Oscillator>(), this);
-            else if (SelChan > -1) SelInstrument.Randomize(this);
+                  || CurClip.ParamAuto) RandomValues(CurChan);
+            else if (CurSet  > -1)      CurSetting   .Randomize(this);
+            else if (CurSrc  > -1)      SelSource    .Randomize(new List<Oscillator>(), this);
+            else if (SelChan > -1)      SelInstrument.Randomize(this);
 
             //MarkLabel(lblRandom);
         }
@@ -46,6 +46,8 @@ namespace IngameScript
                 var ch = g_rnd.Next(0, g_nChans);
                 RandomNotes(ch, rndInst);
             }
+
+            UpdateInstOff(CurClip.CurChan);
         }
 
 

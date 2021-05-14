@@ -69,7 +69,7 @@ namespace IngameScript
             }
 
             public virtual bool HasDeepParams(Channel chan, int src) { return false; }
-            public virtual void Remove(Setting setting) {}
+            public virtual void DeleteSetting(Setting setting) {}
                                 
 
             public virtual void Clear() {}

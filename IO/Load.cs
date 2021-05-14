@@ -42,7 +42,6 @@ namespace IngameScript
             //}
 
             SetLabelColor(CurClip.ColorIndex);
-            //UpdateLabels();
         }
 
 
@@ -56,11 +55,13 @@ namespace IngameScript
             var line  = 0;
 
             var cfg = lines[line++].Split(';');
-            if (!LoadToggles(cfg[0])) goto NothingLoaded;
-            //if (!LoadConfig(cfg))     goto NothingLoaded;
+
+            var c = 0;
+
+            if (c < cfg.Length && !int.TryParse(cfg[c++], out g_lockView)) goto NothingLoaded;
+            if (c < cfg.Length && !LoadToggles(cfg[c++]))                  goto NothingLoaded;
 
             return;
-
 
         NothingLoaded:
             SetDefaultMachineState();

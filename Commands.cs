@@ -430,6 +430,8 @@ namespace IngameScript
                 {
                          if (CurClip.ParamKeys) Interpolate(CurClip);
                     else if (CurClip.ParamAuto) EnableKeyMove(CurClip);
+
+                    lblCmd1.Mark();
                 }
             }
             else if (IsCurSetting(typeof(Modulate)))
@@ -444,12 +446,16 @@ namespace IngameScript
                     ModDestChannel    = SelChannel;
                     ModDestClip       = CurClip;
                 }
+
+                lblCmd1.Mark();
             }
             else if (IsCurSetting(typeof(Arpeggio))
                   && OK(CurArpeggio.Clip.EditPos))
             {
                      if (CurClip.ParamKeys) Interpolate  (CurArpeggio.Clip);
                 else if (CurClip.ParamAuto) EnableKeyMove(CurArpeggio.Clip);
+
+                lblCmd1.Mark();
             }
             else
             {
@@ -460,20 +466,17 @@ namespace IngameScript
                 }
                 else
                 { 
-                    var inst = CurClip.CurInstrument;
-
-                    var src =
-                        CurSrc > -1
-                        ? inst.Sources[CurSrc]
-                        : null;
-
                     if (SelChan < 0)
-                        CopyChan(CurClip, CurPat, CurChan);
+                    { 
+                        if (g_lockView == 0)
+                            g_lockView = ShowPiano ? 2 : 1;
+                        else
+                            g_lockView = 0;
+
+                        //CopyChan(CurClip, CurPat, CurChan);
+                    }
                 }
             }
-
-
-            lblCmd1.Mark();
         }
 
 
@@ -484,7 +487,7 @@ namespace IngameScript
                 var src = SelSource;
 
                 var newOsc = (int)src.Oscillator.Type + 1;
-                if (newOsc > (int)OscType.Crunch) newOsc = 0;
+                if (newOsc > (int)OscType.FastSweepUp) newOsc = 0;
                 src.Oscillator = OscillatorFromType((OscType)newOsc);
             }
             else
@@ -559,11 +562,11 @@ namespace IngameScript
                         CurClip.UpdateAutoKeys();
                     }
                 }
-            }
-            else if (CurSet > -1)
-            {
-                if (CurSetting.CanDelete())
-                    RemoveSetting(CurSetting);
+                else if (CurSet > -1)
+                {
+                    if (CurSetting.CanDelete())
+                        DeleteCurSetting();
+                }
             }
             else if (SelChan < 0)
             { 

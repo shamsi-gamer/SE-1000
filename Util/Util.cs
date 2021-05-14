@@ -238,22 +238,24 @@ namespace IngameScript
         bool IsModPresent()
         {
             return _loadStep < 10
-                ||    (OscSine     ?.Samples.Count ?? 0) > 0
-                   && (OscTriangle ?.Samples.Count ?? 0) > 0
-                   && (OscSaw      ?.Samples.Count ?? 0) > 0
-                   && (OscSquare   ?.Samples.Count ?? 0) > 0
-                   && (OscLowNoise ?.Samples.Count ?? 0) > 0
-                   && (OscHighNoise?.Samples.Count ?? 0) > 0
-                   && (OscBandNoise?.Samples.Count ?? 0) > 0
-                   && (OscClick    ?.Samples.Count ?? 0) > 0
-                   && (OscCrunch   ?.Samples.Count ?? 0) > 0;
+                ||    (OscSine         ?.Samples.Count ?? 0) > 0
+                   && (OscTriangle     ?.Samples.Count ?? 0) > 0
+                   && (OscSaw          ?.Samples.Count ?? 0) > 0
+                   && (OscSquare       ?.Samples.Count ?? 0) > 0
+                   && (OscLowNoise     ?.Samples.Count ?? 0) > 0
+                   && (OscHighNoise    ?.Samples.Count ?? 0) > 0
+                   && (OscBandNoise    ?.Samples.Count ?? 0) > 0
+                   && (OscSlowSweepDown?.Samples.Count ?? 0) > 0
+                   && (OscFastSweepDown?.Samples.Count ?? 0) > 0
+                   && (OscSlowSweepUp  ?.Samples.Count ?? 0) > 0
+                   && (OscFastSweepUp  ?.Samples.Count ?? 0) > 0
+                   && (OscCrunch       ?.Samples.Count ?? 0) > 0;
         }
 
 
         string GetNewName(string name, Func<string, bool> exists)
         {
             var numLength = GetNumLength(name);
-            //numLength = GetNumLength(name);
 
             if (numLength > 0)
             {

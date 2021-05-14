@@ -162,9 +162,6 @@ namespace IngameScript
                 && n.Number == num);
 
             AddNoteAndSounds(new Note(chan, ch, 1, num, patStep, len));
-
-            //if (ShowPiano)
-            //    GetLabelFromNote(num).Mark();
         }
 
 
@@ -208,33 +205,33 @@ namespace IngameScript
 
             var sh = (int)clip.PlayStep % 2 != 0 ? note.Channel.Shuffle : 0;
 
-            if (note.Instrument.Arpeggio != null)
-            {
-                var notes = note.Channel.Notes.FindAll(n =>
-                          n.Instrument.Arpeggio != null
-                       && clip.PlayTime >= clip.PlayPat*g_patSteps*g_session.TicksPerStep + n.PatTime
-                       && clip.PlayTime <  clip.PlayPat*g_patSteps*g_session.TicksPerStep + n.PatTime + n.FrameLength);
+            //if (note.Instrument.Arpeggio != null)
+            //{
+            //    var notes = note.Channel.Notes.FindAll(n =>
+            //              n.Instrument.Arpeggio != null
+            //           && clip.PlayTime >= clip.PlayPat*g_patSteps*g_session.TicksPerStep + n.PatTime
+            //           && clip.PlayTime <  clip.PlayPat*g_patSteps*g_session.TicksPerStep + n.PatTime + n.FrameLength);
 
-                foreach (var n in notes)
-                {
-                    if (TooComplex) return;
+            //    foreach (var n in notes)
+            //    {
+            //        if (TooComplex) return;
 
-                    var arp = n.Instrument.Arpeggio;
+            //        var arp = n.Instrument.Arpeggio;
 
-                    var arpNotes = arp.Clip.Patterns[0].Channels[0].Notes.FindAll(_n =>
-                        clip.PlayTime == (n.PatStep + sh)*g_session.TicksPerStep + _n.ArpPlayTime);
+            //        var arpNotes = arp.Clip.Patterns[0].Channels[0].Notes.FindAll(_n =>
+            //            clip.PlayTime == (n.PatStep + sh)*g_session.TicksPerStep + _n.ArpPlayTime);
 
-                    foreach (var nn in arpNotes)
-                    {
-                        nn.PatStep = n.PatStep + (n.ArpPlayTime + sh) / g_session.TicksPerStep;
+            //        foreach (var nn in arpNotes)
+            //        {
+            //            nn.PatStep = n.PatStep + (n.ArpPlayTime + sh) / g_session.TicksPerStep;
 
-                        g_notes.Add(nn);
-                        g_sounds.AddRange(nn.Sounds);
-                    }
-                }
-            }
-            else // normal note
-            {
+            //            g_notes.Add(nn);
+            //            g_sounds.AddRange(nn.Sounds);
+            //        }
+            //    }
+            //}
+            //else // normal note
+            //{
                 var found =
                     g_notes.Find(n => 
                            clip.PlayStep >= n.PatStep 
@@ -259,7 +256,7 @@ namespace IngameScript
 
                 g_notes.Add(note);
                 g_sounds.AddRange(note.Sounds);
-            }
+            //}
         }
 
 
@@ -278,13 +275,6 @@ namespace IngameScript
             for (int i = delete.Count - 1; i >= 0; i--)
                 g_notes.RemoveAt(delete[i]);
         }
-
-
-        //void StopNote(Clip clip, Note note)
-        //{
-        //    var step = g_playing ? PlayStep : TimeStep;
-        //    //note.UpdateStepLength(step - note.PatStep, g_session.TicksPerStep);
-        //}
 
 
         static int AdjustNoteNumber(Note note, Source src, int sndLen, Program prog)

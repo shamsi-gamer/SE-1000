@@ -92,9 +92,6 @@ namespace IngameScript
             InitMixerLabels();
             InitSideLabels();
 
-
-
-
             frontLight   = Get("Front Light")      as IMyReflectorLight;
             warningLight = Get("Saturation Light") as IMyInteriorLight;
         }

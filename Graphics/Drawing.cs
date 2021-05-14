@@ -17,8 +17,8 @@ namespace IngameScript
 
             if (!TooComplex)
             { 
-                if (g_showSession) DrawClips();
-                else           DrawMixer();
+                if (g_showSession) DrawSessionClips();
+                else               DrawMixer();
             }
 
             DrawVolume();
@@ -69,10 +69,12 @@ namespace IngameScript
 
         static void DrawRect(List<MySprite> sprites, float x, float y, float w, float h, Color c, float wd = 1)
         {
-            DrawLine(sprites, x,   y,   x+w, y,   c, wd);
-            DrawLine(sprites, x,   y+h, x+w, y+h, c, wd);
-            DrawLine(sprites, x,   y,   x,   y+h, c, wd);
-            DrawLine(sprites, x+w, y,   x+w, y+h, c, wd);
+            var wd2 = wd/2;
+
+            DrawLine(sprites, x-wd2, y,       x+w+wd2, y,   c, wd);
+            DrawLine(sprites, x-wd2, y+h,     x+w+wd2, y+h, c, wd);
+            DrawLine(sprites, x,     y-wd2,   x,       y+h, c, wd);
+            DrawLine(sprites, x+w,   y-wd2,   x+w,     y+h, c, wd);
         }
 
 

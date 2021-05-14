@@ -266,20 +266,12 @@ namespace IngameScript
             }
 
 
-            public override void Remove(Setting setting)
+            public override void DeleteSetting(Setting setting)
             {
-                     if (setting == Trigger)  Trigger  = null;
-                else if (setting == Envelope) Envelope = null;
-                else if (setting == Lfo)    
-                {
-                    g_lfo.Remove(Lfo);
-                    Lfo = null; 
-                }
-                else if (setting == Modulate)
-                {
-                    g_mod.Remove(Modulate);
-                    Modulate = null;
-                }
+                     if (setting == Trigger )                           Trigger  = null;
+                else if (setting == Envelope)                           Envelope = null;
+                else if (setting == Lfo     ) { g_lfo.Remove(Lfo);      Lfo      = null; }
+                else if (setting == Modulate) { g_mod.Remove(Modulate); Modulate = null; }
             }
 
 
@@ -584,9 +576,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return 
-                       Parent != null
-                    && Tag == strOff;
+                return Tag == strOff;
             }
 
 

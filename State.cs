@@ -9,33 +9,33 @@ namespace IngameScript
         static float[]  g_steps = { 0.25f, 0.5f, 1, 2, 4, 8, 16, float_Inf };
 
 
-        static long     g_time            = -1; // in ticks
+        static long     g_time           = -1; // in ticks
         static float    TimeStep { get { return (float)g_time / g_session.TicksPerStep; } }
 
-        static bool     g_playing         = false;
+        static bool     g_playing        = false;
 
-        static bool     g_started         = false,
-                        g_init            = false;
-                                          
-        static int      g_curRuntimeTick  = 0;
-        static float[]  g_runtimeMs       = new float[6];
-        static float    g_maxRuntimeMs    = 0;
-                                          
-        float           g_instCount       = 0,
-                        g_dspCount        = 0;
+        static bool     g_started        = false,
+                        g_init           = false;
+                                         
+        static int      g_curRuntimeTick = 0;
+        static float[]  g_runtimeMs      = new float[6];
+        static float    g_maxRuntimeMs   = 0;
+                                         
+        float           g_instCount      = 0,
+                        g_dspCount       = 0;
 
 
-        static bool     g_showSession     = true;
-        static bool     g_setClip         = false;
-                                          
-        static bool     g_move            = false;
-
-                                          
-        static Session  g_session         = null;
+        static bool     g_showSession    = true;
+        static bool     g_setClip        = false;
+                                         
+        static bool     g_move           = false;
+        static int      g_lockView       = 0; // 1 = pattern, 2 = piano
+                                         
+        static Session  g_session        = null;
         //static Clip   CurClip = null;
 
-                                          
-        Key             g_editKey         = null;
+                                         
+        Key             g_editKey        = null;
 
 
         static void SetDefaultMachineState()

@@ -21,7 +21,9 @@
                    ModDestConnecting != null
                 ||    CurSrc > -1
                    && CurSet <  0
-                   && SelSource.On;
+                   && SelSource.On
+                ||    SelChan < 0
+                   && g_lockView > 0;
         }
 
 
@@ -57,16 +59,14 @@
             else
             {
                 if (CurSrc > -1) lbl.SetText("On");
-                else             lbl.SetText(SelChan < 0 ? "Copy" : " ");
+                else             lbl.SetText(SelChan < 0 ? "Lock" : " ");
             }
         }
 
 
         void UpdateCmd2(Label lbl)
         {
-                 if (CurSrc > -1) lbl.SetText("Osc ↕");
-            else if (CurSet > -1) lbl.SetText(" ");
-            else                  lbl.SetText(SelChan < 0 ? "Paste" : " ");
+            lbl.SetText(CurSrc > -1 ? "Osc ↕" : " ");
         }
 
 

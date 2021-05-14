@@ -18,7 +18,8 @@ namespace IngameScript
 
             public Session()
             {
-                Name        = "Untitled";
+                Name        = "New Session";
+
                 Instruments = new List<Instrument>();
 
                 CreateDefaultSession();
@@ -98,6 +99,8 @@ namespace IngameScript
 
             void CreateDefaultInstruments()
             {
+                Instruments.Clear();
+
                 Instruments.Add(new Instrument());
                 Instruments[0].Sources.Add(new Source(Instruments[0]));
             }
@@ -114,6 +117,7 @@ namespace IngameScript
                 clip.Patterns.Add(new Pattern(Instruments[0], clip));
 
                 Tracks[0].Add(clip, 0);
+                Tracks[0].CurIndex = 0;
 
                 CurClip = Tracks[0].Clips[0];
             }
