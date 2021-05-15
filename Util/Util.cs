@@ -527,13 +527,13 @@ namespace IngameScript
         static int        CurSrc         { get { return CurClip.CurSrc;  } set { CurClip.CurSrc  = value; } }
         static int        CurSet         { get { return CurClip.CurSet;  } set { CurClip.CurSet  = value; } }
                                          
-        static float      PlayStep       { get { return CurClip.PlayStep; } }
-        static int        PlayPat        { get { return CurClip.PlayPat;  } }
+        static float      PlayStep       { get { return CurClip.Track.PlayStep; } }
+        static int        PlayPat        { get { return CurClip.Track.PlayPat;  } }
                                          
-        static Pattern    CurPattern     { get { return CurClip.CurPattern;                } }
-        static Channel    CurChannel     { get { return CurClip.CurChannel;                } }
-        static Pattern    PlayPattern    { get { return CurClip.Patterns[CurClip.PlayPat]; } }
-        static Channel    PlayChannel    { get { return PlayPattern.Channels[CurChan];     } }
+        static Pattern    CurPattern     { get { return CurClip.CurPattern;            } }
+        static Channel    CurChannel     { get { return CurClip.CurChannel;            } }
+        static Pattern    PlayPattern    { get { return CurClip.Patterns[PlayPat];     } }
+        static Channel    PlayChannel    { get { return PlayPattern.Channels[CurChan]; } }
                                          
         static Source     SelSource      { get { return CurClip.SelSource;     } }  
         static Instrument CurInstrument  { get { return CurClip.CurInstrument; } }  

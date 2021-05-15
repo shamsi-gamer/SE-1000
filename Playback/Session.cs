@@ -44,29 +44,17 @@ namespace IngameScript
             { 
                 var track = Tracks[tr];
 
-                if (g_setClip)
+                var found = track.Indices.FindIndex(i => i == index);
+
+                if (found < 0)
                 {
-                    var found = track.Indices.FindIndex(i => i == index);
+                    CurClip = new Clip(track);
+                    CurClip.Patterns.Add(new Pattern(Instruments[0], CurClip));
+                    CurClip.Name = "New Clip";
 
-                    if (found < 0)
-                    {
-                        CurClip = new Clip(track);
-                        CurClip.Patterns.Add(new Pattern(Instruments[0], CurClip));
-                        CurClip.Name = "New Clip";
-
-                        track.Clips  .Add(CurClip);
-                        track.Indices.Add(index);
-                        track.CurIndex = index;
-                    }
-                    else
-                    {
-                        CurClip = track.Clips[found];
-                    }
-
-                    g_setClip     = F;
-                    g_showSession = F;
-
-                    //UpdateLabels();
+                    track.Clips  .Add(CurClip);
+                    track.Indices.Add(index);
+                    track.CurIndex = index;
                 }
                 else
                 {
@@ -75,6 +63,14 @@ namespace IngameScript
                         ? index
                         : -1;
                 }
+
+                if (g_setClip)
+                { 
+                    g_showSession = F;
+                    CurClip = track.Clips[track.CurIndex];
+                }
+
+                g_setClip = F;
             }
 
 

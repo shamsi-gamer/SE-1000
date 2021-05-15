@@ -36,7 +36,7 @@ namespace IngameScript
 
             var _dummy = new List<TriggerValue>();
 
-            var tp = new TimeParams(g_time, 0, g_time - CurClip.StartTime, null, CurClip.EditLength, CurSrc, _dummy, this);
+            var tp = new TimeParams(g_time, 0, g_time - CurClip.Track.StartTime, null, CurClip.EditLength, CurSrc, _dummy, this);
 
             var songSteps =
                 arp != null
@@ -80,8 +80,8 @@ namespace IngameScript
                     { 
                         var notes = CurClip.Patterns[p].Channels[SelChan].Notes.FindAll(n => 
                                   n.Instrument.Arpeggio != null
-                               && CurClip.PlayTime >= n.PatStep*g_session.TicksPerStep + n.PatTime                
-                               && CurClip.PlayTime <  n.PatStep*g_session.TicksPerStep + n.PatTime + n.FrameLength);
+                               && CurClip.Track.PlayTime >= n.PatStep*g_session.TicksPerStep + n.PatTime                
+                               && CurClip.Track.PlayTime <  n.PatStep*g_session.TicksPerStep + n.PatTime + n.FrameLength);
 
                         foreach (var n in notes)
                             arpNotes.Add(n);

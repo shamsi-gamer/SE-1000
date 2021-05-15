@@ -81,14 +81,12 @@ namespace IngameScript
             {
                 //curPath = "";
 
-                int c = 0;
+                var c = 0;
 
                 Name = cfg[c++].Replace("\u0085", "\n");
 
                 LoadToggles(cfg[c++]);
 
-                if (! long_TryParse(cfg[c++], out PlayTime   )) return F;
-                if (!int  .TryParse(cfg[c++], out PlayPat    )) return F;
                 if (!int  .TryParse(cfg[c++], out CueNext    )) return F;
 
                 if (!int  .TryParse(cfg[c++], out CurPat     )) return F;

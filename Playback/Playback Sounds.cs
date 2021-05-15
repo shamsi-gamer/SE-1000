@@ -10,7 +10,7 @@ namespace IngameScript
             if (del == null) return;
 
             var lTime = g_time - snd.Note.PatTime;
-            var sTime = g_time - CurClip.StartTime;
+            var sTime = g_time - CurClip.Track.StartTime;
 
             var tp = new TimeParams(g_time, lTime, sTime, snd.Note, snd.Length, snd.SourceIndex, snd.TriggerValues, this);
 

@@ -31,27 +31,6 @@ namespace IngameScript
             public bool[]        ChanOn = new bool[g_nChans];
 
 
-            public long          StartTime, // in ticks
-                                 PlayTime;
-
-            public int           PlayPat; // this can't be a property because it must sometimes be separate from PlayTime, for queueing
-
-            public float         PlayStep { get 
-                                 { 
-                                     return 
-                                         g_playing 
-                                         ? PlayTime / (float)Track.Session.TicksPerStep 
-                                         : fN; 
-                                 } }
-
-          //public float         PlayStep { get
-          //                     {
-          //                         return
-          //                               (g_playing ? PlayTime : g_time)
-          //                             / (float)Track.Session.TicksPerStep;
-          //                     } }
-
-
             public int           CueNext;
 
             public bool          Recording;
@@ -154,11 +133,7 @@ namespace IngameScript
                     ChannelAutoKeys[i] = new List<Key>();
 
                 EditNotes   = new List<Note>();
-                            
-                PlayTime    = long_NaN;
-                StartTime   = long_NaN;
-                            
-                PlayPat     = -1;
+
                 CueNext     = -1;
                             
                 Recording   = 
@@ -257,11 +232,6 @@ namespace IngameScript
                     ChannelAutoKeys[i] = new List<Key>(clip.ChannelAutoKeys[i]);
 
                 EditNotes       = new List<Note>();
-                                
-                PlayTime        = clip.PlayTime;
-                StartTime       = clip.StartTime;
-                                
-                PlayPat         = clip.PlayPat;
                                 
                 CueNext         = clip.CueNext;
                                 
@@ -414,54 +384,6 @@ namespace IngameScript
             }
 
 
-            public void CueNextPattern()
-            {
-                Length = Patterns.Count * g_patSteps;
-
-
-                if (CueNext > -1)
-                {
-                    var b = GetBlock(PlayPat);
-
-                    if (Block && b != null)
-                        PlayPat = b.Last;
-                }
-
-
-                if (PlayStep >= (PlayPat + 1) * g_patSteps)
-                { 
-                    int start, end;
-                    GetPosLimits(PlayPat, out start, out end);
-                    end = start + Math.Min(end - start, Length);
-
-                    if (CueNext > -1)
-                    {
-                        var b = GetBlock(CueNext);
-                        if (Block && b != null)
-                            CueNext = b.First;
-
-                        PlayTime  = GetPatTime(CueNext);
-                        StartTime = g_time - PlayTime;
-
-                        CueNext = -1;
-                    }
-                    else if (PlayStep >= end)
-                    {
-                        WrapCurrentNotes(end - start);
-
-                        PlayTime  -= (end - start) * g_session.TicksPerStep;
-                        StartTime += (end - start) * g_session.TicksPerStep;
-                    }
-                }
-
-
-                PlayPat =
-                    g_playing
-                    ? (int)(PlayStep / g_patSteps)
-                    : -1;
-            }
-
-
             public void GetPosLimits(int pat, out int start, out int end)
             {
                 int first, last;
@@ -524,39 +446,6 @@ namespace IngameScript
                         && timeStep <  noteStep + note.StepLength)
                         note.UpdateStepTime(-nWrapSteps);
                 }
-            }
-
-
-            public void FinalizePlayback()
-            {
-                //var pat = clip.Patterns[clip.PlayPat];
-
-                //for (int ch = 0; ch < nChans; ch++)
-                //{
-                //    var chan = pat.Channels[ch];
-
-                //    var arpNotes = chan.Notes.FindAll(n =>
-                //                n.Instrument.Arpeggio != null
-                //            && (int)(clip.PlayStep * g_session.TicksPerStep) >= (int)((clip.PlayPat * nSteps + n.StepTime               ) * g_session.TicksPerStep)
-                //            && (int)(clip.PlayStep * g_session.TicksPerStep) <  (int)((clip.PlayPat * nSteps + n.StepTime + n.StepLength) * g_session.TicksPerStep));
-
-                //    var noteLen = (int)(EditLength * g_session.TicksPerStep);
-
-                //    foreach (var n in arpNotes)
-                //    {
-                //        var arp = n.Instrument.Arpeggio;
-
-                //        n.FramePlayTime += arp.Scale .UpdateValue(g_time, 0, clip.StartTime, noteLen, n, -1);
-                //        var maxLength    = arp.Length.UpdateValue(g_time, 0, clip.StartTime, noteLen, n, -1);
-
-                //        while (n.FramePlayTime >= maxLength * g_session.TicksPerStep)
-                //            n.FramePlayTime -= maxLength * g_session.TicksPerStep;
-                //    }
-                //}
-
-
-                if (g_playing)
-                    PlayTime++;
             }
 
 

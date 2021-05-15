@@ -66,8 +66,6 @@
                       Name.Replace("\n", "\u0085")
                     + PS(SaveToggles())
 
-                    + P (PlayTime == long_NaN ? "?" : S(PlayTime))
-                    + PS(PlayPat)
                     + PS(CueNext)
 
                     + PS(CurPat)         

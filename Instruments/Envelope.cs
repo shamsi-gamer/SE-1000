@@ -249,7 +249,7 @@ namespace IngameScript
             {
                 var sTime = 
                     g_playing
-                    ? g_time - CurClip.StartTime
+                    ? g_time - CurClip.Track.StartTime
                     : 0;
 
                 var tp = new TimeParams(g_time, 0, sTime, null, CurClip.EditLength, -1, _triggerDummy, dp.Program);

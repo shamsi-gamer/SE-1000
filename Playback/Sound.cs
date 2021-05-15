@@ -162,7 +162,7 @@ namespace IngameScript
 
 
                 var lTime = g_time - Time;
-                var sTime = g_time - CurClip.StartTime;
+                var sTime = g_time - CurClip.Track.StartTime;
 
                 var tp = new TimeParams(g_time, lTime, sTime, Note, Length, SourceIndex, TriggerValues, prog);
 
@@ -171,9 +171,9 @@ namespace IngameScript
                 if (Cache != null) // not echo
                 {
                     var updateVol = 
-                        CurClip.PlayTime < Time + Length + ReleaseLength
+                        CurClip.Track.PlayTime < Time + Length + ReleaseLength
                         //&& !prog.TooComplex
-                        ? GetVolume(g_time, CurClip.StartTime, prog)
+                        ? GetVolume(g_time, CurClip.Track.StartTime, prog)
                         : 0;
 
                     vol = 

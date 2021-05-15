@@ -9,17 +9,17 @@ namespace IngameScript
         {
             CurClip.SetCurrentPattern(CurPat);
 
-            CurClip.PlayTime = playTime % (CurClip.Patterns.Count * g_patSteps * g_session.TicksPerStep);
+            CurClip.Track.PlayTime = playTime % (CurClip.Patterns.Count * g_patSteps * g_session.TicksPerStep);
 
-            CurClip.StartTime =
+            CurClip.Track.StartTime =
                 g_playing
-                ? g_time - CurClip.PlayTime        
+                ? g_time - CurClip.Track.PlayTime        
                 : long_NaN;
 
             if (CurClip.AutoCue)
                 CurClip.SetCue();
 
-            CurClip.CueNextPattern();
+            CurClip.Track.CueNextPattern();
         }
 
 
@@ -27,7 +27,7 @@ namespace IngameScript
         {
             UpdateTime();
 
-            StopNotes(g_playing ? CurClip.PlayStep : 0);
+            StopNotes(g_playing ? CurClip.Track.PlayStep : 0);
             DeleteSounds(StopSounds());
 
             UpdateSounds();
@@ -49,11 +49,11 @@ namespace IngameScript
 
                 var clip = track.Clips[track.CurIndex];
 
-                clip.CueNextPattern();
+                clip.Track.CueNextPattern();
 
                 if (   clip == CurClip
                     && clip.Follow) 
-                    clip.SetCurrentPattern(clip.PlayPat);
+                    clip.SetCurrentPattern(clip.Track.PlayPat);
 
                 AddPlaybackNotes(clip);
             }

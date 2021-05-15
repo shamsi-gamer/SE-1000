@@ -153,7 +153,7 @@ namespace IngameScript
 
             var patStep = 
                   (g_playing 
-                   ? (clip.PlayPat - clip.CurPat) * g_patSteps + (clip.PlayStep % g_patSteps) 
+                   ? (clip.Track.PlayPat - clip.CurPat) * g_patSteps + (clip.Track.PlayStep % g_patSteps) 
                    : 0) 
                 + chordSpreadOffset;
 
@@ -170,15 +170,15 @@ namespace IngameScript
             if (TooComplex)
                 return;
 
-            var pat = clip.Patterns[clip.PlayPat];
+            var pat = clip.Patterns[clip.Track.PlayPat];
 
             for (int ch = 0; ch < g_nChans; ch++)
             {
                 var chan = pat.Channels[ch];
                 if (!chan.On) continue;
 
-                var sh    = (int)clip.PlayStep % 2 != 0 ? chan.Shuffle : 0;
-                var notes = chan.Notes.FindAll(n => n.SongTime == clip.PlayTime);
+                var sh    = (int)clip.Track.PlayStep % 2 != 0 ? chan.Shuffle : 0;
+                var notes = chan.Notes.FindAll(n => n.SongTime == clip.Track.PlayTime);
 
                 foreach (var n in notes)
                 {
@@ -203,7 +203,7 @@ namespace IngameScript
             var clip = note.Channel.Pattern.Clip;
 
 
-            var sh = (int)clip.PlayStep % 2 != 0 ? note.Channel.Shuffle : 0;
+            var sh = (int)clip.Track.PlayStep % 2 != 0 ? note.Channel.Shuffle : 0;
 
             //if (note.Instrument.Arpeggio != null)
             //{
@@ -234,8 +234,8 @@ namespace IngameScript
             //{
                 var found =
                     g_notes.Find(n => 
-                           clip.PlayStep >= n.PatStep 
-                        && clip.PlayStep <  n.PatStep + n.StepLength);
+                           clip.Track.PlayStep >= n.PatStep 
+                        && clip.Track.PlayStep <  n.PatStep + n.StepLength);
                 
                 if (   found != null
                     && found.Number == note.Number
@@ -251,7 +251,7 @@ namespace IngameScript
                         src.CreateSounds(note.Sounds, note, this);
                 }
 
-                if (!g_playing)//CurClip.PlayTime < 0)
+                if (!g_playing)//CurClip.Track.PlayTime < 0)
                     note.PatStep = TimeStep;
 
                 g_notes.Add(note);
@@ -286,7 +286,7 @@ namespace IngameScript
             var tp = new TimeParams(
                 g_time, 
                 0, 
-                g_time - note.Channel.Pattern.Clip.StartTime, 
+                g_time - note.Channel.Pattern.Clip.Track.StartTime, 
                 note, 
                 sndLen, 
                 src.Index, 

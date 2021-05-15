@@ -32,7 +32,8 @@ namespace IngameScript
                 foreach (var lfo in g_lfo) lfo.AdvanceTime();
                 foreach (var mod in g_mod) mod.AdvanceTime();
 
-                CurClip.FinalizePlayback();
+                foreach (var track in g_session.Tracks)
+                    track.FinalizePlayback();
             }
 
             UpdateRuntimeInfo();

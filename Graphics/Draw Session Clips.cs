@@ -38,45 +38,63 @@ namespace IngameScript
 
                 for (int ix = nDsp*6 + 0; ix < nDsp*6 + 6; ix++)
                 {
-                    var iClip = track.Indices.FindIndex(i => i == ix);
-                    var col   = iClip < 0 ? color2 : color4;
+                    var iClip     = track.Indices.FindIndex(i => i == ix);
+                    var isCurClip = iClip == track.CurIndex;
 
-                    var cx = x + w/6*(ix - nDsp*6);
-                    var cy = y + h/4*iy;
+                    var cw = w/6;
+                    var ch = h/4;
+
+                    var cx = x + cw*(ix - nDsp*6);
+                    var cy = y + ch*iy;
                     
                     FillRect(
                         sprites, 
                         cx + gap/2, 
                         cy + gap/2, 
-                        w/6 - gap,
-                        h/4 - gap, 
-                        col); 
+                        cw - gap,
+                        ch - gap,
+                        iClip < 0 ? color1 : (isCurClip ? color3 : color1));
 
                     if (iClip != ix) continue;
                     var clip = track.Clips[iClip];
 
-                    // current clip of track
-                    if (iClip == track.CurIndex)
-                        DrawRect(
+                    for (int j = 1; j < clip.Patterns.Count; j++)
+                    {
+                        var pw = cw / clip.Patterns.Count;
+                        var lx = cx + gap/2 + j*pw;
+
+                        DrawLine(
                             sprites, 
-                            cx + gap/2 + 3, 
-                            cy + gap/2 + 3, 
-                            w/6 - gap - 6,
-                            h/4 - gap - 6, 
-                            color5,
+                            lx,
+                            cy, 
+                            lx, 
+                            cy + ch,
+                            isCurClip ? color4 : color2, 
                             6); 
+                    }
+
 
                     // current clip of session
                     if (clip == g_session.CurClip)
                         DrawRect(
                             sprites, 
-                            cx + gap/2 + 11, 
-                            cy + gap/2 + 11, 
-                            w/6 - gap - 22,
-                            h/4 - gap - 22, 
+                            cx + gap/2 + 3, 
+                            cy + gap/2 + 3, 
+                            cw - gap - 6,
+                            ch - gap - 6, 
                             color5,
-                            4); 
+                            6);
 
+                    // position in current clip
+                    if (iClip == track.CurIndex)
+                    {
+                        var pw = cw / clip.Patterns.Count;
+                        var px = cx + gap/2 + (track.PlayStep / g_patSteps) * pw;
+                        DrawLine(sprites, px, cy, px, cy + ch, color6, 6); 
+                    }
+
+
+                    // clip name
                     var name       = clip.Name.Split('\n')[0];
                     var nNameLines = clip.Name.Split(' ').Length;
 
@@ -86,18 +104,8 @@ namespace IngameScript
                         cx + w/12,
                         cy + h/8 - 15 - (nNameLines-1)*20,
                         1,
-                        color0,
+                        isCurClip ? color0 : color4,
                         TaC);
-
-
-                    // debug
-                    DrawString(
-                        sprites,
-                        $"iClip = {iClip}",
-                        cx + 5,
-                        cy + 5,
-                        0.4f,
-                        color0);
                 }
             }
 

@@ -172,7 +172,7 @@ namespace IngameScript
                     if (i == 0) snd0 = snd;
 
                     var lTime = g_time - sndTime;
-                    var sTime = g_playing ? g_time - CurClip.StartTime : lTime;
+                    var sTime = g_playing ? g_time - CurClip.Track.StartTime : lTime;
 
                     if (!prog.TooComplex)
                     { 

@@ -156,7 +156,7 @@ namespace IngameScript
                 }
 
                 if (g_playing)
-                    PlayTime += GetPatTime(CurPat - destPat);
+                    Track.PlayTime += GetPatTime(CurPat - destPat);
 
                 if (OK(EditPos))
                     EditPos = CurPat * g_patSteps + EditPos % g_patSteps;
@@ -298,8 +298,8 @@ namespace IngameScript
                 //if (OK(g_song.PlayTime))
                 //    g_song.StartTime += nSteps * g_session.TicksPerStep;
 
-                if (PlayPat >= Patterns.Count)
-                    PlayPat  = Patterns.Count - 1;
+                if (Track.PlayPat >= Patterns.Count)
+                    Track.PlayPat  = Patterns.Count - 1;
 
 
                 UpdateAutoKeys();

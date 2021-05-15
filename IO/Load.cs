@@ -26,7 +26,7 @@ namespace IngameScript
             {
                 g_setClip = T;
                 g_session.SetClip(curClipTrack, curClipIndex);
-                InitPlaybackAfterLoad(CurClip.PlayTime);
+                InitPlaybackAfterLoad(CurClip.Track.PlayTime);
             }
             else
                 g_session = new Session();

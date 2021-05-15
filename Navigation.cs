@@ -18,13 +18,13 @@ namespace IngameScript
 
             if (CurClip.CueNext > -1)
             {
-                CurClip.PlayTime = GetPatTime(CurClip.CueNext);
+                CurClip.Track.PlayTime = GetPatTime(CurClip.CueNext);
                 CurClip.CueNext  = -1;
             }
             else
-                CurClip.PlayTime = GetPatTime(CurPat);
+                CurClip.Track.PlayTime = GetPatTime(CurPat);
 
-            CurClip.StartTime = g_time - CurClip.PlayTime;
+            CurClip.Track.StartTime = g_time - CurClip.Track.PlayTime;
 
             //UpdatePlayStopLabels();
         }
@@ -38,7 +38,7 @@ namespace IngameScript
             g_playing = F;
 
 
-            if (!g_playing)//CurClip.PlayTime < 0)
+            if (!g_playing)//CurClip.Track.PlayTime < 0)
             {
                 var b = CurClip.GetBlock(CurPat);
 
@@ -55,8 +55,8 @@ namespace IngameScript
             CurClip.TrimCurrentNotes();
 
 
-            CurClip.PlayTime  = long_NaN;
-            CurClip.StartTime = long_NaN;
+            CurClip.Track.PlayTime  = long_NaN;
+            CurClip.Track.StartTime = long_NaN;
 
 
             lastNotes.Clear();
