@@ -73,11 +73,11 @@ namespace IngameScript
             case   3: OscSquare        = new Oscillator(OscType.Square,        "Sqr",   strSqr);      break;
             case   4: OscLowNoise      = new Oscillator(OscType.LowNoise,      "Lo #",  strLow);      break;
             case   5: OscHighNoise     = new Oscillator(OscType.HighNoise,     "Hi #",  strHigh);     break;
-            case   6: OscBandNoise     = new Oscillator(OscType.BandNoise,     "Bnd #", strBand);     break;
+            case   6: OscBandNoise     = new Oscillator(OscType.BandNoise,     "Bd #", strBand);     break;
             case   7: OscSlowSweepDown = new Oscillator(OscType.SlowSweepDown, "Sw ▼",  strSlowDown); break;
-            case   8: OscFastSweepDown = new Oscillator(OscType.FastSweepDown, "Sw ▼▼", strFastDown); break;
+            case   8: OscFastSweepDown = new Oscillator(OscType.FastSweepDown, "Sw▼▼", strFastDown); break;
             case   9: OscSlowSweepUp   = new Oscillator(OscType.SlowSweepUp,   "Sw ▲",  strSlowUp);   break;
-            case  10: OscFastSweepUp   = new Oscillator(OscType.FastSweepUp,   "Sw ▲▲", strFastUp);   break;
+            case  10: OscFastSweepUp   = new Oscillator(OscType.FastSweepUp,   "Sw▲▲", strFastUp);   break;
             case  11: OscCrunch        = new Oscillator(OscType.Crunch,        "Crn",   strCrn);      break;
             case  12: OscSample        = new Oscillator(OscType.Sample,        "Smpl");               break;
             }

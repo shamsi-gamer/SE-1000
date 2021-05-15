@@ -347,7 +347,7 @@ namespace IngameScript
                     FillRect(sprites, xh + gap/2,                yt + ht, wc - gap - 8, -ht * curVal, color4);
                     FillRect(sprites, xh + gap/2 + (wc-gap) - 7, yt + ht, 7,            -ht * val,    color6);
 
-                    DrawString(sprites, S(i+1), xt + i*wc + wc/2 - 4, yt + ht - 15, 0.4f, color3, TaC);
+                    DrawString(sprites, S(i+1), xt + i*wc + wc/2 - 3, yt + ht - 14, 0.4f, color3, TaC);
                 }
 
                 // current tone

@@ -285,7 +285,6 @@ namespace IngameScript
                     }
                 }        
             }
-
         }
     }
 }

@@ -29,7 +29,7 @@ namespace IngameScript
         }
 
 
-        static void DrawValueVertical(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag, bool mixer = T)
+        static void DrawValueVertical(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag, int dec, bool mixer = T)
         {
             var wb = w/10;
             var wg = w/20;
@@ -66,7 +66,7 @@ namespace IngameScript
             // set value number
             DrawString(
                 sprites, 
-                printValue(value, 3, T, 0), 
+                printValue(value, dec, T, 0), 
                 x + wl + 30, 
                 zy - sy - 10, 
                 1f, 

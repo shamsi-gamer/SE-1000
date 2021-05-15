@@ -499,7 +499,9 @@ namespace IngameScript
                         Tag);
                 }
                 else
-                { 
+                {
+                    var dec = Tag == strTune ? 1 : 3;
+
                     DrawValueVertical(
                         sprites, 
                         x + w/2 - valWidth, 
@@ -509,6 +511,7 @@ namespace IngameScript
                         Min, Max, 
                         Value, CurValue, 
                         Tag, 
+                        dec,
                         F);
                 }
             }
@@ -530,7 +533,10 @@ namespace IngameScript
                       && Tag    == strOff)
                     DrawValueHorizontal(sprites, x + bx +  5, y + by + 90, 180,  50, Min, Max, Value, CurValue, Tag);
                 else
-                    DrawValueVertical  (sprites, x + bx + 20, y + by + 90,  60, 120, Min, Max, Value, CurValue, Tag, F);
+                { 
+                    var dec = Tag == strTune ? 1 : 2;
+                    DrawValueVertical  (sprites, x + bx + 20, y + by + 90,  60, 120, Min, Max, Value, CurValue, Tag, dec, F);
+                }
             }
 
 
