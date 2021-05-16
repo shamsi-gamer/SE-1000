@@ -76,7 +76,7 @@ namespace IngameScript
 
 
 
-        static SpeakerManager g_sm = new SpeakerManager();
+        static  SpeakerManager g_sm = new SpeakerManager();
 
 
         void InitSpeakers()

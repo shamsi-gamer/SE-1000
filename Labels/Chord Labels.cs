@@ -43,7 +43,7 @@
             var chord = lbl.Data;
 
             return
-                    CurClip.Chord == chord-1
+                   CurClip.Chord == chord-1
                 && (   CurClip.ChordEdit
                     || CurClip.ChordMode)
                 && !IsCurParam(strTune);

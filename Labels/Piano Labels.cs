@@ -49,7 +49,7 @@ namespace IngameScript
         bool PianoHighIsBright(Label lbl)
         {
             return
-                ShowPiano
+                  ShowPiano
                 ? NoteIsBright(HighToNote(lbl.Data))
                 : ToggleIsBright(lbl);
         }
@@ -58,7 +58,7 @@ namespace IngameScript
         bool PianoHighIsDim(Label lbl)
         {
             return
-                   ShowPiano 
+                   ShowPiano
                 && NoteIsDim(HighToNote(lbl.Data));
         }
 
@@ -121,7 +121,7 @@ namespace IngameScript
         bool PianoLowIsBright(Label lbl)
         {
             return
-                ShowPiano
+                   ShowPiano
                 ?    -lbl.Data == 15 && CurClip.HalfSharp
                   || NoteIsBright(LowToNote(-lbl.Data))
                 : StepIsBright(lbl);
@@ -130,10 +130,9 @@ namespace IngameScript
 
         bool PianoLowIsDim(Label lbl)
         {
-            return
-                ShowPiano
-                ? NoteIsDim(LowToNote(-lbl.Data))
-                : F;
+            return 
+                   ShowPiano 
+                && NoteIsDim(LowToNote(-lbl.Data));
         }
 
 
@@ -248,10 +247,37 @@ namespace IngameScript
 
         bool ToggleIsBright(Label lbl)
         {
-            return 
+            return
                    lbl.Data == 2 && CurClip.Pick
                 || lbl.Data == 3 && CurClip.AllChan
                 || lbl.Data == 4 && CurClip.RndInst;
+        }
+
+
+        void UpdatePianoToggle(Label lbl)
+        {
+            if (ShowPiano)
+            {
+                lbl.SetText(
+                    //  "     ║  ███  ║       ║  ███\n"
+                    //+ "     ║       ║       ║     \n"
+                    //+ "═════╬═══════╬═══════╬═════\n"
+                    //+ "     ║       ║       ║     \n"
+                    //+ " ███ ║  ███  ║  ███  ║  ███\n",
+                    lblHigh[10].Panel.CustomData,
+                    1.7f,
+                    17);
+            }
+            else
+            {
+                lbl.SetText(
+                    //  "█ █ ██ █ █ █\n"
+                    //+ "█▄█▄██▄█▄█▄█\n"
+                    //+ "▀▀▀▀▀▀▀▀▀▀▀▀\n",
+                    lblShuffle.Panel.CustomData,
+                    3.7f,
+                    10);
+            }
         }
 
 
@@ -296,11 +322,12 @@ namespace IngameScript
 
             else if (ShowPiano)
                 lbl.SetText(
-                    " ▄█   █ █ ██ █ █ █   █▄ \n" +
-                   " ▀██   █▄█▄██▄█▄█▄█   ██▀ \n" +
-                     " ▀   ▀▀▀▀▀▀▀▀▀▀▀▀   ▀ ",
-                    2,
-                    32);
+                    //  "█ █ ██ █ █ █\n"
+                    //+ "█▄█▄██▄█▄█▄█\n"
+                    //+ "▀▀▀▀▀▀▀▀▀▀▀▀\n",
+                    lblShuffle.Panel.CustomData,
+                    3.7f,
+                    10);
 
             else
                 lbl.SetText("Shuf");

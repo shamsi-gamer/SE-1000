@@ -85,7 +85,7 @@ namespace IngameScript
             public override string GetLabel(out float width)
             {
                 width = 90f; 
-                return printValue(Value, 2, T, 1).PadLeft(5);
+                return PrintValue(Value, 2, T, 1).PadLeft(5);
             }
 
 

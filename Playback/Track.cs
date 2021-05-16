@@ -122,6 +122,9 @@ namespace IngameScript
                         PlayTime  -= (end - start) * g_session.TicksPerStep;
                         StartTime += (end - start) * g_session.TicksPerStep;
                     }
+
+                    if (NextIndex > -1)
+                        CurIndex = NextIndex;
                 }
 
 

@@ -55,7 +55,7 @@ namespace IngameScript
                 else SetCurrentPattern(CurPat - 1);
 
                 //MarkLabel(lblPrevPat, !movePat);
-                g_clipPressed.Add(5);
+                g_lcdPressed.Add(lcdClip+5);
             }
 
 
@@ -65,7 +65,7 @@ namespace IngameScript
                 else SetCurrentPattern(CurPat + 1);
 
                 //MarkLabel(lblNextPat, !movePat);
-                g_clipPressed.Add(6);
+                g_lcdPressed.Add(lcdClip+6);
             }
 
 
@@ -165,7 +165,7 @@ namespace IngameScript
                 UpdateAutoKeys();
 
 
-                g_clipPressed.Add(7);
+                g_lcdPressed.Add(lcdClip+7);
             }
 
 
@@ -239,7 +239,7 @@ namespace IngameScript
                 UpdateAutoKeys();
 
 
-                g_clipPressed.Add(2);
+                g_lcdPressed.Add(lcdClip+2);
             }
 
 
@@ -310,7 +310,7 @@ namespace IngameScript
 
                 ValMem();
 
-                g_clipPressed.Add(0);
+                g_lcdPressed.Add(lcdClip+0);
             }
 
 
@@ -348,7 +348,7 @@ namespace IngameScript
                 UpdateAutoKeys();
 
 
-                g_clipPressed.Add(1);
+                g_lcdPressed.Add(lcdClip+1);
             }        
         }
     }

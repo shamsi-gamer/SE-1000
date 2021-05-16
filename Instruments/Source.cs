@@ -169,7 +169,7 @@ namespace IngameScript
 
                 if (Harmonics != null)
                 {
-                    Harmonics.CreateSounds(_sounds, this, note, noteNum, sndTime, note.FrameLength, relLen, vol, triggerValues, prog);
+                    Harmonics.CreateSounds(_sounds, this, note, noteNum, sndTime, note.FrameLength, relLen, triggerValues, prog);
                 }
                 else
                 {

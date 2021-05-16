@@ -18,7 +18,7 @@ namespace IngameScript
 
 
             if (arp == null)
-                DrawChannelList(sprites, x, y, 340, rh, clip);
+                DrawChannelList(sprites, x, y, 340, rh);
             else
             {
                 var dp = new DrawParams(this);
@@ -26,11 +26,11 @@ namespace IngameScript
 
                 var lenCol = CurSetting == arp.Length ? color6 : color3;
                 DrawString(sprites, "Length",                                 x + 30, y + 160, 1f,   lenCol);
-                DrawString(sprites, printValue(arp.Length.Value, 0, T, 0), x + 40, y + 200, 0.8f, lenCol);
+                DrawString(sprites, PrintValue(arp.Length.Value, 0, T, 0), x + 40, y + 200, 0.8f, lenCol);
 
                 var sclCol = CurSetting == arp.Scale ? color6 : color3;
                 DrawString(sprites, "Scale",                                  x + 30, y + 260, 1f,   sclCol);
-                DrawString(sprites, printValue(arp.Scale.Value, -3, T, 0), x + 40, y + 300, 0.8f, sclCol);
+                DrawString(sprites, PrintValue(arp.Scale.Value, -3, T, 0), x + 40, y + 300, 0.8f, sclCol);
             }
 
 
@@ -47,7 +47,7 @@ namespace IngameScript
             var xt = 340;
             var wt = (float)(w - xt) / g_patSteps;
 
-            DrawPianoGrid(sprites, x + xt, y, w - xt, rh, CurChan, songSteps);
+            DrawPianoGrid(sprites, x + xt, y, w - xt, rh, songSteps);
 
 
             // draw edit position
@@ -113,7 +113,7 @@ namespace IngameScript
         }
 
 
-        void DrawPianoGrid(List<MySprite> sprites, float x, float y, float w, float h, int ch, int songSteps)
+        void DrawPianoGrid(List<MySprite> sprites, float x, float y, float w, float h, int songSteps)
         {
             var wt = w/g_patSteps;
             var ht = h/25;

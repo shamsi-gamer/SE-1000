@@ -17,8 +17,7 @@ namespace IngameScript
             public Arpeggio(Instrument inst) 
                 : base(strArp, null, null, inst, null)
             {
-                Clip = new Clip(null, "");
-                Clip.Arpeggio = this;
+                Clip = new Clip(null, "") { Arpeggio = this };
                 Clip.Patterns.Add(new Pattern(inst, Clip));
                 
                 SetInstrument(inst);
@@ -158,7 +157,7 @@ namespace IngameScript
             {
                 DrawFuncButton(sprites, strLen, 1, w, h, T, Length.HasDeepParams(chan, -1));
                 DrawFuncButton(sprites, strScl, 2, w, h, T, Scale .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "X",   5, w, h, F, F, g_mainPressed.Contains(5));                
+                DrawFuncButton(sprites, "X",   5, w, h, F, F, IsPressed(lcdMain+5));                
             }
 
 

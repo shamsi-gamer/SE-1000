@@ -142,9 +142,9 @@ namespace IngameScript
                 width = 138;
 
                 return
-                      printValue(Cutoff   .Value, 2, T, 0).PadLeft(4) + " "
-                    + printValue(Resonance.Value, 2, T, 0).PadLeft(4) + " "
-                    + printValue(Sharpness.Value, 2, T, 0).PadLeft(4);
+                      PrintValue(Cutoff   .Value, 2, T, 0).PadLeft(4) + " "
+                    + PrintValue(Resonance.Value, 2, T, 0).PadLeft(4) + " "
+                    + PrintValue(Sharpness.Value, 2, T, 0).PadLeft(4);
             }
 
 
@@ -196,15 +196,15 @@ namespace IngameScript
 
                 // cutoff
                 DrawString(sprites, strCut,                       x0,       y0 - 40, fs, IsCurParam(strCut) ? color6 : color4);
-                DrawString(sprites, printValue(cut, 2, T, 0),  x0,       y0 - 25, fs, IsCurParam(strCut) ? color6 : color4);
+                DrawString(sprites, PrintValue(cut, 2, T, 0),  x0,       y0 - 25, fs, IsCurParam(strCut) ? color6 : color4);
                                                                   
                 // resonance                                      
                 DrawString(sprites, strRes,                       x0 + 100, y0 - 40, fs, IsCurParam(strRes) ? color6 : color4);
-                DrawString(sprites, printValue(res, 2, T, 0),  x0 + 100, y0 - 25, fs, IsCurParam(strRes) ? color6 : color4);
+                DrawString(sprites, PrintValue(res, 2, T, 0),  x0 + 100, y0 - 25, fs, IsCurParam(strRes) ? color6 : color4);
 
                 // sharpness
                 DrawString(sprites, strShrp,                      x0 + 200, y0 - 40, fs, IsCurParam(strShrp) ? color6 : color4);
-                DrawString(sprites, printValue(shrp, 2, T, 0), x0 + 200, y0 - 25, fs, IsCurParam(strShrp) ? color6 : color4);
+                DrawString(sprites, PrintValue(shrp, 2, T, 0), x0 + 200, y0 - 25, fs, IsCurParam(strShrp) ? color6 : color4);
             }
 
 
@@ -232,7 +232,7 @@ namespace IngameScript
                                 p = (int)FilterPass.Low;
 
                             Pass = (FilterPass)p;
-                            g_mainPressed.Add(func);
+                            g_lcdPressed.Add(func);
 
                             break;
                         }
@@ -255,11 +255,11 @@ namespace IngameScript
             shrp = Math.Min(shrp, 1);
 
             var val = 1f;
-            var rw  = nozero(1-shrp);
+            var rw  = Nozero(1-shrp);
 
             if (pass == FilterPass.Low)
             {
-                var cw = nozero((1+rw) * cut);
+                var cw = Nozero((1+rw) * cut);
                 var c  = 1 - (float)Math.Pow(f/cw, (6.4f/rw-1)*cut + 1);
                 var r  = (1 - (float)Math.Cos(1/rw*Tau*MinMax(0, f + rw - cw, rw))) / 3;
 
@@ -267,7 +267,7 @@ namespace IngameScript
             }
             else if (pass == FilterPass.High)
             {
-                var cw = nozero((1+rw) * (1-cut));
+                var cw = Nozero((1+rw) * (1-cut));
                 var c  = 1 - (float)Math.Pow((1-f) / cw, (6.4f/rw-1)*(1-cut) + 1);
                 var r  = (1 - (float)Math.Cos(1/rw*Tau*MinMax(0, 1-f + rw - cw, rw))) / 3;
 
@@ -278,7 +278,7 @@ namespace IngameScript
                 var f1 =  f - cut - res/2;
                 var f2 = -f + cut - res/2;
 
-                var s = nozero(1-shrp);
+                var s = Nozero(1-shrp);
 
                      if (0 <= f1 && f1 <= 1) val = 1 - (float)Math.Pow(f1/s, 1/s);
                 else if (0 <= f2 && f2 <= 1) val = 1 - (float)Math.Pow(f2/s, 1/s);
@@ -292,7 +292,7 @@ namespace IngameScript
                 var f1 =  f - cut - res/2;
                 var f2 = -f + cut - res/2;
 
-                var s = 2 * nozero(1-shrp);
+                var s = 2 * Nozero(1-shrp);
 
                      if (0 <= f1 && f1 <= 1-shrp) val = (1 - (float)Math.Cos(Tau*f1/s)) / 2;
                 else if (0 <= f2 && f2 <= 1-shrp) val = (1 - (float)Math.Cos(Tau*f2/s)) / 2;

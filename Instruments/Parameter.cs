@@ -150,7 +150,6 @@ namespace IngameScript
                 if (tp.Note != null)
                 { 
                     var val = GetAutoValue(
-                        tp.Note.PatStep, 
                         tp.Note.PatIndex, 
                         tp.Note.iChan, 
                         path);
@@ -186,10 +185,10 @@ namespace IngameScript
             }
 
 
-            public static float GetAutoValue(float songStep, int pat, int ch, string path)
+            public static float GetAutoValue(float songStep, int pat, string path)
             {
-                var prevKey = PrevSongAutoKey(songStep, pat, ch, path);
-                var nextKey = NextSongAutoKey(songStep, pat, ch, path);
+                var prevKey = PrevClipAutoKey(songStep, pat, path);
+                var nextKey = NextClipAutoKey(songStep, pat, path);
 
                      if (prevKey == null && nextKey == null) return fN;
                 else if (prevKey != null && nextKey == null) return prevKey.Value;
@@ -418,8 +417,8 @@ namespace IngameScript
                 
                 return
                     Tag == strVol
-                    ? printValue(100 * Math.Log10(Value), 0, T, 0).PadLeft(4)
-                    : printValue(CurValue, 2, T, 1).PadLeft(4);
+                    ? PrintValue(100 * Math.Log10(Value), 0, T, 0).PadLeft(4)
+                    : PrintValue(CurValue, 2, T, 1).PadLeft(4);
             }
 
 
@@ -479,7 +478,7 @@ namespace IngameScript
 
                     DrawString(
                         sprites,
-                        printValue(100 * Math.Log10(Value), 0, T, 0) + " dB", 
+                        PrintValue(100 * Math.Log10(Value), 0, T, 0) + " dB", 
                         x + w/2 + 10, 
                         y + h/2 + valHeight/2 - 30,
                         1f, 
@@ -511,13 +510,12 @@ namespace IngameScript
                         Min, Max, 
                         Value, CurValue, 
                         Tag, 
-                        dec,
-                        F);
+                        dec);
                 }
             }
 
 
-            public void DrawSettingValues(List<MySprite> sprites, float x, float y, float w, float h, float vol, Program prog)
+            public void DrawSettingValues(List<MySprite> sprites, float x, float y)
             {
                 var bx = 40;
                 var by = 55;
@@ -526,7 +524,7 @@ namespace IngameScript
                 {
                     DrawSoundLevel(sprites, x + bx + 20, y + by + 90, 60, 120, Value, CurValue);
 
-                    var db = printValue(100 * Math.Log10(Value), 0, T, 0) + " dB";
+                    var db = PrintValue(100 * Math.Log10(Value), 0, T, 0) + " dB";
                     DrawString(sprites, db, x + bx + 100, y + by + 180, 1f, color6);
                 }
                 else if (Parent == null // source offset has no parent
@@ -535,7 +533,7 @@ namespace IngameScript
                 else
                 { 
                     var dec = Tag == strTune ? 1 : 2;
-                    DrawValueVertical  (sprites, x + bx + 20, y + by + 90,  60, 120, Min, Max, Value, CurValue, Tag, dec, F);
+                    DrawValueVertical  (sprites, x + bx + 20, y + by + 90,  60, 120, Min, Max, Value, CurValue, Tag, dec);
                 }
             }
 

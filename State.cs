@@ -7,24 +7,24 @@ namespace IngameScript
     {
         const  float    float_Inf = 65536f;
         static float[]  g_steps = { 0.25f, 0.5f, 1, 2, 4, 8, 16, float_Inf };
-
-
+                        
+                        
         static long     g_time           = -1; // in ticks
         static float    TimeStep { get { return (float)g_time / g_session.TicksPerStep; } }
-
+                        
         static bool     g_playing        = F;
-
+                        
         static bool     g_started        = F,
                         g_init           = F;
                                          
         static int      g_curRuntimeTick = 0;
-        static float[]  g_runtimeMs      = new float[6];
+        static  float[] g_runtimeMs      = new float[6];
         static float    g_maxRuntimeMs   = 0;
                                          
         float           g_instCount      = 0,
                         g_dspCount       = 0;
-
-
+                        
+                        
         static bool     g_showSession    = T;
         static bool     g_setClip        = F;
                                          
@@ -33,7 +33,7 @@ namespace IngameScript
                                          
         static Session  g_session        = null;
         //static Clip   CurClip = null;
-
+                        
                                          
         Key             g_editKey        = null;
 

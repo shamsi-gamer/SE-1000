@@ -369,31 +369,31 @@ namespace IngameScript
         }
 
 
-        string HighNoteName(int high, bool halfSharp)
-        {
-            var h = high;
-            if (high > 1) h++;
-            if (high > 4) h++;
-            if (high > 6) h++;
+        //string HighNoteName(int high, bool halfSharp)
+        //{
+        //    var h = high;
+        //    if (high > 1) h++;
+        //    if (high > 4) h++;
+        //    if (high > 6) h++;
 
-            if (halfSharp) 
-            {
-                var c = (char)(65 + (h+3) % 7);
-                return c + "Ъ";
-            }
-            else
-            { 
-                var c = (char)(65 + (h+2) % 7);
-                return c + "#";
-            }
-        }
+        //    if (halfSharp) 
+        //    {
+        //        var c = (char)(65 + (h+3) % 7);
+        //        return c + "Ъ";
+        //    }
+        //    else
+        //    { 
+        //        var c = (char)(65 + (h+2) % 7);
+        //        return c + "#";
+        //    }
+        //}
 
 
-        string LowNoteName(int low, bool halfSharp)
-        {
-            return
-                  S((char)(65 + (low+2) % 7)) 
-                + (CurClip.HalfSharp ? "‡" : "");
-        }
+        //string LowNoteName(int low, bool halfSharp)
+        //{
+        //    return
+        //          S((char)(65 + (low+2) % 7)) 
+        //        + (CurClip.HalfSharp ? "‡" : "");
+        //}
     }
 }

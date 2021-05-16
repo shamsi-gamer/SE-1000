@@ -10,7 +10,7 @@
             lblStep  = new Label(Lbl("Step"));
 
             lblHold  = new Label(Lbl("Hold"),
-                lbl =>    
+                lbl => 
                        CurClip.Hold 
                     && (  !OK(CurClip.EditPos) 
                         || CurClip.EditNotes.Count > 0));

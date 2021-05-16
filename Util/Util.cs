@@ -299,44 +299,44 @@ namespace IngameScript
         }}
 
 
-        Label GetLabelFromNote(int num)
-        {
-            num /= NoteScale;
-            num -= 60;
-            num -= CurChannel.Transpose * 12;
+        //Label GetLabelFromNote(int num)
+        //{
+        //    num /= NoteScale;
+        //    num -= 60;
+        //    num -= CurChannel.Transpose * 12;
 
-            switch (num)
-            {
-                case  0: return lblLow[ 0];
-                case  2: return lblLow[ 1];
-                case  4: return lblLow[ 2];
-                case  5: return lblLow[ 3];
-                case  7: return lblLow[ 4];
-                case  9: return lblLow[ 5];
-                case 11: return lblLow[ 6];
-                case 12: return lblLow[ 7];
-                case 14: return lblLow[ 8];
-                case 16: return lblLow[ 9];
-                case 17: return lblLow[10];
-                case 19: return lblLow[11];
-                case 21: return lblLow[12];
-                case 23: return lblLow[13];
-                case 24: return lblLow[14];
+        //    switch (num)
+        //    {
+        //        case  0: return lblLow[ 0];
+        //        case  2: return lblLow[ 1];
+        //        case  4: return lblLow[ 2];
+        //        case  5: return lblLow[ 3];
+        //        case  7: return lblLow[ 4];
+        //        case  9: return lblLow[ 5];
+        //        case 11: return lblLow[ 6];
+        //        case 12: return lblLow[ 7];
+        //        case 14: return lblLow[ 8];
+        //        case 16: return lblLow[ 9];
+        //        case 17: return lblLow[10];
+        //        case 19: return lblLow[11];
+        //        case 21: return lblLow[12];
+        //        case 23: return lblLow[13];
+        //        case 24: return lblLow[14];
 
-                case  1: return lblHigh[0];
-                case  3: return lblHigh[1];
-                case  6: return lblHigh[2];
-                case  8: return lblHigh[3];
-                case 10: return lblHigh[4];
-                case 13: return lblHigh[5];
-                case 15: return lblHigh[6];
-                case 18: return lblHigh[7];
-                case 20: return lblHigh[8];
-                case 22: return lblHigh[9];
-            }
+        //        case  1: return lblHigh[0];
+        //        case  3: return lblHigh[1];
+        //        case  6: return lblHigh[2];
+        //        case  8: return lblHigh[3];
+        //        case 10: return lblHigh[4];
+        //        case 13: return lblHigh[5];
+        //        case 15: return lblHigh[6];
+        //        case 18: return lblHigh[7];
+        //        case 20: return lblHigh[8];
+        //        case 22: return lblHigh[9];
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
 
         void SetVolumeAll(float dv)
@@ -517,6 +517,7 @@ namespace IngameScript
 
 
         static bool IsPressed(Label lbl) { return g_labelsPressed.Contains(lbl); }
+        static bool IsPressed(int   lbl) { return    g_lcdPressed.Contains(lbl); }
 
 
         static Clip       CurClip        { get { return g_session.CurClip; } }
@@ -536,7 +537,7 @@ namespace IngameScript
         static Channel    PlayChannel    { get { return PlayPattern.Channels[CurChan]; } }
                                          
         static Source     SelSource      { get { return CurClip.SelSource;     } }  
-        static Instrument CurInstrument  { get { return CurClip.CurInstrument; } }  
+        //static Instrument CurInstrument  { get { return CurClip.CurInstrument; } }  
         static Instrument SelInstrument  { get { return CurClip.SelInstrument; } }  
         static Channel    SelChannel     { get { return CurClip.SelChannel;    } }  
     }

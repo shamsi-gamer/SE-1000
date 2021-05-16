@@ -544,7 +544,7 @@ namespace IngameScript
 
                     if (key == null) // create
                     {
-                        var val = Parameter.GetAutoValue(CurClip.EditPos, CurPat, SelChan, path);
+                        var val = Parameter.GetAutoValue(CurClip.EditPos, CurPat, path);
 
                         var newKey = new Key(
                             CurSrc,
@@ -664,7 +664,7 @@ namespace IngameScript
         void AdjustFromController(Clip clip, Setting setting, float delta)
         {
             if (IsParam(setting))
-                AdjustParam(CurClip, (Parameter)setting, delta);
+                AdjustParam(clip, (Parameter)setting, delta);
         }
 
 

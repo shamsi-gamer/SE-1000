@@ -199,9 +199,7 @@ namespace IngameScript
                 var data = lines[line++].Split(';');
                 var i    = 0;
 
-                var inst = new Instrument();
-
-                inst.Name = data[i++];
+                var inst = new Instrument { Name = data[i++] };
 
                 var nSources = int.Parse(data[i++]);
 

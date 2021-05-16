@@ -90,7 +90,7 @@ namespace IngameScript
             //if (!LoadSong(S(clip)))
             //    NewSong();
 
-            g_infoPressed.Add(0);
+            g_lcdPressed.Add(lcdInfo+0);
         }
 
 

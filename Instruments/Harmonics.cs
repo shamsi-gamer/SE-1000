@@ -12,8 +12,8 @@ namespace IngameScript
         {
             public enum Preset { Sine, Square4, Square8, Square16, Square24, Saw4, Saw8, Saw16, Saw24, Pulse4, Pulse8, Pulse16, Pulse24, Random4, Random8, Random16, Random24 };
 
-            public Parameter[] Tones    = new Parameter[24];
-                   float[]     m_values = new float    [24];
+            public   Parameter[] Tones    = new Parameter[24];
+             float[]     m_values = new float    [24];
 
             public Preset      CurPreset;
             public int         CurTone;
@@ -126,7 +126,7 @@ namespace IngameScript
             }
 
 
-            public void CreateSounds(List<Sound> sounds, Source src, Note note, int noteNum, long sndTime, int sndLen, int relLen, float vol, List<TriggerValue> triggerValues, Program prog)
+            public void CreateSounds(List<Sound> sounds, Source src, Note note, int noteNum, long sndTime, int sndLen, int relLen, List<TriggerValue> triggerValues, Program prog)
             {
                 var inst = src.Instrument;
                 var iSrc = inst.Sources.IndexOf(src);
@@ -314,7 +314,7 @@ namespace IngameScript
             }
 
 
-            public void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, Channel chan, Program prog)
+            public void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, Channel chan, Program prog)
             {
                 FillRect(sprites, x, y, w, h, color0);
 
@@ -440,9 +440,9 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                DrawFuncButton(sprites, "Smth",  1, w, h, F, F, g_mainPressed.Contains(1));
-                DrawFuncButton(sprites, "Pre ↕", 2, w, h, F, F, g_mainPressed.Contains(2));
-                DrawFuncButton(sprites, "Set",   3, w, h, F, F, g_mainPressed.Contains(3));
+                DrawFuncButton(sprites, "Smth",  1, w, h, F, F, g_lcdPressed.Contains(lcdMain+1));
+                DrawFuncButton(sprites, "Pre ↕", 2, w, h, F, F, g_lcdPressed.Contains(lcdMain+2));
+                DrawFuncButton(sprites, "Set",   3, w, h, F, F, g_lcdPressed.Contains(lcdMain+3));
                 
                 if (CurTone > -1)
                     DrawFuncButton(sprites, "Tone", 4, w, h, T, Tones[CurTone].HasDeepParams(chan, -1));
@@ -462,7 +462,7 @@ namespace IngameScript
                             cp = (int)Preset.Sine;
 
                         CurPreset = (Preset)cp;
-                        g_mainPressed.Add(func);
+                        g_lcdPressed.Add(lcdMain+func);
 
                         break;
                     }

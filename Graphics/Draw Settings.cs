@@ -29,7 +29,7 @@ namespace IngameScript
         }
 
 
-        static void DrawValueVertical(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag, int dec, bool mixer = T)
+        static void DrawValueVertical(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag, int dec)
         {
             var wb = w/10;
             var wg = w/20;
@@ -50,7 +50,7 @@ namespace IngameScript
                 var val = max + i * (min - max)/4;
 
                 DrawString(sprites, 
-                    printValue(val, -2, val == 0, 0),
+                    PrintValue(val, -2, val == 0, 0),
                     x, 
                     y + h/4f * i + 4, 
                     0.25f, 
@@ -66,7 +66,7 @@ namespace IngameScript
             // set value number
             DrawString(
                 sprites, 
-                printValue(value, dec, T, 0), 
+                PrintValue(value, dec, T, 0), 
                 x + wl + 30, 
                 zy - sy - 10, 
                 1f, 
@@ -92,7 +92,7 @@ namespace IngameScript
                 var val = max + (4 - i) * (min - max)/4;
 
                 DrawString(sprites, 
-                    printValue(val, -2, val == 0, 0),
+                    PrintValue(val, -2, val == 0, 0),
                     x + w/4f * i + 4, 
                     y, 
                     0.25f, 
@@ -122,7 +122,7 @@ namespace IngameScript
             // set value number
             DrawString(
                 sprites, 
-                printValue(value, 3, T, 0), 
+                PrintValue(value, 3, T, 0), 
                 x + w/2 - 20, 
                 y + hl + 30, 
                 1f, 
@@ -149,7 +149,7 @@ namespace IngameScript
                     for (float f = 0; f <= 1; f += 0.1f)
                     { 
                         var y0 = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, (float)Math.Pow(f, pow) * 2, fN), clip).Y;
-                        var db = printValue(Math.Abs(100 * (float)Math.Log10(f * extra)), 0, T, 2);
+                        var db = PrintValue(Math.Abs(100 * (float)Math.Log10(f * extra)), 0, T, 2);
 
                         DrawLine(sprites, x + xt, y0, x+w, y0, color2);
                         DrawString(sprites, db, x + xt + 3, y0 + lf*2, lf, color2);
@@ -162,7 +162,7 @@ namespace IngameScript
                     for (int i = 0; i <= 20; i += 5)
                     { 
                         var y0  = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, i, fN), clip).Y;
-                        var val = printValue(i, 0, F, 0);
+                        var val = PrintValue(i, 0, F, 0);
 
                         DrawLine(sprites, x+xt, y0, x+w, y0, color2);
                         DrawString(sprites, val, x + xt + 3, y0 + lf*2, lf, color2);
@@ -178,7 +178,7 @@ namespace IngameScript
                         var f   = (val - param.Min) / (param.Max - param.Min);
                         var key = new Key(CurSrc, param, f, fN);
                         var y0  = KeyPos(x, y + rh, w, h - rh, 0, key, clip).Y;
-                        var str = printValue(val, -2, param.Max - param.Min > 1, 0);
+                        var str = PrintValue(val, -2, param.Max - param.Min > 1, 0);
 
                             
                         DrawLine(sprites, x + xt, y0, x+w, y0, color2);
@@ -237,9 +237,9 @@ namespace IngameScript
         {
             switch (paramTag)
             { 
-            case strVol: return printValue(100 * Math.Log10(val), 0, T, 0) + " dB";
-            case strCnt: return printValue(val, 0, T, 0);
-            default:     return printValue(val, 2, T, 0);
+            case strVol: return PrintValue(100 * Math.Log10(val), 0, T, 0) + " dB";
+            case strCnt: return PrintValue(val, 0, T, 0);
+            default:     return PrintValue(val, 2, T, 0);
             }
         }
 
@@ -362,14 +362,14 @@ namespace IngameScript
 
                 // draw first section
                 var f1 = KeyPos(x, y, w, h, p, AltChanKey(songKeys[0]), clip);
-                var prevKey = PrevSongAutoKey(songKeys[0].StepTime, p, ch, path);
+                var prevKey = PrevClipAutoKey(songKeys[0].StepTime, p, path);
                 var f0 = prevKey != null ? KeyPos(x, y, w, h, p, prevKey, clip) : new Vector2(x, f1.Y);
                 DrawLine(sprites, f0, f1, color6);
 
 
                 // draw last section
                 var l0 = KeyPos(x, y, w, h, p, AltChanKey(songKeys.Last()), clip);
-                var nextKey = NextSongAutoKey(songKeys.Last().StepTime, p, ch, path);
+                var nextKey = NextClipAutoKey(songKeys.Last().StepTime, p, path);
                 var l1 = nextKey != null ? KeyPos(x, y, w, h, p, nextKey, clip) : new Vector2(x + wTotal, l0.Y);
                 DrawLine(sprites, l0, l1, color6);
             }

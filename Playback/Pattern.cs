@@ -72,7 +72,7 @@ namespace IngameScript
                 for (int ch = 0; ch < nChans; ch++)
                 { 
                     int iChan;
-                    var chan = Channel.Load(session, data, ref i, out iChan, pat);
+                    var chan = Channel.Load(data, ref i, out iChan, pat);
                     pat.Channels[iChan] = chan;
                 }
 

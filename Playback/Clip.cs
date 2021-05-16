@@ -511,7 +511,7 @@ namespace IngameScript
                 Blocks.Remove(GetBlock(CurPat));
                 DisableBlock();
                 MovePatternOff(); 
-                g_clipPressed.Add(11);
+                g_lcdPressed.Add(lcdClip+11);
             }
 
 

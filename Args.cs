@@ -10,11 +10,11 @@
 
             switch (arg)
             {
-                case "load":       LoadSongExt();                        break;
-                case "save":       SaveSongExt();                        break;
-                                                                         
-                case "load all":   Load();                               break;
-                case "save all":   Save();                               break;
+                case /* load */     "ld":   LoadSongExt();                        break;
+                case /* save */     "sv":   SaveSongExt();                        break;
+                                                                          
+                case /* load all */ "la":   Load();                               break;
+                case /* save all */ "sa":   Save();                               break;
                                                                          
                 case "import inst": g_session.ImportInstruments();       break;
                                                                          

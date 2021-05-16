@@ -57,7 +57,7 @@
                     chan.Volume = MinMax(0, vol + dVol * mod, 2);
                 }
 
-                g_mixerPressed.Add(ch);
+                g_lcdPressed.Add(lcdMixer+ch);
             }
         }
 

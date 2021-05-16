@@ -19,8 +19,8 @@ namespace IngameScript
         const float dVol = 0.01f;
 
 
-        static Random  g_rnd    = new Random(DateTime.Now.Millisecond);
-        static float[] g_random = new float[1000];
+        static  Random  g_rnd    = new Random(DateTime.Now.Millisecond);
+        static  float[] g_random = new float[1000];
 
 
         static Color   color6,

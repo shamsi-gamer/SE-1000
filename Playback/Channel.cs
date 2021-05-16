@@ -51,8 +51,7 @@ namespace IngameScript
                 Notes = new List<Note>();
                 foreach (var n in chan.Notes)
                 {
-                    var note = new Note(n);
-                    note.Channel = this;
+                    var note = new Note(n) { Channel = this };
                     Notes.Add(note);
                 }
 
@@ -158,7 +157,7 @@ namespace IngameScript
             }
 
 
-            public static Channel Load(Session session, string[] data, ref int i, out int index, Pattern pat)
+            public static Channel Load(string[] data, ref int i, out int index, Pattern pat)
             {
                 index           = int.Parse(data[i++]);
 

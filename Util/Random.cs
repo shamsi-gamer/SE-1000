@@ -257,62 +257,62 @@ namespace IngameScript
         //}
 
 
-        void RandomShuffle(int pat, int ch)
-        {
-            var chan = CurClip.Patterns[pat].Channels[ch];
-            chan.Shuffle = g_rnd.Next(0, g_session.TicksPerStep - 1);
-        }
+        //void RandomShuffle(int pat, int ch)
+        //{
+        //    var chan = CurClip.Patterns[pat].Channels[ch];
+        //    chan.Shuffle = g_rnd.Next(0, g_session.TicksPerStep - 1);
+        //}
 
 
-        void RndVol(int pat, int ch)
-        {
-            var chan = CurClip.Patterns[pat].Channels[ch];
-            chan.Volume = RND;
-        }
+        //void RndVol(int pat, int ch)
+        //{
+        //    var chan = CurClip.Patterns[pat].Channels[ch];
+        //    chan.Volume = RND;
+        //}
 
 
-        void RandomInstrument(int pat, int ch)
-        {
-            var chan = CurClip.Patterns[pat].Channels[ch];
-            chan.Instrument = g_session.Instruments[g_rnd.Next(0, g_session.Instruments.Count)];
-            UpdateInstOff(ch);
-        }
+        //void RandomInstrument(int pat, int ch)
+        //{
+        //    var chan = CurClip.Patterns[pat].Channels[ch];
+        //    chan.Instrument = g_session.Instruments[g_rnd.Next(0, g_session.Instruments.Count)];
+        //    UpdateInstOff(ch);
+        //}
 
-        void RandomSound(int iInst)
-        {
-            //var inst = g_session.Instruments[iInst];
+        //void RandomSound(int iInst)
+        //{
+        //    //var inst = g_session.Instruments[iInst];
 
-            //inst.Sources.Clear();
+        //    //inst.Sources.Clear();
 
-            //var nSrc = g_rnd.Next(0, maxSrc) + 1;
+        //    //var nSrc = g_rnd.Next(0, maxSrc) + 1;
 
-            //for (int i = 0; i < nSrc; i++)
-            //{
-            //    var src = new Source();
+        //    //for (int i = 0; i < nSrc; i++)
+        //    //{
+        //    //    var src = new Source();
 
-            //    src.Oscillator   = (Oscillator)g_rnd.Next((int)Oscillator.Sine, (int)Oscillator.Samples1);
-            //    src.Volume       = i == 0 ? 1 : 0.5f + Rnd / 2;
-            //    src.LfoAmplitude = Rnd;
-            //    src.LfoFrequency = Rnd * 20;
-            //    src.Attack       = Rnd / 4;
-            //    src.Decay        = Rnd / 3;
-            //    src.Sustain      = Rnd;
-            //    src.Release      = Rnd / 2;
-            //    src.Transpose    = i == 0 ? 0 : g_rnd.Next(-2, 3) * 12;
-            //    src.Offset       = g_rnd.Next(-2, 3);
+        //    //    src.Oscillator   = (Oscillator)g_rnd.Next((int)Oscillator.Sine, (int)Oscillator.Samples1);
+        //    //    src.Volume       = i == 0 ? 1 : 0.5f + Rnd / 2;
+        //    //    src.LfoAmplitude = Rnd;
+        //    //    src.LfoFrequency = Rnd * 20;
+        //    //    src.Attack       = Rnd / 4;
+        //    //    src.Decay        = Rnd / 3;
+        //    //    src.Sustain      = Rnd;
+        //    //    src.Release      = Rnd / 2;
+        //    //    src.Transpose    = i == 0 ? 0 : g_rnd.Next(-2, 3) * 12;
+        //    //    src.Offset       = g_rnd.Next(-2, 3);
 
-            //    inst.Sources.Add(src);
-            //}
+        //    //    inst.Sources.Add(src);
+        //    //}
 
-            //inst.DelayCount = g_rnd.Next(0, 4);
-            //inst.DelayTime = Math.Max(0.01f, Rnd) / 2;
-            //inst.DelayLevel = Rnd;
-            //inst.DelayPower = Math.Max(0.01f, Rnd * 5);
+        //    //inst.DelayCount = g_rnd.Next(0, 4);
+        //    //inst.DelayTime = Math.Max(0.01f, Rnd) / 2;
+        //    //inst.DelayLevel = Rnd;
+        //    //inst.DelayPower = Math.Max(0.01f, Rnd * 5);
 
-            //if (g_song.CurSrc > -1)
-            //    UpdateSrcOff(inst, g_song.CurSrc);
+        //    //if (g_song.CurSrc > -1)
+        //    //    UpdateSrcOff(inst, g_song.CurSrc);
 
-            //TriggerNote(curNote > 1 ? curNote : 69, g_song.CurChan, stepLen);
-        }
+        //    //TriggerNote(curNote > 1 ? curNote : 69, g_song.CurChan, stepLen);
+        //}
     }
 }

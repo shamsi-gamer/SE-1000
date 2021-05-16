@@ -252,9 +252,9 @@ namespace IngameScript
                 return
                      (Op == ModOp.Add ? "+ " : "* ")
                     + strOsc + " "
-                    + printValue(Amplitude.Value, 2, T, 0).PadLeft(4) + " "
-                    + printValue(Frequency.Value, 2, T, 0).PadLeft(4) + " "
-                    + printValue(Offset   .Value, 2, T, 0).PadLeft(4);
+                    + PrintValue(Amplitude.Value, 2, T, 0).PadLeft(4) + " "
+                    + PrintValue(Frequency.Value, 2, T, 0).PadLeft(4) + " "
+                    + PrintValue(Offset   .Value, 2, T, 0).PadLeft(4);
             }
 
 
@@ -394,7 +394,7 @@ namespace IngameScript
                         var newOp = (int)Op + 1;
                         if (newOp > (int)ModOp.Add) newOp = 0;
                         Op = (ModOp)newOp;
-                        g_mainPressed.Add(func);
+                        g_lcdPressed.Add(lcdMain+func);
                         break;
                     }
                     case 1: AddNextSetting(strAmp);  break;
@@ -405,7 +405,7 @@ namespace IngameScript
                         var newOsc = (int)Type + 1;
                         if (newOsc > (int)LfoType.Noise) newOsc = 0;
                         Type = (LfoType)newOsc;
-                        g_mainPressed.Add(func);
+                        g_lcdPressed.Add(lcdMain+func);
                         break;
                     }
                 }

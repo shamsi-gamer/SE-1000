@@ -43,10 +43,10 @@ namespace IngameScript
             DrawString(sprites, S0(GetBPM()), x + 343, y + h - 122, 2.5f, color6, TaC);
             DrawString(sprites, "BPM", x + 312, y + h - 43, 1f, color6);
 
-            var prLoad    = _infoPressed.Contains(0);
-            var prSave    = _infoPressed.Contains(1);
-            var prBpmDown = _infoPressed.Contains(2);
-            var prBpmUp   = _infoPressed.Contains(3);
+            var prLoad    = _lcdPressed.Contains(0);
+            var prSave    = _lcdPressed.Contains(1);
+            var prBpmDown = _lcdPressed.Contains(2);
+            var prBpmUp   = _lcdPressed.Contains(3);
 
             if (prLoad   ) FillRect(sprites, x + 202, y + 8,      104, 40, color6);
             if (prSave   ) FillRect(sprites, x + 374, y + 8,      104, 40, color6);
@@ -100,8 +100,8 @@ namespace IngameScript
             Array.Sort(g_runtimeMs);
             var med = (g_runtimeMs[2] + g_runtimeMs[3])/2;
             
-            var strMed = printValue(med,            -3, T, 0);
-            var strMax = printValue(g_maxRuntimeMs, -3, T, 0);
+            var strMed = PrintValue(med,            -3, T, 0);
+            var strMax = PrintValue(g_maxRuntimeMs, -3, T, 0);
 
             DrawString(sprites, "med " + strMed + ", max " + strMax + " ms", cx + 55, y + 107, 0.5f, color6);
 

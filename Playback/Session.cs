@@ -42,33 +42,44 @@ namespace IngameScript
 
             public void SetClip(int tr, int index)
             { 
+                Log("1");
                 var track = Tracks[tr];
+                Log("2");
 
                 var found = track.Indices.FindIndex(i => i == index);
+                Log("3");
 
                 if (found < 0)
                 {
+                    Log("4");
                     CurClip = new Clip(track);
                     CurClip.Patterns.Add(new Pattern(Instruments[0], CurClip));
                     CurClip.Name = "New Clip";
+                    Log("5");
 
                     track.Clips  .Add(CurClip);
                     track.Indices.Add(index);
                     track.CurIndex = index;
+                    Log("6");
                 }
                 else
                 {
-                    track.CurIndex = 
+                    Log("7");
+                    track.NextIndex = 
                         track.CurIndex != index
                         ? index
                         : -1;
                 }
 
+                Log("8");
                 if (g_setClip)
-                { 
+                {
+                    Log("9");
                     g_showSession = F;
                     CurClip = track.Clips[track.CurIndex];
+                    Log("10");
                 }
+                Log("11");
 
                 g_setClip = F;
             }

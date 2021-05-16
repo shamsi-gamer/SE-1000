@@ -187,10 +187,10 @@ namespace IngameScript
                 width = 176;
 
                 return
-                      printValue(Count.Value, 0, T, 0).PadLeft(2) + "  "
-                    + printValue(Time .Value, 2, T, 0).PadLeft(4) + "  "
-                    + printValue(Level.Value, 2, T, 0).PadLeft(4) + "  "
-                    + printValue(Power.Value, 2, T, 0).PadLeft(4);
+                      PrintValue(Count.Value, 0, T, 0).PadLeft(2) + "  "
+                    + PrintValue(Time .Value, 2, T, 0).PadLeft(4) + "  "
+                    + PrintValue(Level.Value, 2, T, 0).PadLeft(4) + "  "
+                    + PrintValue(Power.Value, 2, T, 0).PadLeft(4);
             }
 
 

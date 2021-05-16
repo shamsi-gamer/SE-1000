@@ -15,7 +15,7 @@ namespace IngameScript
             var rh = h - 90;
 
 
-            DrawChannelList(sprites, x, y, 340, rh, clip);
+            DrawChannelList(sprites, x, y, 340, rh);
 
 
             var xt = 340;
@@ -67,7 +67,7 @@ namespace IngameScript
         }
 
 
-        void DrawChannelList(List<MySprite> sprites, float x, float y, float w, float h, Clip clip)
+        void DrawChannelList(List<MySprite> sprites, float x, float y, float w, float h)
         {
             var ch = h / g_nChans;
 

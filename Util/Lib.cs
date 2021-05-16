@@ -5,8 +5,8 @@ namespace IngameScript
 {
     partial class Program
     {
-        static float sqr(float x) { return x*x; }
-        static float nozero(float x) { return x != 0 ? x : 0.000001f; }
+        //static float Sqr(float x) { return x*x; }
+        static float Nozero(float x) { return x != 0 ? x : 0.000001f; }
 
         //static float logb(double _base, double value)
         //{
@@ -21,7 +21,7 @@ namespace IngameScript
         //}
 
 
-        static string printNoZero(double d, int dec)
+        static string PrintNoZero(double d, int dec)
         {
             return d.ToString(
                   (Math.Abs(d) < 1 ? "" : "0") 
@@ -30,7 +30,7 @@ namespace IngameScript
         }
 
 
-        static string printValue(double val, int dec, bool showZero, int pad)
+        static string PrintValue(double val, int dec, bool showZero, int pad)
         {
             string str;
 
@@ -51,7 +51,7 @@ namespace IngameScript
             else
             {
                 str =
-                    printNoZero(val, Math.Abs(dec))
+                    PrintNoZero(val, Math.Abs(dec))
                     .PadLeft(pad + Math.Abs(dec) + (dec != 0 ? 1 : 0));
             }
 
@@ -86,7 +86,7 @@ namespace IngameScript
         }
 
 
-        static bool OK(long  l) { return l != long_NaN; }
+        //static bool OK(long  l) { return l != long_NaN; }
         static bool OK(float f) { return !float.IsNaN(f); }
 
 

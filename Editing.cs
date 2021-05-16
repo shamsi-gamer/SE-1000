@@ -7,10 +7,10 @@ namespace IngameScript
 {
     partial class Program
     {
-        void CopyChan(Clip clip, int p, int ch)
-        {
-            copyChan = new Channel(clip.Patterns[p].Channels[ch]);
-        }
+        //void CopyChan(Clip clip, int p, int ch)
+        //{
+        //    copyChan = new Channel(clip.Patterns[p].Channels[ch]);
+        //}
 
 
         void PasteChan(Clip clip, int p, int ch)
@@ -243,7 +243,7 @@ namespace IngameScript
         }
 
 
-        static Key PrevSongAutoKey(float pos, int p, int ch, string path)
+        static Key PrevClipAutoKey(float pos, int ch, string path)
         {
             var prevKeys = CurClip.ChannelAutoKeys[ch]
                 .Where(k => 
@@ -259,7 +259,7 @@ namespace IngameScript
         }
 
 
-        static Key NextSongAutoKey(float pos, int p, int ch, string path)
+        static Key NextClipAutoKey(float pos, int ch, string path)
         {
             var nextKeys = CurClip.ChannelAutoKeys[ch]
                 .Where(k =>
@@ -324,7 +324,7 @@ namespace IngameScript
                 }
             }
 
-            g_mainPressed.Add(3);
+            g_lcdPressed.Add(lcdMain+3);
         }
 
 
@@ -411,7 +411,7 @@ namespace IngameScript
                     chan.Shuffle = Math.Min(chan.Shuffle, g_session.TicksPerStep - 1);
             }
 
-            g_infoPressed.Add(d > 0 ? 2 : 3);
+            g_lcdPressed.Add(lcdInfo + (d > 0 ? 2 : 3));
         }
 
 

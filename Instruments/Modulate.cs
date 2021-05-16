@@ -281,9 +281,9 @@ namespace IngameScript
 
                 return
                       (Op == ModOp.Add ? "+ " : "* ")
-                    + printValue(Amount .Value, 2, T, 0).PadLeft(5) + " "
-                    + printValue(Attack .Value, 2, T, 0).PadLeft(4) + " "
-                    + printValue(Release.Value, 2, T, 0).PadLeft(4);
+                    + PrintValue(Amount .Value, 2, T, 0).PadLeft(5) + " "
+                    + PrintValue(Attack .Value, 2, T, 0).PadLeft(4) + " "
+                    + PrintValue(Release.Value, 2, T, 0).PadLeft(4);
             }
 
 
@@ -451,7 +451,7 @@ namespace IngameScript
                         var newOp = (int)Op + 1;
                         if (newOp > (int)ModOp.Add) newOp = 0;
                         Op = (ModOp)newOp;
-                        g_mainPressed.Add(func);
+                        g_lcdPressed.Add(lcdMain+func);
                         break;
                     }
                     case 1: AddNextSetting(strAmt); break;

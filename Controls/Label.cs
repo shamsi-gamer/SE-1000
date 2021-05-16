@@ -25,16 +25,19 @@ namespace IngameScript
 
             public int           Data;
 
+            public bool          UsedForSession;
+
           //public bool          NeedsUpdate;
 
 
             public Label(IMyTextPanel  panel,
-                         CondFunc      condBright = null, 
-                         CondFunc      condDim    = null, 
-                         Action<Label> updateFunc = null, 
-                         Action<Label> colorFunc  = null, 
-                         int           data       = 0,
-                         bool          fast       = F)
+                         CondFunc      condBright     = null, 
+                         CondFunc      condDim        = null, 
+                         Action<Label> updateFunc     = null, 
+                         Action<Label> colorFunc      = null, 
+                         int           data           = 0,
+                         bool          fast           = F,
+                         bool          usedForSession = F)
             {
                 Panel           = panel;
 
@@ -50,6 +53,8 @@ namespace IngameScript
 
                 Data            = data;
 
+                UsedForSession  = usedForSession;
+
               //NeedsUpdate     = T;
 
                 if (fast) g_fastLabels.Add(this);
@@ -63,11 +68,11 @@ namespace IngameScript
                 HalfColor = color3;
                 BackColor = color0;
 
-                if (ColorFunc  != null) ColorFunc(this);
-                if (UpdateFunc != null) UpdateFunc(this);
+                ColorFunc ?.Invoke(this);
+                UpdateFunc?.Invoke(this);
 
-                var bCond = BrightCondition != null ? BrightCondition(this) : F;
-                var dCond = DimCondition    != null ? DimCondition   (this) : F;
+                var bCond = BrightCondition != null && BrightCondition(this);
+                var dCond = DimCondition    != null && DimCondition   (this);
 
                 Update(IsPressed(this) || bCond, dCond);
             }
@@ -86,8 +91,17 @@ namespace IngameScript
 
             public void Update(bool full, bool half = F)
             {
-                Panel.FontColor       = full ? BackColor : ForeColor;
-                Panel.BackgroundColor = full ? ForeColor : (half ? HalfColor : BackColor);
+                if (   UsedForSession
+                    || !g_showSession)
+                {
+                    Panel.FontColor       = full ? BackColor : ForeColor;
+                    Panel.BackgroundColor = full ? ForeColor : (half ? HalfColor : BackColor);
+                }
+                else
+                {
+                    Panel.FontColor       = color0;
+                    Panel.BackgroundColor = color0;
+                }
             }
 
 

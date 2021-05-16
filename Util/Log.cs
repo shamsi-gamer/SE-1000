@@ -5,8 +5,8 @@ namespace IngameScript
 {
     partial class Program
     {
-        static List<string> g_log     = new List<string>();
-        static List<long>   g_logTime = new List<long>();
+        static  List<string> g_log     = new List<string>();
+        static  List<long>   g_logTime = new List<long>();
 
         static void Log(string str)
         {

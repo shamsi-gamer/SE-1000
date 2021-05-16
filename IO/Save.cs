@@ -16,7 +16,7 @@ namespace IngameScript
             //    + PN(lblNext.CustomData));
 
 
-            g_infoPressed.Add(1);
+            g_lcdPressed.Add(lcdInfo+1);
         }
 
 
@@ -86,8 +86,8 @@ namespace IngameScript
         //}
 
 
-        static void add(List<byte> b, short s) { b.AddArray(BitConverter.GetBytes(s)); }
-        static void add(List<byte> b, int   i) { b.AddArray(BitConverter.GetBytes(i)); }
-        static void add(List<byte> b, float f) { b.AddArray(BitConverter.GetBytes(f)); }
+        //static void Add(List<byte> b, short s) { b.AddArray(BitConverter.GetBytes(s)); }
+        //static void Add(List<byte> b, int   i) { b.AddArray(BitConverter.GetBytes(i)); }
+        //static void Add(List<byte> b, float f) { b.AddArray(BitConverter.GetBytes(f)); }
     }
 }

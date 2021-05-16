@@ -7,7 +7,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        List<IMyButtonPanel> funcButtons = new List<IMyButtonPanel>();
+         List<IMyButtonPanel> funcButtons = new List<IMyButtonPanel>();
 
 
         void InitFuncButtons()
@@ -43,7 +43,7 @@ namespace IngameScript
                 }
             }
 
-            g_mainPressed.Add(func);
+            g_lcdPressed.Add(lcdMain+func);
 
             //UpdateEnterLabel();
             //UpdateAdjustLabels(CurClip);

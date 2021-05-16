@@ -72,7 +72,9 @@
 
         bool AdjustIsBright(Label lbl)
         {
-            return CanAdjust && CurClip.Shift;
+            return 
+                   CanAdjust 
+                && CurClip.Shift;
         }
 
 
@@ -183,9 +185,10 @@
                 else
                     lblCmd3.SetText(     
                         SelChan < 0 
-                        ? " ▄█   █ █ ██ █ █ █   █▄ \n" +
-                         " ▀██   █▄█▄██▄█▄█▄█   ██▀ \n" +  
-                           " ▀   ▀▀▀▀▀▀▀▀▀▀▀▀   ▀ " 
+                        //? " ▄█   █ █ ██ █ █ █   █▄ \n" +
+                        // " ▀██   █▄█▄██▄█▄█▄█   ██▀ \n" +  
+                        //   " ▀   ▀▀▀▀▀▀▀▀▀▀▀▀   ▀ " 
+                        ? lblCmd3.Panel.CustomData
                         : " ", 
                         2, 
                         32);

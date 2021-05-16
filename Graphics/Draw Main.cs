@@ -11,41 +11,48 @@ namespace IngameScript
             var dsp = dspMain;
             if (dsp == null) return;
 
-            var Volume = dsp.Viewport;
+            var v = dsp.Viewport;
 
-            var x = Volume.X;
-            var y = Volume.Y;
-            var w = Volume.Width;
-            var h = Volume.Height;
+            var x = v.X;
+            var y = v.Y;
+            var w = v.Width;
+            var h = v.Height;
 
             var sprites = new List<MySprite>();
 
-            if (   SelChan > -1
-                && IsCurParam()
-                && (   CurClip.ParamKeys
-                    || CurClip.ParamAuto))
+            if (g_showSession)
             {
-                if (CurClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, T, null);
-                else               DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, T);
+                FillRect(sprites, x, y, w, h, color0);
             }
-            else if (SelChan > -1)
-            {
-                if (IsCurSetting(typeof(Harmonics)))
+            else
+            { 
+                if (   SelChan > -1
+                    && IsCurParam()
+                    && (   CurClip.ParamKeys
+                        || CurClip.ParamAuto))
                 {
-                     var hrm = CurOrParentHarmonics;
-                     hrm.DrawSetting(sprites, x, y, w, h, CurClip, CurChannel, this);
+                    if (CurClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, T, null);
+                    else               DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, T);
                 }
-                else if (IsCurOrParentSetting(typeof(Arpeggio)))
+                else if (SelChan > -1)
                 {
-                     var arp = CurOrParentArpeggio;
-                     DrawPianoDisplay(sprites, x, y, w, h, arp.Clip, CurPat, T, arp);
+                    if (IsCurSetting(typeof(Harmonics)))
+                    {
+                         var hrm = CurOrParentHarmonics;
+                         hrm.DrawSetting(sprites, x, y, w, h, CurChannel, this);
+                    }
+                    else if (IsCurOrParentSetting(typeof(Arpeggio)))
+                    {
+                         var arp = CurOrParentArpeggio;
+                         DrawPianoDisplay(sprites, x, y, w, h, arp.Clip, CurPat, T, arp);
+                    }
+                    else DrawInstrument  (sprites, x, y, w, h);
                 }
-                else DrawInstrument  (sprites, x, y, w, h);
+                else if (CurClip.Piano 
+                      && g_lockView != 1
+                   || g_lockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, T, null);
+                else                   DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, T);
             }
-            else if (CurClip.Piano 
-                  && g_lockView != 1
-               || g_lockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, T, null);
-            else                   DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, T);
 
             dsp.Draw(sprites);
         }
