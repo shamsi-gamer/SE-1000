@@ -224,7 +224,7 @@ namespace IngameScript
                 DrawFuncButton(sprites, "Dup",  1, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 1));
                 DrawFuncButton(sprites, "New",  2, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 2));
                                                                                               
-                DrawFuncButton(sprites, "Cue",  4, w, h, F, F, CurClip.CueNext > -1);         
+                DrawFuncButton(sprites, "Cue",  4, w, h, F, F, CurClip.Track.NextPat > -1);         
                 DrawFuncButton(sprites, "◄",    5, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 5) ^ CurClip.MovePat); }
          else { DrawFuncButton(sprites, "►",    0, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 6) ^ CurClip.MovePat);
                 DrawFuncButton(sprites, "◄►",   1, w, h, F, F, CurClip.MovePat);

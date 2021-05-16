@@ -39,7 +39,7 @@ namespace IngameScript
                 for (int ix = nDsp*6 + 0; ix < nDsp*6 + 6; ix++)
                 {
                     var iClip     = track.Indices.FindIndex(i => i == ix);
-                    var isCurClip = iClip == track.CurIndex;
+                    var isCurClip = iClip == track.PlayClip;
 
                     var cw = w/6;
                     var ch = h/4;
@@ -74,7 +74,7 @@ namespace IngameScript
 
 
                     // next in queue
-                    if (iClip == track.NextIndex)
+                    if (iClip == track.NextClip)
                         DrawRect(sprites, lx+1, ly+1, lw-2, lh-2, color5, 2);
 
 
@@ -93,11 +93,11 @@ namespace IngameScript
 
 
                     // position in current clip
-                    if (iClip == track.CurIndex)
+                    if (iClip == track.PlayClip)
                     {
                         var pw = lw / clip.Patterns.Count;
                         var px = lx + (track.PlayStep / g_patSteps) * pw;
-                        var beatStart = track.PlayStep - track.PlayPat * g_patSteps < 2;
+                        var beatStart = track.PlayStep - track.PlayPat * g_patSteps == 0;
                         DrawLine(sprites, px, ly, px, ly + lh, color6, beatStart ? 9 : 5); 
                     }
                 }

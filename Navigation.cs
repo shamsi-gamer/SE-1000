@@ -16,17 +16,18 @@ namespace IngameScript
             g_playing = T;
 
 
-            if (CurClip.CueNext > -1)
-            {
-                CurClip.Track.PlayTime = GetPatTime(CurClip.CueNext);
-                CurClip.CueNext  = -1;
+            foreach (var track in g_session.Tracks)
+            { 
+                if (track.NextPat > -1)
+                {
+                    track.PlayTime = GetPatTime(track.NextPat);
+                    track.NextPat  = -1;
+                }
+                else
+                    track.PlayTime = GetPatTime(CurPat);
+
+                track.StartTime = g_time - track.PlayTime;
             }
-            else
-                CurClip.Track.PlayTime = GetPatTime(CurPat);
-
-            CurClip.Track.StartTime = g_time - CurClip.Track.PlayTime;
-
-            //UpdatePlayStopLabels();
         }
 
 
@@ -38,7 +39,7 @@ namespace IngameScript
             g_playing = F;
 
 
-            if (!g_playing)//CurClip.Track.PlayTime < 0)
+            if (!g_playing)
             {
                 var b = CurClip.GetBlock(CurPat);
 
@@ -48,7 +49,7 @@ namespace IngameScript
                     && CurPat > b.First;
 
                 CurClip.SetCurrentPattern(_block ? b.First : 0);
-                CurClip.CueNext = -1;
+                CurClip.Track.NextPat = -1;
             }
 
 

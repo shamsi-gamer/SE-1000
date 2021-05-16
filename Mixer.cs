@@ -41,7 +41,7 @@
         {
             if (g_showSession)
             { 
-                g_session.SetClip(dv > 0 ? 0 : 1, ch);
+                g_session.Tracks[dv > 0 ? 0 : 1].SetClip(ch);
             }
             else
             { 
@@ -65,9 +65,8 @@
         void Solo(int ch)
         {
             if (g_showSession)
-            {
-                //SetClip(2, ch);
-            }
+                g_session.Tracks[2].SetClip(ch);
+
             else
             {
                 if (CurClip.Solo >= 0)
@@ -104,7 +103,7 @@
         void Mute(int ch)
         {
             if (g_showSession)
-                g_session.SetClip(3, ch);
+                g_session.Tracks[3].SetClip(ch);
 
             else
             { 

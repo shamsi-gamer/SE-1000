@@ -44,10 +44,10 @@ namespace IngameScript
 
             foreach (var track in g_session.Tracks)
             {
-                if (track.CurIndex < 0)
+                if (track.PlayClip < 0)
                     continue;
 
-                var clip = track.Clips[track.CurIndex];
+                var clip = track.Clips[track.PlayClip];
 
                 clip.Track.CueNextPattern();
 

@@ -19,8 +19,8 @@ namespace IngameScript
                 }
                 else if (Mems[m] > -1)
                 {
-                    if (g_playing) CueNext = Mems[m];
-                    else              SetCurrentPattern(Mems[m]);
+                    if (g_playing) Track.NextPat = Mems[m];
+                    else           SetCurrentPattern(Mems[m]);
                 }
 
                 //MarkLabel(lblMem[m]);
@@ -198,7 +198,7 @@ namespace IngameScript
 
 
                     if (AutoCue)
-                        CueNext = CurPat;
+                        Track.NextPat = CurPat;
                 }
 
                 if (OK(EditPos))

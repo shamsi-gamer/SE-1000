@@ -32,12 +32,11 @@ namespace IngameScript
                     return F;
 
                 var state = sb.ToString().Split(';');
-                var s     = 0;
+                var s = 0;
 
                 Name = state[s++];
 
                 if (!int.TryParse(state[s++], out TicksPerStep)) return F;
-
                 if (!int.TryParse(state[s++], out curClipTrack)) return F;
                 if (!int.TryParse(state[s++], out curClipIndex)) return F;
 

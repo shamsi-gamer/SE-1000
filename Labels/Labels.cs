@@ -169,7 +169,11 @@ namespace IngameScript
                 Lbl("Session"), 
                 lbl => g_showSession && g_setClip,
                 null,
-                lbl => lbl.SetText(g_showSession ? "Clip" : "Clips", 8, 18),
+                lbl =>
+                { 
+                    if (g_showSession) lbl.SetText("Clip",    8, 18);
+                    else               lbl.SetText("Session", 7, 21);
+                },
                 null,
                 0,
                 false,

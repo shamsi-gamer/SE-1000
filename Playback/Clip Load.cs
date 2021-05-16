@@ -87,33 +87,31 @@ namespace IngameScript
 
                 LoadToggles(cfg[c++]);
 
-                if (!int  .TryParse(cfg[c++], out CueNext    )) return F;
-
-                if (!int  .TryParse(cfg[c++], out CurPat     )) return F;
-                if (!int  .TryParse(cfg[c++], out CurChan    )) return F;
-                                                             
-                if (!int  .TryParse(cfg[c++], out SelChan    )) return F;
-                if (!int  .TryParse(cfg[c++], out CurSrc     )) return F;
+                if (!int  .TryParse(cfg[c++], out CurPat         )) return F;
+                if (!int  .TryParse(cfg[c++], out CurChan        )) return F;
+                                                                 
+                if (!int  .TryParse(cfg[c++], out SelChan        )) return F;
+                if (!int  .TryParse(cfg[c++], out CurSrc         )) return F;
                                                              
                 //curPath = cfg[c++];                              
                                                              
-                if (!int  .TryParse(cfg[c++], out EditStepIndex   )) return F;
-                if (!int  .TryParse(cfg[c++], out EditLengthIndex )) return F;
+                if (!int  .TryParse(cfg[c++], out EditStepIndex  )) return F;
+                if (!int  .TryParse(cfg[c++], out EditLengthIndex)) return F;
                                                            
-                if (!int  .TryParse(cfg[c++], out CurNote    )) return F;
-                                                             
-                if (!int  .TryParse(cfg[c++], out Chord      )) return F;
-                if (!int  .TryParse(cfg[c++], out ChordSpread)) return F;
-                                                           
-                if (!int  .TryParse(cfg[c++], out SongOff    )) return F;
-                if (!int  .TryParse(cfg[c++], out InstOff    )) return F;
-                if (!int  .TryParse(cfg[c++], out SrcOff     )) return F;
-                                                             
-                if (!int  .TryParse(cfg[c++], out Solo       )) return F;
-                                                           
-                if (!float.TryParse(cfg[c++], out Volume     )) return F;
-
-                if (!int  .TryParse(cfg[c++], out ColorIndex )) return F;
+                if (!int  .TryParse(cfg[c++], out CurNote        )) return F;
+                                                                 
+                if (!int  .TryParse(cfg[c++], out Chord          )) return F;
+                if (!int  .TryParse(cfg[c++], out ChordSpread    )) return F;
+                                                                 
+                if (!int  .TryParse(cfg[c++], out SongOff        )) return F;
+                if (!int  .TryParse(cfg[c++], out InstOff        )) return F;
+                if (!int  .TryParse(cfg[c++], out SrcOff         )) return F;
+                                                                 
+                if (!int  .TryParse(cfg[c++], out Solo           )) return F;
+                                                                 
+                if (!float.TryParse(cfg[c++], out Volume         )) return F;
+                                                                 
+                if (!int  .TryParse(cfg[c++], out ColorIndex     )) return F;
 
                 return T;
             }

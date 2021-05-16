@@ -66,8 +66,6 @@
                       Name.Replace("\n", "\u0085")
                     + PS(SaveToggles())
 
-                    + PS(CueNext)
-
                     + PS(CurPat)         
                     + PS(CurChan)        
 

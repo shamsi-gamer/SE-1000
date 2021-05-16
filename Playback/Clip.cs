@@ -31,8 +31,6 @@ namespace IngameScript
             public bool[]        ChanOn = new bool[g_nChans];
 
 
-            public int           CueNext;
-
             public bool          Recording;
 
             public bool          Loop,
@@ -134,8 +132,6 @@ namespace IngameScript
 
                 EditNotes   = new List<Note>();
 
-                CueNext     = -1;
-                            
                 Recording   = 
                 Loop        =
                 Block       =
@@ -232,8 +228,6 @@ namespace IngameScript
                     ChannelAutoKeys[i] = new List<Key>(clip.ChannelAutoKeys[i]);
 
                 EditNotes       = new List<Note>();
-                                
-                CueNext         = clip.CueNext;
                                 
                 Loop            = clip.Loop;
                 Block           = clip.Block;
@@ -380,7 +374,7 @@ namespace IngameScript
 
             public void SetCue()
             {
-                CueNext = CueNext == CurPat ? -1 : CurPat;
+                Track.NextPat = Track.NextPat == CurPat ? -1 : CurPat;
             }
 
 

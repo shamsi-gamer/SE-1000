@@ -18,7 +18,7 @@ namespace IngameScript
 
             public Session()
             {
-                Name        = "New Session";
+                Name = "New Session";
 
                 Instruments = new List<Instrument>();
 
@@ -35,67 +35,9 @@ namespace IngameScript
                     track.Clips  .Clear();
                     track.Indices.Clear();
 
-                    track.CurIndex = -1;
+                    track.PlayClip = -1;
                 }
             }
-
-
-            public void SetClip(int tr, int index)
-            { 
-                Log("1");
-                var track = Tracks[tr];
-                Log("2");
-
-                var found = track.Indices.FindIndex(i => i == index);
-                Log("3");
-
-                if (found < 0)
-                {
-                    Log("4");
-                    CurClip = new Clip(track);
-                    CurClip.Patterns.Add(new Pattern(Instruments[0], CurClip));
-                    CurClip.Name = "New Clip";
-                    Log("5");
-
-                    track.Clips  .Add(CurClip);
-                    track.Indices.Add(index);
-                    track.CurIndex = index;
-                    Log("6");
-                }
-                else
-                {
-                    Log("7");
-                    track.NextIndex = 
-                        track.CurIndex != index
-                        ? index
-                        : -1;
-                }
-
-                Log("8");
-                if (g_setClip)
-                {
-                    Log("9");
-                    g_showSession = F;
-                    CurClip = track.Clips[track.CurIndex];
-                    Log("10");
-                }
-                Log("11");
-
-                g_setClip = F;
-            }
-
-
-            //void SetClip(Clip clip)
-            //{ 
-            //    clip.Track.CurIndex = clip.Track.Clips.IndexOf(clip);
-
-            //    CurClip = clip;
-
-            //    g_setClip = F;
-            //    g_showSession = F;
-
-            //    //UpdateLabels();
-            //}
 
 
             public void CreateDefaultSession()
@@ -124,7 +66,7 @@ namespace IngameScript
                 clip.Patterns.Add(new Pattern(Instruments[0], clip));
 
                 Tracks[0].Add(clip, 0);
-                Tracks[0].CurIndex = 0;
+                Tracks[0].PlayClip = 0;
 
                 CurClip = Tracks[0].Clips[0];
             }

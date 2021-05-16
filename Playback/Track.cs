@@ -13,13 +13,16 @@ namespace IngameScript
             public List<Clip> Clips;
             public List<int>  Indices;
 
-            public int        CurIndex;
-            public int        NextIndex;
 
             public long       StartTime, // in ticks
                               PlayTime;
 
-            public int        PlayPat; // this can't be a property because it must sometimes be separate from PlayTime, for queueing
+            public int        PlayClip,
+                              NextClip,
+                              
+                              PlayPat, // this can't be a property because it must sometimes be separate from PlayTime, for queueing
+                              NextPat;
+
 
             public float      PlayStep { get 
                               {
@@ -37,13 +40,14 @@ namespace IngameScript
                 Clips     = new List<Clip>();
                 Indices   = new List<int> ();
 
-                CurIndex  = 
-                NextIndex = -1;
+                StartTime = 
+                PlayTime  = long_NaN;
 
-                PlayTime  =
-                StartTime = long_NaN;
-                          
-                PlayPat   = -1;
+                PlayClip  = 
+                NextClip  =
+
+                PlayPat   =
+                NextPat   = -1;
             }
 
 
@@ -64,13 +68,14 @@ namespace IngameScript
                 foreach (var i in track.Indices)
                     Indices.Add(i);
 
-                CurIndex  = track.CurIndex;
-                NextIndex = track.NextIndex;
-
-                PlayTime  = track.PlayTime;
                 StartTime = track.StartTime;
+                PlayTime  = track.PlayTime;
                           
+                PlayClip  = track.PlayClip;
+                NextClip  = track.NextClip;
+
                 PlayPat   = track.PlayPat;
+                NextPat   = track.NextPat;
             }
 
 
@@ -81,15 +86,69 @@ namespace IngameScript
             }
 
 
+            public void SetClip(int index)
+            { 
+                Log("1");
+                var found = Indices.FindIndex(i => i == index);
+                Log("2");
+
+                if (found < 0)
+                {
+                    Log("3");
+                    Session.CurClip = new Clip(this);
+                    Session.CurClip.Patterns.Add(new Pattern(Session.Instruments[0], Program.CurClip));
+                    Session.CurClip.Name = "New Clip";
+                    Log("4");
+
+                    Clips.Add(Program.CurClip);
+                    Indices.Add(index);
+                    PlayClip = index;
+                    Log("5");
+                }
+                else
+                {
+                    Log("6");
+                    NextClip = 
+                        PlayClip != index
+                        ? index
+                        : -1;
+                }
+                Log("7");
+
+                if (g_setClip)
+                {
+                    Log("8");
+                    g_showSession = F;
+                    Session.CurClip = Clips[PlayClip];
+                }
+                Log("9");
+
+                g_setClip = F;
+            }
+
+
+            //void SetClip(Clip clip)
+            //{ 
+            //    clip.Track.CurIndex = clip.Track.Clips.IndexOf(clip);
+
+            //    CurClip = clip;
+
+            //    g_setClip = F;
+            //    g_showSession = F;
+
+            //    //UpdateLabels();
+            //}
+
+
             public void CueNextPattern()
             {
-                var clip = Clips[CurIndex];
+                var clip = Clips[PlayClip];
 
 
                 clip.Length = clip.Patterns.Count * g_patSteps;
 
 
-                if (clip.CueNext > -1)
+                if (NextPat > -1)
                 {
                     var b = clip.GetBlock(PlayPat);
 
@@ -100,20 +159,29 @@ namespace IngameScript
 
                 if (PlayStep >= (PlayPat + 1) * g_patSteps)
                 { 
+                    if (NextClip > -1)
+                    { 
+                        PlayClip = NextClip;
+                        NextClip = -1;
+                    }
+
+                    clip = Clips[PlayClip];
+
+
                     int start, end;
                     clip.GetPosLimits(PlayPat, out start, out end);
                     end = start + Math.Min(end - start, clip.Length);
 
-                    if (clip.CueNext > -1)
+                    if (NextPat > -1)
                     {
-                        var b = clip.GetBlock(clip.CueNext);
+                        var b = clip.GetBlock(NextPat);
                         if (clip.Block && b != null)
-                            clip.CueNext = b.First;
+                            NextPat = b.First;
 
-                        PlayTime  = GetPatTime(clip.CueNext);
+                        PlayTime  = GetPatTime(NextPat);
                         StartTime = g_time - PlayTime;
 
-                        clip.CueNext = -1;
+                        NextPat = -1;
                     }
                     else if (PlayStep >= end)
                     {
@@ -122,9 +190,6 @@ namespace IngameScript
                         PlayTime  -= (end - start) * g_session.TicksPerStep;
                         StartTime += (end - start) * g_session.TicksPerStep;
                     }
-
-                    if (NextIndex > -1)
-                        CurIndex = NextIndex;
                 }
 
 
@@ -173,7 +238,8 @@ namespace IngameScript
                 var cfg = 
                         (PlayTime == long_NaN ? "?" : S(PlayTime))
                     + PS(PlayPat)
-                    + PS(NextIndex);
+                    + PS(NextPat)
+                    + PS(NextClip);
 
                 var indices = S(Clips.Count);
 
@@ -200,7 +266,8 @@ namespace IngameScript
 
                 if (!long_TryParse(cfg[c++], out track.PlayTime )) return null;
                 if (!int .TryParse(cfg[c++], out track.PlayPat  )) return null;
-                if (!int .TryParse(cfg[c++], out track.NextIndex)) return null;
+                if (!int .TryParse(cfg[c++], out track.NextPat  )) return null;
+                if (!int .TryParse(cfg[c++], out track.NextClip )) return null;
 
                 var indices = lines[line++].Split(';');
 
