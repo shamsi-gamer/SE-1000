@@ -72,7 +72,7 @@ namespace IngameScript
             public void MovePatterns(int destPat)
             {
                 var block = GetBlock(CurPat);
-                if (block != null)
+                if (OK(block))
                 {
                     var pats = new List<Pattern>();
 
@@ -86,7 +86,7 @@ namespace IngameScript
                     if (destPat > CurPat)
                     {
                         var b = GetBlock(block.Last + 1);
-                        if (b != null)
+                        if (OK(b))
                         {
                             b.First -= block.Len;
                             b.Last  -= block.Len;
@@ -105,7 +105,7 @@ namespace IngameScript
                         newFirst = block.First;
 
                         var b = GetBlock(block.First - 1);
-                        if (b != null)
+                        if (OK(b))
                         {
                             newFirst = b.First;
 
@@ -135,7 +135,7 @@ namespace IngameScript
                     Patterns.RemoveAt(CurPat);
 
                     var b = GetBlock(destPat);
-                    if (b != null)
+                    if (OK(b))
                     {
                         var frw = destPat > CurPat ? 1 : -1;
 
@@ -181,7 +181,7 @@ namespace IngameScript
 
                 var b = GetBlock(CurPat);
 
-                if (    b != null
+                if (    OK(b)
                     && (In || Out))
                 {
                     var off = p > CurPat ? 1 : -1;
@@ -248,7 +248,7 @@ namespace IngameScript
                 var block = GetBlock(CurPat);
 
                 if (   Block
-                    && block != null)
+                    && OK(block))
                 {
                     var first = Patterns[block.First];
 
@@ -280,7 +280,7 @@ namespace IngameScript
                     if (Patterns.Count > 1) Patterns.RemoveAt(CurPat);
                     else                    Patterns[0].Clear();
 
-                    if (b != null)
+                    if (OK(b))
                     {
                         if (b.First == b.Last) Blocks.Remove(b);
                         else b.Last--;
@@ -319,7 +319,7 @@ namespace IngameScript
                 var block = GetBlock(CurPat);
 
                 if (   Block
-                    && block != null)
+                    && OK(block))
                 {
                     for (int p = block.First; p <= block.Last; p++)
                         Patterns.Insert(block.Last + 1 + p - block.First, new Pattern(Patterns[p]));
@@ -339,7 +339,7 @@ namespace IngameScript
                 MovePatternOff();
                 DisableBlock();
 
-                //if (!OK(recordPosition))
+                //if (NOK(recordPosition))
                 // recordPosition = 0;
 
                 //if (g_playing)

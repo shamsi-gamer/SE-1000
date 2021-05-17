@@ -16,7 +16,7 @@ namespace IngameScript
 
         void DrawClip(Display dsp, int nDsp)
         {
-            if (dsp == null) return;
+            if (NO(dsp)) return;
 
             var v = dsp.Viewport;
 
@@ -65,7 +65,7 @@ namespace IngameScript
                     var bo = 30;
 
                     var block = CurClip.GetBlock(p);
-                    if (block != null)
+                    if (OK(block))
                     {
                         var c = curBlock == block ? color3 : color2;
 
@@ -197,7 +197,7 @@ namespace IngameScript
                     var px = x - _f * pw + _p * pw;
 
                     var b = CurClip.GetBlock(p);
-                    var c = b != null && b == curBlock ? color5 : color4;
+                    var c = OK(b) && b == curBlock ? color5 : color4;
 
                     DrawString(sprites, S(p + 1), px + 8, py - 28, 0.8f, c);
 
@@ -238,8 +238,8 @@ namespace IngameScript
 
         void DrawBrackets(List<MySprite> sprites, int p, float x, float y, float w, float h, float bw, float bh)
         {
-            if (CurClip.Blocks.Find(b => p == b.First) != null) DrawLeftBracket (sprites, x,     y, bw, h, bh);
-            if (CurClip.Blocks.Find(b => p == b.Last ) != null) DrawRightBracket(sprites, x + w, y, bw, h, bh);
+            if (OK(CurClip.Blocks.Find(b => p == b.First))) DrawLeftBracket (sprites, x,     y, bw, h, bh);
+            if (OK(CurClip.Blocks.Find(b => p == b.Last ))) DrawRightBracket(sprites, x + w, y, bw, h, bh);
         }
 
 

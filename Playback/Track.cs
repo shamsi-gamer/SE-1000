@@ -152,7 +152,7 @@ namespace IngameScript
                 {
                     var b = clip.GetBlock(PlayPat);
 
-                    if (clip.Block && b != null)
+                    if (clip.Block && OK(b))
                         PlayPat = b.Last;
                 }
 
@@ -175,7 +175,7 @@ namespace IngameScript
                     if (NextPat > -1)
                     {
                         var b = clip.GetBlock(NextPat);
-                        if (clip.Block && b != null)
+                        if (clip.Block && OK(b))
                             NextPat = b.First;
 
                         PlayTime  = GetPatTime(NextPat);
@@ -209,7 +209,7 @@ namespace IngameScript
                 //    var chan = pat.Channels[ch];
 
                 //    var arpNotes = chan.Notes.FindAll(n =>
-                //                n.Instrument.Arpeggio != null
+                //               OK(n.Instrument.Arpeggio)
                 //            && (int)(clip.PlayStep * g_session.TicksPerStep) >= (int)((clip.PlayPat * nSteps + n.StepTime               ) * g_session.TicksPerStep)
                 //            && (int)(clip.PlayStep * g_session.TicksPerStep) <  (int)((clip.PlayPat * nSteps + n.StepTime + n.StepLength) * g_session.TicksPerStep));
 
@@ -285,8 +285,8 @@ namespace IngameScript
                 
                     var clip = Clip.Load(session, lines, ref line);
 
-                    if (clip != null) track.Clips.Add(clip);//, out curPath));
-                    else              return null;
+                    if (OK(clip)) track.Clips.Add(clip);//, out curPath));
+                    else          return null;
                 }
 
                 return track;

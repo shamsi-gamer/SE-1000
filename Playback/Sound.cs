@@ -168,7 +168,7 @@ namespace IngameScript
 
                 float vol = 0;
 
-                if (Cache != null) // not echo
+                if (OK(Cache)) // not echo
                 {
                     var updateVol = 
                         CurClip.Track.PlayTime < Time + Length + ReleaseLength
@@ -197,7 +197,7 @@ namespace IngameScript
 
                     var srcVol = 0f;
 
-                    if (    Harmonic != null
+                    if (    OK(Harmonic)
                         && !prog.TooComplex)
                     {
                         Harmonic.UpdateValue(tp);
@@ -254,7 +254,7 @@ namespace IngameScript
                     { 
                         var spk = g_sm.GetSpeaker();
 
-                        if (spk != null)
+                        if (OK(spk))
                         { 
                             spk.Block.SelectedSound = Sample;
                             spk.Block.LoopPeriod    = 60;

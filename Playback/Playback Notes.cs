@@ -186,7 +186,7 @@ namespace IngameScript
 
                     note.PatStep += (float)sh / g_session.TicksPerStep;
 
-                    if (note.Instrument.Arpeggio != null)
+                    if (OK(note.Instrument.Arpeggio))
                         note.ArpPlayTime = 0;
 
                     AddNoteAndSounds(note);
@@ -205,10 +205,10 @@ namespace IngameScript
 
             var sh = (int)clip.Track.PlayStep % 2 != 0 ? note.Channel.Shuffle : 0;
 
-            //if (note.Instrument.Arpeggio != null)
+            //if (OK(note.Instrument.Arpeggio))
             //{
             //    var notes = note.Channel.Notes.FindAll(n =>
-            //              n.Instrument.Arpeggio != null
+            //              OK(n.Instrument.Arpeggio)
             //           && clip.PlayTime >= clip.PlayPat*g_patSteps*g_session.TicksPerStep + n.PatTime
             //           && clip.PlayTime <  clip.PlayPat*g_patSteps*g_session.TicksPerStep + n.PatTime + n.FrameLength);
 
@@ -237,7 +237,7 @@ namespace IngameScript
                            clip.Track.PlayStep >= n.PatStep 
                         && clip.Track.PlayStep <  n.PatStep + n.StepLength);
                 
-                if (   found != null
+                if (   OK(found)
                     && found.Number == note.Number
                     && found.StepLength == float_Inf)
                     return;
@@ -298,12 +298,12 @@ namespace IngameScript
 
             var noteNum = MinMax(12*NoteScale, (int)Math.Round(_noteNum), 150*NoteScale);
 
-            if (   src.Tune != null
+            if (   OK(src.Tune)
                 && src.Tune.UseChord
                 && src.Tune.FinalChord.Count > 0)
                 noteNum = LimitNoteToChord(noteNum, src.Tune.FinalChord);
 
-            if (   inst.Tune != null
+            if (   OK(inst.Tune)
                 && inst.Tune.UseChord
                 && inst.Tune.FinalChord.Count > 0)
                 noteNum = LimitNoteToChord(noteNum, inst.Tune.FinalChord);

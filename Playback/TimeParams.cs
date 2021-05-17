@@ -47,7 +47,7 @@ namespace IngameScript
                               
                 SourceIndex   = tp.SourceIndex;
 
-                if (tp.TriggerValues != null)
+                if (OK(tp.TriggerValues))
                 {
                     TriggerValues = new List<TriggerValue>();
                     foreach (var tv in tp.TriggerValues)
@@ -76,7 +76,7 @@ namespace IngameScript
                 var path    = param.GetPath(SourceIndex);
                 var trigVal = TriggerValues.Find(v => v.Path == path);
 
-                if (trigVal == null)
+                if (NO(trigVal))
                 {
                     trigVal = new TriggerValue(path, param.UpdateValue(this));
                     TriggerValues.Add(trigVal);

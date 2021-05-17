@@ -91,8 +91,8 @@ namespace IngameScript
             InitMixerLabels();
             InitSideLabels();
 
-            frontLight   = Get("Front Light")      as IMyReflectorLight;
-            warningLight = Get("Saturation Light") as IMyInteriorLight;
+            frontLight   = Get("Front Light") as IMyReflectorLight;
+            warningLight = Get("Sat Light")   as IMyInteriorLight;
         }
 
 
@@ -161,35 +161,27 @@ namespace IngameScript
             lblMixerAll        = new Label(Lbl("M Solo R"));
             lblMixerMuteAll    = new Label(Lbl("M Mute R"));
 
-            lblMixerShift = new Label(
-                Lbl("M Shift"), 
-                lbl => CurClip.MixerShift);
+            lblMixerShift      = new Label(Lbl("M Shift"), lbl => CurClip.MixerShift);
+            lblSession         = new Label(Lbl("Session"), lbl => g_showSession && g_setClip, null, UpdateSessionLabel, null, 0, false, true);
+        }
 
-            lblSession = new Label(
-                Lbl("Session"), 
-                lbl => g_showSession && g_setClip,
-                null,
-                lbl =>
-                { 
-                    if (g_showSession) lbl.SetText("Clip",    8, 18);
-                    else               lbl.SetText("Session", 7, 21);
-                },
-                null,
-                0,
-                false,
-                true);
+
+        void UpdateSessionLabel(Label lbl)
+        {
+            if (g_showSession) lbl.SetText("Edit",    8, 18);
+            else               lbl.SetText("Session", 7, 21);
         }
 
 
         void InitSideLabels()
         {
-            lblLock     = new Label(Lbl("Lock"),      lbl => g_locks.Find(l => l.IsLocked) != null, null, null, null, 0, F, T);
-            lblAutoLock = new Label(Lbl("Auto Lock"), lbl => g_locks.Find(l => l.AutoLock) != null, null, null, null, 0, F, T);
+            lblLock     = new Label(Lbl("Lock"),      lbl => OK(g_locks.Find(l => l.IsLocked)), null, null, null, 0, F, T);
+            lblAutoLock = new Label(Lbl("Auto Lock"), lbl => OK(g_locks.Find(l => l.AutoLock)), null, null, null, 0, F, T);
 
             lblFold     = new Label(Lbl("Fold"), null, null, null, null, 0, F, T);
 
-            lblGyro     = new Label(Lbl("Gyro"),  lbl => g_gyros .Find(g => !g.Enabled) == null, null, null, null, 0, F, T);
-            lblNoise    = new Label(Lbl("Noise"), lbl => g_timers.Find(t => !t.Enabled) == null, null, null, null, 0, F, T);
+            lblGyro     = new Label(Lbl("Gyro"),  lbl => NO(g_gyros .Find(g => !g.Enabled)), null, null, null, 0, F, T);
+            lblNoise    = new Label(Lbl("Noise"), lbl => NO(g_timers.Find(t => !t.Enabled)), null, null, null, 0, F, T);
         }
 
 
@@ -237,7 +229,7 @@ namespace IngameScript
             var lights = new List<IMyInteriorLight>();
 
             var group = GridTerminalSystem.GetBlockGroupWithName("Rear Lights");
-            if (group != null) group.GetBlocksOfType(lights);
+            if (OK(group)) group.GetBlocksOfType(lights);
 
             foreach (var l in lights)
                 l.Color = lightColor;

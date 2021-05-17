@@ -22,7 +22,7 @@
                 : null;
 
             if (   !(CurClip.ParamKeys || CurClip.ParamAuto)
-                && tune != null)
+                && OK(tune))
                 return tune.UseChord;
             else
                 return CurClip.ChordMode;
@@ -79,7 +79,7 @@
                     : null;
 
                 lbl.SetText(
-                       tune != null 
+                       OK(tune)
                     && tune.UseChord 
                     ? strAll : " ");
             }
@@ -98,7 +98,7 @@
             if (   IsCurParam(strTune)
                 && !(CurClip.ParamKeys || CurClip.ParamAuto))
                 return
-                       tune != null 
+                       OK(tune) 
                     && tune.AllOctaves;
 
             else return

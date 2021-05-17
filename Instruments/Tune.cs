@@ -74,7 +74,7 @@ namespace IngameScript
                 }
                 else
                 { 
-                    if (Lfo != null)
+                    if (OK(Lfo))
                         g_lfo.Remove(Lfo);
 
                     Lfo = null;

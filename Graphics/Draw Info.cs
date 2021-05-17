@@ -13,7 +13,7 @@ namespace IngameScript
         void DrawInfo()
         {
             var dsp = dspInfo;
-            if (dsp == null) return;
+            if (NO(dsp)) return;
 
 
             var Volume = dsp.Viewport;
@@ -152,7 +152,7 @@ namespace IngameScript
         void DrawIO()
         {
             var dsp = dspIO;
-            if (dsp == null) return;
+            if (NO(dsp)) return;
 
             var Volume = dsp.Viewport;
 

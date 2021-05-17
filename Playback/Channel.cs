@@ -101,8 +101,8 @@ namespace IngameScript
             }
 
 
-            public bool HasNoteKeys(string path) { return Notes   .Find(n => n.Keys.Find(k => k.Path == path) != null) != null; }
-            public bool HasAutoKeys(string path) { return AutoKeys.Find(k => k.Path == path) != null; }
+            public bool HasNoteKeys(string path) { return OK(Notes   .Find(n => OK(n.Keys.Find(k => k.Path == path)))); }
+            public bool HasAutoKeys(string path) { return OK(AutoKeys.Find(k => k.Path == path)); }
             public bool HasKeys    (string path) { return HasNoteKeys(path) || HasAutoKeys(path); }
 
 

@@ -17,7 +17,7 @@ namespace IngameScript
             var irh = h - 50;
 
 
-            if (arp == null)
+            if (NO(arp))
                 DrawChannelList(sprites, x, y, 340, rh);
             else
             {
@@ -39,7 +39,7 @@ namespace IngameScript
             var tp = new TimeParams(g_time, 0, g_time - CurClip.Track.StartTime, null, CurClip.EditLength, CurSrc, _dummy, this);
 
             var songSteps =
-                arp != null
+                OK(arp)
                 ? (int)Math.Round(arp.Length.UpdateValue(tp))
                 : g_patSteps;
 
@@ -65,7 +65,7 @@ namespace IngameScript
             }
 
 
-            DrawPianoRoll(sprites, x + xt, y, w - xt, rh, clip, pat, 2, arp != null, songSteps);
+            DrawPianoRoll(sprites, x + xt, y, w - xt, rh, clip, pat, 2, OK(arp), songSteps);
 
 
             // draw position line/s
@@ -79,7 +79,7 @@ namespace IngameScript
                     for (int p = 0; p <= CurPat; p++)
                     { 
                         var notes = CurClip.Patterns[p].Channels[SelChan].Notes.FindAll(n => 
-                                  n.Instrument.Arpeggio != null
+                                  OK(n.Instrument.Arpeggio)
                                && CurClip.Track.PlayTime >= n.PatStep*g_session.TicksPerStep + n.PatTime                
                                && CurClip.Track.PlayTime <  n.PatStep*g_session.TicksPerStep + n.PatTime + n.FrameLength);
 
@@ -103,12 +103,12 @@ namespace IngameScript
             }
 
 
-            FillRect(sprites, x, y + (arp != null ? irh : rh), w, 1, color6);
+            FillRect(sprites, x, y + (OK(arp) ? irh : rh), w, 1, color6);
 
             if (IsCurParam())
-                DrawValueLegend(sprites, CurParam, x, y, w, h, xt, rh, clip, pat);
+                DrawKeysAndAuto(sprites, CurParam, x, y, w, h, xt, rh, clip, pat);
 
-            if (SelChan < 0 || arp != null)
+            if (SelChan < 0 || OK(arp))
                 DrawFuncButtons(sprites, w, h, clip);
         }
 

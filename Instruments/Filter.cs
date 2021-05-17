@@ -335,7 +335,7 @@ namespace IngameScript
         {
             if (tp.Program.TooComplex) return value;
 
-            if (src.Filter != null)
+            if (OK(src.Filter))
             {
                 value *= GetFilter(
                     pos,
@@ -346,7 +346,7 @@ namespace IngameScript
             }
 
             var inst = src.Instrument;
-            if (inst.Filter != null)
+            if (OK(inst.Filter))
             {
                 value *= GetFilter(
                     pos, 

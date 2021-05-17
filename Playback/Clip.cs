@@ -360,7 +360,7 @@ namespace IngameScript
             }
 
 
-            public int   GetKeyPat(Key key) { return Patterns.FindIndex(p => Array.Find(p.Channels, c => c.AutoKeys.Contains(key)) != null); }
+            public int   GetKeyPat(Key key) { return Patterns.FindIndex(p => OK(Array.Find(p.Channels, c => c.AutoKeys.Contains(key)))); }
             public float GetStep  (Key key) { return GetKeyPat(key) * g_patSteps + key.StepTime; }
 
 
@@ -397,8 +397,7 @@ namespace IngameScript
 
                     var b = GetBlock(p);
 
-                    if (   Block
-                        && b != null)
+                    if (Block && OK(b))
                     {
                         f = b.First;
                         l = b.Last;
@@ -447,7 +446,7 @@ namespace IngameScript
             {
                 var b = GetBlock(CurPat);
 
-                if (b == null)
+                if (NO(b))
                 {
                     Blocks.Add(new Block(CurPat));
 
@@ -473,7 +472,7 @@ namespace IngameScript
             {
                 var b = GetBlock(CurPat);
 
-                if (b == null)
+                if (NO(b))
                 {
                     Blocks.Add(new Block(CurPat));
 
@@ -588,7 +587,7 @@ namespace IngameScript
                     var b = GetBlock(pat);
 
                     if (   Block
-                        && b != null)
+                        && OK(b))
                     {
                         first = b.First;
                         last  = b.Last;

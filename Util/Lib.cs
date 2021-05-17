@@ -5,20 +5,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        //static float Sqr(float x) { return x*x; }
         static float Nozero(float x) { return x != 0 ? x : 0.000001f; }
-
-        //static float logb(double _base, double value)
-        //{
-        //    return (float)(Math.Log(value) / Math.Log(_base));
-        //}
-
-        //Vector2 vector2(float angle, float dist)
-        //{
-        //    return new Vector2(
-        //        dist * (float)Math.Cos(angle),
-        //        dist * (float)Math.Sin(angle));
-        //}
 
 
         static string PrintNoZero(double d, int dec)
@@ -59,14 +46,6 @@ namespace IngameScript
         }
 
 
-        //static void Swap<T>(ref T t1, ref T t2)
-        //{
-        //    var temp = t1;
-        //    t1 = t2;
-        //    t2 = temp;
-        //}
-
-
         int GetNumLength(string name)
         {
             var numLength = 0;
@@ -86,13 +65,14 @@ namespace IngameScript
         }
 
 
-        //static bool OK(long  l) { return l != long_NaN; }
-        static bool OK(float f) { return !float.IsNaN(f); }
+        static bool  OK(float  f) { return !float.IsNaN(f); }
+        static bool NOK(float  f) { return !OK(f); }
 
+        static bool  OK(object o) { return o != null; }
+        static bool NO(object o) { return !OK(o); }
 
-        static int    MinMax(int    min, int    val, int    max) { return Math.Min(Math.Max(min, val), max); }
-        static float  MinMax(float  min, float  val, float  max) { return Math.Min(Math.Max(min, val), max); }
-        //static double MinMax(double min, double val, double max) { return Math.Min(Math.Max(min, val), max); }
+        static int   MinMax(int   min, int   val, int   max) { return Math.Min(Math.Max(min, val), max); }
+        static float MinMax(float min, float val, float max) { return Math.Min(Math.Max(min, val), max); }
 
 
         static int GetInt(string str, string pre, string suf = "")

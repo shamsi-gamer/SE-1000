@@ -103,7 +103,7 @@ namespace IngameScript
                     Tune = null;
                 
                 if (   RND > 0.7f
-                    && Sources.Find(s => s.Harmonics != null) != null)
+                    && OK(Sources.Find(s => OK(s.Harmonics))))
                 {
                     Filter = new Filter(this, null);
                     Filter.Randomize(prog);
@@ -247,10 +247,10 @@ namespace IngameScript
                 else
                 {
                     DrawFuncButton(sprites, strVol,  1, w, h, T, Volume.HasDeepParams(chan, -1));
-                    DrawFuncButton(sprites, strTune, 2, w, h, T, Tune     != null);
-                    DrawFuncButton(sprites, strFlt,  3, w, h, T, Filter   != null);
-                    DrawFuncButton(sprites, strDel,  4, w, h, T, Delay    != null);
-                    DrawFuncButton(sprites, strArp,  5, w, h, T, Arpeggio != null);
+                    DrawFuncButton(sprites, strTune, 2, w, h, T, OK(Tune    ));
+                    DrawFuncButton(sprites, strFlt,  3, w, h, T, OK(Filter  ));
+                    DrawFuncButton(sprites, strDel,  4, w, h, T, OK(Delay   ));
+                    DrawFuncButton(sprites, strArp,  5, w, h, T, OK(Arpeggio));
                 }
             }
         }

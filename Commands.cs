@@ -405,7 +405,7 @@ namespace IngameScript
 
         void Command1()
         {
-            if (ModDestConnecting != null)
+            if (OK(ModDestConnecting))
             {
                 if (ModDestConnecting == CurSetting)
                     ResetModConnecting();
@@ -436,7 +436,7 @@ namespace IngameScript
             }
             else if (IsCurSetting(typeof(Modulate)))
             {
-                if (ModDestConnecting == null)
+                if (NO(ModDestConnecting))
                 {
                     ModDestConnecting = CurModulate;
                     ModCurChan        = CurChan;
@@ -542,7 +542,7 @@ namespace IngameScript
                         && k.StepTime >= (CurClip.EditPos % g_patSteps)
                         && k.StepTime <  (CurClip.EditPos % g_patSteps) + 1);
 
-                    if (key == null) // create
+                    if (NO(key)) // create
                     {
                         var val = Parameter.GetAutoValue(CurClip.EditPos, CurPat, path);
 
@@ -631,7 +631,7 @@ namespace IngameScript
                             && k.StepTime >= (clip.EditPos % g_patSteps) 
                             && k.StepTime <  (clip.EditPos % g_patSteps) + 1);
 
-                        if (key != null)
+                        if (OK(key))
                             AdjustKey(key, delta);
                     }
                     else

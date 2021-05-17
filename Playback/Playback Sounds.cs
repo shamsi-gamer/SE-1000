@@ -7,7 +7,7 @@ namespace IngameScript
     {
         void AddSoundAndEchos(List<Sound> sounds, Sound snd, Delay del)
         {
-            if (del == null) return;
+            if (NO(del)) return;
 
             var lTime = g_time - snd.Note.PatTime;
             var sTime = g_time - CurClip.Track.StartTime;

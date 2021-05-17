@@ -15,7 +15,7 @@ namespace IngameScript
             for (int i = 0; i < 6; i++)
             {
                 var btn = Get("Button F" + (i+1)) as IMyButtonPanel;
-                if (btn != null) funcButtons.Add(btn);
+                if (OK(btn)) funcButtons.Add(btn);
             }
         }
 
@@ -93,8 +93,8 @@ namespace IngameScript
 
         static void AddNextSetting(string tag, Instrument inst = null, int iSrc = -2)
         {
-            if (inst == null) inst = SelInstrument;
-            if (iSrc == -2)   iSrc = CurSrc;
+            if (NO(inst))   inst = SelInstrument;
+            if (iSrc == -2) iSrc = CurSrc;
 
             if (CurSet > -1)
                 CurSetting._IsCurrent = F;
@@ -137,12 +137,12 @@ namespace IngameScript
 
                 switch (setting.Tag)
                 {
-                    case strOff:  if (src != null) src.Offset    = null;                            break;
-                    case strDel:  if (src != null) src.Delay     = null; else inst.Delay    = null; break;
-                    case strTune: if (src != null) src.Tune      = null; else inst.Tune     = null; break;
-                    case strHrm:  if (src != null) src.Harmonics = null;                            break;
-                    case strFlt:  if (src != null) src.Filter    = null; else inst.Filter   = null; break;
-                    case strArp:  if (src == null)                            inst.Arpeggio = null; break;
+                    case strOff:  if (OK(src)) src.Offset    = null;                            break;
+                    case strDel:  if (OK(src)) src.Delay     = null; else inst.Delay    = null; break;
+                    case strTune: if (OK(src)) src.Tune      = null; else inst.Tune     = null; break;
+                    case strHrm:  if (OK(src)) src.Harmonics = null;                            break;
+                    case strFlt:  if (OK(src)) src.Filter    = null; else inst.Filter   = null; break;
+                    case strArp:  if (NO(src))                            inst.Arpeggio = null; break;
                 }
             }
 

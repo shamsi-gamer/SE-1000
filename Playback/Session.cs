@@ -42,7 +42,7 @@ namespace IngameScript
 
             public void CreateDefaultSession()
             {
-                TicksPerStep = 7;
+                TicksPerStep = 8;
             }
 
 
@@ -62,18 +62,20 @@ namespace IngameScript
                 for (int i = 0; i < Tracks.Count; i++)
                     Tracks[i] = new Track(this);
 
-                var clip = new Clip(Tracks[0]);
+                var track = Tracks[3];
+                var clip  = new Clip(track);
+
                 clip.Patterns.Add(new Pattern(Instruments[0], clip));
 
-                Tracks[0].Add(clip, 0);
-                Tracks[0].PlayClip = 0;
+                track.Add(clip, 0);
+                track.PlayClip = 0;
 
-                CurClip = Tracks[0].Clips[0];
+                CurClip = track.Clips[0];
             }
         }
 
 
-        void Clips()
+        void ToggleSession()
         {
             if (g_showSession) g_setClip     = T;
             else               g_showSession = T;

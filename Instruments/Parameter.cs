@@ -85,12 +85,12 @@ namespace IngameScript
 
             public void SetValue(float val, Note note, int src)
             {
-                if (note != null)
+                if (OK(note))
                 {
                     var key = note.Keys.Find(k => k.Path == GetPath(src));
 
-                    if (key != null) key.Value = MinMax(Min, val, Max);
-                    else             m_value   = MinMax(Min, val, Max);
+                    if (OK(key)) key.Value = MinMax(Min, val, Max);
+                    else         m_value   = MinMax(Min, val, Max);
                 }
                 else
                 {
@@ -108,16 +108,15 @@ namespace IngameScript
 
             public float UpdateValue(TimeParams tp)
             {
-                if ( /*m_valid
-                    ||*/tp.Program.TooComplex) 
+                if (tp.Program.TooComplex) 
                     return CurValue;
 
 
                 var value = GetKeyValue(tp.Note, tp.SourceIndex);
                 var path  = GetPath(tp.SourceIndex);
 
-                if (   tp.TriggerValues.Find(v => v.Path == path) == null
-                    && Lfo != null)
+                if (   NO(tp.TriggerValues.Find(v => v.Path == path))
+                    && OK(Lfo))
                 {
                     var lfo = Lfo.UpdateValue(tp);
 
@@ -128,7 +127,7 @@ namespace IngameScript
                         tp.TriggerValues.Add(new TriggerValue(path, MinMax(Min, value, Max)));
                 }
 
-                if (Modulate != null)
+                if (OK(Modulate))
                 {
                     var mod = Modulate.UpdateValue(tp);
 
@@ -136,7 +135,7 @@ namespace IngameScript
                     else                          value *= mod;
                 }
 
-                if (Envelope != null)
+                if (OK(Envelope))
                     value *= Envelope.UpdateValue(tp);
 
 
@@ -147,7 +146,7 @@ namespace IngameScript
                 else                  auto = 1;
 
 
-                if (tp.Note != null)
+                if (OK(tp.Note))
                 { 
                     var val = GetAutoValue(
                         tp.Note.PatIndex, 
@@ -175,7 +174,7 @@ namespace IngameScript
 
             public float GetKeyValue(Note note, int src)
             {
-                if (note != null)
+                if (OK(note))
                 {
                     var key = note.Keys.Find(k => k.Path == GetPath(src));
                     return key?.Value ?? m_value; 
@@ -190,9 +189,9 @@ namespace IngameScript
                 var prevKey = PrevClipAutoKey(songStep, pat, path);
                 var nextKey = NextClipAutoKey(songStep, pat, path);
 
-                     if (prevKey == null && nextKey == null) return fN;
-                else if (prevKey != null && nextKey == null) return prevKey.Value;
-                else if (prevKey == null && nextKey != null) return nextKey.Value;
+                     if (NO(prevKey) && NO(nextKey)) return fN;
+                else if ( OK(prevKey) && NO(nextKey)) return prevKey.Value;
+                else if (NO(prevKey) &&  OK(nextKey)) return nextKey.Value;
                 else
                     return prevKey.Value + (nextKey.Value - prevKey.Value) * (songStep - prevKey.StepTime) / (nextKey.StepTime - prevKey.StepTime);
             }
@@ -256,10 +255,10 @@ namespace IngameScript
             public override bool HasDeepParams(Channel chan, int src)
             {
                 return
-                       Trigger  != null
-                    || Envelope != null
-                    || Lfo      != null
-                    || Modulate != null
+                       OK(Trigger )
+                    || OK(Envelope)
+                    || OK(Lfo     )
+                    || OK(Modulate)
                     || (chan?.HasKeys(GetPath(src)) ?? F)
                     || _IsCurrent;
             }
@@ -286,10 +285,10 @@ namespace IngameScript
                 Trigger  = null;
                 Envelope = null;
 
-                if (Lfo != null) g_lfo.Remove(Lfo);
+                if (OK(Lfo)) g_lfo.Remove(Lfo);
                 Lfo = null;
 
-                if (Modulate != null) g_mod.Remove(Modulate);
+                if (OK(Modulate)) g_mod.Remove(Modulate);
                 Modulate = null;
             }
 
@@ -329,7 +328,7 @@ namespace IngameScript
                 }
                 else
                 { 
-                    if (Lfo != null)
+                    if (OK(Lfo))
                         g_lfo.Remove(Lfo);
 
                     Lfo = null;
@@ -363,10 +362,10 @@ namespace IngameScript
             {
                 var nSettings = 0;
                 
-                if (Trigger  != null) nSettings++;
-                if (Envelope != null) nSettings++;
-                if (Lfo      != null) nSettings++;
-                if (Modulate != null) nSettings++;
+                if (OK(Trigger )) nSettings++;
+                if (OK(Envelope)) nSettings++;
+                if (OK(Lfo     )) nSettings++;
+                if (OK(Modulate)) nSettings++;
 
                 return
                       W(Tag)
@@ -387,10 +386,10 @@ namespace IngameScript
 
                 Parameter param;
 
-                     if (proto  != null) param = proto;                                                    
-                else if (parent != null) param = (Parameter)parent.GetOrAddSettingFromTag(tag);            
-                else if (iSrc > -1)      param = (Parameter)inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
-                else                     param = (Parameter)inst.GetOrAddSettingFromTag(tag);              
+                     if (OK(proto )) param = proto;                                                    
+                else if (OK(parent)) param = (Parameter)parent.GetOrAddSettingFromTag(tag);            
+                else if (iSrc > -1)  param = (Parameter)inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
+                else                 param = (Parameter)inst.GetOrAddSettingFromTag(tag);              
 
                 param.m_value = float.Parse(data[i++]);
 
@@ -452,7 +451,7 @@ namespace IngameScript
                     || Tag == strAmt
                     || Tag == strAmp
                     || Tag == strFreq
-                    ||    Parent != null // LFO offset has a parent
+                    ||    OK(Parent) // LFO offset has a parent
                        && Tag == strOff
                     || Tag == strDry
                     || Tag == strCnt
@@ -484,7 +483,7 @@ namespace IngameScript
                         1f, 
                         color6);
                 }
-                else if (Parent == null // source offset has no parent
+                else if (NO(Parent) // source offset has no parent
                       && Tag    == strOff)
                 { 
                     DrawValueHorizontal(
@@ -527,7 +526,7 @@ namespace IngameScript
                     var db = PrintValue(100 * Math.Log10(Value), 0, T, 0) + " dB";
                     DrawString(sprites, db, x + bx + 100, y + by + 180, 1f, color6);
                 }
-                else if (Parent == null // source offset has no parent
+                else if (NO(Parent) // source offset has no parent
                       && Tag    == strOff)
                     DrawValueHorizontal(sprites, x + bx +  5, y + by + 90, 180,  50, Min, Max, Value, CurValue, Tag);
                 else
@@ -543,12 +542,12 @@ namespace IngameScript
                 if (   !AnyParentIsEnvelope
                     && !HasTagOrAnyParent(this,strTrig))
                 {
-                    DrawFuncButton(sprites, strTrig, 0, w, h, T, Trigger  != null);
-                    DrawFuncButton(sprites, strEnv,  1, w, h, T, Envelope != null);
+                    DrawFuncButton(sprites, strTrig, 0, w, h, T, OK(Trigger));
+                    DrawFuncButton(sprites, strEnv,  1, w, h, T, OK(Envelope));
                 }
 
-                DrawFuncButton(sprites, strLfo, 2, w, h, T, Lfo      != null);
-                DrawFuncButton(sprites, strMod, 3, w, h, T, Modulate != null);
+                DrawFuncButton(sprites, strLfo, 2, w, h, T, OK(Lfo));
+                DrawFuncButton(sprites, strMod, 3, w, h, T, OK(Modulate));
                 DrawFuncButton(sprites, "Key",  4, w, h, T, chan.HasNoteKeys(GetPath(CurSrc)));
                 DrawFuncButton(sprites, "Auto", 5, w, h, T, chan.HasAutoKeys(GetPath(CurSrc)));
             }

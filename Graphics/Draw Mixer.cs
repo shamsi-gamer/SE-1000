@@ -17,7 +17,7 @@ namespace IngameScript
 
         void DrawMixer(Display dsp, int first)
         {
-            if (dsp == null) return;
+            if (NO(dsp)) return;
 
             var bb = 75.5f;
             var bw = 95;

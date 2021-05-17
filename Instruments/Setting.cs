@@ -48,7 +48,7 @@ namespace IngameScript
 
                 Setting setting = this;
 
-                while (setting != null)
+                while (OK(setting))
                 {
                     path.Insert(0, setting.Tag + (path.Length > 0 ? "/" : ""));
                     setting = setting.Parent;
@@ -99,7 +99,7 @@ namespace IngameScript
             public virtual void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
             {
                 if (dp.Program.TooComplex) return;
-                if (sprites == null) return;
+                if (NO(sprites)) return;
 
 
                 var textCol = this == CurSetting ? color0 : color6;
@@ -181,7 +181,7 @@ namespace IngameScript
             foreach (var tag in tags)
             {
                 setting = 
-                    setting == null
+                    NO(setting)
                     ? inst   .GetOrAddSettingFromTag(tag)
                     : setting.GetOrAddSettingFromTag(tag);
             }
@@ -277,7 +277,7 @@ namespace IngameScript
 
         static bool IsParam(Setting setting) 
         {
-            if (setting == null) return F;
+            if (NO(setting)) return F;
 
             return setting.GetType() == typeof(Tune)
                 || setting.GetType() == typeof(Parameter); 
@@ -287,7 +287,7 @@ namespace IngameScript
         static bool IsSettingType(Setting setting, Type type)
         {
             return
-                   setting != null
+                   OK(setting)
                 && setting.GetType() == type;
         }
 
@@ -295,7 +295,7 @@ namespace IngameScript
         static bool HasTag(Setting setting, string tag)
         {
             return 
-                   setting != null
+                   OK(setting)
                 && setting.Tag == tag;
         }
 
@@ -303,14 +303,14 @@ namespace IngameScript
         static bool HasTagOrParent(Setting setting, string tag)
         {
             return HasTag(setting, tag)
-                ||    setting.Parent != null
+                ||    OK(setting.Parent)
                    && HasTag(setting.Parent, tag);
         }
 
 
         static bool HasTagOrAnyParent(Setting setting, string tag)
         {
-            while (setting != null)
+            while (OK(setting))
             {
                 if (setting.Tag == tag)
                     return T;

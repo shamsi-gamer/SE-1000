@@ -16,7 +16,7 @@ namespace IngameScript
 
         void DrawSessionClips(Display dsp, int nDsp)
         {
-            if (dsp == null) return;
+            if (NO(dsp)) return;
 
 
             var sprites = new List<MySprite>();
@@ -95,10 +95,11 @@ namespace IngameScript
                     // position in current clip
                     if (iClip == track.PlayClip)
                     {
-                        var pw = lw / clip.Patterns.Count;
-                        var px = lx + (track.PlayStep / g_patSteps) * pw;
-                        var beatStart = track.PlayStep - track.PlayPat * g_patSteps == 0;
-                        DrawLine(sprites, px, ly, px, ly + lh, color6, beatStart ? 9 : 5); 
+                        var pw       = lw / clip.Patterns.Count;
+                        var px       = lx + (track.PlayStep / g_patSteps) * pw;
+                        var patStart = track.PlayStep - track.PlayPat * g_patSteps <= 1;
+
+                        DrawLine(sprites, px, ly, px, ly + lh, color6, patStart ? 9 : 5); 
                     }
                 }
             }

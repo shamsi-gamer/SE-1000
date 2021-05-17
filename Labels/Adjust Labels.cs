@@ -18,7 +18,7 @@
         bool Cmd1IsBright(Label lbl)
         {
             return
-                   ModDestConnecting != null
+                   OK(ModDestConnecting)
                 ||    CurSrc > -1
                    && CurSet <  0
                    && SelSource.On
@@ -29,7 +29,7 @@
 
         void UpdateCmd1(Label lbl)
         {
-            if (ModDestConnecting != null)
+            if (OK(ModDestConnecting))
             {
                 lbl.SetText("Conn");
                 return;
@@ -46,10 +46,10 @@
                     if (OK(CurClip.EditPos))
                     {
                         lbl.SetText(
-                            SelChannel.AutoKeys.Find(k =>
+                            OK(SelChannel.AutoKeys.Find(k =>
                                    k.Path == path
                                 && k.StepTime >= (CurClip.EditPos % g_patSteps)
-                                && k.StepTime <  (CurClip.EditPos % g_patSteps) + 1) != null
+                                && k.StepTime <  (CurClip.EditPos % g_patSteps) + 1))
                             ? "Move" : " ");
                     }
                 }
@@ -153,10 +153,10 @@
                 if (CurClip.ParamKeys)
                 {
                     lblCmd3.SetText(
-                        SelChannel.Notes.Find(n =>
+                        OK(SelChannel.Notes.Find(n =>
                                n.SongStep >= CurClip.EditPos
                             && n.SongStep <  CurClip.EditPos+1
-                            && n.Keys.Find(k => k.Path == path) != null) != null
+                            && OK(n.Keys.Find(k => k.Path == path))))
                         ? "X"
                         : " ");
                 }
@@ -165,10 +165,10 @@
                     if (OK(CurClip.EditPos))
                     { 
                         lblCmd3.SetText(
-                            SelChannel.AutoKeys.Find(k =>
+                            OK(SelChannel.AutoKeys.Find(k =>
                                 k.Path == path
                                 && k.StepTime >= (CurClip.EditPos % g_patSteps)
-                                && k.StepTime <  (CurClip.EditPos % g_patSteps) + 1) != null
+                                && k.StepTime <  (CurClip.EditPos % g_patSteps) + 1))
                             ? "X" : "+");
                     }
                     else

@@ -33,7 +33,7 @@ namespace IngameScript
             UpdateSounds();
             UpdateVolumes();
 
-            ResetValues();
+            g_session.Instruments.ForEach(inst => inst.ResetValues());
         }
 
 
@@ -72,7 +72,7 @@ namespace IngameScript
                 if (lTime < snd.Length + snd.ReleaseLength)
                 {
                     var instVol = snd.Source.Instrument.DisplayVolume;
-                    if (!OK(instVol)) instVol = 0;
+                    if (NOK(instVol)) instVol = 0;
 
                     g_dspVol[snd.iChan] = Math.Max(
                         g_dspVol[snd.iChan],
@@ -81,13 +81,6 @@ namespace IngameScript
                         * CurClip.Volume);
                 }
             }
-        }
-
-
-        void ResetValues()
-        {
-            foreach (var inst in g_session.Instruments)
-                inst.ResetValues();
         }
 
 

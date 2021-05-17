@@ -130,7 +130,7 @@ namespace IngameScript
         }
 
 
-        void DrawValueLegend(List<MySprite> sprites, Parameter param, float x, float y, float w, float h, float xt, float rh, Clip clip, int pat)
+        void DrawKeysAndAuto(List<MySprite> sprites, Parameter param, float x, float y, float w, float h, float xt, float rh, Clip clip, int pat)
         {
             var path  = param.GetPath(CurSrc);
 
@@ -214,7 +214,7 @@ namespace IngameScript
 
                 var strVal = "";
                     
-                if (key != null)
+                if (OK(key))
                 {
                     strVal = GetParamValueString(key.Value, key.Path.Split('/').Last());
                 }
@@ -223,7 +223,7 @@ namespace IngameScript
                     var src = CurSrc > -1 ? SelSource : null;
 
                     var _param = (Parameter)GetSettingFromPath(SelChannel.Instrument, path);
-                    var val    = _param.CurValue;
+                    var val    = _param.Value;
 
                     strVal = GetParamValueString(val, path.Split('/').Last());
                 }
@@ -269,7 +269,7 @@ namespace IngameScript
 
                 // draw interpolation circle
                 if (   note == clip.Inter
-                    ||    clip.Inter != null
+                    ||    OK(clip.Inter)
                        && note.SongStep >= clip.EditPos
                        && note.SongStep <  clip.EditPos+1)
                 {      
@@ -278,7 +278,7 @@ namespace IngameScript
                 }
 
 
-                var col = key != null ? color6 : color3;
+                var col = OK(key) ? color6 : color3;
 
 
                 // draw shadow
@@ -288,7 +288,7 @@ namespace IngameScript
                     DrawLine  (sprites, pt.X, pt.Y, p0.X, p0.Y, color0, w/250+2);
                     FillCircle(sprites, p0.X, p0.Y, cd/2+1, color0);
 
-                    if (key == null) col = color4;
+                    if (NO(key)) col = color4;
                 }
 
                 // draw key
@@ -302,8 +302,8 @@ namespace IngameScript
                 && n.SongStep <  clip.EditPos+1);
 
             // draw interpolation line
-            if (   clip.Inter != null
-                && curNote != null
+            if (   OK(clip.Inter)
+                && OK(curNote)
                 && (   clip.Inter.PatIndex == p
                     || curNote   .PatIndex == p))
             {
@@ -363,14 +363,14 @@ namespace IngameScript
                 // draw first section
                 var f1 = KeyPos(x, y, w, h, p, AltChanKey(songKeys[0]), clip);
                 var prevKey = PrevClipAutoKey(songKeys[0].StepTime, p, path);
-                var f0 = prevKey != null ? KeyPos(x, y, w, h, p, prevKey, clip) : new Vector2(x, f1.Y);
+                var f0 = OK(prevKey) ? KeyPos(x, y, w, h, p, prevKey, clip) : new Vector2(x, f1.Y);
                 DrawLine(sprites, f0, f1, color6);
 
 
                 // draw last section
                 var l0 = KeyPos(x, y, w, h, p, AltChanKey(songKeys.Last()), clip);
                 var nextKey = NextClipAutoKey(songKeys.Last().StepTime, p, path);
-                var l1 = nextKey != null ? KeyPos(x, y, w, h, p, nextKey, clip) : new Vector2(x + wTotal, l0.Y);
+                var l1 = OK(nextKey) ? KeyPos(x, y, w, h, p, nextKey, clip) : new Vector2(x + wTotal, l0.Y);
                 DrawLine(sprites, l0, l1, color6);
             }
             else

@@ -9,53 +9,53 @@ namespace IngameScript
     {
         const int                 NoteScale          = 2;
         const float               ControlSensitivity = 12;
-
+                                  
         const int                 OscCount           = 13;
+                                     
+                                     
+        static  List<string>      g_samples = new List<string>();
+                                  
+        static  List<Note>        g_notes   = new List<Note>();
+        static  List<Sound>       g_sounds  = new List<Sound>();
+                                  
+        static  List<LFO>         g_lfo     = new List<LFO>();
+        static  List<Modulate>    g_mod     = new List<Modulate>();
+                                                        
+                                                        
+         float[]                  g_dspVol  = new float[g_nChans];
+                                     
+                                     
+        static Display            dspMixer1, dspMixer2,
+                                  dspVol1, dspVol2, dspVol3,
+                                  dspInfo,
+                                  dspIO,
+                                  dspClip1, dspClip2,
+                                  dspMain;
+                                  
+        static IMyTextPanel       pnlInfoLog,
+                                  
+                                  pnlStorageState,
+                                  pnlStorageSession,
+                                  pnlStorageInstruments,
+                                  pnlStorageTracks;
+                                          
+                                          
+        static IMyRemoteControl           g_remote;
+         List<IMyLandingGear>     g_locks          = new List<IMyLandingGear>();
+                                                       
+         List<IMyGyro>            g_gyros          = new List<IMyGyro>();
+         List<IMyTimerBlock>      g_timers         = new List<IMyTimerBlock>();
+                                          
+         IMyPistonBase            g_lightPiston;
+         IMyMotorBase             g_lightHinge1, g_lightHinge2;
+
+
+        static List<Note>         lastNotes        = new List<Note>();
+                                  
+        Channel                   copyChan         = null;
                                   
                                   
-        static  List<string>   g_samples = new List<string>();
-
-        static  List<Note>     g_notes   = new List<Note>();
-        static  List<Sound>    g_sounds  = new List<Sound>();
-
-        static  List<LFO>      g_lfo     = new List<LFO>();
-        static  List<Modulate> g_mod     = new List<Modulate>();
-                                                     
-                                                     
-         float[]               g_dspVol  = new float[g_nChans];
-                                  
-                                  
-        static Display                 dspMixer1, dspMixer2,
-                                       dspVol1, dspVol2, dspVol3,
-                                       dspInfo,
-                                       dspIO,
-                                       dspClip1, dspClip2,
-                                       dspMain;
-                                       
-        static IMyTextPanel            pnlInfoLog,
-                                       
-                                       pnlStorageState,
-                                       pnlStorageSession,
-                                       pnlStorageInstruments,
-                                       pnlStorageTracks;
-                                       
-                                       
-        static IMyRemoteControl        g_remote;
-         List<IMyLandingGear>  g_locks          = new List<IMyLandingGear>();
-                                                    
-         List<IMyGyro>         g_gyros          = new List<IMyGyro>();
-         List<IMyTimerBlock>   g_timers         = new List<IMyTimerBlock>();
-                                       
-         IMyPistonBase         g_lightPiston;
-         IMyMotorBase          g_lightHinge1, g_lightHinge2;
-
-
-        static List<Note>              lastNotes        = new List<Note>();
-                                       
-        Channel                        copyChan         = null;
-                                       
-                                       
-        static List<TriggerValue>      _triggerDummy    = new List<TriggerValue>();
+        static List<TriggerValue> _triggerDummy    = new List<TriggerValue>();
 
                                                    
         public Program()

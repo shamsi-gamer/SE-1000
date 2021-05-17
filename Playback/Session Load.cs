@@ -110,8 +110,8 @@ namespace IngameScript
                     SkipWhiteSpace(lines, ref line);
                     var track = Track.Load(this, lines, ref line);
 
-                    if (track != null) Tracks.Add(track);
-                    else               return F;
+                    if (OK(track)) Tracks.Add(track);
+                    else           return F;
                 }
 
 

@@ -15,7 +15,7 @@ namespace IngameScript
 
         void PasteChan(Clip clip, int p, int ch)
         {
-            if (copyChan == null)
+            if (NO(copyChan))
                 return;
 
             int f, l;
@@ -106,7 +106,7 @@ namespace IngameScript
                 return;
 
 
-            if (clip.Inter == null)
+            if (NO(clip.Inter))
             {
                 clip.StopEdit();
 
@@ -120,7 +120,7 @@ namespace IngameScript
                        n.SongStep >= clip.EditPos
                     && n.SongStep <  clip.EditPos + CurClip.EditStepIndex);
 
-                if (note != null)
+                if (OK(note))
                 {
                     var si = clip.Inter.SongStep;
                     var sn = note      .SongStep;
@@ -148,7 +148,7 @@ namespace IngameScript
                             var nParam = (Parameter)GetSettingFromPath(n.Instrument, path);
                             var key = n.Keys.Find(k => k.Path == path);
 
-                            if (key != null)
+                            if (OK(key))
                                 SetKeyValue(key, val);
                             else
                             {
@@ -161,9 +161,6 @@ namespace IngameScript
 
                 clip.Inter = null;
             }
-
-            //UpdateLabel(lblCmd1, clip.Inter != null);
-            //UpdateAdjustLabels(CurClip);
         }
 
 
@@ -178,8 +175,6 @@ namespace IngameScript
                       && k.StepTime <  (clip.EditPos % g_patSteps) + 1);
 
                 g_editKey = g_editKey ?? key;
-
-                //(lblCmd1, g_editKey != null);
             }
         }
 
@@ -503,7 +498,7 @@ namespace IngameScript
                     }
                 }
             }
-            else if (g_editKey != null)
+            else if (OK(g_editKey))
             {
                 g_editKey.StepTime += move * CurClip.EditStep;
                 clip.EditPos       += move * CurClip.EditStep;
@@ -543,12 +538,11 @@ namespace IngameScript
                                 clip.EditPos -= clip.Patterns.Count * g_patSteps;
                         }
                     }
-                    else if (!OK(clip.EditPos))
+                    else if (NOK(clip.EditPos))
                         clip.EditPos += clip.Patterns.Count * g_patSteps;
                 }
 
                 clip.LimitRecPosition();
-                //UpdateAdjustLabels(CurClip);
             }
         }
 

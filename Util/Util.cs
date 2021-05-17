@@ -69,7 +69,7 @@ namespace IngameScript
         //    get
         //    {
         //        var setting = CurSetting;
-        //        while (setting != null)
+        //        while (OK(setting))
         //        {
         //            if (setting.GetType() == typeof(Arpeggio))
         //                return (Arpeggio)setting;
@@ -109,7 +109,7 @@ namespace IngameScript
             return
                    CurSet > -1
                 && (   IsCurSetting(type)
-                    ||    CurSetting.Parent != null
+                    ||    OK(CurSetting.Parent)
                        && CurSetting.Parent.GetType() == type);
         }
 
@@ -120,7 +120,7 @@ namespace IngameScript
 
         //    var setting = CurSetting;
 
-        //    while (setting != null)
+        //    while (OK(setting))
         //    {
         //        if (setting.GetType() == typeof(Arpeggio))
         //            return T;
@@ -281,7 +281,7 @@ namespace IngameScript
 
         bool ShowPiano { get 
         {
-            if (g_session == null)
+            if (NO(g_session))
                 return F;
 
             var tune = SelSource    ?.Tune
@@ -368,8 +368,6 @@ namespace IngameScript
         {
             foreach (var l in g_locks)
                 l.ToggleLock();
-
-            //UpdateLockLabels();
         }
 
 
@@ -387,8 +385,6 @@ namespace IngameScript
 
             foreach (var timer in g_timers)
                 timer.Enabled = on;
-
-            //UpdateTimerLabel();
         }
 
 
@@ -398,8 +394,6 @@ namespace IngameScript
 
             foreach (var gyro in g_gyros)
                 gyro.Enabled = !on;
-
-            //UpdateGyroLabel();
         }
 
 
@@ -409,8 +403,6 @@ namespace IngameScript
 
             foreach (var l in g_locks) auto |= l.AutoLock;
             foreach (var l in g_locks) l.AutoLock = !auto;
-
-            //UpdateLabel(lblAutoLock, g_locks.Find(l => l.AutoLock) != null);
         }
 
 
@@ -421,9 +413,9 @@ namespace IngameScript
 
             var p = g_lightPiston;
 
-            if (   p     == null
-                || open  == null
-                || close == null)
+            if (   NO(p)
+                || NO(open)
+                || NO(close))
                 return;
 
 
@@ -442,8 +434,8 @@ namespace IngameScript
             var fold = Get("Timer Fold 1")    as IMyTimerBlock;
             var recl = Get("Timer Recline 1") as IMyTimerBlock;
 
-            if (   fold == null
-                || recl == null)
+            if (   NO(fold)
+                || NO(recl))
                 return;
 
             if (hinge.Angle > (hinge.LowerLimitRad + hinge.UpperLimitRad) / 2) fold.Trigger();

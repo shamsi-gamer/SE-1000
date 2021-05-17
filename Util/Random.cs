@@ -67,7 +67,7 @@ namespace IngameScript
 
             var inst = g_session.Instruments[g_rnd.Next(0, g_session.Instruments.Count)];
 
-            if (rndInst != null)
+            if (OK(rndInst))
             { 
                 if (rndInst.Contains(inst))
                     return;
@@ -77,7 +77,7 @@ namespace IngameScript
 
             for (int p = first; p <= last; p++)
             {
-                if (   rndInst != null
+                if (   OK(rndInst)
                     || CurClip.RndInst)
                     CurClip.Patterns[p].Channels[ch].Instrument = inst;
 
@@ -129,7 +129,7 @@ namespace IngameScript
                 {
                     var found = chan.Notes.Find(n => n.PatStep == step);
 
-                    if (found != null) chan.Notes.Remove(found);
+                    if (OK(found)) chan.Notes.Remove(found);
                     else
                     { 
                         var editLength = g_steps[g_rnd.Next(0, CurClip.EditLengthIndex + 1)];

@@ -35,7 +35,7 @@ namespace IngameScript
                 Length = new Parameter(arp.Length, this);
                 Scale  = new Parameter(arp.Scale,  this);
 
-                //if (arp.Clip != null)
+                //if (OK(arp.Clip))
                 //{ 
                 //    Notes = new List<Note>();
 
@@ -45,7 +45,7 @@ namespace IngameScript
                 //    if (arp.Length > 0)
                 //        Length = arp.Length;
 
-                //    if (arp.Scale != null)
+                //    if (OK(arp.Scale))
                 //    {
                 //        Scale = new Parameter(arp.Scale);
                 //        Scale.Parent = this;
@@ -70,7 +70,7 @@ namespace IngameScript
 
             public override bool HasDeepParams(Channel chan, int src)
             {
-                return Scale != null;
+                return OK(Scale);
             }
 
 

@@ -9,7 +9,7 @@ namespace IngameScript
         void DrawMain()
         {
             var dsp = dspMain;
-            if (dsp == null) return;
+            if (NO(dsp)) return;
 
             var v = dsp.Viewport;
 

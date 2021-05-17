@@ -117,7 +117,7 @@ namespace IngameScript
                     var src  = SrcSources    [i];
                     var inst = SrcInstruments[i];
 
-                    if (set != null)
+                    if (OK(set))
                     {
                              if (set.GetType() == typeof(Parameter)) val = Math.Max(val, ((Parameter)set).CurValue);
                         else if (set.GetType() == typeof(LFO      )) val = Math.Max(val, ((LFO      )set).CurValue);
@@ -126,7 +126,7 @@ namespace IngameScript
                         // TODO add more that have CurValue
                     }
 
-                    else if (src != null) 
+                    else if (OK(src)) 
                         val = Math.Max(val, src.CurVolume);
                     
                     else
@@ -227,9 +227,9 @@ namespace IngameScript
                     var inst = SrcInstruments[i];
 
                     save += 
-                          P (set  != null ? set .GetPath(src.Index) : "")
-                        + PS(src  != null ? src .Index              : -1)
-                        + P (inst != null ? inst.Name               : "");
+                          P (OK(set)  ? set .GetPath(src.Index) : "")
+                        + PS(OK(src)  ? src .Index              : -1)
+                        + P (OK(inst) ? inst.Name               : "");
                 }
 
                 save +=
@@ -355,8 +355,8 @@ namespace IngameScript
                         
                         strFrom += "\n" + inst.Name;
 
-                             if (set != null) strFrom += "/" + set.GetPath(src != null ? src.Index : -1);
-                        else if (src != null) strFrom += "/" + src.Index;
+                             if (OK(set)) strFrom += "/" + set.GetPath(OK(src) ? src.Index : -1);
+                        else if (OK(src)) strFrom += "/" + src.Index;
                     }
                 }
 

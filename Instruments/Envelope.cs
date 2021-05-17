@@ -66,7 +66,7 @@ namespace IngameScript
                     return CurValue;
 
 
-                if (tp.Note != null)
+                if (OK(tp.Note))
                     tp.NoteLength = tp.Note.FrameLength;
 
                 CurValue = UpdateValue(

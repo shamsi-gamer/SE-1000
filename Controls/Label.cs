@@ -71,8 +71,8 @@ namespace IngameScript
                 ColorFunc ?.Invoke(this);
                 UpdateFunc?.Invoke(this);
 
-                var bCond = BrightCondition != null && BrightCondition(this);
-                var dCond = DimCondition    != null && DimCondition   (this);
+                var bCond = OK(BrightCondition) && BrightCondition(this);
+                var dCond = OK(DimCondition)    && DimCondition   (this);
 
                 Update(IsPressed(this) || bCond, dCond);
             }

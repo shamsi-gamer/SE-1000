@@ -286,9 +286,9 @@ namespace IngameScript
             var patStep  = -lbl.Data;
             var songStep =  CurPat * g_patSteps + patStep;
 
-            var on = CurChannel.Notes.Find(n => 
+            var on = OK(CurChannel.Notes.Find(n => 
                    n.PatStep >= patStep
-                && n.PatStep <  patStep+1) != null;
+                && n.PatStep <  patStep+1));
 
             if (   g_playing
                 && (int)PlayStep  == songStep

@@ -60,7 +60,7 @@ namespace IngameScript
             FillRect(sprites, x, y + rh, w, 1, color6);
 
             if (IsCurParam())
-                DrawValueLegend(sprites, CurParam, x, y, w, h, xt, rh, clip, pat);
+                DrawKeysAndAuto(sprites, CurParam, x, y, w, h, xt, rh, clip, pat);
 
             if (SelChan < 0)
                 DrawFuncButtons(sprites, w, h, clip);

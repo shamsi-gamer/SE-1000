@@ -33,7 +33,7 @@ namespace IngameScript
 
         static void Stop()
         {
-            if (g_session == null)
+            if (NO(g_session))
                 return;
 
             g_playing = F;
@@ -45,7 +45,7 @@ namespace IngameScript
 
                 var _block =
                        CurClip.Block
-                    && b != null
+                    && OK(b)
                     && CurPat > b.First;
 
                 CurClip.SetCurrentPattern(_block ? b.First : 0);

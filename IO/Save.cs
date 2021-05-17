@@ -29,10 +29,10 @@ namespace IngameScript
 
         void SaveMachineState()
         {
-            //+   (ModDestConnecting != null ? ModDestConnecting.GetPath(ModDestSrcIndex) : "")
+            //+   (OK(ModDestConnecting) ? ModDestConnecting.GetPath(ModDestSrcIndex) : "")
             //+ PS(ModDestSrcIndex)
-            //+ PS(ModDestChannel != null ? Patterns.IndexOf(ModDestChannel.Pattern) : -1)
-            //+ PS(ModDestChannel != null ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)
+            //+ PS(OK(ModDestChannel) ? Patterns.IndexOf(ModDestChannel.Pattern) : -1)
+            //+ PS(OK(ModDestChannel) ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)
             //+ PS(ModCurPat)
             //+ PS(ModDestClip)
 
@@ -59,7 +59,7 @@ namespace IngameScript
         static string SaveSetting(Setting setting)
         {
             return
-                setting != null
+                OK(setting)
                 ? P(setting.Save())
                 : "";
         }

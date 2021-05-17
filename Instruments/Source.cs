@@ -137,7 +137,7 @@ namespace IngameScript
                 var tp = new TimeParams(sndTime, lTime, sTime, note, note.FrameLength, Index, triggerValues, prog);
 
 
-                if (Offset != null)
+                if (OK(Offset))
                     sndTime += (int)Math.Round(Offset.UpdateValue(tp) * FPS);
 
 
@@ -158,8 +158,8 @@ namespace IngameScript
 
                 string relPath = "";
                 
-                     if (     Volume.Envelope != null) relPath =      Volume.Envelope.Release.GetPath(Index);
-                else if (inst.Volume.Envelope != null) relPath = inst.Volume.Envelope.Release.GetPath(-1);
+                     if (OK(     Volume.Envelope)) relPath =      Volume.Envelope.Release.GetPath(Index);
+                else if (OK(inst.Volume.Envelope)) relPath = inst.Volume.Envelope.Release.GetPath(-1);
 
 
                 var _relLen = triggerValues.Find(v => v.Path == relPath);
@@ -167,10 +167,10 @@ namespace IngameScript
 
                 var sample = GetSample(noteNum);
 
-                if (Harmonics != null)
-                {
+
+                if (OK(Harmonics))
                     Harmonics.CreateSounds(_sounds, this, note, noteNum, sndTime, note.FrameLength, relLen, triggerValues, prog);
-                }
+
                 else
                 {
                     if (   noteNum <  12*NoteScale
@@ -202,7 +202,7 @@ namespace IngameScript
 
                     var del = Delay ?? inst.Delay;
 
-                    if (del != null)
+                    if (OK(del))
                         prog.AddSoundAndEchos(
                             sounds, 
                             snd, 
@@ -260,7 +260,7 @@ namespace IngameScript
                     Harmonics = null;
 
 
-                if (   Harmonics != null
+                if (   OK(Harmonics)
                     && RND > 0.7f)
                 {
                     Filter = new Filter(Instrument, this);
@@ -468,12 +468,12 @@ namespace IngameScript
                 }
                 else
                 {
-                    DrawFuncButton(sprites, strOff,  0, w, y, T, Offset    != null);
-                    DrawFuncButton(sprites, strVol,  1, w, y, T, Volume.HasDeepParams(chan, Index));
-                    DrawFuncButton(sprites, strTune, 2, w, y, T, Tune      != null);
-                    DrawFuncButton(sprites, strHrm,  3, w, y, T, Harmonics != null);
-                    DrawFuncButton(sprites, strFlt,  4, w, y, T, Filter    != null);
-                    DrawFuncButton(sprites, strDel,  5, w, y, T, Delay     != null);
+                    DrawFuncButton(sprites, strOff,  0, w, y, T, OK(Offset   ));
+                    DrawFuncButton(sprites, strVol,  1, w, y, T,    Volume.HasDeepParams(chan, Index));
+                    DrawFuncButton(sprites, strTune, 2, w, y, T, OK(Tune     ));
+                    DrawFuncButton(sprites, strHrm,  3, w, y, T, OK(Harmonics));
+                    DrawFuncButton(sprites, strFlt,  4, w, y, T, OK(Filter   ));
+                    DrawFuncButton(sprites, strDel,  5, w, y, T, OK(Delay    ));
                 }
             }
 
