@@ -40,23 +40,21 @@ namespace IngameScript
 
         void BeatHigh(int h)
         {
-                 if (h == 0) Shift(F);
-            else if (h == 1) Shift(T); 
-
-            else if (h == 2) PickNote();  
-            else if (h == 3) ToggleAllChannels();
-            else if (h == 4) RandomInstrument();
-
-            else if (h == 5) RandomChannelNotes();
-            else if (h == 6) ClearNotes();
+                 if (h == 0) ClearNotes();
+            else if (h == 1) Random();
                                    
+            else if (h == 2) RandomInstrument();
+            else if (h == 3) ToggleAllChannels();
+            else if (h == 4) PickNote();  
+                          
+            else if (h == 5) Shift(F);
+            else if (h == 6) Shift(T); 
+                          
             else if (h == 7) Flip(CurChan, 4); 
             else if (h == 8) Flip(CurChan, 8); 
             else if (h == 9) Flip(CurChan, 16);
 
-            if (   h != 2
-                && h != 3
-                && h != 4)
+            if (h < 2 || h > 4)
                 lblHigh[h].Mark();
         }
 
@@ -69,7 +67,6 @@ namespace IngameScript
                 g_settings.RemoveLast();
                 CurSet--;
                 CurClip.Piano = F;
-                //UpdateChordLabels();
             }
             else
                 CurClip.Piano = !CurClip.Piano;
@@ -127,8 +124,8 @@ namespace IngameScript
             var  chan = CurClip.Patterns[pat].Channels[ch];
 
             var found = chan.Notes.Where(n => 
-                   n.PatStep >= step
-                && n.PatStep <  step+1).ToArray();
+                   n.Step >= step
+                && n.Step <  step+1).ToArray();
 
             if (found.Length == 0)
             {
@@ -143,7 +140,6 @@ namespace IngameScript
             else if (CurClip.Pick)
             {
                 CurClip.CurNote = found[0].Number;
-                //g_showNote = CurClip.CurNote;
 
                 CurClip.Pick = F;
 
@@ -195,9 +191,9 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.PatStep += Math.Min(CurClip.EditStepIndex, 1);
+                        note.Step += Math.Min(CurClip.EditStepIndex, 1);
 
-                        if (note.PatStep >= g_patSteps)
+                        if (note.Step >= g_patSteps)
                             spill.Add(note);
                     }
                 }
@@ -220,9 +216,9 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.PatStep -= Math.Min(CurClip.EditStepIndex, 1);
+                        note.Step -= Math.Min(CurClip.EditStepIndex, 1);
 
-                        if (note.PatStep < 0)
+                        if (note.Step < 0)
                             spill.Add(note);
                     }
                 }
@@ -244,21 +240,19 @@ namespace IngameScript
             spillChan.Notes.Add(note);
 
             note.Channel  = spillChan;
-            note.PatStep += dSteps;
+            note.Step += dSteps;
         }
 
 
         void RandomInstrument()
         {
             CurClip.RndInst = !CurClip.RndInst;
-            //UpdateHighLabels(CurPattern, CurChannel);
         }
 
 
         void ToggleAllChannels()
         {
             CurClip.AllChan = !CurClip.AllChan;
-            //UpdateHighLabels(CurPattern, CurChannel);
         }
 
 
@@ -367,33 +361,5 @@ namespace IngameScript
                   (60 + CurChannel.Transpose * 12 + l) * NoteScale
                 + (CurClip.HalfSharp ? 1 : 0);
         }
-
-
-        //string HighNoteName(int high, bool halfSharp)
-        //{
-        //    var h = high;
-        //    if (high > 1) h++;
-        //    if (high > 4) h++;
-        //    if (high > 6) h++;
-
-        //    if (halfSharp) 
-        //    {
-        //        var c = (char)(65 + (h+3) % 7);
-        //        return c + "Ъ";
-        //    }
-        //    else
-        //    { 
-        //        var c = (char)(65 + (h+2) % 7);
-        //        return c + "#";
-        //    }
-        //}
-
-
-        //string LowNoteName(int low, bool halfSharp)
-        //{
-        //    return
-        //          S((char)(65 + (low+2) % 7)) 
-        //        + (CurClip.HalfSharp ? "‡" : "");
-        //}
     }
 }

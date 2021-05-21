@@ -31,7 +31,7 @@ namespace IngameScript
             FillRect(sprites, x, y, w, h, color0);
 
 
-            if (!g_showSession)
+            if (OK(CurClip))
             {
                 var xt = 256f;
                 var wt = xt / g_patSteps;

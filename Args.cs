@@ -10,32 +10,31 @@
 
             switch (arg)
             {
-                case "load":        LoadSongExt();                        break;
-                case "save":        SaveSongExt();                        break;
+                case "load":        LoadSongExt();                  break;
+                case "save":        SaveSongExt();                  break;
                                                             
-                case "load all":    Load();                               break;
-                case "save all":    Save();                               break;
-                                                                         
-                case "import inst": g_session.ImportInstruments();       break;
-                                                                         
-                case "play":        Play();                               break;
-                case "stop":        Stop();                               break;
-                                                                              
-                case "bpm up":      SetStepLength(-1);                    break;
-                case "bpm down":    SetStepLength(1);                     break;
-                                                                         
-                case "del pat":     CurClip.DeletePattern();              break;
-                case "dup pat":     CurClip.DuplicatePattern();           break;
-                case "new pat":     CurClip.NewPattern();                 break;
-                case "move pat":    CurClip.ToggleMovePattern();          break;
-                case "prev pat":    CurClip.PrevPattern(CurClip.MovePat); break;
-                case "next pat":    CurClip.NextPattern(CurClip.MovePat); break;
-                                                                     
-                case "loop":        CurClip.ToogleLoop();                 break;
-                case "block":       CurClip.ToggleBlock();                break;
-                case "all pat":     CurClip.ToggleAllPatterns();          break;
-                case "auto cue":    CurClip.ToggleAutoCue();              break;
-                case "follow":      CurClip.ToggleFollow();               break;
+                case "load all":    Load();                         break;
+                case "save all":    Save();                         break;
+                                                                   
+                case "import inst": g_session.ImportInstruments();  break;
+                                                                   
+                case "play":        Play();                         break;
+                                                                          
+                case "bpm up":      SetStepLength(-1);              break;
+                case "bpm down":    SetStepLength( 1);              break;
+
+                case "del pat":     CurClip?.DeletePattern();       break;
+                case "dup pat":     CurClip?.DuplicatePattern();    break;
+                case "new pat":     CurClip?.NewPattern();          break;
+                case "move pat":    CurClip?.ToggleMovePattern();   break;
+                case "prev pat":    CurClip?.PrevPattern();         break;
+                case "next pat":    CurClip?.NextPattern();         break;
+
+                case "loop":        CurClip?.ToogleLoop();          break;
+                case "block":       CurClip?.ToggleBlock();         break;
+                case "all pat":     CurClip?.ToggleAllPatterns();   break;
+                case "auto cue":    CurClip?.ToggleAutoCue();       break;
+                case "follow":      CurClip?.ToggleFollow();        break;
                                                                          
                 case "new":         New();                                break;
                 case "dup":         Duplicate();                          break;
@@ -62,22 +61,20 @@
                 case "shift":       Shift();                              break;
                 case "cmd3":        Command3();                           break;
                                                                           
-                case "tr up":       SetTranspose(CurClip,  1);            break;
-                case "tr down":     SetTranspose(CurClip, -1);            break;
+                case "tr up":       SetTranspose( 1);                     break;
+                case "tr down":     SetTranspose(-1);                     break;
                                                                           
                 case "spread":      Spread();                             break;
                                                                        
-                case "rnd snd":     /*RandomSound(g_session.Instruments.IndexOf(CurClip.CurrentInstrument));*/ break;
-                                        
                 case "up all":      SetVolumeAll( 1);                     break;
                 case "down all":    SetVolumeAll(-1);                     break;
                                                                            
-                case "solo all":    EnableChannels(T);                 break;
-                case "mute all":    EnableChannels(F);                break;
+                case "solo all":    EnableChannels(T);                    break;
+                case "mute all":    EnableChannels(F);                    break;
                                                                           
                 case "m shift":     MixerShift();                         break;
                                                                           
-                case "session":     ToggleSession();                              break;
+                case "session":     ToggleSession();                      break;
                                                                           
                 case "edit":        Edit();                               break;
                 case "rec":         Record();                             break;
@@ -101,10 +98,7 @@
                                                                           
                 case "lock":        Lock();                               break;
                 case "auto lock":   AutoLock();                           break;
-                                                                               
-                case "gyro":        Gyro();                               break;
-                case "noise":       NoiseEmitters();                      break;
-                                                                     
+
                 case "sb":          CurClip.StartBlock();                 break;
                 case "eb":          CurClip.EndBlock();                   break;
                 case "cb":          CurClip.ClearBlock();                 break;
@@ -118,7 +112,11 @@
                 case "wl":          SetLabelColor(6);                     break;
                                                                           
                 case "light":       ToggleLabel();                        break;
+
                 case "fold":        ToggleFold();                         break;
+                case "timers":      NoiseEmitters();                      break;
+                                                                     
+                case "gyro":        Gyro();                               break;
                                                                           
                 case "cue":         CurClip.Cue();                        break;
 

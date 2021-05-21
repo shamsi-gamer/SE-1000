@@ -420,7 +420,7 @@ namespace IngameScript
                     if (   ch < 0
                         || note.iChan == ch)
                     { 
-                        var noteStep = g_playing ? note.SongStep : note.PatStep;
+                        var noteStep = g_playing ? note.SongStep : note.Step;
                         note.UpdateStepLength(timeStep - noteStep);
                     }
                 }
@@ -433,7 +433,7 @@ namespace IngameScript
 
                 foreach (var note in g_notes)
                 {
-                    var noteStep = g_playing ? note.SongStep : note.PatStep;
+                    var noteStep = g_playing ? note.SongStep : note.Step;
 
                     if (   timeStep >= noteStep
                         && timeStep <  noteStep + note.StepLength)

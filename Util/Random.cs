@@ -11,14 +11,13 @@ namespace IngameScript
 
         void Random()
         {
-                 if (SelChan < 0)       RandomPatternNotes();
+                 if (   SelChan < 0
+                     || !CurClip.RndInst) RandomChannelNotes();
             else if (CurClip.ParamKeys
-                  || CurClip.ParamAuto) RandomValues(CurChan);
-            else if (CurSet  > -1)      CurSetting   .Randomize(this);
-            else if (CurSrc  > -1)      SelSource    .Randomize(new List<Oscillator>(), this);
-            else if (SelChan > -1)      SelInstrument.Randomize(this);
-
-            //MarkLabel(lblRandom);
+                  || CurClip.ParamAuto)   RandomValues(CurChan);
+            else if (CurSet  > -1)        CurSetting   .Randomize(this);
+            else if (CurSrc  > -1)        SelSource    .Randomize(new List<Oscillator>(), this);
+            else if (SelChan > -1)        SelInstrument.Randomize(this);
         }
 
 
@@ -35,20 +34,20 @@ namespace IngameScript
         }
 
             
-        void RandomPatternNotes()
-        {
-            var nChannels = g_rnd.Next(1, g_nChans/2);
+        //void RandomPatternNotes()
+        //{
+        //    var nChannels = g_rnd.Next(1, g_nChans/2);
 
-            var rndInst = new List<Instrument>();
+        //    var rndInst = new List<Instrument>();
 
-            for (int i = 0; i < nChannels; i++)
-            {
-                var ch = g_rnd.Next(0, g_nChans);
-                RandomNotes(ch, rndInst);
-            }
+        //    for (int i = 0; i < nChannels; i++)
+        //    {
+        //        var ch = g_rnd.Next(0, g_nChans);
+        //        RandomNotes(ch, rndInst);
+        //    }
 
-            UpdateInstOff(CurClip.CurChan);
-        }
+        //    UpdateInstOff(CurClip.CurChan);
+        //}
 
 
         void RandomChannelNotes()
@@ -127,7 +126,7 @@ namespace IngameScript
 
                 if (RND >= 0.5)
                 {
-                    var found = chan.Notes.Find(n => n.PatStep == step);
+                    var found = chan.Notes.Find(n => n.Step == step);
 
                     if (OK(found)) chan.Notes.Remove(found);
                     else
@@ -216,7 +215,7 @@ namespace IngameScript
                 if (index > -1)
                     note.Keys[index].Value = rndValue;
                 else
-                    note.Keys.Add(new Key(CurSrc, param, rndValue, note.PatStep, chan));
+                    note.Keys.Add(new Key(CurSrc, param, rndValue, note.Step, chan));
             }
         }
 
@@ -245,74 +244,5 @@ namespace IngameScript
 
             CurClip.UpdateAutoKeys();
         }
-
-
-        //void RandomChannel(int pat, int ch, bool vol = F)
-        //{
-        //    if (rndInst) RandomInstrument(pat, ch);
-        //    if (vol)     RndVol(pat, ch);
-
-        //    RandomShuffle(pat, ch);
-        //    RandomNotes(pat, ch);
-        //}
-
-
-        //void RandomShuffle(int pat, int ch)
-        //{
-        //    var chan = CurClip.Patterns[pat].Channels[ch];
-        //    chan.Shuffle = g_rnd.Next(0, g_session.TicksPerStep - 1);
-        //}
-
-
-        //void RndVol(int pat, int ch)
-        //{
-        //    var chan = CurClip.Patterns[pat].Channels[ch];
-        //    chan.Volume = RND;
-        //}
-
-
-        //void RandomInstrument(int pat, int ch)
-        //{
-        //    var chan = CurClip.Patterns[pat].Channels[ch];
-        //    chan.Instrument = g_session.Instruments[g_rnd.Next(0, g_session.Instruments.Count)];
-        //    UpdateInstOff(ch);
-        //}
-
-        //void RandomSound(int iInst)
-        //{
-        //    //var inst = g_session.Instruments[iInst];
-
-        //    //inst.Sources.Clear();
-
-        //    //var nSrc = g_rnd.Next(0, maxSrc) + 1;
-
-        //    //for (int i = 0; i < nSrc; i++)
-        //    //{
-        //    //    var src = new Source();
-
-        //    //    src.Oscillator   = (Oscillator)g_rnd.Next((int)Oscillator.Sine, (int)Oscillator.Samples1);
-        //    //    src.Volume       = i == 0 ? 1 : 0.5f + Rnd / 2;
-        //    //    src.LfoAmplitude = Rnd;
-        //    //    src.LfoFrequency = Rnd * 20;
-        //    //    src.Attack       = Rnd / 4;
-        //    //    src.Decay        = Rnd / 3;
-        //    //    src.Sustain      = Rnd;
-        //    //    src.Release      = Rnd / 2;
-        //    //    src.Transpose    = i == 0 ? 0 : g_rnd.Next(-2, 3) * 12;
-        //    //    src.Offset       = g_rnd.Next(-2, 3);
-
-        //    //    inst.Sources.Add(src);
-        //    //}
-
-        //    //inst.DelayCount = g_rnd.Next(0, 4);
-        //    //inst.DelayTime = Math.Max(0.01f, Rnd) / 2;
-        //    //inst.DelayLevel = Rnd;
-        //    //inst.DelayPower = Math.Max(0.01f, Rnd * 5);
-
-        //    //if (g_song.CurSrc > -1)
-        //    //    UpdateSrcOff(inst, g_song.CurSrc);
-
-        //    //TriggerNote(curNote > 1 ? curNote : 69, g_song.CurChan, stepLen);
-        //}
     }
 }

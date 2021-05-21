@@ -54,7 +54,7 @@ namespace IngameScript
 
 
                     // clip rectangle
-                    var col = iClip < 0 ? color1 : (isCurClip ? color3 : color1);
+                    var col = iClip < 0 ? color1 : (isCurClip ? color4 : color3);
                     FillRect(sprites, lx, ly, lw, lh, col);
 
 
@@ -76,6 +76,10 @@ namespace IngameScript
                     // next in queue
                     if (iClip == track.NextClip)
                         DrawRect(sprites, lx+1, ly+1, lw-2, lh-2, color5, 2);
+
+
+                    if (clip == CurClip)
+                        DrawRect(sprites, lx+10, ly+10, lw-20, lh-20, color4, 5);
 
 
                     // clip name

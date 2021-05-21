@@ -20,7 +20,7 @@ namespace IngameScript
 
             var sprites = new List<MySprite>();
 
-            if (g_showSession)
+            if (NO(CurClip))
             {
                 FillRect(sprites, x, y, w, h, color0);
             }

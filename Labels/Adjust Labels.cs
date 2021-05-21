@@ -94,7 +94,7 @@
 
         void UpdateAdjustShift(Label lbl)
         {
-            lbl.SetText(CanAdjust ? strShft : " ");
+            lbl.SetText(CanAdjust ? strShift : " ", 9, 14);
         }
 
 

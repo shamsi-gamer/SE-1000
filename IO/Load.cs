@@ -7,7 +7,7 @@ namespace IngameScript
     {
         void Load()
         {
-            Stop();
+            Play(F);
 
 
             //string curPath;
@@ -22,14 +22,17 @@ namespace IngameScript
             int curClipTrack, curClipIndex;
             g_session = Session.Load(out curClipTrack, out curClipIndex);
 
-            if (OK(g_session))
+            if (NO(g_session))
             {
-                g_setClip = T;
+                g_editClip = 1;
                 g_session.Tracks[curClipTrack].SetClip(curClipIndex);
-                InitPlaybackAfterLoad(CurClip.Track.PlayTime);
+                //InitPlaybackAfterLoad(CurClip.Track.PlayTime);
             }
             else
+            { 
                 g_session = new Session();
+                g_session.Tracks[0].SetClip(0);
+            }
 
 
             //if (curPath != "")

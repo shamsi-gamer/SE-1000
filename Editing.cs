@@ -39,8 +39,8 @@ namespace IngameScript
 
                     int found;
                     while ((found = chan.Notes.FindIndex(n => 
-                               CurPat * g_patSteps + n.PatStep >= clip.EditPos 
-                            && CurPat * g_patSteps + n.PatStep <  clip.EditPos + 1)) > -1)
+                               CurPat * g_patSteps + n.Step >= clip.EditPos 
+                            && CurPat * g_patSteps + n.Step <  clip.EditPos + 1)) > -1)
                         chan.Notes.RemoveAt(found);
 
                     lastNotes.Clear();
@@ -74,7 +74,7 @@ namespace IngameScript
                             if (pat < 0) return;
 
                             lastNote.StepLength = Math.Min(
-                                clip.EditPos - (pat * g_patSteps + lastNote.PatStep) + CurClip.EditStepIndex + ChordSpread(i),
+                                clip.EditPos - (pat * g_patSteps + lastNote.Step) + CurClip.EditStepIndex + ChordSpread(i),
                                 10f * FPS / g_session.TicksPerStep);
 
                             TriggerNote(clip, lastNote.Number, lastNote.iChan, CurClip.EditStepIndex, ChordSpread(i));
@@ -484,13 +484,13 @@ namespace IngameScript
 
                     foreach (var n in clip.EditNotes)
                     {
-                        n.PatStep += move * CurClip.EditStep;
+                        n.Step += move * CurClip.EditStep;
 
-                        if (   n.PatStep < 0
-                            || n.PatStep >= g_patSteps)
+                        if (   n.Step < 0
+                            || n.Step >= g_patSteps)
                         {
                             n.Channel.Notes.Remove(n);
-                            n.PatStep -= move * g_patSteps;
+                            n.Step -= move * g_patSteps;
 
                             chan.Notes.Add(n);
                             n.Channel = chan;
@@ -538,7 +538,7 @@ namespace IngameScript
                                 clip.EditPos -= clip.Patterns.Count * g_patSteps;
                         }
                     }
-                    else if (NOK(clip.EditPos))
+                    else if (NO(clip.EditPos))
                         clip.EditPos += clip.Patterns.Count * g_patSteps;
                 }
 
@@ -580,16 +580,19 @@ namespace IngameScript
         }
 
 
-        void SetTranspose(Clip clip, int d)
+        void SetTranspose(int d)
         {
-            var tune = clip.SelSource    ?.Tune
-                    ?? clip.SelInstrument?.Tune;
+            if (NO(CurClip))
+                return;
 
-            if (clip.Spread)
-                clip.ChordSpread = MinMax(0, clip.ChordSpread + d, 16);
+            var tune = CurClip.SelSource    ?.Tune
+                    ?? CurClip.SelInstrument?.Tune;
+
+            if (CurClip.Spread)
+                CurClip.ChordSpread = MinMax(0, CurClip.ChordSpread + d, 16);
             
-            else if (ShowPiano) SetTranspose(clip, clip.CurChan, d);
-            else                SetShuffle(clip.CurChan, d);
+            else if (ShowPiano) SetTranspose(CurClip, CurClip.CurChan, d);
+            else                SetShuffle(CurClip.CurChan, d);
 
             if (d > 0) lblOctaveUp  .Mark();
             else       lblOctaveDown.Mark();

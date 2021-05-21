@@ -33,6 +33,9 @@ namespace IngameScript
                               } }
 
             
+            public float[]    DspVol;
+                                         
+
             public Track(Session session)
             {
                 Session   = session;
@@ -48,6 +51,8 @@ namespace IngameScript
 
                 PlayPat   =
                 NextPat   = -1;
+
+                DspVol    = new float[g_nChans];
             }
 
 
@@ -76,6 +81,8 @@ namespace IngameScript
 
                 PlayPat   = track.PlayPat;
                 NextPat   = track.NextPat;
+
+                DspVol    = new float[g_nChans];
             }
 
 
@@ -88,42 +95,40 @@ namespace IngameScript
 
             public void SetClip(int index)
             { 
-                Log("1");
                 var found = Indices.FindIndex(i => i == index);
-                Log("2");
 
-                if (found < 0)
+                if (g_editClip > 0)
                 {
-                    Log("3");
-                    Session.CurClip = new Clip(this);
-                    Session.CurClip.Patterns.Add(new Pattern(Session.Instruments[0], Program.CurClip));
-                    Session.CurClip.Name = "New Clip";
-                    Log("4");
+                    if (found < 0)
+                    {
+                        Session.CurClip = new Clip(this);
 
-                    Clips.Add(Program.CurClip);
-                    Indices.Add(index);
-                    PlayClip = index;
-                    Log("5");
+                        CurClip.Patterns.Add(new Pattern(Session.Instruments[0], CurClip));
+                        CurClip.Name = "Clip";
+                        
+                        Clips.Add(CurClip);
+                        Indices.Add(index);
+
+                        //if (   g_playing
+                        //    && PlayTime == long_NaN)
+                        //    PlayTime = 0;
+                    }
+
+                    NextClip = index;
+
+                    Session.CurClip = Clips[index];
+
+                    if (g_editClip == 2)
+                        g_showSession = F;
+
+                    //g_editClip = 0;
                 }
                 else
                 {
-                    Log("6");
-                    NextClip = 
-                        PlayClip != index
-                        ? index
-                        : -1;
+                    if (   PlayClip != index
+                        && OK(found))
+                        NextClip = index;
                 }
-                Log("7");
-
-                if (g_setClip)
-                {
-                    Log("8");
-                    g_showSession = F;
-                    Session.CurClip = Clips[PlayClip];
-                }
-                Log("9");
-
-                g_setClip = F;
             }
 
 
@@ -142,9 +147,10 @@ namespace IngameScript
 
             public void CueNextPattern()
             {
-                var clip = Clips[PlayClip];
+                var trackIndex = Session.Tracks.IndexOf(this);
 
 
+                var clip = Clips[PlayClip > -1 ? PlayClip : NextClip];
                 clip.Length = clip.Patterns.Count * g_patSteps;
 
 
@@ -157,10 +163,13 @@ namespace IngameScript
                 }
 
 
+                if (PlayTime == long_NaN)
+                    PlayTime = 0;
+
                 if (PlayStep >= (PlayPat + 1) * g_patSteps)
-                { 
+                {
                     if (NextClip > -1)
-                    { 
+                    {
                         PlayClip = NextClip;
                         NextClip = -1;
                     }
@@ -178,7 +187,7 @@ namespace IngameScript
                         if (clip.Block && OK(b))
                             NextPat = b.First;
 
-                        PlayTime  = GetPatTime(NextPat);
+                        PlayTime = GetPatTime(NextPat);
                         StartTime = g_time - PlayTime;
 
                         NextPat = -1;
@@ -290,6 +299,44 @@ namespace IngameScript
                 }
 
                 return track;
+            }
+
+
+            public void UpdateVolumes(Program prog)
+            {
+                for (int i = 0; i < g_sounds.Count; i++)
+                {
+                    if (prog.TooComplex) return;
+
+                    var snd   = g_sounds[i];
+                    var lTime = g_time - snd.Time;
+
+                    if (lTime < snd.Length + snd.ReleaseLength)
+                    {
+                        var instVol = snd.Source.Instrument.DisplayVolume;
+                        if (NO(instVol)) instVol = 0;
+
+                        DspVol[snd.iChan] = Math.Max(
+                            DspVol[snd.iChan],
+                              instVol
+                            * snd.Channel.Volume
+                            * CurClip.Volume);
+                    }
+                }
+            }
+
+
+            public void DampenDisplayVolumes(float f = 0.6f)
+            {
+                for (int i = 0; i < DspVol.Length; i++)
+                    DspVol[i] *= f;
+            }
+
+
+            public void ResetDisplayVolumes()
+            {
+                for (int i = 0; i < DspVol.Length; i++)
+                    DspVol[i] = 0;
             }
         }
     }

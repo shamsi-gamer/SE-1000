@@ -66,25 +66,25 @@ namespace IngameScript
         void UpdatePianoHigh(Label lbl)
         {
             if (ShowPiano)
-                lbl.SetText(" ");//HighNoteName(lbl.Data, CurClip.HalfSharp)); 
+                lbl.SetText(" ");
 
             else
             { 
                 switch (lbl.Data)
                 { 
-                case 0: lbl.SetText("◄∙∙");                 break;
-                case 1: lbl.SetText("∙∙►");                 break;
-                                                                       
-                case 2: lbl.SetText("Pick");                break;
+                case 0: lbl.SetText("Clr");  break;
+                case 1: lbl.SetText("Rnd");  break;
+                                                        
+                case 2: lbl.SetText("Inst"); break;
                 case 3: lbl.SetText("All Ch", 7.6f, 19.5f); break;
-                case 4: lbl.SetText("Inst");                break;
-                                                                       
-                case 5: lbl.SetText("Rnd");                 break;
-                case 6: lbl.SetText("Clr");                 break;
-                                                                       
-                case 7: lbl.SetText("1/4");                 break;
-                case 8: lbl.SetText("1/8");                 break;
-                case 9: lbl.SetText("Flip");                break;
+                case 4: lbl.SetText("Pick"); break;
+                                                        
+                case 5: lbl.SetText("◄∙∙");  break;
+                case 6: lbl.SetText("∙∙►");  break;
+                                                        
+                case 7: lbl.SetText("1/4");  break;
+                case 8: lbl.SetText("1/8");  break;
+                case 9: lbl.SetText("Flip"); break;
                 }
             }
         }
@@ -140,10 +140,10 @@ namespace IngameScript
         {
             if (ShowPiano)
             {
-                if (-lbl.Data < 15) lbl.SetText(" ");//LowNoteName(-lbl.Data, CurClip.HalfSharp));
-                else                lbl.SetText("‡", 8, 17);
-            }
-            else                    lbl.SetText(" ");
+                if (-lbl.Data == 15) lbl.SetText("‡", 8, 17); 
+                else                 lbl.SetText(" ");
+            } 
+            else                     lbl.SetText(" ");
         }
 
 
@@ -240,17 +240,17 @@ namespace IngameScript
 
             return
                    noteNum == note.Number
-                && timeStep >= note.PatStep
-                && timeStep <  note.PatStep + note.StepLength;
+                && timeStep >= note.Step
+                && timeStep <  note.Step + note.StepLength;
         }
 
 
         bool ToggleIsBright(Label lbl)
         {
             return
-                   lbl.Data == 2 && CurClip.Pick
+                   lbl.Data == 2 && CurClip.RndInst
                 || lbl.Data == 3 && CurClip.AllChan
-                || lbl.Data == 4 && CurClip.RndInst;
+                || lbl.Data == 4 && CurClip.Pick;
         }
 
 
@@ -259,11 +259,11 @@ namespace IngameScript
             if (ShowPiano)
             {
                 lbl.SetText(
-                    //  "     ║  ███  ║       ║  ███\n"
-                    //+ "     ║       ║       ║     \n"
-                    //+ "═════╬═══════╬═══════╬═════\n"
-                    //+ "     ║       ║       ║     \n"
-                    //+ " ███ ║  ███  ║  ███  ║  ███\n",
+                    //     ║  ███  ║       ║  ███
+                    //     ║       ║       ║     
+                    //═════╬═══════╬═══════╬═════
+                    //     ║       ║       ║     
+                    // ███ ║  ███  ║  ███  ║  ███
                     lblHigh[10].Panel.CustomData,
                     1.7f,
                     17);
@@ -271,9 +271,9 @@ namespace IngameScript
             else
             {
                 lbl.SetText(
-                    //  "█ █ ██ █ █ █\n"
-                    //+ "█▄█▄██▄█▄█▄█\n"
-                    //+ "▀▀▀▀▀▀▀▀▀▀▀▀\n",
+                    //█ █ ██ █ █ █
+                    //█▄█▄██▄█▄█▄█
+                    //▀▀▀▀▀▀▀▀▀▀▀▀
                     lblShuffle.Panel.CustomData,
                     3.7f,
                     10);
@@ -287,8 +287,8 @@ namespace IngameScript
             var songStep =  CurPat * g_patSteps + patStep;
 
             var on = OK(CurChannel.Notes.Find(n => 
-                   n.PatStep >= patStep
-                && n.PatStep <  patStep+1));
+                   n.Step >= patStep
+                && n.Step <  patStep+1));
 
             if (   g_playing
                 && (int)PlayStep  == songStep
@@ -311,7 +311,7 @@ namespace IngameScript
             else if (ShowPiano)      val = CurChannel.Transpose;
             else                     val = CurChannel.Shuffle;
 
-            lbl.SetText((val > 0 ? "+" : "") + S(val));
+            lbl.SetText((val == 15 ? "+" : " ") + S(val));
         }
 
 
@@ -322,9 +322,9 @@ namespace IngameScript
 
             else if (ShowPiano)
                 lbl.SetText(
-                    //  "█ █ ██ █ █ █\n"
-                    //+ "█▄█▄██▄█▄█▄█\n"
-                    //+ "▀▀▀▀▀▀▀▀▀▀▀▀\n",
+                    //█ █ ██ █ █ █
+                    //█▄█▄██▄█▄█▄█
+                    //▀▀▀▀▀▀▀▀▀▀▀▀
                     lblShuffle.Panel.CustomData,
                     3.7f,
                     10);

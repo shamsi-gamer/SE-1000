@@ -80,8 +80,8 @@ namespace IngameScript
                     { 
                         var notes = CurClip.Patterns[p].Channels[SelChan].Notes.FindAll(n => 
                                   OK(n.Instrument.Arpeggio)
-                               && CurClip.Track.PlayTime >= n.PatStep*g_session.TicksPerStep + n.PatTime                
-                               && CurClip.Track.PlayTime <  n.PatStep*g_session.TicksPerStep + n.PatTime + n.FrameLength);
+                               && CurClip.Track.PlayTime >= n.Step*g_session.TicksPerStep + n.Time                
+                               && CurClip.Track.PlayTime <  n.Step*g_session.TicksPerStep + n.Time + n.FrameLength);
 
                         foreach (var n in notes)
                             arpNotes.Add(n);

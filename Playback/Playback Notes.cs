@@ -69,7 +69,7 @@ namespace IngameScript
                 { 
                     found = chan.Notes.FindIndex(n => 
                             note == n.Number
-                        && clip.EditPos == clip.CurPat*g_patSteps + n.PatStep + ChordSpread(i));
+                        && clip.EditPos == clip.CurPat*g_patSteps + n.Step + ChordSpread(i));
 
                     if (found > -1) 
                     {
@@ -117,7 +117,7 @@ namespace IngameScript
                 do
                 { 
                     found = chan.Notes.FindIndex(n => 
-                        clip.EditPos == clip.CurPat*g_patSteps + n.PatStep + ChordSpread(i));
+                        clip.EditPos == clip.CurPat*g_patSteps + n.Step + ChordSpread(i));
 
                     if (found > -1) 
                         chan.Notes.RemoveAt(found);
@@ -184,7 +184,7 @@ namespace IngameScript
                 {
                     var note = new Note(n);
 
-                    note.PatStep += (float)sh / g_session.TicksPerStep;
+                    note.Step = TimeStep + (float)sh / g_session.TicksPerStep;
 
                     if (OK(note.Instrument.Arpeggio))
                         note.ArpPlayTime = 0;
@@ -234,14 +234,13 @@ namespace IngameScript
             //{
                 var found =
                     g_notes.Find(n => 
-                           clip.Track.PlayStep >= n.PatStep 
-                        && clip.Track.PlayStep <  n.PatStep + n.StepLength);
+                           clip.Track.PlayStep >= n.Step 
+                        && clip.Track.PlayStep <  n.Step + n.StepLength);
                 
                 if (   OK(found)
                     && found.Number == note.Number
                     && found.StepLength == float_Inf)
                     return;
-
 
                 foreach (var src in inst.Sources)
                 {
@@ -251,16 +250,13 @@ namespace IngameScript
                         src.CreateSounds(note.Sounds, note, this);
                 }
 
-                if (!g_playing)//CurClip.Track.PlayTime < 0)
-                    note.PatStep = TimeStep;
-
                 g_notes.Add(note);
                 g_sounds.AddRange(note.Sounds);
             //}
         }
 
 
-        void StopNotes(float step)
+        void StopNotes()
         {
             var delete = new List<int>();
 
@@ -268,7 +264,7 @@ namespace IngameScript
             {
                 var note = g_notes[i];
 
-                if (step >= note.PatStep + note.StepLength)
+                if (TimeStep >= note.Step + note.StepLength)
                     delete.Add(i);
             }
 

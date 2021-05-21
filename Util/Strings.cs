@@ -46,7 +46,7 @@
                      strLeft     = "◄",
                      strRight    = "►",
                                  
-                     strShft     = "Shft",
+                     strShift    = "Shift",
                      strAll      = "All",
                                  
                      strSine     = "Sine",
@@ -63,6 +63,12 @@
                      strSlowUp   = "SlowSweepUp", 
                      strFastUp   = "FastSweepUp", 
 
-                     strCrn      = "Crunch";   
+                     strCrn      = "Crunch",
+
+                     strClip     = "Clip",
+                     strMixer    = "Mixer",
+            
+                     strLight    = "Light",
+                     strStorage  = "Storage";
     }
 }

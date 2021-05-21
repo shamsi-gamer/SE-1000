@@ -62,7 +62,7 @@ namespace IngameScript
                 for (int i = 0; i < Tracks.Count; i++)
                     Tracks[i] = new Track(this);
 
-                var track = Tracks[3];
+                var track = Tracks[0];
                 var clip  = new Clip(track);
 
                 clip.Patterns.Add(new Pattern(Instruments[0], clip));
@@ -77,10 +77,13 @@ namespace IngameScript
 
         void ToggleSession()
         {
-            if (g_showSession) g_setClip     = T;
-            else               g_showSession = T;
-
-            //UpdateClipsLabel();
+            if (g_showSession) 
+            {
+                if (++g_editClip > 2) 
+                    g_editClip = 0; 
+            }
+            else
+                g_showSession = T;
         }
     }
 }

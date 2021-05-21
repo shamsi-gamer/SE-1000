@@ -70,21 +70,21 @@ namespace IngameScript
                 {
                     var ahead = Notes.FindIndex(_n =>
                            _n.Number == note.Number
-                        && _n.PatStep > note.PatStep
-                        && _n.PatStep < note.PatStep + note.StepLength);
+                        && _n.Step > note.Step
+                        && _n.Step < note.Step + note.StepLength);
 
                     if (   ahead >= 0
                         && ahead < Notes.Count)
-                        note.StepLength = Notes[ahead].PatStep - note.PatStep;
+                        note.StepLength = Notes[ahead].Step - note.Step;
 
                     var behind = Notes.FindIndex(_n =>
                            note.Number == _n.Number
-                        && note.PatStep > _n.PatStep
-                        && note.PatStep < _n.PatStep + _n.StepLength);
+                        && note.Step > _n.Step
+                        && note.Step < _n.Step + _n.StepLength);
 
                     if (   behind >= 0
                         && behind < Notes.Count)
-                        Notes[behind].StepLength = note.PatStep - Notes[behind].PatStep;
+                        Notes[behind].StepLength = note.Step - Notes[behind].Step;
                 }
             }
 

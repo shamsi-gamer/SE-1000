@@ -9,35 +9,36 @@ namespace IngameScript
 {
     partial class Program
     {
-        static Label              lblPlay, lblStop,
-                                  lblEdit, lblRec,
-                                  lblOctave, lblShuffle,
-                                  lblOctaveUp, lblOctaveDown,
-                                  lblLeft, lblRight,
-                                  lblStep, lblHold, 
-                                  lblEditStep, lblEditLength,
-                                  lblLoop, lblBlock, lblAllPatterns, lblFollow, lblAutoCue,
-                                  lblNew, lblDup, lblDelete,
-                                  lblMove, lblPrev, lblNext, 
-                                  lblEnter, lblBack, lblOut,
-                                  lblLock, lblAutoLock,
-                                  lblFold, lblGyro, lblNoise,
-                                  lblCmd1, lblCmd2, lblCmd3,
-                                  lblUp, lblDown, lblShift,
-                                  lblChord, lblChord1, lblChord2, lblChord3, lblChord4, lblChordEdit, lblSpread,
-                                  lblMixerVolumeUp, lblMixerVolumeDown, lblMixerAll, lblMixerMuteAll,
-                                  lblMixerShift, lblSession,
-                                  lblMemSet, lblMemory;
+        static Label        lblPlay, 
+                            lblEdit, lblRec,
+                            lblOctave, lblShuffle,
+                            lblOctaveUp, lblOctaveDown,
+                            lblLeft, lblRight,
+                            lblStep, lblHold, 
+                            lblEditStep, lblEditLength,
+                            lblLoop, lblBlock, lblAllPatterns, lblFollow, lblAutoCue,
+                            lblNew, lblDup, lblDel,
+                            lblMove, lblPrev, lblNext, 
+                            lblEnter, lblBack, lblOut,
+                            lblLock, lblAutoLock,
+                            lblFold, lblTimers,
+                            lblGyro, lblMass,
+                            lblCmd1, lblCmd2, lblCmd3,
+                            lblUp, lblDown, lblShift,
+                            lblChord, lblChord1, lblChord2, lblChord3, lblChord4, lblChordEdit, lblSpread,
+                            lblMixerVolumeUp, lblMixerVolumeDown, lblMixerAll, lblMixerMuteAll,
+                            lblMixerShift, lblSession,
+                            lblMemSet, lblMemory;
 
 
-        List<Label>               lblHigh,
-                                  lblLow;
+        List<Label>         lblHigh,
+                            lblLow;
 
-        static  Label[]   lblMem = new Label[nMems];
+        static  Label[]     lblMem = new Label[nMems];
 
 
-        IMyInteriorLight          warningLight;
-        IMyReflectorLight         frontLight;
+        IMyInteriorLight    warningLight;
+        IMyReflectorLight   frontLight;
 
 
         static  List<Label> g_fastLabels    = new List<Label>();
@@ -49,10 +50,11 @@ namespace IngameScript
         static  List<int>   g_lcdPressed   = new List<int>();
         static  List<int>    _lcdPressed   = new List<int>();
 
-        const int lcdInfo  = 0,
-                  lcdMain  = 1,
-                  lcdClip  = 2,
-                  lcdMixer = 3;
+
+        const int lcdInfo  =    0,
+                  lcdMain  = 1000,
+                  lcdClip  = 2000,
+                  lcdMixer = 3000;
 
 
         void SetLabelColor(int iCol)
@@ -85,7 +87,7 @@ namespace IngameScript
             InitPianoLabels();
             InitToggleLabels();
             InitChordLabels();
-            InitNavigationLabels();
+            InitNavLabels();
             InitAdjustLabels();
             InitMemLabels();
             InitMixerLabels();
@@ -98,8 +100,18 @@ namespace IngameScript
 
         void InitTransportLabels()
         {
-            lblPlay = new Label(Lbl("Play"), lbl => g_playing, lbl => g_playing, null, null, 0, false, true);
-            lblStop = new Label(Lbl("Stop"), lbl => g_playing, lbl => g_playing, null, null, 0, false, true);
+            lblPlay = new Label(Lbl("Play"), 
+                lbl => g_playing,
+                lbl => g_playing, 
+                null,
+                lbl =>
+                { 
+                    if (g_playing) lbl.SetText("Stop ▐█", 6.5f, 24);
+                    else           lbl.SetText("► Play",  7,    24);
+                },
+                0, 
+                false, 
+                true);
 
             lblEdit = new Label(Lbl("Edit"),
                 lbl => OK(CurClip.EditPos), 
@@ -135,22 +147,23 @@ namespace IngameScript
         }
 
 
-        void InitNavigationLabels()
+        void InitNavLabels()
         {
-            lblNew    = new Label(Lbl("New"),   NavIsBright,  NavIsDim);
-            lblDup    = new Label(Lbl("Dup"),   NavIsBright,  NavIsDim);
-            lblDelete = new Label(Lbl(strDel),  NavIsBright,  NavIsDim);
+            lblNew   = new Label(Lbl("New"),   NavIsBright,  NavIsDim, UpdateNew);
+            lblDup   = new Label(Lbl("Dup"),   NavIsBright,  NavIsDim, UpdateDup);
+            lblDel   = new Label(Lbl(strDel),  NavIsBright,  NavIsDim, UpdateDel);
 
-            lblMove   = new Label(Lbl("Move"),
-                lbl => g_move ^ (CurSrc > -1), 
-                lbl => SelChan > -1 && !g_move);
+            lblMove  = new Label(Lbl("Move"),
+                lbl => (g_move ^ (CurSrc > -1)) && CurSet < 0, 
+                lbl => SelChan > -1 && CurSet < 0 && !g_move,
+                UpdateMove);
 
-            lblPrev   = new Label(Lbl("Prev"),  MoveIsBright, NavIsDim);
-            lblNext   = new Label(Lbl("Next"),  MoveIsBright, NavIsDim);
+            lblPrev  = new Label(Lbl("Prev"),  MoveIsBright, NavIsDim, UpdatePrev);
+            lblNext  = new Label(Lbl("Next"),  MoveIsBright, NavIsDim, UpdateNext);
 
-            lblOut    = new Label(Lbl("Out"),   NavIsBright,  NavIsDim);
-            lblBack   = new Label(Lbl("Back"),  NavIsBright,  NavIsDim);
-            lblEnter  = new Label(Lbl("Enter"), NavIsBright,  NavIsDim);
+            lblOut   = new Label(Lbl("Out"),   NavIsBright,  NavIsDim);
+            lblBack  = new Label(Lbl("Back"),  NavIsBright,  NavIsDim);
+            lblEnter = new Label(Lbl("Enter"), NavIsBright,  NavIsDim);
         }
 
 
@@ -162,7 +175,19 @@ namespace IngameScript
             lblMixerMuteAll    = new Label(Lbl("M Mute R"));
 
             lblMixerShift      = new Label(Lbl("M Shift"), lbl => CurClip.MixerShift);
-            lblSession         = new Label(Lbl("Session"), lbl => g_showSession && g_setClip, null, UpdateSessionLabel, null, 0, false, true);
+
+            lblSession = new Label(Lbl("Session"), 
+                lbl => 
+                       g_showSession 
+                    && g_editClip == 2, 
+                lbl => 
+                       g_showSession 
+                    && g_editClip == 1, 
+                UpdateSessionLabel, 
+                null, 
+                0, 
+                F, 
+                T);
         }
 
 
@@ -175,20 +200,38 @@ namespace IngameScript
 
         void InitSideLabels()
         {
-            lblLock     = new Label(Lbl("Lock"),      lbl => OK(g_locks.Find(l => l.IsLocked)), null, null, null, 0, F, T);
-            lblAutoLock = new Label(Lbl("Auto Lock"), lbl => OK(g_locks.Find(l => l.AutoLock)), null, null, null, 0, F, T);
+            lblLock     = new Label(Lbl("Lock"),      lbl => OK(g_locks.Find(l => l.IsLocked)),  null, null, null, 0, F, T);
+            lblAutoLock = new Label(Lbl("Auto Lock"), lbl => OK(g_locks.Find(l => l.AutoLock)),  null, null, null, 0, F, T);
 
-            lblFold     = new Label(Lbl("Fold"), null, null, null, null, 0, F, T);
+            lblFold     = new Label(Lbl("Fold"),      null, null, null, null, 0, F, T);
+            lblTimers   = new Label(Lbl("Timers"),    lbl => NO(g_timers.Find(t => !t.Enabled)), null, null, null, 0, F, T);
 
-            lblGyro     = new Label(Lbl("Gyro"),  lbl => NO(g_gyros .Find(g => !g.Enabled)), null, null, null, 0, F, T);
-            lblNoise    = new Label(Lbl("Noise"), lbl => NO(g_timers.Find(t => !t.Enabled)), null, null, null, 0, F, T);
+            lblGyro     = new Label(Lbl("Gyro"),      lbl => NO(g_gyros .Find(g => !g.Enabled)), null, null, null, 0, F, T);
+            lblMass     = new Label(Lbl("Mass"),      lbl => NO(g_mass  .Find(g => !g.Enabled)), null, null, null, 0, F, T);
         }
 
 
-        bool NavIsBright (Label lbl) { return CurSrc  > -1 && !g_labelsPressed.Contains(lbl); }
-        bool NavIsDim    (Label lbl) { return SelChan > -1; }
+        bool NavIsBright(Label lbl) 
+        { 
+            return 
+                   CurSrc > -1 
+                && CurSet <  0 
+                && !g_labelsPressed.Contains(lbl); 
+        }
+        
 
-        bool MoveIsBright(Label lbl) { return g_move ^ (CurSrc > -1); }
+        bool NavIsDim(Label lbl) { return SelChan > -1 && CurSet < 0; }
+
+
+        void UpdateNew (Label lbl) { lbl.SetText(CurSet < 0 ? "New"  : " "); }
+        void UpdateDup (Label lbl) { lbl.SetText(CurSet < 0 ? "Dup"  : " "); }
+        void UpdateDel (Label lbl) { lbl.SetText(CurSet < 0 ? "Del"  : " "); }
+        void UpdateMove(Label lbl) { lbl.SetText(CurSet < 0 ? "▲\n▼" : " ", 10, 20); }
+        void UpdatePrev(Label lbl) { lbl.SetText(CurSet < 0 ? "►"    : " "); }
+        void UpdateNext(Label lbl) { lbl.SetText(CurSet < 0 ? "◄"    : " "); }
+
+
+        bool MoveIsBright(Label lbl) { return CurSet < 0 && g_move ^ (CurSrc > -1); }
         //bool MoveIsDim   (Label lbl) { return SelChan > -1 && !g_move; }
 
 

@@ -70,7 +70,9 @@ namespace IngameScript
             if (_loadStep > 10)
             {
                 DrawDisplays();
-                DampenDisplayVolumes();
+                
+                foreach (var track in g_session.Tracks)
+                    track.DampenDisplayVolumes();
 
                 if (!TooComplex)
                     foreach (var lbl in g_slowLabels)

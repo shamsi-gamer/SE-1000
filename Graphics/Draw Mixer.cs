@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
-using VRageMath;
 
 
 namespace IngameScript
@@ -19,21 +17,24 @@ namespace IngameScript
         {
             if (NO(dsp)) return;
 
-            var bb = 75.5f;
-            var bw = 95;
+            var v = dsp.Viewport;
 
+            var x = v.X;
+            var y = v.Y + 20;
+            var w = v.Width;
+            var h = v.Height - 100;
 
-            var Volume = dsp.Viewport;
+            var bw = w/6;
+            var bb = 20;
+            var vb = 70;
+            var rw = bw - bb;
 
-            var x = Volume.X;
-            var y = Volume.Y + 20;
-            var w = Volume.Width;
-            var h = Volume.Height - 100;
+            var ry = y + h;
 
 
             var sprites = new List<MySprite>();
 
-            FillRect(sprites, x, Volume.Y, w, Volume.Height, color0);
+            FillRect(sprites, x, v.Y, w, v.Height, color0);
 
             for (int ch = first; ch < first + 6; ch++)
             {
@@ -41,15 +42,15 @@ namespace IngameScript
                     
                 var chan = CurPattern.Channels[ch];
 
-                var xc = x + bb/2 + (ch - first) * (bw + bb);
-
+                var rx  = x + (ch-first) * bw + bb/2;
                 var col = chan.Notes.Count > 0 ? color6 : color3;
 
-                DrawSoundLevel(sprites, xc, y,         bw, h - 15, chan.Volume, g_dspVol[ch], chan, 2);
-                FillRect      (sprites, xc, y + h + 6, bw, 76,     chan.On ^ _lcdPressed.Contains(ch) ? col : color0);
+                FillRect(sprites, rx, ry + 6, rw, 76, chan.On ^ _lcdPressed.Contains(ch) ? col : color0);
+                          
+                DrawString(sprites, chan.Instrument.Name, rx + rw/2 + 3, ry + 14, 0.5f, chan.On ? color0 : col, TaC);
+                DrawString(sprites, S(ch + 1),            rx + rw/2 + 3, ry + 35, 1.2f, chan.On ? color0 : col, TaC);
 
-                DrawString(sprites, chan.Instrument.Name, xc + bw/2 + 3, y + h + 14, 0.5f, chan.On ? color0 : col, TaC);
-                DrawString(sprites, S(ch + 1),            xc + bw/2 + 3, y + h + 35, 1.2f, chan.On ? color0 : col, TaC);
+                DrawSoundLevel(sprites, rx + vb/2, y, rw - vb, h - 15, chan.Volume, CurClip.Track.DspVol[ch], chan, 2);
             }
 
             dsp.Draw(sprites);

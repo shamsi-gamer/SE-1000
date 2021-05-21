@@ -71,10 +71,10 @@ namespace IngameScript
         {
             var wd2 = wd/2;
 
-            DrawLine(sprites, x-wd2, y,       x+w+wd2, y,   c, wd);
-            DrawLine(sprites, x-wd2, y+h,     x+w+wd2, y+h, c, wd);
-            DrawLine(sprites, x,     y-wd2,   x,       y+h, c, wd);
-            DrawLine(sprites, x+w,   y-wd2,   x+w,     y+h, c, wd);
+            DrawLine(sprites, x-wd2, y,     x+w+wd2, y,   c, wd);
+            DrawLine(sprites, x-wd2, y+h,   x+w+wd2, y+h, c, wd);
+            DrawLine(sprites, x,     y-wd2, x,       y+h, c, wd);
+            DrawLine(sprites, x+w,   y-wd2, x+w,     y+h, c, wd);
         }
 
 

@@ -261,10 +261,10 @@ namespace IngameScript
                 var key   = note.Keys.Find(k => k.Path == path);
 
                 var pt = new Vector2(
-                    x + wt * (note.PatStep + note.ShOffset) + wt/2,
+                    x + wt * (note.Step + note.ShOffset) + wt/2,
                     y + h);
 
-                var p0 = KeyPos(x, y, w, h, p, AltChanKey(key ?? new Key(CurSrc, param, param.GetKeyValue(note, CurSrc), note.PatStep)), clip);
+                var p0 = KeyPos(x, y, w, h, p, AltChanKey(key ?? new Key(CurSrc, param, param.GetKeyValue(note, CurSrc), note.Step)), clip);
 
 
                 // draw interpolation circle
@@ -415,7 +415,7 @@ namespace IngameScript
             }
 
             return new Vector2(
-                x + wt * (note.PatStep + (note.PatIndex - p)*g_patSteps + note.ShOffset) + wt/2, 
+                x + wt * (note.Step + (note.PatIndex - p)*g_patSteps + note.ShOffset) + wt/2, 
                 y + h - h/2 * val - cd/2);
         }
 

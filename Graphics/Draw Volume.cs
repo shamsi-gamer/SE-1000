@@ -12,7 +12,7 @@ namespace IngameScript
         {
             float maxVol = 0;
 
-            foreach (var vol in g_dspVol)
+            foreach (var vol in CurClip.Track.DspVol)
                 maxVol = Math.Max(vol, maxVol);
 
             if (!TooComplex) DrawVolume(maxVol, dspVol1, 2);

@@ -98,7 +98,6 @@
     <AdditionalFiles Include="MDK\MDK.paths.props">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AdditionalFiles>
-    <Compile Include="Navigation.cs" />
     <Compile Include="Mixer.cs" />
     <Compile Include="Playback\Key.cs" />
     <Compile Include="Playback\Note.cs" />

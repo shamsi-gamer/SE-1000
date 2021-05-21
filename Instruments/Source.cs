@@ -117,19 +117,13 @@ namespace IngameScript
 
             public void CreateSounds(List<Sound> sounds, Note note, Program prog)
             {
-                if (prog.TooComplex) return;
-
-
                 var  inst   = Instrument;
                 var _sounds = new List<Sound>();
 
                 var triggerValues = new List<TriggerValue>();
 
 
-                var sndTime = 
-                    g_playing
-                    ? CurClip.Track.StartTime + note.SongTime + 1
-                    : g_time + 1;
+                var sndTime = note.Time + 1;
 
                 var lTime = g_time - CurClip.Track.StartTime - note.SongTime;
                 var sTime = g_playing ? g_time - CurClip.Track.StartTime : lTime;

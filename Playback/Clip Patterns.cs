@@ -14,16 +14,12 @@ namespace IngameScript
                 {
                     Mems[m] = Mems[m] < 0 || Mems[m] != CurPat ? CurPat : -1;
                     MemSet = F;
-
-                    //UpdateMemoryLabels();
                 }
                 else if (Mems[m] > -1)
                 {
                     if (g_playing) Track.NextPat = Mems[m];
                     else           SetCurrentPattern(Mems[m]);
                 }
-
-                //MarkLabel(lblMem[m]);
             }
 
 
@@ -36,7 +32,6 @@ namespace IngameScript
             public void Mem()
             {
                 MemSet = !MemSet;
-                //UpdateLabel(lblMemory, MemSet);
             }
 
 
@@ -44,27 +39,23 @@ namespace IngameScript
             {
                 for (int m = 0; m < nMems; m++)
                     if (Mems[m] >= Patterns.Count) Mems[m] = -1;
-
-                //UpdateMemoryLabels();
             }
 
 
-            public void PrevPattern(bool movePat)
+            public void PrevPattern()
             {
-                if (movePat) MovePatterns(CurPat - 1);
+                if (MovePat) MovePatterns(CurPat - 1);
                 else SetCurrentPattern(CurPat - 1);
 
-                //MarkLabel(lblPrevPat, !movePat);
                 g_lcdPressed.Add(lcdClip+5);
             }
 
 
-            public void NextPattern(bool movePat)
+            public void NextPattern()
             {
-                if (movePat) MovePatterns(CurPat + 1);
+                if (MovePat) MovePatterns(CurPat + 1);
                 else SetCurrentPattern(CurPat + 1);
 
-                //MarkLabel(lblNextPat, !movePat);
                 g_lcdPressed.Add(lcdClip+6);
             }
 

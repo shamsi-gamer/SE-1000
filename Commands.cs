@@ -8,9 +8,11 @@ namespace IngameScript
     {
         void New()
         {
+            if (CurSet > -1)
+                return;
+
             if (CurSrc > -1)
             {
-                CurSet = -1;
                 g_settings.Clear();
 
 
@@ -32,7 +34,6 @@ namespace IngameScript
             }
             else if (SelChan > -1)
             {
-                CurSet = -1;
                 g_settings.Clear();
 
 
@@ -59,9 +60,11 @@ namespace IngameScript
 
         void Duplicate()
         {
+            if (CurSet > -1)
+                return;
+
             if (CurSrc > -1)
             {
-                CurSet = -1;
                 g_settings.Clear();
 
 
@@ -84,7 +87,6 @@ namespace IngameScript
             }
             else if (SelChan > -1)
             {
-                CurSet = -1;
                 g_settings.Clear();
 
 
@@ -109,9 +111,12 @@ namespace IngameScript
 
         void Delete()
         {
+            if (CurSet > -1)
+                return;
+
+
             if (CurSrc > -1)
             {
-                CurSet = -1;
                 g_settings.Clear();
 
 
@@ -138,7 +143,6 @@ namespace IngameScript
             }
             else if (SelChan > -1)
             {
-                CurSet = -1;
                 g_settings.Clear();
 
 
@@ -168,13 +172,14 @@ namespace IngameScript
                 UpdateInstName();
             }
 
-            lblDelete.Mark();
+            lblDel.Mark();
         }
 
 
         public void ToggleMove()
         {
-            if (CurSet > -1) return;
+            if (CurSet > -1) 
+                return;
 
             g_move = !g_move;
         }

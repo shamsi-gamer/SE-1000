@@ -9,7 +9,7 @@ namespace IngameScript
         {
             if (NO(del)) return;
 
-            var lTime = g_time - snd.Note.PatTime;
+            var lTime = g_time - snd.Note.Time;
             var sTime = g_time - CurClip.Track.StartTime;
 
             var tp = new TimeParams(g_time, lTime, sTime, snd.Note, snd.Length, snd.SourceIndex, snd.TriggerValues, this);
