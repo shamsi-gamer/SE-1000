@@ -15,7 +15,7 @@ namespace IngameScript
 
         void DrawMixer(Display dsp, int first)
         {
-            if (NO(dsp)) return;
+            if (!OK(dsp)) return;
 
             var v = dsp.Viewport;
 

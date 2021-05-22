@@ -23,7 +23,7 @@ namespace IngameScript
 
         void DrawVolume(float vol, Display dsp, int i)
         {
-            if (NO(dsp)) return;
+            if (!OK(dsp)) return;
 
             var bb = 200;
             var bw = 300;
@@ -115,7 +115,7 @@ namespace IngameScript
                 : color4;
 
             var col = 
-                NO(chan)
+                !OK(chan)
                 ? color6
                 : (chan.Notes.Count > 0 ? brightCol : color3);
 

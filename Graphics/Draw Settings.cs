@@ -288,7 +288,7 @@ namespace IngameScript
                     DrawLine  (sprites, pt.X, pt.Y, p0.X, p0.Y, color0, w/250+2);
                     FillCircle(sprites, p0.X, p0.Y, cd/2+1, color0);
 
-                    if (NO(key)) col = color4;
+                    if (!OK(key)) col = color4;
                 }
 
                 // draw key

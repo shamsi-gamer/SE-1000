@@ -76,7 +76,7 @@ namespace IngameScript
                 var path    = param.GetPath(SourceIndex);
                 var trigVal = TriggerValues.Find(v => v.Path == path);
 
-                if (NO(trigVal))
+                if (!OK(trigVal))
                 {
                     trigVal = new TriggerValue(path, param.UpdateValue(this));
                     TriggerValues.Add(trigVal);

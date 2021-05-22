@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
+using VRageMath;
 
 
 namespace IngameScript
@@ -16,7 +17,7 @@ namespace IngameScript
 
         void DrawSessionClips(Display dsp, int nDsp)
         {
-            if (NO(dsp)) return;
+            if (!OK(dsp)) return;
 
 
             var sprites = new List<MySprite>();
@@ -54,7 +55,12 @@ namespace IngameScript
 
 
                     // clip rectangle
-                    var col = iClip < 0 ? color1 : (isCurClip ? color4 : color3);
+                    Color col; 
+                    
+                         if (!OK(iClip)) col = color1;
+                    else if (isCurClip)  col = track.NotesArePlaying ? color5 : color4;
+                    else                 col = color3;
+
                     FillRect(sprites, lx, ly, lw, lh, col);
 
 
@@ -79,7 +85,7 @@ namespace IngameScript
 
 
                     if (clip == CurClip)
-                        DrawRect(sprites, lx+10, ly+10, lw-20, lh-20, color4, 5);
+                        DrawRect(sprites, lx+10, ly+10, lw-20, lh-20, color6, 5);
 
 
                     // clip name

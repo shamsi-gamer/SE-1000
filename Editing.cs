@@ -15,7 +15,7 @@ namespace IngameScript
 
         void PasteChan(Clip clip, int p, int ch)
         {
-            if (NO(copyChan))
+            if (!OK(copyChan))
                 return;
 
             int f, l;
@@ -106,7 +106,7 @@ namespace IngameScript
                 return;
 
 
-            if (NO(clip.Inter))
+            if (!OK(clip.Inter))
             {
                 clip.StopEdit();
 
@@ -538,7 +538,7 @@ namespace IngameScript
                                 clip.EditPos -= clip.Patterns.Count * g_patSteps;
                         }
                     }
-                    else if (NO(clip.EditPos))
+                    else if (!OK(clip.EditPos))
                         clip.EditPos += clip.Patterns.Count * g_patSteps;
                 }
 
@@ -582,7 +582,7 @@ namespace IngameScript
 
         void SetTranspose(int d)
         {
-            if (NO(CurClip))
+            if (!OK(CurClip))
                 return;
 
             var tune = CurClip.SelSource    ?.Tune

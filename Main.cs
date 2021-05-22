@@ -50,6 +50,9 @@ namespace IngameScript
             if (!TooComplex)
                 UpdatePlayback();
 
+            foreach (var track in g_session.Tracks)
+                track.UpdateNotesArePlaying();
+
             if (!TooComplex)
                 foreach (var lbl in g_fastLabels)
                     lbl.Update();
@@ -71,12 +74,18 @@ namespace IngameScript
             {
                 DrawDisplays();
                 
-                foreach (var track in g_session.Tracks)
-                    track.DampenDisplayVolumes();
 
                 if (!TooComplex)
                     foreach (var lbl in g_slowLabels)
                         lbl.Update();
+
+
+                foreach (var track in g_session.Tracks)
+                {
+                    track.DampenDisplayVolumes();
+                    track.NotesArePlaying = F;
+                }
+
 
                 if (!TooComplex)
                     UnmarkAllLabels();

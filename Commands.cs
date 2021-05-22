@@ -441,7 +441,7 @@ namespace IngameScript
             }
             else if (IsCurSetting(typeof(Modulate)))
             {
-                if (NO(ModDestConnecting))
+                if (!OK(ModDestConnecting))
                 {
                     ModDestConnecting = CurModulate;
                     ModCurChan        = CurChan;
@@ -547,7 +547,7 @@ namespace IngameScript
                         && k.StepTime >= (CurClip.EditPos % g_patSteps)
                         && k.StepTime <  (CurClip.EditPos % g_patSteps) + 1);
 
-                    if (NO(key)) // create
+                    if (!OK(key)) // create
                     {
                         var val = Parameter.GetAutoValue(CurClip.EditPos, CurPat, path);
 

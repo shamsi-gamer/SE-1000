@@ -281,7 +281,7 @@ namespace IngameScript
 
         bool ShowPiano { get 
         {
-            if (NO(g_session))
+            if (!OK(g_session))
                 return F;
 
             var tune = SelSource    ?.Tune
@@ -373,9 +373,9 @@ namespace IngameScript
 
             var p = g_lightPiston;
 
-            if (   NO(p)
-                || NO(open)
-                || NO(close))
+            if (   !OK(p)
+                || !OK(open)
+                || !OK(close))
                 return;
 
 
@@ -394,8 +394,8 @@ namespace IngameScript
             var fold = Get("Timer Fold 1")    as IMyTimerBlock;
             var recl = Get("Timer Recline 1") as IMyTimerBlock;
 
-            if (   NO(fold)
-                || NO(recl))
+            if (   !OK(fold)
+                || !OK(recl))
                 return;
 
             if (hinge.Angle > (hinge.LowerLimitRad + hinge.UpperLimitRad) / 2) fold.Trigger();

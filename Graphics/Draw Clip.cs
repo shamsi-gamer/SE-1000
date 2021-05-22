@@ -16,7 +16,7 @@ namespace IngameScript
 
         void DrawClip(Display dsp, int nDsp)
         {
-            if (NO(dsp)) return;
+            if (!OK(dsp)) return;
 
             var v = dsp.Viewport;
 

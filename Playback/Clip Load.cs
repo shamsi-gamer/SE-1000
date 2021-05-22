@@ -125,7 +125,7 @@ namespace IngameScript
                 {
                     int i = 0;
                     var pat = Pattern.Load(session, lines[line++].Split(';'), ref i);
-                    if (NO(pat)) return F;
+                    if (!OK(pat)) return F;
 
                     pat.Clip = this;
 

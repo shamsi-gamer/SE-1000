@@ -22,7 +22,7 @@ namespace IngameScript
             int curClipTrack, curClipIndex;
             g_session = Session.Load(out curClipTrack, out curClipIndex);
 
-            if (NO(g_session))
+            if (!OK(g_session))
             {
                 g_editClip = 1;
                 g_session.Tracks[curClipTrack].SetClip(curClipIndex);

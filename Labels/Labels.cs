@@ -204,10 +204,10 @@ namespace IngameScript
             lblAutoLock = new Label(Lbl("Auto Lock"), lbl => OK(g_locks.Find(l => l.AutoLock)),  null, null, null, 0, F, T);
 
             lblFold     = new Label(Lbl("Fold"),      null, null, null, null, 0, F, T);
-            lblTimers   = new Label(Lbl("Timers"),    lbl => NO(g_timers.Find(t => !t.Enabled)), null, null, null, 0, F, T);
+            lblTimers   = new Label(Lbl("Timers"),    lbl => !OK(g_timers.Find(t => !t.Enabled)), null, null, null, 0, F, T);
 
-            lblGyro     = new Label(Lbl("Gyro"),      lbl => NO(g_gyros .Find(g => !g.Enabled)), null, null, null, 0, F, T);
-            lblMass     = new Label(Lbl("Mass"),      lbl => NO(g_mass  .Find(g => !g.Enabled)), null, null, null, 0, F, T);
+            lblGyro     = new Label(Lbl("Gyro"),      lbl => !OK(g_gyros .Find(g => !g.Enabled)), null, null, null, 0, F, T);
+            lblMass     = new Label(Lbl("Mass"),      lbl => !OK(g_mass  .Find(g => !g.Enabled)), null, null, null, 0, F, T);
         }
 
 

@@ -206,7 +206,7 @@ namespace IngameScript
                         continue;
 
                     if (   g_playing
-                        && PlayPattern.Channels[ch].Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
+                        && OK(PlayPattern.Channels[ch].Notes.Find(n => NoteIsPlaying(noteNum, n))))
                         return T;
                 }
             }

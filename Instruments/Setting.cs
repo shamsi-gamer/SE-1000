@@ -99,7 +99,7 @@ namespace IngameScript
             public virtual void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
             {
                 if (dp.Program.TooComplex) return;
-                if (NO(sprites)) return;
+                if (!OK(sprites)) return;
 
 
                 var textCol = this == CurSetting ? color0 : color6;
@@ -181,7 +181,7 @@ namespace IngameScript
             foreach (var tag in tags)
             {
                 setting = 
-                    NO(setting)
+                    !OK(setting)
                     ? inst   .GetOrAddSettingFromTag(tag)
                     : setting.GetOrAddSettingFromTag(tag);
             }
@@ -277,7 +277,7 @@ namespace IngameScript
 
         static bool IsParam(Setting setting) 
         {
-            if (NO(setting)) return F;
+            if (!OK(setting)) return F;
 
             return setting.GetType() == typeof(Tune)
                 || setting.GetType() == typeof(Parameter); 

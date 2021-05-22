@@ -115,7 +115,7 @@ namespace IngameScript
             public int           EditLength     { get { return (int)(EditStepLength * g_session.TicksPerStep); } }
 
 
-            public Clip(Track track, string name = "Clip 1")
+            public Clip(Track track, string name = "Clip")
             {
                 Name        = name;
                 Track       = track;
@@ -446,7 +446,7 @@ namespace IngameScript
             {
                 var b = GetBlock(CurPat);
 
-                if (NO(b))
+                if (!OK(b))
                 {
                     Blocks.Add(new Block(CurPat));
 
@@ -472,7 +472,7 @@ namespace IngameScript
             {
                 var b = GetBlock(CurPat);
 
-                if (NO(b))
+                if (!OK(b))
                 {
                     Blocks.Add(new Block(CurPat));
 

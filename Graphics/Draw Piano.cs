@@ -17,7 +17,7 @@ namespace IngameScript
             var irh = h - 50;
 
 
-            if (NO(arp))
+            if (!OK(arp))
                 DrawChannelList(sprites, x, y, 340, rh);
             else
             {

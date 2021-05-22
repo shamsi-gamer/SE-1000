@@ -62,7 +62,7 @@ namespace IngameScript
 
             else // stop
             { 
-                if (NO(g_session))
+                if (!OK(g_session))
                     return;
 
                 g_playing = F;
@@ -108,6 +108,9 @@ namespace IngameScript
                         continue;
 
                     track.CueNextPattern();
+
+                    if (!OK(track.PlayClip))
+                        continue;
 
                     var clip = track.Clips[track.PlayClip];
 

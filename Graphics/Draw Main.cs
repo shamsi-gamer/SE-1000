@@ -9,7 +9,7 @@ namespace IngameScript
         void DrawMain()
         {
             var dsp = dspMain;
-            if (NO(dsp)) return;
+            if (!OK(dsp)) return;
 
             var v = dsp.Viewport;
 
@@ -20,7 +20,7 @@ namespace IngameScript
 
             var sprites = new List<MySprite>();
 
-            if (NO(CurClip))
+            if (!OK(CurClip))
             {
                 FillRect(sprites, x, y, w, h, color0);
             }

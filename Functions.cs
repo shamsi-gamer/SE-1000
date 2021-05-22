@@ -93,7 +93,7 @@ namespace IngameScript
 
         static void AddNextSetting(string tag, Instrument inst = null, int iSrc = -2)
         {
-            if (NO(inst))   inst = SelInstrument;
+            if (!OK(inst))   inst = SelInstrument;
             if (iSrc == -2) iSrc = CurSrc;
 
             if (CurSet > -1)
@@ -142,7 +142,7 @@ namespace IngameScript
                     case strTune: if (OK(src)) src.Tune      = null; else inst.Tune     = null; break;
                     case strHrm:  if (OK(src)) src.Harmonics = null;                            break;
                     case strFlt:  if (OK(src)) src.Filter    = null; else inst.Filter   = null; break;
-                    case strArp:  if (NO(src))                            inst.Arpeggio = null; break;
+                    case strArp:  if (!OK(src))                            inst.Arpeggio = null; break;
                 }
             }
 

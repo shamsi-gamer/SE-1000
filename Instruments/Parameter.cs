@@ -115,7 +115,7 @@ namespace IngameScript
                 var value = GetKeyValue(tp.Note, tp.SourceIndex);
                 var path  = GetPath(tp.SourceIndex);
 
-                if (   NO(tp.TriggerValues.Find(v => v.Path == path))
+                if (   !OK(tp.TriggerValues.Find(v => v.Path == path))
                     && OK(Lfo))
                 {
                     var lfo = Lfo.UpdateValue(tp);
@@ -189,9 +189,9 @@ namespace IngameScript
                 var prevKey = PrevClipAutoKey(songStep, pat, path);
                 var nextKey = NextClipAutoKey(songStep, pat, path);
 
-                     if (NO(prevKey) && NO(nextKey)) return fN;
-                else if ( OK(prevKey) && NO(nextKey)) return prevKey.Value;
-                else if (NO(prevKey) &&  OK(nextKey)) return nextKey.Value;
+                     if (!OK(prevKey) && !OK(nextKey)) return fN;
+                else if ( OK(prevKey) && !OK(nextKey)) return prevKey.Value;
+                else if (!OK(prevKey) &&  OK(nextKey)) return nextKey.Value;
                 else
                     return prevKey.Value + (nextKey.Value - prevKey.Value) * (songStep - prevKey.StepTime) / (nextKey.StepTime - prevKey.StepTime);
             }
@@ -483,7 +483,7 @@ namespace IngameScript
                         1f, 
                         color6);
                 }
-                else if (NO(Parent) // source offset has no parent
+                else if (!OK(Parent) // source offset has no parent
                       && Tag    == strOff)
                 { 
                     DrawValueHorizontal(
@@ -526,7 +526,7 @@ namespace IngameScript
                     var db = PrintValue(100 * Math.Log10(Value), 0, T, 0) + " dB";
                     DrawString(sprites, db, x + bx + 100, y + by + 180, 1f, color6);
                 }
-                else if (NO(Parent) // source offset has no parent
+                else if (!OK(Parent) // source offset has no parent
                       && Tag    == strOff)
                     DrawValueHorizontal(sprites, x + bx +  5, y + by + 90, 180,  50, Min, Max, Value, CurValue, Tag);
                 else
