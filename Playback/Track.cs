@@ -87,11 +87,12 @@ namespace IngameScript
             }
 
 
-            public void SetClip(int index)
+            public void SetClip(int index, bool force = false)
             { 
                 var clip = Clips[index];
 
-                if (g_editClip > 0)
+                if (   g_editClip > 0
+                    || force)
                 {
                     if (!OK(clip))
                     {
@@ -111,11 +112,11 @@ namespace IngameScript
                 }
                 else if (OK(clip))
                 { 
-                    if (PlayClip != index)
+                    if (index != PlayClip)
                         NextClip = index;
                     else if (OK(PlayClip)
-                            && !OK(NextClip))
-                        PlayClip = -1;
+                         && !OK(NextClip))
+                        PlayClip = -1; // force mute on second press
                     else
                         NextClip = -1;
                 }
@@ -135,9 +136,23 @@ namespace IngameScript
 
 
                 if (OK(NextClip))
+                { 
                     NextPat = 0;
 
+                    if (!OK(PlayClip))
+                    { 
+                        PlayTime  = GetPatTime(NextPat);
+                        StartTime = g_time - PlayTime;
+                    }
+                }
+
+
                 PlayClip = NextClip;
+
+                if (!OK(PlayClip)) 
+                    return;
+
+
 
 
                 var clip = Clips[PlayClip];

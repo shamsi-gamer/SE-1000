@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using VRage.Game.GUI.TextPanel;
 using Sandbox.ModAPI.Ingame;
 using VRageMath;
+
 
 namespace IngameScript
 {
@@ -16,12 +16,12 @@ namespace IngameScript
             if (!OK(dsp)) return;
 
 
-            var Volume = dsp.Viewport;
+            var v = dsp.Viewport;
 
-            var x = Volume.X;
-            var y = Volume.Y;
-            var w = Volume.Width;
-            var h = Volume.Height;
+            var x = v.X;
+            var y = v.Y;
+            var w = v.Width;
+            var h = v.Height;
 
 
             var sprites = new List<MySprite>();
@@ -40,23 +40,15 @@ namespace IngameScript
             }
 
 
+            DrawButton(sprites, "Load",  0, 3, w, 50, IsPressed(lcdInfo+0));
+            DrawButton(sprites, "Save",  1, 3, w, 50, IsPressed(lcdInfo+1));
+
+            DrawButton(sprites, strDown, 0, 3, w, h,  IsPressed(lcdInfo+2));
+            DrawButton(sprites, strUp,   1, 3, w, h,  IsPressed(lcdInfo+3));
+
+
             DrawString(sprites, S0(GetBPM()), x + 173, y + h - 122, 2.5f, color6, TaC);
             DrawString(sprites, "BPM",        x + 142, y + h - 43, 1f, color6);
-
-            var prLoad    = _lcdPressed.Contains(lcdInfo + 0);
-            var prSave    = _lcdPressed.Contains(lcdInfo + 1);
-            var prBpmDown = _lcdPressed.Contains(lcdInfo + 2);
-            var prBpmUp   = _lcdPressed.Contains(lcdInfo + 3);
-
-            if (prLoad   ) FillRect(sprites, x +  32, y + 8,      104, 40, color6);
-            if (prSave   ) FillRect(sprites, x + 204, y + 8,      104, 40, color6);
-            if (prBpmDown) FillRect(sprites, x +  31, y + h - 48, 104, 40, color6);
-            if (prBpmUp  ) FillRect(sprites, x + 204, y + h - 48, 104, 40, color6);
-
-            DrawString(sprites, "Load",  x +  42, y + 10,     1.1f, prLoad    ? color0 : color6);
-            DrawString(sprites, "Save",  x + 214, y + 10,     1.1f, prSave    ? color0 : color6);
-            DrawString(sprites, strDown, x +  70, y + h - 51, 1.5f, prBpmDown ? color0 : color6);
-            DrawString(sprites, strUp,   x + 245, y + h - 51, 1.5f, prBpmUp   ? color0 : color6);
 
 
             var nameLines = EditClip.Name.Split('\n');
@@ -114,35 +106,16 @@ namespace IngameScript
             FillRect  (sprites,        cx,      y + 142, 353 * Math.Min(g_sm.UsedRatio, 1), 26, color6);
 
 
-            if (T)
-            {
-                var min = Math.Max(0, g_log.Count - 15);
-                var sb  = new StringBuilder();
-
-                for (int i = min; i < g_log.Count; i++)
-                { 
-                    DrawString(
-                        sprites,
-                        S(g_logTime[i]) + ": " + g_log[i], 
-                        x + 6, 
-                        y + 306 + (i-min) * 25*0.5f, 
-                        0.4f, 
-                        color6);
-                }
-            }
-            else
-            {
-                //var oy = new int[dance.Length];
-                //for (int i = 0; i < oy.Length; i++) oy[0] = 0;
+            //var oy = new int[dance.Length];
+            //for (int i = 0; i < oy.Length; i++) oy[0] = 0;
 
 
-                //var iMan =
-                //    OK(g_song.PlayTime)
-                //    ? (int)(g_song.PlayStep / 2) % dance.Length
-                //    : 3;
+            //var iMan =
+            //    OK(g_song.PlayTime)
+            //    ? (int)(g_song.PlayStep / 2) % dance.Length
+            //    : 3;
 
-                //dsp.Add(ref frame, DrawString(dance[iMan], x + 30, y + 330 - oy[iMan], 1.8f, color6));
-            }
+            //dsp.Add(ref frame, DrawString(dance[iMan], x + 30, y + 330 - oy[iMan], 1.8f, color6));
 
 
             dsp.Draw(sprites);
@@ -154,12 +127,12 @@ namespace IngameScript
             var dsp = dspIO;
             if (!OK(dsp)) return;
 
-            var Volume = dsp.Viewport;
+            var v = dsp.Viewport;
 
-            var x = Volume.X;
-            var y = Volume.Y;
-            var w = Volume.Width;
-            var h = Volume.Height;
+            var x = v.X;
+            var y = v.Y;
+            var w = v.Width;
+            var h = v.Height;
 
             var cx = x + w/2;
             var cy = y + h/2;

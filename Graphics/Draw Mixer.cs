@@ -45,7 +45,7 @@ namespace IngameScript
                 var rx  = x + (ch-first) * bw + bb/2;
                 var col = chan.Notes.Count > 0 ? color6 : color3;
 
-                FillRect(sprites, rx, ry + 6, rw, 76, chan.On ^ _lcdPressed.Contains(ch) ? col : color0);
+                FillRect(sprites, rx, ry + 6, rw, 76, chan.On ^ IsPressed(lcdMixer+ch) ? col : color0);
                           
                 DrawString(sprites, chan.Instrument.Name, rx + rw/2 + 3, ry + 14, 0.5f, chan.On ? color0 : col, TaC);
                 DrawString(sprites, S(ch + 1),            rx + rw/2 + 3, ry + 35, 1.2f, chan.On ? color0 : col, TaC);

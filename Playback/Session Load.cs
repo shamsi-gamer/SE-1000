@@ -79,6 +79,9 @@ namespace IngameScript
                 {
                     foreach (var clip in track.Clips)
                     { 
+                        if (!OK(clip))
+                            continue;
+
                         int first, last;
                         clip.GetCurPatterns(out first, out last);
 

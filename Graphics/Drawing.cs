@@ -129,5 +129,26 @@ namespace IngameScript
                 col, 
                 width);
         }
+
+
+        static void DrawButton(List<MySprite> sprites, string str, int i, int maxButtons, float w, float h, bool down = F)
+        {
+            var bw =  w/maxButtons;
+            var x0 = bw/2;
+
+            var y  = h - 50;
+
+            if (down)
+                FillRect(sprites, i * bw, y, bw, 50, color6);
+
+            DrawString(
+                sprites,
+                str, 
+                x0 + i * bw,
+                y + 6, 
+                1.2f, 
+                down ? color0 : color6,
+                TaC);
+        }
     }
 }

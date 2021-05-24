@@ -85,7 +85,7 @@ namespace IngameScript
         {
             lblPlay = new Label(Lbl("Play"), 
                 lbl => g_playing,
-                lbl => g_playing, 
+                null, 
                 null,
                 lbl =>
                 { 
@@ -100,7 +100,7 @@ namespace IngameScript
                 lbl => OK(EditClip.EditPos), 
                 null,
                 null,
-                (lbl) => 
+                lbl => 
                 {
                     lbl.ForeColor = editColor6;
                     lbl.HalfColor = 
@@ -111,7 +111,7 @@ namespace IngameScript
                 lbl => EditClip.Recording, 
                 null,
                 null,
-                (lbl) => 
+                lbl => 
                 {
                     lbl.ForeColor = recColor6;
                     lbl.HalfColor = 
@@ -152,10 +152,10 @@ namespace IngameScript
 
         void InitMixerLabels()
         { 
-            lblMixerVolumeUp   = new Label(Lbl("M Up R"));
-            lblMixerVolumeDown = new Label(Lbl("M Down R"));
-            lblMixerAll        = new Label(Lbl("M Solo R"));
-            lblMixerMuteAll    = new Label(Lbl("M Mute R"));
+            lblMixerVolumeUp   = new Label(Lbl("Volume Up"));
+            lblMixerVolumeDown = new Label(Lbl("Volume Down"));
+            lblMixerAll        = new Label(Lbl("Solo"));
+            lblMixerMuteAll    = new Label(Lbl("Mute"));
 
             lblMixerShift      = new Label(Lbl("M Shift"), lbl => EditClip.MixerShift);
 

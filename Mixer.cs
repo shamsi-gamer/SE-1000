@@ -41,6 +41,7 @@
             if (g_showSession)
             { 
                 g_session.Tracks[dv > 0 ? 0 : 1].SetClip(ch);
+                UpdatePlaybackStatus();
             }
             else
             { 
@@ -64,8 +65,10 @@
         void Solo(int ch)
         {
             if (g_showSession)
+            { 
                 g_session.Tracks[2].SetClip(ch);
-
+                UpdatePlaybackStatus();
+            }
             else
             {
                 if (EditClip.Solo >= 0)
@@ -102,8 +105,10 @@
         void Mute(int ch)
         {
             if (g_showSession)
+            { 
                 g_session.Tracks[3].SetClip(ch);
-
+                UpdatePlaybackStatus();
+            }
             else
             { 
                 var on = !CurPattern.Channels[ch].On;

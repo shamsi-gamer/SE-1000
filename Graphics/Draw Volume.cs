@@ -28,20 +28,20 @@ namespace IngameScript
             var bb = 200;
             var bw = 300;
 
-            var Volume = dsp.Viewport;
+            var v = dsp.Viewport;
 
-            var x = Volume.X;
-            var y = Volume.Y + 55;
-            var w = Volume.Width;
-            var h = Volume.Height * 3 - 40;
+            var x = v.X;
+            var y = v.Y + 55;
+            var w = v.Width;
+            var h = v.Height * 3 - 40;
 
 
             var sprites = new List<MySprite>();
 
-            FillRect(sprites, x, Volume.Y, w, Volume.Height, color0);
+            FillRect(sprites, x, v.Y, w, v.Height, color0);
 
             var xc = x + bb/2;
-            DrawSoundLevel(sprites, xc, y - i * Volume.Height, bw, h - 295, EditClip.Volume, vol, null, 6.5f);
+            DrawSoundLevel(sprites, xc, y - i * v.Height, bw, h - 295, EditClip.Volume, vol, null, 6.5f);
 
             dsp.Draw(sprites);
         }

@@ -57,7 +57,7 @@ namespace IngameScript
 
                     var cancel = 
                            OK(track.NextClip) 
-                        || ix != track.PlayClip;
+                        || !isPlayClip;
 
                     // clip rectangle
                     var cnw = cancel ? 0 : 14;
@@ -93,8 +93,14 @@ namespace IngameScript
                     var ew = cancel ? 0 : 14;
 
                     if (clip == EditClip)
-                        DrawLine(sprites, lx+ew, ly+lh-7, lx+lw-ew, ly+lh-7, color5, 14);
-                        //DrawRect(sprites, lx+2, ly+2, lw-4, lh-4, color5, 4);
+                    { 
+                        var editCol = color4;
+
+                             if (isPlayClip)          editCol = color5;
+                        else if (!OK(track.NextClip)) editCol = color2;
+
+                        DrawLine(sprites, lx+ew, ly+lh-7, lx+lw-ew, ly+lh-7, editCol, 14);
+                    }
 
 
                     // clip name

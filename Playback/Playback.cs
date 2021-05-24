@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 
 
 namespace IngameScript
@@ -42,8 +42,8 @@ namespace IngameScript
 
                 foreach (var track in g_session.Tracks)
                 {
-                    track.PlayTime  = playTime;
-                    track.StartTime = startTime;
+                    //track.PlayTime  = playTime;
+                    //track.StartTime = startTime;
 
                     //if (track.NextClip < 0) continue;
                     //var nextClip = track.Clips[track.NextClip];
@@ -70,7 +70,7 @@ namespace IngameScript
 
                 foreach (var track in g_session.Tracks)
                 {
-                    if (track.PlayClip < 0) continue;
+                    if (!OK(track.PlayClip)) continue;
                     var playClip = track.Clips[track.PlayClip];
 
                     var b = playClip.GetBlock(playClip.CurPat);
@@ -97,17 +97,35 @@ namespace IngameScript
         }
 
 
+        void UpdatePlaybackStatus()
+        {
+            var nPlaying = g_session.Tracks.Count(track => 
+                   OK(track.PlayClip) 
+                || OK(track.NextClip));
+
+            if (   g_playing
+                && nPlaying == 0)
+                Play(F);
+            else if (!g_playing
+                  && nPlaying > 0)
+                Play(T);
+        }
+
+
         void UpdatePlayback()
         {
             if (g_playing)
             {
                 foreach (var track in g_session.Tracks)
                 {
-                    if (   track.PlayClip < 0
-                        && track.NextClip < 0)
+                    if (   !OK(track.PlayClip)
+                        && !OK(track.NextClip))
                         continue;
 
                     track.CueNextPattern();
+
+                    if (!OK(track.PlayClip))
+                        continue;
 
                     var clip = track.Clips[track.PlayClip];
 
@@ -122,7 +140,6 @@ namespace IngameScript
 
             StopNotes();
             DeleteSounds(StopSounds());
-
             UpdateSounds();
 
 

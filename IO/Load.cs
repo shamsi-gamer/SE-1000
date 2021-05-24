@@ -22,16 +22,15 @@ namespace IngameScript
             int curClipTrack, curClipIndex;
             g_session = Session.Load(out curClipTrack, out curClipIndex);
 
-            if (!OK(g_session))
+            if (OK(g_session))
             {
-                g_editClip = 1;
-                g_session.Tracks[curClipTrack].SetClip(curClipIndex);
+                g_session.Tracks[curClipTrack].SetClip(curClipIndex, T);
                 //InitPlaybackAfterLoad(EditClip.Track.PlayTime);
             }
             else
             { 
                 g_session = new Session();
-                g_session.Tracks[0].SetClip(0);
+                g_session.Tracks[0].SetClip(0, T);
             }
 
 

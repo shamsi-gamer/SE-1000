@@ -440,9 +440,9 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                DrawFuncButton(sprites, "Smth",  1, w, h, F, F, g_lcdPressed.Contains(lcdMain+1));
-                DrawFuncButton(sprites, "Pre ↕", 2, w, h, F, F, g_lcdPressed.Contains(lcdMain+2));
-                DrawFuncButton(sprites, "Set",   3, w, h, F, F, g_lcdPressed.Contains(lcdMain+3));
+                DrawFuncButton(sprites, "Smth",  1, w, h, F, F, IsPressed(lcdMain+1));
+                DrawFuncButton(sprites, "Pre ↕", 2, w, h, F, F, IsPressed(lcdMain+2));
+                DrawFuncButton(sprites, "Set",   3, w, h, F, F, IsPressed(lcdMain+3));
                 
                 if (CurTone > -1)
                     DrawFuncButton(sprites, "Tone", 4, w, h, T, Tones[CurTone].HasDeepParams(chan, -1));

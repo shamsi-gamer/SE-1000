@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
+using System.Text;
 
 
 namespace IngameScript
@@ -210,6 +211,25 @@ namespace IngameScript
                 DrawClipFuncButtons(sprites, w, h, nDsp);
             }
 
+
+            if (nDsp == 1)
+            {
+                var min = Math.Max(0, g_log.Count - 30);
+                var sb  = new StringBuilder();
+
+                for (int i = min; i < g_log.Count; i++)
+                { 
+                    DrawString(
+                        sprites,
+                        S(g_logTime[i]) + ": " + g_log[i], 
+                        x + 6, 
+                        y + (i-min) * 25*0.5f, 
+                        0.4f, 
+                        color6);
+                }
+            }
+
+
             dsp.Draw(sprites);
         }
 
@@ -221,18 +241,18 @@ namespace IngameScript
 
             if (nDsp == 0)
             {
-                DrawFuncButton(sprites, strDel, 0, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 0));
-                DrawFuncButton(sprites, "Dup",  1, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 1));
-                DrawFuncButton(sprites, "New",  2, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 2));
-                                                                                              
-                DrawFuncButton(sprites, "Cue",  4, w, h, F, F, EditClip.Track.NextPat > -1);         
-                DrawFuncButton(sprites, "◄",    5, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 5) ^ EditClip.MovePat); }
-         else { DrawFuncButton(sprites, "►",    0, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 6) ^ EditClip.MovePat);
-                DrawFuncButton(sprites, "◄►",   1, w, h, F, F, EditClip.MovePat);
-                                                
-                DrawFuncButton(sprites, "[",    3, w, h, F, F, EditClip.In);
-                DrawFuncButton(sprites, "]",    4, w, h, F, F, EditClip.Out);
-                DrawFuncButton(sprites, "X",    5, w, h, F, F, g_lcdPressed.Contains(lcdClip+11));
+                DrawButton(sprites, strDel, 0, 6, w, h, IsPressed(lcdClip+ 0));
+                DrawButton(sprites, "Dup",  1, 6, w, h, IsPressed(lcdClip+ 1));
+                DrawButton(sprites, "New",  2, 6, w, h, IsPressed(lcdClip+ 2));
+
+                DrawButton(sprites, "Cue",  4, 6, w, h, EditClip.Track.NextPat > -1);         
+                DrawButton(sprites, "◄",    5, 6, w, h, IsPressed(lcdClip+ 5) ^ EditClip.MovePat); }
+         else { DrawButton(sprites, "►",    0, 6, w, h, IsPressed(lcdClip+ 6) ^ EditClip.MovePat);
+                DrawButton(sprites, "◄►",   1, 6, w, h, EditClip.MovePat);
+
+                DrawButton(sprites, "[",    3, 6, w, h, EditClip.In);
+                DrawButton(sprites, "]",    4, 6, w, h, EditClip.Out);
+                DrawButton(sprites, "X",    5, 6, w, h, IsPressed(lcdClip+11));
             }
         }
 
