@@ -38,15 +38,12 @@ namespace IngameScript
             {
                 switch (func)
                 {
-                case 2: ToggleNote(CurClip); break;
-                case 3: CutNotes(CurClip);   break;
+                case 2: ToggleNote(EditClip); break;
+                case 3: CutNotes(EditClip);   break;
                 }
             }
 
             g_lcdPressed.Add(lcdMain+func);
-
-            //UpdateEnterLabel();
-            //UpdateAdjustLabels(CurClip);
         }
 
 

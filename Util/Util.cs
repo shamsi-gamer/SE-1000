@@ -165,9 +165,9 @@ namespace IngameScript
         static void UpdateSongOff()
         {
             UpdateDspOffset(
-                ref CurClip.SongOff, 
+                ref EditClip.SongOff, 
                 CurPat, 
-                CurClip.Patterns.Count, 
+                EditClip.Patterns.Count, 
                 maxDspPats, 
                 1,
                 1);
@@ -177,16 +177,16 @@ namespace IngameScript
         void UpdateInstOff(int ch)
         {
             var curInst = g_session.Instruments.IndexOf(CurPattern.Channels[ch].Instrument);
-            UpdateDspOffset(ref CurClip.InstOff, curInst, g_session.Instruments.Count, maxDspInst, 0, 1);
+            UpdateDspOffset(ref EditClip.InstOff, curInst, g_session.Instruments.Count, maxDspInst, 0, 1);
         }
 
 
         void UpdateSrcOff()
         {
             UpdateDspOffset(
-                ref CurClip.SrcOff, 
+                ref EditClip.SrcOff, 
                 CurSrc, 
-                CurClip.CurInstrument.Sources.Count, 
+                EditClip.CurInstrument.Sources.Count, 
                 maxDspSrc, 
                 0,
                 0);
@@ -228,10 +228,10 @@ namespace IngameScript
         void SetCurInst(Instrument inst)
         {
             int first, last;
-            CurClip.GetCurPatterns(out first, out last);
+            EditClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
-                CurClip.Patterns[p].Channels[CurChan].Instrument = inst;
+                EditClip.Patterns[p].Channels[CurChan].Instrument = inst;
         }
 
 
@@ -288,21 +288,21 @@ namespace IngameScript
                     ?? SelInstrument?.Tune;
 
             return
-                   CurClip.Piano
-                ||    CurClip.ChordEdit 
-                   && CurClip.Chord > -1
+                   EditClip.Piano
+                ||    EditClip.ChordEdit 
+                   && EditClip.Chord > -1
                 ||    IsCurParam(strTune)
                    && (tune?.UseChord ?? F)
-                   && !(   CurClip.ParamKeys 
-                        || CurClip.ParamAuto)
+                   && !(   EditClip.ParamKeys 
+                        || EditClip.ParamAuto)
                 ||    IsCurOrParentSetting(typeof(Arpeggio));
         }}
 
 
         void SetVolumeAll(float dv)
         {
-            var mod = (CurClip.MixerShift ? 10 : 1) * dv;
-            CurClip.Volume = MinMax(0, CurClip.Volume + dVol * mod, 2);
+            var mod = (EditClip.MixerShift ? 10 : 1) * dv;
+            EditClip.Volume = MinMax(0, EditClip.Volume + dVol * mod, 2);
 
             (dv > 0
              ? lblMixerVolumeUp
@@ -472,24 +472,24 @@ namespace IngameScript
         static bool IsPressed(int   lbl) { return    g_lcdPressed.Contains(lbl); }
 
 
-        static Clip       CurClip        { get { return g_session.CurClip; } }
+        static Clip       EditClip        { get { return g_session.EditClip; } }
                                                                                 
-        static int        CurPat         { get { return CurClip.CurPat;  } }
-        static int        CurChan        { get { return CurClip.CurChan; } set { CurClip.CurChan = value; } }
-        static int        SelChan        { get { return CurClip.SelChan; } set { CurClip.SelChan = value; } }
-        static int        CurSrc         { get { return CurClip.CurSrc;  } set { CurClip.CurSrc  = value; } }
-        static int        CurSet         { get { return CurClip.CurSet;  } set { CurClip.CurSet  = value; } }
+        static int        CurPat         { get { return EditClip.CurPat;  } }
+        static int        CurChan        { get { return EditClip.CurChan; } set { EditClip.CurChan = value; } }
+        static int        SelChan        { get { return EditClip.SelChan; } set { EditClip.SelChan = value; } }
+        static int        CurSrc         { get { return EditClip.CurSrc;  } set { EditClip.CurSrc  = value; } }
+        static int        CurSet         { get { return EditClip.CurSet;  } set { EditClip.CurSet  = value; } }
                                          
-        static float      PlayStep       { get { return CurClip.Track.PlayStep; } }
-        static int        PlayPat        { get { return CurClip.Track.PlayPat;  } }
+        static float      PlayStep       { get { return EditClip.Track.PlayStep; } }
+        static int        PlayPat        { get { return EditClip.Track.PlayPat;  } }
                                          
-        static Pattern    CurPattern     { get { return CurClip.CurPattern;            } }
-        static Channel    CurChannel     { get { return CurClip.CurChannel;            } }
-        static Pattern    PlayPattern    { get { return CurClip.Patterns[PlayPat];     } }
+        static Pattern    CurPattern     { get { return EditClip.CurPattern;            } }
+        static Channel    CurChannel     { get { return EditClip.CurChannel;            } }
+        static Pattern    PlayPattern    { get { return EditClip.Patterns[PlayPat];     } }
         static Channel    PlayChannel    { get { return PlayPattern.Channels[CurChan]; } }
                                          
-        static Source     SelSource      { get { return CurClip.SelSource;     } }  
-        static Instrument SelInstrument  { get { return CurClip.SelInstrument; } }  
-        static Channel    SelChannel     { get { return CurClip.SelChannel;    } }  
+        static Source     SelSource      { get { return EditClip.SelSource;     } }  
+        static Instrument SelInstrument  { get { return EditClip.SelInstrument; } }  
+        static Channel    SelChannel     { get { return EditClip.SelChannel;    } }  
     }
 }

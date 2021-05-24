@@ -35,31 +35,31 @@ namespace IngameScript
                 var min = sec / 60;
                 sec %= 60;
 
-                FillRect(sprites, x + 220, y + h - 192, 250, 64, color6);
-                DrawString(sprites, S(min) + ":" + sec.ToString("00"), x + 345, y + h - 191, 2f, color0, TaC);
+                FillRect(sprites, x + 50, y + h - 192, 250, 64, color6);
+                DrawString(sprites, S(min) + ":" + sec.ToString("00"), x + 175, y + h - 191, 2f, color0, TaC);
             }
 
 
-            DrawString(sprites, S0(GetBPM()), x + 343, y + h - 122, 2.5f, color6, TaC);
-            DrawString(sprites, "BPM", x + 312, y + h - 43, 1f, color6);
+            DrawString(sprites, S0(GetBPM()), x + 173, y + h - 122, 2.5f, color6, TaC);
+            DrawString(sprites, "BPM",        x + 142, y + h - 43, 1f, color6);
 
-            var prLoad    = _lcdPressed.Contains(0);
-            var prSave    = _lcdPressed.Contains(1);
-            var prBpmDown = _lcdPressed.Contains(2);
-            var prBpmUp   = _lcdPressed.Contains(3);
+            var prLoad    = _lcdPressed.Contains(lcdInfo + 0);
+            var prSave    = _lcdPressed.Contains(lcdInfo + 1);
+            var prBpmDown = _lcdPressed.Contains(lcdInfo + 2);
+            var prBpmUp   = _lcdPressed.Contains(lcdInfo + 3);
 
-            if (prLoad   ) FillRect(sprites, x + 202, y + 8,      104, 40, color6);
-            if (prSave   ) FillRect(sprites, x + 374, y + 8,      104, 40, color6);
-            if (prBpmDown) FillRect(sprites, x + 201, y + h - 48, 104, 40, color6);
-            if (prBpmUp  ) FillRect(sprites, x + 374, y + h - 48, 104, 40, color6);
+            if (prLoad   ) FillRect(sprites, x +  32, y + 8,      104, 40, color6);
+            if (prSave   ) FillRect(sprites, x + 204, y + 8,      104, 40, color6);
+            if (prBpmDown) FillRect(sprites, x +  31, y + h - 48, 104, 40, color6);
+            if (prBpmUp  ) FillRect(sprites, x + 204, y + h - 48, 104, 40, color6);
 
-            DrawString(sprites, "Load", x + 212, y + 10,     1.1f, prLoad    ? color0 : color6);
-            DrawString(sprites, "Save", x + 384, y + 10,     1.1f, prSave    ? color0 : color6);
-            DrawString(sprites, strDown,    x + 240, y + h - 51, 1.5f, prBpmDown ? color0 : color6);
-            DrawString(sprites, strUp,    x + 415, y + h - 51, 1.5f, prBpmUp   ? color0 : color6);
+            DrawString(sprites, "Load",  x +  42, y + 10,     1.1f, prLoad    ? color0 : color6);
+            DrawString(sprites, "Save",  x + 214, y + 10,     1.1f, prSave    ? color0 : color6);
+            DrawString(sprites, strDown, x +  70, y + h - 51, 1.5f, prBpmDown ? color0 : color6);
+            DrawString(sprites, strUp,   x + 245, y + h - 51, 1.5f, prBpmUp   ? color0 : color6);
 
 
-            var nameLines = CurClip.Name.Split('\n');
+            var nameLines = EditClip.Name.Split('\n');
 
             if (nameLines.Length > 0) 
                 DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TaC);

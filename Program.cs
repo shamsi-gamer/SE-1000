@@ -128,8 +128,7 @@ namespace IngameScript
 
                 Load();
 
-                //UpdateLabels();
-                SetLabelColor(CurClip.ColorIndex);
+                SetLabelColor(EditClip.ColorIndex);
             }
         }
 

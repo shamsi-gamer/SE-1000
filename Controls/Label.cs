@@ -92,7 +92,7 @@ namespace IngameScript
             public void Update(bool full, bool half = F)
             {
                 if (   UsedForSession
-                    || OK(CurClip))
+                    || OK(EditClip))
                 {
                     Panel.FontColor       = full ? BackColor : ForeColor;
                     Panel.BackgroundColor = full ? ForeColor : (half ? HalfColor : BackColor);

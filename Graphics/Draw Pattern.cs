@@ -42,7 +42,7 @@ namespace IngameScript
                     x + xt + wt * (clip.EditPos % g_patSteps), 
                     y, 
                     wt,
-                    CurClip.ParamKeys || CurClip.ParamAuto ? h : rh,
+                    EditClip.ParamKeys || EditClip.ParamAuto ? h : rh,
                     color3);
             }
 
@@ -53,7 +53,7 @@ namespace IngameScript
                 && PlayPat == pat)
             {
                 FillRect(sprites, x + xt + wt * ((int)PlayStep % g_patSteps), y, wt, rh, color6);
-                DrawPatNeg(sprites, x + xt, y, w - xt, rh, clip, pat, (int)PlayStep, isolated);
+                DrawPatternNeg(sprites, x + xt, y, w - xt, rh, clip, pat, (int)PlayStep, isolated);
             }
 
 
@@ -162,7 +162,7 @@ namespace IngameScript
         }
 
 
-        void DrawPatNeg(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int pat, float step, bool isolated)
+        void DrawPatternNeg(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int pat, float step, bool isolated)
         {
             var wt = w/g_patSteps;
             var ht = h/g_nChans;

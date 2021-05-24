@@ -26,7 +26,7 @@ namespace IngameScript
             {
                 g_editClip = 1;
                 g_session.Tracks[curClipTrack].SetClip(curClipIndex);
-                //InitPlaybackAfterLoad(CurClip.Track.PlayTime);
+                //InitPlaybackAfterLoad(EditClip.Track.PlayTime);
             }
             else
             { 
@@ -36,15 +36,15 @@ namespace IngameScript
 
 
             //if (curPath != "")
-            //    SwitchToSetting(CurClip.CurrentInstrument, CurSrc, curPath);
+            //    SwitchToSetting(EditClip.CurrentInstrument, CurSrc, curPath);
 
             //if (modConnPath != "")
             //{
-            //    ModDestChannel    = CurClip.Patterns[modPat].Channels[modChan];
+            //    ModDestChannel    = EditClip.Patterns[modPat].Channels[modChan];
             //    ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
             //}
 
-            SetLabelColor(CurClip.ColorIndex);
+            SetLabelColor(EditClip.ColorIndex);
         }
 
 

@@ -203,7 +203,6 @@ namespace IngameScript
                 //}
 
 
-                //UpdateOctaveLabel();
                 UpdateSongOff();//g_song.CurPat);
             
                 UpdateInstName();

@@ -17,7 +17,7 @@ namespace IngameScript
                 var sb = new StringBuilder();
                 dspMain.Panel.ReadText(sb, F);
 
-                CurClip.CurInstrument.Name = S(sb).Trim().Trim(new char[] {';'});
+                EditClip.CurInstrument.Name = S(sb).Trim().Trim(new char[] {';'});
             }
 
             g_inputValid = T;
@@ -29,13 +29,13 @@ namespace IngameScript
             var sb = new StringBuilder();
             dspInfo.Panel.ReadText(sb, F);
 
-            CurClip.Name = S(sb).Trim();
+            EditClip.Name = S(sb).Trim();
         }
 
 
         void UpdateClipDsp()
         {
-            dspInfo.Panel.WriteText(CurClip.Name.Replace("\u0085", "\n"));
+            dspInfo.Panel.WriteText(EditClip.Name.Replace("\u0085", "\n"));
         }
     }
 }

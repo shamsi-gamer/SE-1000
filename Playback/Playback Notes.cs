@@ -46,7 +46,7 @@ namespace IngameScript
                     clip.TrimCurrentNotes(ch);
 
                 for (int i = 0; i < notes.Count; i++)
-                    TriggerNote(clip, notes[i], ch, CurClip.EditStepLength, ChordSpread(i));
+                    TriggerNote(clip, notes[i], ch, EditClip.EditStepLength, ChordSpread(i));
             }
 
 
@@ -91,13 +91,13 @@ namespace IngameScript
                             && clip.Chord > -1))
                     {
                         var noteStep = clip.EditPos % g_patSteps + ChordSpread(i);
-                        var lastNote = new Note(chan, ch, 1, note, noteStep, CurClip.EditStepLength);
+                        var lastNote = new Note(chan, ch, 1, note, noteStep, EditClip.EditStepLength);
                     
                         lastNotes.Add(lastNote);
                         chan.AddNote(lastNote);
                     }
 
-                    TriggerNote(clip, note, ch, CurClip.EditStepLength, ChordSpread(i));
+                    TriggerNote(clip, note, ch, EditClip.EditStepLength, ChordSpread(i));
                 }
             }
         }
@@ -136,13 +136,13 @@ namespace IngameScript
                       && clip.Chord > -1))
                 {
                     var noteStep = clip.EditPos % g_patSteps + ChordSpread(i);
-                    var lastNote = new Note(chan, ch, 1, note, noteStep, CurClip.EditStepLength);
+                    var lastNote = new Note(chan, ch, 1, note, noteStep, EditClip.EditStepLength);
                     
                     lastNotes.Add(lastNote);
                     chan.AddNote(lastNote);
                 }
 
-                TriggerNote(clip, note, ch, CurClip.EditStepLength, ChordSpread(i));
+                TriggerNote(clip, note, ch, EditClip.EditStepLength, ChordSpread(i));
             }
         }
 

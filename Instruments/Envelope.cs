@@ -249,10 +249,10 @@ namespace IngameScript
             {
                 var sTime = 
                     g_playing
-                    ? g_time - CurClip.Track.StartTime
+                    ? g_time - EditClip.Track.StartTime
                     : 0;
 
-                var tp = new TimeParams(g_time, 0, sTime, null, CurClip.EditLength, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, sTime, null, EditClip.EditLength, -1, _triggerDummy, dp.Program);
 
                 Attack .UpdateValue(tp);
                 Decay  .UpdateValue(tp);

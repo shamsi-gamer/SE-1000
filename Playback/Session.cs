@@ -13,7 +13,7 @@ namespace IngameScript
 
             public int              TicksPerStep;
 
-            public Clip             CurClip;
+            public Clip             EditClip;
 
 
             public Session()
@@ -32,8 +32,8 @@ namespace IngameScript
             {
                 foreach (var track in Tracks)
                 {
-                    track.Clips  .Clear();
-                    track.Indices.Clear();
+                    for (int i = 0; i < g_nChans; i++)
+                        track.Clips[i] = null;
 
                     track.PlayClip = -1;
                 }
@@ -67,10 +67,11 @@ namespace IngameScript
 
                 clip.Patterns.Add(new Pattern(Instruments[0], clip));
 
-                track.Add(clip, 0);
-                track.PlayClip = 0;
+                EditClip       = clip;
+                track.Clips[0] = clip;
 
-                CurClip = track.Clips[0];
+                track.PlayClip = 0;
+                track.NextClip = 0;
             }
         }
 

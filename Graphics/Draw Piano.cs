@@ -36,7 +36,7 @@ namespace IngameScript
 
             var _dummy = new List<TriggerValue>();
 
-            var tp = new TimeParams(g_time, 0, g_time - CurClip.Track.StartTime, null, CurClip.EditLength, CurSrc, _dummy, this);
+            var tp = new TimeParams(g_time, 0, g_time - EditClip.Track.StartTime, null, EditClip.EditLength, CurSrc, _dummy, this);
 
             var songSteps =
                 OK(arp)
@@ -59,8 +59,8 @@ namespace IngameScript
                     sprites, 
                     x + xt + wt * (clip.EditPos % g_patSteps), 
                     y, 
-                    wt / (CurClip.EditStepLength == 0.5f ? 2 : 1), 
-                    CurClip.ParamKeys || CurClip.ParamAuto ? h : rh, 
+                    wt / (EditClip.EditStepLength == 0.5f ? 2 : 1), 
+                    EditClip.ParamKeys || EditClip.ParamAuto ? h : rh, 
                     color3);
             }
 
@@ -78,10 +78,10 @@ namespace IngameScript
 
                     for (int p = 0; p <= CurPat; p++)
                     { 
-                        var notes = CurClip.Patterns[p].Channels[SelChan].Notes.FindAll(n => 
+                        var notes = EditClip.Patterns[p].Channels[SelChan].Notes.FindAll(n => 
                                   OK(n.Instrument.Arpeggio)
-                               && CurClip.Track.PlayTime >= n.Step*g_session.TicksPerStep + n.Time                
-                               && CurClip.Track.PlayTime <  n.Step*g_session.TicksPerStep + n.Time + n.FrameLength);
+                               && EditClip.Track.PlayTime >= n.Step*g_session.TicksPerStep + n.Time                
+                               && EditClip.Track.PlayTime <  n.Step*g_session.TicksPerStep + n.Time + n.FrameLength);
 
                         foreach (var n in notes)
                             arpNotes.Add(n);
@@ -98,7 +98,7 @@ namespace IngameScript
                 else
                 { 
                     FillRect(sprites, x + xt + wt * ((int)PlayStep % g_patSteps), y, wt, rh, color6);
-                    DrawPianoNeg(sprites, x + xt, y, w - xt, rh, CurClip, pat, (int)PlayStep, T);
+                    DrawPianoNeg(sprites, x + xt, y, w - xt, rh, EditClip, pat, (int)PlayStep, T);
                 }
             }
 
@@ -204,7 +204,7 @@ namespace IngameScript
         }
 
 
-        void DrawPianoNeg(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int p, float step, bool isolated)
+        void DrawPianoNeg(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int pat, float step, bool isolated)
         {
             for (int ch = 0; ch < g_nChans; ch++)
             {
@@ -222,10 +222,10 @@ namespace IngameScript
                     : color5;
 
 
-                for (int _p = 0; _p <= p; _p++)
+                for (int _p = 0; _p <= pat; _p++)
                 {
-                    var patStart =  p   *g_patSteps;
-                    var patEnd   = (p+1)*g_patSteps;
+                    var patStart =  pat   *g_patSteps;
+                    var patEnd   = (pat+1)*g_patSteps;
 
                     var chan = clip.Patterns[_p].Channels[ch];
 

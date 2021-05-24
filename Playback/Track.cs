@@ -12,7 +12,7 @@ namespace IngameScript
             public Session    Session;
 
             public List<Clip> Clips;
-            public List<int>  Indices;
+            public Clip[]     Clips;
 
 
             public long       StartTime, // in ticks
@@ -36,143 +36,114 @@ namespace IngameScript
             
             public float[]    DspVol;
 
-            public bool       NotesArePlaying;
+            //public bool       NotesArePlaying;
             
 
             public Track(Session session)
             {
-                Session         = session;
-                                
-                Clips           = new List<Clip>();
-                Indices         = new List<int> ();
-                                
-                StartTime       = 
-                PlayTime        = long_NaN;
-                                
-                PlayClip        = 
-                NextClip        =
-                                
-                PlayPat         =
-                NextPat         = -1;
-                                
-                DspVol          = new float[g_nChans];
+                Session   = session;
+                          
+                Clips = new Clip[g_nChans];
+                for (int i = 0; i < g_nChans; i++)
+                    Clips[i] = null;
+                          
+                StartTime = 
+                PlayTime  = long_NaN;
+                          
+                PlayClip  = 
+                NextClip  =
+                          
+                PlayPat   =
+                NextPat   = -1;
+                          
+                DspVol    = new float[g_nChans];
 
-                NotesArePlaying = F;
+                //NotesArePlaying = F;
             }
 
 
             public Track(Track track)
             {
                 Session   = track.Session;
-                          
-                Clips = new List<Clip>(); 
-
-                foreach (var clip in track.Clips)
+                            
+                Clips = new Clip[g_nChans]; 
+                for (int i = 0; i < g_nChans; i++)
                 {
-                    Clips.Add(clip);
-                    clip.Track = this;
+                    Clips[i]       = track.Clips[i];
+                    Clips[i].Track = this;
                 }
 
-                Indices = new List<int>();
+                StartTime = track.StartTime;
+                PlayTime  = track.PlayTime;
+                          
+                PlayClip  = track.PlayClip;
+                NextClip  = track.NextClip;
+                          
+                PlayPat   = track.PlayPat;
+                NextPat   = track.NextPat;
+                          
+                DspVol    = new float[g_nChans];
 
-                foreach (var i in track.Indices)
-                    Indices.Add(i);
-
-                StartTime       = track.StartTime;
-                PlayTime        = track.PlayTime;
-                                
-                PlayClip        = track.PlayClip;
-                NextClip        = track.NextClip;
-                                
-                PlayPat         = track.PlayPat;
-                NextPat         = track.NextPat;
-                                
-                DspVol          = new float[g_nChans];
-
-                NotesArePlaying = track.NotesArePlaying;
-            }
-
-
-            public void Add(Clip clip, int index)
-            {
-                Clips  .Add(clip);
-                Indices.Add(index);
+                //NotesArePlaying = track.NotesArePlaying;
             }
 
 
             public void SetClip(int index)
             { 
-                var found = Indices.FindIndex(i => i == index);
+                var clip = Clips[index];
 
                 if (g_editClip > 0)
                 {
-                    if (found < 0)
+                    if (!OK(clip))
                     {
-                        Session.CurClip = new Clip(this);
+                        clip = new Clip(this);
+                        clip.Patterns.Add(new Pattern(Session.Instruments[0], clip));
 
-                        CurClip.Patterns.Add(new Pattern(Session.Instruments[0], CurClip));
-                        
-                        Clips.Add(CurClip);
-                        Indices.Add(index);
-
-                        //if (   g_playing
-                        //    && PlayTime == long_NaN)
-                        //    PlayTime = 0;
+                        Clips[index] = clip;
                     }
 
-                    NextClip = index;
-                    NextPat  = 0;
-
-                    Session.CurClip = Clips[index];
+                    if (!OK(PlayClip))
+                        NextClip = index;
+ 
+                    Session.EditClip = Clips[index];
 
                     if (g_editClip == 2)
                         g_showSession = F;
-
-                    //g_editClip = 0;
                 }
-                else
-                {
-                    if (   PlayClip != index
-                        && OK(found))
-                    { 
+                else if (OK(clip))
+                { 
+                    if (PlayClip != index)
                         NextClip = index;
-                        NextPat  = 0;
-                    }
+                    else if (OK(PlayClip)
+                            && !OK(NextClip))
+                        PlayClip = -1;
+                    else
+                        NextClip = -1;
                 }
             }
 
 
-            //void SetClip(Clip clip)
-            //{ 
-            //    clip.Track.CurIndex = clip.Track.Clips.IndexOf(clip);
-
-            //    CurClip = clip;
-
-            //    g_setClip = F;
-            //    g_showSession = F;
-
-            //    //UpdateLabels();
-            //}
-
-
             public void CueNextPattern()
             {
-                var trackIndex = Session.Tracks.IndexOf(this);
+                if (   !OK(PlayClip)
+                    && !OK(NextClip))
+                    return;
+
+
+                if (   OK(PlayPat)
+                    && PlayStep < (PlayPat + 1) * g_patSteps)
+                    return;
 
 
                 if (OK(NextClip))
-                { 
-                    PlayClip = NextClip;
-                    NextClip = -1;
-                }
+                    NextPat = 0;
 
+                PlayClip = NextClip;
 
-                if (!OK(PlayClip))
-                    return;
 
                 var clip = Clips[PlayClip];
-                clip.Length = clip.Patterns.Count * g_patSteps;
 
+                clip.Length = clip.Patterns.Count * g_patSteps;
 
                 if (NextPat > -1)
                 {
@@ -183,49 +154,37 @@ namespace IngameScript
                 }
 
 
-                //if (PlayTime == long_NaN)
-                //    PlayTime = 0;
+                int start, end;
+                clip.GetPosLimits(PlayPat, out start, out end);
+                end = start + Math.Min(end - start, clip.Length);
 
-                if (PlayStep >= (PlayPat + 1) * g_patSteps)
+                if (NextPat > -1)
                 {
-                    if (NextClip > -1)
-                    {
-                        PlayClip = NextClip;
-                        NextClip = -1;
-                    }
+                    var b = clip.GetBlock(NextPat);
+                    if (clip.Block && OK(b))
+                        NextPat = b.First;
 
-                    clip = Clips[PlayClip];
+                    PlayTime  = GetPatTime(NextPat);
+                    StartTime = g_time - PlayTime;
 
+                    NextPat = -1;
+                }
+                else if (PlayStep >= end)
+                {
+                    clip.WrapCurrentNotes(end - start);
 
-                    int start, end;
-                    clip.GetPosLimits(PlayPat, out start, out end);
-                    end = start + Math.Min(end - start, clip.Length);
-
-                    if (NextPat > -1)
-                    {
-                        var b = clip.GetBlock(NextPat);
-                        if (clip.Block && OK(b))
-                            NextPat = b.First;
-
-                        PlayTime  = GetPatTime(NextPat);
-                        StartTime = g_time - PlayTime;
-
-                        NextPat = -1;
-                    }
-                    else if (PlayStep >= end)
-                    {
-                        clip.WrapCurrentNotes(end - start);
-
-                        PlayTime  -= (end - start) * g_session.TicksPerStep;
-                        StartTime += (end - start) * g_session.TicksPerStep;
-                    }
+                    PlayTime  -= (end - start) * g_session.TicksPerStep;
+                    StartTime += (end - start) * g_session.TicksPerStep;
                 }
 
 
-                PlayPat =
-                    g_playing
-                    ? (int)(PlayStep / g_patSteps)
-                    : -1;
+                if (OK(PlayClip))
+                { 
+                    PlayPat =
+                        g_playing
+                        ? (int)(PlayStep / g_patSteps)
+                        : -1;
+                }
             }
 
 
@@ -265,14 +224,20 @@ namespace IngameScript
             public string Save()
             {
                 var cfg = 
-                        (PlayTime == long_NaN ? "?" : S(PlayTime))
+                     (PlayTime == long_NaN ? "?" : S(PlayTime))
                     + PS(PlayPat)
                     + PS(NextPat)
                     + PS(NextClip);
 
-                var indices = S(Clips.Count);
 
-                foreach (var i in Indices)
+                var _indices = new List<int>();
+
+                for (int i = 0; i < g_nChans; i++)
+                    if (OK(Clips[i])) _indices.Add(i);
+
+                var indices = S(_indices.Count);
+
+                foreach (var i in _indices)
                     indices += PS(i);
 
                 var save =
@@ -298,23 +263,22 @@ namespace IngameScript
                 if (!int .TryParse(cfg[c++], out track.NextPat  )) return null;
                 if (!int .TryParse(cfg[c++], out track.NextClip )) return null;
 
-                var indices = lines[line++].Split(';');
+                var _indices = lines[line++].Split(';');
 
                 int nClips;
-                if (!int .TryParse(indices[0], out nClips)) return null;
+                if (!int .TryParse(_indices[0], out nClips)) return null;
 
+                var indices = new List<int>();
+                for (int i = 0; i < nClips; i++)
+                    indices.Add(int.Parse(_indices[i+1]));
+                 
                 //curPath = "";
 
                 for (int i = 0; i < nClips; i++)
                 {
-                    int index;
-                    if (!int.TryParse(indices[i+1], out index)) return null;
-
-                    track.Indices.Add(line);
-                
                     var clip = Clip.Load(session, lines, ref line);
 
-                    if (OK(clip)) track.Clips.Add(clip);//, out curPath));
+                    if (OK(clip)) track.Clips[indices[i]] = clip;//, out curPath));
                     else          return null;
                 }
 
@@ -340,7 +304,7 @@ namespace IngameScript
                             DspVol[snd.iChan],
                               instVol
                             * snd.Channel.Volume
-                            * CurClip.Volume);
+                            * EditClip.Volume);
                     }
                 }
             }
@@ -360,11 +324,11 @@ namespace IngameScript
             }
 
 
-            public void UpdateNotesArePlaying()
-            {
-                if (OK(g_notes.Find(n => n.Channel.Pattern.Clip.Track == this)))
-                    NotesArePlaying = T;
-            }
+            //public void UpdateNotesArePlaying()
+            //{
+            //    if (OK(g_notes.Find(n => n.Channel.Pattern.Clip.Track == this)))
+            //        NotesArePlaying = T;
+            //}
         }
     }
 }

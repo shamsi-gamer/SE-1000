@@ -32,7 +32,7 @@ namespace IngameScript
                         g_lockView       = 0; // 1 = pattern, 2 = piano
 
         static Session  g_session        = null;
-        //static Clip   CurClip          = null;
+        //static Clip   EditClip          = null;
 
 
         Key             g_editKey        = null;

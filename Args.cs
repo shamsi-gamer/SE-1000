@@ -23,18 +23,18 @@
                 case "bpm up":      SetStepLength(-1);              break;
                 case "bpm down":    SetStepLength( 1);              break;
 
-                case "del pat":     CurClip?.DeletePattern();       break;
-                case "dup pat":     CurClip?.DuplicatePattern();    break;
-                case "new pat":     CurClip?.NewPattern();          break;
-                case "move pat":    CurClip?.ToggleMovePattern();   break;
-                case "prev pat":    CurClip?.PrevPattern();         break;
-                case "next pat":    CurClip?.NextPattern();         break;
+                case "del pat":     EditClip?.DeletePattern();       break;
+                case "dup pat":     EditClip?.DuplicatePattern();    break;
+                case "new pat":     EditClip?.NewPattern();          break;
+                case "move pat":    EditClip?.ToggleMovePattern();   break;
+                case "prev pat":    EditClip?.PrevPattern();         break;
+                case "next pat":    EditClip?.NextPattern();         break;
 
-                case "loop":        CurClip?.ToogleLoop();          break;
-                case "block":       CurClip?.ToggleBlock();         break;
-                case "all pat":     CurClip?.ToggleAllPatterns();   break;
-                case "auto cue":    CurClip?.ToggleAutoCue();       break;
-                case "follow":      CurClip?.ToggleFollow();        break;
+                case "loop":        EditClip?.ToogleLoop();          break;
+                case "block":       EditClip?.ToggleBlock();         break;
+                case "all pat":     EditClip?.ToggleAllPatterns();   break;
+                case "auto cue":    EditClip?.ToggleAutoCue();       break;
+                case "follow":      EditClip?.ToggleFollow();        break;
                                                                          
                 case "new":         New();                                break;
                 case "dup":         Duplicate();                          break;
@@ -56,8 +56,8 @@
                                                                           
                 case "cmd1":        Command1();                           break;
                 case "cmd2":        Command2();                           break;
-                case "up":          Adjust(CurClip, CurSetting,  1);      break;
-                case "down":        Adjust(CurClip, CurSetting, -1);      break;
+                case "up":          Adjust(EditClip, CurSetting,  1);      break;
+                case "down":        Adjust(EditClip, CurSetting, -1);      break;
                 case "shift":       Shift();                              break;
                 case "cmd3":        Command3();                           break;
                                                                           
@@ -89,19 +89,19 @@
                 case "edit step":   ChangeEditStep();                     break;
                 case "edit len":    ChangeEditLength();                   break;
                                                                            
-                case "step":        Step(CurClip, CurChan);               break;
-                case "hold":        Hold(CurClip);                        break;
+                case "step":        Step(EditClip, CurChan);               break;
+                case "hold":        Hold(EditClip);                        break;
                                                                            
-                case "left":        Left (CurClip);                       break;
-                case "right":       Right(CurClip);                       break;
+                case "left":        Left (EditClip);                       break;
+                case "right":       Right(EditClip);                       break;
                                                                           
                                                                           
                 case "lock":        Lock();                               break;
                 case "auto lock":   AutoLock();                           break;
 
-                case "sb":          CurClip.StartBlock();                 break;
-                case "eb":          CurClip.EndBlock();                   break;
-                case "cb":          CurClip.ClearBlock();                 break;
+                case "sb":          EditClip.StartBlock();                 break;
+                case "eb":          EditClip.EndBlock();                   break;
+                case "cb":          EditClip.ClearBlock();                 break;
                                                                          
                 case "rl":          SetLabelColor(0);                     break;
                 case "ol":          SetLabelColor(1);                     break;
@@ -118,9 +118,9 @@
                                                                      
                 case "gyro":        Gyro();                               break;
                                                                           
-                case "cue":         CurClip.Cue();                        break;
+                case "cue":         EditClip.Cue();                        break;
 
-                case "mem":         CurClip.Mem();                        break;
+                case "mem":         EditClip.Mem();                        break;
                                                                     
 
                 default:
@@ -133,7 +133,7 @@
                     else if ((val = GetInt(arg, "solo ")) > -1) Solo(val);
                     else if ((val = GetInt(arg, "mute ")) > -1) Mute(val);
 
-                    else if ((val = GetInt(arg, "mem " )) > -1) CurClip.SetMem(val);
+                    else if ((val = GetInt(arg, "mem " )) > -1) EditClip.SetMem(val);
 
                     break;
             }

@@ -308,10 +308,10 @@ namespace IngameScript
             {
                 var sTime = 
                     g_playing
-                    ? g_time - CurClip.Track.StartTime
+                    ? g_time - EditClip.Track.StartTime
                     : 0;
 
-                var tp = new TimeParams(g_time, 0, sTime, null, CurClip.EditLength, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, sTime, null, EditClip.EditLength, -1, _triggerDummy, dp.Program);
 
                 Amount .UpdateValue(tp);
                 Attack .UpdateValue(tp);
@@ -478,8 +478,6 @@ namespace IngameScript
             ModCurPat         = -1;
             ModDestClip       = null;
             ModDestChannel    = null;
-
-            //UpdateAdjustLabels(CurClip);
         }
     }
 }

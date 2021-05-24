@@ -20,7 +20,7 @@ namespace IngameScript
 
             var sprites = new List<MySprite>();
 
-            if (!OK(CurClip))
+            if (!OK(EditClip))
             {
                 FillRect(sprites, x, y, w, h, color0);
             }
@@ -28,11 +28,11 @@ namespace IngameScript
             { 
                 if (   SelChan > -1
                     && IsCurParam()
-                    && (   CurClip.ParamKeys
-                        || CurClip.ParamAuto))
+                    && (   EditClip.ParamKeys
+                        || EditClip.ParamAuto))
                 {
-                    if (CurClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, T, null);
-                    else               DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, T);
+                    if (EditClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, EditClip, CurPat, T, null);
+                    else               DrawPatternDisplay(sprites, x, y, w, h, EditClip, CurPat, T);
                 }
                 else if (SelChan > -1)
                 {
@@ -48,10 +48,10 @@ namespace IngameScript
                     }
                     else DrawInstrument  (sprites, x, y, w, h);
                 }
-                else if (CurClip.Piano 
+                else if (EditClip.Piano 
                       && g_lockView != 1
-                   || g_lockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, CurClip, CurPat, T, null);
-                else                   DrawPatternDisplay(sprites, x, y, w, h, CurClip, CurPat, T);
+                   || g_lockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditClip, CurPat, T, null);
+                else                   DrawPatternDisplay(sprites, x, y, w, h, EditClip, CurPat, T);
             }
 
             dsp.Draw(sprites);
@@ -66,7 +66,7 @@ namespace IngameScript
             if (SelChan > -1)
             {
                 if (CurSrc < 0) SelInstrument.DrawFuncButtons(sprites, w, y, SelChannel);
-                else                   SelSource    .DrawFuncButtons(sprites, w, y, SelChannel);
+                else            SelSource    .DrawFuncButtons(sprites, w, y, SelChannel);
             }
             else
             {

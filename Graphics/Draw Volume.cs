@@ -12,7 +12,7 @@ namespace IngameScript
         {
             float maxVol = 0;
 
-            foreach (var vol in CurClip.Track.DspVol)
+            foreach (var vol in EditClip.Track.DspVol)
                 maxVol = Math.Max(vol, maxVol);
 
             if (!TooComplex) DrawVolume(maxVol, dspVol1, 2);
@@ -41,7 +41,7 @@ namespace IngameScript
             FillRect(sprites, x, Volume.Y, w, Volume.Height, color0);
 
             var xc = x + bb/2;
-            DrawSoundLevel(sprites, xc, y - i * Volume.Height, bw, h - 295, CurClip.Volume, vol, null, 6.5f);
+            DrawSoundLevel(sprites, xc, y - i * Volume.Height, bw, h - 295, EditClip.Volume, vol, null, 6.5f);
 
             dsp.Draw(sprites);
         }

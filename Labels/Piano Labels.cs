@@ -122,7 +122,7 @@ namespace IngameScript
         {
             return
                    ShowPiano
-                ?    -lbl.Data == 15 && CurClip.HalfSharp
+                ?    -lbl.Data == 15 && EditClip.HalfSharp
                   || NoteIsBright(LowToNote(-lbl.Data))
                 : StepIsBright(lbl);
         }
@@ -172,9 +172,9 @@ namespace IngameScript
                 return tune.Chord.Contains(noteNum);
             }
 
-            else if (CurClip.Chord > -1
-                  && CurClip.ChordEdit)
-                return CurClip.Chords[CurClip.Chord].Contains(noteNum);
+            else if (EditClip.Chord > -1
+                  && EditClip.ChordEdit)
+                return EditClip.Chords[EditClip.Chord].Contains(noteNum);
 
             else if (g_playing 
                   && PlayChannel.Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
@@ -226,8 +226,8 @@ namespace IngameScript
                 return T;
 
             // note is at edit position
-            if (   note.SongStep >= CurClip.EditPos 
-                && note.SongStep <  CurClip.EditPos + CurClip.EditStepLength)
+            if (   note.SongStep >= EditClip.EditPos 
+                && note.SongStep <  EditClip.EditPos + EditClip.EditStepLength)
                 return T;
 
             return F;
@@ -248,9 +248,9 @@ namespace IngameScript
         bool ToggleIsBright(Label lbl)
         {
             return
-                   lbl.Data == 2 && CurClip.RndInst
-                || lbl.Data == 3 && CurClip.AllChan
-                || lbl.Data == 4 && CurClip.Pick;
+                   lbl.Data == 2 && EditClip.RndInst
+                || lbl.Data == 3 && EditClip.AllChan
+                || lbl.Data == 4 && EditClip.Pick;
         }
 
 
@@ -307,7 +307,7 @@ namespace IngameScript
 
             int val;
 
-                 if (CurClip.Spread) val = CurClip.ChordSpread;
+                 if (EditClip.Spread) val = EditClip.ChordSpread;
             else if (ShowPiano)      val = CurChannel.Transpose;
             else                     val = CurChannel.Shuffle;
 
@@ -317,7 +317,7 @@ namespace IngameScript
 
         void UpdateShuffleLabel(Label lbl)
         {
-            if (CurClip.Spread)
+            if (EditClip.Spread)
                 lbl.SetText("Sprd");
 
             else if (ShowPiano)

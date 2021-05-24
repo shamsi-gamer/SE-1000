@@ -17,8 +17,8 @@
                 var state = 
                       Name
                     + PS(TicksPerStep)
-                    + PS(Tracks.IndexOf(CurClip.Track))
-                    + PS(CurClip.Track.Clips.IndexOf(CurClip));
+                    + PS(Tracks.IndexOf(EditClip.Track))
+                    + PS(EditClip.Track.Clips.IndexOf(EditClip));
 
                 pnlStorageSession.WriteText(state);
             }

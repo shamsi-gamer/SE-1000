@@ -99,7 +99,7 @@ namespace IngameScript
             // bottom func separator
             FillRect(sprites, x, y + instHeight, w, 1, color6);
             
-            DrawFuncButtons(sprites, w, h, CurClip);
+            DrawFuncButtons(sprites, w, h, EditClip);
         }
 
 
@@ -112,9 +112,9 @@ namespace IngameScript
             var step  = 28.5f;
 
             if (SelChan > -1 && CurSrc < 0)
-                FillRect(sprites, x + sw, y + (iInst - CurClip.InstOff) * step, w - sw, step, color6);
+                FillRect(sprites, x + sw, y + (iInst - EditClip.InstOff) * step, w - sw, step, color6);
 
-            for (int i = CurClip.InstOff; i < Math.Min(CurClip.InstOff + maxDspInst, g_session.Instruments.Count); i++)
+            for (int i = EditClip.InstOff; i < Math.Min(EditClip.InstOff + maxDspInst, g_session.Instruments.Count); i++)
             {
                 var inst = g_session.Instruments[i];
 
@@ -122,7 +122,7 @@ namespace IngameScript
                     sprites, 
                     inst.Name.Substring(0, Math.Min(inst.Name.Length, maxNameLength)),
                     x + sw + 5,
-                    y + (i - CurClip.InstOff) * step,
+                    y + (i - EditClip.InstOff) * step,
                     0.7f,
                     inst == chan.Instrument 
                     ? (CurSrc > -1 ? color6 : color0) 
@@ -144,9 +144,9 @@ namespace IngameScript
             var nSrc = inst.Sources.Count;
             var sw   = 20;
 
-            var iy = y - CurClip.SrcOff;
+            var iy = y - EditClip.SrcOff;
 
-            for (int i = CurClip.SrcOff; i < Math.Min(CurClip.SrcOff + maxDspSrc, nSrc); i++)
+            for (int i = EditClip.SrcOff; i < Math.Min(EditClip.SrcOff + maxDspSrc, nSrc); i++)
                 inst.Sources[i].DrawSource(sprites, x + sw, ref iy, w - sw, this);
 
             if (CurSrc > -1 && nSrc > 8)

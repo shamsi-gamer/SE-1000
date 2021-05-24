@@ -45,13 +45,13 @@ namespace IngameScript
 
         void Update1()
         {
-            CurSetting?.AdjustFromController(CurClip, this);
+            CurSetting?.AdjustFromController(EditClip, this);
 
             if (!TooComplex)
                 UpdatePlayback();
 
-            foreach (var track in g_session.Tracks)
-                track.UpdateNotesArePlaying();
+            //foreach (var track in g_session.Tracks)
+            //    track.UpdateNotesArePlaying();
 
             if (!TooComplex)
                 foreach (var lbl in g_fastLabels)
@@ -83,7 +83,7 @@ namespace IngameScript
                 foreach (var track in g_session.Tracks)
                 {
                     track.DampenDisplayVolumes();
-                    track.NotesArePlaying = F;
+                    //track.NotesArePlaying = F;
                 }
 
 

@@ -4,8 +4,7 @@
     {
         void MixerShift()
         {
-            CurClip.MixerShift = !CurClip.MixerShift;
-            //UpdateLabel(lblMixerShift, CurClip.MixerShift);
+            EditClip.MixerShift = !EditClip.MixerShift;
         }
 
 
@@ -23,16 +22,16 @@
         void EnableChannel(int ch, bool on)
         {
             int first, last;
-            CurClip.GetCurPatterns(out first, out last);
+            EditClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
-                CurClip.Patterns[p].Channels[ch].On = on;
+                EditClip.Patterns[p].Channels[ch].On = on;
         }
 
 
         void EnableChannel(int pat, int ch, bool on)
         {
-            var chan = CurClip.Patterns[pat].Channels[ch];
+            var chan = EditClip.Patterns[pat].Channels[ch];
             chan.On = on;
         }
 
@@ -46,14 +45,14 @@
             else
             { 
                 var vol = CurPattern.Channels[ch].Volume;
-                var mod = (CurClip.MixerShift ? 10 : 1) * dv;
+                var mod = (EditClip.MixerShift ? 10 : 1) * dv;
 
                 int first, last;
-                CurClip.GetPatterns(CurPat, out first, out last);
+                EditClip.GetPatterns(CurPat, out first, out last);
 
                 for (int p = first; p <= last; p++)
                 {
-                    var chan = CurClip.Patterns[p].Channels[ch];
+                    var chan = EditClip.Patterns[p].Channels[ch];
                     chan.Volume = MinMax(0, vol + dVol * mod, 2);
                 }
 
@@ -69,33 +68,33 @@
 
             else
             {
-                if (CurClip.Solo >= 0)
+                if (EditClip.Solo >= 0)
                 {
                     int _first, _last;
-                    CurClip.GetCurPatterns(out _first, out _last);
+                    EditClip.GetCurPatterns(out _first, out _last);
 
                     for (int p = _first; p <= _last; p++)
                         UnsoloChannel(p, ch);
                 }
 
-                if (ch == CurClip.Solo)
+                if (ch == EditClip.Solo)
                 {
-                    CurClip.Solo = -1;
+                    EditClip.Solo = -1;
                     return;
                 }
 
 
                 for (int _ch = 0; _ch < g_nChans; _ch++)
-                    CurClip.ChanOn[_ch] = CurPattern.Channels[_ch].On;
+                    EditClip.ChanOn[_ch] = CurPattern.Channels[_ch].On;
 
 
                 int first, last;
-                CurClip.GetCurPatterns(out first, out last);
+                EditClip.GetCurPatterns(out first, out last);
 
                 for (int p = first; p <= last; p++)
                     SoloChannel(p, ch);
 
-                CurClip.Solo = CurClip.Solo == ch ? -1 : ch;
+                EditClip.Solo = EditClip.Solo == ch ? -1 : ch;
             }
         }
 
@@ -110,13 +109,13 @@
                 var on = !CurPattern.Channels[ch].On;
 
                 int first, last;
-                CurClip.GetCurPatterns(out first, out last);
+                EditClip.GetCurPatterns(out first, out last);
 
                 for (int p = first; p <= last; p++)
-                    CurClip.Patterns[p].Channels[ch].On = on;
+                    EditClip.Patterns[p].Channels[ch].On = on;
 
                 if (!on)
-                    CurClip.TrimCurrentNotes(ch);
+                    EditClip.TrimCurrentNotes(ch);
             }
         }
 
@@ -127,7 +126,7 @@
             {
                 if (i == ch) continue;
                 EnableChannel(pat, i, F);
-                CurClip.TrimCurrentNotes(i);
+                EditClip.TrimCurrentNotes(i);
             }
 
             EnableChannel(pat, ch, T);
@@ -136,10 +135,10 @@
 
         void UnsoloChannel(int pat, int ch)
         {
-            if (CurClip.Solo >= 0)
+            if (EditClip.Solo >= 0)
             {
                 for (int i = 0; i < g_nChans; i++)
-                    EnableChannel(pat, i, CurClip.ChanOn[i]);
+                    EnableChannel(pat, i, EditClip.ChanOn[i]);
             }
         }
     }

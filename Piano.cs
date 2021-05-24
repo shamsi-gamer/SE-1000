@@ -17,20 +17,20 @@ namespace IngameScript
 
             else if (IsCurParam(strTune)
                   && (tune?.UseChord ?? F)
-                  && !(CurClip.ParamKeys || CurClip.ParamAuto))
+                  && !(EditClip.ParamKeys || EditClip.ParamAuto))
                 UpdateFinalTuneChord(tune, HighToNote(h));
 
-            else if (CurClip.ChordEdit
-                  && CurClip.Chord > -1)
+            else if (EditClip.ChordEdit
+                  && EditClip.Chord > -1)
                 EditChord(HighToNote(h));
 
-            else if (CurClip.Piano)
+            else if (EditClip.Piano)
                 PlayNote(
-                    CurClip,
+                    EditClip,
                     HighToNote(h), 
-                       CurClip.Chord > -1 
-                    && CurClip.ChordMode 
-                    ? CurClip.Chords[CurClip.Chord] 
+                       EditClip.Chord > -1 
+                    && EditClip.ChordMode 
+                    ? EditClip.Chords[EditClip.Chord] 
                     : null,
                     CurChan);
             else
@@ -66,13 +66,13 @@ namespace IngameScript
             { 
                 g_settings.RemoveLast();
                 CurSet--;
-                CurClip.Piano = F;
+                EditClip.Piano = F;
             }
             else
-                CurClip.Piano = !CurClip.Piano;
+                EditClip.Piano = !EditClip.Piano;
 
-            if (CurClip.Piano)
-                CurClip.Pick = F;
+            if (EditClip.Piano)
+                EditClip.Pick = F;
         }
 
 
@@ -85,21 +85,21 @@ namespace IngameScript
                 && (tune?.UseChord ?? F))
                 UpdateFinalTuneChord(tune, LowToNote(l));
 
-            else if (CurClip.ChordEdit
-                  && CurClip.Chord > -1)
+            else if (EditClip.ChordEdit
+                  && EditClip.Chord > -1)
                 EditChord(LowToNote(l));
 
-            else if (CurClip.Piano)
+            else if (EditClip.Piano)
             {
                 if (l == 15)
-                    CurClip.HalfSharp = !CurClip.HalfSharp;
+                    EditClip.HalfSharp = !EditClip.HalfSharp;
 
                 else PlayNote( // l < 15
-                    CurClip,
+                    EditClip,
                     LowToNote(l),
-                       CurClip.Chord > -1 
-                    && CurClip.ChordMode 
-                    ? CurClip.Chords[CurClip.Chord]
+                       EditClip.Chord > -1 
+                    && EditClip.ChordMode 
+                    ? EditClip.Chords[EditClip.Chord]
                     : null,
                     CurChan);
             }
@@ -111,7 +111,7 @@ namespace IngameScript
         void Tick(int ch, int step)
         {
             int first, last;
-            CurClip.GetCurPatterns(out first, out last);
+            EditClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
                 Tick(p, ch, step);
@@ -120,8 +120,8 @@ namespace IngameScript
 
         void Tick(int pat, int ch, int step)
         {
-            var _chan = CurClip.Patterns[pat].Channels[ch];
-            var  chan = CurClip.Patterns[pat].Channels[ch];
+            var _chan = EditClip.Patterns[pat].Channels[ch];
+            var  chan = EditClip.Patterns[pat].Channels[ch];
 
             var found = chan.Notes.Where(n => 
                    n.Step >= step
@@ -129,22 +129,22 @@ namespace IngameScript
 
             if (found.Length == 0)
             {
-                if (!CurClip.Pick)
+                if (!EditClip.Pick)
                 {
-                    var notes = GetChordNotes(CurClip.CurNote);
+                    var notes = GetChordNotes(EditClip.CurNote);
 
                     for (int n = 0; n < notes.Count; n++)
-                        chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordSpread(n), CurClip.EditStepLength));
+                        chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordSpread(n), EditClip.EditStepLength));
                 }
             }
-            else if (CurClip.Pick)
+            else if (EditClip.Pick)
             {
-                CurClip.CurNote = found[0].Number;
+                EditClip.CurNote = found[0].Number;
 
-                CurClip.Pick = F;
+                EditClip.Pick = F;
 
                 TriggerNote(
-                    CurClip,
+                    EditClip,
                     found[0].Number, 
                     ch, 
                     found[0].StepLength,
@@ -152,7 +152,7 @@ namespace IngameScript
             }
             else
             {
-                CurClip.Pick = F;
+                EditClip.Pick = F;
                 
                 foreach (var n in found)
                     chan.Notes.Remove(n);
@@ -162,7 +162,7 @@ namespace IngameScript
 
         void Shift(bool fwd)
         {
-            if (CurClip.AllChan)
+            if (EditClip.AllChan)
             {
                 for (int i = 0; i < g_nChans; i++)
                     Shift(i, fwd);
@@ -174,12 +174,12 @@ namespace IngameScript
 
         void Shift(int ch, bool fwd)
         {
-            var pats = CurClip.Patterns;
+            var pats = EditClip.Patterns;
 
             var spill = new List<Note>();
 
             int first, last;
-            CurClip.GetCurPatterns(out first, out last);
+            EditClip.GetCurPatterns(out first, out last);
 
             if (fwd)
             {
@@ -191,7 +191,7 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.Step += Math.Min(CurClip.EditStepIndex, 1);
+                        note.Step += Math.Min(EditClip.EditStepIndex, 1);
 
                         if (note.Step >= g_patSteps)
                             spill.Add(note);
@@ -216,7 +216,7 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.Step -= Math.Min(CurClip.EditStepIndex, 1);
+                        note.Step -= Math.Min(EditClip.EditStepIndex, 1);
 
                         if (note.Step < 0)
                             spill.Add(note);
@@ -246,20 +246,20 @@ namespace IngameScript
 
         void RandomInstrument()
         {
-            CurClip.RndInst = !CurClip.RndInst;
+            EditClip.RndInst = !EditClip.RndInst;
         }
 
 
         void ToggleAllChannels()
         {
-            CurClip.AllChan = !CurClip.AllChan;
+            EditClip.AllChan = !EditClip.AllChan;
         }
 
 
         void Flip(int ch, int frac)
         {
             int first, last;
-            CurClip.GetCurPatterns(out first, out last);
+            EditClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
             { 
@@ -278,7 +278,7 @@ namespace IngameScript
 
         void ClearNotes()
         {
-            if (CurClip.AllChan)
+            if (EditClip.AllChan)
             {
                 for (int i = 0; i < g_nChans; i++)
                     ClearNotes(i);
@@ -291,13 +291,13 @@ namespace IngameScript
         void ClearNotes(int ch)
         {
             int first, last;
-            CurClip.GetCurPatterns(out first, out last);
+            EditClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
             { 
-                var chan = CurClip.Patterns[p].Channels[ch];
+                var chan = EditClip.Patterns[p].Channels[ch];
 
-                if (CurClip.ParamKeys)
+                if (EditClip.ParamKeys)
                 {
                     foreach (var note in chan.Notes)
                     { 
@@ -308,7 +308,7 @@ namespace IngameScript
                             note.Keys.RemoveAt(index);
                     }
                 }
-                else if (CurClip.ParamAuto)
+                else if (EditClip.ParamAuto)
                 {
                     var param = GetCurrentParam(chan.Instrument);
                     var index = 0;
@@ -322,15 +322,14 @@ namespace IngameScript
                 }
             }
 
-            if (CurClip.ParamAuto)
-                CurClip.UpdateAutoKeys();
+            if (EditClip.ParamAuto)
+                EditClip.UpdateAutoKeys();
         }
 
 
         void PickNote()
         {
-            CurClip.Pick = !CurClip.Pick;
-            //UpdateLabel(lblHigh[7], CurClip.Pick);
+            EditClip.Pick = !EditClip.Pick;
         }
 
 
@@ -344,7 +343,7 @@ namespace IngameScript
 
             return 
                   (60 + CurChannel.Transpose * 12 + h) * NoteScale 
-                + (CurClip.HalfSharp ? 1 : 0);
+                + (EditClip.HalfSharp ? 1 : 0);
         }
 
 
@@ -359,7 +358,7 @@ namespace IngameScript
 
             return 
                   (60 + CurChannel.Transpose * 12 + l) * NoteScale
-                + (CurClip.HalfSharp ? 1 : 0);
+                + (EditClip.HalfSharp ? 1 : 0);
         }
     }
 }

@@ -5,7 +5,7 @@
         void InitMemLabels()
         {
             lblMemSet = new Label(Lbl("MemSet"));
-            lblMemory = new Label(Lbl("Mem"), lbl => CurClip.MemSet);
+            lblMemory = new Label(Lbl("Mem"), lbl => EditClip.MemSet);
 
             for (int m = 0; m < nMems; m++)
                 lblMem[m] = new Label(Lbl("Mem " + S(m)), null, null, UpdateMem, null, m);
@@ -18,7 +18,7 @@
 
             lbl.SetText(
                   S((char)(65 + m)) + " "
-                + (CurClip.Mems[m] > -1 ? S(CurClip.Mems[m] + 1).PadLeft(3) : " "));
+                + (EditClip.Mems[m] > -1 ? S(EditClip.Mems[m] + 1).PadLeft(3) : " "));
         }
     }
 }

@@ -57,23 +57,6 @@ namespace IngameScript
                   lcdMixer = 3000;
 
 
-        void SetLabelColor(int iCol)
-        {
-            CurClip.ColorIndex = MinMax(0, iCol, 6);
-
-            switch (CurClip.ColorIndex)
-            {
-                case 0: SetLabelColor(new Color(255,   0,   0), 0.35f); break;
-                case 1: SetLabelColor(new Color(255,  92,   0), 0.35f); break;
-                case 2: SetLabelColor(new Color(255, 255,   0), 0.4f);  break;
-                case 3: SetLabelColor(new Color(0,   255,   0), 0.35f); break;
-                case 4: SetLabelColor(new Color(0,    40, 255));        break;
-                case 5: SetLabelColor(new Color(128,   0, 255), 0.4f);  break;
-                case 6: SetLabelColor(new Color(255, 255, 255), 0.35f); break;
-            }
-        }
-
-
         Color MakeColor(Color c, float f)
         {
             return new Color(Color.Multiply(c, f), 1);
@@ -114,7 +97,7 @@ namespace IngameScript
                 true);
 
             lblEdit = new Label(Lbl("Edit"),
-                lbl => OK(CurClip.EditPos), 
+                lbl => OK(EditClip.EditPos), 
                 null,
                 null,
                 (lbl) => 
@@ -125,7 +108,7 @@ namespace IngameScript
                 });
 
             lblRec = new Label(Lbl("Rec"),
-                lbl => CurClip.Recording, 
+                lbl => EditClip.Recording, 
                 null,
                 null,
                 (lbl) => 
@@ -139,11 +122,11 @@ namespace IngameScript
 
         void InitToggleLabels()
         {
-            lblLoop        = new Label(Lbl("Loop"),         lbl => CurClip.Loop);
-            lblBlock       = new Label(Lbl("Block"),        lbl => CurClip.Block);
-            lblAllPatterns = new Label(Lbl("All Patterns"), lbl => CurClip.AllPats);
-            lblFollow      = new Label(Lbl("Follow"),       lbl => CurClip.Follow);
-            lblAutoCue     = new Label(Lbl("Auto Cue"),     lbl => CurClip.AutoCue);
+            lblLoop        = new Label(Lbl("Loop"),         lbl => EditClip.Loop);
+            lblBlock       = new Label(Lbl("Block"),        lbl => EditClip.Block);
+            lblAllPatterns = new Label(Lbl("All Patterns"), lbl => EditClip.AllPats);
+            lblFollow      = new Label(Lbl("Follow"),       lbl => EditClip.Follow);
+            lblAutoCue     = new Label(Lbl("Auto Cue"),     lbl => EditClip.AutoCue);
         }
 
 
@@ -174,7 +157,7 @@ namespace IngameScript
             lblMixerAll        = new Label(Lbl("M Solo R"));
             lblMixerMuteAll    = new Label(Lbl("M Mute R"));
 
-            lblMixerShift      = new Label(Lbl("M Shift"), lbl => CurClip.MixerShift);
+            lblMixerShift      = new Label(Lbl("M Shift"), lbl => EditClip.MixerShift);
 
             lblSession = new Label(Lbl("Session"), 
                 lbl => 
@@ -235,13 +218,30 @@ namespace IngameScript
         //bool MoveIsDim   (Label lbl) { return SelChan > -1 && !g_move; }
 
 
+        void SetLabelColor(int iCol)
+        {
+            EditClip.ColorIndex = MinMax(0, iCol, 6);
+
+            switch (EditClip.ColorIndex)
+            {
+                case 0: SetLabelColor(new Color(255,   0,   0), 0.35f); break;
+                case 1: SetLabelColor(new Color(255,  92,   0), 0.35f); break;
+                case 2: SetLabelColor(new Color(255, 255,   0), 0.4f);  break;
+                case 3: SetLabelColor(new Color(0,   255,   0), 0.35f); break;
+                case 4: SetLabelColor(new Color(0,    40, 255));        break;
+                case 5: SetLabelColor(new Color(128,   0, 255), 0.4f);  break;
+                case 6: SetLabelColor(new Color(255, 255, 255), 0.35f); break;
+            }
+        }
+
+
         void SetLabelColor(Color c, float f = 1)
         {
             color6 = MakeColor(c, 0.878f * f);
-            color5 = MakeColor(c, 0.722f * f);
+            color5 = MakeColor(c, 0.622f * f);
             color4 = MakeColor(c, 0.353f * f);
-            color3 = MakeColor(c, 0.157f * f);
-            color2 = MakeColor(c, 0.031f * f);
+            color3 = MakeColor(c, 0.170f * f);
+            color2 = MakeColor(c, 0.051f * f);
             color1 = MakeColor(c, 0.020f * f);
             color0 = MakeColor(c, 0.004f * f);
 
@@ -265,8 +265,8 @@ namespace IngameScript
                 color6.B / max * 0xFF);
 
 
-                 if (CurClip.ColorIndex == 1) lightColor = new Color(0xFF, 0x50, 0);
-            else if (CurClip.ColorIndex == 5) lightColor = new Color(0xAA, 0, 0xFF);
+                 if (EditClip.ColorIndex == 1) lightColor = new Color(0xFF, 0x50, 0);
+            else if (EditClip.ColorIndex == 5) lightColor = new Color(0xAA, 0, 0xFF);
 
 
             var lights = new List<IMyInteriorLight>();
@@ -284,7 +284,7 @@ namespace IngameScript
                 lightColor.B + (int)((0xFF - lightColor.B) * 0.23f));
 
 
-            switch (CurClip.ColorIndex)
+            switch (EditClip.ColorIndex)
             {
             case 0: warningLight.Color = new Color(0,    0,    0xFF); break;
             case 1: warningLight.Color = new Color(0,    0,    0xFF); break;

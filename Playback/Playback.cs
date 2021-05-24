@@ -109,12 +109,9 @@ namespace IngameScript
 
                     track.CueNextPattern();
 
-                    if (!OK(track.PlayClip))
-                        continue;
-
                     var clip = track.Clips[track.PlayClip];
 
-                    if (   clip == CurClip
+                    if (   clip == EditClip
                         && clip.Follow) 
                         clip.SetCurrentPattern(track.PlayPat);
 

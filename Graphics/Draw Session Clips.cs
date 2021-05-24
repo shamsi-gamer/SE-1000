@@ -39,8 +39,9 @@ namespace IngameScript
 
                 for (int ix = nDsp*6 + 0; ix < nDsp*6 + 6; ix++)
                 {
-                    var iClip     = track.Indices.FindIndex(i => i == ix);
-                    var isCurClip = iClip == track.PlayClip;
+                    var clip       = track.Clips[ix];
+                    var isPlayClip = ix == track.PlayClip;
+
 
                     var cw = w/6;
                     var ch = h/4;
@@ -54,38 +55,46 @@ namespace IngameScript
                     var lh = ch - gap;
 
 
+                    var cancel = 
+                           OK(track.NextClip) 
+                        || ix != track.PlayClip;
+
                     // clip rectangle
+                    var cnw = cancel ? 0 : 14;
+                    
                     Color col; 
                     
-                         if (!OK(iClip)) col = color1;
-                    else if (isCurClip)  col = track.NotesArePlaying ? color5 : color4;
-                    else                 col = color3;
+                         if (!OK(clip))  col = color1;
+                    else if (isPlayClip) col = color3;
+                    else                 col = color2;
 
-                    FillRect(sprites, lx, ly, lw, lh, col);
+                    FillRect(sprites, lx + cnw, ly + cnw, lw - cnw*2, lh - cnw*2, col);
 
 
-                    if (iClip != ix) continue;
+                    if (!OK(clip)) continue;
 
 
                     // pattern marks
-                    var clip = track.Clips[iClip];
-
                     for (int j = 1; j < clip.Patterns.Count; j++)
                     {
                         var pw = cw / clip.Patterns.Count;
                         var jx = lx + j*pw;
 
-                        DrawLine(sprites, jx, ly, jx, ly + lh, isCurClip ? color5 : color3, 1); 
+                        DrawLine(sprites, jx, ly, jx, ly + lh, isPlayClip ? color6 : color4, 1); 
                     }
 
 
                     // next in queue
-                    if (iClip == track.NextClip)
-                        DrawRect(sprites, lx+1, ly+1, lw-2, lh-2, color5, 2);
+                    if (ix == track.NextClip)
+                        DrawRect(sprites, lx+7, ly+7, lw-14, lh-14, color3, 14);
 
 
-                    if (clip == CurClip)
-                        DrawRect(sprites, lx+10, ly+10, lw-20, lh-20, color6, 5);
+                    // edited clip
+                    var ew = cancel ? 0 : 14;
+
+                    if (clip == EditClip)
+                        DrawLine(sprites, lx+ew, ly+lh-7, lx+lw-ew, ly+lh-7, color5, 14);
+                        //DrawRect(sprites, lx+2, ly+2, lw-4, lh-4, color5, 4);
 
 
                     // clip name
@@ -98,12 +107,12 @@ namespace IngameScript
                         cx + w/12,
                         cy + h/8 - 15 - (nNameLines-1)*20,
                         1,
-                        isCurClip ? color0 : color4,
+                        isPlayClip ? color0 : color4,
                         TaC);
 
 
-                    // position in current clip
-                    if (iClip == track.PlayClip)
+                    // position in played clip
+                    if (isPlayClip)
                     {
                         var pw       = lw / clip.Patterns.Count;
                         var px       = lx + (track.PlayStep / g_patSteps) * pw;

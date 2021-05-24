@@ -167,15 +167,11 @@ namespace IngameScript
                 { 
                 case 1:
                     Clip.EditPos = -1;
-                    //UpdateEditLabel(lblEdit, F);
-
                     AddNextSetting(strLen);
                     break;
 
                 case 2:
                     Clip.EditPos = -1;
-                    //UpdateEditLabel(lblEdit, F);
-
                     AddNextSetting(strScl);
                     break;
                 }

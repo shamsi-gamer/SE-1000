@@ -31,7 +31,7 @@ namespace IngameScript
             FillRect(sprites, x, y, w, h, color0);
 
 
-            if (OK(CurClip))
+            if (OK(EditClip))
             {
                 var xt = 256f;
                 var wt = xt / g_patSteps;
@@ -40,20 +40,20 @@ namespace IngameScript
                 var pw = wt * g_patSteps;
                 var ph = ht * g_nChans;
 
-                var pxCur = x - (nDsp*4 + CurClip.SongOff) * pw + CurPat * pw;
+                var pxCur = x - (nDsp*4 + EditClip.SongOff) * pw + CurPat * pw;
                 var py = y + h/2 - ph/2;
 
-                var first = nDsp * 4 + CurClip.SongOff;
-                var next = Math.Min((nDsp + 1) * 4 + CurClip.SongOff, CurClip.Patterns.Count);
+                var first = nDsp * 4 + EditClip.SongOff;
+                var next = Math.Min((nDsp + 1) * 4 + EditClip.SongOff, EditClip.Patterns.Count);
 
-                var curBlock = CurClip.GetBlock(CurPat);
+                var curBlock = EditClip.GetBlock(CurPat);
 
-                var _f = first - CurClip.SongOff;
+                var _f = first - EditClip.SongOff;
 
 
                 for (int p = first; p < next; p++)
                 {
-                    var _p = p - CurClip.SongOff;
+                    var _p = p - EditClip.SongOff;
 
                     var px = x - _f * pw + _p * pw;
 
@@ -64,7 +64,7 @@ namespace IngameScript
 
                     var bo = 30;
 
-                    var block = CurClip.GetBlock(p);
+                    var block = EditClip.GetBlock(p);
                     if (OK(block))
                     {
                         var c = curBlock == block ? color3 : color2;
@@ -77,11 +77,11 @@ namespace IngameScript
                 }
 
 
-                if (!CurClip.Piano)
+                if (!EditClip.Piano)
                 {
                     for (int p = first; p < next; p++)
                     {
-                        var px = x - (nDsp * 4 + CurClip.SongOff) * pw + p * pw;
+                        var px = x - (nDsp * 4 + EditClip.SongOff) * pw + p * pw;
                         var ch = ph / g_nChans;
                         var cy = py + ph - (CurChan + 1) * ch;
 
@@ -91,18 +91,18 @@ namespace IngameScript
 
 
                 // draw edit position
-                if (   CurClip.EditPos >= first * g_patSteps
-                    && CurClip.EditPos <  next  * g_patSteps)
+                if (   EditClip.EditPos >= first * g_patSteps
+                    && EditClip.EditPos <  next  * g_patSteps)
                 {
-                    var pl    = x - pw * (nDsp * 4 * pw + CurPat + CurClip.SongOff);
-                    var xTick = wt * CurClip.EditPos;
+                    var pl    = x - pw * (nDsp * 4 * pw + CurPat + EditClip.SongOff);
+                    var xTick = wt * EditClip.EditPos;
 
                     FillRect(
                         sprites,
                         xTick + 2, 
                         py, 
                         wt - 4,
-                        ph + (CurClip.ParamKeys || CurClip.ParamAuto ? ph/5 : 0),
+                        ph + (EditClip.ParamKeys || EditClip.ParamAuto ? ph/5 : 0),
                         color3);
                 }
 
@@ -110,29 +110,29 @@ namespace IngameScript
                 // draw keys
                 for (int p = first; p < next; p++)
                 {
-                    var _p = p - CurClip.SongOff;
+                    var _p = p - EditClip.SongOff;
                     var px = x - _f * pw + _p * pw;
 
-                    if (CurClip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, CurClip, p, 1, F, g_patSteps);
-                    else         DrawPattern  (sprites, px, py, pw, ph, CurClip, p, 1, F);
+                    if (EditClip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, EditClip, p, 1, F, g_patSteps);
+                    else         DrawPattern  (sprites, px, py, pw, ph, EditClip, p, 1, F);
 
-                    if (CurClip.ParamKeys)
+                    if (EditClip.ParamKeys)
                     {
                         FillRect     (sprites, px, py+ph+ph/5, pw, 1,    color3);
-                        DrawParamKeys(sprites, px, py + ph,    pw, ph/5, CurClip, p, CurChan);
+                        DrawParamKeys(sprites, px, py + ph,    pw, ph/5, EditClip, p, CurChan);
                     }
-                    else if (CurClip.ParamAuto)
+                    else if (EditClip.ParamAuto)
                     {
                         FillRect(sprites, px, py + ph + ph/5, pw, 1, color3);
                     }
                 }
 
-                if (CurClip.ParamAuto)
+                if (EditClip.ParamAuto)
                 { 
                     var fx   = x - _f * pw;
-                    var wMax = Math.Min(CurClip.Patterns.Count * pw, w * 2);
+                    var wMax = Math.Min(EditClip.Patterns.Count * pw, w * 2);
 
-                    DrawParamAuto(sprites, fx, py + ph, pw, ph/5, wMax, CurClip, 0, CurChan);
+                    DrawParamAuto(sprites, fx, py + ph, pw, ph/5, wMax, EditClip, 0, CurChan);
                 }
 
 
@@ -141,35 +141,36 @@ namespace IngameScript
 
 
                 // draw play position
-                if (g_playing)
+                if (   g_playing
+                    && PlayPat < EditClip.Patterns.Count)
                 {
-                    var pl    = x  - pw * (nDsp * 4 + CurClip.SongOff);
+                    var pl    = x  - pw * (nDsp * 4 + EditClip.SongOff);
                     var xTick = pl + wt * (int)PlayStep;
 
                     FillRect(sprites, xTick, py, wt, ph, color6);
 
-                    if (CurClip.Piano) DrawPianoNeg(sprites, pl, py, pw, ph, CurClip, PlayPat, (int)PlayStep, F);
-                    else                         DrawPatNeg  (sprites, pl, py, pw, ph, CurClip, PlayPat, (int)PlayStep, F);
+                    if (EditClip.Piano) DrawPianoNeg  (sprites, pl, py, pw, ph, EditClip, PlayPat, (int)PlayStep, F);
+                    else                DrawPatternNeg(sprites, pl, py, pw, ph, EditClip, PlayPat, (int)PlayStep, F);
                 }
 
 
-                if (CurClip.Patterns.Count > maxDspPats)
+                if (EditClip.Patterns.Count > maxDspPats)
                 {
-                    var bw = (w * 2) / (float)CurClip.Patterns.Count;
+                    var bw = (w * 2) / (float)EditClip.Patterns.Count;
                     var sh = 29;
 
                     var px = x - nDsp * 4 * pw;
                     var by = y + h - sh;
 
-                    for (int p = 0; p < CurClip.Patterns.Count; p++)
+                    for (int p = 0; p < EditClip.Patterns.Count; p++)
                     {
                         FillRect(sprites, px + bw * p + 1, by, 1, sh, color4);
 
-                        var m = Array.FindIndex(CurClip.Mems, _m => _m == p);
+                        var m = Array.FindIndex(EditClip.Mems, _m => _m == p);
                         if (m > -1) DrawString(sprites, S((char)(65 + m)), px + 5, by - 30, 0.7f, color4);
                     }
 
-                    foreach (var b in CurClip.Blocks)
+                    foreach (var b in EditClip.Blocks)
                     {
                         var bx = px + bw * b.First + 1;
                         var sw = bw * b.Len - 2;
@@ -192,16 +193,16 @@ namespace IngameScript
 
                 for (int p = first; p < next; p++)
                 {
-                    var _p = p - CurClip.SongOff;
+                    var _p = p - EditClip.SongOff;
 
                     var px = x - _f * pw + _p * pw;
 
-                    var b = CurClip.GetBlock(p);
+                    var b = EditClip.GetBlock(p);
                     var c = OK(b) && b == curBlock ? color5 : color4;
 
                     DrawString(sprites, S(p + 1), px + 8, py - 28, 0.8f, c);
 
-                    var m = Array.FindIndex(CurClip.Mems, _m => _m == p);
+                    var m = Array.FindIndex(EditClip.Mems, _m => _m == p);
                     if (m > -1) DrawString(sprites, S((char)(65 + m)), px + 8, py - 68, 1, color4);
                 }
 
@@ -224,13 +225,13 @@ namespace IngameScript
                 DrawFuncButton(sprites, "Dup",  1, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 1));
                 DrawFuncButton(sprites, "New",  2, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 2));
                                                                                               
-                DrawFuncButton(sprites, "Cue",  4, w, h, F, F, CurClip.Track.NextPat > -1);         
-                DrawFuncButton(sprites, "◄",    5, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 5) ^ CurClip.MovePat); }
-         else { DrawFuncButton(sprites, "►",    0, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 6) ^ CurClip.MovePat);
-                DrawFuncButton(sprites, "◄►",   1, w, h, F, F, CurClip.MovePat);
+                DrawFuncButton(sprites, "Cue",  4, w, h, F, F, EditClip.Track.NextPat > -1);         
+                DrawFuncButton(sprites, "◄",    5, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 5) ^ EditClip.MovePat); }
+         else { DrawFuncButton(sprites, "►",    0, w, h, F, F, g_lcdPressed.Contains(lcdClip+ 6) ^ EditClip.MovePat);
+                DrawFuncButton(sprites, "◄►",   1, w, h, F, F, EditClip.MovePat);
                                                 
-                DrawFuncButton(sprites, "[",    3, w, h, F, F, CurClip.In);
-                DrawFuncButton(sprites, "]",    4, w, h, F, F, CurClip.Out);
+                DrawFuncButton(sprites, "[",    3, w, h, F, F, EditClip.In);
+                DrawFuncButton(sprites, "]",    4, w, h, F, F, EditClip.Out);
                 DrawFuncButton(sprites, "X",    5, w, h, F, F, g_lcdPressed.Contains(lcdClip+11));
             }
         }
@@ -238,8 +239,8 @@ namespace IngameScript
 
         void DrawBrackets(List<MySprite> sprites, int p, float x, float y, float w, float h, float bw, float bh)
         {
-            if (OK(CurClip.Blocks.Find(b => p == b.First))) DrawLeftBracket (sprites, x,     y, bw, h, bh);
-            if (OK(CurClip.Blocks.Find(b => p == b.Last ))) DrawRightBracket(sprites, x + w, y, bw, h, bh);
+            if (OK(EditClip.Blocks.Find(b => p == b.First))) DrawLeftBracket (sprites, x,     y, bw, h, bh);
+            if (OK(EditClip.Blocks.Find(b => p == b.Last ))) DrawRightBracket(sprites, x + w, y, bw, h, bh);
         }
 
 

@@ -130,65 +130,66 @@ namespace IngameScript
                 for (int i = 0; i < ChannelAutoKeys.Length; i++)
                     ChannelAutoKeys[i] = new List<Key>();
 
-                EditNotes   = new List<Note>();
-
-                Recording   = 
-                Loop        =
-                Block       =
-                AllPats     =
-                Follow      =
-                AutoCue     = F;
-
-                MovePat     = 
-                         
-                In          = 
-                Out         = 
-                         
-                AllChan     = 
-                RndInst     = 
-                         
-                Piano       = 
-                         
-                Shift       = 
-                MixerShift  = 
-                         
-                Hold        = 
-                Pick        = 
-                         
-                ChordMode   =
-                ChordEdit   =
-                ChordAll    = 
-                         
-                HalfSharp   =
-                         
-                ParamKeys   = 
-                ParamAuto   =
-                         
-                MemSet      = F;
-
-                CurPat      =  
-                CurChan     = 0;
-                SelChan     = 
-                CurSrc      = 
-                CurSet      = -1;
+                EditNotes       = new List<Note>();
+                                
+                Recording       = 
+                Loop            =
+                Block           =
+                AllPats         =
+                Follow          =
+                AutoCue         = F;
+                                
+                MovePat         = 
+                                
+                In              = 
+                Out             = 
+                                
+                AllChan         = 
+                RndInst         = 
+                                
+                Piano           = 
+                                
+                Shift           = 
+                MixerShift      = 
+                                
+                Hold            = 
+                Pick            = 
+                                
+                ChordMode       =
+                ChordEdit       =
+                ChordAll        = 
+                                
+                HalfSharp       =
+                                
+                ParamKeys       = 
+                ParamAuto       =
+                                
+                MemSet          = F;
+                                
+                CurPat          =  
+                CurChan         = 0;
+                                
+                SelChan         = 
+                CurSrc          = 
+                CurSet          = -1;
                            
-                EditStepIndex    =  
-                EditLengthIndex  = 2;
+                EditStepIndex   =  
+                EditLengthIndex = 2;
                          
-                CurNote     = 69 * NoteScale;
-                         
-                Chord       = -1;
-                ChordSpread =  
-                            
-                SongOff     =  
-                InstOff     =  
-                SrcOff      = 0;
-                         
-                Solo        = -1;
-                           
-                Volume      = 1;
-                           
-                ColorIndex  = 4;
+                CurNote         = 69 * NoteScale;
+                                
+                Chord           = -1;
+                ChordSpread     =  
+                                
+                SongOff         =  
+                InstOff         =  
+                SrcOff          = 0;
+                                
+                Solo            = -1;
+                                
+                Volume          = 1;
+                                
+                ColorIndex      = 4;
 
 
                 for (int m = 0; m < nMems; m++)
@@ -607,8 +608,6 @@ namespace IngameScript
                     Hold = F;
 
                 EditNotes.Clear();
-
-                //UpdateHoldLabel();
             }
 
 
