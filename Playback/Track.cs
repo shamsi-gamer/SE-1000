@@ -11,7 +11,6 @@ namespace IngameScript
         {
             public Session    Session;
 
-            public List<Clip> Clips;
             public Clip[]     Clips;
 
 
