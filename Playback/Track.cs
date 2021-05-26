@@ -24,10 +24,12 @@ namespace IngameScript
                               NextPat;
 
 
+            public bool       IsPlaying { get { return OK(PlayClip); } }
+
             public float      PlayStep { get 
                               {
                                   return
-                                      g_playing 
+                                      IsPlaying 
                                       ? PlayTime / (float)Session.TicksPerStep 
                                       : fN; 
                               } }
@@ -91,7 +93,7 @@ namespace IngameScript
             { 
                 var clip = Clips[index];
 
-                if (   g_editClip > 0
+                if (   g_session.EditClip == 0
                     || force)
                 {
                     if (!OK(clip))
@@ -101,22 +103,43 @@ namespace IngameScript
 
                         Clips[index] = clip;
                     }
-
-                    if (!OK(PlayClip))
-                        NextClip = index;
- 
-                    Session.EditClip = Clips[index];
-
-                    if (g_editClip == 2)
-                        g_showSession = F;
+                    
+                    if (clip != Session.EditedClip) Session.EditedClip = clip;
+                    else                            g_session.ShowSession = F;
                 }
+
+                else if (OK(g_session.ClipCopy))
+                {
+                    Clips[index] = new Clip(g_session.ClipCopy, this);
+                    g_session.ClipCopy = null;
+                }
+
                 else if (OK(clip))
                 { 
-                    if (index != PlayClip)
-                        NextClip = index;
+                    if (g_session.EditClip == 1)
+                    {
+                        g_session.ClipCopy = clip;
+                        g_session.EditClip = -1;
+                    }
+
+                    else if (g_session.EditClip == 2)
+                    {
+                        if (clip == Session.EditedClip)
+                            Session.EditedClip = Session.GetClipAfterDelete(clip);
+
+                        if (Session.Tracks.Sum(t => t.Clips.Count(c => OK(c))) > 1) // check that this isn't the only clip
+                            Clips[index] = null;
+
+                        g_session.EditClip = -1;
+                    }
+
+                    else if (index != PlayClip)
+                        NextClip = !OK(NextClip) ? index : -1;
+                    
                     else if (OK(PlayClip)
                          && !OK(NextClip))
                         PlayClip = -1; // force mute on second press
+                    
                     else
                         NextClip = -1;
                 }
@@ -130,29 +153,20 @@ namespace IngameScript
                     return;
 
 
-                if (   OK(PlayPat)
-                    && PlayStep < (PlayPat + 1) * g_patSteps)
+                if (  !OK(PlayPat)
+                    || PlayStep < (PlayPat + 1) * g_patSteps)
                     return;
 
 
-                if (OK(NextClip))
+                if (NextClip != PlayClip)
                 { 
-                    NextPat = 0;
-
-                    if (!OK(PlayClip))
-                    { 
-                        PlayTime  = GetPatTime(NextPat);
-                        StartTime = g_time - PlayTime;
-                    }
+                    NextPat  = 0;
+                    PlayClip = NextClip;
                 }
 
 
-                PlayClip = NextClip;
-
                 if (!OK(PlayClip)) 
                     return;
-
-
 
 
                 var clip = Clips[PlayClip];
@@ -193,12 +207,7 @@ namespace IngameScript
 
 
                 if (OK(PlayClip))
-                { 
-                    PlayPat =
-                        g_playing
-                        ? (int)(PlayStep / g_patSteps)
-                        : -1;
-                }
+                    PlayPat = (int)(PlayStep / g_patSteps);
             }
 
 
@@ -230,7 +239,7 @@ namespace IngameScript
                 //}
 
 
-                if (g_playing)
+                if (IsPlaying)
                     PlayTime++;
             }
 
@@ -318,7 +327,7 @@ namespace IngameScript
                             DspVol[snd.iChan],
                               instVol
                             * snd.Channel.Volume
-                            * EditClip.Volume);
+                            * EditedClip.Volume);
                     }
                 }
             }

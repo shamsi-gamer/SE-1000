@@ -36,7 +36,7 @@ namespace IngameScript
 
             var _dummy = new List<TriggerValue>();
 
-            var tp = new TimeParams(g_time, 0, g_time - EditClip.Track.StartTime, null, EditClip.EditLength, CurSrc, _dummy, this);
+            var tp = new TimeParams(g_time, 0, g_time - EditedClip.Track.StartTime, null, EditedClip.EditLength, CurSrc, _dummy, this);
 
             var songSteps =
                 OK(arp)
@@ -59,8 +59,8 @@ namespace IngameScript
                     sprites, 
                     x + xt + wt * (clip.EditPos % g_patSteps), 
                     y, 
-                    wt / (EditClip.EditStepLength == 0.5f ? 2 : 1), 
-                    EditClip.ParamKeys || EditClip.ParamAuto ? h : rh, 
+                    wt / (EditedClip.EditStepLength == 0.5f ? 2 : 1), 
+                    EditedClip.ParamKeys || EditedClip.ParamAuto ? h : rh, 
                     color3);
             }
 
@@ -69,7 +69,7 @@ namespace IngameScript
 
 
             // draw position line/s
-            if (   g_playing
+            if (   g_session.IsPlaying
                 && PlayPat == pat)
             {
                 if (IsCurOrParentSetting(typeof(Arpeggio)))
@@ -78,10 +78,10 @@ namespace IngameScript
 
                     for (int p = 0; p <= CurPat; p++)
                     { 
-                        var notes = EditClip.Patterns[p].Channels[SelChan].Notes.FindAll(n => 
+                        var notes = EditedClip.Patterns[p].Channels[SelChan].Notes.FindAll(n => 
                                   OK(n.Instrument.Arpeggio)
-                               && EditClip.Track.PlayTime >= n.Step*g_session.TicksPerStep + n.Time                
-                               && EditClip.Track.PlayTime <  n.Step*g_session.TicksPerStep + n.Time + n.FrameLength);
+                               && EditedClip.Track.PlayTime >= n.Step*g_session.TicksPerStep + n.Time                
+                               && EditedClip.Track.PlayTime <  n.Step*g_session.TicksPerStep + n.Time + n.FrameLength);
 
                         foreach (var n in notes)
                             arpNotes.Add(n);
@@ -98,7 +98,7 @@ namespace IngameScript
                 else
                 { 
                     FillRect(sprites, x + xt + wt * ((int)PlayStep % g_patSteps), y, wt, rh, color6);
-                    DrawPianoNeg(sprites, x + xt, y, w - xt, rh, EditClip, pat, (int)PlayStep, T);
+                    DrawPianoNeg(sprites, x + xt, y, w - xt, rh, EditedClip, pat, (int)PlayStep, T);
                 }
             }
 

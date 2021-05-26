@@ -90,16 +90,20 @@ namespace IngameScript
 
 
                     // edited clip
-                    var ew = cancel ? 0 : 14;
-
-                    if (clip == EditClip)
+                    if (clip == EditedClip)
                     { 
                         var editCol = color4;
 
                              if (isPlayClip)          editCol = color5;
-                        else if (!OK(track.NextClip)) editCol = color2;
+                        else if (!OK(track.NextClip)) editCol = color3;
 
-                        DrawLine(sprites, lx+ew, ly+lh-7, lx+lw-ew, ly+lh-7, editCol, 14);
+                        var ew = cancel ?  0 : 14;
+                        var de = cancel ?  0 :  5;
+                        var dh = cancel ? 14 :  3;
+
+                        var ey = ly - de + lh - 7;
+
+                        DrawLine(sprites, lx+ew, ey, lx-ew+lw, ey, editCol, dh);
                     }
 
 

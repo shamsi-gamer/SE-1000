@@ -10,7 +10,7 @@
             lblChord3    = new Label(Lbl("Chord 3"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 3);
             lblChord4    = new Label(Lbl("Chord 4"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 4);
             lblChordEdit = new Label(Lbl("Chord Edit"), ChordEditIsBright, null,          UpdateChordEdit);
-            lblSpread    = new Label(Lbl("Spread"),     lbl => EditClip.Spread);
+            lblSpread    = new Label(Lbl("Spread"),     lbl => EditedClip.Spread);
         }
 
 
@@ -21,20 +21,20 @@
                 ? (Tune)GetCurrentParam(SelInstrument) 
                 : null;
 
-            if (   !(EditClip.ParamKeys || EditClip.ParamAuto)
+            if (   !(EditedClip.ParamKeys || EditedClip.ParamAuto)
                 && OK(tune))
                 return tune.UseChord;
             else
-                return EditClip.ChordMode;
+                return EditedClip.ChordMode;
         }
 
 
         void UpdateChord(Label lbl)
         {
             if (   !IsCurParam(strTune)
-                || EditClip.ParamKeys 
-                || EditClip.ParamAuto)
-                lbl.SetText(EditClip.ChordEdit ? " " : "Chord", 9, 12);
+                || EditedClip.ParamKeys 
+                || EditedClip.ParamAuto)
+                lbl.SetText(EditedClip.ChordEdit ? " " : "Chord", 9, 12);
         }
 
 
@@ -43,9 +43,9 @@
             var chord = lbl.Data;
 
             return
-                   EditClip.Chord == chord-1
-                && (   EditClip.ChordEdit
-                    || EditClip.ChordMode)
+                   EditedClip.Chord == chord-1
+                && (   EditedClip.ChordEdit
+                    || EditedClip.ChordMode)
                 && !IsCurParam(strTune);
         }
 
@@ -55,23 +55,23 @@
             var chord = lbl.Data;
 
             return
-                      EditClip.ChordMode
-                   && EditClip.Chord == chord-1 
-                || EditClip.Chords[chord-1].Count > 0;
+                      EditedClip.ChordMode
+                   && EditedClip.Chord == chord-1 
+                || EditedClip.Chords[chord-1].Count > 0;
         }
 
 
         void UpdateChordNum(Label lbl)
         {
             var chord = lbl.Data;
-            lbl.SetText(GetChordName(EditClip.Chords[chord-1], S(chord)));
+            lbl.SetText(GetChordName(EditedClip.Chords[chord-1], S(chord)));
         }
 
 
         void UpdateChordEdit(Label lbl)
         {
             if (    IsCurParam(strTune)
-                && !(EditClip.ParamKeys || EditClip.ParamAuto))
+                && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
             {
                 var tune =
                     IsCurParam(strTune)
@@ -84,7 +84,7 @@
                     ? strAll : " ");
             }
             else
-                lbl.SetText(EditClip.ChordMode ? strAll : "Edit");
+                lbl.SetText(EditedClip.ChordMode ? strAll : "Edit");
         }
 
 
@@ -96,15 +96,15 @@
                 : null;
 
             if (   IsCurParam(strTune)
-                && !(EditClip.ParamKeys || EditClip.ParamAuto))
+                && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
                 return
                        OK(tune) 
                     && tune.AllOctaves;
 
             else return
-                      EditClip.ChordMode
-                   && EditClip.ChordAll
-                || EditClip.ChordEdit;
+                      EditedClip.ChordMode
+                   && EditedClip.ChordAll
+                || EditedClip.ChordEdit;
         }
     }
 }

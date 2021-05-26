@@ -38,18 +38,18 @@
             {
                 var path = g_settings.Last().GetPath(CurSrc);
 
-                if (EditClip.ParamKeys)
+                if (EditedClip.ParamKeys)
                     lbl.SetText("Inter");
 
-                else if (EditClip.ParamAuto)
+                else if (EditedClip.ParamAuto)
                 {
-                    if (OK(EditClip.EditPos))
+                    if (OK(EditedClip.EditPos))
                     {
                         lbl.SetText(
                             OK(SelChannel.AutoKeys.Find(k =>
                                    k.Path == path
-                                && k.StepTime >= (EditClip.EditPos % g_patSteps)
-                                && k.StepTime <  (EditClip.EditPos % g_patSteps) + 1))
+                                && k.StepTime >= (EditedClip.EditPos % g_patSteps)
+                                && k.StepTime <  (EditedClip.EditPos % g_patSteps) + 1))
                             ? "Move" : " ");
                     }
                 }
@@ -74,7 +74,7 @@
         {
             return 
                    CanAdjust 
-                && EditClip.Shift;
+                && EditedClip.Shift;
         }
 
 
@@ -103,7 +103,7 @@
             return
                    IsCurParam()
                 || IsCurSetting(typeof(Harmonics))
-                ||    EditClip.Transpose
+                ||    EditedClip.Transpose
                    && SelChan < 0;
         } }
 
@@ -119,9 +119,9 @@
                         || IsCurParam(strLvl)
                         || IsCurParam(strPow)
                         ||     IsCurParam(strCnt)
-                            && (EditClip.ParamKeys || EditClip.ParamAuto)
+                            && (EditedClip.ParamKeys || EditedClip.ParamAuto)
                         || IsCurSetting(typeof(Harmonics)))
-                || EditClip.Transpose;
+                || EditedClip.Transpose;
         } }
 
 
@@ -131,7 +131,7 @@
                    CurSet  < 0
                 && CurSrc  < 0
                 && SelChan < 0
-                && EditClip.Transpose;
+                && EditedClip.Transpose;
         }
 
 
@@ -140,7 +140,7 @@
             return
                    CurSet < 0
                 && CurSrc < 0
-                && EditClip.EditNotes.Count > 0;
+                && EditedClip.EditNotes.Count > 0;
         }
 
 
@@ -150,25 +150,25 @@
             {
                 var path = g_settings.Last().GetPath(CurSrc);
 
-                if (EditClip.ParamKeys)
+                if (EditedClip.ParamKeys)
                 {
                     lblCmd3.SetText(
                         OK(SelChannel.Notes.Find(n =>
-                               n.SongStep >= EditClip.EditPos
-                            && n.SongStep <  EditClip.EditPos+1
+                               n.SongStep >= EditedClip.EditPos
+                            && n.SongStep <  EditedClip.EditPos+1
                             && OK(n.Keys.Find(k => k.Path == path))))
                         ? "X"
                         : " ");
                 }
-                else if (EditClip.ParamAuto)
+                else if (EditedClip.ParamAuto)
                 {
-                    if (OK(EditClip.EditPos))
+                    if (OK(EditedClip.EditPos))
                     { 
                         lblCmd3.SetText(
                             OK(SelChannel.AutoKeys.Find(k =>
                                 k.Path == path
-                                && k.StepTime >= (EditClip.EditPos % g_patSteps)
-                                && k.StepTime <  (EditClip.EditPos % g_patSteps) + 1))
+                                && k.StepTime >= (EditedClip.EditPos % g_patSteps)
+                                && k.StepTime <  (EditedClip.EditPos % g_patSteps) + 1))
                             ? "X" : "+");
                     }
                     else

@@ -36,23 +36,9 @@ namespace IngameScript
             //+ PS(ModCurPat)
             //+ PS(ModDestClip)
 
-            var state = 
-                   S(g_lockView)
-                + PS(SaveToggles());
+            var state = S(g_lockView);
 
             pnlStorageState.WriteText(state);
-        }
-
-
-        uint SaveToggles()
-        {
-            uint f = 0;
-            var  i = 0;
-
-            WriteBit(ref f, g_showSession, i++);
-            WriteBit(ref f, g_move,        i++);
-
-            return f;
         }
 
 

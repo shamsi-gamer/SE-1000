@@ -122,7 +122,7 @@ namespace IngameScript
         {
             return
                    ShowPiano
-                ?    -lbl.Data == 15 && EditClip.HalfSharp
+                ?    -lbl.Data == 15 && EditedClip.HalfSharp
                   || NoteIsBright(LowToNote(-lbl.Data))
                 : StepIsBright(lbl);
         }
@@ -172,11 +172,11 @@ namespace IngameScript
                 return tune.Chord.Contains(noteNum);
             }
 
-            else if (EditClip.Chord > -1
-                  && EditClip.ChordEdit)
-                return EditClip.Chords[EditClip.Chord].Contains(noteNum);
+            else if (EditedClip.Chord > -1
+                  && EditedClip.ChordEdit)
+                return EditedClip.Chords[EditedClip.Chord].Contains(noteNum);
 
-            else if (g_playing 
+            else if (g_session.IsPlaying 
                   && PlayChannel.Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
                 return T; // note is in the currently played channel
 
@@ -205,7 +205,7 @@ namespace IngameScript
                     if (ch == CurChan)
                         continue;
 
-                    if (   g_playing
+                    if (   g_session.IsPlaying
                         && OK(PlayPattern.Channels[ch].Notes.Find(n => NoteIsPlaying(noteNum, n))))
                         return T;
                 }
@@ -226,8 +226,8 @@ namespace IngameScript
                 return T;
 
             // note is at edit position
-            if (   note.SongStep >= EditClip.EditPos 
-                && note.SongStep <  EditClip.EditPos + EditClip.EditStepLength)
+            if (   note.SongStep >= EditedClip.EditPos 
+                && note.SongStep <  EditedClip.EditPos + EditedClip.EditStepLength)
                 return T;
 
             return F;
@@ -236,7 +236,7 @@ namespace IngameScript
         
         bool NoteIsTriggered(int noteNum, Note note)
         {
-            var timeStep = g_playing ? PlayStep : TimeStep;
+            var timeStep = g_session.IsPlaying ? PlayStep : TimeStep;
 
             return
                    noteNum == note.Number
@@ -248,9 +248,9 @@ namespace IngameScript
         bool ToggleIsBright(Label lbl)
         {
             return
-                   lbl.Data == 2 && EditClip.RndInst
-                || lbl.Data == 3 && EditClip.AllChan
-                || lbl.Data == 4 && EditClip.Pick;
+                   lbl.Data == 2 && EditedClip.RndInst
+                || lbl.Data == 3 && EditedClip.AllChan
+                || lbl.Data == 4 && EditedClip.Pick;
         }
 
 
@@ -290,7 +290,7 @@ namespace IngameScript
                    n.Step >= patStep
                 && n.Step <  patStep+1));
 
-            if (   g_playing
+            if (   g_session.IsPlaying
                 && (int)PlayStep  == songStep
                 && CurPat == PlayPat)
                 return !on;
@@ -307,7 +307,7 @@ namespace IngameScript
 
             int val;
 
-                 if (EditClip.Spread) val = EditClip.ChordSpread;
+                 if (EditedClip.Spread) val = EditedClip.ChordSpread;
             else if (ShowPiano)      val = CurChannel.Transpose;
             else                     val = CurChannel.Shuffle;
 
@@ -317,7 +317,7 @@ namespace IngameScript
 
         void UpdateShuffleLabel(Label lbl)
         {
-            if (EditClip.Spread)
+            if (EditedClip.Spread)
                 lbl.SetText("Sprd");
 
             else if (ShowPiano)

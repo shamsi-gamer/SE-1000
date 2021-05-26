@@ -29,15 +29,15 @@ namespace IngameScript
 
             FillRect(sprites, x, y, w, h, color0);
 
-            if (g_playing)
-            {
-                var sec = (int)(PlayStep * g_session.TicksPerStep / FPS);
-                var min = sec / 60;
-                sec %= 60;
+            //if (g_session.IsPlaying)
+            //{
+            //    var sec = (int)(PlayStep * g_session.TicksPerStep / FPS);
+            //    var min = sec / 60;
+            //    sec %= 60;
 
-                FillRect(sprites, x + 50, y + h - 192, 250, 64, color6);
-                DrawString(sprites, S(min) + ":" + sec.ToString("00"), x + 175, y + h - 191, 2f, color0, TaC);
-            }
+            //    FillRect(sprites, x + 50, y + h - 192, 250, 64, color6);
+            //    DrawString(sprites, S(min) + ":" + sec.ToString("00"), x + 175, y + h - 191, 2f, color0, TaC);
+            //}
 
 
             DrawButton(sprites, "Load",  0, 3, w, 50, IsPressed(lcdInfo+0));
@@ -51,7 +51,7 @@ namespace IngameScript
             DrawString(sprites, "BPM",        x + 142, y + h - 43, 1f, color6);
 
 
-            var nameLines = EditClip.Name.Split('\n');
+            var nameLines = EditedClip.Name.Split('\n');
 
             if (nameLines.Length > 0) 
                 DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TaC);

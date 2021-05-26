@@ -16,7 +16,7 @@ namespace IngameScript
                 g_settings.Clear();
 
 
-                var inst = EditClip.CurInstrument;
+                var inst = EditedClip.CurInstrument;
 
                 if (inst.Sources.Count < maxDspSrc)
                 { 
@@ -42,7 +42,7 @@ namespace IngameScript
 
                 inst.Name = GetNewName(inst.Name, str => g_session.Instruments.Exists(_s => _s.Name == str));
 
-                g_session.Instruments.Insert(g_session.Instruments.IndexOf(EditClip.CurInstrument) + 1, inst);
+                g_session.Instruments.Insert(g_session.Instruments.IndexOf(EditedClip.CurInstrument) + 1, inst);
                 SetCurInst(inst);
 
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_session.Instruments.Count, maxDspSrc, 0, 1);
@@ -67,7 +67,7 @@ namespace IngameScript
                 g_settings.Clear();
 
 
-                var inst = EditClip.CurInstrument;
+                var inst = EditedClip.CurInstrument;
 
                 if (inst.Sources.Count < 8)
                 {
@@ -89,12 +89,12 @@ namespace IngameScript
                 g_settings.Clear();
 
 
-                var inst = new Instrument(EditClip.CurInstrument);
+                var inst = new Instrument(EditedClip.CurInstrument);
                 inst.Name = GetNewName(inst.Name, newName => g_session.Instruments.Exists(s => s.Name == newName));
 
-                g_session.Instruments.Insert(g_session.Instruments.IndexOf(EditClip.CurInstrument) + 1, inst);
+                g_session.Instruments.Insert(g_session.Instruments.IndexOf(EditedClip.CurInstrument) + 1, inst);
                 SetCurInst(inst);
-                EditClip.SrcOff = 0;
+                EditedClip.SrcOff = 0;
 
                 UpdateInstName();
 
@@ -118,9 +118,9 @@ namespace IngameScript
                 g_settings.Clear();
 
 
-                var inst = EditClip.CurInstrument;
+                var inst = EditedClip.CurInstrument;
 
-                inst.Sources[CurSrc].Delete(EditClip);
+                inst.Sources[CurSrc].Delete(EditedClip);
                 inst.Sources.RemoveAt(CurSrc);
 
                 //for (int i = g_song.CurSrc; i < inst.Sources.Count; i++)
@@ -144,11 +144,11 @@ namespace IngameScript
                 g_settings.Clear();
 
 
-                var i = g_session.Instruments.IndexOf(EditClip.CurInstrument);
-                var inst = EditClip.CurInstrument;
+                var i = g_session.Instruments.IndexOf(EditedClip.CurInstrument);
+                var inst = EditedClip.CurInstrument;
 
-                EditClip.CurInstrument.Delete(EditClip);
-                g_session.Instruments.Remove(EditClip.CurInstrument);
+                EditedClip.CurInstrument.Delete(EditedClip);
+                g_session.Instruments.Remove(EditedClip.CurInstrument);
 
                 if (g_session.Instruments.Count == 0)
                 {
@@ -158,11 +158,11 @@ namespace IngameScript
 
                 i = MinMax(0, i - 1, g_session.Instruments.Count - 1);
 
-                foreach (var p in EditClip.Patterns)
+                foreach (var p in EditedClip.Patterns)
                     foreach (var c in p.Channels)
                         if (c.Instrument == inst) c.Instrument = g_session.Instruments[i];
 
-                EditClip.SrcOff = 0;
+                EditedClip.SrcOff = 0;
 
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_session.Instruments.Count, maxDspSrc, 0, 1);
                 UpdateInstOff(CurChan);
@@ -179,7 +179,7 @@ namespace IngameScript
             if (CurSet > -1) 
                 return;
 
-            g_move = !g_move;
+            g_session.Move = !g_session.Move;
         }
 
 
@@ -195,13 +195,13 @@ namespace IngameScript
             }
             else if (CurSrc < 0) // instrument
             {
-                var i = g_session.Instruments.IndexOf(EditClip.CurInstrument);
+                var i = g_session.Instruments.IndexOf(EditedClip.CurInstrument);
                 var n = i + move;
 
                 if (n >= g_session.Instruments.Count) n = 0;
                 if (n < 0) n = g_session.Instruments.Count - 1;
 
-                if (g_move)
+                if (g_session.Move)
                 {
                     var inst = g_session.Instruments[i];
 
@@ -211,10 +211,10 @@ namespace IngameScript
                 else
                 {
                     int first, last;
-                    EditClip.GetCurPatterns(out first, out last);
+                    EditedClip.GetCurPatterns(out first, out last);
 
                     for (int p = first; p <= last; p++)
-                        EditClip.Patterns[p].Channels[CurChan].Instrument = g_session.Instruments[n];
+                        EditedClip.Patterns[p].Channels[CurChan].Instrument = g_session.Instruments[n];
                 }
 
 
@@ -223,17 +223,17 @@ namespace IngameScript
 
                 UpdateInstOff(CurChan);
 
-                EditClip.SrcOff = 0;
+                EditedClip.SrcOff = 0;
             }
             else // source
             {
-                var inst = EditClip.CurInstrument;
+                var inst = EditedClip.CurInstrument;
                 var next = CurSrc + move;
 
                 if (next >= inst.Sources.Count) next = 0;
                 if (next < 0) next = inst.Sources.Count - 1;
 
-                if (g_move)
+                if (g_session.Move)
                 {
                     var src = inst.Sources[CurSrc];
                     inst.Sources.RemoveAt(CurSrc);
@@ -255,10 +255,10 @@ namespace IngameScript
 
         void BackOut()
         {
-            g_move = F;
+            g_session.Move = F;
 
-            EditClip.ParamKeys = F;
-            EditClip.ParamAuto = F;
+            EditedClip.ParamKeys = F;
+            EditedClip.ParamAuto = F;
 
             var _curSet = F;
 
@@ -279,9 +279,9 @@ namespace IngameScript
                 && !_curSet)
             {
                 CurSrc = -1;
-                EditClip.SrcOff =  0;
+                EditedClip.SrcOff =  0;
 
-                EditClip.Shift  = F;
+                EditedClip.Shift  = F;
 
                 UpdateInstName(T);
                 g_inputValid = F;
@@ -293,8 +293,8 @@ namespace IngameScript
             {
                 SelChan = -1;
 
-                EditClip.Shift = F;
-                g_move  = F;
+                EditedClip.Shift = F;
+                g_session.Move = F;
 
                 UpdateInstName(F);
             }
@@ -307,19 +307,19 @@ namespace IngameScript
 
         void Back()
         {
-            g_move = F;
+            g_session.Move = F;
 
             if (CurSet > -1)
             {
-                if (EditClip.ParamKeys)
+                if (EditedClip.ParamKeys)
                 {
-                    EditClip.ParamKeys = F;
-                    EditClip.EditPos   = fN;
+                    EditedClip.ParamKeys = F;
+                    EditedClip.EditPos   = fN;
                 }
-                else if (EditClip.ParamAuto)
+                else if (EditedClip.ParamAuto)
                 {
-                    EditClip.ParamAuto = F;
-                    EditClip.EditPos   = fN;
+                    EditedClip.ParamAuto = F;
+                    EditedClip.EditPos   = fN;
                 }
                 else
                 {
@@ -335,9 +335,9 @@ namespace IngameScript
             else if (CurSrc > -1)
             {
                 CurSrc = -1;
-                EditClip.SrcOff =  0;
+                EditedClip.SrcOff =  0;
 
-                EditClip.Shift = F;
+                EditedClip.Shift = F;
 
                 UpdateInstName(T);
                 g_inputValid = F;
@@ -346,15 +346,15 @@ namespace IngameScript
             {
                 SelChan = -1;
 
-                EditClip.Shift = F;
-                g_move        = F;
+                EditedClip.Shift = F;
+                g_session.Move = F;
 
-                EditClip.EditPos = fN;
+                EditedClip.EditPos = fN;
 
                 UpdateInstName(F);
 
-                EditClip.ParamKeys = F;
-                EditClip.ParamAuto = F;
+                EditedClip.ParamKeys = F;
+                EditedClip.ParamAuto = F;
             }
 
             lblBack.Mark();
@@ -368,11 +368,11 @@ namespace IngameScript
             if (CurSet > -1)
                 return;
 
-            g_move = F;
+            g_session.Move = F;
 
             if (SelChan < 0)
             {
-                EditClip.EditPos = fN;
+                EditedClip.EditPos = fN;
                 SelChan = CurChan;
 
                 UpdateInstOff(SelChan);
@@ -385,7 +385,7 @@ namespace IngameScript
             else if (CurSrc < 0)
             {
                 CurSrc = 0;
-                EditClip.Shift  = F;
+                EditedClip.Shift  = F;
 
                 UpdateInstName(F);
 
@@ -417,10 +417,10 @@ namespace IngameScript
             }
             else if (IsCurParam())
             {
-                if (OK(EditClip.EditPos))
+                if (OK(EditedClip.EditPos))
                 {
-                         if (EditClip.ParamKeys) Interpolate(EditClip);
-                    else if (EditClip.ParamAuto) EnableKeyMove(EditClip);
+                         if (EditedClip.ParamKeys) Interpolate(EditedClip);
+                    else if (EditedClip.ParamAuto) EnableKeyMove(EditedClip);
 
                     lblCmd1.Mark();
                 }
@@ -435,7 +435,7 @@ namespace IngameScript
                     ModCurPat         = CurPat;
                     ModDestSrcIndex   = CurSrc;
                     ModDestChannel    = SelChannel;
-                    ModDestClip       = EditClip;
+                    ModDestClip       = EditedClip;
                 }
 
                 lblCmd1.Mark();
@@ -443,8 +443,8 @@ namespace IngameScript
             else if (IsCurSetting(typeof(Arpeggio))
                   && OK(CurArpeggio.Clip.EditPos))
             {
-                     if (EditClip.ParamKeys) Interpolate  (CurArpeggio.Clip);
-                else if (EditClip.ParamAuto) EnableKeyMove(CurArpeggio.Clip);
+                     if (EditedClip.ParamKeys) Interpolate  (CurArpeggio.Clip);
+                else if (EditedClip.ParamAuto) EnableKeyMove(CurArpeggio.Clip);
 
                 lblCmd1.Mark();
             }
@@ -485,16 +485,16 @@ namespace IngameScript
             { 
                 var src =
                     CurSrc > -1
-                    ? EditClip.CurInstrument.Sources[CurSrc]
+                    ? EditedClip.CurInstrument.Sources[CurSrc]
                     : null;
 
                 if (SelChan < 0)
                 {
                     int f, l;
-                    EditClip.GetCurPatterns(out f, out l);
+                    EditedClip.GetCurPatterns(out f, out l);
 
                     for (int p = f; p <= l; p++)
-                        PasteChan(EditClip, p, CurChan);
+                        PasteChan(EditedClip, p, CurChan);
 
                     copyChan = null;
                 }
@@ -512,10 +512,10 @@ namespace IngameScript
                 var path  = g_settings.Last().GetPath(CurSrc);
 
                 
-                if (   EditClip.ParamKeys
-                    && OK(EditClip.EditPos))
+                if (   EditedClip.ParamKeys
+                    && OK(EditedClip.EditPos))
                 { 
-                    var notes = GetEditNotes(EditClip);
+                    var notes = GetEditNotes(EditedClip);
 
                     foreach (var note in notes)
                     { 
@@ -523,34 +523,34 @@ namespace IngameScript
                         if (iKey > -1) note.Keys.RemoveAt(iKey);
                     }
                 }
-                else if (EditClip.ParamAuto
-                      && OK(EditClip.EditPos))
+                else if (EditedClip.ParamAuto
+                      && OK(EditedClip.EditPos))
                 {
                     var chan = SelChannel;
 
                     var key = chan.AutoKeys.Find(k =>
                            k.Path == path
-                        && k.StepTime >= (EditClip.EditPos % g_patSteps)
-                        && k.StepTime <  (EditClip.EditPos % g_patSteps) + 1);
+                        && k.StepTime >= (EditedClip.EditPos % g_patSteps)
+                        && k.StepTime <  (EditedClip.EditPos % g_patSteps) + 1);
 
                     if (!OK(key)) // create
                     {
-                        var val = Parameter.GetAutoValue(EditClip.EditPos, CurPat, path);
+                        var val = Parameter.GetAutoValue(EditedClip.EditPos, CurPat, path);
 
                         var newKey = new Key(
                             CurSrc,
                             param,
                             OK(val) ? val : param.Value,
-                            EditClip.EditPos % g_patSteps,
+                            EditedClip.EditPos % g_patSteps,
                             SelChannel);
 
                         chan.AutoKeys.Add(newKey);
-                        EditClip.UpdateAutoKeys();
+                        EditedClip.UpdateAutoKeys();
                     }
                     else // delete
                     {
                         chan.AutoKeys.Remove(key);
-                        EditClip.UpdateAutoKeys();
+                        EditedClip.UpdateAutoKeys();
                     }
                 }
                 else if (CurSet > -1)
@@ -571,14 +571,14 @@ namespace IngameScript
             }
             else if (SelChan < 0)
             { 
-                EditClip.Transpose = !EditClip.Transpose;
+                EditedClip.Transpose = !EditedClip.Transpose;
             }
         }
 
 
         void Shift()
         {
-            EditClip.Shift = !EditClip.Shift;
+            EditedClip.Shift = !EditedClip.Shift;
         }
 
 
@@ -613,7 +613,7 @@ namespace IngameScript
                         }
                     }
                 }
-                else if (EditClip.ParamAuto)
+                else if (EditedClip.ParamAuto)
                 {
                     if (OK(clip.EditPos))
                     { 
@@ -664,7 +664,7 @@ namespace IngameScript
             param.SetValue(
                 MinMax(
                     param.Min, 
-                    param.AdjustValue(param.Value, delta, EditClip.Shift),
+                    param.AdjustValue(param.Value, delta, EditedClip.Shift),
                     param.Max),
                 null,
                 CurSrc);
@@ -675,7 +675,7 @@ namespace IngameScript
         {
             key.Value = MinMax(
                 key.Parameter.Min,
-                key.Parameter.AdjustValue(key.Value, delta, EditClip.Shift),
+                key.Parameter.AdjustValue(key.Value, delta, EditedClip.Shift),
                 key.Parameter.Max);
         }
 
@@ -683,18 +683,18 @@ namespace IngameScript
         void SetChan(int ch)
         {
             int first, last;
-            EditClip.GetCurPatterns(out first, out last);
+            EditedClip.GetCurPatterns(out first, out last);
 
             ch += CurChan; 
 
             for (int p = first; p <= last; p++)
             { 
-                var pat = EditClip.Patterns[p];
+                var pat = EditedClip.Patterns[p];
 
                 if (ch >= g_nChans) ch = 0;
                 if (ch < 0) ch = g_nChans - 1;
 
-                if (g_move)
+                if (g_session.Move)
                 {
                     var temp = pat.Channels[CurChan];
                     pat.Channels[CurChan] = pat.Channels[ch];
@@ -719,11 +719,11 @@ namespace IngameScript
             sh += CurPattern.Channels[ch].Shuffle;
 
             int first, last;
-            EditClip.GetCurPatterns(out first, out last);
+            EditedClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
             {
-                var pat  = EditClip.Patterns[p];
+                var pat  = EditedClip.Patterns[p];
                 var chan = pat.Channels[ch];
 
                 chan.Shuffle = MinMax(0, sh, g_session.TicksPerStep - 1);

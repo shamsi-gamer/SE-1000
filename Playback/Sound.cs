@@ -162,7 +162,7 @@ namespace IngameScript
 
 
                 var lTime = g_time - Time;
-                var sTime = g_time - EditClip.Track.StartTime;
+                var sTime = g_time - EditedClip.Track.StartTime;
 
                 var tp = new TimeParams(g_time, lTime, sTime, Note, Length, SourceIndex, TriggerValues, prog);
 
@@ -171,16 +171,16 @@ namespace IngameScript
                 if (OK(Cache)) // not echo
                 {
                     var updateVol = 
-                        EditClip.Track.PlayTime < Time + Length + ReleaseLength
+                        EditedClip.Track.PlayTime < Time + Length + ReleaseLength
                         //&& !prog.TooComplex
-                        ? GetVolume(g_time, EditClip.Track.StartTime, prog)
+                        ? GetVolume(g_time, EditedClip.Track.StartTime, prog)
                         : 0;
 
                     vol = 
                           TriggerVolume
                         * updateVol
                         * Channel.Volume
-                        * EditClip.Volume;
+                        * EditedClip.Volume;
 
                     // this is for the fake "current volume"
                     if (   (   Source.Oscillator == OscSlowSweepDown

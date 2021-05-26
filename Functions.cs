@@ -38,8 +38,8 @@ namespace IngameScript
             {
                 switch (func)
                 {
-                case 2: ToggleNote(EditClip); break;
-                case 3: CutNotes(EditClip);   break;
+                case 2: ToggleNote(EditedClip); break;
+                case 3: CutNotes(EditedClip);   break;
                 }
             }
 

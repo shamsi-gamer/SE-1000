@@ -30,7 +30,7 @@ namespace IngameScript
             public Arpeggio(Arpeggio arp) 
                 : base(arp.Tag, null, arp.Prototype, arp.Instrument, arp.Source)
             {
-                Clip   = new Clip(arp.Clip);
+                Clip   = new Clip(arp.Clip, null); // TODO which track does this go to?
 
                 Length = new Parameter(arp.Length, this);
                 Scale  = new Parameter(arp.Scale,  this);

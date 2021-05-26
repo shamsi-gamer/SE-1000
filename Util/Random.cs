@@ -12,9 +12,9 @@ namespace IngameScript
         void Random()
         {
                  if (   SelChan < 0
-                     || !EditClip.RndInst) RandomChannelNotes();
-            else if (EditClip.ParamKeys
-                  || EditClip.ParamAuto)   RandomValues(CurChan);
+                     || !EditedClip.RndInst) RandomChannelNotes();
+            else if (EditedClip.ParamKeys
+                  || EditedClip.ParamAuto)   RandomValues(CurChan);
             else if (CurSet  > -1)        CurSetting   .Randomize(this);
             else if (CurSrc  > -1)        SelSource    .Randomize(new List<Oscillator>(), this);
             else if (SelChan > -1)        SelInstrument.Randomize(this);
@@ -24,12 +24,12 @@ namespace IngameScript
         void RandomValues(int ch)
         {
             int first, last;
-            EditClip.GetCurPatterns(out first, out last);
+            EditedClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
             { 
-                     if (EditClip.ParamKeys) RandomParamKeys(p, ch);
-                else if (EditClip.ParamAuto) RandomParamAuto(p, ch);
+                     if (EditedClip.ParamKeys) RandomParamKeys(p, ch);
+                else if (EditedClip.ParamAuto) RandomParamAuto(p, ch);
             }
         }
 
@@ -52,7 +52,7 @@ namespace IngameScript
 
         void RandomChannelNotes()
         {
-            if (EditClip.AllChan) Random();
+            if (EditedClip.AllChan) Random();
             else                 RandomNotes(CurChan, null);
         }
 
@@ -62,7 +62,7 @@ namespace IngameScript
             if (TooComplex) return;
 
             int first, last;
-            EditClip.GetCurPatterns(out first, out last);
+            EditedClip.GetCurPatterns(out first, out last);
 
             var inst = g_session.Instruments[g_rnd.Next(0, g_session.Instruments.Count)];
 
@@ -77,8 +77,8 @@ namespace IngameScript
             for (int p = first; p <= last; p++)
             {
                 if (   OK(rndInst)
-                    || EditClip.RndInst)
-                    EditClip.Patterns[p].Channels[ch].Instrument = inst;
+                    || EditedClip.RndInst)
+                    EditedClip.Patterns[p].Channels[ch].Instrument = inst;
 
                 if (RND > 0.6  ) Flip(p, ch,  1);
                 if (RND > 0.8  ) Flip(p, ch,  2);
@@ -96,7 +96,7 @@ namespace IngameScript
             if (TooComplex) return;
 
 
-            var chan = EditClip.Patterns[pat].Channels[ch];
+            var chan = EditedClip.Patterns[pat].Channels[ch];
 
 
             const int minNote   = 54 * NoteScale;
@@ -108,7 +108,7 @@ namespace IngameScript
             // this is only used for randomizing chords,
             // but must be initialized here
             var chords = new List<List<int>>();
-            foreach (var c in EditClip.Chords)
+            foreach (var c in EditedClip.Chords)
                 if (c.Count > 0) chords.Add(new List<int>(c));
 
             var curChord = g_rnd.Next(0, chords.Count);
@@ -131,7 +131,7 @@ namespace IngameScript
                     if (OK(found)) chan.Notes.Remove(found);
                     else
                     { 
-                        var editLength = g_steps[g_rnd.Next(0, EditClip.EditLengthIndex + 1)];
+                        var editLength = g_steps[g_rnd.Next(0, EditedClip.EditLengthIndex + 1)];
 
                         if (note < 0)
                         { 
@@ -144,21 +144,21 @@ namespace IngameScript
                             var dNote    = dNoteMax * RND;
 
                             var rndNote = (int)MinMax(minNote, note - dNoteMax/2 + dNote, maxNote);
-                            if (!EditClip.HalfSharp) rndNote = (rndNote / NoteScale) * NoteScale;
+                            if (!EditedClip.HalfSharp) rndNote = (rndNote / NoteScale) * NoteScale;
 
-                            if (EditClip.ChordMode)
+                            if (EditedClip.ChordMode)
                             {
-                                if (EditClip.Chord > -1)
+                                if (EditedClip.Chord > -1)
                                 {
-                                    var chord = EditClip.Chords[EditClip.Chord];
+                                    var chord = EditedClip.Chords[EditedClip.Chord];
 
-                                    if (EditClip.ChordAll)
+                                    if (EditedClip.ChordAll)
                                         chord = UpdateFinalTuneChord(chord, T);
                                     
                                     note = chord[g_rnd.Next(0, chord.Count)];
                                     chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
                                 }
-                                else if (EditClip.ChordAll)
+                                else if (EditedClip.ChordAll)
                                 {
                                     var chord = chords[curChord];
                                     note = chord[g_rnd.Next(0, chord.Count)];
@@ -181,7 +181,7 @@ namespace IngameScript
                                     foreach (var off in chord)
                                     { 
                                         var _note = note + off;
-                                        if (!EditClip.HalfSharp) _note = (_note / NoteScale) * NoteScale;
+                                        if (!EditedClip.HalfSharp) _note = (_note / NoteScale) * NoteScale;
                                         chan.AddNote(new Note(chan, ch, 1, _note, step, editLength));                               
                                     }
                                 }
@@ -195,7 +195,7 @@ namespace IngameScript
                     }
                 }
 
-                dStep = 1 + (int)Math.Round(Math.Pow(RND, 0.8f) * Math.Max(0, (g_steps[EditClip.EditStepIndex] - 1)));
+                dStep = 1 + (int)Math.Round(Math.Pow(RND, 0.8f) * Math.Max(0, (g_steps[EditedClip.EditStepIndex] - 1)));
                 step += dStep;
             }
         }
@@ -203,7 +203,7 @@ namespace IngameScript
 
         void RandomParamKeys(int pat, int ch)
         {
-            var chan = EditClip.Patterns[pat].Channels[ch];
+            var chan = EditedClip.Patterns[pat].Channels[ch];
 
             foreach (var note in chan.Notes)
             {
@@ -222,7 +222,7 @@ namespace IngameScript
 
         void RandomParamAuto(int pat, int ch)
         {
-            var chan  = EditClip.Patterns[pat].Channels[ch];
+            var chan  = EditedClip.Patterns[pat].Channels[ch];
             var param = GetCurrentParam(chan.Instrument);
 
             for (int step = 0; step < g_patSteps; step++)
@@ -242,7 +242,7 @@ namespace IngameScript
                     chan.AutoKeys.Add(new Key(CurSrc, param, rndValue, step, chan));
             }
 
-            EditClip.UpdateAutoKeys();
+            EditedClip.UpdateAutoKeys();
         }
     }
 }

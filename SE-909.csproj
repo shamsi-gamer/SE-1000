@@ -44,6 +44,7 @@
     <Compile Include="Labels\Chord Labels.cs" />
     <Compile Include="Labels\Edit Labels.cs" />
     <Compile Include="Labels\Mem Labels.cs" />
+    <Compile Include="Labels\Mixer Labels.cs" />
     <Compile Include="Labels\Piano Labels.cs" />
     <Compile Include="Playback\Sample.cs" />
     <Compile Include="Util\Chords.cs" />

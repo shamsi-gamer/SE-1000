@@ -307,11 +307,11 @@ namespace IngameScript
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
                 var sTime = 
-                    g_playing
-                    ? g_time - EditClip.Track.StartTime
+                    g_session.IsPlaying
+                    ? g_time - EditedClip.Track.StartTime
                     : 0;
 
-                var tp = new TimeParams(g_time, 0, sTime, null, EditClip.EditLength, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, sTime, null, EditedClip.EditLength, -1, _triggerDummy, dp.Program);
 
                 Amount .UpdateValue(tp);
                 Attack .UpdateValue(tp);

@@ -125,8 +125,8 @@ namespace IngameScript
 
                 var sndTime = note.Time + 1;
 
-                var lTime = g_time - EditClip.Track.StartTime - note.SongTime;
-                var sTime = g_playing ? g_time - EditClip.Track.StartTime : lTime;
+                var lTime = g_time - EditedClip.Track.StartTime - note.SongTime;
+                var sTime = g_session.IsPlaying ? g_time - EditedClip.Track.StartTime : lTime;
 
                 var tp = new TimeParams(sndTime, lTime, sTime, note, note.FrameLength, Index, triggerValues, prog);
 

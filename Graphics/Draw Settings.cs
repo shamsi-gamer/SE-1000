@@ -191,21 +191,21 @@ namespace IngameScript
 
 
             // draw values
-                 if (EditClip.ParamKeys) DrawParamKeys(sprites, x + xt, y + rh, w-xt, h-rh,       clip, pat, CurChan);
-            else if (EditClip.ParamAuto) DrawParamAuto(sprites, x + xt, y + rh, w-xt, h-rh, w-xt, clip, pat, CurChan);
+                 if (EditedClip.ParamKeys) DrawParamKeys(sprites, x + xt, y + rh, w-xt, h-rh,       clip, pat, CurChan);
+            else if (EditedClip.ParamAuto) DrawParamAuto(sprites, x + xt, y + rh, w-xt, h-rh, w-xt, clip, pat, CurChan);
 
 
-            if (   EditClip.ParamKeys
-                || EditClip.ParamAuto)
+            if (   EditedClip.ParamKeys
+                || EditedClip.ParamAuto)
                 FillRect(sprites, x, y + rh, xt, h - rh, color0); // masks the line above
 
 
             // draw value string
-            if (EditClip.ParamKeys)
+            if (EditedClip.ParamKeys)
             {
 
             }
-            else if (EditClip.ParamAuto)
+            else if (EditedClip.ParamAuto)
             {
                 var key = SelChannel.AutoKeys.Find(
                        k => k.Path == path

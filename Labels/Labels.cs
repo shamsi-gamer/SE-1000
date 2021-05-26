@@ -84,20 +84,20 @@ namespace IngameScript
         void InitTransportLabels()
         {
             lblPlay = new Label(Lbl("Play"), 
-                lbl => g_playing,
+                lbl => g_session.IsPlaying,
                 null, 
                 null,
                 lbl =>
                 { 
-                    if (g_playing) lbl.SetText("Stop ▐█", 6.5f, 24);
-                    else           lbl.SetText("► Play",  7,    24);
+                    if (g_session.IsPlaying) lbl.SetText("Stop ▐█", 6.5f, 24);
+                    else                     lbl.SetText("► Play",  7,    24);
                 },
                 0, 
                 false, 
                 true);
 
             lblEdit = new Label(Lbl("Edit"),
-                lbl => OK(EditClip.EditPos), 
+                lbl => OK(EditedClip.EditPos), 
                 null,
                 null,
                 lbl => 
@@ -108,7 +108,7 @@ namespace IngameScript
                 });
 
             lblRec = new Label(Lbl("Rec"),
-                lbl => EditClip.Recording, 
+                lbl => EditedClip.Recording, 
                 null,
                 null,
                 lbl => 
@@ -122,11 +122,11 @@ namespace IngameScript
 
         void InitToggleLabels()
         {
-            lblLoop        = new Label(Lbl("Loop"),         lbl => EditClip.Loop);
-            lblBlock       = new Label(Lbl("Block"),        lbl => EditClip.Block);
-            lblAllPatterns = new Label(Lbl("All Patterns"), lbl => EditClip.AllPats);
-            lblFollow      = new Label(Lbl("Follow"),       lbl => EditClip.Follow);
-            lblAutoCue     = new Label(Lbl("Auto Cue"),     lbl => EditClip.AutoCue);
+            lblLoop        = new Label(Lbl("Loop"),         lbl => EditedClip.Loop);
+            lblBlock       = new Label(Lbl("Block"),        lbl => EditedClip.Block);
+            lblAllPatterns = new Label(Lbl("All Patterns"), lbl => EditedClip.AllPats);
+            lblFollow      = new Label(Lbl("Follow"),       lbl => EditedClip.Follow);
+            lblAutoCue     = new Label(Lbl("Auto Cue"),     lbl => EditedClip.AutoCue);
         }
 
 
@@ -137,8 +137,8 @@ namespace IngameScript
             lblDel   = new Label(Lbl(strDel),  NavIsBright,  NavIsDim, UpdateDel);
 
             lblMove  = new Label(Lbl("Move"),
-                lbl => (g_move ^ (CurSrc > -1)) && CurSet < 0, 
-                lbl => SelChan > -1 && CurSet < 0 && !g_move,
+                lbl => (g_session.Move ^ (CurSrc > -1)) && CurSet < 0, 
+                lbl => SelChan > -1 && CurSet < 0 && !g_session.Move,
                 UpdateMove);
 
             lblPrev  = new Label(Lbl("Prev"),  MoveIsBright, NavIsDim, UpdatePrev);
@@ -150,34 +150,10 @@ namespace IngameScript
         }
 
 
-        void InitMixerLabels()
-        { 
-            lblMixerVolumeUp   = new Label(Lbl("Volume Up"));
-            lblMixerVolumeDown = new Label(Lbl("Volume Down"));
-            lblMixerAll        = new Label(Lbl("Solo"));
-            lblMixerMuteAll    = new Label(Lbl("Mute"));
-
-            lblMixerShift      = new Label(Lbl("M Shift"), lbl => EditClip.MixerShift);
-
-            lblSession = new Label(Lbl("Session"), 
-                lbl => 
-                       g_showSession 
-                    && g_editClip == 2, 
-                lbl => 
-                       g_showSession 
-                    && g_editClip == 1, 
-                UpdateSessionLabel, 
-                null, 
-                0, 
-                F, 
-                T);
-        }
-
-
         void UpdateSessionLabel(Label lbl)
         {
-            if (g_showSession) lbl.SetText("Edit",    8, 18);
-            else               lbl.SetText("Session", 7, 21);
+            if (g_session.ShowSession) lbl.SetText("Clip",    8, 18);
+            else                       lbl.SetText("Session", 7, 21);
         }
 
 
@@ -214,15 +190,15 @@ namespace IngameScript
         void UpdateNext(Label lbl) { lbl.SetText(CurSet < 0 ? "◄"    : " "); }
 
 
-        bool MoveIsBright(Label lbl) { return CurSet < 0 && g_move ^ (CurSrc > -1); }
+        bool MoveIsBright(Label lbl) { return CurSet < 0 && g_session.Move ^ (CurSrc > -1); }
         //bool MoveIsDim   (Label lbl) { return SelChan > -1 && !g_move; }
 
 
         void SetLabelColor(int iCol)
         {
-            EditClip.ColorIndex = MinMax(0, iCol, 6);
+            EditedClip.ColorIndex = MinMax(0, iCol, 6);
 
-            switch (EditClip.ColorIndex)
+            switch (EditedClip.ColorIndex)
             {
                 case 0: SetLabelColor(new Color(255,   0,   0), 0.35f); break;
                 case 1: SetLabelColor(new Color(255,  92,   0), 0.35f); break;
@@ -265,8 +241,8 @@ namespace IngameScript
                 color6.B / max * 0xFF);
 
 
-                 if (EditClip.ColorIndex == 1) lightColor = new Color(0xFF, 0x50, 0);
-            else if (EditClip.ColorIndex == 5) lightColor = new Color(0xAA, 0, 0xFF);
+                 if (EditedClip.ColorIndex == 1) lightColor = new Color(0xFF, 0x50, 0);
+            else if (EditedClip.ColorIndex == 5) lightColor = new Color(0xAA, 0, 0xFF);
 
 
             var lights = new List<IMyInteriorLight>();
@@ -284,7 +260,7 @@ namespace IngameScript
                 lightColor.B + (int)((0xFF - lightColor.B) * 0.23f));
 
 
-            switch (EditClip.ColorIndex)
+            switch (EditedClip.ColorIndex)
             {
             case 0: warningLight.Color = new Color(0,    0,    0xFF); break;
             case 1: warningLight.Color = new Color(0,    0,    0xFF); break;

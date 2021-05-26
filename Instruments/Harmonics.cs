@@ -172,7 +172,7 @@ namespace IngameScript
                     if (i == 0) snd0 = snd;
 
                     var lTime = g_time - sndTime;
-                    var sTime = g_playing ? g_time - EditClip.Track.StartTime : lTime;
+                    var sTime = g_session.IsPlaying ? g_time - EditedClip.Track.StartTime : lTime;
 
                     if (!prog.TooComplex)
                     { 
@@ -222,12 +222,12 @@ namespace IngameScript
                 if (CurTone > -1)
                 {
                     var tone = Tones[CurTone];
-                    tone.SetValue(tone.AdjustValue(tone.Value, delta, EditClip.Shift), null, -1);
+                    tone.SetValue(tone.AdjustValue(tone.Value, delta, EditedClip.Shift), null, -1);
                 }
                 else
                 {
                     foreach (var tone in Tones)
-                        tone.SetValue(tone.AdjustValue(tone.Value, delta, EditClip.Shift, T), null, -1);
+                        tone.SetValue(tone.AdjustValue(tone.Value, delta, EditedClip.Shift, T), null, -1);
                 }
             }
 

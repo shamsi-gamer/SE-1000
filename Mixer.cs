@@ -4,41 +4,61 @@
     {
         void MixerShift()
         {
-            EditClip.MixerShift = !EditClip.MixerShift;
+            EditedClip.MixerShift = !EditedClip.MixerShift;
         }
 
 
         void EnableChannels(bool on)
         {
-            for (int ch = 0; ch < g_nChans; ch++)
-                EnableChannel(ch, on);
+            if (g_session.ShowSession)
+            { 
+                if (on)
+                {
+                    g_session.EditClip = 
+                        g_session.EditClip != 1
+                        ?  1
+                        : -1;
+                }
+                else    
+                {
+                    g_session.EditClip = 
+                        g_session.EditClip != 2
+                        ?  2
+                        : -1;
+                }
+            }
+            else
+            { 
+                for (int ch = 0; ch < g_nChans; ch++)
+                    EnableChannel(ch, on);
 
-            (on
-             ? lblMixerAll
-             : lblMixerMuteAll).Mark();
+                (on
+                 ? lblMixerAll
+                 : lblMixerMuteAll).Mark();
+            }
         }
 
 
         void EnableChannel(int ch, bool on)
         {
             int first, last;
-            EditClip.GetCurPatterns(out first, out last);
+            EditedClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
-                EditClip.Patterns[p].Channels[ch].On = on;
+                EditedClip.Patterns[p].Channels[ch].On = on;
         }
 
 
         void EnableChannel(int pat, int ch, bool on)
         {
-            var chan = EditClip.Patterns[pat].Channels[ch];
+            var chan = EditedClip.Patterns[pat].Channels[ch];
             chan.On = on;
         }
 
 
         public void SetVolume(int ch, float dv)
         {
-            if (g_showSession)
+            if (g_session.ShowSession)
             { 
                 g_session.Tracks[dv > 0 ? 0 : 1].SetClip(ch);
                 UpdatePlaybackStatus();
@@ -46,14 +66,14 @@
             else
             { 
                 var vol = CurPattern.Channels[ch].Volume;
-                var mod = (EditClip.MixerShift ? 10 : 1) * dv;
+                var mod = (EditedClip.MixerShift ? 10 : 1) * dv;
 
                 int first, last;
-                EditClip.GetPatterns(CurPat, out first, out last);
+                EditedClip.GetPatterns(CurPat, out first, out last);
 
                 for (int p = first; p <= last; p++)
                 {
-                    var chan = EditClip.Patterns[p].Channels[ch];
+                    var chan = EditedClip.Patterns[p].Channels[ch];
                     chan.Volume = MinMax(0, vol + dVol * mod, 2);
                 }
 
@@ -64,47 +84,47 @@
 
         void Solo(int ch)
         {
-            if (g_showSession)
+            if (g_session.ShowSession)
             { 
                 g_session.Tracks[2].SetClip(ch);
                 UpdatePlaybackStatus();
             }
             else
             {
-                if (EditClip.Solo >= 0)
+                if (EditedClip.Solo >= 0)
                 {
                     int _first, _last;
-                    EditClip.GetCurPatterns(out _first, out _last);
+                    EditedClip.GetCurPatterns(out _first, out _last);
 
                     for (int p = _first; p <= _last; p++)
                         UnsoloChannel(p, ch);
                 }
 
-                if (ch == EditClip.Solo)
+                if (ch == EditedClip.Solo)
                 {
-                    EditClip.Solo = -1;
+                    EditedClip.Solo = -1;
                     return;
                 }
 
 
                 for (int _ch = 0; _ch < g_nChans; _ch++)
-                    EditClip.ChanOn[_ch] = CurPattern.Channels[_ch].On;
+                    EditedClip.ChanOn[_ch] = CurPattern.Channels[_ch].On;
 
 
                 int first, last;
-                EditClip.GetCurPatterns(out first, out last);
+                EditedClip.GetCurPatterns(out first, out last);
 
                 for (int p = first; p <= last; p++)
                     SoloChannel(p, ch);
 
-                EditClip.Solo = EditClip.Solo == ch ? -1 : ch;
+                EditedClip.Solo = EditedClip.Solo == ch ? -1 : ch;
             }
         }
 
 
         void Mute(int ch)
         {
-            if (g_showSession)
+            if (g_session.ShowSession)
             { 
                 g_session.Tracks[3].SetClip(ch);
                 UpdatePlaybackStatus();
@@ -114,13 +134,13 @@
                 var on = !CurPattern.Channels[ch].On;
 
                 int first, last;
-                EditClip.GetCurPatterns(out first, out last);
+                EditedClip.GetCurPatterns(out first, out last);
 
                 for (int p = first; p <= last; p++)
-                    EditClip.Patterns[p].Channels[ch].On = on;
+                    EditedClip.Patterns[p].Channels[ch].On = on;
 
                 if (!on)
-                    EditClip.TrimCurrentNotes(ch);
+                    EditedClip.TrimCurrentNotes(ch);
             }
         }
 
@@ -131,7 +151,7 @@
             {
                 if (i == ch) continue;
                 EnableChannel(pat, i, F);
-                EditClip.TrimCurrentNotes(i);
+                EditedClip.TrimCurrentNotes(i);
             }
 
             EnableChannel(pat, ch, T);
@@ -140,10 +160,10 @@
 
         void UnsoloChannel(int pat, int ch)
         {
-            if (EditClip.Solo >= 0)
+            if (EditedClip.Solo >= 0)
             {
                 for (int i = 0; i < g_nChans; i++)
-                    EnableChannel(pat, i, EditClip.ChanOn[i]);
+                    EnableChannel(pat, i, EditedClip.ChanOn[i]);
             }
         }
     }

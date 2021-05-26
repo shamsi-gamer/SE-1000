@@ -206,10 +206,10 @@ namespace IngameScript
             }
 
 
-            public Clip(Clip clip)
+            public Clip(Clip clip, Track track)
             {
                 Name     = clip.Name;
-                Track    = clip.Track;
+                Track    = track;
 
                 Arpeggio = clip.Arpeggio;
                 Length   = clip.Length;
@@ -414,14 +414,14 @@ namespace IngameScript
 
             public void TrimCurrentNotes(int ch = -1)
             {
-                var timeStep = g_playing ? PlayStep : TimeStep;
+                var timeStep = g_session.IsPlaying ? PlayStep : TimeStep;
 
                 foreach (var note in g_notes)
                 {
                     if (   ch < 0
                         || note.iChan == ch)
                     { 
-                        var noteStep = g_playing ? note.SongStep : note.Step;
+                        var noteStep = g_session.IsPlaying ? note.SongStep : note.Step;
                         note.UpdateStepLength(timeStep - noteStep);
                     }
                 }
@@ -430,11 +430,11 @@ namespace IngameScript
 
             public void WrapCurrentNotes(int nWrapSteps)
             {
-                var timeStep = g_playing ? PlayStep : TimeStep;
+                var timeStep = g_session.IsPlaying ? PlayStep : TimeStep;
 
                 foreach (var note in g_notes)
                 {
-                    var noteStep = g_playing ? note.SongStep : note.Step;
+                    var noteStep = g_session.IsPlaying ? note.SongStep : note.Step;
 
                     if (   timeStep >= noteStep
                         && timeStep <  noteStep + note.StepLength)

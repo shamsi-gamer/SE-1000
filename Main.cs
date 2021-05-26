@@ -45,7 +45,7 @@ namespace IngameScript
 
         void Update1()
         {
-            CurSetting?.AdjustFromController(EditClip, this);
+            CurSetting?.AdjustFromController(EditedClip, this);
 
             if (!TooComplex)
                 UpdatePlayback();

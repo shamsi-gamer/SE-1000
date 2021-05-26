@@ -43,10 +43,10 @@ namespace IngameScript
         {
             var chordNotes = new List<int>();
 
-            if (    EditClip.Chord > -1
+            if (    EditedClip.Chord > -1
                 && !IsCurParam(strTune))
             {
-                var chord = EditClip.Chords[EditClip.Chord];
+                var chord = EditedClip.Chords[EditedClip.Chord];
 
                 chord.Sort();
 
@@ -146,7 +146,7 @@ namespace IngameScript
 
         void ToggleChordMode()
         {
-            if (EditClip.ChordEdit)
+            if (EditedClip.ChordEdit)
                 return;
 
             if (IsCurParam(strTune))
@@ -158,10 +158,10 @@ namespace IngameScript
             }
             else
             {
-                EditClip.ChordMode = !EditClip.ChordMode;
+                EditedClip.ChordMode = !EditedClip.ChordMode;
 
-                if (!EditClip.ChordMode)
-                    EditClip.Chord = -1;
+                if (!EditedClip.ChordMode)
+                    EditedClip.Chord = -1;
             }
         }
 
@@ -169,7 +169,7 @@ namespace IngameScript
         // return steps
         float ChordSpread(int n)
         {
-            return (float)(EditClip.ChordSpread*Math.Pow(n, 1.33) / g_session.TicksPerStep);        
+            return (float)(EditedClip.ChordSpread*Math.Pow(n, 1.33) / g_session.TicksPerStep);        
         }
 
 
@@ -182,7 +182,7 @@ namespace IngameScript
             if (   IsCurParam(strTune)
                 && tune.UseChord)
             {
-                var _chord = EditClip.Chords[chord-1];
+                var _chord = EditedClip.Chords[chord-1];
 
                 var tc = tune.Chord;
 
@@ -214,40 +214,40 @@ namespace IngameScript
 
                 //MarkChordLabel(chord);
             }
-            else if (EditClip.ChordEdit)
+            else if (EditedClip.ChordEdit)
             {
-                EditClip.Chord = 
-                    EditClip.Chord != chord-1
+                EditedClip.Chord = 
+                    EditedClip.Chord != chord-1
                     ? chord-1
                     : -1;
             }
-            else if (EditClip.ChordMode)
+            else if (EditedClip.ChordMode)
             {
-                if (EditClip.Chord != chord-1)
+                if (EditedClip.Chord != chord-1)
                 {
-                    if (EditClip.Chords[chord-1].Count > 0)
+                    if (EditedClip.Chords[chord-1].Count > 0)
                     { 
-                        EditClip.Chord    = chord-1;
-                        EditClip.ChordAll = F;
+                        EditedClip.Chord    = chord-1;
+                        EditedClip.ChordAll = F;
                     }
                 }
                 else
-                    EditClip.Chord = -1;
+                    EditedClip.Chord = -1;
             }
             else
             {
-                EditClip.Chord = chord-1;
-                var _chord = EditClip.Chords[EditClip.Chord];
+                EditedClip.Chord = chord-1;
+                var _chord = EditedClip.Chords[EditedClip.Chord];
 
                 if (_chord.Count > 0)
                 {
                     _chord.Sort();
-                    PlayNote(EditClip, _chord[0], _chord, CurChan);
+                    PlayNote(EditedClip, _chord[0], _chord, CurChan);
                 }
 
                 //MarkChordLabel(chord);            
 
-                EditClip.Chord = -1;
+                EditedClip.Chord = -1;
             }
         }
 
@@ -268,22 +268,22 @@ namespace IngameScript
                     tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
                 }
             }
-            else if (EditClip.ChordMode)
+            else if (EditedClip.ChordMode)
             {
-                EditClip.ChordAll = !EditClip.ChordAll;
+                EditedClip.ChordAll = !EditedClip.ChordAll;
                 //if (g_chordAll) EditClip.Chord = -1;
             }
             else
             { 
-                EditClip.ChordEdit = !EditClip.ChordEdit;
-                if (!EditClip.ChordEdit) EditClip.Chord = -1;
+                EditedClip.ChordEdit = !EditedClip.ChordEdit;
+                if (!EditedClip.ChordEdit) EditedClip.Chord = -1;
             }
         }
 
 
         void EditChord(int noteNum)
         {
-            var chord = EditClip.Chords[EditClip.Chord];
+            var chord = EditedClip.Chords[EditedClip.Chord];
 
             if (chord.Contains(noteNum)) chord.Remove(noteNum);
             else                         chord.Add   (noteNum);
@@ -292,10 +292,10 @@ namespace IngameScript
             {
                 chord.Sort();
 
-                var oldIndex = EditClip.EditLengthIndex;
-                EditClip.EditLengthIndex = Math.Min(EditClip.EditLengthIndex, g_steps.Length-2);
-                PlayNote(EditClip, chord[0], chord, CurChan);
-                EditClip.EditLengthIndex = oldIndex;
+                var oldIndex = EditedClip.EditLengthIndex;
+                EditedClip.EditLengthIndex = Math.Min(EditedClip.EditLengthIndex, g_steps.Length-2);
+                PlayNote(EditedClip, chord[0], chord, CurChan);
+                EditedClip.EditLengthIndex = oldIndex;
             }
         }
 

@@ -19,18 +19,28 @@ namespace IngameScript
             //LoadInstruments();
             //LoadClips(out curPath);
 
-            int curClipTrack, curClipIndex;
-            g_session = Session.Load(out curClipTrack, out curClipIndex);
 
+            int curClipTrack, 
+                curClipIndex, 
+                copyClipTrack, 
+                copyClipIndex;
+
+            g_session = Session.Load(
+                out curClipTrack, 
+                out curClipIndex, 
+                out copyClipTrack, 
+                out copyClipIndex);
+
+            
             if (OK(g_session))
             {
-                g_session.Tracks[curClipTrack].SetClip(curClipIndex, T);
+                //g_session.Tracks[curClipTrack].SetClip(curClscipIndex, T);
                 //InitPlaybackAfterLoad(EditClip.Track.PlayTime);
             }
             else
             { 
                 g_session = new Session();
-                g_session.Tracks[0].SetClip(0, T);
+                //g_session.Tracks[0].SetClip(0, T);
             }
 
 
@@ -43,7 +53,7 @@ namespace IngameScript
             //    ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
             //}
 
-            SetLabelColor(EditClip.ColorIndex);
+            SetLabelColor(EditedClip.ColorIndex);
         }
 
 
@@ -61,26 +71,11 @@ namespace IngameScript
             var c = 0;
 
             if (c < cfg.Length && !int.TryParse(cfg[c++], out g_lockView)) goto NothingLoaded;
-            if (c < cfg.Length && !LoadToggles(cfg[c++]))                  goto NothingLoaded;
 
             return;
 
         NothingLoaded:
             SetDefaultMachineState();
-        }
-
-
-        bool LoadToggles(string toggles)
-        {
-            uint f;
-            if (!uint.TryParse(toggles, out f)) return F;
-
-            var i = 0;
-
-            g_showSession = ReadBit(f, i++);
-            g_move        = ReadBit(f, i++);
-
-            return T;
         }
 
 

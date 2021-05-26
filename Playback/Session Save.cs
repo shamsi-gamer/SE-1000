@@ -16,11 +16,27 @@
             {
                 var state = 
                       Name
+                    + PS(SaveToggles())
                     + PS(TicksPerStep)
-                    + PS(Tracks.IndexOf(EditClip.Track))
-                    + PS(EditClip.Track.Clips.IndexOf(EditClip));
+                    + PS(EditClip)
+                    + PS(OK(EditedClip) ? Tracks.IndexOf(EditedClip.Track)           : -1)
+                    + PS(OK(EditedClip) ? EditedClip.Track.Clips.IndexOf(EditedClip) : -1)
+                    + PS(OK(ClipCopy)   ? Tracks.IndexOf(ClipCopy.Track)             : -1)
+                    + PS(OK(ClipCopy)   ? ClipCopy.Track.Clips.IndexOf(ClipCopy)     : -1);
 
                 pnlStorageSession.WriteText(state);
+            }
+
+
+            uint SaveToggles()
+            {
+                uint f = 0;
+                var  i = 0;
+
+                WriteBit(ref f, ShowSession, i++);
+                WriteBit(ref f, Move,        i++);
+
+                return f;
             }
 
 

@@ -571,8 +571,8 @@ namespace IngameScript
                 case 2: AddNextSetting(strLfo); break;
                 case 3: AddNextSetting(strMod); break;
 
-                case 4: EditClip.ParamKeys = T; break;
-                case 5: EditClip.ParamAuto = T; break;
+                case 4: EditedClip.ParamKeys = T; break;
+                case 5: EditedClip.ParamAuto = T; break;
                 }
             }
 

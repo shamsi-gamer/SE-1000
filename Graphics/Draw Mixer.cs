@@ -50,7 +50,7 @@ namespace IngameScript
                 DrawString(sprites, chan.Instrument.Name, rx + rw/2 + 3, ry + 14, 0.5f, chan.On ? color0 : col, TaC);
                 DrawString(sprites, S(ch + 1),            rx + rw/2 + 3, ry + 35, 1.2f, chan.On ? color0 : col, TaC);
 
-                DrawSoundLevel(sprites, rx + vb/2, y, rw - vb, h - 15, chan.Volume, EditClip.Track.DspVol[ch], chan, 2);
+                DrawSoundLevel(sprites, rx + vb/2, y, rw - vb, h - 15, chan.Volume, EditedClip.Track.DspVol[ch], chan, 2);
             }
 
             dsp.Draw(sprites);

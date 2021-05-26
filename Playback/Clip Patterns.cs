@@ -17,8 +17,8 @@ namespace IngameScript
                 }
                 else if (Mems[m] > -1)
                 {
-                    if (g_playing) Track.NextPat = Mems[m];
-                    else           SetCurrentPattern(Mems[m]);
+                    if (g_session.IsPlaying) Track.NextPat = Mems[m];
+                    else                     SetCurrentPattern(Mems[m]);
                 }
             }
 
@@ -146,7 +146,7 @@ namespace IngameScript
                     Patterns.Insert(destPat, pat);
                 }
 
-                if (g_playing)
+                if (g_session.IsPlaying)
                     Track.PlayTime += GetPatTime(CurPat - destPat);
 
                 if (OK(EditPos))
@@ -196,7 +196,7 @@ namespace IngameScript
                     EditPos = CurPat * g_patSteps + EditPos % g_patSteps;
 
 
-                //if (g_playing)
+                //if (Playing)
                 //{
                 //         if (CurPat > oldPat) StartTime -= nSteps * g_session.TicksPerStep;
                 //    else if (CurPat < oldPat) StartTime += nSteps * g_session.TicksPerStep;
@@ -223,7 +223,7 @@ namespace IngameScript
                 if (OK(EditPos))
                     EditPos = 0;
 
-                //if (g_playing)
+                //if (Playing)
                 //    StartTime -= nSteps * g_session.TicksPerStep;
 
                 UpdateAutoKeys();
@@ -332,7 +332,7 @@ namespace IngameScript
                 //if (NOK(recordPosition))
                 // recordPosition = 0;
 
-                //if (g_playing)
+                //if (Playing)
                 //    StartTime -= nSteps * g_session.TicksPerStep;
 
                 UpdateAutoKeys();

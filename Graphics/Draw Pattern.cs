@@ -42,14 +42,14 @@ namespace IngameScript
                     x + xt + wt * (clip.EditPos % g_patSteps), 
                     y, 
                     wt,
-                    EditClip.ParamKeys || EditClip.ParamAuto ? h : rh,
+                    EditedClip.ParamKeys || EditedClip.ParamAuto ? h : rh,
                     color3);
             }
 
 
             DrawPattern(sprites, x + xt, y, w - xt, rh, clip, pat, 2, isolated);
 
-            if (   g_playing
+            if (   g_session.IsPlaying
                 && PlayPat == pat)
             {
                 FillRect(sprites, x + xt + wt * ((int)PlayStep % g_patSteps), y, wt, rh, color6);

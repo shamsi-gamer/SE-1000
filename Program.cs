@@ -46,7 +46,10 @@ namespace IngameScript
 
 
         IMyPistonBase                 g_lightPiston;
-         IMyMotorBase                 g_lightHinge1, g_lightHinge2;
+         IMyMotorBase                 g_lightHinge1, 
+                                      g_lightHinge2, 
+                                      g_hingeL, 
+                                      g_hingeR;
                                       
                                       
         static List<Note>             lastNotes = new List<Note>();
@@ -108,6 +111,8 @@ namespace IngameScript
             g_lightPiston = Get(strLight + " Piston")  as IMyPistonBase;
             g_lightHinge1 = Get(strLight + " Hinge 1") as IMyMotorBase;
             g_lightHinge2 = Get(strLight + " Hinge 2") as IMyMotorBase;
+            g_hingeL      = Get("Hinge L") as IMyMotorBase;
+            g_hingeR      = Get("Hinge R") as IMyMotorBase;
 
             g_remote      = Get("Remote Control") as IMyRemoteControl;
 
@@ -128,7 +133,7 @@ namespace IngameScript
 
                 Load();
 
-                SetLabelColor(EditClip.ColorIndex);
+                SetLabelColor(EditedClip.ColorIndex);
             }
         }
 

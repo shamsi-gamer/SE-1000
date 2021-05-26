@@ -17,7 +17,7 @@ namespace IngameScript
         //        track.PlayTime = playTime % (playClip.Patterns.Count * g_patSteps * g_session.TicksPerStep);
 
         //        track.StartTime =
-        //            g_playing
+        //            Playing
         //            ? g_time - track.PlayTime        
         //            : long_NaN;
 
@@ -31,110 +31,114 @@ namespace IngameScript
 
         void Play(bool play = T)
         {
-            if (  !g_playing // play
+            if (!OK(g_session))
+                return;
+
+            if (  !(g_session?.IsPlaying ?? F) // play
                 && play) 
             {
-                g_playing = T;
-
-                var nextPat   = 0;
-                var playTime  = GetPatTime(nextPat);
-                var startTime = g_time - playTime;
+                //var nextPat   = 0;
+                //var playTime  = GetPatTime(nextPat);
+                //var startTime = g_time - playTime;
 
                 foreach (var track in g_session.Tracks)
                 {
-                    //track.PlayTime  = playTime;
-                    //track.StartTime = startTime;
+                    track.PlayPat = 0;
+                //    //track.PlayTime  = playTime;
+                //    //track.StartTime = startTime;
 
-                    //if (track.NextClip < 0) continue;
-                    //var nextClip = track.Clips[track.NextClip];
+                //    //if (track.NextClip < 0) continue;
+                //    //var nextClip = track.Clips[track.NextClip];
 
-                    //var nextPat = 
-                    //    track.NextPat > -1 
-                    //    ? track.NextPat 
-                    //    : nextClip.CurPat;
+                //    //var nextPat = 
+                //    //    track.NextPat > -1 
+                //    //    ? track.NextPat 
+                //    //    : nextClip.CurPat;
 
-                    //track.PlayTime = GetPatTime(nextPat);
-                    //track.NextPat  = -1;
+                //    //track.PlayTime = GetPatTime(nextPat);
+                //    //track.NextPat  = -1;
 
-                    //track.StartTime = g_time - track.PlayTime;
+                //    //track.StartTime = g_time - track.PlayTime;
                 }
             }
 
             else // stop
             { 
-                if (!OK(g_session))
-                    return;
-
-                g_playing = F;
-
-
                 foreach (var track in g_session.Tracks)
                 {
-                    if (!OK(track.PlayClip)) continue;
-                    var playClip = track.Clips[track.PlayClip];
+                    if (!OK(track.PlayClip))
+                        continue;
 
-                    var b = playClip.GetBlock(playClip.CurPat);
+                    if (OK(track.NextClip))
+                        track.NextClip = -1;
+                    else
+                    {
+                        var playClip = track.Clips[track.PlayClip];
 
-                    var _block =
-                           playClip.Block
-                        && OK(b)
-                        && CurPat > b.First;
+                        var b = playClip.GetBlock(playClip.CurPat);
 
-                    playClip.SetCurrentPattern(_block ? b.First : 0);
-                    playClip.Track.NextPat = -1;
+                        var _block =
+                               playClip.Block
+                            && OK(b)
+                            && CurPat > b.First;
 
+                        playClip.SetCurrentPattern(_block ? b.First : 0);
 
-                    playClip.TrimCurrentNotes();
+                        track.NextPat   = -1;
+                        track.PlayPat   = -1;
 
+                        playClip.TrimCurrentNotes();
 
-                    playClip.Track.PlayTime  = long_NaN;
-                    playClip.Track.StartTime = long_NaN;
+                        track.PlayTime  = long_NaN;
+                        track.StartTime = long_NaN;
+
+                        track.PlayClip  = -1;
+                    }
                 }
-
 
                 lastNotes.Clear();
             }
         }
 
 
+        void Stop() { Play(F); }
+
+
         void UpdatePlaybackStatus()
         {
-            var nPlaying = g_session.Tracks.Count(track => 
+            var playing = OK(g_session.Tracks.Find(track => 
                    OK(track.PlayClip) 
-                || OK(track.NextClip));
+                || OK(track.NextClip)));
 
-            if (   g_playing
-                && nPlaying == 0)
-                Play(F);
-            else if (!g_playing
-                  && nPlaying > 0)
-                Play(T);
+            if (    g_session.IsPlaying
+                && !playing)
+                Stop();
+            //else if (!g_session.IsPlaying
+            //       && playing)
+            //    Play();
         }
 
 
         void UpdatePlayback()
         {
-            if (g_playing)
+            foreach (var track in g_session.Tracks)
             {
-                foreach (var track in g_session.Tracks)
-                {
-                    if (   !OK(track.PlayClip)
-                        && !OK(track.NextClip))
-                        continue;
+                if (   !OK(track.PlayClip)
+                    && !OK(track.NextClip))
+                    continue;
 
-                    track.CueNextPattern();
+                track.CueNextPattern();
 
-                    if (!OK(track.PlayClip))
-                        continue;
+                if (!OK(track.PlayClip))
+                    continue;
 
-                    var clip = track.Clips[track.PlayClip];
+                var clip = track.Clips[track.PlayClip];
 
-                    if (   clip == EditClip
-                        && clip.Follow) 
-                        clip.SetCurrentPattern(track.PlayPat);
+                if (   clip == EditedClip
+                    && clip.Follow) 
+                    clip.SetCurrentPattern(track.PlayPat);
 
-                    AddPlaybackNotes(clip);
-                }
+                AddPlaybackNotes(clip);
             }
 
 

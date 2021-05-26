@@ -8,11 +8,20 @@ namespace IngameScript
     {
         public partial class Session
         {
-            public static Session Load(out int curClipTrack, out int curClipIndex)
+            public static Session Load(out int curClipTrack, 
+                                       out int curClipIndex,
+                                       out int copyClipTrack,
+                                       out int copyClipIndex)
             {
                 var session = new Session();
 
-                if (!session.LoadSession    (out curClipTrack, out curClipIndex)) return null;
+                if (!session.LoadSession(
+                    out curClipTrack, 
+                    out curClipIndex, 
+                    out copyClipTrack, 
+                    out copyClipIndex)) 
+                    return null;
+
                 if (!session.LoadInstruments()) session.CreateDefaultInstruments();
                 if (!session.LoadTracks     ()) session.CreateDefaultTracks();
 
@@ -20,10 +29,15 @@ namespace IngameScript
             }
 
 
-            bool LoadSession(out int curClipTrack, out int curClipIndex)
+            bool LoadSession(out int curClipTrack, 
+                             out int curClipIndex,
+                             out int copyClipTrack,
+                             out int copyClipIndex)
             {
-                curClipTrack = -1;
-                curClipIndex = -1;
+                curClipTrack  = -1;
+                curClipIndex  = -1;
+                copyClipTrack = -1;
+                copyClipIndex = -1;
 
                 var sb = new StringBuilder();
                 pnlStorageSession.ReadText(sb);
@@ -36,9 +50,28 @@ namespace IngameScript
 
                 Name = state[s++];
 
-                if (!int.TryParse(state[s++], out TicksPerStep)) return F;
-                if (!int.TryParse(state[s++], out curClipTrack)) return F;
-                if (!int.TryParse(state[s++], out curClipIndex)) return F;
+                LoadToggles(state[s++]);
+
+                if (!int.TryParse(state[s++], out TicksPerStep))  return F;
+                if (!int.TryParse(state[s++], out EditClip))      return F;
+                if (!int.TryParse(state[s++], out curClipTrack))  return F;
+                if (!int.TryParse(state[s++], out curClipIndex))  return F;
+                if (!int.TryParse(state[s++], out copyClipTrack)) return F;
+                if (!int.TryParse(state[s++], out copyClipIndex)) return F;
+
+                return T;
+            }
+
+
+            bool LoadToggles(string toggles)
+            {
+                uint f;
+                if (!uint.TryParse(toggles, out f)) return F;
+
+                var i = 0;
+
+                ShowSession = ReadBit(f, i++);
+                Move        = ReadBit(f, i++);
 
                 return T;
             }

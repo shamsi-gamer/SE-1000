@@ -20,7 +20,7 @@ namespace IngameScript
 
             var sprites = new List<MySprite>();
 
-            if (!OK(EditClip))
+            if (!OK(EditedClip))
             {
                 FillRect(sprites, x, y, w, h, color0);
             }
@@ -28,11 +28,11 @@ namespace IngameScript
             { 
                 if (   SelChan > -1
                     && IsCurParam()
-                    && (   EditClip.ParamKeys
-                        || EditClip.ParamAuto))
+                    && (   EditedClip.ParamKeys
+                        || EditedClip.ParamAuto))
                 {
-                    if (EditClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, EditClip, CurPat, T, null);
-                    else               DrawPatternDisplay(sprites, x, y, w, h, EditClip, CurPat, T);
+                    if (EditedClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, T, null);
+                    else               DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, T);
                 }
                 else if (SelChan > -1)
                 {
@@ -48,10 +48,10 @@ namespace IngameScript
                     }
                     else DrawInstrument  (sprites, x, y, w, h);
                 }
-                else if (EditClip.Piano 
+                else if (EditedClip.Piano 
                       && g_lockView != 1
-                   || g_lockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditClip, CurPat, T, null);
-                else                   DrawPatternDisplay(sprites, x, y, w, h, EditClip, CurPat, T);
+                   || g_lockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, T, null);
+                else                   DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, T);
             }
 
             dsp.Draw(sprites);
@@ -74,14 +74,14 @@ namespace IngameScript
                     DrawFuncButton(sprites, "Note", 2, w, y, F, F, clip.EditNotes.Count > 0);
 
                 if (GetLongNotes(clip).Count > 0)
-                    DrawFuncButton(sprites, strCut,  3, w, y, F, F);
+                    DrawFuncButton(sprites, strCut, 3, w, y, F, F);
             }
         }
 
 
         static void DrawFuncButton(List<MySprite> sprites, string str, int i, float w, float h, bool isSetting, bool hasSetting, bool down = F)
         {
-            DrawButton(sprites, str, i, 6, w, h + 24, down);
+            DrawButton(sprites, str, i, 6, w, h, down);
 
 
             if (isSetting)
