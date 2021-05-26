@@ -48,13 +48,13 @@ namespace IngameScript
                 for (int i = 0; i < g_nChans; i++)
                     Clips[i] = null;
                           
-                StartTime = 
+                StartTime = long_NaN;
                 PlayTime  = long_NaN;
                           
-                PlayClip  = 
-                NextClip  =
+                PlayClip  = -1;
+                NextClip  = -1;
                           
-                PlayPat   =
+                PlayPat   = -1;
                 NextPat   = -1;
                           
                 DspVol    = new float[g_nChans];
@@ -165,8 +165,11 @@ namespace IngameScript
                 }
 
 
-                if (!OK(PlayClip)) 
+                if (!OK(PlayClip))
+                {
+                    PlayPat = -1;
                     return;
+                }
 
 
                 var clip = Clips[PlayClip];
@@ -206,8 +209,7 @@ namespace IngameScript
                 }
 
 
-                if (OK(PlayClip))
-                    PlayPat = (int)(PlayStep / g_patSteps);
+                PlayPat = (int)(PlayStep / g_patSteps);
             }
 
 

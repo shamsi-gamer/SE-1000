@@ -54,7 +54,7 @@ namespace IngameScript
 
             public void CreateDefaultSession()
             {
-                TicksPerStep = 7;
+                TicksPerStep = 8; // 113 bpm
 
                 EditedClip = null;
                 ClipCopy   = null;
@@ -87,7 +87,7 @@ namespace IngameScript
 
                 clip.Patterns.Add(new Pattern(Instruments[0], clip));
 
-                EditedClip       = clip;
+                EditedClip     = clip;
                 track.Clips[0] = clip;
 
                 track.PlayClip = -1;
