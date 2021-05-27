@@ -162,7 +162,7 @@ namespace IngameScript
                 index           = int.Parse(data[i++]);
 
                 var instName    = data[i++];
-                var inst        = g_session.Instruments.Find(_inst => _inst.Name == instName);
+                var inst        = Instruments.Find(_inst => _inst.Name == instName);
 
                 var chan = new Channel(pat, inst);
                 

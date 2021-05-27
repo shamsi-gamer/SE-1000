@@ -29,6 +29,8 @@ namespace IngameScript
             public List<Speaker> Available;
             public List<Speaker> Used;
 
+            public float         UsedRatio => (float)Used.Count / Speakers.Count;
+
 
             public SpeakerManager()
             {
@@ -61,10 +63,6 @@ namespace IngameScript
                 Used.Remove(spk);
                 Available.Add(spk);
             }
-
-
-            public float UsedRatio { get { 
-                    return (float)Used.Count / Speakers.Count; } }
 
 
             public void StopAll()

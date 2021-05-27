@@ -142,7 +142,7 @@ namespace IngameScript
 
 
                 // draw play position
-                if (   g_session.IsPlaying
+                if (   IsPlaying
                     && PlayPat < EditedClip.Patterns.Count)
                 {
                     var pl    = x  - pw * (nDsp * 4 + EditedClip.SongOff);

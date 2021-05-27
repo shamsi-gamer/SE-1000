@@ -7,7 +7,7 @@
             public int       SourceIndex;
 
             public Parameter Parameter;
-            public string    Path { get { return Parameter.GetPath(SourceIndex); } }
+            public string    Path => Parameter.GetPath(SourceIndex);
 
             public float     Value,
                              StepTime;

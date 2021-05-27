@@ -48,7 +48,6 @@ namespace IngameScript
                                  Spread     = F,
                                         
                                  Shift      = F,
-                                 MixerShift = F,
                                  
                                  Hold,
                                  Pick,
@@ -102,17 +101,17 @@ namespace IngameScript
             public int[]         Mems = new int[nMems];
                                  
 
-            public Pattern       CurPattern     { get { return Patterns[CurPat]; } }
-            public Channel       CurChannel     { get { return CurPattern.Channels[CurChan]; } }
-            public Instrument    CurInstrument  { get { return CurChannel.Instrument; } }
-            public Channel       SelChannel    { get { return SelChan > -1 ? CurPattern.Channels[SelChan] : null; } }
-            public Instrument    SelInstrument { get { return SelChannel?.Instrument ?? null; } }
-            public Source        SelSource     { get { return CurSrc > -1 ? SelInstrument.Sources[CurSrc] : null; } }
+            public Pattern       CurPattern     => Patterns[CurPat];
+            public Channel       CurChannel     => CurPattern.Channels[CurChan];
+            public Instrument    CurInstrument  => CurChannel.Instrument;
+            public Channel       SelChannel     => SelChan > -1 ? CurPattern.Channels[SelChan] : null;
+            public Instrument    SelInstrument  => SelChannel?.Instrument ?? null;
+            public Source        SelSource      => CurSrc > -1 ? SelInstrument.Sources[CurSrc] : null;
 
 
-            public float         EditStep       { get { return g_steps[EditStepIndex  ]; } }
-            public float         EditStepLength { get { return g_steps[EditLengthIndex]; } }
-            public int           EditLength     { get { return (int)(EditStepLength * g_session.TicksPerStep); } }
+            public float         EditStep       => g_steps[EditStepIndex  ];
+            public float         EditStepLength => g_steps[EditLengthIndex];
+            public int           EditLength     => (int)(EditStepLength * TicksPerStep);
 
 
             public Clip(Track track, string name = "Clip")
@@ -247,7 +246,6 @@ namespace IngameScript
                 Piano           = clip.Piano;
                                 
                 Shift           = clip.Shift;
-                MixerShift      = clip.MixerShift;
                                 
                 Hold            = clip.Hold;
                 Pick            = clip.Pick;
@@ -414,14 +412,14 @@ namespace IngameScript
 
             public void TrimCurrentNotes(int ch = -1)
             {
-                var timeStep = g_session.IsPlaying ? PlayStep : TimeStep;
+                var timeStep = IsPlaying ? PlayStep : TimeStep;
 
                 foreach (var note in g_notes)
                 {
                     if (   ch < 0
                         || note.iChan == ch)
                     { 
-                        var noteStep = g_session.IsPlaying ? note.SongStep : note.Step;
+                        var noteStep = IsPlaying ? note.SongStep : note.Step;
                         note.UpdateStepLength(timeStep - noteStep);
                     }
                 }
@@ -430,11 +428,11 @@ namespace IngameScript
 
             public void WrapCurrentNotes(int nWrapSteps)
             {
-                var timeStep = g_session.IsPlaying ? PlayStep : TimeStep;
+                var timeStep = IsPlaying ? PlayStep : TimeStep;
 
                 foreach (var note in g_notes)
                 {
-                    var noteStep = g_session.IsPlaying ? note.SongStep : note.Step;
+                    var noteStep = IsPlaying ? note.SongStep : note.Step;
 
                     if (   timeStep >= noteStep
                         && timeStep <  noteStep + note.StepLength)

@@ -60,12 +60,12 @@ namespace IngameScript
             }
 
 
-            public static Pattern Load(Session session, string[] data, ref int i)
+            public static Pattern Load(string[] data, ref int i)
             {
-                var pat = new Pattern(session.Instruments[0]);
+                var pat = new Pattern(Instruments[0]);
 
                 foreach (var chan in pat.Channels)
-                    chan.Instrument = session.Instruments[0];
+                    chan.Instrument = Instruments[0];
 
                 var nChans = int.Parse(data[i++]);
 

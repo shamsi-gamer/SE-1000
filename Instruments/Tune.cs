@@ -105,13 +105,13 @@ namespace IngameScript
             }
 
 
-            public static Tune Load(Session session, string[] data, ref int i, Instrument inst, int iSrc)
+            public static Tune Load(string[] data, ref int i, Instrument inst, int iSrc)
             {
                 var tune = new Tune(
                     inst, 
                     iSrc > -1 ? inst.Sources[iSrc] : null);
 
-                Parameter.Load(session, data, ref i, inst, iSrc, null, tune);
+                Parameter.Load(data, ref i, inst, iSrc, null, tune);
 
                 tune.UseChord   = data[i++] == "1";
                 tune.AllOctaves = data[i++] == "1";

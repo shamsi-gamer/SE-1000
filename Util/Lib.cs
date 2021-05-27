@@ -38,7 +38,7 @@ namespace IngameScript
             else
             {
                 str =
-                    PrintNoZero(val, Math.Abs(dec))
+                     PrintNoZero(val, Math.Abs(dec))
                     .PadLeft(pad + Math.Abs(dec) + (dec != 0 ? 1 : 0));
             }
 
@@ -65,9 +65,9 @@ namespace IngameScript
         }
 
 
-        static bool OK(int    i) { return i > -1; }
-        static bool OK(float  f) { return !float.IsNaN(f); }
-        static bool OK(object o) { return o != null; }
+        static bool  OK(int    i) { return i > -1; }
+        static bool  OK(float  f) { return !float.IsNaN(f); }
+        static bool  OK(object o) { return o != null; }
 
         static int   MinMax(int   min, int   val, int   max) { return Math.Min(Math.Max(min, val), max); }
         static float MinMax(float min, float val, float max) { return Math.Min(Math.Max(min, val), max); }
@@ -80,7 +80,7 @@ namespace IngameScript
                 && str.Substring(str.Length - suf.Length) == suf)
             {
                 int val;
-                if (int.TryParse(str.Substring(pre.Length, str.Length - pre.Length - suf.Length), out val))
+                if (int_TryParse(str.Substring(pre.Length, str.Length - pre.Length - suf.Length), out val))
                     return val;
             }
 

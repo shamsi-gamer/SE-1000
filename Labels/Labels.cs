@@ -83,20 +83,20 @@ namespace IngameScript
 
         void InitTransportLabels()
         {
-            lblPlay = new Label(Lbl("Play"), 
-                lbl => g_session.IsPlaying,
+            lblPlay = new Label(GetLabel("Play"), 
+                lbl => IsPlaying,
                 null, 
                 null,
                 lbl =>
                 { 
-                    if (g_session.IsPlaying) lbl.SetText("Stop ▐█", 6.5f, 24);
-                    else                     lbl.SetText("► Play",  7,    24);
+                    if (IsPlaying) lbl.SetText("Stop ▐█", 6.5f, 24);
+                    else           lbl.SetText("► Play",  7,    24);
                 },
                 0, 
                 false, 
                 true);
 
-            lblEdit = new Label(Lbl("Edit"),
+            lblEdit = new Label(GetLabel("Edit"),
                 lbl => OK(EditedClip.EditPos), 
                 null,
                 null,
@@ -107,7 +107,7 @@ namespace IngameScript
                     lbl.BackColor = editColor0;
                 });
 
-            lblRec = new Label(Lbl("Rec"),
+            lblRec = new Label(GetLabel("Rec"),
                 lbl => EditedClip.Recording, 
                 null,
                 null,
@@ -122,51 +122,51 @@ namespace IngameScript
 
         void InitToggleLabels()
         {
-            lblLoop        = new Label(Lbl("Loop"),         lbl => EditedClip.Loop);
-            lblBlock       = new Label(Lbl("Block"),        lbl => EditedClip.Block);
-            lblAllPatterns = new Label(Lbl("All Patterns"), lbl => EditedClip.AllPats);
-            lblFollow      = new Label(Lbl("Follow"),       lbl => EditedClip.Follow);
-            lblAutoCue     = new Label(Lbl("Auto Cue"),     lbl => EditedClip.AutoCue);
+            lblLoop        = new Label(GetLabel("Loop"),         lbl => EditedClip.Loop);
+            lblBlock       = new Label(GetLabel("Block"),        lbl => EditedClip.Block);
+            lblAllPatterns = new Label(GetLabel("All Patterns"), lbl => EditedClip.AllPats);
+            lblFollow      = new Label(GetLabel("Follow"),       lbl => EditedClip.Follow);
+            lblAutoCue     = new Label(GetLabel("Auto Cue"),     lbl => EditedClip.AutoCue);
         }
 
 
         void InitNavLabels()
         {
-            lblNew   = new Label(Lbl("New"),   NavIsBright,  NavIsDim, UpdateNew);
-            lblDup   = new Label(Lbl("Dup"),   NavIsBright,  NavIsDim, UpdateDup);
-            lblDel   = new Label(Lbl(strDel),  NavIsBright,  NavIsDim, UpdateDel);
+            lblNew   = new Label(GetLabel("New"),   NavIsBright,  NavIsDim, UpdateNew);
+            lblDup   = new Label(GetLabel("Dup"),   NavIsBright,  NavIsDim, UpdateDup);
+            lblDel   = new Label(GetLabel(strDel),  NavIsBright,  NavIsDim, UpdateDel);
 
-            lblMove  = new Label(Lbl("Move"),
-                lbl => (g_session.Move ^ (CurSrc > -1)) && CurSet < 0, 
-                lbl => SelChan > -1 && CurSet < 0 && !g_session.Move,
+            lblMove  = new Label(GetLabel("Move"),
+                lbl => (Move ^ (CurSrc > -1)) && CurSet < 0, 
+                lbl => SelChan > -1 && CurSet < 0 && !Move,
                 UpdateMove);
 
-            lblPrev  = new Label(Lbl("Prev"),  MoveIsBright, NavIsDim, UpdatePrev);
-            lblNext  = new Label(Lbl("Next"),  MoveIsBright, NavIsDim, UpdateNext);
+            lblPrev  = new Label(GetLabel("Prev"),  MoveIsBright, NavIsDim, UpdatePrev);
+            lblNext  = new Label(GetLabel("Next"),  MoveIsBright, NavIsDim, UpdateNext);
 
-            lblOut   = new Label(Lbl("Out"),   NavIsBright,  NavIsDim);
-            lblBack  = new Label(Lbl("Back"),  NavIsBright,  NavIsDim);
-            lblEnter = new Label(Lbl("Enter"), NavIsBright,  NavIsDim);
+            lblOut   = new Label(GetLabel("Out"),   NavIsBright,  NavIsDim);
+            lblBack  = new Label(GetLabel("Back"),  NavIsBright,  NavIsDim);
+            lblEnter = new Label(GetLabel("Enter"), NavIsBright,  NavIsDim);
         }
 
 
         void UpdateSessionLabel(Label lbl)
         {
-            if (g_session.ShowSession) lbl.SetText("Clip",    8, 18);
-            else                       lbl.SetText("Session", 7, 21);
+            if (ShowSession) lbl.SetText("Clip",    8, 18);
+            else             lbl.SetText("Session", 7, 21);
         }
 
 
         void InitSideLabels()
         {
-            lblLock     = new Label(Lbl("Lock"),      lbl => OK(g_locks.Find(l => l.IsLocked)),  null, null, null, 0, F, T);
-            lblAutoLock = new Label(Lbl("Auto Lock"), lbl => OK(g_locks.Find(l => l.AutoLock)),  null, null, null, 0, F, T);
+            lblLock     = new Label(GetLabel("Lock"),      lbl => OK(g_locks.Find(l => l.IsLocked)),  null, null, null, 0, F, T);
+            lblAutoLock = new Label(GetLabel("Auto Lock"), lbl => OK(g_locks.Find(l => l.AutoLock)),  null, null, null, 0, F, T);
 
-            lblFold     = new Label(Lbl("Fold"),      null, null, null, null, 0, F, T);
-            lblTimers   = new Label(Lbl("Timers"),    lbl => !OK(g_timers.Find(t => !t.Enabled)), null, null, null, 0, F, T);
+            lblFold     = new Label(GetLabel("Fold"),      null, null, null, null, 0, F, T);
+            lblTimers   = new Label(GetLabel("Timers"),    lbl => !OK(g_timers.Find(t => !t.Enabled)), null, null, null, 0, F, T);
 
-            lblGyro     = new Label(Lbl("Gyro"),      lbl => !OK(g_gyros .Find(g => !g.Enabled)), null, null, null, 0, F, T);
-            lblMass     = new Label(Lbl("Mass"),      lbl => !OK(g_mass  .Find(g => !g.Enabled)), null, null, null, 0, F, T);
+            lblGyro     = new Label(GetLabel("Gyro"),      lbl => !OK(g_gyros .Find(g => !g.Enabled)), null, null, null, 0, F, T);
+            lblMass     = new Label(GetLabel("Mass"),      lbl => !OK(g_mass  .Find(g => !g.Enabled)), null, null, null, 0, F, T);
         }
 
 
@@ -190,7 +190,7 @@ namespace IngameScript
         void UpdateNext(Label lbl) { lbl.SetText(CurSet < 0 ? "◄"    : " "); }
 
 
-        bool MoveIsBright(Label lbl) { return CurSet < 0 && g_session.Move ^ (CurSrc > -1); }
+        bool MoveIsBright(Label lbl) { return CurSet < 0 && Move ^ (CurSrc > -1); }
         //bool MoveIsDim   (Label lbl) { return SelChan > -1 && !g_move; }
 
 

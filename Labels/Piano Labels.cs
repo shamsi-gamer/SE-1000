@@ -12,10 +12,10 @@ namespace IngameScript
             InitPianoLabelsHigh();
             InitPianoLabelsLow();
 
-            lblOctave     = new Label(Lbl("Octave"),  null, null, UpdateOctaveLabel);
-            lblShuffle    = new Label(Lbl("Shuffle"), null, null, UpdateShuffleLabel);
-            lblOctaveUp   = new Label(Lbl("Octave Up"));
-            lblOctaveDown = new Label(Lbl("Octave Down"));
+            lblOctave     = new Label(GetLabel("Octave"),  null, null, UpdateOctaveLabel);
+            lblShuffle    = new Label(GetLabel("Shuffle"), null, null, UpdateShuffleLabel);
+            lblOctaveUp   = new Label(GetLabel("Octave Up"));
+            lblOctaveDown = new Label(GetLabel("Octave Down"));
         }
 
 
@@ -176,7 +176,7 @@ namespace IngameScript
                   && EditedClip.ChordEdit)
                 return EditedClip.Chords[EditedClip.Chord].Contains(noteNum);
 
-            else if (g_session.IsPlaying 
+            else if (IsPlaying 
                   && PlayChannel.Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
                 return T; // note is in the currently played channel
 
@@ -205,7 +205,7 @@ namespace IngameScript
                     if (ch == CurChan)
                         continue;
 
-                    if (   g_session.IsPlaying
+                    if (   IsPlaying
                         && OK(PlayPattern.Channels[ch].Notes.Find(n => NoteIsPlaying(noteNum, n))))
                         return T;
                 }
@@ -236,7 +236,7 @@ namespace IngameScript
         
         bool NoteIsTriggered(int noteNum, Note note)
         {
-            var timeStep = g_session.IsPlaying ? PlayStep : TimeStep;
+            var timeStep = IsPlaying ? PlayStep : TimeStep;
 
             return
                    noteNum == note.Number
@@ -290,7 +290,7 @@ namespace IngameScript
                    n.Step >= patStep
                 && n.Step <  patStep+1));
 
-            if (   g_session.IsPlaying
+            if (   IsPlaying
                 && (int)PlayStep  == songStep
                 && CurPat == PlayPat)
                 return !on;

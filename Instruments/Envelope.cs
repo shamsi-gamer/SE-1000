@@ -200,16 +200,16 @@ namespace IngameScript
             }
 
 
-            public static Envelope Load(Session session, string[] data, ref int i, Instrument inst, int iSrc, Setting parent)
+            public static Envelope Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent)
             {
                 var tag = data[i++];
 
                 var env = new Envelope(parent, inst, iSrc > -1 ? inst.Sources[iSrc] : null);
 
-                env.Attack  = Parameter.Load(session, data, ref i, inst, iSrc, env, env.Attack );
-                env.Decay   = Parameter.Load(session, data, ref i, inst, iSrc, env, env.Decay  );
-                env.Sustain = Parameter.Load(session, data, ref i, inst, iSrc, env, env.Sustain);
-                env.Release = Parameter.Load(session, data, ref i, inst, iSrc, env, env.Release);
+                env.Attack  = Parameter.Load(data, ref i, inst, iSrc, env, env.Attack );
+                env.Decay   = Parameter.Load(data, ref i, inst, iSrc, env, env.Decay  );
+                env.Sustain = Parameter.Load(data, ref i, inst, iSrc, env, env.Sustain);
+                env.Release = Parameter.Load(data, ref i, inst, iSrc, env, env.Release);
 
                 return env;
             }
@@ -248,7 +248,7 @@ namespace IngameScript
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
                 var sTime =
-                    g_session.IsPlaying
+                    IsPlaying
                     ? g_time - EditedClip.Track.StartTime
                     : 0;
 

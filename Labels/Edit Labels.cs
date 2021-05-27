@@ -4,19 +4,19 @@
     {
         void InitEditLabels()
         {
-            lblLeft  = new Label(Lbl("Left"),  null, lbl => EditedClip.EditNotes.Count > 0);
-            lblRight = new Label(Lbl("Right"), null, lbl => EditedClip.EditNotes.Count > 0);
+            lblLeft  = new Label(GetLabel("Left"),  null, lbl => EditedClip.EditNotes.Count > 0);
+            lblRight = new Label(GetLabel("Right"), null, lbl => EditedClip.EditNotes.Count > 0);
 
-            lblStep  = new Label(Lbl("Step"));
+            lblStep  = new Label(GetLabel("Step"));
 
-            lblHold  = new Label(Lbl("Hold"),
+            lblHold  = new Label(GetLabel("Hold"),
                 lbl => 
                        EditedClip.Hold 
                     && (  !OK(EditedClip.EditPos) 
                         || EditedClip.EditNotes.Count > 0));
 
-            lblEditStep   = new Label(Lbl("Edit Step"),   null, null, UpdateEditStepLabel);
-            lblEditLength = new Label(Lbl("Edit Length"), null, null, UpdateEditLengthLabel);
+            lblEditStep   = new Label(GetLabel("Edit Step"),   null, null, UpdateEditStepLabel);
+            lblEditLength = new Label(GetLabel("Edit Length"), null, null, UpdateEditLengthLabel);
         }
 
 

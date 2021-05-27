@@ -6,7 +6,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        static float RND { get { return (float)g_rnd.NextDouble(); } }
+        static float RND => (float)g_rnd.NextDouble();
 
 
         void Random()
@@ -64,7 +64,7 @@ namespace IngameScript
             int first, last;
             EditedClip.GetCurPatterns(out first, out last);
 
-            var inst = g_session.Instruments[g_rnd.Next(0, g_session.Instruments.Count)];
+            var inst = Instruments[g_rnd.Next(0, Instruments.Count)];
 
             if (OK(rndInst))
             { 

@@ -33,9 +33,9 @@ namespace IngameScript
             FillRect(sprites, x, y, w, h, color0);
 
             
-            for (int iy = 0; iy < Math.Min(g_session.Tracks.Count, 4); iy++)
+            for (int iy = 0; iy < Math.Min(Tracks.Count, 4); iy++)
             {
-                var track = g_session.Tracks[iy];
+                var track = Tracks[iy];
 
                 for (int ix = nDsp*6 + 0; ix < nDsp*6 + 6; ix++)
                 {
@@ -92,10 +92,10 @@ namespace IngameScript
                     // edited clip
                     if (clip == EditedClip)
                     { 
-                        var editCol = color4;
+                        var editCol = color3;
 
-                             if (isPlayClip)          editCol = color5;
-                        else if (!OK(track.NextClip)) editCol = color3;
+                             if (ix == track.NextClip) editCol = color4;
+                        else if (isPlayClip)           editCol = color5;
 
                         var ew = cancel ?  0 : 14;
                         var de = cancel ?  0 :  5;

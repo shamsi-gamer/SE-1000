@@ -5,17 +5,17 @@ namespace IngameScript
     {
         void InitMixerLabels()
         { 
-            lblMixerVolumeUp   = new Label(Lbl("Volume Up"));
-            lblMixerVolumeDown = new Label(Lbl("Volume Down"));
-            lblMixerAll        = new Label(Lbl("Solo"), lbl => g_session.EditClip == 1, lbl => OK(g_session.ClipCopy), UpdateMixerAll);
-            lblMixerMuteAll    = new Label(Lbl("Mute"), lbl => g_session.EditClip == 2, null,                          UpdateMixerMuteAll);
+            lblMixerVolumeUp   = new Label(GetLabel("Volume Up"));
+            lblMixerVolumeDown = new Label(GetLabel("Volume Down"));
+            lblMixerAll        = new Label(GetLabel("Solo"), lbl => EditClip == 1, lbl => OK(ClipCopy), UpdateMixerAll);
+            lblMixerMuteAll    = new Label(GetLabel("Mute"), lbl => EditClip == 2, null,                          UpdateMixerMuteAll);
 
-            lblMixerShift      = new Label(Lbl("M Shift"), lbl => EditedClip.MixerShift);
+            lblMixerShift      = new Label(GetLabel("M Shift"), lbl => MixerShift);
 
-            lblSession = new Label(Lbl("Session"), 
+            lblSession = new Label(GetLabel("Session"), 
                 lbl => 
-                       g_session.ShowSession
-                    && g_session.EditClip == 0, 
+                       ShowSession
+                    && EditClip == 0, 
                 null, 
                 UpdateSessionLabel, 
                 null, 
@@ -27,15 +27,15 @@ namespace IngameScript
 
         void UpdateMixerAll(Label lbl)
         {
-            if (g_session.ShowSession) lbl.SetText("Dup");
-            else                       lbl.SetText("Solo", 8, 18);
+            if (ShowSession) lbl.SetText("Dup");
+            else             lbl.SetText("Solo", 8, 18);
         }
 
 
         void UpdateMixerMuteAll(Label lbl)
         {
-            if (g_session.ShowSession) lbl.SetText("Del");
-            else                       lbl.SetText("Mute", 8, 18);
+            if (ShowSession) lbl.SetText("Del");
+            else             lbl.SetText("Mute", 8, 18);
         }
     }
 }

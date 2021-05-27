@@ -124,14 +124,14 @@ namespace IngameScript
             }
 
 
-            public static Arpeggio Load(Session session, string[] data, ref int i, Instrument inst, int iSrc)
+            public static Arpeggio Load(string[] data, ref int i, Instrument inst, int iSrc)
             {
                 var tag = data[i++];
  
                 var arp = new Arpeggio(inst);
 
-                arp.Length = Parameter.Load(session, data, ref i, inst, iSrc, arp, arp.Length);
-                arp.Scale  = Parameter.Load(session, data, ref i, inst, iSrc, arp, arp.Scale );
+                arp.Length = Parameter.Load(data, ref i, inst, iSrc, arp, arp.Length);
+                arp.Scale  = Parameter.Load(data, ref i, inst, iSrc, arp, arp.Scale );
 
                 return arp;
             }

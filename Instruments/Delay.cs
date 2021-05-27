@@ -164,7 +164,7 @@ namespace IngameScript
             }
 
 
-            public static Delay Load(Session session, string[] data, ref int i, Instrument inst, int iSrc)
+            public static Delay Load(string[] data, ref int i, Instrument inst, int iSrc)
             {
                 var tag = data[i++];
  
@@ -172,11 +172,11 @@ namespace IngameScript
                     inst, 
                     iSrc > -1 ? inst.Sources[iSrc] : null);
 
-                del.Dry   = Parameter.Load(session, data, ref i, inst, iSrc, del, del.Dry  );
-                del.Count = Parameter.Load(session, data, ref i, inst, iSrc, del, del.Count);
-                del.Time  = Parameter.Load(session, data, ref i, inst, iSrc, del, del.Time );
-                del.Level = Parameter.Load(session, data, ref i, inst, iSrc, del, del.Level);
-                del.Power = Parameter.Load(session, data, ref i, inst, iSrc, del, del.Power);
+                del.Dry   = Parameter.Load(data, ref i, inst, iSrc, del, del.Dry  );
+                del.Count = Parameter.Load(data, ref i, inst, iSrc, del, del.Count);
+                del.Time  = Parameter.Load(data, ref i, inst, iSrc, del, del.Time );
+                del.Level = Parameter.Load(data, ref i, inst, iSrc, del, del.Level);
+                del.Power = Parameter.Load(data, ref i, inst, iSrc, del, del.Power);
 
                 return del;
             }

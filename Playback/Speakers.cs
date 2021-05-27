@@ -27,7 +27,7 @@ namespace IngameScript
 
             public IMySoundBlock Block;
 
-            public bool IsUsed { get { return m_used; } }
+            public bool IsUsed => m_used;
 
             public Speaker(IMySoundBlock sb)
             {

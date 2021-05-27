@@ -49,7 +49,7 @@ namespace IngameScript
 
             DrawPattern(sprites, x + xt, y, w - xt, rh, clip, pat, 2, isolated);
 
-            if (   g_session.IsPlaying
+            if (   IsPlaying
                 && PlayPat == pat)
             {
                 FillRect(sprites, x + xt + wt * ((int)PlayStep % g_patSteps), y, wt, rh, color6);

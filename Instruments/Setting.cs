@@ -151,8 +151,8 @@ namespace IngameScript
             }
 
 
-            public bool           ParentIsEnvelope    { get { return HasTag(Parent, strEnv); } }
-            public bool           AnyParentIsEnvelope { get { return HasTagOrAnyParent(Parent, strEnv); } }
+            public bool           ParentIsEnvelope    => HasTag(Parent, strEnv);
+            public bool           AnyParentIsEnvelope => HasTagOrAnyParent(Parent, strEnv);
 
 
             public virtual void   DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp) {}

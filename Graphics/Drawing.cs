@@ -17,8 +17,8 @@ namespace IngameScript
 
             if (!TooComplex)
             { 
-                if (g_session.ShowSession) DrawSessionClips();
-                else                       DrawMixer();
+                if (ShowSession) DrawSessionClips();
+                else             DrawMixer();
             }
 
             DrawVolume();

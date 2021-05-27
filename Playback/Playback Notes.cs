@@ -152,7 +152,7 @@ namespace IngameScript
             var chan = clip.CurPattern.Channels[ch];
 
             var patStep = 
-                  (g_session.IsPlaying
+                  (IsPlaying
                    ? (clip.Track.PlayPat - clip.CurPat) * g_patSteps + (clip.Track.PlayStep % g_patSteps) 
                    : 0) 
                 + chordSpreadOffset;
@@ -184,7 +184,7 @@ namespace IngameScript
                 {
                     var note = new Note(n);
 
-                    note.Step = TimeStep + (float)sh / g_session.TicksPerStep;
+                    note.Step = TimeStep + (float)sh / TicksPerStep;
 
                     if (OK(note.Instrument.Arpeggio))
                         note.ArpPlayTime = 0;

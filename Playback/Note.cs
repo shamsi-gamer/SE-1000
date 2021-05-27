@@ -10,7 +10,7 @@ namespace IngameScript
             public Channel     Channel;
             public int         iChan;
                                
-            public Instrument  Instrument  { get { return Channel.Instrument; } }
+            public Instrument  Instrument  => Channel.Instrument;
 
             public int         Number;
             public float       Volume;
@@ -18,15 +18,14 @@ namespace IngameScript
             public float       Step,
                                StepLength;
             
-            public int         PatIndex    { get { return Channel.Pattern.Clip.Patterns.IndexOf(Channel.Pattern); } }
+            public int         PatIndex    => Channel.Pattern.Clip.Patterns.IndexOf(Channel.Pattern);
 
-            //public Clip        Clip        { get { return Channel.Pattern.Clip; } }
-            public float       SongStep    { get { return PatIndex * g_patSteps + Step; } }
+            public float       SongStep    => PatIndex * g_patSteps + Step;
 
-            public long        Time        { get { return (long)(Step * g_session.TicksPerStep); } }
-            public long        SongTime    { get { return GetPatTime(PatIndex) + Time; } }
+            public long        Time        => (long)(Step * TicksPerStep);
+            public long        SongTime    => GetPatTime(PatIndex) + Time;
 
-            public int         FrameLength { get { return (int)(StepLength * g_session.TicksPerStep); } }
+            public int         FrameLength => (int)(StepLength * TicksPerStep);
 
             public List<Sound> Sounds;
 
@@ -101,9 +100,9 @@ namespace IngameScript
             {
                 get
                 {
-                         if (Step % 2 == 1   ) return (float)Channel.Shuffle / g_session.TicksPerStep;
-                    else if (Step % 2 == 1.5f) return (float)Channel.Shuffle / g_session.TicksPerStep;
-                    else                          return 0;
+                         if (Step % 2 == 1   ) return (float)Channel.Shuffle / TicksPerStep;
+                    else if (Step % 2 == 1.5f) return (float)Channel.Shuffle / TicksPerStep;
+                    else                       return 0;
                 }
             }
 
@@ -122,7 +121,7 @@ namespace IngameScript
                 StepLength = len;
 
                 foreach (var snd in Sounds)
-                    snd.Length = (int)(StepLength * g_session.TicksPerStep);
+                    snd.Length = (int)(StepLength * TicksPerStep);
             }
 
 

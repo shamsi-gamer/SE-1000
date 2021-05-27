@@ -5,9 +5,21 @@ namespace IngameScript
 {
     partial class Program
     {
+        void LoadSongExt()
+        {
+            //var clip = new StringBuilder();
+            //dspIO.Surface.ReadText(clip, F);
+
+            //if (!LoadSong(S(clip)))
+            //    NewSong();
+
+            g_lcdPressed.Add(lcdInfo + 0);
+        }
+
+
         void Load()
         {
-            Play(F);
+            Stop();
 
 
             //string curPath;
@@ -15,33 +27,24 @@ namespace IngameScript
             //int    modPat,
             //       modChan;
 
-            LoadMachineState();
-            //LoadInstruments();
-            //LoadClips(out curPath);
+
+            int editTrack,
+                editIndex,
+                copyTrack,
+                copyIndex;
+
+            if (!LoadMachineState(out editTrack, out editIndex, out copyTrack, out copyIndex)) 
+                                    CreateDefaultMachineState();
+            if (!LoadInstruments()) CreateDefaultInstruments();
+            if (!LoadTracks     ()) CreateDefaultTracks();
 
 
-            int curClipTrack, 
-                curClipIndex, 
-                copyClipTrack, 
-                copyClipIndex;
+            if (OK(editTrack) && OK(editIndex)) EditedClip = Tracks[editTrack].Clips[editIndex];
+            if (OK(copyTrack) && OK(copyIndex)) ClipCopy   = Tracks[copyTrack].Clips[copyIndex];
 
-            g_session = Session.Load(
-                out curClipTrack, 
-                out curClipIndex, 
-                out copyClipTrack, 
-                out copyClipIndex);
 
-            
-            if (OK(g_session))
-            {
-                //g_session.Tracks[curClipTrack].SetClip(curClscipIndex, T);
-                //InitPlaybackAfterLoad(EditClip.Track.PlayTime);
-            }
-            else
-            { 
-                g_session = new Session();
-                //g_session.Tracks[0].SetClip(0, T);
-            }
+            if (OK(EditedClip))
+                SetLabelColor(EditedClip.ColorIndex);
 
 
             //if (curPath != "")
@@ -53,41 +56,127 @@ namespace IngameScript
             //    ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
             //}
 
-            SetLabelColor(EditedClip.ColorIndex);
-        }
-
-
-        void LoadMachineState()
-        {
-            var sb = new StringBuilder();
-            pnlStorageState.ReadText(sb);
-            var state = sb.ToString();
-
-            var lines = state.Split('\n');
-            var line  = 0;
-
-            var cfg = lines[line++].Split(';');
-
-            var c = 0;
-
-            if (c < cfg.Length && !int.TryParse(cfg[c++], out g_lockView)) goto NothingLoaded;
 
             return;
-
-        NothingLoaded:
-            SetDefaultMachineState();
         }
 
 
-        void LoadSongExt()
+        bool LoadMachineState(out int editTrack, out int editIndex, 
+                              out int copyTrack, out int copyIndex)
         {
-            //var clip = new StringBuilder();
-            //dspIO.Surface.ReadText(clip, F);
+            editTrack = editIndex =
+            copyTrack = copyIndex = -1;
 
-            //if (!LoadSong(S(clip)))
-            //    NewSong();
+            if (!pnlStorageState.GetText().Contains(";"))
+                return F;
 
-            g_lcdPressed.Add(lcdInfo+0);
+            var state = pnlStorageState.GetText().Split(';');
+            var s = 0;
+
+            SessionName = state[s++];
+
+            LoadToggles(state[s++]);
+
+            return 
+                   !int_TryParse(state[s++], out TicksPerStep)
+                || !int_TryParse(state[s++], out LockView    )
+                || !int_TryParse(state[s++], out EditClip    )
+                || !int_TryParse(state[s++], out editTrack   )
+                || !int_TryParse(state[s++], out editIndex   )
+                || !int_TryParse(state[s++], out copyTrack   )
+                || !int_TryParse(state[s++], out copyIndex   );
+        }
+
+
+        bool LoadToggles(string toggles)
+        {
+            uint f;
+            if (!uint.TryParse(toggles, out f)) return F;
+
+            var i = 0;
+
+            ShowSession = ReadBit(f, i++);
+            Move        = ReadBit(f, i++);
+
+            return T;
+        }
+
+
+        bool LoadInstruments()
+        {
+            Instruments.Clear();
+
+
+            var sb = new StringBuilder();
+            pnlStorageInstruments.ReadText(sb);
+
+            var lines = sb.ToString().Split('\n');
+            var line  = 0;
+
+
+            while (line < lines.Length)
+            {
+                SkipWhiteSpace(lines, ref line);
+
+                if (line < lines.Length)
+                    Instruments.Add(Instrument.Load(lines, ref line));
+            }
+
+            
+            return Instruments.Count > 0;
+        }
+
+
+        public void ImportInstruments()
+        {
+            LoadInstruments();
+
+            // set all instruments to first
+
+            foreach (var track in Tracks)
+            {
+                foreach (var clip in track.Clips)
+                { 
+                    if (!OK(clip))
+                        continue;
+
+                    int first, last;
+                    clip.GetCurPatterns(out first, out last);
+
+                    for (int p = first; p <= last; p++)
+                    {
+                        for (int ch = 0; ch < g_nChans; ch++)
+                            clip.Patterns[p].Channels[ch].Instrument = Instruments[0];
+                    }
+                }
+            }
+        }
+
+
+        bool LoadTracks()
+        {
+            Tracks.Clear();
+
+            var sb = new StringBuilder();
+            pnlStorageInstruments.ReadText(sb);
+
+            var lines = sb.ToString().Split('\n');
+            var line  = 0;
+
+            int nTracks;
+            if (!int_TryParse(lines[line++], out nTracks)) return F;
+
+            for (int t = 0; t < nTracks; t++)
+            {
+                SkipWhiteSpace(lines, ref line);
+                var track = Track.Load(lines, ref line);
+
+                if (OK(track)) Tracks.Add(track);
+                else           return F;
+            }
+
+
+            return Tracks.Count > 0;
         }
 
 
@@ -115,14 +204,14 @@ namespace IngameScript
         //    var c = 0;
 
         //    int nNotes;
-        //    if (!int.TryParse(cfg[c++], out nNotes)) return F;
+        //    if (!int_TryParse(cfg[c++], out nNotes)) return F;
 
         //    for (int i = 0; i < nNotes; i++)
         //    {
         //        int p, ch, n;
-        //        if (!int.TryParse(cfg[c++], out p )) return F;
-        //        if (!int.TryParse(cfg[c++], out ch)) return F;
-        //        if (!int.TryParse(cfg[c++], out n )) return F;
+        //        if (!int_TryParse(cfg[c++], out p )) return F;
+        //        if (!int_TryParse(cfg[c++], out ch)) return F;
+        //        if (!int_TryParse(cfg[c++], out n )) return F;
 
         //        g_song.EditNotes.Add(g_song.Patterns[p].Channels[ch].Notes[n]);
         //    }

@@ -9,41 +9,38 @@ namespace IngameScript
     {
         public class Track
         {
-            public Session    Session;
-
-            public Clip[]     Clips;
+            public Clip[]  Clips;
 
 
-            public long       StartTime, // in ticks
-                              PlayTime;
+            public long    StartTime, // in ticks
+                           PlayTime;
 
-            public int        PlayClip,
-                              NextClip,
-                              
-                              PlayPat, // this can't be a property because it must sometimes be separate from PlayTime, for queueing
-                              NextPat;
+            public int     PlayClip,
+                           NextClip,
+                           
+                           PlayPat, // this can't be a property because it must sometimes be separate from PlayTime, for queueing
+                           NextPat;
 
 
-            public bool       IsPlaying { get { return OK(PlayClip); } }
+            public bool    IsPlaying => OK(PlayClip);
 
-            public float      PlayStep { get 
-                              {
-                                  return
-                                      IsPlaying 
-                                      ? PlayTime / (float)Session.TicksPerStep 
-                                      : fN; 
-                              } }
+
+            public float   PlayStep { get 
+                           {
+                               return
+                                   IsPlaying 
+                                   ? PlayTime / (float)TicksPerStep 
+                                   : fN; 
+                           } }
 
             
-            public float[]    DspVol;
+            public float[] DspVol;
 
-            //public bool       NotesArePlaying;
+            //public bool  NotesArePlaying;
             
 
-            public Track(Session session)
+            public Track()
             {
-                Session   = session;
-                          
                 Clips = new Clip[g_nChans];
                 for (int i = 0; i < g_nChans; i++)
                     Clips[i] = null;
@@ -65,8 +62,6 @@ namespace IngameScript
 
             public Track(Track track)
             {
-                Session   = track.Session;
-                            
                 Clips = new Clip[g_nChans]; 
                 for (int i = 0; i < g_nChans; i++)
                 {
@@ -93,48 +88,57 @@ namespace IngameScript
             { 
                 var clip = Clips[index];
 
-                if (   g_session.EditClip == 0
+                if (   EditClip == 0
                     || force)
                 {
                     if (!OK(clip))
                     {
                         clip = new Clip(this);
-                        clip.Patterns.Add(new Pattern(Session.Instruments[0], clip));
+                        clip.Patterns.Add(new Pattern(Instruments[0], clip));
 
                         Clips[index] = clip;
                     }
                     
-                    if (clip != Session.EditedClip) Session.EditedClip = clip;
-                    else                            g_session.ShowSession = F;
+                    if (clip != EditedClip) EditedClip  = clip;
+                    else                    ShowSession = F;
                 }
 
-                else if (OK(g_session.ClipCopy))
+                else if (OK(ClipCopy))
                 {
-                    Clips[index] = new Clip(g_session.ClipCopy, this);
-                    g_session.ClipCopy = null;
+                    Clips[index] = new Clip(ClipCopy, this);
+                    EditedClip = Clips[index];
+                    ClipCopy   = null;
                 }
 
                 else if (OK(clip))
                 { 
-                    if (g_session.EditClip == 1)
+                    if (EditClip == 1)
                     {
-                        g_session.ClipCopy = clip;
-                        g_session.EditClip = -1;
+                        ClipCopy = clip;
+                        EditClip = -1;
                     }
 
-                    else if (g_session.EditClip == 2)
+                    else if (EditClip == 2)
                     {
-                        if (clip == Session.EditedClip)
-                            Session.EditedClip = Session.GetClipAfterDelete(clip);
+                        if (clip == EditedClip)
+                            EditedClip = GetClipAfterDelete(clip);
 
-                        if (Session.Tracks.Sum(t => t.Clips.Count(c => OK(c))) > 1) // check that this isn't the only clip
+                        if (Tracks.Sum(t => t.Clips.Count(c => OK(c))) > 1) // check that this isn't the only clip
                             Clips[index] = null;
 
-                        g_session.EditClip = -1;
+                        EditClip = -1;
                     }
 
                     else if (index != PlayClip)
-                        NextClip = !OK(NextClip) ? index : -1;
+                    { 
+                        if (OK(NextClip))
+                            NextClip =
+                                index != NextClip
+                                ? index
+                                : -1;
+                        else
+                            NextClip = index;
+                    }
                     
                     else if (OK(PlayClip)
                          && !OK(NextClip))
@@ -146,16 +150,17 @@ namespace IngameScript
             }
 
 
-            public void CueNextPattern()
+            public bool CueNextPattern()
             {
                 if (   !OK(PlayClip)
                     && !OK(NextClip))
-                    return;
+                    return F;
 
 
-                if (  !OK(PlayPat)
+                if (      !OK(PlayPat)
+                       && !OK(NextPat)
                     || PlayStep < (PlayPat + 1) * g_patSteps)
-                    return;
+                    return F;
 
 
                 if (NextClip != PlayClip)
@@ -168,48 +173,54 @@ namespace IngameScript
                 if (!OK(PlayClip))
                 {
                     PlayPat = -1;
-                    return;
-                }
-
-
-                var clip = Clips[PlayClip];
-
-                clip.Length = clip.Patterns.Count * g_patSteps;
-
-                if (NextPat > -1)
-                {
-                    var b = clip.GetBlock(PlayPat);
-
-                    if (clip.Block && OK(b))
-                        PlayPat = b.Last;
-                }
-
-
-                int start, end;
-                clip.GetPosLimits(PlayPat, out start, out end);
-                end = start + Math.Min(end - start, clip.Length);
-
-                if (NextPat > -1)
-                {
-                    var b = clip.GetBlock(NextPat);
-                    if (clip.Block && OK(b))
-                        NextPat = b.First;
-
-                    PlayTime  = GetPatTime(NextPat);
-                    StartTime = g_time - PlayTime;
-
                     NextPat = -1;
+                    return F;
                 }
-                else if (PlayStep >= end)
-                {
-                    clip.WrapCurrentNotes(end - start);
 
-                    PlayTime  -= (end - start) * g_session.TicksPerStep;
-                    StartTime += (end - start) * g_session.TicksPerStep;
-                }
+
+                //if (PlayStep >= Clips[PlayClip].Patterns.Count * g_patSteps)
+                //{
+                    var clip = Clips[PlayClip];
+
+                    clip.Length = clip.Patterns.Count * g_patSteps;
+
+                    if (NextPat > -1)
+                    {
+                        var b = clip.GetBlock(PlayPat);
+
+                        if (clip.Block && OK(b))
+                            PlayPat = b.Last;
+                    }
+
+
+                    int start, end;
+                    clip.GetPosLimits(PlayPat, out start, out end);
+                    end = start + Math.Min(end - start, clip.Length);
+
+                    if (NextPat > -1)
+                    {
+                        var b = clip.GetBlock(NextPat);
+                        if (clip.Block && OK(b))
+                            NextPat = b.First;
+
+                        PlayTime  = GetPatTime(NextPat);
+                        StartTime = g_time - PlayTime;
+
+                        NextPat = -1;
+                    }
+                    else if (PlayStep >= end)
+                    {
+                        clip.WrapCurrentNotes(end - start);
+
+                        PlayTime  -= (end - start) * TicksPerStep;
+                        StartTime += (end - start) * TicksPerStep;
+                    }
+                //}
 
 
                 PlayPat = (int)(PlayStep / g_patSteps);
+
+                return T;
             }
 
 
@@ -254,7 +265,6 @@ namespace IngameScript
                     + PS(NextPat)
                     + PS(NextClip);
 
-
                 var _indices = new List<int>();
 
                 for (int i = 0; i < g_nChans; i++)
@@ -270,15 +280,18 @@ namespace IngameScript
                     + PN(indices);
 
                 foreach (var clip in Clips)
-                    save += PN(clip.Save());
+                {
+                    if (OK(clip))
+                        save += PN(clip.Save());
+                }
 
                 return save;
             }
 
 
-            public static Track Load(Session session, string[] lines, ref int line)//, out string curPath)
+            public static Track Load(string[] lines, ref int line)//, out string curPath)
             {
-                var track = new Track(session);
+                var track = new Track();
 
                 var cfg = lines[line++].Split(';');
                 var c = 0;
@@ -301,7 +314,7 @@ namespace IngameScript
 
                 for (int i = 0; i < nClips; i++)
                 {
-                    var clip = Clip.Load(session, lines, ref line);
+                    var clip = Clip.Load(lines, ref line);
 
                     if (OK(clip)) track.Clips[indices[i]] = clip;//, out curPath));
                     else          return null;

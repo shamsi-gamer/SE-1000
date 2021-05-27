@@ -80,7 +80,7 @@ namespace IngameScript
             public Parameter Copy(Setting parent) => new Parameter(this, parent);
 
 
-            public float Value { get { return m_value; } }
+            public float Value => m_value;
 
 
             public void SetValue(float val, Note note, int src)
@@ -380,7 +380,7 @@ namespace IngameScript
             }
 
 
-            public static Parameter Load(Session session, string[] data, ref int i, Instrument inst, int iSrc, Setting parent, Parameter proto = null)
+            public static Parameter Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent, Parameter proto = null)
             {
                 var tag = data[i++];
 
@@ -399,10 +399,10 @@ namespace IngameScript
                 {
                     switch (data[i])
                     { 
-                        case strTrig: param.Trigger  =           Load(session, data, ref i, inst, iSrc, param); break;
-                        case strEnv:  param.Envelope = Envelope .Load(session, data, ref i, inst, iSrc, param); break;
-                        case strLfo:  param.Lfo      = LFO      .Load(session, data, ref i, inst, iSrc, param); break;
-                        case strMod:  param.Modulate = Modulate .Load(session, data, ref i, inst, iSrc, param); break;
+                        case strTrig: param.Trigger  =           Load(data, ref i, inst, iSrc, param); break;
+                        case strEnv:  param.Envelope = Envelope .Load(data, ref i, inst, iSrc, param); break;
+                        case strLfo:  param.Lfo      = LFO      .Load(data, ref i, inst, iSrc, param); break;
+                        case strMod:  param.Modulate = Modulate .Load(data, ref i, inst, iSrc, param); break;
                     }
                 }
 

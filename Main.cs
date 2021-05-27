@@ -32,7 +32,7 @@ namespace IngameScript
                 foreach (var lfo in g_lfo) lfo.AdvanceTime();
                 foreach (var mod in g_mod) mod.AdvanceTime();
 
-                foreach (var track in g_session.Tracks)
+                foreach (var track in Tracks)
                     track.FinalizePlayback();
             }
 
@@ -80,7 +80,7 @@ namespace IngameScript
                         lbl.Update();
 
 
-                foreach (var track in g_session.Tracks)
+                foreach (var track in Tracks)
                 {
                     track.DampenDisplayVolumes();
                     //track.NotesArePlaying = F;

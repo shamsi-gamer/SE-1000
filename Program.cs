@@ -32,17 +32,17 @@ namespace IngameScript
         static IMyTextPanel           pnlInfoLog,
                                       
                                       pnlStorageState,
-                                      pnlStorageSession,
                                       pnlStorageInstruments,
                                       pnlStorageTracks;
                                           
                                           
         static IMyRemoteControl       g_remote;
-         List<IMyLandingGear>         g_locks   = new List<IMyLandingGear>();
+                                      
+        List<IMyLandingGear>          g_locks  = new List<IMyLandingGear>();
                                                     
-         List<IMyTimerBlock>          g_timers  = new List<IMyTimerBlock>();
-         List<IMyGyro>                g_gyros   = new List<IMyGyro>();
-         List<IMyArtificialMassBlock> g_mass    = new List<IMyArtificialMassBlock>();
+        List<IMyTimerBlock>           g_timers = new List<IMyTimerBlock>();
+        List<IMyGyro>                 g_gyros  = new List<IMyGyro>();
+        List<IMyArtificialMassBlock>  g_mass   = new List<IMyArtificialMassBlock>();
 
 
         IMyPistonBase                 g_lightPiston;
@@ -62,14 +62,18 @@ namespace IngameScript
                                                    
         public Program()
         {
+            Runtime.UpdateFrequency =
+                  UpdateFrequency.Update1
+                | UpdateFrequency.Update10;
+
+
             pnlInfoLog = Get("Info Display") as IMyTextPanel;
-            pnlInfoLog.CustomData = ""; // init log storage
+            //pnlInfoLog.CustomData = ""; // init log storage
 
 
-            pnlStorageState       = Lcd(strStorage + " State");
-            pnlStorageSession     = Lcd(strStorage + " Session");
-            pnlStorageInstruments = Lcd(strStorage + " Instruments");
-            pnlStorageTracks      = Lcd(strStorage + " Tracks");
+            pnlStorageState       = GetLcd(strStorage + " State");
+            pnlStorageInstruments = GetLcd(strStorage + " Instruments");
+            pnlStorageTracks      = GetLcd(strStorage + " Tracks");
 
 
             InitSpeakers();
@@ -81,11 +85,6 @@ namespace IngameScript
                 DrawMissingMod();
                 return;
             }
-
-
-            Runtime.UpdateFrequency =
-                  UpdateFrequency.Update1
-                | UpdateFrequency.Update10;
 
 
             for (int i = 0; i < g_random.Length; i++)
@@ -108,11 +107,11 @@ namespace IngameScript
             Get(g_mass);
 
 
-            g_lightPiston = Get(strLight + " Piston")  as IMyPistonBase;
-            g_lightHinge1 = Get(strLight + " Hinge 1") as IMyMotorBase;
-            g_lightHinge2 = Get(strLight + " Hinge 2") as IMyMotorBase;
-            g_hingeL      = Get("Hinge L") as IMyMotorBase;
-            g_hingeR      = Get("Hinge R") as IMyMotorBase;
+            g_lightPiston = Get(strLight + " Piston") as IMyPistonBase;
+            g_lightHinge1 = GetHinge(strLight + " 1");
+            g_lightHinge2 = GetHinge(strLight + " 2");
+            g_hingeL      = GetHinge("L");
+            g_hingeR      = GetHinge("R");
 
             g_remote      = Get("Remote Control") as IMyRemoteControl;
 
@@ -140,20 +139,20 @@ namespace IngameScript
 
         void InitDisplays()
         {
-            dspMain   = new Display(Dsp("Main"));
+            dspMain   = new Display(DetDisplay("Main"));
 
-            dspIO     = new Display(Dsp("IO"));
-            dspInfo   = new Display(Dsp("Info"));
+            dspIO     = new Display(DetDisplay("IO"));
+            dspInfo   = new Display(DetDisplay("Info"));
             
-            dspClip1  = new Display(Dsp(strClip,  1));
-            dspClip2  = new Display(Dsp(strClip,  2));
+            dspClip1  = new Display(DetDisplay(strClip,  1));
+            dspClip2  = new Display(DetDisplay(strClip,  2));
             
-            dspMixer1 = new Display(Dsp(strMixer, 1));
-            dspMixer2 = new Display(Dsp(strMixer, 2));
+            dspMixer1 = new Display(DetDisplay(strMixer, 1));
+            dspMixer2 = new Display(DetDisplay(strMixer, 2));
 
-            dspVol1   = new Display(Dsp(strVol,   1));
-            dspVol2   = new Display(Dsp(strVol,   2));
-            dspVol3   = new Display(Dsp(strVol,   3));
+            dspVol1   = new Display(DetDisplay(strVol,   1));
+            dspVol2   = new Display(DetDisplay(strVol,   2));
+            dspVol3   = new Display(DetDisplay(strVol,   3));
         }
     }
 }

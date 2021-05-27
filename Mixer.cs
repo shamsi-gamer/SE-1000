@@ -2,30 +2,18 @@
 {
     partial class Program
     {
-        void MixerShift()
+        void ToggleMixerShift()
         {
-            EditedClip.MixerShift = !EditedClip.MixerShift;
+            MixerShift = !MixerShift;
         }
 
 
         void EnableChannels(bool on)
         {
-            if (g_session.ShowSession)
+            if (ShowSession)
             { 
-                if (on)
-                {
-                    g_session.EditClip = 
-                        g_session.EditClip != 1
-                        ?  1
-                        : -1;
-                }
-                else    
-                {
-                    g_session.EditClip = 
-                        g_session.EditClip != 2
-                        ?  2
-                        : -1;
-                }
+                if (on) EditClip = EditClip != 1 ? 1 : -1;
+                else    EditClip = EditClip != 2 ? 2 : -1;
             }
             else
             { 
@@ -58,15 +46,15 @@
 
         public void SetVolume(int ch, float dv)
         {
-            if (g_session.ShowSession)
+            if (ShowSession)
             { 
-                g_session.Tracks[dv > 0 ? 0 : 1].SetClip(ch);
-                UpdatePlaybackStatus();
+                Tracks[dv > 0 ? 0 : 1].SetClip(ch);
+                CheckIfMustStop();
             }
             else
             { 
                 var vol = CurPattern.Channels[ch].Volume;
-                var mod = (EditedClip.MixerShift ? 10 : 1) * dv;
+                var mod = (MixerShift ? 10 : 1) * dv;
 
                 int first, last;
                 EditedClip.GetPatterns(CurPat, out first, out last);
@@ -84,10 +72,10 @@
 
         void Solo(int ch)
         {
-            if (g_session.ShowSession)
+            if (ShowSession)
             { 
-                g_session.Tracks[2].SetClip(ch);
-                UpdatePlaybackStatus();
+                Tracks[2].SetClip(ch);
+                CheckIfMustStop();
             }
             else
             {
@@ -124,10 +112,10 @@
 
         void Mute(int ch)
         {
-            if (g_session.ShowSession)
+            if (ShowSession)
             { 
-                g_session.Tracks[3].SetClip(ch);
-                UpdatePlaybackStatus();
+                Tracks[3].SetClip(ch);
+                CheckIfMustStop();
             }
             else
             { 

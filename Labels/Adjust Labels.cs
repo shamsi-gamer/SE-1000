@@ -4,14 +4,14 @@
     {
         void InitAdjustLabels()
         {
-            lblCmd1  = new Label(Lbl("Command 1"), Cmd1IsBright, null, UpdateCmd1);
-            lblCmd2  = new Label(Lbl("Command 2"), null,         null, UpdateCmd2);
+            lblCmd1  = new Label(GetLabel("Command 1"), Cmd1IsBright, null, UpdateCmd1);
+            lblCmd2  = new Label(GetLabel("Command 2"), null,         null, UpdateCmd2);
             
-            lblUp    = new Label(Lbl("Up"),    AdjustIsBright, null, UpdateAdjustUp);
-            lblDown  = new Label(Lbl("Down"),  AdjustIsBright, null, UpdateAdjustDown);
-            lblShift = new Label(Lbl("Shift"), AdjustIsBright, null, UpdateAdjustShift);
+            lblUp    = new Label(GetLabel("Up"),    AdjustIsBright, null, UpdateAdjustUp);
+            lblDown  = new Label(GetLabel("Down"),  AdjustIsBright, null, UpdateAdjustDown);
+            lblShift = new Label(GetLabel("Shift"), AdjustIsBright, null, UpdateAdjustShift);
             
-            lblCmd3  = new Label(Lbl("Command 3"), Cmd3IsBright, Cmd3IsDim, UpdateCmd3);
+            lblCmd3  = new Label(GetLabel("Command 3"), Cmd3IsBright, Cmd3IsDim, UpdateCmd3);
         }
 
 
@@ -23,7 +23,7 @@
                    && CurSet <  0
                    && SelSource.On
                 ||    SelChan < 0
-                   && g_lockView > 0;
+                   && LockView > 0;
         }
 
 

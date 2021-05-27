@@ -213,7 +213,7 @@ namespace IngameScript
             }
 
 
-            public static LFO Load(Session session, string[] data, ref int i, Instrument inst, int iSrc, Setting parent)
+            public static LFO Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent)
             {
                 var tag = data[i++];
  
@@ -225,9 +225,9 @@ namespace IngameScript
                 lfo.Op   = (ModOp)  int.Parse(data[i++]);
                 lfo.Type = (LfoType)int.Parse(data[i++]);
 
-                lfo.Amplitude = Parameter.Load(session, data, ref i, inst, iSrc, lfo, lfo.Amplitude);
-                lfo.Frequency = Parameter.Load(session, data, ref i, inst, iSrc, lfo, lfo.Frequency);
-                lfo.Offset    = Parameter.Load(session, data, ref i, inst, iSrc, lfo, lfo.Offset   );
+                lfo.Amplitude = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Amplitude);
+                lfo.Frequency = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Frequency);
+                lfo.Offset    = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Offset   );
 
                 return lfo;
             }

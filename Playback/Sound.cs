@@ -13,16 +13,17 @@ namespace IngameScript
             public List<Speaker>      Speakers;
                                       
             public Channel            Channel;
-            public int                iChan;
+            public int                iChan,
                                       
-            public long               Time; // in ticks
-            public int                Length;
-            public int                ReleaseLength;
+                                      Length,
+                                      ReleaseLength;
                                       
-            public long               ElapsedTime; // in ticks
+            public long               Time, // in ticks
+                                      ElapsedTime; // in ticks
+
                                       
-            public float              TriggerVolume;//,
                                       //DisplayVolume;
+            public float              TriggerVolume;//,
 
             public List<TriggerValue> TriggerValues;
 
@@ -42,7 +43,8 @@ namespace IngameScript
             public float              EchoVolume;
             public bool               IsEcho;
 
-            public Sample             NoteSample { get { return Source.Oscillator.Samples[Note.Number-24*NoteScale]; } }
+            public Sample             NoteSample => Source.Oscillator.Samples[Note.Number-24*NoteScale];
+
 
             public Sound(string sample, Channel chan, int ch, long frameTime, int frameLen, int releaseLen, float vol, Instrument inst, int iSrc, Note note, List<TriggerValue> triggerValues, bool isEcho, Sound echoSrc, float echoVol, Parameter harmonic = null, Sound hrmSound = null, float hrmPos = fN)
             {
@@ -93,9 +95,9 @@ namespace IngameScript
                 Channel       = snd.Channel;
                 iChan         = snd.iChan;
 
-                Time     = snd.Time;
-
-                Length   = snd.Length;
+                Time          = snd.Time;
+                              
+                Length        = snd.Length;
                 ReleaseLength = snd.ReleaseLength;
 
                 ElapsedTime   = snd.ElapsedTime;

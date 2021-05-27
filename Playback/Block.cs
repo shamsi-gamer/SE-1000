@@ -3,6 +3,8 @@ using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
+
+
 namespace IngameScript
 {
     partial class Program
@@ -12,6 +14,9 @@ namespace IngameScript
             public int First,
                        Last;
 
+            public int Len => Last - First + 1;
+
+            
             public Block(int first)
             {
                 First = first;
@@ -29,8 +34,6 @@ namespace IngameScript
                 First = block.First;
                 Last  = block.Last;
             }
-
-            public int Len { get { return Last - First + 1; } }
         }
     }
 }

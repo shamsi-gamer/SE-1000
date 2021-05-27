@@ -108,15 +108,15 @@ namespace IngameScript
             var maxNameLength = 13;
             var sw = 20;
 
-            var iInst = g_session.Instruments.IndexOf(chan.Instrument);
+            var iInst = Instruments.IndexOf(chan.Instrument);
             var step  = 28.5f;
 
             if (SelChan > -1 && CurSrc < 0)
                 FillRect(sprites, x + sw, y + (iInst - EditedClip.InstOff) * step, w - sw, step, color6);
 
-            for (int i = EditedClip.InstOff; i < Math.Min(EditedClip.InstOff + maxDspInst, g_session.Instruments.Count); i++)
+            for (int i = EditedClip.InstOff; i < Math.Min(EditedClip.InstOff + maxDspInst, Instruments.Count); i++)
             {
-                var inst = g_session.Instruments[i];
+                var inst = Instruments[i];
 
                 DrawString(
                     sprites, 
@@ -131,9 +131,9 @@ namespace IngameScript
 
             FillRect(sprites, x + w - 4, y, 4, h, color6);
 
-            if (SelChan > -1 && g_session.Instruments.Count > maxDspInst)
+            if (SelChan > -1 && Instruments.Count > maxDspInst)
             {
-                var bh = h / (float)g_session.Instruments.Count;
+                var bh = h / (float)Instruments.Count;
                 FillRect(sprites, x, y + bh * iInst, sw, bh, color6);
             }
         }

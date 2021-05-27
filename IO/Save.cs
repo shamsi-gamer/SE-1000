@@ -9,36 +9,84 @@ namespace IngameScript
     {
         void SaveSongExt()
         {
-            g_session.Save();
+            Save();
 
-            //dspIO.Panel.WriteText(
-            //         lblPrev.CustomData 
-            //    + PN(lblNext.CustomData));
-
+            dspIO.Panel.WriteText(
+                  pnlStorageState      .GetText()
+                + pnlStorageInstruments.GetText()
+                + pnlStorageTracks     .GetText());
 
             g_lcdPressed.Add(lcdInfo+1);
         }
 
 
-        public void Save()
+        void Save()
         {
             SaveMachineState();
-            g_session.Save();
+            SaveInstruments();
+            SaveTracks();
         }
 
 
         void SaveMachineState()
         {
+            pnlStorageState.WriteText(
+                  SessionName
+                + PS(SaveStateToggles())
+                + PS(TicksPerStep)
+                + PS(LockView)
+                + PS(EditClip)
+                + PS(OK(EditedClip) ? Tracks.IndexOf(EditedClip.Track)           : -1)
+                + PS(OK(EditedClip) ? EditedClip.Track.Clips.IndexOf(EditedClip) : -1)
+                + PS(OK(ClipCopy)   ? Tracks.IndexOf(ClipCopy.Track)             : -1)
+                + PS(OK(ClipCopy)   ? ClipCopy.Track.Clips.IndexOf(ClipCopy)     : -1));
+
             //+   (OK(ModDestConnecting) ? ModDestConnecting.GetPath(ModDestSrcIndex) : "")
             //+ PS(ModDestSrcIndex)
             //+ PS(OK(ModDestChannel) ? Patterns.IndexOf(ModDestChannel.Pattern) : -1)
             //+ PS(OK(ModDestChannel) ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)
             //+ PS(ModCurPat)
             //+ PS(ModDestClip)
+        }
 
-            var state = S(g_lockView);
 
-            pnlStorageState.WriteText(state);
+        uint SaveStateToggles()
+        {
+            uint f = 0;
+            var  i = 0;
+
+            WriteBit(ref f, ShowSession, i++);
+            WriteBit(ref f, Move,        i++);
+
+            return f;
+        }
+
+
+        void SaveInstruments()
+        {
+            var inst = "";
+
+            for (int i = 0; i < Instruments.Count; i++)
+            { 
+                if (i > 0) inst += "\n";
+                inst += Instruments[i].Save();
+            }
+
+            pnlStorageInstruments.WriteText(inst);
+        }
+
+
+        void SaveTracks()
+        {
+            var tracks = N(S(Tracks.Count));
+
+            for (int t = 0; t < Tracks.Count; t++)
+            {
+                if (t > 0) tracks += "\n";
+                tracks += Tracks[t].Save();
+            }
+
+            pnlStorageTracks.WriteText(tracks);
         }
 
 

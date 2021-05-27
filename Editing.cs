@@ -74,7 +74,7 @@ namespace IngameScript
 
                             lastNote.StepLength = Math.Min(
                                 clip.EditPos - (pat * g_patSteps + lastNote.Step) + EditedClip.EditStepIndex + ChordSpread(i),
-                                10f * FPS / g_session.TicksPerStep);
+                                10f * FPS / TicksPerStep);
 
                             TriggerNote(clip, lastNote.Number, lastNote.iChan, EditedClip.EditStepIndex, ChordSpread(i));
                         }
@@ -379,15 +379,15 @@ namespace IngameScript
 
         void SetStepLength(int d)
         {
-            var len = MinMax(4, g_session.TicksPerStep + d, 15);
-            var newTime = (float)g_time / len;
+            var len = MinMax(4, TicksPerStep + d, 15);
+            var newTime = g_time / len;
 
-            g_session.TicksPerStep = len;
+            TicksPerStep = len;
 
             foreach (var pat in EditedClip.Patterns)
             {
                 foreach (var chan in pat.Channels)
-                    chan.Shuffle = Math.Min(chan.Shuffle, g_session.TicksPerStep - 1);
+                    chan.Shuffle = (int)Math.Min(chan.Shuffle, TicksPerStep - 1);
             }
 
             g_lcdPressed.Add(lcdInfo + (d > 0 ? 2 : 3));
@@ -451,7 +451,7 @@ namespace IngameScript
                     foreach (var n in clip.EditNotes)
                     {
                         var is05 = n.StepLength == 0.5f && EditedClip.EditStep >= 1;
-                        n.StepLength = MinMax(0.5f, n.StepLength + move * EditedClip.EditStepLength, 10f * FPS / g_session.TicksPerStep);
+                        n.StepLength = MinMax(0.5f, n.StepLength + move * EditedClip.EditStepLength, 10f * FPS / TicksPerStep);
                         if (is05) n.StepLength -= 0.5f;
                     }
                 }

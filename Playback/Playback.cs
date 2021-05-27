@@ -31,40 +31,23 @@ namespace IngameScript
 
         void Play(bool play = T)
         {
-            if (!OK(g_session))
+            if (!OK(Tracks))
                 return;
 
-            if (  !(g_session?.IsPlaying ?? F) // play
+
+            if (  !IsPlaying // play
                 && play) 
             {
-                //var nextPat   = 0;
-                //var playTime  = GetPatTime(nextPat);
-                //var startTime = g_time - playTime;
-
-                foreach (var track in g_session.Tracks)
+                foreach (var track in Tracks)
                 {
-                    track.PlayPat = 0;
-                //    //track.PlayTime  = playTime;
-                //    //track.StartTime = startTime;
-
-                //    //if (track.NextClip < 0) continue;
-                //    //var nextClip = track.Clips[track.NextClip];
-
-                //    //var nextPat = 
-                //    //    track.NextPat > -1 
-                //    //    ? track.NextPat 
-                //    //    : nextClip.CurPat;
-
-                //    //track.PlayTime = GetPatTime(nextPat);
-                //    //track.NextPat  = -1;
-
-                //    //track.StartTime = g_time - track.PlayTime;
+                    if (OK(track.NextClip))
+                        track.NextPat = 0;
                 }
             }
 
             else // stop
             { 
-                foreach (var track in g_session.Tracks)
+                foreach (var track in Tracks)
                 {
                     if (!OK(track.PlayClip))
                         continue;
@@ -104,30 +87,29 @@ namespace IngameScript
         void Stop() { Play(F); }
 
 
-        void UpdatePlaybackStatus()
+        void CheckIfMustStop()
         {
-            var playing = OK(g_session.Tracks.Find(track => 
+            var playing = OK(Tracks.Find(track => 
                    OK(track.PlayClip) 
                 || OK(track.NextClip)));
 
-            if (    g_session.IsPlaying
+            if (    IsPlaying
                 && !playing)
                 Stop();
-            //else if (!g_session.IsPlaying
-            //       && playing)
-            //    Play();
         }
 
 
         void UpdatePlayback()
         {
-            foreach (var track in g_session.Tracks)
+            var cueNext = F;
+
+            foreach (var track in Tracks)
             {
                 if (   !OK(track.PlayClip)
                     && !OK(track.NextClip))
                     continue;
 
-                track.CueNextPattern();
+                cueNext |= track.CueNextPattern();
 
                 if (!OK(track.PlayClip))
                     continue;
@@ -142,15 +124,25 @@ namespace IngameScript
             }
 
 
+            if (cueNext)
+            {
+                foreach (var track in Tracks)
+                {
+                    if (OK(track.NextClip))
+                        track.NextPat = 0;
+                }
+            }
+
+
             StopNotes();
             DeleteSounds(StopSounds());
             UpdateSounds();
 
 
-            foreach (var track in g_session.Tracks)
+            foreach (var track in Tracks)
                 track.UpdateVolumes(this);
 
-            foreach (var inst in g_session.Instruments)
+            foreach (var inst in Instruments)
                 inst.ResetValues();
         }
     }

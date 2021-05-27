@@ -8,7 +8,7 @@ namespace IngameScript
     {
         public partial class Clip
         {
-            public static Clip Load(Session session, string[] lines, ref int line)//, out string curPath)
+            public static Clip Load(string[] lines, ref int line)//, out string curPath)
             { 
                 //curPath     = "";
 
@@ -18,11 +18,11 @@ namespace IngameScript
                 var clip = new Clip(null);
 
                 var cfg = lines[line++].Split(';');
-                if (!clip.LoadConfig  (cfg))                      return null;//, out curPath)) return null;
-                if (!clip.LoadChords  (lines[line++]))            return null;
-                if (!clip.LoadMems    (lines[line++]))            return null;
-                if (!clip.LoadPatterns(session, lines, ref line)) return null;
-                if (!clip.LoadBlocks  (lines[line++]))            return null;
+                if (!clip.LoadConfig  (cfg))             return null;//, out curPath)) return null;
+                if (!clip.LoadChords  (lines[line++]))   return null;
+                if (!clip.LoadMems    (lines[line++]))   return null;
+                if (!clip.LoadPatterns(lines, ref line)) return null;
+                if (!clip.LoadBlocks  (lines[line++]))   return null;
 
                 clip.UpdateAutoKeys();
 
@@ -117,14 +117,14 @@ namespace IngameScript
             }
 
 
-            bool LoadPatterns(Session session, string[] lines, ref int line)
+            bool LoadPatterns(string[] lines, ref int line)
             {
                 int nPats = int.Parse(lines[line++]);
 
                 for (int p = 0; p < nPats; p++)
                 {
                     int i = 0;
-                    var pat = Pattern.Load(session, lines[line++].Split(';'), ref i);
+                    var pat = Pattern.Load(lines[line++].Split(';'), ref i);
                     if (!OK(pat)) return F;
 
                     pat.Clip = this;
@@ -162,7 +162,7 @@ namespace IngameScript
                 var mems = line.Split(';');
 
                 for (int m = 0; m < nMems; m++)
-                    if (!int.TryParse(mems[m], out Mems[m])) return F;
+                    if (!int_TryParse(mems[m], out Mems[m])) return F;
 
                 return T;
             }
@@ -187,7 +187,7 @@ namespace IngameScript
                     int key;
                     foreach (var k in _keys)
                     {
-                        if (!int.TryParse(k, out key)) return F;
+                        if (!int_TryParse(k, out key)) return F;
                         Chords[_c].Add(key);
                     }
                 }

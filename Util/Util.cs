@@ -27,41 +27,25 @@ namespace IngameScript
 
     partial class Program
     {                                                                              
-        static List<Setting> g_settings = new List<Setting>();
+        static List<Setting> g_settings   = new List<Setting>();
 
-                      
-        static Setting       LastSetting  { get { return g_settings.Count > 0 ? g_settings.Last() : null; } }
-                             
-                             
-        static Setting       CurSetting   { get { return CurSet > -1 ? g_settings[CurSet] : null; } }
-        static Parameter     CurParam     { get { return (Parameter)CurSetting; } }
-        static Modulate      CurModulate  { get { return (Modulate) CurSetting; } }
+        static Setting   LastSetting  => g_settings.Count > 0 ? g_settings.Last() : null;
+        static Setting   CurSetting   => CurSet > -1 ? g_settings[CurSet] : null;
 
+        static Parameter CurParam     => (Parameter)CurSetting;
+        static Modulate  CurModulate  => (Modulate) CurSetting;
 
-        static Harmonics     CurHarmonics { get { return (Harmonics)CurSetting; } }
-        static Harmonics     CurOrParentHarmonics
-        {
-            get
-            {
-                return
-                    IsCurSetting(typeof(Harmonics))
-                    ? CurHarmonics
-                    : (Harmonics)CurSetting.Parent;
-            }
-        }
+        static Harmonics CurHarmonics => (Harmonics)CurSetting;
+        static Harmonics CurOrParentHarmonics =>
+            IsCurSetting(typeof(Harmonics))
+            ? CurHarmonics
+            : (Harmonics)CurSetting.Parent;
 
-
-        Arpeggio CurArpeggio { get { return (Arpeggio)CurSetting; } }
-        Arpeggio CurOrParentArpeggio
-        {
-            get
-            {
-                return
-                    IsCurSetting(typeof(Arpeggio))
-                    ? CurArpeggio
-                    : (Arpeggio)CurSetting.Parent;
-            }
-        }
+        Arpeggio CurArpeggio => (Arpeggio)CurSetting;
+        Arpeggio CurOrParentArpeggio =>
+            IsCurSetting(typeof(Arpeggio))
+            ? CurArpeggio
+            : (Arpeggio)CurSetting.Parent;
         
 
         //Arpeggio CurOrAnyParentArpeggio
@@ -176,8 +160,8 @@ namespace IngameScript
 
         void UpdateInstOff(int ch)
         {
-            var curInst = g_session.Instruments.IndexOf(CurPattern.Channels[ch].Instrument);
-            UpdateDspOffset(ref EditedClip.InstOff, curInst, g_session.Instruments.Count, maxDspInst, 0, 1);
+            var curInst = Instruments.IndexOf(CurPattern.Channels[ch].Instrument);
+            UpdateDspOffset(ref EditedClip.InstOff, curInst, Instruments.Count, maxDspInst, 0, 1);
         }
 
 
@@ -281,9 +265,6 @@ namespace IngameScript
 
         bool ShowPiano { get 
         {
-            if (!OK(g_session))
-                return F;
-
             var tune = SelSource    ?.Tune
                     ?? SelInstrument?.Tune;
 
@@ -301,7 +282,7 @@ namespace IngameScript
 
         void SetVolumeAll(float dv)
         {
-            var mod = (EditedClip.MixerShift ? 10 : 1) * dv;
+            var mod = (MixerShift ? 10 : 1) * dv;
             EditedClip.Volume = MinMax(0, EditedClip.Volume + dVol * mod, 2);
 
             (dv > 0
@@ -320,7 +301,7 @@ namespace IngameScript
 
         float GetBPM()
         {
-            return 120f / (g_session.TicksPerStep * g_patSteps) * 120f;
+            return 120f / (TicksPerStep * g_patSteps) * 120f;
         }
 
 
@@ -409,7 +390,7 @@ namespace IngameScript
 
         static long GetPatTime(int pat) 
         {
-            return pat * g_patSteps * g_session.TicksPerStep; 
+            return pat * g_patSteps * TicksPerStep; 
         } 
 
 
@@ -437,18 +418,20 @@ namespace IngameScript
         }
 
 
-        bool TooComplex { get { return 
+        bool TooComplex =>
                Runtime.CurrentCallChainDepth   / (float)Runtime.MaxCallChainDepth   > 0.8f
-            || Runtime.CurrentInstructionCount / (float)Runtime.MaxInstructionCount > 0.8f; } }
+            || Runtime.CurrentInstructionCount / (float)Runtime.MaxInstructionCount > 0.8f;
 
 
         void             Get<T>(List<T> blocks)                          where T : class { GridTerminalSystem.GetBlocksOfType(blocks);            }
         void             Get<T>(List<T> blocks, Func<T, bool> condition) where T : class { GridTerminalSystem.GetBlocksOfType(blocks, condition); }
 
-        IMyTerminalBlock Get(string s)             { return GridTerminalSystem.GetBlockWithName(s); }
-        IMyTextPanel     Lcd(string s)             { return Get(s) as IMyTextPanel; }
-        IMyTextPanel     Lbl(string s)             { return Lcd("Label " + s); }
-        IMyTextPanel     Dsp(string s, int i = -1) { return Lcd(s + " Display" + (i > -1 ? " " + S(i) : "")); }
+        IMyTerminalBlock Get       (string s)             { return GridTerminalSystem.GetBlockWithName(s); }
+        IMyMotorBase     GetMotor  (string s)             { return Get(s) as IMyMotorBase; }
+        IMyMotorBase     GetHinge  (string s)             { return GetMotor("Hinge " + s); }
+        IMyTextPanel     GetLcd    (string s)             { return Get(s) as IMyTextPanel; }
+        IMyTextPanel     GetLabel  (string s)             { return GetLcd("Label " + s); }
+        IMyTextPanel     DetDisplay(string s, int i = -1) { return GetLcd(s + " Display" + (i > -1 ? " " + S(i) : "")); }
 
 
         static void SkipWhiteSpace(string[] lines, ref int line)
@@ -457,6 +440,8 @@ namespace IngameScript
                 && lines[line].Trim() == "") line++;
         }
 
+
+        static bool int_TryParse(string str, out int val) => int.TryParse(str, out val);
 
         static bool long_TryParse(string str, out long val)
         {
@@ -474,25 +459,23 @@ namespace IngameScript
         static bool IsPressed(int   lbl) { return    g_lcdPressed.Contains(lbl); }
 
 
-      //static bool       Playing        { get { return g_session?.IsPlaying ?? F; } }
-        static Clip       EditedClip     { get { return g_session.EditedClip;        } }
-                                                                                
-        static int        CurPat         { get { return EditedClip.CurPat;  } }
-        static int        CurChan        { get { return EditedClip.CurChan; } set { EditedClip.CurChan = value; } }
-        static int        SelChan        { get { return EditedClip.SelChan; } set { EditedClip.SelChan = value; } }
-        static int        CurSrc         { get { return EditedClip.CurSrc;  } set { EditedClip.CurSrc  = value; } }
-        static int        CurSet         { get { return EditedClip.CurSet;  } set { EditedClip.CurSet  = value; } }
-                                         
-        static float      PlayStep       { get { return EditedClip.Track.PlayStep; } }
-        static int        PlayPat        { get { return EditedClip.Track.PlayPat;  } }
-                                         
-        static Pattern    CurPattern     { get { return EditedClip.CurPattern;            } }
-        static Channel    CurChannel     { get { return EditedClip.CurChannel;            } }
-        static Pattern    PlayPattern    { get { return EditedClip.Patterns[PlayPat];     } }
-        static Channel    PlayChannel    { get { return PlayPattern.Channels[CurChan]; } }
-                                         
-        static Source     SelSource      { get { return EditedClip.SelSource;     } }  
-        static Instrument SelInstrument  { get { return EditedClip.SelInstrument; } }  
-        static Channel    SelChannel     { get { return EditedClip.SelChannel;    } }  
+        static int        CurPat        => EditedClip.CurPat;
+
+        static int        CurChan       { get { return EditedClip.CurChan; } set { EditedClip.CurChan = value; } }
+        static int        SelChan       { get { return EditedClip.SelChan; } set { EditedClip.SelChan = value; } }
+        static int        CurSrc        { get { return EditedClip.CurSrc;  } set { EditedClip.CurSrc  = value; } }
+        static int        CurSet        { get { return EditedClip.CurSet;  } set { EditedClip.CurSet  = value; } }
+                                        
+        static float      PlayStep      => EditedClip.Track.PlayStep;
+        static int        PlayPat       => EditedClip.Track.PlayPat;
+                                        
+        static Pattern    CurPattern    => EditedClip.CurPattern;
+        static Channel    CurChannel    => EditedClip.CurChannel;
+        static Pattern    PlayPattern   => EditedClip.Patterns[PlayPat];
+        static Channel    PlayChannel   => PlayPattern.Channels[CurChan];
+                                        
+        static Source     SelSource     => EditedClip.SelSource;
+        static Instrument SelInstrument => EditedClip.SelInstrument;
+        static Channel    SelChannel    => EditedClip.SelChannel;
     }
 }

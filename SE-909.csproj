@@ -78,9 +78,6 @@
     <Compile Include="Graphics\Draw Mixer.cs" />
     <Compile Include="Graphics\Draw Info.cs" />
     <Compile Include="IO\Input.cs" />
-    <Compile Include="Playback\Session Load.cs" />
-    <Compile Include="Playback\Session Save.cs" />
-    <Compile Include="Playback\Session.cs" />
     <Compile Include="Playback\Clip Load.cs" />
     <Compile Include="Playback\Clip Patterns.cs" />
     <Compile Include="Playback\Clip Save.cs" />

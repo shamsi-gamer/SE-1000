@@ -120,7 +120,7 @@ namespace IngameScript
             }
 
 
-            public static Filter Load(Session session, string[] data, ref int i, Instrument inst, int iSrc)
+            public static Filter Load(string[] data, ref int i, Instrument inst, int iSrc)
             {
                 var tag = data[i++];
  
@@ -129,9 +129,9 @@ namespace IngameScript
                     iSrc > -1 ? inst.Sources[iSrc] : null);
 
                 flt.Pass      = (FilterPass)int.Parse(data[i++]);
-                flt.Cutoff    = Parameter.Load(session, data, ref i, inst, iSrc, flt, flt.Cutoff   );
-                flt.Resonance = Parameter.Load(session, data, ref i, inst, iSrc, flt, flt.Resonance);
-                flt.Sharpness = Parameter.Load(session, data, ref i, inst, iSrc, flt, flt.Sharpness);
+                flt.Cutoff    = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Cutoff   );
+                flt.Resonance = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Resonance);
+                flt.Sharpness = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Sharpness);
 
                 return flt;
             }

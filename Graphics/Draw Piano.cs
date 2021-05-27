@@ -69,7 +69,7 @@ namespace IngameScript
 
 
             // draw position line/s
-            if (   g_session.IsPlaying
+            if (   IsPlaying
                 && PlayPat == pat)
             {
                 if (IsCurOrParentSetting(typeof(Arpeggio)))
@@ -80,8 +80,8 @@ namespace IngameScript
                     { 
                         var notes = EditedClip.Patterns[p].Channels[SelChan].Notes.FindAll(n => 
                                   OK(n.Instrument.Arpeggio)
-                               && EditedClip.Track.PlayTime >= n.Step*g_session.TicksPerStep + n.Time                
-                               && EditedClip.Track.PlayTime <  n.Step*g_session.TicksPerStep + n.Time + n.FrameLength);
+                               && EditedClip.Track.PlayTime >= n.Step*TicksPerStep + n.Time                
+                               && EditedClip.Track.PlayTime <  n.Step*TicksPerStep + n.Time + n.FrameLength);
 
                         foreach (var n in notes)
                             arpNotes.Add(n);
@@ -89,7 +89,7 @@ namespace IngameScript
 
                     foreach (var an in arpNotes)
                     {
-                        var ft = (int)((an.ArpPlayTime / g_session.TicksPerStep) % g_patSteps);
+                        var ft = (int)((an.ArpPlayTime / TicksPerStep) % g_patSteps);
 
                         FillRect(sprites, x + xt + wt * ft, y, wt, rh, color6);
                         DrawPianoNeg(sprites, x + xt, y, w - xt, rh, clip, pat, ft, T);
@@ -152,9 +152,9 @@ namespace IngameScript
         void DrawChanNotes(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int p, int gs, int ch, Color col, int songSteps = g_patSteps)
         {
             var wt = w/g_patSteps;
-            var ht = h/25;
+            var ht = h/ 25;
                      
-            var bw = w/76;
+            var bw = w/ 76;
             var bh = h/200;
             var th = ht - bh*2;
 

@@ -4,11 +4,11 @@
     {
         void InitMemLabels()
         {
-            lblMemSet = new Label(Lbl("MemSet"));
-            lblMemory = new Label(Lbl("Mem"), lbl => EditedClip.MemSet);
+            lblMemSet = new Label(GetLabel("MemSet"));
+            lblMemory = new Label(GetLabel("Mem"), lbl => EditedClip.MemSet);
 
             for (int m = 0; m < nMems; m++)
-                lblMem[m] = new Label(Lbl("Mem " + S(m)), null, null, UpdateMem, null, m);
+                lblMem[m] = new Label(GetLabel("Mem " + S(m)), null, null, UpdateMem, null, m);
         }
 
 
