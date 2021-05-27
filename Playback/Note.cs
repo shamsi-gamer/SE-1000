@@ -150,7 +150,7 @@ namespace IngameScript
                 note.StepLength = float.Parse(data[i++]);
                 note.Volume     = float.Parse(data[i++]);
 
-                var nKeys = int.Parse(data[i++]);
+                var nKeys = int_Parse(data[i++]);
 
                 for (int k = 0; k < nKeys; k++)
                     note.Keys.Add(Key.Load(data, ref i, inst));

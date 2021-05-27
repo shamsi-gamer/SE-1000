@@ -251,12 +251,12 @@ namespace IngameScript
                     iSrc > -1 ? inst.Sources[iSrc] : null);
 
 
-                var nSources = int.Parse(data[d++]);
+                var nSources = int_Parse(data[d++]);
 
                 for (int i = 0; i < nSources; i++)
                 {
                     var setPath     = data[d++];
-                    var modSrcIndex = int.Parse(data[d++]);
+                    var modSrcIndex = int_Parse(data[d++]);
                     var modInst     = data[d++];
 
                     var _inst = Instruments.Find(_i => _i.Name == modInst);

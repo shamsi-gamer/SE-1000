@@ -201,7 +201,7 @@ namespace IngameScript
 
                 var inst = new Instrument { Name = data[i++] };
 
-                var nSources = int.Parse(data[i++]);
+                var nSources = int_Parse(data[i++]);
 
                 inst.Volume = Parameter.Load(data, ref i, inst, -1, null);
 

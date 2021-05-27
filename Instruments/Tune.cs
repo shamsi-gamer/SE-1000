@@ -116,10 +116,10 @@ namespace IngameScript
                 tune.UseChord   = data[i++] == "1";
                 tune.AllOctaves = data[i++] == "1";
 
-                var nChords = int.Parse(data[i++]);
+                var nChords = int_Parse(data[i++]);
 
                 for (int j = 0; j < nChords; j++)
-                    tune.Chord.Add(int.Parse(data[i++]));
+                    tune.Chord.Add(int_Parse(data[i++]));
 
                 return tune;
             }

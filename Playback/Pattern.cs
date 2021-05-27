@@ -67,7 +67,7 @@ namespace IngameScript
                 foreach (var chan in pat.Channels)
                     chan.Instrument = Instruments[0];
 
-                var nChans = int.Parse(data[i++]);
+                var nChans = int_Parse(data[i++]);
 
                 for (int ch = 0; ch < nChans; ch++)
                 { 

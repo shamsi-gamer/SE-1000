@@ -47,7 +47,7 @@
 
             public static Key Load(string[] data, ref int i, Instrument inst)
             {
-                var srcIndex = int.Parse(data[i++]);
+                var srcIndex = int_Parse(data[i++]);
                 var path     = data[i++];
                 var value    = float.Parse(data[i++]);
                 var stepTime = float.Parse(data[i++]);

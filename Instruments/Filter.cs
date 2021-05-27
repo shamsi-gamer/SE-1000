@@ -128,7 +128,7 @@ namespace IngameScript
                     inst, 
                     iSrc > -1 ? inst.Sources[iSrc] : null);
 
-                flt.Pass      = (FilterPass)int.Parse(data[i++]);
+                flt.Pass      = (FilterPass)int_Parse(data[i++]);
                 flt.Cutoff    = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Cutoff   );
                 flt.Resonance = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Resonance);
                 flt.Sharpness = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Sharpness);

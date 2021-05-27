@@ -222,8 +222,8 @@ namespace IngameScript
                     inst, 
                     iSrc > -1 ? inst.Sources[iSrc] : null);
 
-                lfo.Op   = (ModOp)  int.Parse(data[i++]);
-                lfo.Type = (LfoType)int.Parse(data[i++]);
+                lfo.Op   = (ModOp)  int_Parse(data[i++]);
+                lfo.Type = (LfoType)int_Parse(data[i++]);
 
                 lfo.Amplitude = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Amplitude);
                 lfo.Frequency = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Frequency);

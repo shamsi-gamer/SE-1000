@@ -250,7 +250,7 @@ namespace IngameScript
 
             public override Setting GetOrAddSettingFromTag(string tag)
             {
-                return Tones[int.Parse(tag)];
+                return Tones[int_Parse(tag)];
             }
 
 
@@ -288,8 +288,8 @@ namespace IngameScript
                 for (int j = 0; j < hrm.Tones.Length; j++)
                     hrm.Tones[j] = Parameter.Load(data, ref i, inst, iSrc, hrm, hrm.Tones[j]);
                 
-                hrm.CurPreset = (Preset)int.Parse(data[i++]);
-                hrm.CurTone   =         int.Parse(data[i++]);
+                hrm.CurPreset = (Preset)int_Parse(data[i++]);
+                hrm.CurTone   =         int_Parse(data[i++]);
 
                 return hrm;
             }

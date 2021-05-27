@@ -8,22 +8,23 @@ namespace IngameScript
     {
         public partial class Clip
         {
-            public static Clip Load(string[] lines, ref int line)//, out string curPath)
+            public static Clip Load(string[] lines, ref int line, Track track)//, out string curPath)
             { 
                 //curPath     = "";
 
                 if (lines.Length < 3)
-                    return null;
+                    return Clip_null;
 
-                var clip = new Clip(null);
+                var clip = new Clip(track);
 
                 var cfg = lines[line++].Split(';');
-                if (!clip.LoadConfig  (cfg))             return null;//, out curPath)) return null;
 
-                if (!clip.LoadChords  (lines[line++]))   return null;
-                if (!clip.LoadMems    (lines[line++]))   return null;
-                if (!clip.LoadPatterns(lines, ref line)) return null;
-                if (!clip.LoadBlocks  (lines[line++]))   return null;
+                if (   !clip.LoadConfig  (cfg) //, out curPath)) return Clip_null;
+                    || !clip.LoadChords  (lines[line++])
+                    || !clip.LoadMems    (lines[line++])
+                    || !clip.LoadPatterns(lines, ref line)
+                    || !clip.LoadBlocks  (lines[line++]))
+                    return Clip_null;
 
                 clip.UpdateAutoKeys();
 
@@ -88,39 +89,38 @@ namespace IngameScript
 
                 LoadToggles(cfg[c++]);
 
-                if (!int  .TryParse(cfg[c++], out CurPat         )) return F;
-                if (!int  .TryParse(cfg[c++], out CurChan        )) return F;
-                                                                 
-                if (!int  .TryParse(cfg[c++], out SelChan        )) return F;
-                if (!int  .TryParse(cfg[c++], out CurSrc         )) return F;
-                                                             
-                //curPath = cfg[c++];                              
-                                                             
-                if (!int  .TryParse(cfg[c++], out EditStepIndex  )) return F;
-                if (!int  .TryParse(cfg[c++], out EditLengthIndex)) return F;
-                                                           
-                if (!int  .TryParse(cfg[c++], out CurNote        )) return F;
-                                                                 
-                if (!int  .TryParse(cfg[c++], out Chord          )) return F;
-                if (!int  .TryParse(cfg[c++], out ChordSpread    )) return F;
-                                                                 
-                if (!int  .TryParse(cfg[c++], out SongOff        )) return F;
-                if (!int  .TryParse(cfg[c++], out InstOff        )) return F;
-                if (!int  .TryParse(cfg[c++], out SrcOff         )) return F;
-                                                                 
-                if (!int  .TryParse(cfg[c++], out Solo           )) return F;
-                                                                 
-                if (!float.TryParse(cfg[c++], out Volume         )) return F;
-                                                                 
-                if (!int  .TryParse(cfg[c++], out ColorIndex     )) return F;
-
-                return T;
+                return
+                       int_TryParse  (cfg[c++], out CurPat         )
+                    && int_TryParse  (cfg[c++], out CurChan        )
+                                                                    
+                    && int_TryParse  (cfg[c++], out SelChan        )
+                    && int_TryParse  (cfg[c++], out CurSrc         )
+                                                                    
+                    //Path = cfg[c++];                             
+                                                                    
+                    && int_TryParse  (cfg[c++], out EditStepIndex  )
+                    && int_TryParse  (cfg[c++], out EditLengthIndex)
+                                                                    
+                    && int_TryParse  (cfg[c++], out CurNote        )
+                                                                    
+                    && int_TryParse  (cfg[c++], out Chord          )
+                    && int_TryParse  (cfg[c++], out ChordSpread    )
+                                                                    
+                    && int_TryParse  (cfg[c++], out SongOff        )
+                    && int_TryParse  (cfg[c++], out InstOff        )
+                    && int_TryParse  (cfg[c++], out SrcOff         )
+                                                                    
+                    && int_TryParse  (cfg[c++], out Solo           )
+                                                                    
+                    && float.TryParse(cfg[c++], out Volume         )
+                                                                    
+                    && int_TryParse  (cfg[c++], out ColorIndex     );
             }
 
 
             bool LoadPatterns(string[] lines, ref int line)
             {
-                int nPats = int.Parse(lines[line++]);
+                int nPats = int_Parse(lines[line++]);
 
                 for (int p = 0; p < nPats; p++)
                 {
@@ -144,12 +144,12 @@ namespace IngameScript
 
                 Blocks.Clear();
 
-                int nBlocks = int.Parse(data[i++]);
+                int nBlocks = int_Parse(data[i++]);
 
                 for (int b = 0; b < nBlocks; b++)
                 {
-                    int first = int.Parse(data[i++]);
-                    int last  = int.Parse(data[i++]);
+                    int first = int_Parse(data[i++]);
+                    int last  = int_Parse(data[i++]);
 
                     Blocks.Add(new Block(first, last));
                 }

@@ -64,7 +64,7 @@
             string SaveConfig()
             {
                 return
-                      Name.Replace("\n", "\u0085")
+                       Name.Replace("\n", "\u0085")
                     + PS(SaveToggles())
 
                     + PS(CurPat)         

@@ -155,11 +155,14 @@ namespace IngameScript
 
             public override void AdjustFromController(Clip clip, Program prog)
             {
-                if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(clip, Attack,  -g_remote.MoveIndicator    .Z/ControlSensitivity);
-                if (g_remote.MoveIndicator    .X != 0) prog.AdjustFromController(clip, Decay,    g_remote.MoveIndicator    .X/ControlSensitivity);
+                var mi = g_remote.MoveIndicator;
+                var ri = g_remote.RotationIndicator;
 
-                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(clip, Sustain, -g_remote.RotationIndicator.X/ControlSensitivity);
-                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(clip, Release,  g_remote.RotationIndicator.Y/ControlSensitivity);
+                if (mi.Z != 0) prog.AdjustFromController(clip, Attack,  -mi.Z/ControlSensitivity);
+                if (mi.X != 0) prog.AdjustFromController(clip, Decay,    mi.X/ControlSensitivity);
+
+                if (ri.X != 0) prog.AdjustFromController(clip, Sustain, -ri.X/ControlSensitivity);
+                if (ri.Y != 0) prog.AdjustFromController(clip, Release,  ri.Y/ControlSensitivity);
             }
 
 
@@ -173,7 +176,7 @@ namespace IngameScript
                     case strRel: return GetOrAddParamFromTag(Release, tag);
                 }
 
-                return null;
+                return Setting_null;
             }
 
 

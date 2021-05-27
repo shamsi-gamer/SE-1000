@@ -133,7 +133,7 @@ namespace IngameScript
 
                 var num =
                     len > 0
-                    ? int.Parse(suffix.Substring(0, len))
+                    ? int_Parse(suffix.Substring(0, len))
                     : 0;
 
                 smp.Note = num;

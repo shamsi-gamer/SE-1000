@@ -43,15 +43,16 @@ namespace IngameScript
             {
                 Clips = new Clip[g_nChans];
                 for (int i = 0; i < g_nChans; i++)
-                    Clips[i] = null;
+                    Clips[i] = Clip_null;
                           
-                StartTime = long_NaN;
+
+                StartTime = 
                 PlayTime  = long_NaN;
                           
-                PlayClip  = -1;
-                NextClip  = -1;
+                PlayClip  = 
+                NextClip  = 
                           
-                PlayPat   = -1;
+                PlayPat   = 
                 NextPat   = -1;
                           
                 DspVol    = new float[g_nChans];
@@ -106,8 +107,8 @@ namespace IngameScript
                 else if (OK(ClipCopy))
                 {
                     Clips[index] = new Clip(ClipCopy, this);
-                    EditedClip = Clips[index];
-                    ClipCopy   = null;
+                    EditedClip   = Clips[index];
+                    ClipCopy     = Clip_null;
                 }
 
                 else if (OK(clip))
@@ -124,7 +125,7 @@ namespace IngameScript
                             EditedClip = GetClipAfterDelete(clip);
 
                         if (Tracks.Sum(t => t.Clips.Count(c => OK(c))) > 1) // check that this isn't the only clip
-                            Clips[index] = null;
+                            Clips[index] = Clip_null;
 
                         EditClip = -1;
                     }
@@ -279,11 +280,8 @@ namespace IngameScript
                       cfg
                     + PN(indices);
 
-                foreach (var clip in Clips)
-                {
-                    if (OK(clip))
-                        save += PN(clip.Save());
-                }
+                for (int i = 0; i < _indices.Count; i++)
+                    save += PN(Clips[_indices[i]].Save());
 
                 return save;
             }
@@ -291,34 +289,43 @@ namespace IngameScript
 
             public static Track Load(string[] lines, ref int line)//, out string curPath)
             {
+                if (line >= lines.Length) 
+                    return Track_null;
+
                 var track = new Track();
 
-                var cfg = lines[line++].Split(';');
+                var strCfg = lines[line++];
+
+                if (!strCfg.Contains(';'))
+                    return Track_null;
+
+                var cfg = strCfg.Split(';');
                 var c = 0;
 
-                if (   !long_TryParse(cfg[c++], out track.PlayTime)
+                if (   cfg.Length < 4
+                    || !long_TryParse(cfg[c++], out track.PlayTime)
                     || ! int_TryParse(cfg[c++], out track.PlayPat )
                     || ! int_TryParse(cfg[c++], out track.NextPat )
                     || ! int_TryParse(cfg[c++], out track.NextClip)) 
-                    return null;
+                    return Track_null;
 
                 var _indices = lines[line++].Split(';');
 
                 int nClips;
-                if (!int .TryParse(_indices[0], out nClips)) return null;
+                if (!int_TryParse(_indices[0], out nClips)) return Track_null;
 
                 var indices = new List<int>();
                 for (int i = 0; i < nClips; i++)
-                    indices.Add(int.Parse(_indices[i+1]));
+                    indices.Add(int_Parse(_indices[i+1]));
                  
                 //curPath = "";
 
                 for (int i = 0; i < nClips; i++)
                 {
-                    var clip = Clip.Load(lines, ref line);
+                    var clip = Clip.Load(lines, ref line, track);
 
                     if (OK(clip)) track.Clips[indices[i]] = clip;//, out curPath));
-                    else          return null;
+                    else          return Track_null;
                 }
 
                 return track;

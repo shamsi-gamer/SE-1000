@@ -116,8 +116,8 @@ namespace IngameScript
 
             public Clip(Track track, string name = "Clip")
             {
-                Name        = name;
                 Track       = track;
+                Name        = name;
                             
                 Arpeggio    = null;
                 Length      = -1;

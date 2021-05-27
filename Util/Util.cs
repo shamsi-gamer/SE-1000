@@ -29,8 +29,8 @@ namespace IngameScript
     {                                                                              
         static List<Setting> g_settings   = new List<Setting>();
 
-        static Setting   LastSetting  => g_settings.Count > 0 ? g_settings.Last() : null;
-        static Setting   CurSetting   => CurSet > -1 ? g_settings[CurSet] : null;
+        static Setting   LastSetting  => g_settings.Count > 0 ? g_settings.Last()  : Setting_null;
+        static Setting   CurSetting   => CurSet > -1          ? g_settings[CurSet] : Setting_null;
 
         static Parameter CurParam     => (Parameter)CurSetting;
         static Modulate  CurModulate  => (Modulate) CurSetting;
@@ -244,7 +244,7 @@ namespace IngameScript
             if (numLength > 0)
             {
                 var len = name.Length - numLength;
-                var num = int.Parse(name.Substring(len));
+                var num = int_Parse(name.Substring(len));
 
                 string newName = "";
                 while (newName == "" || exists(newName))
@@ -441,7 +441,8 @@ namespace IngameScript
         }
 
 
-        static bool int_TryParse(string str, out int val) => int.TryParse(str, out val);
+        static int   int_Parse(string str) => int.Parse(str);
+        static bool  int_TryParse(string str, out int val) => int.TryParse(str, out val);
 
         static bool long_TryParse(string str, out long val)
         {

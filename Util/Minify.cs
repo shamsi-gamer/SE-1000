@@ -1,5 +1,5 @@
 ﻿using VRage.Game.GUI.TextPanel;
-
+using VRageMath;
 
 namespace IngameScript
 {
@@ -9,6 +9,12 @@ namespace IngameScript
                     F  = false;
 
         const float fN = float.NaN;
+
+
+        const Track     Track_null = null;
+        const Clip       Clip_null = null;
+        const Setting Setting_null = null;
+
 
         const TextAlignment TaC = TextAlignment.CENTER;
 

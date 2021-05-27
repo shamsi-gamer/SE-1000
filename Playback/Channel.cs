@@ -159,7 +159,7 @@ namespace IngameScript
 
             public static Channel Load(string[] data, ref int i, out int index, Pattern pat)
             {
-                index           = int.Parse(data[i++]);
+                index           = int_Parse(data[i++]);
 
                 var instName    = data[i++];
                 var inst        = Instruments.Find(_inst => _inst.Name == instName);
@@ -180,7 +180,7 @@ namespace IngameScript
 
             void LoadNotes(string[] data, ref int i, int iChan)
             {
-                var nNotes = int.Parse(data[i++]);
+                var nNotes = int_Parse(data[i++]);
 
                 for (int n = 0; n < nNotes; n++)
                 {
@@ -196,7 +196,7 @@ namespace IngameScript
 
             void LoadAutoKeys(string[] data, ref int i)
             {
-                var nKeys = int.Parse(data[i++]);
+                var nKeys = int_Parse(data[i++]);
 
                 for (int k = 0; k < nKeys; k++)
                     AutoKeys.Add(Key.Load(data, ref i, Instrument));

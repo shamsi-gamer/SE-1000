@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Collections.Generic;
 
 
 namespace IngameScript
@@ -67,6 +68,9 @@ namespace IngameScript
         bool LoadMachineState(out int editTrack, out int editIndex, 
                               out int copyTrack, out int copyIndex)
         {
+            ClearMachineState();
+
+
             editTrack = editIndex =
             copyTrack = copyIndex = -1;
 
@@ -81,13 +85,13 @@ namespace IngameScript
             LoadToggles(state[s++]);
 
             return 
-                   !int_TryParse(state[s++], out TicksPerStep)
-                || !int_TryParse(state[s++], out LockView    )
-                || !int_TryParse(state[s++], out EditClip    )
-                || !int_TryParse(state[s++], out editTrack   )
-                || !int_TryParse(state[s++], out editIndex   )
-                || !int_TryParse(state[s++], out copyTrack   )
-                || !int_TryParse(state[s++], out copyIndex   );
+                   int_TryParse(state[s++], out TicksPerStep)
+                && int_TryParse(state[s++], out LockView    )
+                && int_TryParse(state[s++], out EditClip    )
+                && int_TryParse(state[s++], out editTrack   )
+                && int_TryParse(state[s++], out editIndex   )
+                && int_TryParse(state[s++], out copyTrack   )
+                && int_TryParse(state[s++], out copyIndex   );
         }
 
 
@@ -107,7 +111,7 @@ namespace IngameScript
 
         bool LoadInstruments()
         {
-            Instruments.Clear();
+            Instruments = new List<Instrument>();
 
 
             var sb = new StringBuilder();
@@ -158,24 +162,22 @@ namespace IngameScript
 
         bool LoadTracks()
         {
-            ClearTracks();
+            CreateTracks();
 
             var lines = pnlStorageTracks.GetText().Split('\n');
             var line  = 0;
 
-            int nTracks;
-            if (!int_TryParse(lines[line++], out nTracks)) return F;
-
-            for (int t = 0; t < nTracks; t++)
+            for (int t = 0; t < Tracks.Count; t++)
             {
                 SkipWhiteSpace(lines, ref line);
-                var track = Track.Load(lines, ref line);
 
-                if (OK(track)) Tracks.Add(track);
-                else           return F;
+                var track = Track.Load(lines, ref line);
+                if (!OK(track)) return F;
+
+                Tracks[t] = track;
             }
 
-            return Tracks.Count > 0;
+            return T;
         }
 
 

@@ -78,7 +78,7 @@ namespace IngameScript
 
         void SaveTracks()
         {
-            var tracks = N(S(Tracks.Count));
+            var tracks = "";
 
             for (int t = 0; t < Tracks.Count; t++)
             {

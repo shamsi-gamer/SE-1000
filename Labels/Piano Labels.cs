@@ -25,7 +25,7 @@ namespace IngameScript
 
             var high = new List<IMyTextPanel>();
             Get(high, l => l.CustomName.Length >= 11 && l.CustomName.Substring(0, 11) == "Label High ");
-            high = high.OrderBy(l => int.Parse(l.CustomName.Substring(11))).ToList();
+            high = high.OrderBy(l => int_Parse(l.CustomName.Substring(11))).ToList();
 
             for (int h = 0; h < 10; h++)
             { 
@@ -102,7 +102,7 @@ namespace IngameScript
 
             var low = new List<IMyTextPanel>();
             Get(low, l => l.CustomName.Length >= 10 && l.CustomName.Substring(0, 10) == "Label Low ");
-            low = low.OrderBy(l => int.Parse(l.CustomName.Substring(10))).ToList();
+            low = low.OrderBy(l => int_Parse(l.CustomName.Substring(10))).ToList();
 
             for (int l = 0; l < low.Count; l++)
             { 

@@ -7,10 +7,10 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        int                           NoteScale          = 2;
-        float                         ControlSensitivity = 12;
+        const int                     NoteScale          = 2;
+        const float                   ControlSensitivity = 12;
                                       
-        int                           OscCount           = 13;
+        const int                     OscCount           = 13;
                                          
                                          
         static  List<string>          g_samples = new List<string>();

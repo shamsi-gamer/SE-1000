@@ -5,7 +5,7 @@ namespace IngameScript
 {
     partial class Program
     {
-               float   float_Inf = 65536f;
+        const  float   float_Inf = 65536f;
         static float[] g_steps   = { 0.25f, 0.5f, 1, 2, 4, 8, 16, float_Inf };
 
 
@@ -25,7 +25,7 @@ namespace IngameScript
                         
         static int     LockView       = 0; // 1 = pattern, 2 = piano
 
-        Key            g_editKey        = null;
+        Key            g_editKey      = null;
 
 
         static string           SessionName;
@@ -49,26 +49,17 @@ namespace IngameScript
         static bool IsPlaying => OK(Tracks.Find(track => track?.IsPlaying ?? F));
 
 
-        static void InitMachineState()
+        static void CreateDefaultMachineState()
         {
-            SessionName = "New Session";
+            ClearMachineState();
 
-            Instruments = new List<Instrument>();
+            SessionName = "New Session";
 
             CreateMachineState();
             CreateDefaultInstruments();
             CreateDefaultTracks();
 
             EditedClip = Tracks[0].Clips[0];
-        }
-
-
-        static void CreateDefaultMachineState()
-        {
-            ClearMachineState();
-            ClearTracks();
-
-            InitMachineState();
         }
 
 
@@ -83,13 +74,10 @@ namespace IngameScript
 
         static void ClearTracks()
         {
-            if (!OK(Tracks))
-                return;
-
             foreach (var track in Tracks)
             {
                 for (int i = 0; i < g_nChans; i++)
-                    track.Clips[i] = null;
+                    track.Clips[i] = Clip_null;
 
                 track.PlayClip = -1;
                 track.NextClip = -1;
@@ -101,11 +89,12 @@ namespace IngameScript
         {
             TicksPerStep = 8; // 113 bpm
 
-            EditedClip   = null;
-            ClipCopy     = null;
+            EditedClip   = 
+            ClipCopy     = Clip_null;
                          
             ShowSession  = T;
-            MixerShift   = F;
+
+            MixerShift   = 
             Move         = F;
                          
             EditClip     = -1;
@@ -114,19 +103,24 @@ namespace IngameScript
 
         static void CreateDefaultInstruments()
         {
-            Instruments.Clear();
+            Instruments = new List<Instrument>();
 
             Instruments.Add(new Instrument());
             Instruments[0].Sources.Add(new Source(Instruments[0]));
         }
 
 
-        static void CreateDefaultTracks()
+        static void CreateTracks()
         {
             Tracks = new List<Track>(new Track[4]);
+            for (int t = 0; t < Tracks.Count; t++)
+                Tracks[t] = new Track();
+        }
 
-            for (int i = 0; i < Tracks.Count; i++)
-                Tracks[i] = new Track();
+
+        static void CreateDefaultTracks()
+        {
+            CreateTracks();
 
             var track = Tracks[0];
             var clip  = new Clip(track);
@@ -165,7 +159,7 @@ namespace IngameScript
                 }
             }
 
-            return null;
+            return Clip_null;
         }
 
 

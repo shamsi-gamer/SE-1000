@@ -35,7 +35,7 @@ namespace IngameScript
                 Oscillator = OscSine;
 
                 Offset     = null;
-                Volume     = (Parameter)NewSettingFromTag(strVol, null, inst, this);
+                Volume     = (Parameter)NewSettingFromTag(strVol, Setting_null, inst, this);
                 Tune       = null;
                 Harmonics  = null;
                 Filter     = null;
@@ -53,7 +53,7 @@ namespace IngameScript
                 Oscillator = src.Oscillator;
                 
                 Offset     = src.Offset   ?.Copy(null);
-                Volume     = new Parameter(src.Volume, null);                               
+                Volume     = new Parameter(src.Volume, Setting_null);                               
                 Tune       = src.Tune     ?.Copy();
                 Harmonics  = src.Harmonics?.Copy();
                 Filter     = src.Filter   ?.Copy();
@@ -332,7 +332,7 @@ namespace IngameScript
                 var src = new Source(inst);
                 inst.Sources.Add(src);
 
-                src.Oscillator = OscillatorFromType((OscType)int.Parse(data[i++]));
+                src.Oscillator = OscillatorFromType((OscType)int_Parse(data[i++]));
                 src.On         = data[i++] == "1";
 
                 src.Volume = Parameter.Load(data, ref i, inst, iSrc, null);

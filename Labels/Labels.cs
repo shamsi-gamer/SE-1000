@@ -51,10 +51,10 @@ namespace IngameScript
                              _lcdPressed    = new List<int>();
 
 
-        int lcdInfo  =    0,
-            lcdMain  = 1000,
-            lcdClip  = 2000,
-            lcdMixer = 3000;
+        const int lcdInfo  =    0,
+                  lcdMain  = 1000,
+                  lcdClip  = 2000,
+                  lcdMixer = 3000;
 
 
         Color MakeColor(Color c, float f)
@@ -198,16 +198,15 @@ namespace IngameScript
         {
             EditedClip.ColorIndex = MinMax(0, iCol, 6);
 
-            switch (EditedClip.ColorIndex)
-            {
-                case 0: SetLabelColor(new Color(255,   0,   0), 0.35f); break;
-                case 1: SetLabelColor(new Color(255,  92,   0), 0.35f); break;
-                case 2: SetLabelColor(new Color(255, 255,   0), 0.4f);  break;
-                case 3: SetLabelColor(new Color(0,   255,   0), 0.35f); break;
-                case 4: SetLabelColor(new Color(0,    40, 255));        break;
-                case 5: SetLabelColor(new Color(128,   0, 255), 0.4f);  break;
-                case 6: SetLabelColor(new Color(255, 255, 255), 0.35f); break;
-            }
+            var ci = EditedClip.ColorIndex;
+
+            if (ci == 0) SetLabelColor(new Color(255,   0,   0), 0.35f);
+            if (ci == 1) SetLabelColor(new Color(255,  92,   0), 0.35f);
+            if (ci == 2) SetLabelColor(new Color(255, 255,   0), 0.4f); 
+            if (ci == 3) SetLabelColor(new Color(0,   255,   0), 0.35f);
+            if (ci == 4) SetLabelColor(new Color(0,    40, 255));       
+            if (ci == 5) SetLabelColor(new Color(128,   0, 255), 0.4f); 
+            if (ci == 6) SetLabelColor(new Color(255, 255, 255), 0.35f);
         }
 
 
@@ -260,16 +259,15 @@ namespace IngameScript
                 lightColor.B + (int)((0xFF - lightColor.B) * 0.23f));
 
 
-            switch (EditedClip.ColorIndex)
-            {
-            case 0: warningLight.Color = new Color(0,    0,    0xFF); break;
-            case 1: warningLight.Color = new Color(0,    0,    0xFF); break;
-            case 2: warningLight.Color = new Color(0xFF, 0,    0x80); break;
-            case 3: warningLight.Color = new Color(0xFF, 0,    0xFF); break;
-            case 4: warningLight.Color = new Color(0xFF, 0x40, 0   ); break;
-            case 5: warningLight.Color = new Color(0xFF, 0x30, 0   ); break;
-            case 6: warningLight.Color = new Color(0xFF, 0,    0   ); break;
-            }
+            var ci = EditedClip.ColorIndex;
+
+            if (ci == 0) warningLight.Color = new Color(0,    0,    0xFF);
+            if (ci == 1) warningLight.Color = new Color(0,    0,    0xFF);
+            if (ci == 2) warningLight.Color = new Color(0xFF, 0,    0x80);
+            if (ci == 3) warningLight.Color = new Color(0xFF, 0,    0xFF);
+            if (ci == 4) warningLight.Color = new Color(0xFF, 0x40, 0   );
+            if (ci == 5) warningLight.Color = new Color(0xFF, 0x30, 0   );
+            if (ci == 6) warningLight.Color = new Color(0xFF, 0,    0   );
         }
 
 

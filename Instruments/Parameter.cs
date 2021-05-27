@@ -393,7 +393,7 @@ namespace IngameScript
 
                 param.m_value = float.Parse(data[i++]);
 
-                var nSettings = int.Parse(data[i++]);
+                var nSettings = int_Parse(data[i++]);
 
                 while (nSettings-- > 0)
                 {

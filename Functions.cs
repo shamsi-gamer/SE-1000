@@ -79,7 +79,7 @@ namespace IngameScript
                 if (   i == 0
                     && IsDigit(tag[0]))
                 { 
-                    iSrc = int.Parse(tag);
+                    iSrc = int_Parse(tag);
                     continue;
                 }
 

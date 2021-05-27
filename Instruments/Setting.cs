@@ -8,7 +8,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        float g_labelHeight = 18;
+        const float g_labelHeight = 18;
 
 
         public class Setting
@@ -61,7 +61,7 @@ namespace IngameScript
             }
 
 
-            public virtual Setting GetOrAddSettingFromTag(string tag) => null;
+            public virtual Setting GetOrAddSettingFromTag(string tag) => Setting_null;
             
             public Parameter GetOrAddParamFromTag(Parameter param, string tag)
             {
@@ -176,7 +176,7 @@ namespace IngameScript
         {
             var tags = path.Split('/');
 
-            Setting setting = null;
+            Setting setting = Setting_null;
 
             foreach (var tag in tags)
             {
@@ -267,7 +267,7 @@ namespace IngameScript
             case strScl:  return new Parameter(tag,    0.01f,      16,   0.25f, 4,    0.01f,  0.1f,  1,    parent, inst, src);
             }
 
-            return null;
+            return Setting_null;
         }
 
 
