@@ -562,9 +562,6 @@ namespace IngameScript
 
         void SetTranspose(int d)
         {
-            if (!OK(EditedClip))
-                return;
-
             var tune = EditedClip.SelSource    ?.Tune
                     ?? EditedClip.SelInstrument?.Tune;
 

@@ -296,10 +296,11 @@ namespace IngameScript
                 var cfg = lines[line++].Split(';');
                 var c = 0;
 
-                if (!long_TryParse(cfg[c++], out track.PlayTime )) return null;
-                if (!int .TryParse(cfg[c++], out track.PlayPat  )) return null;
-                if (!int .TryParse(cfg[c++], out track.NextPat  )) return null;
-                if (!int .TryParse(cfg[c++], out track.NextClip )) return null;
+                if (   !long_TryParse(cfg[c++], out track.PlayTime)
+                    || ! int_TryParse(cfg[c++], out track.PlayPat )
+                    || ! int_TryParse(cfg[c++], out track.NextPat )
+                    || ! int_TryParse(cfg[c++], out track.NextClip)) 
+                    return null;
 
                 var _indices = lines[line++].Split(';');
 

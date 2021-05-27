@@ -19,6 +19,7 @@ namespace IngameScript
 
                 var cfg = lines[line++].Split(';');
                 if (!clip.LoadConfig  (cfg))             return null;//, out curPath)) return null;
+
                 if (!clip.LoadChords  (lines[line++]))   return null;
                 if (!clip.LoadMems    (lines[line++]))   return null;
                 if (!clip.LoadPatterns(lines, ref line)) return null;

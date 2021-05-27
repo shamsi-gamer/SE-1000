@@ -41,20 +41,20 @@ namespace IngameScript
         IMyReflectorLight   frontLight;
 
 
-        static  List<Label> g_fastLabels    = new List<Label>();
-        static  List<Label> g_slowLabels    = new List<Label>();
+        static  List<Label> g_fastLabels    = new List<Label>(),
+                            g_slowLabels    = new List<Label>(),
 
-        static  List<Label> g_labelsPressed = new List<Label>();
-        static  List<Label>  _labelsPressed = new List<Label>();
+                            g_labelsPressed = new List<Label>(),
+                             _labelsPressed = new List<Label>();
 
-        static  List<int>   g_lcdPressed   = new List<int>();
-        static  List<int>    _lcdPressed   = new List<int>();
+        static  List<int>   g_lcdPressed    = new List<int>(),
+                             _lcdPressed    = new List<int>();
 
 
-        const int lcdInfo  =    0,
-                  lcdMain  = 1000,
-                  lcdClip  = 2000,
-                  lcdMixer = 3000;
+        int lcdInfo  =    0,
+            lcdMain  = 1000,
+            lcdClip  = 2000,
+            lcdMixer = 3000;
 
 
         Color MakeColor(Color c, float f)

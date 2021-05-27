@@ -39,12 +39,15 @@ namespace IngameScript
             if (!LoadTracks     ()) CreateDefaultTracks();
 
 
-            if (OK(editTrack) && OK(editIndex)) EditedClip = Tracks[editTrack].Clips[editIndex];
-            if (OK(copyTrack) && OK(copyIndex)) ClipCopy   = Tracks[copyTrack].Clips[copyIndex];
+            if (!OK(EditedClip))
+                EditedClip = Tracks[editTrack].Clips[editIndex];
+            
+            if (   OK(copyTrack) 
+                && OK(copyIndex)) 
+                ClipCopy = Tracks[copyTrack].Clips[copyIndex];
 
 
-            if (OK(EditedClip))
-                SetLabelColor(EditedClip.ColorIndex);
+            SetLabelColor(EditedClip.ColorIndex);
 
 
             //if (curPath != "")
@@ -155,12 +158,9 @@ namespace IngameScript
 
         bool LoadTracks()
         {
-            Tracks.Clear();
+            ClearTracks();
 
-            var sb = new StringBuilder();
-            pnlStorageInstruments.ReadText(sb);
-
-            var lines = sb.ToString().Split('\n');
+            var lines = pnlStorageTracks.GetText().Split('\n');
             var line  = 0;
 
             int nTracks;
@@ -174,7 +174,6 @@ namespace IngameScript
                 if (OK(track)) Tracks.Add(track);
                 else           return F;
             }
-
 
             return Tracks.Count > 0;
         }

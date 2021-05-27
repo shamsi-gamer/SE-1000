@@ -374,8 +374,8 @@ namespace IngameScript
         {
             var hinge = Get("Hinge R") as IMyMotorStator;
 
-            var fold = Get("Timer Fold 1")    as IMyTimerBlock;
-            var recl = Get("Timer Recline 1") as IMyTimerBlock;
+            var fold  = Get("Timer Fold 1")    as IMyTimerBlock;
+            var recl  = Get("Timer Recline 1") as IMyTimerBlock;
 
             if (   !OK(fold)
                 || !OK(recl))
@@ -470,8 +470,8 @@ namespace IngameScript
         static int        PlayPat       => EditedClip.Track.PlayPat;
                                         
         static Pattern    CurPattern    => EditedClip.CurPattern;
-        static Channel    CurChannel    => EditedClip.CurChannel;
         static Pattern    PlayPattern   => EditedClip.Patterns[PlayPat];
+        static Channel    CurChannel    => EditedClip.CurChannel;
         static Channel    PlayChannel   => PlayPattern.Channels[CurChan];
                                         
         static Source     SelSource     => EditedClip.SelSource;

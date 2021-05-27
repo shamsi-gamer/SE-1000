@@ -8,7 +8,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        const float g_labelHeight = 18;
+        float g_labelHeight = 18;
 
 
         public class Setting

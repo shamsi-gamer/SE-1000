@@ -99,10 +99,10 @@ namespace IngameScript
             var chan = EditedClip.Patterns[pat].Channels[ch];
 
 
-            const int minNote   = 54 * NoteScale;
-            const int maxNote   = 78 * NoteScale;
+            int minNote   = 54 * NoteScale;
+            int maxNote   = 78 * NoteScale;
 
-            const int _noteScale = 32;
+            int _noteScale = 32;
 
 
             // this is only used for randomizing chords,

@@ -7,11 +7,12 @@
             public string Save()
             {
                 return
-                        SaveConfig()
-                    + N(SaveChords())
-                    + N(SaveMems())
-                    + N(SavePatterns())
-                    +   SaveBlocks();
+                         SaveConfig()
+
+                    + PN(SaveChords())
+                    + PN(SaveMems())
+                    + PN(SavePatterns())
+                    + PN(SaveBlocks());
             }
 
 
@@ -72,7 +73,7 @@
                     + PS(SelChan)        
                     + PS(CurSrc)
 
-                    + W (CurSet > -1 ? CurSetting.GetPath(CurSrc) : "")
+                    //+ W (CurSet > -1 ? CurSetting.GetPath(CurSrc) : "")
 
                     + PS(EditStepIndex)
                     + PS(EditLengthIndex)     
@@ -144,8 +145,8 @@
                 foreach (var b in Blocks)
                 {
                     save +=
-                      PS(b.First)
-                    + PS(b.Last);
+                          PS(b.First)
+                        + PS(b.Last);
                 }
 
                 return save;

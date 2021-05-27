@@ -25,8 +25,8 @@ namespace IngameScript
 
             public Queue<float> ValueCache;
 
-                  int           m_count;
-            const int           MaxCount = 4;
+            int                 m_count;
+            int                 MaxCount = 4;
 
  
 

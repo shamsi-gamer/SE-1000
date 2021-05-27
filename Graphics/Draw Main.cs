@@ -20,12 +20,12 @@ namespace IngameScript
 
             var sprites = new List<MySprite>();
 
-            if (!OK(EditedClip))
-            {
-                FillRect(sprites, x, y, w, h, color0);
-            }
-            else
-            { 
+            //if (!OK(EditedClip))
+            //{
+            //    FillRect(sprites, x, y, w, h, color0);
+            //}
+            //else
+            //{ 
                 if (   SelChan > -1
                     && IsCurParam()
                     && (   EditedClip.ParamKeys
@@ -52,7 +52,7 @@ namespace IngameScript
                       && LockView != 1
                    || LockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, T, null);
                 else                   DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, T);
-            }
+            //}
 
             dsp.Draw(sprites);
         }

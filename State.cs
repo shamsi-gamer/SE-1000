@@ -5,7 +5,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        const  float   float_Inf = 65536f;
+               float   float_Inf = 65536f;
         static float[] g_steps   = { 0.25f, 0.5f, 1, 2, 4, 8, 16, float_Inf };
 
 
@@ -58,6 +58,8 @@ namespace IngameScript
             CreateMachineState();
             CreateDefaultInstruments();
             CreateDefaultTracks();
+
+            EditedClip = Tracks[0].Clips[0];
         }
 
 

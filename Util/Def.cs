@@ -25,7 +25,7 @@ namespace IngameScript
                     nMems        = 8;
                                  
                                  
-        const float dVol         = 0.01f;
+        float       dVol         = 0.01f;
 
 
         static  Random  g_rnd    = new Random(DateTime.Now.Millisecond);
