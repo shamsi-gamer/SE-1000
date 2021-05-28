@@ -41,30 +41,6 @@ namespace IngameScript
             ? CurHarmonics
             : (Harmonics)CurSetting.Parent;
 
-        Arpeggio CurArpeggio => (Arpeggio)CurSetting;
-        Arpeggio CurOrParentArpeggio =>
-            IsCurSetting(typeof(Arpeggio))
-            ? CurArpeggio
-            : (Arpeggio)CurSetting.Parent;
-        
-
-        //Arpeggio CurOrAnyParentArpeggio
-        //{
-        //    get
-        //    {
-        //        var setting = CurSetting;
-        //        while (OK(setting))
-        //        {
-        //            if (setting.GetType() == typeof(Arpeggio))
-        //                return (Arpeggio)setting;
-
-        //            setting = setting.Parent;
-        //        }
-
-        //        return Arpeggio_null;
-        //    }
-        //}
-
 
         static bool IsCurParam()
         {
@@ -96,24 +72,6 @@ namespace IngameScript
                     ||    OK(CurSetting.Parent)
                        && CurSetting.Parent.GetType() == type);
         }
-
-
-        //bool IsCurOrAnyParent(Type type)
-        //{
-        //    if (CurSet < 0) return F;
-
-        //    var setting = CurSetting;
-
-        //    while (OK(setting))
-        //    {
-        //        if (setting.GetType() == typeof(Arpeggio))
-        //            return T;
-
-        //        setting = setting.Parent;
-        //    }
-
-        //    return F;
-        //}
 
 
         static void UpdateDspOffset(ref int off, int pos, int count, int max, int dOff1, int dOff2)
@@ -275,8 +233,7 @@ namespace IngameScript
                 ||    IsCurParam(strTune)
                    && (tune?.UseChord ?? False)
                    && !(   EditedClip.ParamKeys 
-                        || EditedClip.ParamAuto)
-                ||    IsCurOrParentSetting(typeof(Arpeggio));
+                        || EditedClip.ParamAuto);
         }}
 
 

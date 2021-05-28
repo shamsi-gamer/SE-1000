@@ -27,7 +27,6 @@ namespace IngameScript
         const Harmonics   Harmonics_null = null;
         const Filter         Filter_null = null;
         const Delay           Delay_null = null;
-        const Arpeggio     Arpeggio_null = null;
         const Modulate     Modulate_null = null;
         const Key               Key_null = null;
         const Sound           Sound_null = null;

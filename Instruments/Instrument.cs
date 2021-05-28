@@ -15,7 +15,6 @@ namespace IngameScript
             public Tune         Tune;
             public Filter       Filter;
             public Delay        Delay;
-            public Arpeggio     Arpeggio;
 
             public List<Source> Sources;
 
@@ -43,7 +42,6 @@ namespace IngameScript
                 Filter        = Filter_null;
                               
                 Delay         = Delay_null;
-                Arpeggio      = Arpeggio_null;
                               
                 Sources       = new List<Source>();
 
@@ -67,7 +65,6 @@ namespace IngameScript
                 Filter   = inst.Filter  ?.Copy();
 
                 Delay    = inst.Delay   ?.Copy();
-                Arpeggio = inst.Arpeggio?.Copy();
 
                 Sources = new List<Source>();
                 foreach (var src in inst.Sources)
@@ -118,14 +115,6 @@ namespace IngameScript
                 }
                 else
                     Delay = Delay_null;
-
-                //if (RND > 0.7f)
-                //{
-                //    Arpeggio = new Arpeggio(this);
-                //    Arpeggio.Randomize(Program prog);
-                //}
-                //else
-                    Arpeggio = Arpeggio_null;
             }
 
 
@@ -137,7 +126,6 @@ namespace IngameScript
                 Tune    ?.Reset();
                 Filter  ?.Reset();
                 Delay   ?.Reset();
-                Arpeggio?.Reset();
 
                 foreach (var src in Sources)
                     src.ResetValues();
@@ -152,7 +140,6 @@ namespace IngameScript
                     case strTune: return Tune     ?? (Tune     = new Tune    (this, Source_null));
                     case strFlt:  return Filter   ?? (Filter   = new Filter  (this, Source_null));
                     case strDel:  return Delay    ?? (Delay    = new Delay   (this, Source_null));
-                    case strArp:  return Arpeggio ?? (Arpeggio = new Arpeggio(Instrument_null));
                 }
 
                 return Setting_null;
@@ -167,7 +154,6 @@ namespace IngameScript
                 Tune    ?.Delete(clip, -1);
                 Filter  ?.Delete(clip, -1);
                 Delay   ?.Delete(clip, -1);
-                Arpeggio?.Delete(clip, -1);
 
                 foreach (var src in Sources)
                     src.Delete(clip);
@@ -184,8 +170,7 @@ namespace IngameScript
 
                     + SaveSetting(Tune)
                     + SaveSetting(Filter)
-                    + SaveSetting(Delay)
-                    + SaveSetting(Arpeggio));
+                    + SaveSetting(Delay));
 
                 for (int i = 0; i < Sources.Count; i++)
                     inst += N(Sources[i].Save());
@@ -216,7 +201,6 @@ namespace IngameScript
                         case strTune: inst.Tune     = Tune    .Load(data, ref i, inst, -1); break;
                         case strFlt:  inst.Filter   = Filter  .Load(data, ref i, inst, -1); break;
                         case strDel:  inst.Delay    = Delay   .Load(data, ref i, inst, -1); break;
-                        case strArp:  inst.Arpeggio = Arpeggio.Load(data, ref i, inst, -1); break;
                     }
                 }
 
@@ -233,7 +217,6 @@ namespace IngameScript
                 Tune    ?.DrawLabels(sprites, x, y, dp);
                 Filter  ?.DrawLabels(sprites, x, y, dp);
                 Delay   ?.DrawLabels(sprites, x, y, dp);
-                Arpeggio?.DrawLabels(sprites, x, y, dp);
             }                                           
 
 
@@ -250,7 +233,6 @@ namespace IngameScript
                     DrawFuncButton(sprites, strTune, 2, w, h, True, OK(Tune    ));
                     DrawFuncButton(sprites, strFlt,  3, w, h, True, OK(Filter  ));
                     DrawFuncButton(sprites, strDel,  4, w, h, True, OK(Delay   ));
-                    DrawFuncButton(sprites, strArp,  5, w, h, True, OK(Arpeggio));
                 }
             }
         }

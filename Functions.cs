@@ -138,7 +138,6 @@ namespace IngameScript
                     case strTune: if ( OK(src)) src.Tune      =      Tune_null; else inst.Tune   =   Tune_null; break;
                     case strHrm:  if ( OK(src)) src.Harmonics = Harmonics_null;                                 break;
                     case strFlt:  if ( OK(src)) src.Filter    =    Filter_null; else inst.Filter = Filter_null; break;
-                    case strArp:  if (!OK(src)) inst.Arpeggio =  Arpeggio_null;                                 break;
                 }
             }
 

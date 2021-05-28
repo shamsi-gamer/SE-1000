@@ -323,9 +323,7 @@ namespace IngameScript
                 }
                 else
                 {
-                    if (IsCurSetting(typeof(Arpeggio)))
-                        CurArpeggio.Clip.EditPos = -Math.Abs(CurArpeggio.Clip.EditPos); // turn off but keep value
-                    else if (IsCurParam())
+                    if (IsCurParam())
                         CurSetting._IsCurrent = False;
 
                     CurSet--;
@@ -437,14 +435,6 @@ namespace IngameScript
                     ModDestChannel    = SelChannel;
                     ModDestClip       = EditedClip;
                 }
-
-                lblCmd1.Mark();
-            }
-            else if (IsCurSetting(typeof(Arpeggio))
-                  && OK(CurArpeggio.Clip.EditPos))
-            {
-                     if (EditedClip.ParamKeys) Interpolate  (CurArpeggio.Clip);
-                else if (EditedClip.ParamAuto) EnableKeyMove(CurArpeggio.Clip);
 
                 lblCmd1.Mark();
             }

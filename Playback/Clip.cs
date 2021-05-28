@@ -11,8 +11,6 @@ namespace IngameScript
             public string        Name;
             public Track         Track;
 
-            public Arpeggio      Arpeggio; // indicates that this clip is an arpeggio
-
             public List<Pattern> Patterns;
             public List<Block>   Blocks;
 
@@ -119,7 +117,6 @@ namespace IngameScript
                 Track       = track;
                 Name        = name;
                             
-                Arpeggio    = Arpeggio_null;
                 Length      = -1;
                             
                 Patterns    = new List<Pattern>();
@@ -210,7 +207,6 @@ namespace IngameScript
                 Name     = clip.Name;
                 Track    = track;
 
-                Arpeggio = clip.Arpeggio;
                 Length   = clip.Length;
 
                 Patterns = new List<Pattern>();

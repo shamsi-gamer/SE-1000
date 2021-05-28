@@ -115,8 +115,7 @@ namespace IngameScript
                     && GetType() != typeof(Tune)
                     && GetType() != typeof(Harmonics)
                     && GetType() != typeof(Filter)
-                    && GetType() != typeof(Delay)
-                    && GetType() != typeof(Arpeggio))
+                    && GetType() != typeof(Delay))
                 { 
                     var ly = y + g_labelHeight/2;
 
@@ -225,7 +224,6 @@ namespace IngameScript
             case strLvl:  return "Level";
             case strPow:  return "Power";
                          
-            case strArp:  return "Arpeggio";
             case strLen:  return "Length";
             case strScl:  return "Scale";
             }

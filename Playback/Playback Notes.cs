@@ -183,12 +183,7 @@ namespace IngameScript
                 foreach (var n in notes)
                 {
                     var note = new Note(n);
-
                     note.Step = TimeStep + (float)sh / TicksPerStep;
-
-                    if (OK(note.Instrument.Arpeggio))
-                        note.ArpPlayTime = 0;
-
                     AddNoteAndSounds(note);
                 }
             }
@@ -205,54 +200,26 @@ namespace IngameScript
 
             var sh = (int)clip.Track.PlayStep % 2 != 0 ? note.Channel.Shuffle : 0;
 
-            //if (OK(note.Instrument.Arpeggio))
-            //{
-            //    var notes = note.Channel.Notes.FindAll(n =>
-            //              OK(n.Instrument.Arpeggio)
-            //           && clip.PlayTime >= clip.PlayPat*g_patSteps*g_session.TicksPerStep + n.PatTime
-            //           && clip.PlayTime <  clip.PlayPat*g_patSteps*g_session.TicksPerStep + n.PatTime + n.FrameLength);
-
-            //    foreach (var n in notes)
-            //    {
-            //        if (TooComplex) return;
-
-            //        var arp = n.Instrument.Arpeggio;
-
-            //        var arpNotes = arp.Clip.Patterns[0].Channels[0].Notes.FindAll(_n =>
-            //            clip.PlayTime == (n.PatStep + sh)*g_session.TicksPerStep + _n.ArpPlayTime);
-
-            //        foreach (var nn in arpNotes)
-            //        {
-            //            nn.PatStep = n.PatStep + (n.ArpPlayTime + sh) / g_session.TicksPerStep;
-
-            //            g_notes.Add(nn);
-            //            g_sounds.AddRange(nn.Sounds);
-            //        }
-            //    }
-            //}
-            //else // normal note
-            //{
-                var found =
-                    g_notes.Find(n => 
-                           clip.Track.PlayStep >= n.Step 
-                        && clip.Track.PlayStep <  n.Step + n.StepLength);
+            var found =
+                g_notes.Find(n => 
+                        clip.Track.PlayStep >= n.Step 
+                    && clip.Track.PlayStep <  n.Step + n.StepLength);
                 
-                if (   OK(found)
-                    && found.Number == note.Number
-                    && found.StepLength == float_Inf)
-                    return;
+            if (   OK(found)
+                && found.Number == note.Number
+                && found.StepLength == float_Inf)
+                return;
 
-                foreach (var src in inst.Sources)
-                {
-                    if (TooComplex) return;
+            foreach (var src in inst.Sources)
+            {
+                if (TooComplex) return;
 
-                    if (src.On)
-                        src.CreateSounds(note.Sounds, note, this);
-                }
+                if (src.On)
+                    src.CreateSounds(note.Sounds, note, this);
+            }
 
-                g_notes.Add(note);
-                g_sounds.AddRange(note.Sounds);
-            //}
+            g_notes.Add(note);
+            g_sounds.AddRange(note.Sounds);
         }
 
 

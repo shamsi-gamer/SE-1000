@@ -58,7 +58,6 @@
     <Compile Include="Instruments\Harmonics.cs" />
     <Compile Include="Instruments\Modulate.cs" />
     <Compile Include="Instruments\Setting.cs" />
-    <Compile Include="Instruments\Arpeggio.cs" />
     <Compile Include="Playback\Block.cs" />
     <Compile Include="Instruments\Tune.cs" />
     <Compile Include="Playback\Channel.cs" />

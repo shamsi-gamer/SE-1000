@@ -256,39 +256,6 @@ namespace IngameScript
             }
 
 
-            public void FinalizePlayback()
-            {
-                //var pat = clip.Patterns[clip.PlayPat];
-
-                //for (int ch = 0; ch < nChans; ch++)
-                //{
-                //    var chan = pat.Channels[ch];
-
-                //    var arpNotes = chan.Notes.FindAll(n =>
-                //               OK(n.Instrument.Arpeggio)
-                //            && (int)(clip.PlayStep * g_session.TicksPerStep) >= (int)((clip.PlayPat * nSteps + n.StepTime               ) * g_session.TicksPerStep)
-                //            && (int)(clip.PlayStep * g_session.TicksPerStep) <  (int)((clip.PlayPat * nSteps + n.StepTime + n.StepLength) * g_session.TicksPerStep));
-
-                //    var noteLen = (int)(EditLength * g_session.TicksPerStep);
-
-                //    foreach (var n in arpNotes)
-                //    {
-                //        var arp = n.Instrument.Arpeggio;
-
-                //        n.FramePlayTime += arp.Scale .UpdateValue(g_time, 0, clip.StartTime, noteLen, n, -1);
-                //        var maxLength    = arp.Length.UpdateValue(g_time, 0, clip.StartTime, noteLen, n, -1);
-
-                //        while (n.FramePlayTime >= maxLength * g_session.TicksPerStep)
-                //            n.FramePlayTime -= maxLength * g_session.TicksPerStep;
-                //    }
-                //}
-
-
-                if (IsPlaying)
-                    PlayTime++;
-            }
-
-
             public string Save()
             {
                 var cfg = 

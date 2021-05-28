@@ -7,7 +7,7 @@
                      strVol      = "Vol",
                                  
                      strTune     = "Tune",
-                                 
+
                      strTrig     = "Trig",
                      strEnv      = "Env",
                      strAtt      = "Att",

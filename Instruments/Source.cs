@@ -375,7 +375,7 @@ namespace IngameScript
 
 
                 var dp1 = new DrawParams(active, prog);
-                DrawLabels(sprites, 0, 0, dp1);
+                DrawLabels(null, 0, 0, dp1); // don'g draw anything, just init the values
 
 
                 var sh = dp1.OffY + 20;

@@ -33,7 +33,7 @@ namespace IngameScript
                 foreach (var mod in g_mod) mod.AdvanceTime();
 
                 foreach (var track in Tracks)
-                    track.FinalizePlayback();
+                    if (IsPlaying) track.PlayTime++;
             }
 
             UpdateRuntimeInfo();

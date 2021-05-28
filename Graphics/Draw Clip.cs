@@ -112,8 +112,8 @@ namespace IngameScript
                 var _p = p - EditedClip.SongOff;
                 var px = x - _f * pw + _p * pw;
 
-                if (EditedClip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, EditedClip, p, 1, False, g_patSteps);
-                else         DrawPattern  (sprites, px, py, pw, ph, EditedClip, p, 1, False);
+                if (EditedClip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, EditedClip, p, 1);
+                else                  DrawPattern  (sprites, px, py, pw, ph, EditedClip, p, 1, False);
 
                 if (EditedClip.ParamKeys)
                 {

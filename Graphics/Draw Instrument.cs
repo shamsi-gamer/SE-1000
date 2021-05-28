@@ -35,16 +35,6 @@ namespace IngameScript
                                            
             FillRect(sprites, x + lw + w2, 0,     1, rh/4, color5);
 
-            //DrawInstSample(
-            //    sprites,
-            //    x + lw,
-            //    y + rh/16,
-            //    w2,
-            //    rh/8,
-            //    inst,
-            //    F,
-            //    timeScale);
-
 
             // instrument separator line
             FillRect(sprites, x + lw, rh/4, w-lw, 1, color5);
@@ -59,23 +49,6 @@ namespace IngameScript
                 color6);
 
 
-            // draw time position line
-            //foreach (var note in g_notes)
-            //{
-            //    if (   note.Instrument == inst
-            //        && g_time - note.PatTime >= 0
-            //        && g_time - note.PatTime < note.FrameLength)
-            //    {
-            //        FillRect(sprites, 
-            //            x + lw + w2 * (g_time - note.PatTime) / (float)FPS / timeScale,
-            //            0,
-            //            3,
-            //            rh/4,
-            //            color6);
-            //    }
-            //}
-
-
             var dpInst = new DrawParams(this);
             SelInstrument.DrawLabels(sprites, x + lw + w2 + 21, y + 5, dpInst);
 
@@ -88,17 +61,17 @@ namespace IngameScript
                 instHeight - rh/4);
 
             DrawSourceList(
-                sprites, 
-                x + lw + (w-lw)/3, 
-                y + rh/4, 
-                (w-lw)*2/3f, 
-                instHeight - rh/4, 
+                sprites,
+                x + lw + (w - lw) / 3,
+                y + rh / 4,
+                (w - lw) * 2 / 3f,
+                instHeight - rh / 4,
                 inst);
 
 
             // bottom func separator
             FillRect(sprites, x, y + instHeight, w, 1, color6);
-            
+
             DrawFuncButtons(sprites, w, h, EditedClip);
         }
 
