@@ -139,19 +139,18 @@ namespace IngameScript
 
                     else if (EditClip == 3) // delete clip
                     {
-                        if (Tracks.Sum(t => t.Clips.Count(c => OK(c))) > 1) // check that this isn't the only clip
+                        if (clip == EditedClip)
+                            EditedClip = GetClipAfterDelete(clip);
+
+                        Clips[index] = Clip_null;
+
+                        if (Tracks.Sum(t => t.Clips.Count(c => OK(c))) == 0) // check that this isn't the only clip
                         { 
-                            if (clip == EditedClip)
-                                EditedClip = GetClipAfterDelete(clip);
-
-                            Clips[index] = Clip_null;
-                        }
-                        else
-                        {
-                            EditedClip =
                             Clips[index] = new Clip(this);
-                        }
+                            Clips[index].Patterns.Add(new Pattern(Instruments[0], Clips[index]));
 
+                            EditedClip = Clips[index];
+                        }
 
                         if (PlayClip == index)
                         { 
