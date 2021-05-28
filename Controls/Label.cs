@@ -20,8 +20,8 @@ namespace IngameScript
             public CondFunc      BrightCondition,
                                  DimCondition;
 
-            public Action<Label> UpdateFunc;
-            public Action<Label> ColorFunc;
+            public Action<Label> UpdateFunc,
+                                 ColorFunc;
 
             public int           Data;
 
@@ -31,13 +31,13 @@ namespace IngameScript
 
 
             public Label(IMyTextPanel  panel,
-                         CondFunc      condBright     = null, 
-                         CondFunc      condDim        = null, 
-                         Action<Label> updateFunc     = null, 
-                         Action<Label> colorFunc      = null, 
+                         CondFunc      condBright     = CF_null, 
+                         CondFunc      condDim        = CF_null, 
+                         Action<Label> updateFunc     = AL_null, 
+                         Action<Label> colorFunc      = AL_null, 
                          int           data           = 0,
-                         bool          fast           = F,
-                         bool          usedForSession = F)
+                         bool          fast           = False,
+                         bool          usedForSession = False)
             {
                 Panel           = panel;
 
@@ -89,7 +89,7 @@ namespace IngameScript
             }
 
 
-            public void Update(bool full, bool half = F)
+            public void Update(bool full, bool half = False)
             {
                 if (   UsedForSession
                     || OK(EditedClip))
@@ -105,14 +105,14 @@ namespace IngameScript
             }
 
 
-            public void Mark(bool on = T)
+            public void Mark(bool on = True)
             {
                 g_labelsPressed.Add(this);
                 Update(on);
             }
 
 
-            public void Unmark(bool on = F, bool half = F)
+            public void Unmark(bool on = False, bool half = False)
             {
                 Update(on, half);
                 _labelsPressed.Remove(this);

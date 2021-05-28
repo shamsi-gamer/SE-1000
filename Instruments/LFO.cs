@@ -32,7 +32,7 @@ namespace IngameScript
 
 
             public LFO(Setting parent, Instrument inst, Source src) 
-                : base(strLfo, parent, null, inst, src) 
+                : base(strLfo, parent, Setting_null, inst, src) 
             {
                 Op          = ModOp  .Multiply;
                 Type        = LfoType.Sine;
@@ -122,7 +122,7 @@ namespace IngameScript
                 }
 
                 CurValue *= amp;
-                m_valid = T;
+                m_valid = True;
 
                 return CurValue;
             }
@@ -185,7 +185,7 @@ namespace IngameScript
                     case strOff:  return GetOrAddParamFromTag(Offset,    tag);
                 }
 
-                return null;
+                return Setting_null;
             }
 
 
@@ -220,7 +220,7 @@ namespace IngameScript
                 var lfo = new LFO(
                     parent, 
                     inst, 
-                    iSrc > -1 ? inst.Sources[iSrc] : null);
+                    iSrc > -1 ? inst.Sources[iSrc] : Source_null);
 
                 lfo.Op   = (ModOp)  int_Parse(data[i++]);
                 lfo.Type = (LfoType)int_Parse(data[i++]);
@@ -252,9 +252,9 @@ namespace IngameScript
                 return
                      (Op == ModOp.Add ? "+ " : "* ")
                     + strOsc + " "
-                    + PrintValue(Amplitude.Value, 2, T, 0).PadLeft(4) + " "
-                    + PrintValue(Frequency.Value, 2, T, 0).PadLeft(4) + " "
-                    + PrintValue(Offset   .Value, 2, T, 0).PadLeft(4);
+                    + PrintValue(Amplitude.Value, 2, True, 0).PadLeft(4) + " "
+                    + PrintValue(Frequency.Value, 2, True, 0).PadLeft(4) + " "
+                    + PrintValue(Offset   .Value, 2, True, 0).PadLeft(4);
             }
 
 
@@ -277,7 +277,7 @@ namespace IngameScript
 
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
-                var pPrev = new Vector2(fN, fN);
+                var pPrev = new Vector2(float_NaN, float_NaN);
 
                 var w0     = 240f;
                 var h0     = 120f;
@@ -300,7 +300,7 @@ namespace IngameScript
 
 
                 var time = (long)(Phase * FPS);
-                var _tp  = new TimeParams(time, time, time, null, EditedClip.EditLength, -1, _triggerDummy, dp.Program);
+                var _tp  = new TimeParams(time, time, time, Note_null, EditedClip.EditLength, -1, _triggerDummy, dp.Program);
 
                 var val  = UpdateValue(_tp);
 
@@ -351,7 +351,7 @@ namespace IngameScript
                     y0 + h0/2 - h0/2*amp - 20, 
                     fs, 
                     isAmp ? color6 : color3,
-                    TaC);
+                    TA_CENTER);
 
                 // frequency label
                 DrawString(
@@ -361,7 +361,7 @@ namespace IngameScript
                     y0 + h0 + 3,
                     fs,
                     isFreq ? color6 : color3,
-                    TaC);
+                    TA_CENTER);
 
                 // offset label
                 DrawString(
@@ -371,17 +371,17 @@ namespace IngameScript
                     y0 + h0 + 3,
                     fs,
                     isOff ? color6 : color3,
-                    TaC);
+                    TA_CENTER);
             }
 
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, F, F);
-                DrawFuncButton(sprites, strAmp,  1, w, y, T, Amplitude.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strFreq, 2, w, y, T, Frequency.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strOff,  3, w, y, T, Offset   .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "Osc ↕", 4, w, y, F, F);
+                DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, False, False);
+                DrawFuncButton(sprites, strAmp,  1, w, y, True, Amplitude.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strFreq, 2, w, y, True, Frequency.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strOff,  3, w, y, True, Offset   .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "Osc ↕", 4, w, y, False, False);
             }
 
 
@@ -414,7 +414,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return T;
+                return True;
             }
         }
     }

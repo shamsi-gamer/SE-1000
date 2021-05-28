@@ -13,7 +13,7 @@ namespace IngameScript
                 if (MemSet)
                 {
                     Mems[m] = Mems[m] < 0 || Mems[m] != CurPat ? CurPat : -1;
-                    MemSet = F;
+                    MemSet = False;
                 }
                 else if (Mems[m] > -1)
                 {

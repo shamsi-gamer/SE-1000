@@ -75,7 +75,7 @@ namespace IngameScript
             copyTrack = copyIndex = -1;
 
             if (!pnlStorageState.GetText().Contains(";"))
-                return F;
+                return False;
 
             var state = pnlStorageState.GetText().Split(';');
             var s = 0;
@@ -98,14 +98,14 @@ namespace IngameScript
         bool LoadToggles(string toggles)
         {
             uint f;
-            if (!uint.TryParse(toggles, out f)) return F;
+            if (!uint.TryParse(toggles, out f)) return False;
 
             var i = 0;
 
             ShowSession = ReadBit(f, i++);
             Move        = ReadBit(f, i++);
 
-            return T;
+            return True;
         }
 
 
@@ -172,12 +172,12 @@ namespace IngameScript
                 SkipWhiteSpace(lines, ref line);
 
                 var track = Track.Load(lines, ref line);
-                if (!OK(track)) return F;
+                if (!OK(track)) return False;
 
                 Tracks[t] = track;
             }
 
-            return T;
+            return True;
         }
 
 

@@ -16,7 +16,7 @@ namespace IngameScript
                 TogglePiano(tune);
 
             else if (IsCurParam(strTune)
-                  && (tune?.UseChord ?? F)
+                  && (tune?.UseChord ?? False)
                   && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
                 UpdateFinalTuneChord(tune, HighToNote(h));
 
@@ -47,8 +47,8 @@ namespace IngameScript
             else if (h == 3) ToggleAllChannels();
             else if (h == 4) PickNote();  
                           
-            else if (h == 5) Shift(F);
-            else if (h == 6) Shift(T); 
+            else if (h == 5) Shift(False);
+            else if (h == 6) Shift(True); 
                           
             else if (h == 7) Flip(CurChan, 4); 
             else if (h == 8) Flip(CurChan, 8); 
@@ -62,17 +62,17 @@ namespace IngameScript
         void TogglePiano(Tune tune)
         { 
             if (   IsCurParam(strTune)
-                && (tune?.UseChord ?? F))
+                && (tune?.UseChord ?? False))
             { 
                 g_settings.RemoveLast();
                 CurSet--;
-                EditedClip.Piano = F;
+                EditedClip.Piano = False;
             }
             else
                 EditedClip.Piano = !EditedClip.Piano;
 
             if (EditedClip.Piano)
-                EditedClip.Pick = F;
+                EditedClip.Pick = False;
         }
 
 
@@ -82,7 +82,7 @@ namespace IngameScript
                     ?? SelInstrument?.Tune;
 
             if (   IsCurParam(strTune)
-                && (tune?.UseChord ?? F))
+                && (tune?.UseChord ?? False))
                 UpdateFinalTuneChord(tune, LowToNote(l));
 
             else if (EditedClip.ChordEdit
@@ -141,7 +141,7 @@ namespace IngameScript
             {
                 EditedClip.CurNote = found[0].Number;
 
-                EditedClip.Pick = F;
+                EditedClip.Pick = False;
 
                 TriggerNote(
                     EditedClip,
@@ -152,7 +152,7 @@ namespace IngameScript
             }
             else
             {
-                EditedClip.Pick = F;
+                EditedClip.Pick = False;
                 
                 foreach (var n in found)
                     chan.Notes.Remove(n);

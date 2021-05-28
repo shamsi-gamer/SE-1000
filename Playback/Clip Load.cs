@@ -35,7 +35,7 @@ namespace IngameScript
             bool LoadToggles(string toggles)
             {
                 uint f;
-                if (!uint.TryParse(toggles, out f)) return F;
+                if (!uint.TryParse(toggles, out f)) return False;
 
                 var i = 0;
 
@@ -75,7 +75,7 @@ namespace IngameScript
                        
                 MemSet     = ReadBit(f, i++);
 
-                return T;
+                return True;
             }
 
 
@@ -126,14 +126,14 @@ namespace IngameScript
                 {
                     int i = 0;
                     var pat = Pattern.Load(lines[line++].Split(';'), ref i);
-                    if (!OK(pat)) return F;
+                    if (!OK(pat)) return False;
 
                     pat.Clip = this;
 
                     Patterns.Add(pat);
                 }
 
-                return T;
+                return True;
             }
 
 
@@ -154,7 +154,7 @@ namespace IngameScript
                     Blocks.Add(new Block(first, last));
                 }
 
-                return T;
+                return True;
             }
 
 
@@ -163,9 +163,9 @@ namespace IngameScript
                 var mems = line.Split(';');
 
                 for (int m = 0; m < nMems; m++)
-                    if (!int_TryParse(mems[m], out Mems[m])) return F;
+                    if (!int_TryParse(mems[m], out Mems[m])) return False;
 
-                return T;
+                return True;
             }
 
 
@@ -188,13 +188,13 @@ namespace IngameScript
                     int key;
                     foreach (var k in _keys)
                     {
-                        if (!int_TryParse(k, out key)) return F;
+                        if (!int_TryParse(k, out key)) return False;
                         Chords[_c].Add(key);
                     }
                 }
 
 
-                return T;
+                return True;
             }
         }
     }

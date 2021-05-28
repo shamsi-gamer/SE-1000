@@ -47,8 +47,8 @@ namespace IngameScript
 
                 FillRect(sprites, rx, ry + 6, rw, 76, chan.On ^ IsPressed(lcdMixer+ch) ? col : color0);
                           
-                DrawString(sprites, chan.Instrument.Name, rx + rw/2 + 3, ry + 14, 0.5f, chan.On ? color0 : col, TaC);
-                DrawString(sprites, S(ch + 1),            rx + rw/2 + 3, ry + 35, 1.2f, chan.On ? color0 : col, TaC);
+                DrawString(sprites, chan.Instrument.Name, rx + rw/2 + 3, ry + 14, 0.5f, chan.On ? color0 : col, TA_CENTER);
+                DrawString(sprites, S(ch + 1),            rx + rw/2 + 3, ry + 35, 1.2f, chan.On ? color0 : col, TA_CENTER);
 
                 DrawSoundLevel(sprites, rx + vb/2, y, rw - vb, h - 15, chan.Volume, EditedClip.Track.DspVol[ch], chan, 2);
             }

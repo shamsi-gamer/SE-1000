@@ -33,7 +33,7 @@ namespace IngameScript
 
 
             public Parameter(string tag, float min, float max, float normalMin, float normalMax, float delta, float bigDelta, float defVal, Setting parent, Instrument inst, Source src) 
-                : base(tag, parent, null, inst, src)
+                : base(tag, parent, Setting_null, inst, src)
             {
                 Tag       = tag;
 
@@ -49,14 +49,14 @@ namespace IngameScript
                 Delta     = delta;
                 BigDelta  = bigDelta;
 
-                Trigger   = null;
-                Envelope  = null;
-                Lfo       = null;
-                Modulate  = null;
+                Trigger   = Parameter_null;
+                Envelope  =  Envelope_null;
+                Lfo       =       LFO_null;
+                Modulate  =  Modulate_null;
             }
 
 
-            public Parameter(Parameter param, Setting parent, string tag = "", bool copy = T) 
+            public Parameter(Parameter param, Setting parent, string tag = "", bool copy = True) 
                 : base(tag != "" ? tag : param.Tag, parent, param.Prototype, param.Instrument, param.Source)
             {
                 m_value   = param.m_value;
@@ -70,10 +70,10 @@ namespace IngameScript
                 Delta     = param.Delta;
                 BigDelta  = param.BigDelta;
 
-                Trigger   = copy ? param.Trigger ?.Copy(this) : null;
-                Envelope  = copy ? param.Envelope?.Copy(this) : null;
-                Lfo       = copy ? param.Lfo     ?.Copy(this) : null;
-                Modulate  = copy ? param.Modulate?.Copy(this) : null;
+                Trigger   = copy ? param.Trigger ?.Copy(this) : Parameter_null;
+                Envelope  = copy ? param.Envelope?.Copy(this) :  Envelope_null;
+                Lfo       = copy ? param.Lfo     ?.Copy(this) :       LFO_null;
+                Modulate  = copy ? param.Modulate?.Copy(this) :  Modulate_null;
             }
 
 
@@ -166,7 +166,7 @@ namespace IngameScript
                 }
 
                 CurValue = MinMax(Min, value, Max);
-                m_valid  = T;
+                m_valid  = True;
 
                 return CurValue;
             }
@@ -189,7 +189,7 @@ namespace IngameScript
                 var prevKey = PrevClipAutoKey(songStep, pat, path);
                 var nextKey = NextClipAutoKey(songStep, pat, path);
 
-                     if (!OK(prevKey) && !OK(nextKey)) return fN;
+                     if (!OK(prevKey) && !OK(nextKey)) return float_NaN;
                 else if ( OK(prevKey) && !OK(nextKey)) return prevKey.Value;
                 else if (!OK(prevKey) &&  OK(nextKey)) return nextKey.Value;
                 else
@@ -197,14 +197,14 @@ namespace IngameScript
             }
 
 
-            public float AdjustValue(float value, float delta, bool shift, bool scale = F)
+            public float AdjustValue(float value, float delta, bool shift, bool scale = False)
             {
                      if (Tag == strAtt
-                      && HasTag(Parent, strEnv)) ((Envelope)Parent).TrigAttack  = fN;
-                else if (Tag == strDec)          ((Envelope)Parent).TrigDecay   = fN;
-                else if (Tag == strSus)          ((Envelope)Parent).TrigSustain = fN;
+                      && HasTag(Parent, strEnv)) ((Envelope)Parent).TrigAttack  = float_NaN;
+                else if (Tag == strDec)          ((Envelope)Parent).TrigDecay   = float_NaN;
+                else if (Tag == strSus)          ((Envelope)Parent).TrigSustain = float_NaN;
                 else if (Tag == strRel
-                      && HasTag(Parent, strEnv)) ((Envelope)Parent).TrigRelease = fN;
+                      && HasTag(Parent, strEnv)) ((Envelope)Parent).TrigRelease = float_NaN;
 
                 if (scale)
                 {
@@ -248,7 +248,7 @@ namespace IngameScript
                     case strMod:  return Modulate ?? (Modulate = new Modulate(this, Instrument, Source));
                 }
 
-                return null;
+                return Setting_null;
             }
 
 
@@ -259,17 +259,17 @@ namespace IngameScript
                     || OK(Envelope)
                     || OK(Lfo     )
                     || OK(Modulate)
-                    || (chan?.HasKeys(GetPath(src)) ?? F)
+                    || (chan?.HasKeys(GetPath(src)) ?? False)
                     || _IsCurrent;
             }
 
 
             public override void DeleteSetting(Setting setting)
             {
-                     if (setting == Trigger )                           Trigger  = null;
-                else if (setting == Envelope)                           Envelope = null;
-                else if (setting == Lfo     ) { g_lfo.Remove(Lfo);      Lfo      = null; }
-                else if (setting == Modulate) { g_mod.Remove(Modulate); Modulate = null; }
+                     if (setting == Trigger )                           Trigger  = Parameter_null;
+                else if (setting == Envelope)                           Envelope =  Envelope_null;
+                else if (setting == Lfo     ) { g_lfo.Remove(Lfo);      Lfo      =       LFO_null; }
+                else if (setting == Modulate) { g_mod.Remove(Modulate); Modulate =  Modulate_null; }
             }
 
 
@@ -282,14 +282,14 @@ namespace IngameScript
                 Lfo     ?.Clear();
                 Modulate?.Clear();
 
-                Trigger  = null;
-                Envelope = null;
+                Trigger  = Parameter_null;
+                Envelope =  Envelope_null;
 
                 if (OK(Lfo)) g_lfo.Remove(Lfo);
-                Lfo = null;
+                Lfo = LFO_null;
 
                 if (OK(Modulate)) g_mod.Remove(Modulate);
-                Modulate = null;
+                Modulate = Modulate_null;
             }
 
 
@@ -317,7 +317,7 @@ namespace IngameScript
                     Envelope.Randomize(prog);
                 }
                 else 
-                    Envelope = null;
+                    Envelope = Envelope_null;
 
 
                 if (   !prog.TooComplex
@@ -331,7 +331,7 @@ namespace IngameScript
                     if (OK(Lfo))
                         g_lfo.Remove(Lfo);
 
-                    Lfo = null;
+                    Lfo = LFO_null;
                 }
             }
 
@@ -380,7 +380,7 @@ namespace IngameScript
             }
 
 
-            public static Parameter Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent, Parameter proto = null)
+            public static Parameter Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent, Parameter proto = Parameter_null)
             {
                 var tag = data[i++];
 
@@ -416,8 +416,8 @@ namespace IngameScript
                 
                 return
                     Tag == strVol
-                    ? PrintValue(100 * Math.Log10(Value), 0, T, 0).PadLeft(4)
-                    : PrintValue(CurValue, 2, T, 1).PadLeft(4);
+                    ? PrintValue(100 * Math.Log10(Value), 0, True, 0).PadLeft(4)
+                    : PrintValue(CurValue, 2, True, 1).PadLeft(4);
             }
 
 
@@ -477,7 +477,7 @@ namespace IngameScript
 
                     DrawString(
                         sprites,
-                        PrintValue(100 * Math.Log10(Value), 0, T, 0) + " dB", 
+                        PrintValue(100 * Math.Log10(Value), 0, True, 0) + " dB", 
                         x + w/2 + 10, 
                         y + h/2 + valHeight/2 - 30,
                         1f, 
@@ -523,7 +523,7 @@ namespace IngameScript
                 {
                     DrawSoundLevel(sprites, x + bx + 20, y + by + 90, 60, 120, Value, CurValue);
 
-                    var db = PrintValue(100 * Math.Log10(Value), 0, T, 0) + " dB";
+                    var db = PrintValue(100 * Math.Log10(Value), 0, True, 0) + " dB";
                     DrawString(sprites, db, x + bx + 100, y + by + 180, 1f, color6);
                 }
                 else if (!OK(Parent) // source offset has no parent
@@ -542,14 +542,14 @@ namespace IngameScript
                 if (   !AnyParentIsEnvelope
                     && !HasTagOrAnyParent(this,strTrig))
                 {
-                    DrawFuncButton(sprites, strTrig, 0, w, h, T, OK(Trigger));
-                    DrawFuncButton(sprites, strEnv,  1, w, h, T, OK(Envelope));
+                    DrawFuncButton(sprites, strTrig, 0, w, h, True, OK(Trigger));
+                    DrawFuncButton(sprites, strEnv,  1, w, h, True, OK(Envelope));
                 }
 
-                DrawFuncButton(sprites, strLfo, 2, w, h, T, OK(Lfo));
-                DrawFuncButton(sprites, strMod, 3, w, h, T, OK(Modulate));
-                DrawFuncButton(sprites, "Key",  4, w, h, T, chan.HasNoteKeys(GetPath(CurSrc)));
-                DrawFuncButton(sprites, "Auto", 5, w, h, T, chan.HasAutoKeys(GetPath(CurSrc)));
+                DrawFuncButton(sprites, strLfo, 2, w, h, True, OK(Lfo));
+                DrawFuncButton(sprites, strMod, 3, w, h, True, OK(Modulate));
+                DrawFuncButton(sprites, "Key",  4, w, h, True, chan.HasNoteKeys(GetPath(CurSrc)));
+                DrawFuncButton(sprites, "Auto", 5, w, h, True, chan.HasAutoKeys(GetPath(CurSrc)));
             }
 
 
@@ -571,8 +571,8 @@ namespace IngameScript
                 case 2: AddNextSetting(strLfo); break;
                 case 3: AddNextSetting(strMod); break;
 
-                case 4: EditedClip.ParamKeys = T; break;
-                case 5: EditedClip.ParamAuto = T; break;
+                case 4: EditedClip.ParamKeys = True; break;
+                case 5: EditedClip.ParamAuto = True; break;
                 }
             }
 

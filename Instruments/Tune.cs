@@ -15,17 +15,17 @@ namespace IngameScript
 
 
             public Tune(Instrument inst, Source src) 
-                : base(strTune, -240, 240, -12, 12, 0.5f, 12, 0, null, inst, src)
+                : base(strTune, -240, 240, -12, 12, 0.5f, 12, 0, Setting_null, inst, src)
             {
-                UseChord   = F;
-                AllOctaves = F;
+                UseChord   = False;
+                AllOctaves = False;
 
                 Chord      = new List<int>();
                 FinalChord = new List<int>();
             }
 
 
-            public Tune(Tune tune) : base(tune, null)
+            public Tune(Tune tune) : base(tune, Setting_null)
             {
                 UseChord   = tune.UseChord;
                 AllOctaves = tune.AllOctaves;
@@ -63,7 +63,7 @@ namespace IngameScript
                     Envelope.Randomize(prog);
                 }
                 else 
-                    Envelope = null;
+                    Envelope = Envelope_null;
 
 
                 if (   !prog.TooComplex
@@ -77,7 +77,7 @@ namespace IngameScript
                     if (OK(Lfo))
                         g_lfo.Remove(Lfo);
 
-                    Lfo = null;
+                    Lfo = LFO_null;
                 }
             }
 
@@ -85,7 +85,7 @@ namespace IngameScript
             public override string GetLabel(out float width)
             {
                 width = 90f; 
-                return PrintValue(Value, 2, T, 1).PadLeft(5);
+                return PrintValue(Value, 2, True, 1).PadLeft(5);
             }
 
 
@@ -109,9 +109,9 @@ namespace IngameScript
             {
                 var tune = new Tune(
                     inst, 
-                    iSrc > -1 ? inst.Sources[iSrc] : null);
+                    iSrc > -1 ? inst.Sources[iSrc] : Source_null);
 
-                Parameter.Load(data, ref i, inst, iSrc, null, tune);
+                Parameter.Load(data, ref i, inst, iSrc, Setting_null, tune);
 
                 tune.UseChord   = data[i++] == "1";
                 tune.AllOctaves = data[i++] == "1";
@@ -127,7 +127,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return T;
+                return True;
             }
         }
     }

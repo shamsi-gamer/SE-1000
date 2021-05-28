@@ -44,10 +44,10 @@ namespace IngameScript
                                  
                                  Piano,
                                  
-                                 Transpose  = F,
-                                 Spread     = F,
+                                 Transpose  = False,
+                                 Spread     = False,
                                         
-                                 Shift      = F,
+                                 Shift      = False,
                                  
                                  Hold,
                                  Pick,
@@ -60,7 +60,7 @@ namespace IngameScript
                                  ParamKeys,
                                  ParamAuto,
                                  
-                                 MemSet = F;
+                                 MemSet = False;
                                  
                                  
             public int           ChordSpread;
@@ -104,9 +104,9 @@ namespace IngameScript
             public Pattern       CurPattern     => Patterns[CurPat];
             public Channel       CurChannel     => CurPattern.Channels[CurChan];
             public Instrument    CurInstrument  => CurChannel.Instrument;
-            public Channel       SelChannel     => SelChan > -1 ? CurPattern.Channels[SelChan] : null;
-            public Instrument    SelInstrument  => SelChannel?.Instrument ?? null;
-            public Source        SelSource      => CurSrc > -1 ? SelInstrument.Sources[CurSrc] : null;
+            public Channel       SelChannel     => SelChan > -1 ? CurPattern.Channels[SelChan] : Channel_null;
+            public Instrument    SelInstrument  => SelChannel?.Instrument ?? Instrument_null;
+            public Source        SelSource      => CurSrc > -1 ? SelInstrument.Sources[CurSrc] : Source_null;
 
 
             public float         EditStep       => g_steps[EditStepIndex  ];
@@ -119,7 +119,7 @@ namespace IngameScript
                 Track       = track;
                 Name        = name;
                             
-                Arpeggio    = null;
+                Arpeggio    = Arpeggio_null;
                 Length      = -1;
                             
                 Patterns    = new List<Pattern>();
@@ -136,7 +136,7 @@ namespace IngameScript
                 Block           =
                 AllPats         =
                 Follow          =
-                AutoCue         = F;
+                AutoCue         = False;
                                 
                 MovePat         = 
                                 
@@ -163,7 +163,7 @@ namespace IngameScript
                 ParamKeys       = 
                 ParamAuto       =
                                 
-                MemSet          = F;
+                MemSet          = False;
                                 
                 CurPat          =  
                 CurChan         = 0;
@@ -351,10 +351,10 @@ namespace IngameScript
 
             void ResetState()
             {
-                EditPos     = fN;
-                LastEditPos = fN;
+                EditPos     = float_NaN;
+                LastEditPos = float_NaN;
 
-                Inter       = null;
+                Inter       = Note_null;
                 EditNotes.Clear();
             }
 
@@ -449,8 +449,8 @@ namespace IngameScript
                 {
                     Blocks.Add(new Block(CurPat));
 
-                    In     = T;
-                    Follow = F;
+                    In     = True;
+                    Follow = False;
                 }
                 else
                 {
@@ -458,8 +458,8 @@ namespace IngameScript
 
                     if (In)
                     {
-                        Out    = F;
-                        Follow = F;
+                        Out    = False;
+                        Follow = False;
                     }
                 }
 
@@ -475,8 +475,8 @@ namespace IngameScript
                 {
                     Blocks.Add(new Block(CurPat));
 
-                    Out    = T;
-                    Follow = F;
+                    Out    = True;
+                    Follow = False;
                 }
                 else
                 {
@@ -484,8 +484,8 @@ namespace IngameScript
 
                     if (Out)
                     {
-                        In     = F;
-                        Follow = F;
+                        In     = False;
+                        Follow = False;
                     }
 
                     //g_blocks[b].Next = currentPattern + 1;
@@ -509,14 +509,14 @@ namespace IngameScript
 
             public void DisableBlock()
             {
-                In  = F;
-                Out = F;
+                In  = False;
+                Out = False;
             }
 
 
             public void MovePatternOff()
             {
-                MovePat = F;
+                MovePat = False;
             }
 
 
@@ -553,7 +553,7 @@ namespace IngameScript
 
                 if (Follow)
                 {
-                    AutoCue = F;
+                    AutoCue = False;
                 }
             }
 
@@ -565,7 +565,7 @@ namespace IngameScript
                 if (AutoCue)
                 {
                     Cue();
-                    Follow = F;
+                    Follow = False;
                 }
             }
 
@@ -603,7 +603,7 @@ namespace IngameScript
             public void StopEdit()
             {
                 if (EditNotes.Count > 0)
-                    Hold = F;
+                    Hold = False;
 
                 EditNotes.Clear();
             }

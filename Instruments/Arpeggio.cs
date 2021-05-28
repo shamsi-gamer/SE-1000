@@ -15,22 +15,22 @@ namespace IngameScript
 
 
             public Arpeggio(Instrument inst) 
-                : base(strArp, null, null, inst, null)
+                : base(strArp, Setting_null, Setting_null, inst, Source_null)
             {
-                Clip = new Clip(null, "") { Arpeggio = this };
+                Clip = new Clip(Track_null, "") { Arpeggio = this };
                 Clip.Patterns.Add(new Pattern(inst, Clip));
                 
                 SetInstrument(inst);
 
-                Length = (Parameter)NewSettingFromTag(strLen, this, inst, null);
-                Scale  = (Parameter)NewSettingFromTag(strScl, this, inst, null);
+                Length = (Parameter)NewSettingFromTag(strLen, this, inst, Source_null);
+                Scale  = (Parameter)NewSettingFromTag(strScl, this, inst, Source_null);
             }
 
 
             public Arpeggio(Arpeggio arp) 
-                : base(arp.Tag, null, arp.Prototype, arp.Instrument, arp.Source)
+                : base(arp.Tag, Setting_null, arp.Prototype, arp.Instrument, arp.Source)
             {
-                Clip   = new Clip(arp.Clip, null); // TODO which track does this go to?
+                Clip   = new Clip(arp.Clip, Track_null); // TODO which track does this go to?
 
                 Length = new Parameter(arp.Length, this);
                 Scale  = new Parameter(arp.Scale,  this);
@@ -51,13 +51,13 @@ namespace IngameScript
                 //        Scale.Parent = this;
                 //    }
                 //    else
-                //        Scale = null;
+                //        Scale = Parameter_null;
                 //}
                 //else
                 //{
                 //    Notes  =  null;
                 //    Length = -Math.Abs(Length); // turn off but keep current value
-                //    Scale  =  null;
+                //    Scale  =  Parameter_null;
                 //}
             }
 
@@ -98,7 +98,7 @@ namespace IngameScript
                     case strScl: return GetOrAddParamFromTag(Scale,  tag);
                 }
 
-                return null;
+                return Setting_null;
             }
 
 
@@ -155,9 +155,9 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                DrawFuncButton(sprites, strLen, 1, w, h, T, Length.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strScl, 2, w, h, T, Scale .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "X",   5, w, h, F, F, IsPressed(lcdMain+5));                
+                DrawFuncButton(sprites, strLen, 1, w, h, True, Length.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strScl, 2, w, h, True, Scale .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "X",   5, w, h, False, False, IsPressed(lcdMain+5));                
             }
 
 
@@ -180,7 +180,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return T;
+                return True;
             }
         }
     }

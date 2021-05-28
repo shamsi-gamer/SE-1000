@@ -16,6 +16,7 @@ namespace IngameScript
                             lblLeft, lblRight,
                             lblStep, lblHold, 
                             lblEditStep, lblEditLength,
+                            lblCopy, lblPaste,
                             lblLoop, lblBlock, lblAllPatterns, lblFollow, lblAutoCue,
                             lblNew, lblDup, lblDel,
                             lblMove, lblPrev, lblNext, 
@@ -85,8 +86,8 @@ namespace IngameScript
         {
             lblPlay = new Label(GetLabel("Play"), 
                 lbl => IsPlaying,
-                null, 
-                null,
+                CF_null,
+                AL_null,
                 lbl =>
                 { 
                     if (IsPlaying) lbl.SetText("Stop ▐█", 6.5f, 24);
@@ -97,9 +98,9 @@ namespace IngameScript
                 true);
 
             lblEdit = new Label(GetLabel("Edit"),
-                lbl => OK(EditedClip.EditPos), 
-                null,
-                null,
+                lbl => OK(EditedClip.EditPos),
+                CF_null,
+                AL_null,
                 lbl => 
                 {
                     lbl.ForeColor = editColor6;
@@ -108,9 +109,9 @@ namespace IngameScript
                 });
 
             lblRec = new Label(GetLabel("Rec"),
-                lbl => EditedClip.Recording, 
-                null,
-                null,
+                lbl => EditedClip.Recording,
+                CF_null,
+                AL_null,
                 lbl => 
                 {
                     lbl.ForeColor = recColor6;
@@ -159,14 +160,14 @@ namespace IngameScript
 
         void InitSideLabels()
         {
-            lblLock     = new Label(GetLabel("Lock"),      lbl => OK(g_locks.Find(l => l.IsLocked)),  null, null, null, 0, F, T);
-            lblAutoLock = new Label(GetLabel("Auto Lock"), lbl => OK(g_locks.Find(l => l.AutoLock)),  null, null, null, 0, F, T);
+            lblLock     = new Label(GetLabel("Lock"),      lbl => OK(g_locks.Find(l => l.IsLocked)),  CF_null, AL_null, AL_null, 0, False, True);
+            lblAutoLock = new Label(GetLabel("Auto Lock"), lbl => OK(g_locks.Find(l => l.AutoLock)),  CF_null, AL_null, AL_null, 0, False, True);
 
-            lblFold     = new Label(GetLabel("Fold"),      null, null, null, null, 0, F, T);
-            lblTimers   = new Label(GetLabel("Timers"),    lbl => !OK(g_timers.Find(t => !t.Enabled)), null, null, null, 0, F, T);
+            lblFold     = new Label(GetLabel("Fold"),      CF_null, CF_null, AL_null, AL_null, 0, False, True);
+            lblTimers   = new Label(GetLabel("Timers"),    lbl => !OK(g_timers.Find(t => !t.Enabled)), CF_null, AL_null, AL_null, 0, False, True);
 
-            lblGyro     = new Label(GetLabel("Gyro"),      lbl => !OK(g_gyros .Find(g => !g.Enabled)), null, null, null, 0, F, T);
-            lblMass     = new Label(GetLabel("Mass"),      lbl => !OK(g_mass  .Find(g => !g.Enabled)), null, null, null, 0, F, T);
+            lblGyro     = new Label(GetLabel("Gyro"),      lbl => !OK(g_gyros .Find(g => !g.Enabled)), CF_null, AL_null, AL_null, 0, False, True);
+            lblMass     = new Label(GetLabel("Mass"),      lbl => !OK(g_mass  .Find(g => !g.Enabled)), CF_null, AL_null, AL_null, 0, False, True);
         }
 
 
@@ -274,7 +275,7 @@ namespace IngameScript
         void UnmarkAllLabels()
         {
             foreach (var lbl in _labelsPressed)
-                lbl.Update(F);
+                lbl.Update(False);
 
             // mark for next cycle and clear pressed list
 

@@ -39,13 +39,13 @@ namespace IngameScript
 
             public Note()
             {
-                Channel     = null;
-                iChan       = -1;
+                Channel =  Channel_null;
+                iChan   = -1;
+                        
+                Step    = -1;
                             
-                Step     = -1;
-                            
-                Sounds      = new List<Sound>();
-                Keys        = new List<Key>();
+                Sounds  = new List<Sound>();
+                Keys    = new List<Key>();
 
                 Reset();
             }
@@ -77,7 +77,7 @@ namespace IngameScript
                 Step     = time;
                 StepLength  = len;
 
-                ArpPlayTime = fN;
+                ArpPlayTime = float_NaN;
 
                 Sounds      = new List<Sound>();
                 Keys        = new List<Key>();
@@ -90,7 +90,7 @@ namespace IngameScript
                 Volume      = 0;
                 StepLength  = 0;
 
-                ArpPlayTime = fN;
+                ArpPlayTime = float_NaN;
 
                 Sounds.Clear();
             }

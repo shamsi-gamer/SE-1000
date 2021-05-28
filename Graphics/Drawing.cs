@@ -49,7 +49,7 @@ namespace IngameScript
                 Position        = pos + size/2,
                 Size            = size,
                 Color           = c,
-                Alignment       = TaC,
+                Alignment       = TA_CENTER,
                 RotationOrScale = rotation
             });
         }
@@ -131,7 +131,7 @@ namespace IngameScript
         }
 
 
-        static void DrawButton(List<MySprite> sprites, string str, int i, int maxButtons, float w, float h, bool down = F)
+        static void DrawButton(List<MySprite> sprites, string str, int i, int maxButtons, float w, float h, bool down = False)
         {
             var bw =  w/maxButtons;
             var x0 = bw/2;
@@ -148,7 +148,7 @@ namespace IngameScript
                 y + 6, 
                 1.2f, 
                 down ? color0 : color6,
-                TaC);
+                TA_CENTER);
         }
     }
 }

@@ -67,7 +67,7 @@ namespace IngameScript
                 UpdateSongName();
             }
             else
-                g_started = T;
+                g_started = True;
 
 
             if (_loadStep > 10)

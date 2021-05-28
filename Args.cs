@@ -119,8 +119,8 @@
                 case "up all":      SetVolumeAll( 1);                break;
                 case "down all":    SetVolumeAll(-1);                break;
 
-                case "solo all":    EnableChannels(T);               break;
-                case "mute all":    EnableChannels(F);               break;
+                case "solo all":    EnableChannels(True);            break;
+                case "mute all":    EnableChannels(False);           break;
 
                 case "m shift":     ToggleMixerShift();              break;
 

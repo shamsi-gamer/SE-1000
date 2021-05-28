@@ -1,0 +1,26 @@
+﻿CONSTANTS
+
+true                 --> True
+false                --> False
+(Type)null           --> Type_null
+TextAlignment.CENTER --> TA_CENTER
+float.NaN            --> float_NaN
+
+FUNCTIONS
+
+x.ToString()      --> S(x)
+x.ToString("00")  --> S00(x)
+int.TryParse(...) --> int_TryParse(...) => int.TryParse(...);
+
+
+REPEATED MODIFIERS
+
+public int X;     
+public int Y; --> public int X, Y, Z;
+putlic int Z;
+
+
+REPEATED CODE
+
+x == null  --> OK(x)
+str + "\n" --> N(str)

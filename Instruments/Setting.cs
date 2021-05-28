@@ -33,8 +33,8 @@ namespace IngameScript
                 Prototype   = proto;
                 Instrument  = inst;
                 Source      = src;
-               _IsCurrent   = F;
-                m_valid     = F;
+               _IsCurrent   = False;
+                m_valid     = False;
             }
 
 
@@ -68,7 +68,7 @@ namespace IngameScript
                 return param ?? (Parameter)NewSettingFromTag(tag, this, Instrument, Source);
             }
 
-            public virtual bool HasDeepParams(Channel chan, int src) { return F; }
+            public virtual bool HasDeepParams(Channel chan, int src) { return False; }
             public virtual void DeleteSetting(Setting setting) {}
                                 
 
@@ -77,7 +77,7 @@ namespace IngameScript
 
             public virtual void Reset()
             { 
-                m_valid = F;
+                m_valid = False;
             }
 
 
@@ -162,7 +162,7 @@ namespace IngameScript
             public virtual void   DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan) {}
             public virtual void   Func(int func) {}
 
-            public virtual bool   CanDelete() { return F; }
+            public virtual bool   CanDelete() { return False; }
         }
 
 
@@ -240,7 +240,7 @@ namespace IngameScript
             { 
             case strVol:  return new Parameter(tag,    0,           2,   0.5f,  1,    0.01f,  0.1f,  1,    parent, inst, src);
                                                                                        
-            case strTrig: return new Parameter((Parameter)parent, parent, tag, F);
+            case strTrig: return new Parameter((Parameter)parent, parent, tag, False);
             case strEnv:  return new Envelope(parent, inst, src);                                  
             case strAtt:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    parent, inst, src);
             case strDec:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, parent, inst, src);
@@ -277,7 +277,7 @@ namespace IngameScript
 
         static bool IsParam(Setting setting) 
         {
-            if (!OK(setting)) return F;
+            if (!OK(setting)) return False;
 
             return setting.GetType() == typeof(Tune)
                 || setting.GetType() == typeof(Parameter); 
@@ -313,12 +313,12 @@ namespace IngameScript
             while (OK(setting))
             {
                 if (setting.Tag == tag)
-                    return T;
+                    return True;
 
                 setting = setting.Parent;
             }
 
-            return F;
+            return False;
         }
     }
 }

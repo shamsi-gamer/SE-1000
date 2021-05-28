@@ -30,7 +30,7 @@ namespace IngameScript
                                return
                                    IsPlaying 
                                    ? PlayTime / (float)TicksPerStep 
-                                   : fN; 
+                                   : float_NaN; 
                            } }
 
             
@@ -101,36 +101,68 @@ namespace IngameScript
                     }
                     
                     if (clip != EditedClip) EditedClip  = clip;
-                    else                    ShowSession = F;
+                    else                    ShowSession = False;
                 }
 
                 else if (OK(ClipCopy))
                 {
+                    if (EditClip == 1)
+                    {
+                        var clipIndex = ClipCopy.Track.Clips.IndexOf(ClipCopy);
+                        ClipCopy.Track.Clips[clipIndex] = Clips[index];
+
+                        if (ClipCopy.Track != this)
+                        {
+                            if (ClipCopy.Track.PlayClip == clipIndex)
+                                ClipCopy.Track.PlayClip =
+                                ClipCopy.Track.NextClip = -1;
+                        }
+
+                        PlayClip =
+                        NextClip = index;
+                    }
+
                     Clips[index] = new Clip(ClipCopy, this);
                     EditedClip   = Clips[index];
+
                     ClipCopy     = Clip_null;
+                    EditClip     = -1;
                 }
 
                 else if (OK(clip))
                 { 
-                    if (EditClip == 1)
-                    {
+                    if (EditClip == 1) // move clip
                         ClipCopy = clip;
-                        EditClip = -1;
-                    }
 
-                    else if (EditClip == 2)
+                    else if (EditClip == 2) // duplicate clip
+                        ClipCopy = clip;
+
+                    else if (EditClip == 3) // delete clip
                     {
-                        if (clip == EditedClip)
-                            EditedClip = GetClipAfterDelete(clip);
-
                         if (Tracks.Sum(t => t.Clips.Count(c => OK(c))) > 1) // check that this isn't the only clip
+                        { 
+                            if (clip == EditedClip)
+                                EditedClip = GetClipAfterDelete(clip);
+
                             Clips[index] = Clip_null;
+                        }
+                        else
+                        {
+                            EditedClip =
+                            Clips[index] = new Clip(this);
+                        }
+
+
+                        if (PlayClip == index)
+                        { 
+                            PlayClip =
+                            NextClip = -1;
+                        }
 
                         EditClip = -1;
                     }
 
-                    else if (index != PlayClip)
+                    else if (index != PlayClip) // queue next clip
                     { 
                         if (OK(NextClip))
                             NextClip =
@@ -146,7 +178,7 @@ namespace IngameScript
                         PlayClip = -1; // force mute on second press
                     
                     else
-                        NextClip = -1;
+                        NextClip = -1; // queue clip off
                 }
             }
 
@@ -155,13 +187,13 @@ namespace IngameScript
             {
                 if (   !OK(PlayClip)
                     && !OK(NextClip))
-                    return F;
+                    return False;
 
 
                 if (      !OK(PlayPat)
                        && !OK(NextPat)
                     || PlayStep < (PlayPat + 1) * g_patSteps)
-                    return F;
+                    return False;
 
 
                 if (NextClip != PlayClip)
@@ -175,7 +207,7 @@ namespace IngameScript
                 {
                     PlayPat = -1;
                     NextPat = -1;
-                    return F;
+                    return False;
                 }
 
 
@@ -221,7 +253,7 @@ namespace IngameScript
 
                 PlayPat = (int)(PlayStep / g_patSteps);
 
-                return T;
+                return True;
             }
 
 

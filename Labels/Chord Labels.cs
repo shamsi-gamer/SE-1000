@@ -4,12 +4,12 @@
     {
         void InitChordLabels()
         {
-            lblChord     = new Label(GetLabel("Chord"),      ChordIsBright,     null,          UpdateChord);
-            lblChord1    = new Label(GetLabel("Chord 1"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 1);
-            lblChord2    = new Label(GetLabel("Chord 2"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 2);
-            lblChord3    = new Label(GetLabel("Chord 3"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 3);
-            lblChord4    = new Label(GetLabel("Chord 4"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, null, 4);
-            lblChordEdit = new Label(GetLabel("Chord Edit"), ChordEditIsBright, null,          UpdateChordEdit);
+            lblChord     = new Label(GetLabel("Chord"),      ChordIsBright,     CF_null,       UpdateChord);
+            lblChord1    = new Label(GetLabel("Chord 1"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, AL_null, 1);
+            lblChord2    = new Label(GetLabel("Chord 2"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, AL_null, 2);
+            lblChord3    = new Label(GetLabel("Chord 3"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, AL_null, 3);
+            lblChord4    = new Label(GetLabel("Chord 4"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, AL_null, 4);
+            lblChordEdit = new Label(GetLabel("Chord Edit"), ChordEditIsBright, CF_null,       UpdateChordEdit);
             lblSpread    = new Label(GetLabel("Spread"),     lbl => EditedClip.Spread);
         }
 
@@ -19,7 +19,7 @@
             var tune =
                 IsCurParam(strTune)
                 ? (Tune)GetCurrentParam(SelInstrument) 
-                : null;
+                : Tune_null;
 
             if (   !(EditedClip.ParamKeys || EditedClip.ParamAuto)
                 && OK(tune))
@@ -76,7 +76,7 @@
                 var tune =
                     IsCurParam(strTune)
                     ? (Tune)GetCurrentParam(SelInstrument) 
-                    : null;
+                    : Tune_null;
 
                 lbl.SetText(
                        OK(tune)
@@ -93,7 +93,7 @@
             var tune =
                 IsCurParam(strTune)
                 ? (Tune)GetCurrentParam(SelInstrument)
-                : null;
+                : Tune_null;
 
             if (   IsCurParam(strTune)
                 && !(EditedClip.ParamKeys || EditedClip.ParamAuto))

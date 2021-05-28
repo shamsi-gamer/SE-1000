@@ -15,7 +15,7 @@
             public Channel   Channel;
 
 
-            public Key(int srcIndex, Parameter param, float val, float stepTime, Channel chan = null)
+            public Key(int srcIndex, Parameter param, float val, float stepTime, Channel chan = Channel_null)
             {
                 SourceIndex = srcIndex;
                 Parameter   = param;

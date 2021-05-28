@@ -8,13 +8,13 @@ namespace IngameScript
 {
     partial class Program
     {
-        static Modulate ModDestConnecting =  null;
+        static Modulate ModDestConnecting =  Modulate_null;
         static int      ModDestSrcIndex   = -1,
                         ModCurChan        = -1,
                         ModSelChan        = -1,
                         ModCurPat         = -1;
-        static Clip     ModDestClip       =  null;
-        static Channel  ModDestChannel    =  null;
+        static Clip     ModDestClip       =  Clip_null;
+        static Channel  ModDestChannel    =  Channel_null;
 
 
         public enum ModOp { Multiply, Add };
@@ -38,7 +38,7 @@ namespace IngameScript
 
 
             public Modulate(Setting parent, Instrument inst, Source src) 
-                : base(strMod, parent, null, inst, src)
+                : base(strMod, parent, Setting_null, inst, src)
             {
                 Op             = ModOp.Add;
                                
@@ -140,7 +140,7 @@ namespace IngameScript
                 var d = Math.Max(0, cv -     _amt/FPS/(rel>0?rel:0.000001f));
 
                 CurValue = Math.Sign(amt) * (d + (a - d) * val);
-                m_valid = T;
+                m_valid = True;
 
                 return CurValue;
             }
@@ -200,7 +200,7 @@ namespace IngameScript
                     case strRel: return GetOrAddParamFromTag(Release, tag);
                 }
 
-                return null;
+                return Setting_null;
             }
 
 
@@ -248,7 +248,7 @@ namespace IngameScript
                 var mod = new Modulate(
                     parent, 
                     inst, 
-                    iSrc > -1 ? inst.Sources[iSrc] : null);
+                    iSrc > -1 ? inst.Sources[iSrc] : Source_null);
 
 
                 var nSources = int_Parse(data[d++]);
@@ -262,7 +262,7 @@ namespace IngameScript
                     var _inst = Instruments.Find(_i => _i.Name == modInst);
 
                     mod.SrcInstruments.Add(_inst);
-                    mod.SrcSources    .Add(modSrcIndex > -1 ? _inst.Sources[modSrcIndex] : null);
+                    mod.SrcSources    .Add(modSrcIndex > -1 ? _inst.Sources[modSrcIndex] : Source_null);
                     mod.SrcSettings   .Add(GetSettingFromPath(_inst, setPath));
                 }
 
@@ -281,9 +281,9 @@ namespace IngameScript
 
                 return
                       (Op == ModOp.Add ? "+ " : "* ")
-                    + PrintValue(Amount .Value, 2, T, 0).PadLeft(5) + " "
-                    + PrintValue(Attack .Value, 2, T, 0).PadLeft(4) + " "
-                    + PrintValue(Release.Value, 2, T, 0).PadLeft(4);
+                    + PrintValue(Amount .Value, 2, True, 0).PadLeft(5) + " "
+                    + PrintValue(Attack .Value, 2, True, 0).PadLeft(4) + " "
+                    + PrintValue(Release.Value, 2, True, 0).PadLeft(4);
             }
 
 
@@ -311,7 +311,7 @@ namespace IngameScript
                     ? g_time - EditedClip.Track.StartTime
                     : 0;
 
-                var tp = new TimeParams(g_time, 0, sTime, null, EditedClip.EditLength, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, sTime, Note_null, EditedClip.EditLength, -1, _triggerDummy, dp.Program);
 
                 Amount .UpdateValue(tp);
                 Attack .UpdateValue(tp);
@@ -330,13 +330,13 @@ namespace IngameScript
 
                 Vector2 p0, p1, p2;
 
-                GetEnvelopeCoords(x0, y0, w0, h0, F, out p0, out p1, out p2);
+                GetEnvelopeCoords(x0, y0, w0, h0, False, out p0, out p1, out p2);
                 DrawEnvelopeSupportsAndInfo(sprites, p0, p1, p2, w0, y0, h0, isAmt, isAtt, isRel);
 
-                GetEnvelopeCoords(x0, y0, w0, h0, T, out p0, out p1, out p2);
-                DrawEnvelope(sprites, p0, p1, p2, color3, F, F, F);
+                GetEnvelopeCoords(x0, y0, w0, h0, True, out p0, out p1, out p2);
+                DrawEnvelope(sprites, p0, p1, p2, color3, False, False, False);
 
-                GetEnvelopeCoords(x0, y0, w0, h0, F, out p0, out p1, out p2);
+                GetEnvelopeCoords(x0, y0, w0, h0, False, out p0, out p1, out p2);
                 DrawEnvelope(sprites, p0, p1, p2, color5, isAmt, isAtt, isRel);
 
 
@@ -360,7 +360,7 @@ namespace IngameScript
                     }
                 }
 
-                DrawString(sprites, strFrom, x0 + w0/2, y + h/2 - h0/2 - 80, 0.5f, color5, TaC);
+                DrawString(sprites, strFrom, x0 + w0/2, y + h/2 - h0/2 - 80, 0.5f, color5, TA_CENTER);
             }
 
 
@@ -380,9 +380,9 @@ namespace IngameScript
 
                 var fs = 0.5f;
 
-                DrawString(sprites, S_00(amt) + (isAmt ? " s" : ""),                      p1.X + 18,           p1.Y + (amt>=0?-20:4), fs, isAmt ? color6 : color3, TaC);
-                DrawString(sprites, S_00(a)   + (isAtt ? " s" : ""),                     (p0.X + p1.X)/2 + 6,  p0.Y +  3,             fs, isAtt ? color6 : color3, TaC);
-                DrawString(sprites, S_00(r)   + (isRel ? " s" : ""), Math.Max(p0.X + 90, (p1.X + p2.X)/2 - 5), p0.Y +  3,             fs, isRel ? color6 : color3, TaC);
+                DrawString(sprites, S_00(amt) + (isAmt ? " s" : ""),                      p1.X + 18,           p1.Y + (amt>=0?-20:4), fs, isAmt ? color6 : color3, TA_CENTER);
+                DrawString(sprites, S_00(a)   + (isAtt ? " s" : ""),                     (p0.X + p1.X)/2 + 6,  p0.Y +  3,             fs, isAtt ? color6 : color3, TA_CENTER);
+                DrawString(sprites, S_00(r)   + (isRel ? " s" : ""), Math.Max(p0.X + 90, (p1.X + p2.X)/2 - 5), p0.Y +  3,             fs, isRel ? color6 : color3, TA_CENTER);
             }
 
 
@@ -435,10 +435,10 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, F, F);
-                DrawFuncButton(sprites, strAmt, 1, w, y, T, Amount .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "A",    2, w, y, T, Attack .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "R",    3, w, y, T, Release.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, False, False);
+                DrawFuncButton(sprites, strAmt, 1, w, y, True, Amount .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "A",    2, w, y, True, Attack .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "R",    3, w, y, True, Release.HasDeepParams(chan, -1));
             }
 
 
@@ -463,7 +463,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return T;
+                return True;
             }
         }
 
@@ -471,13 +471,13 @@ namespace IngameScript
 
         void ResetModConnecting()
         {
-            ModDestConnecting = null;
+            ModDestConnecting = Modulate_null;
             ModDestSrcIndex   = -1;
             ModCurChan        = -1;
             ModSelChan        = -1;
             ModCurPat         = -1;
-            ModDestClip       = null;
-            ModDestChannel    = null;
+            ModDestClip       = Clip_null;
+            ModDestChannel    = Channel_null;
         }
     }
 }

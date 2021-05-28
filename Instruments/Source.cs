@@ -30,16 +30,16 @@ namespace IngameScript
             public Source(Instrument inst)
             {
                 Instrument = inst;
-                On         = T;
+                On         = True;
                            
                 Oscillator = OscSine;
 
-                Offset     = null;
+                Offset     = Parameter_null;
                 Volume     = (Parameter)NewSettingFromTag(strVol, Setting_null, inst, this);
-                Tune       = null;
-                Harmonics  = null;
-                Filter     = null;
-                Delay      = null;
+                Tune       =      Tune_null;
+                Harmonics  = Harmonics_null;
+                Filter     =    Filter_null;
+                Delay      =     Delay_null;
 
                 CurVolume  = 0;
             }
@@ -52,7 +52,7 @@ namespace IngameScript
 
                 Oscillator = src.Oscillator;
                 
-                Offset     = src.Offset   ?.Copy(null);
+                Offset     = src.Offset   ?.Copy(Setting_null);
                 Volume     = new Parameter(src.Volume, Setting_null);                               
                 Tune       = src.Tune     ?.Copy();
                 Harmonics  = src.Harmonics?.Copy();
@@ -85,7 +85,7 @@ namespace IngameScript
                       || Oscillator == OscCrunch       
                       || Oscillator == OscSample)    return 1;
 
-                return fN;
+                return float_NaN;
             } }
 
 
@@ -183,8 +183,8 @@ namespace IngameScript
                         Index,
                         note,
                         triggerValues,
-                        F,
-                        null,
+                        False,
+                        Sound_null,
                         0));
                 }
 
@@ -218,15 +218,15 @@ namespace IngameScript
                 if (   RND > 0.7f
                     && !used.Contains(Oscillator))
                 {
-                    Offset = (Parameter)NewSettingFromTag(strOff, null, Instrument, this);
+                    Offset = (Parameter)NewSettingFromTag(strOff, Setting_null, Instrument, this);
                     Offset.Randomize(prog);
                 }
                 else
-                    Offset = null;
+                    Offset = Parameter_null;
 
 
                 if (Index == 0)
-                    Volume.SetValue(1, null, Index);
+                    Volume.SetValue(1, Note_null, Index);
                 else
                     Volume.Randomize(prog);
 
@@ -239,7 +239,7 @@ namespace IngameScript
                     Tune.Randomize(prog);
                 }
                 else
-                    Tune = null;
+                    Tune = Tune_null;
 
 
                 if (   (   Oscillator == OscSine
@@ -251,7 +251,7 @@ namespace IngameScript
                     Harmonics.Randomize(prog);
                 }
                 else
-                    Harmonics = null;
+                    Harmonics = Harmonics_null;
 
 
                 if (   OK(Harmonics)
@@ -261,7 +261,7 @@ namespace IngameScript
                     Filter.Randomize(prog);
                 }
                 else
-                    Filter = null;
+                    Filter = Filter_null;
 
 
                 if (RND > 0.9f)
@@ -270,7 +270,7 @@ namespace IngameScript
                     Delay.Randomize(prog);
                 }
                 else
-                    Delay = null;
+                    Delay = Delay_null;
 
 
                 used.Add(Oscillator);
@@ -282,14 +282,14 @@ namespace IngameScript
                 switch (tag)
                 {
                     case strVol:  return Volume;
-                    case strOff:  return Offset    ?? (Offset    = (Parameter)NewSettingFromTag(tag, null, Instrument, this));
+                    case strOff:  return Offset    ?? (Offset    = (Parameter)NewSettingFromTag(tag, Setting_null, Instrument, this));
                     case strTune: return Tune      ?? (Tune      = new Tune     (Instrument, this));
                     case strHrm:  return Harmonics ?? (Harmonics = new Harmonics(Instrument, this));
                     case strFlt:  return Filter    ?? (Filter    = new Filter   (Instrument, this));
                     case strDel:  return Delay     ?? (Delay     = new Delay    (Instrument, this));
                 }
 
-                return null;
+                return Setting_null;
             }
 
 
@@ -335,7 +335,7 @@ namespace IngameScript
                 src.Oscillator = OscillatorFromType((OscType)int_Parse(data[i++]));
                 src.On         = data[i++] == "1";
 
-                src.Volume = Parameter.Load(data, ref i, inst, iSrc, null);
+                src.Volume = Parameter.Load(data, ref i, inst, iSrc, Setting_null);
 
                 while (i < data.Length
                     && (   data[i] == strOff
@@ -346,11 +346,11 @@ namespace IngameScript
                 { 
                     switch (data[i])
                     { 
-                        case strOff:  src.Offset    = Parameter.Load(data, ref i, inst, iSrc, null); break;
-                        case strTune: src.Tune      = Tune     .Load(data, ref i, inst, iSrc);       break;
-                        case strHrm:  src.Harmonics = Harmonics.Load(data, ref i, inst, iSrc);       break;
-                        case strFlt:  src.Filter    = Filter   .Load(data, ref i, inst, iSrc);       break;
-                        case strDel:  src.Delay     = Delay    .Load(data, ref i, inst, iSrc);       break;
+                        case strOff:  src.Offset    = Parameter.Load(data, ref i, inst, iSrc, Setting_null); break;
+                        case strTune: src.Tune      = Tune     .Load(data, ref i, inst, iSrc);               break;
+                        case strHrm:  src.Harmonics = Harmonics.Load(data, ref i, inst, iSrc);               break;
+                        case strFlt:  src.Filter    = Filter   .Load(data, ref i, inst, iSrc);               break;
+                        case strDel:  src.Delay     = Delay    .Load(data, ref i, inst, iSrc);               break;
                     }
                 }
             }
@@ -375,7 +375,8 @@ namespace IngameScript
 
 
                 var dp1 = new DrawParams(active, prog);
-                DrawLabels(null, 0, 0, dp1);
+                DrawLabels(sprites, 0, 0, dp1);
+
 
                 var sh = dp1.OffY + 20;
 
@@ -388,12 +389,12 @@ namespace IngameScript
 
                 if (Oscillator == OscSample)
                 {
-                    DrawString(sprites, Oscillator.ShortName, x + 10, y + sh/2 - 10, 0.7f, CurSrc == Index ? col_1 : col_0, TaC);
+                    DrawString(sprites, Oscillator.ShortName, x + 10, y + sh/2 - 10, 0.7f, CurSrc == Index ? col_1 : col_0, TA_CENTER);
                 }
                 else
                 { 
                     DrawSample(sprites,                       x +  10, y + sh/2 - 10, 50, 20, active, CurSrc > -1);
-                    DrawString(sprites, Oscillator.ShortName, x + 100, y + sh/2 - 10, 0.6f, active ? col_1 : col_0, TaC);
+                    DrawString(sprites, Oscillator.ShortName, x + 100, y + sh/2 - 10, 0.6f, active ? col_1 : col_0, TA_CENTER);
                 }
 
 
@@ -411,7 +412,7 @@ namespace IngameScript
                 var col_0 = On && bright ? color6 : color3;
                 var col_1 = On && bright ? color0 : color5;
 
-                var pPrev = new Vector2(fN, fN);
+                var pPrev = new Vector2(float_NaN, float_NaN);
 
 
                 var df = 1/24f;
@@ -462,12 +463,12 @@ namespace IngameScript
                 }
                 else
                 {
-                    DrawFuncButton(sprites, strOff,  0, w, y, T, OK(Offset   ));
-                    DrawFuncButton(sprites, strVol,  1, w, y, T,    Volume.HasDeepParams(chan, Index));
-                    DrawFuncButton(sprites, strTune, 2, w, y, T, OK(Tune     ));
-                    DrawFuncButton(sprites, strHrm,  3, w, y, T, OK(Harmonics));
-                    DrawFuncButton(sprites, strFlt,  4, w, y, T, OK(Filter   ));
-                    DrawFuncButton(sprites, strDel,  5, w, y, T, OK(Delay    ));
+                    DrawFuncButton(sprites, strOff,  0, w, y, True, OK(Offset   ));
+                    DrawFuncButton(sprites, strVol,  1, w, y, True,    Volume.HasDeepParams(chan, Index));
+                    DrawFuncButton(sprites, strTune, 2, w, y, True, OK(Tune     ));
+                    DrawFuncButton(sprites, strHrm,  3, w, y, True, OK(Harmonics));
+                    DrawFuncButton(sprites, strFlt,  4, w, y, True, OK(Filter   ));
+                    DrawFuncButton(sprites, strDel,  5, w, y, True, OK(Delay    ));
                 }
             }
 

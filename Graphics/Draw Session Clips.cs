@@ -118,7 +118,7 @@ namespace IngameScript
                         cy + h/8 - 15 - (nNameLines-1)*20,
                         1,
                         isPlayClip ? color0 : color4,
-                        TaC);
+                        TA_CENTER);
 
 
                     // position in played clip

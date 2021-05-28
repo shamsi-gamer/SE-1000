@@ -13,7 +13,7 @@ namespace IngameScript
             public Channel[] Channels = new Channel[g_nChans];
 
 
-            public Pattern(Instrument defInst, Clip clip = null)
+            public Pattern(Instrument defInst, Clip clip = Clip_null)
             {
                 Clip = clip;
                 

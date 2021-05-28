@@ -5,23 +5,49 @@ namespace IngameScript
     {
         void InitMixerLabels()
         { 
-            lblMixerVolumeUp   = new Label(GetLabel("Volume Up"));
-            lblMixerVolumeDown = new Label(GetLabel("Volume Down"));
-            lblMixerAll        = new Label(GetLabel("Solo"), lbl => EditClip == 1, lbl => OK(ClipCopy), UpdateMixerAll);
-            lblMixerMuteAll    = new Label(GetLabel("Mute"), lbl => EditClip == 2, null,                          UpdateMixerMuteAll);
+            lblMixerVolumeUp = new Label(GetLabel("Volume Up"), CF_null, CF_null, UpdateVolumeUpAll);
 
-            lblMixerShift      = new Label(GetLabel("M Shift"), lbl => MixerShift);
+            lblMixerVolumeDown = new Label(GetLabel("Volume Down"), 
+                lbl => EditClip == 1 && !OK(ClipCopy), 
+                lbl => EditClip == 1 &&  OK(ClipCopy), 
+                UpdateVolumeDownAll);
+
+            lblMixerAll = new Label(GetLabel("Solo"),
+                lbl => EditClip == 2 && !OK(ClipCopy), 
+                lbl => EditClip == 2 &&  OK(ClipCopy), 
+                UpdateMixerAll);
+
+            lblMixerMuteAll = new Label(GetLabel("Mute"),
+                lbl => EditClip == 3, 
+                CF_null,             
+                UpdateMixerMuteAll);
+
+            lblMixerShift = new Label(GetLabel("M Shift"), lbl => MixerShift);
 
             lblSession = new Label(GetLabel("Session"), 
                 lbl => 
                        ShowSession
                     && EditClip == 0, 
-                null, 
+                CF_null, 
                 UpdateSessionLabel, 
-                null, 
+                AL_null, 
                 0, 
-                F, 
-                T);
+                False, 
+                True);
+        }
+
+
+        void UpdateVolumeUpAll(Label lbl)
+        {
+            if (ShowSession) lbl.SetText("Scn");
+            else lbl.SetText("Vol ►", 8, 18);
+        }
+
+
+        void UpdateVolumeDownAll(Label lbl)
+        {
+            if (ShowSession) lbl.SetText("Move");
+            else lbl.SetText("◄ Vol", 8, 18);
         }
 
 

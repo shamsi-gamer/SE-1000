@@ -12,8 +12,8 @@ namespace IngameScript
         static long    g_time           = -1; // in ticks
         static float   TimeStep         => (float)g_time / TicksPerStep;
 
-        static bool    g_started        = F,
-                       g_init           = F;
+        static bool    g_started        = False,
+                       g_init           = False;
 
         static int     g_curRuntimeTick = 0;
         static float[] g_runtimeMs      = new float[6];
@@ -25,7 +25,7 @@ namespace IngameScript
                         
         static int     LockView       = 0; // 1 = pattern, 2 = piano
 
-        Key            g_editKey      = null;
+        Key            g_editKey      = Key_null;
 
 
         static string           SessionName;
@@ -42,11 +42,11 @@ namespace IngameScript
                                 MixerShift,
                                 Move;
                                 
-        static int              EditClip; // 0 = edit, 1 = dup, 2 = del
+        static int              EditClip; // 0 = edit, 1 = move, 2 = dup, 3 = del
 
                  
 
-        static bool IsPlaying => OK(Tracks.Find(track => track?.IsPlaying ?? F));
+        static bool IsPlaying => OK(Tracks.Find(track => track?.IsPlaying ?? False));
 
 
         static void CreateDefaultMachineState()
@@ -92,10 +92,10 @@ namespace IngameScript
             EditedClip   = 
             ClipCopy     = Clip_null;
                          
-            ShowSession  = T;
+            ShowSession  = True;
 
             MixerShift   = 
-            Move         = F;
+            Move         = False;
                          
             EditClip     = -1;
         }
@@ -174,7 +174,7 @@ namespace IngameScript
             }
             else
             { 
-                ShowSession =  T;
+                ShowSession =  True;
                 EditClip    = -1;
             }
         }

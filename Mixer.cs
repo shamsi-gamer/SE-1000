@@ -12,8 +12,8 @@
         {
             if (ShowSession)
             { 
-                if (on) EditClip = EditClip != 1 ? 1 : -1;
-                else    EditClip = EditClip != 2 ? 2 : -1;
+                if (on) EditClip = EditClip != 2 ? 2 : -1;
+                else    EditClip = EditClip != 3 ? 3 : -1;
             }
             else
             { 
@@ -138,11 +138,11 @@
             for (int i = 0; i < g_nChans; i++)
             {
                 if (i == ch) continue;
-                EnableChannel(pat, i, F);
+                EnableChannel(pat, i, False);
                 EditedClip.TrimCurrentNotes(i);
             }
 
-            EnableChannel(pat, ch, T);
+            EnableChannel(pat, ch, True);
         }
 
 

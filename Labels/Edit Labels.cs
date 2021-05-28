@@ -4,8 +4,8 @@
     {
         void InitEditLabels()
         {
-            lblLeft  = new Label(GetLabel("Left"),  null, lbl => EditedClip.EditNotes.Count > 0);
-            lblRight = new Label(GetLabel("Right"), null, lbl => EditedClip.EditNotes.Count > 0);
+            lblLeft  = new Label(GetLabel("Left"),  CF_null, lbl => EditedClip.EditNotes.Count > 0);
+            lblRight = new Label(GetLabel("Right"), CF_null, lbl => EditedClip.EditNotes.Count > 0);
 
             lblStep  = new Label(GetLabel("Step"));
 
@@ -15,8 +15,11 @@
                     && (  !OK(EditedClip.EditPos) 
                         || EditedClip.EditNotes.Count > 0));
 
-            lblEditStep   = new Label(GetLabel("Edit Step"),   null, null, UpdateEditStepLabel);
-            lblEditLength = new Label(GetLabel("Edit Length"), null, null, UpdateEditLengthLabel);
+            lblEditStep   = new Label(GetLabel("Edit Step"),   CF_null, CF_null, UpdateEditStepLabel);
+            lblEditLength = new Label(GetLabel("Edit Length"), CF_null, CF_null, UpdateEditLengthLabel);
+
+            lblCopy  = new Label(GetLabel("Copy"));
+            lblPaste = new Label(GetLabel("Paste"));
         }
 
 
@@ -38,7 +41,7 @@
                  if (EditedClip.EditStepLength == 0.25f )    strLength = "¼";
             else if (EditedClip.EditStepLength == 0.5f  )    strLength = "½";
             else if (EditedClip.EditStepLength == float_Inf) strLength = "∞";
-            else                                          strLength = S0(EditedClip.EditStepLength);
+            else                                             strLength = S0(EditedClip.EditStepLength);
 
             lbl.SetText("─ " + strLength);
         }

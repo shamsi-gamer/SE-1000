@@ -29,7 +29,7 @@ namespace IngameScript
         //}
 
 
-        void Play(bool play = T)
+        void Play(bool play = True)
         {
             if (!OK(Tracks))
                 return;
@@ -84,7 +84,7 @@ namespace IngameScript
         }
 
 
-        void Stop() { Play(F); }
+        void Stop() { Play(False); }
 
 
         void CheckIfMustStop()
@@ -101,7 +101,7 @@ namespace IngameScript
 
         void UpdatePlayback()
         {
-            var cueNext = F;
+            var cueNext = False;
 
             foreach (var track in Tracks)
             {

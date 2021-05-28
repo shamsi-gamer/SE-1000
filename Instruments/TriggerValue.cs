@@ -25,7 +25,7 @@
             public override bool Equals(object obj)
             {
                 if (obj.GetType() != typeof(TriggerValue))
-                    return F;
+                    return False;
 
                 var trig = (TriggerValue)obj;
 

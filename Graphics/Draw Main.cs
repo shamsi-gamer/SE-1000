@@ -31,8 +31,8 @@ namespace IngameScript
                     && (   EditedClip.ParamKeys
                         || EditedClip.ParamAuto))
                 {
-                    if (EditedClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, T, null);
-                    else               DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, T);
+                    if (EditedClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True, Arpeggio_null);
+                    else                  DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, True);
                 }
                 else if (SelChan > -1)
                 {
@@ -44,14 +44,14 @@ namespace IngameScript
                     else if (IsCurOrParentSetting(typeof(Arpeggio)))
                     {
                          var arp = CurOrParentArpeggio;
-                         DrawPianoDisplay(sprites, x, y, w, h, arp.Clip, CurPat, T, arp);
+                         DrawPianoDisplay(sprites, x, y, w, h, arp.Clip, CurPat, True, arp);
                     }
                     else DrawInstrument  (sprites, x, y, w, h);
                 }
                 else if (EditedClip.Piano 
                       && LockView != 1
-                   || LockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, T, null);
-                else                   DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, T);
+                   || LockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True, Arpeggio_null);
+                else                 DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, True);
             //}
 
             dsp.Draw(sprites);
@@ -70,16 +70,16 @@ namespace IngameScript
             }
             else
             {
-                if (GetEditNotes(clip, T).Count > 0)
-                    DrawFuncButton(sprites, "Note", 2, w, y, F, F, clip.EditNotes.Count > 0);
+                if (GetEditNotes(clip, True).Count > 0)
+                    DrawFuncButton(sprites, "Note", 2, w, y, False, False, clip.EditNotes.Count > 0);
 
                 if (GetLongNotes(clip).Count > 0)
-                    DrawFuncButton(sprites, strCut, 3, w, y, F, F);
+                    DrawFuncButton(sprites, strCut, 3, w, y, False, False);
             }
         }
 
 
-        static void DrawFuncButton(List<MySprite> sprites, string str, int i, float w, float h, bool isSetting, bool hasSetting, bool down = F)
+        static void DrawFuncButton(List<MySprite> sprites, string str, int i, float w, float h, bool isSetting, bool hasSetting, bool down = False)
         {
             DrawButton(sprites, str, i, 6, w, h, down);
 
@@ -93,11 +93,11 @@ namespace IngameScript
  
                 if (hasSetting)
                 {
-                    DrawString(sprites, strUp, x0 + i * bw - 5, y, 1f, color6, TaC);
-                    DrawString(sprites, strUp, x0 + i * bw + 5, y, 1f, color6, TaC);
+                    DrawString(sprites, strUp, x0 + i * bw - 5, y, 1f, color6, TA_CENTER);
+                    DrawString(sprites, strUp, x0 + i * bw + 5, y, 1f, color6, TA_CENTER);
                 }
                 else
-                    DrawString(sprites, strUp, x0 + i * bw,     y, 1f, color3, TaC);
+                    DrawString(sprites, strUp, x0 + i * bw,     y, 1f, color3, TA_CENTER);
             }
         }
     }

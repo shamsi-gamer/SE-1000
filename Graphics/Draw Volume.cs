@@ -41,13 +41,23 @@ namespace IngameScript
             FillRect(sprites, x, v.Y, w, v.Height, color0);
 
             var xc = x + bb/2;
-            DrawSoundLevel(sprites, xc, y - i * v.Height, bw, h - 295, EditedClip.Volume, vol, null, 6.5f);
+
+            DrawSoundLevel(
+                sprites, 
+                xc, 
+                y - i * v.Height, 
+                bw, 
+                h - 295, 
+                EditedClip.Volume, 
+                vol,
+                Channel_null,
+                6.5f);
 
             dsp.Draw(sprites);
         }
 
 
-        static void DrawSoundLevel(List<MySprite> sprites, float x, float y, float w, float h, float level, float v, Channel chan = null, float scale = 1)
+        static void DrawSoundLevel(List<MySprite> sprites, float x, float y, float w, float h, float level, float v, Channel chan = Channel_null, float scale = 1)
         {
             var wb = w/10;
             var wg = w/20;
@@ -90,7 +100,7 @@ namespace IngameScript
                     var db = 100 * (float)Math.Log10(i / (float)nMarks * extra);
 
                     DrawString(sprites, 
-                        PrintValue(Math.Abs(db), 0, T, 2),
+                        PrintValue(Math.Abs(db), 0, True, 2),
                         x,
                         y - sy + h - (h - hk) * val,
                         0.25f * scale,

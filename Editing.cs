@@ -46,7 +46,7 @@ namespace IngameScript
                     lastNotes.Clear();
                 }
 
-                MoveEdit(clip, 1, T);
+                MoveEdit(clip, 1, True);
 
                 lblStep.Mark();
             }
@@ -157,7 +157,7 @@ namespace IngameScript
                     }
                 }
 
-                clip.Inter = null;
+                clip.Inter = Note_null;
             }
         }
 
@@ -215,10 +215,10 @@ namespace IngameScript
             if (EditedClip.Hold)
                 EditedClip.TrimCurrentNotes(CurChan);
 
-            EditedClip.Hold = F;
+            EditedClip.Hold = False;
 
             if (!OK(EditedClip.EditPos))
-                EditedClip.Inter = null;
+                EditedClip.Inter = Note_null;
         }
 
 
@@ -240,7 +240,7 @@ namespace IngameScript
             return 
                 prevKeys.Count > 0
                 ? prevKeys.Last()
-                : null;
+                : Key_null;
         }
 
 
@@ -256,7 +256,7 @@ namespace IngameScript
             return
                 nextKeys.Count > 0
                 ? nextKeys[0]
-                : null;
+                : Key_null;
         }
 
 
@@ -264,7 +264,7 @@ namespace IngameScript
         {
             if (OK(clip.EditPos))
             { 
-                clip.Inter = null;
+                clip.Inter = Note_null;
 
                 if (clip.EditNotes.Count > 0) clip.EditNotes.Clear();
                 else                          clip.EditNotes.AddRange(GetEditNotes(clip));
@@ -307,7 +307,7 @@ namespace IngameScript
         }
 
 
-        List<Note> GetEditNotes(Clip clip, bool onlyEdit = F)
+        List<Note> GetEditNotes(Clip clip, bool onlyEdit = False)
         {
             var chan = CurChannel;
 
@@ -436,7 +436,7 @@ namespace IngameScript
         }
 
 
-        void MoveEdit(Clip clip, int move, bool create = F)
+        void MoveEdit(Clip clip, int move, bool create = False)
         {
             var chan = clip.SelChannel;
 

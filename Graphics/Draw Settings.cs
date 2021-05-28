@@ -15,7 +15,7 @@ namespace IngameScript
 
             var setting = g_settings[CurSet];
 
-            DrawString(sprites, FullNameFromTag(setting.Tag), x + w/2, y, 1f, color5, TaC);
+            DrawString(sprites, FullNameFromTag(setting.Tag), x + w/2, y, 1f, color5, TA_CENTER);
 
             var nameHeight = 40;
 
@@ -66,7 +66,7 @@ namespace IngameScript
             // set value number
             DrawString(
                 sprites, 
-                PrintValue(value, dec, T, 0), 
+                PrintValue(value, dec, True, 0), 
                 x + wl + 30, 
                 zy - sy - 10, 
                 1f, 
@@ -122,7 +122,7 @@ namespace IngameScript
             // set value number
             DrawString(
                 sprites, 
-                PrintValue(value, 3, T, 0), 
+                PrintValue(value, 3, True, 0), 
                 x + w/2 - 20, 
                 y + hl + 30, 
                 1f, 
@@ -148,8 +148,8 @@ namespace IngameScript
                 { 
                     for (float f = 0; f <= 1; f += 0.1f)
                     { 
-                        var y0 = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, (float)Math.Pow(f, pow) * 2, fN), clip).Y;
-                        var db = PrintValue(Math.Abs(100 * (float)Math.Log10(f * extra)), 0, T, 2);
+                        var y0 = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, (float)Math.Pow(f, pow) * 2, float_NaN), clip).Y;
+                        var db = PrintValue(Math.Abs(100 * (float)Math.Log10(f * extra)), 0, True, 2);
 
                         DrawLine(sprites, x + xt, y0, x+w, y0, color2);
                         DrawString(sprites, db, x + xt + 3, y0 + lf*2, lf, color2);
@@ -161,8 +161,8 @@ namespace IngameScript
                 {
                     for (int i = 0; i <= 20; i += 5)
                     { 
-                        var y0  = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, i, fN), clip).Y;
-                        var val = PrintValue(i, 0, F, 0);
+                        var y0  = KeyPos(x, y + rh, w, h - rh, 0, new Key(CurSrc, param, i, float_NaN), clip).Y;
+                        var val = PrintValue(i, 0, False, 0);
 
                         DrawLine(sprites, x+xt, y0, x+w, y0, color2);
                         DrawString(sprites, val, x + xt + 3, y0 + lf*2, lf, color2);
@@ -176,7 +176,7 @@ namespace IngameScript
                     { 
                         var val = param.Min + i * (param.Max - param.Min)/4;
                         var f   = (val - param.Min) / (param.Max - param.Min);
-                        var key = new Key(CurSrc, param, f, fN);
+                        var key = new Key(CurSrc, param, f, float_NaN);
                         var y0  = KeyPos(x, y + rh, w, h - rh, 0, key, clip).Y;
                         var str = PrintValue(val, -2, param.Max - param.Min > 1, 0);
 
@@ -220,7 +220,7 @@ namespace IngameScript
                 }
                 else
                 {
-                    var src = CurSrc > -1 ? SelSource : null;
+                    var src = CurSrc > -1 ? SelSource : Source_null;
 
                     var _param = (Parameter)GetSettingFromPath(SelChannel.Instrument, path);
                     var val    = _param.Value;
@@ -237,9 +237,9 @@ namespace IngameScript
         {
             switch (paramTag)
             { 
-            case strVol: return PrintValue(100 * Math.Log10(val), 0, T, 0) + " dB";
-            case strCnt: return PrintValue(val, 0, T, 0);
-            default:     return PrintValue(val, 2, T, 0);
+            case strVol: return PrintValue(100 * Math.Log10(val), 0, True, 0) + " dB";
+            case strCnt: return PrintValue(val, 0, True, 0);
+            default:     return PrintValue(val, 2, True, 0);
             }
         }
 
@@ -375,7 +375,7 @@ namespace IngameScript
             }
             else
             {
-                var key = AltChanKey(new Key(CurSrc, param, param.Value, fN));
+                var key = AltChanKey(new Key(CurSrc, param, param.Value, float_NaN));
                 var pk  = KeyPos(x, y, w, h, p, key, clip);
 
                 var p0 = new Vector2(x,        pk.Y);

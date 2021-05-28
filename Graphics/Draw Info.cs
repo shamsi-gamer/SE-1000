@@ -47,19 +47,19 @@ namespace IngameScript
             DrawButton(sprites, strUp,   1, 3, w, h,  IsPressed(lcdInfo+3));
 
 
-            DrawString(sprites, S0(GetBPM()), x + 173, y + h - 122, 2.5f, color6, TaC);
+            DrawString(sprites, S0(GetBPM()), x + 173, y + h - 122, 2.5f, color6, TA_CENTER);
             DrawString(sprites, "BPM",        x + 142, y + h - 43, 1f, color6);
 
 
             var nameLines = EditedClip.Name.Split('\n');
 
             if (nameLines.Length > 0) 
-                DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TaC);
+                DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TA_CENTER);
 
             if (nameLines.Length > 1) 
             {
                 for (var i = 1; i < Math.Min(nameLines.Length, 4); i++)
-                    DrawString(sprites, nameLines[i], x + w/2, y + 211 + i * 30, 1, color6, TaC);
+                    DrawString(sprites, nameLines[i], x + w/2, y + 211 + i * 30, 1, color6, TA_CENTER);
             }
 
 
@@ -92,8 +92,8 @@ namespace IngameScript
             Array.Sort(g_runtimeMs);
             var med = (g_runtimeMs[2] + g_runtimeMs[3])/2;
             
-            var strMed = PrintValue(med,            -3, T, 0);
-            var strMax = PrintValue(g_maxRuntimeMs, -3, T, 0);
+            var strMed = PrintValue(med,            -3, True, 0);
+            var strMax = PrintValue(g_maxRuntimeMs, -3, True, 0);
 
             DrawString(sprites, "med " + strMed + ", max " + strMax + " ms", cx + 55, y + 107, 0.5f, color6);
 
@@ -140,7 +140,7 @@ namespace IngameScript
             var sprites = new List<MySprite>();
 
             FillRect(sprites, x, y, w, h, color0);
-            DrawString(sprites, "Copy\nPaste\nSong\nHere", cx, cy - 220, 3.5f, color6, TaC);
+            DrawString(sprites, "Copy\nPaste\nSong\nHere", cx, cy - 220, 3.5f, color6, TA_CENTER);
 
             dsp.Draw(sprites);
         }
@@ -160,7 +160,7 @@ namespace IngameScript
 
             var pnl = dspMain.Panel;
 
-            pnl.Alignment   = TaC;
+            pnl.Alignment   = TA_CENTER;
             pnl.Font        = "Monospace";
             pnl.FontSize    = 1.7f;
             pnl.TextPadding = 20;

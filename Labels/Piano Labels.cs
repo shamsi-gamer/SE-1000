@@ -12,8 +12,8 @@ namespace IngameScript
             InitPianoLabelsHigh();
             InitPianoLabelsLow();
 
-            lblOctave     = new Label(GetLabel("Octave"),  null, null, UpdateOctaveLabel);
-            lblShuffle    = new Label(GetLabel("Shuffle"), null, null, UpdateShuffleLabel);
+            lblOctave     = new Label(GetLabel("Octave"),  CF_null, CF_null, UpdateOctaveLabel);
+            lblShuffle    = new Label(GetLabel("Shuffle"), CF_null, CF_null, UpdateShuffleLabel);
             lblOctaveUp   = new Label(GetLabel("Octave Up"));
             lblOctaveDown = new Label(GetLabel("Octave Down"));
         }
@@ -36,12 +36,12 @@ namespace IngameScript
                     UpdatePianoHigh, 
                     UpdatePianoHighColor, 
                     h,
-                    T));
+                    True));
             }
 
             lblHigh.Add(new Label(high[10],
                 lbl => IsPressed(lbl),
-                null,
+                CF_null,
                 UpdatePianoToggle));
         }
 
@@ -113,7 +113,7 @@ namespace IngameScript
                     UpdatePianoLow, 
                     UpdatePianoLowColor, 
                     -l,
-                    T));
+                    True));
             }
         }
 
@@ -178,12 +178,12 @@ namespace IngameScript
 
             else if (IsPlaying 
                   && PlayChannel.Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
-                return T; // note is in the currently played channel
+                return True; // note is in the currently played channel
 
             else if (g_notes.FindIndex(n => NoteIsTriggered(noteNum, n)) > -1)
-                return T; // note is being played on the piano
+                return True; // note is being played on the piano
 
-            return F;
+            return False;
         }
 
 
@@ -207,30 +207,30 @@ namespace IngameScript
 
                     if (   IsPlaying
                         && OK(PlayPattern.Channels[ch].Notes.Find(n => NoteIsPlaying(noteNum, n))))
-                        return T;
+                        return True;
                 }
             }
 
-            return F;
+            return False;
         }
 
 
         bool NoteIsPlaying(int noteNum, Note note)
         {
             if (noteNum != note.Number)
-                return F;
+                return False;
 
             // note is at the playback position
             if (   PlayStep >= note.SongStep + note.ShOffset
                 && PlayStep <  note.SongStep + note.ShOffset + note.StepLength)
-                return T;
+                return True;
 
             // note is at edit position
             if (   note.SongStep >= EditedClip.EditPos 
                 && note.SongStep <  EditedClip.EditPos + EditedClip.EditStepLength)
-                return T;
+                return True;
 
-            return F;
+            return False;
         }
         
         
@@ -295,9 +295,9 @@ namespace IngameScript
                 && CurPat == PlayPat)
                 return !on;
             else if (on)
-                return T;
+                return True;
 
-            return F;
+            return False;
         }
 
 

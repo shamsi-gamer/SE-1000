@@ -18,7 +18,7 @@ namespace IngameScript
             var dt = del.Time .UpdateValue(tp);
 
 
-            Sound echoSrc = null;
+            Sound echoSrc = Sound_null;
 
             for (int i = 0; i < dc; i++)
             {

@@ -53,7 +53,7 @@ namespace IngameScript
         void RandomChannelNotes()
         {
             if (EditedClip.AllChan) Random();
-            else                 RandomNotes(CurChan, null);
+            else                    RandomNotes(CurChan, null);
         }
 
 
@@ -153,7 +153,7 @@ namespace IngameScript
                                     var chord = EditedClip.Chords[EditedClip.Chord];
 
                                     if (EditedClip.ChordAll)
-                                        chord = UpdateFinalTuneChord(chord, T);
+                                        chord = UpdateFinalTuneChord(chord, True);
                                     
                                     note = chord[g_rnd.Next(0, chord.Count)];
                                     chan.AddNote(new Note(chan, ch, 1, note, step, editLength));

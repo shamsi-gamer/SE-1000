@@ -8,7 +8,7 @@
             lblMemory = new Label(GetLabel("Mem"), lbl => EditedClip.MemSet);
 
             for (int m = 0; m < nMems; m++)
-                lblMem[m] = new Label(GetLabel("Mem " + S(m)), null, null, UpdateMem, null, m);
+                lblMem[m] = new Label(GetLabel("Mem " + S(m)), CF_null, CF_null, UpdateMem, AL_null, m);
         }
 
 

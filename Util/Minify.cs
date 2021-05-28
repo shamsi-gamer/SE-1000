@@ -1,24 +1,44 @@
-﻿using VRage.Game.GUI.TextPanel;
-using VRageMath;
+﻿using System;
+using VRage.Game.GUI.TextPanel;
+
 
 namespace IngameScript
 {
     partial class Program
     {
-        const bool  T  = true,
-                    F  = false;
+        const bool  True  = true,
+                    False = false;
 
-        const float fN = float.NaN;
-
-
-        const Track     Track_null = null;
-        const Clip       Clip_null = null;
-        const Setting Setting_null = null;
+        const float float_NaN = float.NaN;
 
 
-        const TextAlignment TaC = TextAlignment.CENTER;
+        const Track           Track_null = null;
+        const Clip             Clip_null = null;
+        const Pattern       Pattern_null = null;
+        const Channel       Channel_null = null;
+        const Note             Note_null = null;
+        const Parameter   Parameter_null = null;
+        const Envelope     Envelope_null = null;
+        const LFO               LFO_null = null;
+        const Instrument Instrument_null = null;
+        const Source         Source_null = null;
+        const Setting       Setting_null = null;
+        const Tune             Tune_null = null;
+        const Harmonics   Harmonics_null = null;
+        const Filter         Filter_null = null;
+        const Delay           Delay_null = null;
+        const Arpeggio     Arpeggio_null = null;
+        const Modulate     Modulate_null = null;
+        const Key               Key_null = null;
+        const Sound           Sound_null = null;
+        const Oscillator Oscillator_null = null;
+                           
+        const Label.CondFunc     CF_null = null;
+        const Action<Label>      AL_null = null;
 
-        static string W(string str, bool semi = T) { return str + (semi ? ";" : ""); }
+        const TextAlignment TA_CENTER = TextAlignment.CENTER;
+
+        static string W(string str, bool semi = True) { return str + (semi ? ";" : ""); }
         static string P(string str)                { return ";" + str; }
 
         static string S<T> (T      val) { return val.ToString();       }
@@ -32,7 +52,7 @@ namespace IngameScript
         static string PS<T>(T    val) { return P(S(val)); }
         static string WB   (bool b  ) { return W(B(b));   }
 
-        static string  N(string s, bool newLine = T) { return s + (newLine ? "\n" : ""); }
+        static string  N(string s, bool newLine = True) { return s + (newLine ? "\n" : ""); }
         static string PN(string s)                   { return "\n" + s; }
     }
 }

@@ -26,7 +26,7 @@ namespace IngameScript
                 LocalTime     = lTime;
                 SongTime      = sTime;
                               
-                Note          = null;
+                Note          = Note_null;
                 NoteLength    = 0;
                               
                 SourceIndex   = -1;

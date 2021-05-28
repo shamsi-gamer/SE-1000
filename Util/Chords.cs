@@ -68,7 +68,7 @@ namespace IngameScript
                 while (c[i] >= 12*NoteScale) c[i] %= 12*NoteScale;
                 
             c = c.Select(n => n).Distinct().ToList();
-            if (c.Count != 3) return F;
+            if (c.Count != 3) return False;
             c.Sort();
 
             if (      c[1]-c[0] ==  n2          * NoteScale
@@ -77,9 +77,9 @@ namespace IngameScript
                    && c[2]-c[0] == (12-n2)      * NoteScale
                 ||    c[1]-c[0] == (12-n3)      * NoteScale
                    && c[2]-c[0] == (12-(n3-n2)) * NoteScale)
-                return T;
+                return True;
          
-            return F;
+            return False;
         }
 
 
@@ -91,7 +91,7 @@ namespace IngameScript
                 while (c[i] >= 12*NoteScale) c[i] %= 12*NoteScale;
                 
             c = c.Select(n => n).Distinct().ToList();
-            if (c.Count != 4) return F;
+            if (c.Count != 4) return False;
             c.Sort();
 
             if (      c[1]-c[0] ==  n2        * NoteScale
@@ -106,9 +106,9 @@ namespace IngameScript
                 ||    c[1]-c[0] == (12-n4)    * NoteScale
                    && c[2]-c[0] == (12-n4+n2) * NoteScale
                    && c[3]-c[0] == (12-n4+n3) * NoteScale)
-                return T;
+                return True;
          
-            return F;
+            return False;
         }
 
 
@@ -186,12 +186,12 @@ namespace IngameScript
 
                 var tc = tune.Chord;
 
-                bool add = F;
+                bool add = False;
                 foreach (var _note in _chord)
                 {
                     if (tc.FindIndex(n => n == _note) < 0)
                     {
-                        add = T;
+                        add = True;
                         break;
                     }
                 }
@@ -208,7 +208,7 @@ namespace IngameScript
                 }
 
                 var inst = SelInstrument;
-                var src  = CurSrc > -1 ? inst.Sources[CurSrc] : null;
+                var src  = CurSrc > -1 ? inst.Sources[CurSrc] : Source_null;
 
                 tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
 
@@ -228,7 +228,7 @@ namespace IngameScript
                     if (EditedClip.Chords[chord-1].Count > 0)
                     { 
                         EditedClip.Chord    = chord-1;
-                        EditedClip.ChordAll = F;
+                        EditedClip.ChordAll = False;
                     }
                 }
                 else

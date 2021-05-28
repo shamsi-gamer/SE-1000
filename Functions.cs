@@ -66,8 +66,8 @@ namespace IngameScript
 
             UpdateInstOff(SelChan);
 
-            UpdateInstName(T);
-            g_inputValid = F;
+            UpdateInstName(True);
+            g_inputValid = False;
 
 
             var tags = path.Split('/');
@@ -88,13 +88,13 @@ namespace IngameScript
         }
 
 
-        static void AddNextSetting(string tag, Instrument inst = null, int iSrc = -2)
+        static void AddNextSetting(string tag, Instrument inst = Instrument_null, int iSrc = -2)
         {
             if (!OK(inst))   inst = SelInstrument;
             if (iSrc == -2) iSrc = CurSrc;
 
             if (CurSet > -1)
-                CurSetting._IsCurrent = F;
+                CurSetting._IsCurrent = False;
 
             Setting setting;
 
@@ -107,7 +107,7 @@ namespace IngameScript
             CurSet++;
 
             if (IsCurParam())
-                CurSetting._IsCurrent = T;
+                CurSetting._IsCurrent = True;
         }
 
 
@@ -122,7 +122,6 @@ namespace IngameScript
                 || HasTag(setting, strRel))
                 set--;
 
-            Log($"CurSet = {CurSet}");
             if (CurSet > 0)
             { 
                 g_settings[CurSet-1].DeleteSetting(setting);
@@ -134,12 +133,12 @@ namespace IngameScript
 
                 switch (setting.Tag)
                 {
-                    case strOff:  if (OK(src)) src.Offset    = null;                            break;
-                    case strDel:  if (OK(src)) src.Delay     = null; else inst.Delay    = null; break;
-                    case strTune: if (OK(src)) src.Tune      = null; else inst.Tune     = null; break;
-                    case strHrm:  if (OK(src)) src.Harmonics = null;                            break;
-                    case strFlt:  if (OK(src)) src.Filter    = null; else inst.Filter   = null; break;
-                    case strArp:  if (!OK(src))                            inst.Arpeggio = null; break;
+                    case strOff:  if ( OK(src)) src.Offset    = Parameter_null;                                 break;
+                    case strDel:  if ( OK(src)) src.Delay     =     Delay_null; else inst.Delay  =  Delay_null; break;
+                    case strTune: if ( OK(src)) src.Tune      =      Tune_null; else inst.Tune   =   Tune_null; break;
+                    case strHrm:  if ( OK(src)) src.Harmonics = Harmonics_null;                                 break;
+                    case strFlt:  if ( OK(src)) src.Filter    =    Filter_null; else inst.Filter = Filter_null; break;
+                    case strArp:  if (!OK(src)) inst.Arpeggio =  Arpeggio_null;                                 break;
                 }
             }
 

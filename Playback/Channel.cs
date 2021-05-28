@@ -26,7 +26,7 @@ namespace IngameScript
             {
                 Pattern    = pat;
 
-                On         = T;
+                On         = True;
                 Instrument = inst;
                 Volume     = 1;
                 Shuffle    = 0;
@@ -37,7 +37,7 @@ namespace IngameScript
             }
 
 
-            public Channel(Channel chan, Pattern pat = null)
+            public Channel(Channel chan, Pattern pat = Pattern_null)
             {
                 Pattern    = pat ?? chan.Pattern;
 

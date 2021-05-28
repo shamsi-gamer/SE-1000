@@ -24,7 +24,7 @@ namespace IngameScript
 
 
             public Envelope(Setting parent, Instrument inst, Source src) 
-                : base(strEnv, parent, null, inst, src)
+                : base(strEnv, parent, Setting_null, inst, src)
             {
                 Attack      = (Parameter)NewSettingFromTag(strAtt, this, inst, src);
                 Decay       = (Parameter)NewSettingFromTag(strDec, this, inst, src);
@@ -34,7 +34,7 @@ namespace IngameScript
                 TrigAttack  = 
                 TrigDecay   = 
                 TrigSustain =
-                TrigRelease = fN;
+                TrigRelease = float_NaN;
             }
 
 
@@ -77,7 +77,7 @@ namespace IngameScript
                     tp.GetTriggerValue(Sustain),
                     tp.GetTriggerValue(Release));
 
-                m_valid = T;
+                m_valid = True;
 
                 return CurValue;
             }
@@ -207,7 +207,7 @@ namespace IngameScript
             {
                 var tag = data[i++];
 
-                var env = new Envelope(parent, inst, iSrc > -1 ? inst.Sources[iSrc] : null);
+                var env = new Envelope(parent, inst, iSrc > -1 ? inst.Sources[iSrc] : Source_null);
 
                 env.Attack  = Parameter.Load(data, ref i, inst, iSrc, env, env.Attack );
                 env.Decay   = Parameter.Load(data, ref i, inst, iSrc, env, env.Decay  );
@@ -223,10 +223,10 @@ namespace IngameScript
                 width = 174;
 
                 return
-                      PrintValue(Attack .Value, 2, T, 0).PadLeft(4) + " "
-                    + PrintValue(Decay  .Value, 2, T, 0).PadLeft(4) + " "
-                    + PrintValue(Sustain.Value, 2, T, 0).PadLeft(4) + " "
-                    + PrintValue(Release.Value, 2, T, 0).PadLeft(4);
+                      PrintValue(Attack .Value, 2, True, 0).PadLeft(4) + " "
+                    + PrintValue(Decay  .Value, 2, True, 0).PadLeft(4) + " "
+                    + PrintValue(Sustain.Value, 2, True, 0).PadLeft(4) + " "
+                    + PrintValue(Release.Value, 2, True, 0).PadLeft(4);
             }
 
 
@@ -255,7 +255,7 @@ namespace IngameScript
                     ? g_time - EditedClip.Track.StartTime
                     : 0;
 
-                var tp = new TimeParams(g_time, 0, sTime, null, EditedClip.EditLength, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, sTime, Note_null, EditedClip.EditLength, -1, _triggerDummy, dp.Program);
 
                 Attack .UpdateValue(tp);
                 Decay  .UpdateValue(tp);
@@ -276,13 +276,13 @@ namespace IngameScript
 
                 Vector2 p0, p1, p2, p3, p4;
 
-                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), F, out p0, out p1, out p2, out p3, out p4);
+                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), False, out p0, out p1, out p2, out p3, out p4);
                 DrawEnvelopeSupportsAndInfo(sprites, p0, p1, p2, p3, p4, y0, h0, isAtt, isDec, isSus, isRel);
 
-                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), T, out p0, out p1, out p2, out p3, out p4);
-                DrawEnvelope(sprites, p0, p1, p2, p3, p4, color3, F, F, F, F, Decay.CurValue);
+                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), True, out p0, out p1, out p2, out p3, out p4);
+                DrawEnvelope(sprites, p0, p1, p2, p3, p4, color3, False, False, False, False, Decay.CurValue);
 
-                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), F, out p0, out p1, out p2, out p3, out p4);
+                GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), False, out p0, out p1, out p2, out p3, out p4);
                 DrawEnvelope(sprites, p0, p1, p2, p3, p4, color5, isAtt, isDec, isSus, isRel, Decay.Value);
             }
 
@@ -309,10 +309,10 @@ namespace IngameScript
 
                 var fs = 0.5f;
 
-                DrawString(sprites, S_00(a) + (isAtt ? " s" : ""),  p0.X           +  6,  p0.Y +  3,         fs, isAtt ? color6 : color3, TaC);
-                DrawString(sprites, S_00(d) + (isDec ? " s" : ""), (p1.X + p2.X)/2 + 16, (p1.Y+p2.Y)/2 - 20, fs, isDec ? color6 : color3, TaC);
-                DrawString(sprites, S_00(s),                       (p2.X + p3.X)/2 -  5,  p2.Y - 20,         fs, isSus ? color6 : color3, TaC);
-                DrawString(sprites, S_00(r) + (isRel ? " s" : ""), (p3.X + p4.X)/2 -  5,  p0.Y +  3,         fs, isRel ? color6 : color3, TaC);
+                DrawString(sprites, S_00(a) + (isAtt ? " s" : ""),  p0.X           +  6,  p0.Y +  3,         fs, isAtt ? color6 : color3, TA_CENTER);
+                DrawString(sprites, S_00(d) + (isDec ? " s" : ""), (p1.X + p2.X)/2 + 16, (p1.Y+p2.Y)/2 - 20, fs, isDec ? color6 : color3, TA_CENTER);
+                DrawString(sprites, S_00(s),                       (p2.X + p3.X)/2 -  5,  p2.Y - 20,         fs, isSus ? color6 : color3, TA_CENTER);
+                DrawString(sprites, S_00(r) + (isRel ? " s" : ""), (p3.X + p4.X)/2 -  5,  p0.Y +  3,         fs, isRel ? color6 : color3, TA_CENTER);
             }
 
 
@@ -389,10 +389,10 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                DrawFuncButton(sprites, "A", 1, w, y, T, Attack .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "D", 2, w, y, T, Decay  .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "S", 3, w, y, T, Sustain.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "R", 4, w, y, T, Release.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "A", 1, w, y, True, Attack .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "D", 2, w, y, True, Decay  .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "S", 3, w, y, True, Sustain.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, "R", 4, w, y, True, Release.HasDeepParams(chan, -1));
             }
 
 
@@ -410,7 +410,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return T;
+                return True;
             }
         }
     }

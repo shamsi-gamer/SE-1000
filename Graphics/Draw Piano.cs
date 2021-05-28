@@ -26,17 +26,17 @@ namespace IngameScript
 
                 var lenCol = CurSetting == arp.Length ? color6 : color3;
                 DrawString(sprites, "Length",                                 x + 30, y + 160, 1f,   lenCol);
-                DrawString(sprites, PrintValue(arp.Length.Value, 0, T, 0), x + 40, y + 200, 0.8f, lenCol);
+                DrawString(sprites, PrintValue(arp.Length.Value, 0, True, 0), x + 40, y + 200, 0.8f, lenCol);
 
                 var sclCol = CurSetting == arp.Scale ? color6 : color3;
                 DrawString(sprites, "Scale",                                  x + 30, y + 260, 1f,   sclCol);
-                DrawString(sprites, PrintValue(arp.Scale.Value, -3, T, 0), x + 40, y + 300, 0.8f, sclCol);
+                DrawString(sprites, PrintValue(arp.Scale.Value, -3, True, 0), x + 40, y + 300, 0.8f, sclCol);
             }
 
 
             var _dummy = new List<TriggerValue>();
 
-            var tp = new TimeParams(g_time, 0, g_time - EditedClip.Track.StartTime, null, EditedClip.EditLength, CurSrc, _dummy, this);
+            var tp = new TimeParams(g_time, 0, g_time - EditedClip.Track.StartTime, Note_null, EditedClip.EditLength, CurSrc, _dummy, this);
 
             var songSteps =
                 OK(arp)
@@ -92,13 +92,13 @@ namespace IngameScript
                         var ft = (int)((an.ArpPlayTime / TicksPerStep) % g_patSteps);
 
                         FillRect(sprites, x + xt + wt * ft, y, wt, rh, color6);
-                        DrawPianoNeg(sprites, x + xt, y, w - xt, rh, clip, pat, ft, T);
+                        DrawPianoNeg(sprites, x + xt, y, w - xt, rh, clip, pat, ft, True);
                     }
                 }
                 else
                 { 
                     FillRect(sprites, x + xt + wt * ((int)PlayStep % g_patSteps), y, wt, rh, color6);
-                    DrawPianoNeg(sprites, x + xt, y, w - xt, rh, EditedClip, pat, (int)PlayStep, T);
+                    DrawPianoNeg(sprites, x + xt, y, w - xt, rh, EditedClip, pat, (int)PlayStep, True);
                 }
             }
 

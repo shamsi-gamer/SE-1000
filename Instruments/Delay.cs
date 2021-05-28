@@ -17,7 +17,7 @@ namespace IngameScript
 
 
             public Delay(Instrument inst, Source src) 
-                : base(strDel, null, null, inst, src)
+                : base(strDel, Setting_null, Setting_null, inst, src)
             {
                 Dry   = (Parameter)NewSettingFromTag(strDry,  this, inst, src);
                 Count = (Parameter)NewSettingFromTag(strCnt,  this, inst, src);
@@ -28,7 +28,7 @@ namespace IngameScript
 
 
             public Delay(Delay del) 
-                : base(del.Tag, null, del, del.Instrument, del.Source)
+                : base(del.Tag, Setting_null, del, del.Instrument, del.Source)
             {
                 Dry   = new Parameter(del.Dry,   this);
                 Count = new Parameter(del.Count, this);
@@ -136,7 +136,7 @@ namespace IngameScript
                     case strPow:  return GetOrAddParamFromTag(Power, tag);
                 }
 
-                return null;
+                return Setting_null;
             }
 
 
@@ -170,7 +170,7 @@ namespace IngameScript
  
                 var del = new Delay(
                     inst, 
-                    iSrc > -1 ? inst.Sources[iSrc] : null);
+                    iSrc > -1 ? inst.Sources[iSrc] : Source_null);
 
                 del.Dry   = Parameter.Load(data, ref i, inst, iSrc, del, del.Dry  );
                 del.Count = Parameter.Load(data, ref i, inst, iSrc, del, del.Count);
@@ -187,10 +187,10 @@ namespace IngameScript
                 width = 176;
 
                 return
-                      PrintValue(Count.Value, 0, T, 0).PadLeft(2) + "  "
-                    + PrintValue(Time .Value, 2, T, 0).PadLeft(4) + "  "
-                    + PrintValue(Level.Value, 2, T, 0).PadLeft(4) + "  "
-                    + PrintValue(Power.Value, 2, T, 0).PadLeft(4);
+                      PrintValue(Count.Value, 0, True, 0).PadLeft(2) + "  "
+                    + PrintValue(Time .Value, 2, True, 0).PadLeft(4) + "  "
+                    + PrintValue(Level.Value, 2, True, 0).PadLeft(4) + "  "
+                    + PrintValue(Power.Value, 2, True, 0).PadLeft(4);
             }
 
 
@@ -237,7 +237,7 @@ namespace IngameScript
                 var dx = 0f;
 
 
-                var tpSet = new TimeParams(g_time, 0, 0, null, EditedClip.EditLength, CurSrc, _triggerDummy, _dp.Program);
+                var tpSet = new TimeParams(g_time, 0, 0, Note_null, EditedClip.EditLength, CurSrc, _triggerDummy, _dp.Program);
 
                 for (int i = 0; i < (int)dc && dx < w - dt; i++)
                 {
@@ -284,7 +284,7 @@ namespace IngameScript
                         y0 + h0 - b - (h0 - b*2) * dl - 24, 
                         fs,
                         IsCurParam(strLvl) ? color6 : color3, 
-                        TaC);
+                        TA_CENTER);
 
 
                     // time
@@ -295,14 +295,14 @@ namespace IngameScript
                         y0 + h0 - b + 8, 
                         fs,
                         IsCurParam(strTime) ? color6 : color3, 
-                        TaC);
+                        TA_CENTER);
 
 
                     // power
                     var px  = x0 + MinMax(90, dt*(dc-1)/2, w0);
                     var dim = dc > 1 && Math.Abs(px - lx) > 20 ? color6 : color3;
 
-                    var tp  = new TimeParams(0, 0, 0, null, EditedClip.EditLength, CurSrc, _triggerDummy, _dp.Program);
+                    var tp  = new TimeParams(0, 0, 0, Note_null, EditedClip.EditLength, CurSrc, _triggerDummy, _dp.Program);
                     var vol = GetVolume(Math.Max(0, (int)dc / 2 - 1), tp);
 
                     DrawString(
@@ -312,18 +312,18 @@ namespace IngameScript
                         y0 + h0 - b - (h0 - b*2) * vol - 24,
                         fs,
                         IsCurParam(strPow) ? color6 : color3,
-                        TaC);
+                        TA_CENTER);
                 }
             }
 
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                DrawFuncButton(sprites, strDry,  0, w, h, T, Dry  .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strCnt,  1, w, h, T, Count.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strTime, 2, w, h, T, Time .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strLvl,  3, w, h, T, Level.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strPow,  4, w, h, T, Power.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strDry,  0, w, h, True, Dry  .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strCnt,  1, w, h, True, Count.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strTime, 2, w, h, True, Time .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strLvl,  3, w, h, True, Level.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strPow,  4, w, h, True, Power.HasDeepParams(chan, -1));
             }
 
 
@@ -342,7 +342,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return T;
+                return True;
             }
         }
     }

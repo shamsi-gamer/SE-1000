@@ -49,7 +49,7 @@ namespace IngameScript
                 UpdateInstOff(CurChan);
 
                 UpdateInstName();
-                g_inputValid = F;
+                g_inputValid = False;
             }
 
 
@@ -219,7 +219,7 @@ namespace IngameScript
 
 
                 UpdateInstName();
-                g_inputValid = F;
+                g_inputValid = False;
 
                 UpdateInstOff(CurChan);
 
@@ -242,7 +242,7 @@ namespace IngameScript
 
                 CurSrc = next;
 
-                dspMain.Panel.WriteText("", F);
+                dspMain.Panel.WriteText("", False);
 
                 UpdateSrcOff();
             }
@@ -255,23 +255,23 @@ namespace IngameScript
 
         void BackOut()
         {
-            Move = F;
+            Move = False;
 
-            EditedClip.ParamKeys = F;
-            EditedClip.ParamAuto = F;
+            EditedClip.ParamKeys = False;
+            EditedClip.ParamAuto = False;
 
-            var _curSet = F;
+            var _curSet = False;
 
 
             if (CurSet > -1)
             {
                 if (IsCurParam())
-                    CurSetting._IsCurrent = F;
+                    CurSetting._IsCurrent = False;
 
                 CurSet = -1;
                 g_settings.Clear();
                     
-                _curSet = T;
+                _curSet = True;
             }
 
 
@@ -281,10 +281,10 @@ namespace IngameScript
                 CurSrc = -1;
                 EditedClip.SrcOff =  0;
 
-                EditedClip.Shift  = F;
+                EditedClip.Shift  = False;
 
-                UpdateInstName(T);
-                g_inputValid = F;
+                UpdateInstName(True);
+                g_inputValid = False;
             }
             
 
@@ -293,10 +293,10 @@ namespace IngameScript
             {
                 SelChan = -1;
 
-                EditedClip.Shift = F;
-                Move = F;
+                EditedClip.Shift = False;
+                Move = False;
 
-                UpdateInstName(F);
+                UpdateInstName(False);
             }
 
             lblOut.Mark();
@@ -307,26 +307,26 @@ namespace IngameScript
 
         void Back()
         {
-            Move = F;
+            Move = False;
 
             if (CurSet > -1)
             {
                 if (EditedClip.ParamKeys)
                 {
-                    EditedClip.ParamKeys = F;
-                    EditedClip.EditPos   = fN;
+                    EditedClip.ParamKeys = False;
+                    EditedClip.EditPos   = float_NaN;
                 }
                 else if (EditedClip.ParamAuto)
                 {
-                    EditedClip.ParamAuto = F;
-                    EditedClip.EditPos   = fN;
+                    EditedClip.ParamAuto = False;
+                    EditedClip.EditPos   = float_NaN;
                 }
                 else
                 {
                     if (IsCurSetting(typeof(Arpeggio)))
                         CurArpeggio.Clip.EditPos = -Math.Abs(CurArpeggio.Clip.EditPos); // turn off but keep value
                     else if (IsCurParam())
-                        CurSetting._IsCurrent = F;
+                        CurSetting._IsCurrent = False;
 
                     CurSet--;
                     g_settings.RemoveAt(g_settings.Count-1);
@@ -337,24 +337,24 @@ namespace IngameScript
                 CurSrc = -1;
                 EditedClip.SrcOff =  0;
 
-                EditedClip.Shift = F;
+                EditedClip.Shift = False;
 
-                UpdateInstName(T);
-                g_inputValid = F;
+                UpdateInstName(True);
+                g_inputValid = False;
             }
             else if (SelChan > -1)
             {
                 SelChan = -1;
 
-                EditedClip.Shift = F;
-                Move             = F;
+                EditedClip.Shift = False;
+                Move             = False;
 
-                EditedClip.EditPos = fN;
+                EditedClip.EditPos = float_NaN;
 
-                UpdateInstName(F);
+                UpdateInstName(False);
 
-                EditedClip.ParamKeys = F;
-                EditedClip.ParamAuto = F;
+                EditedClip.ParamKeys = False;
+                EditedClip.ParamAuto = False;
             }
 
             lblBack.Mark();
@@ -368,26 +368,26 @@ namespace IngameScript
             if (CurSet > -1)
                 return;
 
-            Move = F;
+            Move = False;
 
             if (SelChan < 0)
             {
-                EditedClip.EditPos = fN;
+                EditedClip.EditPos = float_NaN;
                 SelChan = CurChan;
 
                 UpdateInstOff(SelChan);
 
-                UpdateInstName(T);
-                g_inputValid = F;
+                UpdateInstName(True);
+                g_inputValid = False;
 
                 lblEnter.Mark(CurSrc < 0);
             }
             else if (CurSrc < 0)
             {
                 CurSrc = 0;
-                EditedClip.Shift  = F;
+                EditedClip.Shift  = False;
 
-                UpdateInstName(F);
+                UpdateInstName(False);
 
                 lblEnter.Mark();
             }
@@ -403,7 +403,7 @@ namespace IngameScript
 
                 else
                 { 
-                    ModDestConnecting.SrcSettings   .Add(CurSet > -1 ? CurSetting : null);
+                    ModDestConnecting.SrcSettings   .Add(CurSet > -1 ? CurSetting : Setting_null);
                     ModDestConnecting.SrcSources    .Add(SelSource);
                     ModDestConnecting.SrcInstruments.Add(SelInstrument);
 
@@ -486,7 +486,7 @@ namespace IngameScript
                 var src =
                     CurSrc > -1
                     ? EditedClip.CurInstrument.Sources[CurSrc]
-                    : null;
+                    : Source_null;
 
                 if (SelChan < 0)
                 {
@@ -496,7 +496,7 @@ namespace IngameScript
                     for (int p = f; p <= l; p++)
                         PasteChan(EditedClip, p, CurChan);
 
-                    copyChan = null;
+                    copyChan = Channel_null;
                 }
             }
 
@@ -666,7 +666,7 @@ namespace IngameScript
                     param.Min, 
                     param.AdjustValue(param.Value, delta, EditedClip.Shift),
                     param.Max),
-                null,
+                Note_null,
                 CurSrc);
         }
 

@@ -46,19 +46,19 @@ namespace IngameScript
         }
 
 
-        static Oscillator OscSine          = null,
-                          OscTriangle      = null,  
-                          OscSaw           = null,
-                          OscSquare        = null,
-                          OscLowNoise      = null,
-                          OscHighNoise     = null,
-                          OscBandNoise     = null,
-                          OscSlowSweepDown = null,
-                          OscFastSweepDown = null,
-                          OscSlowSweepUp   = null,
-                          OscFastSweepUp   = null,
-                          OscCrunch        = null,
-                          OscSample        = null; 
+        static Oscillator OscSine          = Oscillator_null,
+                          OscTriangle      = Oscillator_null,  
+                          OscSaw           = Oscillator_null,
+                          OscSquare        = Oscillator_null,
+                          OscLowNoise      = Oscillator_null,
+                          OscHighNoise     = Oscillator_null,
+                          OscBandNoise     = Oscillator_null,
+                          OscSlowSweepDown = Oscillator_null,
+                          OscFastSweepDown = Oscillator_null,
+                          OscSlowSweepUp   = Oscillator_null,
+                          OscFastSweepUp   = Oscillator_null,
+                          OscCrunch        = Oscillator_null,
+                          OscSample        = Oscillator_null; 
 
         static int _loadStep = 0;
 
@@ -67,19 +67,19 @@ namespace IngameScript
         {
             switch (i)
             { 
-            case   0: OscSine          = new Oscillator(OscType.Sine,          "Sine",  strSine);     break;
-            case   1: OscTriangle      = new Oscillator(OscType.Triangle,      "Tri",   strTri);      break;
-            case   2: OscSaw           = new Oscillator(OscType.Saw,           "Saw",   strSaw);      break;
-            case   3: OscSquare        = new Oscillator(OscType.Square,        "Sqr",   strSqr);      break;
-            case   4: OscLowNoise      = new Oscillator(OscType.LowNoise,      "Lo #",  strLow);      break;
-            case   5: OscHighNoise     = new Oscillator(OscType.HighNoise,     "Hi #",  strHigh);     break;
+            case   0: OscSine          = new Oscillator(OscType.Sine,          "Sine", strSine);     break;
+            case   1: OscTriangle      = new Oscillator(OscType.Triangle,      "Tri",  strTri);      break;
+            case   2: OscSaw           = new Oscillator(OscType.Saw,           "Saw",  strSaw);      break;
+            case   3: OscSquare        = new Oscillator(OscType.Square,        "Sqr",  strSqr);      break;
+            case   4: OscLowNoise      = new Oscillator(OscType.LowNoise,      "Lo #", strLow);      break;
+            case   5: OscHighNoise     = new Oscillator(OscType.HighNoise,     "Hi #", strHigh);     break;
             case   6: OscBandNoise     = new Oscillator(OscType.BandNoise,     "Bd #", strBand);     break;
-            case   7: OscSlowSweepDown = new Oscillator(OscType.SlowSweepDown, "Sw ▼",  strSlowDown); break;
+            case   7: OscSlowSweepDown = new Oscillator(OscType.SlowSweepDown, "Sw ▼", strSlowDown); break;
             case   8: OscFastSweepDown = new Oscillator(OscType.FastSweepDown, "Sw▼▼", strFastDown); break;
-            case   9: OscSlowSweepUp   = new Oscillator(OscType.SlowSweepUp,   "Sw ▲",  strSlowUp);   break;
+            case   9: OscSlowSweepUp   = new Oscillator(OscType.SlowSweepUp,   "Sw ▲", strSlowUp);   break;
             case  10: OscFastSweepUp   = new Oscillator(OscType.FastSweepUp,   "Sw▲▲", strFastUp);   break;
-            case  11: OscCrunch        = new Oscillator(OscType.Crunch,        "Crn",   strCrn);      break;
-            case  12: OscSample        = new Oscillator(OscType.Sample,        "Smpl");               break;
+            case  11: OscCrunch        = new Oscillator(OscType.Crunch,        "Crn",  strCrn);      break;
+            case  12: OscSample        = new Oscillator(OscType.Sample,        "Smpl");              break;
             }
         }
 
@@ -103,7 +103,7 @@ namespace IngameScript
                 case OscType.Sample:        return OscSample;
             }
 
-            return null;
+            return Oscillator_null;
         }
 
 

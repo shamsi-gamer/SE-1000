@@ -54,7 +54,7 @@ namespace IngameScript
                                       
         static List<Note>             lastNotes = new List<Note>();
                                                    
-        Channel                       copyChan  = null;
+        Channel                       copyChan  = Channel_null;
                                   
                                   
         static List<TriggerValue>    _triggerDummy = new List<TriggerValue>();
@@ -116,7 +116,7 @@ namespace IngameScript
             g_remote      = Get("Remote Control") as IMyRemoteControl;
 
 
-            g_init = T;
+            g_init = True;
         }
 
 

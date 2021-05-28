@@ -61,7 +61,7 @@ namespace IngameScript
         //            setting = setting.Parent;
         //        }
 
-        //        return null;
+        //        return Arpeggio_null;
         //    }
         //}
 
@@ -273,7 +273,7 @@ namespace IngameScript
                 ||    EditedClip.ChordEdit 
                    && EditedClip.Chord > -1
                 ||    IsCurParam(strTune)
-                   && (tune?.UseChord ?? F)
+                   && (tune?.UseChord ?? False)
                    && !(   EditedClip.ParamKeys 
                         || EditedClip.ParamAuto)
                 ||    IsCurOrParentSetting(typeof(Arpeggio));
@@ -282,20 +282,28 @@ namespace IngameScript
 
         void SetVolumeAll(float dv)
         {
-            var mod = (MixerShift ? 10 : 1) * dv;
-            EditedClip.Volume = MinMax(0, EditedClip.Volume + dVol * mod, 2);
+            if (ShowSession)
+            {
+                if (dv < 0) 
+                    EditClip = EditClip != 1 ? 1 : -1;
+            }
+            else
+            { 
+                var mod = (MixerShift ? 10 : 1) * dv;
+                EditedClip.Volume = MinMax(0, EditedClip.Volume + dVol * mod, 2);
 
-            (dv > 0
-             ? lblMixerVolumeUp
-             : lblMixerVolumeDown).Mark();
+                (dv > 0
+                 ? lblMixerVolumeUp
+                 : lblMixerVolumeDown).Mark();
+            }
         }
 
 
-        static void UpdateInstName(bool add = T)
+        static void UpdateInstName(bool add = True)
         {
             if (   CurPat  > -1
                 && SelChan > -1)
-                dspMain.Panel.WriteText(add ? SelChannel.Instrument.Name : "", F);
+                dspMain.Panel.WriteText(add ? SelChannel.Instrument.Name : "", False);
         }
 
 
@@ -342,7 +350,7 @@ namespace IngameScript
 
         void AutoLock()
         {
-            var auto = F;
+            var auto = False;
 
             foreach (var l in g_locks) auto |= l.AutoLock;
             foreach (var l in g_locks) l.AutoLock = !auto;
@@ -362,7 +370,7 @@ namespace IngameScript
                 return;
 
 
-            NoiseEmitters(T);
+            NoiseEmitters(True);
 
 
             if (p.CurrentPosition <= (p.MinLimit + p.MaxLimit) / 2) open .Trigger();
@@ -449,7 +457,7 @@ namespace IngameScript
             if (str == "?")
             { 
                 val = long_NaN;
-                return T;
+                return True;
             }
             else
                 return long.TryParse(str, out val);

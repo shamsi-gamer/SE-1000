@@ -20,7 +20,7 @@ namespace IngameScript
 
 
             public Filter(Instrument inst, Source src) 
-                : base(strFlt, null, null, inst, src)
+                : base(strFlt, Setting_null, Setting_null, inst, src)
             {
                 Pass      = FilterPass.Low;
 
@@ -30,7 +30,7 @@ namespace IngameScript
             }
 
 
-            public Filter(Filter flt) : base(flt.Tag, null, flt, flt.Instrument, flt.Source)
+            public Filter(Filter flt) : base(flt.Tag, Setting_null, flt, flt.Instrument, flt.Source)
             {
                 Pass      = flt.Pass;
 
@@ -94,7 +94,7 @@ namespace IngameScript
                     case strShrp: return GetOrAddParamFromTag(Sharpness, tag);
                 }
 
-                return null;
+                return Setting_null;
             }
 
 
@@ -126,7 +126,7 @@ namespace IngameScript
  
                 var flt = new Filter(
                     inst, 
-                    iSrc > -1 ? inst.Sources[iSrc] : null);
+                    iSrc > -1 ? inst.Sources[iSrc] : Source_null);
 
                 flt.Pass      = (FilterPass)int_Parse(data[i++]);
                 flt.Cutoff    = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Cutoff   );
@@ -142,9 +142,9 @@ namespace IngameScript
                 width = 138;
 
                 return
-                      PrintValue(Cutoff   .Value, 2, T, 0).PadLeft(4) + " "
-                    + PrintValue(Resonance.Value, 2, T, 0).PadLeft(4) + " "
-                    + PrintValue(Sharpness.Value, 2, T, 0).PadLeft(4);
+                      PrintValue(Cutoff   .Value, 2, True, 0).PadLeft(4) + " "
+                    + PrintValue(Resonance.Value, 2, True, 0).PadLeft(4) + " "
+                    + PrintValue(Sharpness.Value, 2, True, 0).PadLeft(4);
             }
 
 
@@ -196,15 +196,15 @@ namespace IngameScript
 
                 // cutoff
                 DrawString(sprites, strCut,                       x0,       y0 - 40, fs, IsCurParam(strCut) ? color6 : color4);
-                DrawString(sprites, PrintValue(cut, 2, T, 0),  x0,       y0 - 25, fs, IsCurParam(strCut) ? color6 : color4);
+                DrawString(sprites, PrintValue(cut, 2, True, 0),  x0,       y0 - 25, fs, IsCurParam(strCut) ? color6 : color4);
                                                                   
                 // resonance                                      
                 DrawString(sprites, strRes,                       x0 + 100, y0 - 40, fs, IsCurParam(strRes) ? color6 : color4);
-                DrawString(sprites, PrintValue(res, 2, T, 0),  x0 + 100, y0 - 25, fs, IsCurParam(strRes) ? color6 : color4);
+                DrawString(sprites, PrintValue(res, 2, True, 0),  x0 + 100, y0 - 25, fs, IsCurParam(strRes) ? color6 : color4);
 
                 // sharpness
                 DrawString(sprites, strShrp,                      x0 + 200, y0 - 40, fs, IsCurParam(strShrp) ? color6 : color4);
-                DrawString(sprites, PrintValue(shrp, 2, T, 0), x0 + 200, y0 - 25, fs, IsCurParam(strShrp) ? color6 : color4);
+                DrawString(sprites, PrintValue(shrp, 2, True, 0), x0 + 200, y0 - 25, fs, IsCurParam(strShrp) ? color6 : color4);
             }
 
 
@@ -213,10 +213,10 @@ namespace IngameScript
                 var _strCut  = Pass > FilterPass.High ? strFreq : strCut;
                 var _strRes  = Pass > FilterPass.High ? strWid  : strRes;
 
-                DrawFuncButton(sprites, GetPassName(Pass) + " ↕", 1, w, h, F, F);
-                DrawFuncButton(sprites, _strCut,  2, w, h, T, Cutoff   .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, _strRes,  3, w, h, T, Resonance.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strShrp,  4, w, h, T, Sharpness.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, GetPassName(Pass) + " ↕", 1, w, h, False, False);
+                DrawFuncButton(sprites, _strCut,  2, w, h, True, Cutoff   .HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, _strRes,  3, w, h, True, Resonance.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strShrp,  4, w, h, True, Sharpness.HasDeepParams(chan, -1));
             }
 
 
@@ -245,7 +245,7 @@ namespace IngameScript
 
             public override bool CanDelete()
             {
-                return T;
+                return True;
             }
         }
 
@@ -308,7 +308,7 @@ namespace IngameScript
         static void DrawFilter(List<MySprite> sprites, float x, float y, float w, float h, Color color, float width, FilterPass pass, float cut, float res, float shrp)
         {
             var step = 1/64f;
-            var prev = fN;
+            var prev = float_NaN;
 
             for (var f = 0f; f <= 1; f += step)
             {

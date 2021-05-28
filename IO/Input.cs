@@ -5,7 +5,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        public bool g_inputValid = T;
+        public bool g_inputValid = True;
 
 
         void UpdateInst()
@@ -15,19 +15,19 @@ namespace IngameScript
                 && CurSrc < 0)
             {
                 var sb = new StringBuilder();
-                dspMain.Panel.ReadText(sb, F);
+                dspMain.Panel.ReadText(sb, False);
 
                 EditedClip.CurInstrument.Name = S(sb).Trim().Trim(new char[] {';'});
             }
 
-            g_inputValid = T;
+            g_inputValid = True;
         }
 
 
         void UpdateSongName()
         {
             var sb = new StringBuilder();
-            dspInfo.Panel.ReadText(sb, F);
+            dspInfo.Panel.ReadText(sb, False);
 
             EditedClip.Name = S(sb).Trim();
         }
