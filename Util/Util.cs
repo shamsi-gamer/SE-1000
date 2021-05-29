@@ -196,7 +196,7 @@ namespace IngameScript
         }
 
 
-        string GetNewName(string name, Func<string, bool> exists)
+        static string GetNewName(string name, Func<string, bool> exists)
         {
             var numLength = GetNumLength(name);
 
@@ -219,6 +219,15 @@ namespace IngameScript
 
                 return name;
             }
+        }
+
+
+        static void UpdateClipName(Clip clip, Clip[] clips)
+        {
+            clip.Name = GetNewName(clip.Name, newName => 
+                Array.Exists(clips, c => 
+                       OK(c) 
+                    && c.Name == newName));
         }
 
 
@@ -450,6 +459,6 @@ namespace IngameScript
         static Instrument SelInstrument   => EditedClip.SelInstrument;
         static Channel    SelChannel      => EditedClip.SelChannel;
 
-        static bool       SessionHasClips => Tracks.Sum(t => t.Clips.Count(c => OK(c))) > 0;
+        static bool       SessionHasClips => Tracks.Exists(t => Array.Exists(t.Clips, c => OK(c)));
     }
 }

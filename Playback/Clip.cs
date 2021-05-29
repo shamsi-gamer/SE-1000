@@ -335,6 +335,7 @@ namespace IngameScript
             {
                 var clip = new Clip(track);
                 clip.Patterns.Add(new Pattern(Instruments[0], clip));
+                UpdateClipName(clip, track.Clips);
                 return clip;
             }
 

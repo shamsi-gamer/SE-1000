@@ -9,7 +9,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        static Label        lblPlay, lblCue, lblSession,
+        static Label        lblCue, lblSession,
                             lblEdit, lblRec,
                             lblOctave, lblShuffle,
                             lblOctaveUp, lblOctaveDown,
@@ -83,19 +83,6 @@ namespace IngameScript
 
         void InitTransportLabels()
         {
-            lblPlay = new Label(GetLabel("Play"), 
-                lbl => Playing,
-                CF_null,
-                AL_null,
-                lbl =>
-                { 
-                    if (Playing) lbl.SetText("Stop ▐█", 6.5f, 24);
-                    else           lbl.SetText("► Play",  7,    24);
-                },
-                0, 
-                false, 
-                true);
-
             lblEdit = new Label(GetLabel("Edit"),
                 lbl => OK(EditedClip.EditPos),
                 CF_null,

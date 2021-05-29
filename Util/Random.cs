@@ -12,7 +12,7 @@ namespace IngameScript
         void Random()
         {
                  if (   SelChan < 0
-                     || !EditedClip.RndInst) RandomPatternNotes();
+                     || !EditedClip.RndInst) RandomNotes();
             else if (EditedClip.ParamKeys
                   || EditedClip.ParamAuto)   RandomValues(CurChan);
             else if (CurSet  > -1) CurSetting   .Randomize(this);
@@ -50,9 +50,9 @@ namespace IngameScript
         }
 
 
-        void RandomChannelNotes()
+        void RandomNotes()
         {
-            if (EditedClip.AllChan) Random();
+            if (EditedClip.AllChan) RandomPatternNotes();
             else                    RandomNotes(CurChan, null);
         }
 

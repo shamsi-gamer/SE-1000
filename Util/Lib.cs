@@ -46,7 +46,7 @@ namespace IngameScript
         }
 
 
-        int GetNumLength(string name)
+        static int GetNumLength(string name)
         {
             var numLength = 0;
 

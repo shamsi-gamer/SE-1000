@@ -101,10 +101,12 @@ namespace IngameScript
                     else if (index != PlayClip) // queue next clip
                     { 
                         if (OK(NextClip))
+                        {
                             NextClip =
-                                index != NextClip
-                                ? index
-                                : -1;
+                                index == NextClip
+                                ? PlayClip
+                                : index;
+                        }
                         else
                             NextClip = index;
                     }
@@ -165,7 +167,10 @@ namespace IngameScript
                     srcTrack.Clips[srcIndex] = swap;
                 }
                 else // duplicate
+                { 
                     Clips[index] = new Clip(srcTrack.Clips[srcIndex], this);
+                    UpdateClipName(Clips[index], Clips);
+                }
 
 
                 // update the clips' tracks in case they were

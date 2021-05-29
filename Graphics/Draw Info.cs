@@ -46,6 +46,9 @@ namespace IngameScript
             DrawButton(sprites, strDown, 0, 3, w, h,  IsPressed(lcdInfo+2));
             DrawButton(sprites, strUp,   1, 3, w, h,  IsPressed(lcdInfo+3));
 
+            var strPlay = Playing ? "Stop ■" : "Play ►";
+            DrawButton(sprites, strPlay, 2, 3, w, h, Playing);
+
 
             DrawString(sprites, S0(GetBPM()), x + 173, y + h - 122, 2.5f, color6, TA_CENTER);
             DrawString(sprites, "BPM",        x + 142, y + h - 43, 1f, color6);
@@ -63,47 +66,10 @@ namespace IngameScript
             }
 
 
-            var cx = x + 137;
 
-
-            DrawString(sprites, "CMP", x + 20,  y + 56, 1.2f, color6);
-                                                
-            FillRect  (sprites,        cx - 2,  y + 60, 357, 30, color6);
-            FillRect  (sprites,        cx,      y + 62, 353, 26, color0);
-                                                
-            FillRect  (sprites,        cx,      y + 62, 353 * g_dspCount / Runtime.MaxInstructionCount, 26, color6);
-
-
-            DrawString(sprites, "RUN", x + 20,  y + 96, 1.2f, color6);
-                                                
-            FillRect  (sprites,        cx - 2,  y + 100, 357, 30, color6);
-            FillRect  (sprites,        cx,      y + 102, 353, 26, color0);
-
-
-            var avg = g_runtimeMs.Sum() / g_runtimeMs.Length;
-
-
-            FillRect  (sprites,        cx,      y + 102, 353 * Math.Min(avg, 1), 26, color3);
-
-
-            for (int i = 0; i < g_runtimeMs.Length; i++)
-                FillRect(sprites, cx + 2, y + 104 + i*4, 40 * g_runtimeMs[i] / g_maxRuntimeMs, 2, color5);
-
-            Array.Sort(g_runtimeMs);
-            var med = (g_runtimeMs[2] + g_runtimeMs[3])/2;
-            
-            var strMed = PrintValue(med,            -3, True, 0);
-            var strMax = PrintValue(g_maxRuntimeMs, -3, True, 0);
-
-            DrawString(sprites, "med " + strMed + ", max " + strMax + " ms", cx + 55, y + 107, 0.5f, color6);
-
-
-            DrawString(sprites, "POLY", x + 20, y + 136, 1.2f, color6);
-
-            FillRect  (sprites,        cx - 2,  y + 140, 357, 30, color6);
-            FillRect  (sprites,        cx,      y + 142, 353, 26, color0);
-                                                
-            FillRect  (sprites,        cx,      y + 142, 353 * Math.Min(g_sm.UsedRatio, 1), 26, color6);
+            DrawComplexityInfo(sprites, x, y +  60);
+            DrawRuntimeInfo   (sprites, x, y + 100);
+            DrawPolyphonyInfo (sprites, x, y + 140);
 
 
             //var oy = new int[dance.Length];
@@ -122,6 +88,49 @@ namespace IngameScript
         }
 
 
+        void DrawComplexityInfo(List<MySprite> sprites, float x, float y)
+        {
+            var cx = x + 137;
+
+            DrawString(sprites, "CMP",  x + 20, y - 4, 1.2f,    color6);
+            DrawRect  (sprites,        cx -  1, y + 1, 355, 28, color6, 2);
+            FillRect  (sprites,        cx,      y + 2, 353 * g_dspCount / Runtime.MaxInstructionCount, 26, color6);
+        }
+
+
+        void DrawRuntimeInfo(List<MySprite> sprites, float x, float y)
+        {
+            var cx = x + 137;
+
+            DrawString(sprites, "RUN",  x + 20, y - 4, 1.2f,    color6);
+            DrawRect  (sprites,        cx -  1, y + 1, 355, 28, color6, 2);
+
+            var avg = g_runtimeMs.Sum() / g_runtimeMs.Length;
+            FillRect  (sprites,        cx,      y + 2, 353 * Math.Min(avg, 1), 26, color3);
+
+            for (int i = 0; i < g_runtimeMs.Length; i++)
+                FillRect(sprites, cx + 2, y + 4 + i*4, 40 * g_runtimeMs[i] / g_maxRuntimeMs, 2, color5);
+
+            Array.Sort(g_runtimeMs);
+            var med = (g_runtimeMs[2] + g_runtimeMs[3])/2;
+            
+            var strMed = PrintValue(med,            -3, True, 0);
+            var strMax = PrintValue(g_maxRuntimeMs, -3, True, 0);
+
+            DrawString(sprites, "med " + strMed + ", max " + strMax + " ms", cx + 55, y + 7, 0.5f, color6);
+        }
+        
+        
+        void DrawPolyphonyInfo(List<MySprite> sprites, float x, float y)
+        {
+            var cx = x + 137;
+
+            DrawString(sprites, "POLY",  x + 20, y - 4, 1.2f,    color6);
+            DrawRect  (sprites,         cx -  1, y + 1, 355, 28, color6, 2);
+            FillRect  (sprites,         cx,      y + 2, 353 * Math.Min(g_sm.UsedRatio, 1), 26, color6);
+        }
+        
+        
         void DrawIO()
         {
             var dsp = dspIO;
