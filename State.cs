@@ -60,6 +60,7 @@ namespace IngameScript
             CreateDefaultTracks();
 
             EditedClip = Tracks[0].Clips[0];
+            UpdateClipDisplay();
         }
 
 

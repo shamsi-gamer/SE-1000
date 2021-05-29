@@ -64,7 +64,7 @@ namespace IngameScript
             if (g_started)
             {
                 UpdateInst();
-                UpdateSongName();
+                UpdateClipName();
             }
             else
                 g_started = True;

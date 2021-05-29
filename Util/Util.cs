@@ -242,8 +242,13 @@ namespace IngameScript
         {
             if (ShowSession)
             {
-                if (dv < 0) 
+                if (dv < 0)
+                {
+                    if (EditClip == 1)
+                        ClipCopy = Clip_null;
+
                     EditClip = EditClip != 1 ? 1 : -1;
+                }
             }
             else
             { 
@@ -397,7 +402,7 @@ namespace IngameScript
         IMyMotorBase     GetHinge  (string s)             { return GetMotor("Hinge " + s); }
         IMyTextPanel     GetLcd    (string s)             { return Get(s) as IMyTextPanel; }
         IMyTextPanel     GetLabel  (string s)             { return GetLcd("Label " + s); }
-        IMyTextPanel     DetDisplay(string s, int i = -1) { return GetLcd(s + " Display" + (i > -1 ? " " + S(i) : "")); }
+        IMyTextPanel     GetDisplay(string s, int i = -1) { return GetLcd(s + " Display" + (i > -1 ? " " + S(i) : "")); }
 
 
         static void SkipWhiteSpace(string[] lines, ref int line)

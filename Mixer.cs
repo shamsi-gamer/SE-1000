@@ -12,8 +12,15 @@
         {
             if (ShowSession)
             { 
-                if (on) EditClip = EditClip != 2 ? 2 : -1;
-                else    EditClip = EditClip != 3 ? 3 : -1;
+                if (on) 
+                {
+                    if (EditClip == 2)
+                        ClipCopy = Clip_null;
+
+                    EditClip = EditClip != 2 ? 2 : -1;
+                }
+                else 
+                    EditClip = EditClip != 3 ? 3 : -1;
             }
             else
             { 

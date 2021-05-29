@@ -24,7 +24,7 @@ namespace IngameScript
         }
 
 
-        void UpdateSongName()
+        void UpdateClipName()
         {
             var sb = new StringBuilder();
             dspInfo.Panel.ReadText(sb, False);
@@ -33,7 +33,7 @@ namespace IngameScript
         }
 
 
-        void UpdateClipDsp()
+        static void UpdateClipDisplay()
         {
             dspInfo.Panel.WriteText(EditedClip.Name.Replace("\u0085", "\n"));
         }

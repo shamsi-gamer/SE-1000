@@ -41,7 +41,11 @@ namespace IngameScript
 
 
             if (!OK(EditedClip))
+            { 
                 EditedClip = Tracks[editTrack].Clips[editIndex];
+                UpdateClipDisplay();
+            }
+
             
             if (   OK(copyTrack) 
                 && OK(copyIndex)) 
@@ -182,6 +186,7 @@ namespace IngameScript
             {
                 Tracks[0].Clips[0] = Clip.Create(Tracks[0]);
                 EditedClip = Tracks[0].Clips[0];
+                UpdateClipDisplay();
             }
 
             return True;

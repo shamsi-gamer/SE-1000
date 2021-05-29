@@ -418,8 +418,10 @@ namespace IngameScript
 
         void Left(Clip clip)
         {
-            if (OK(clip.EditPos)) MoveEdit(clip, -1);
-            else                  Shift(False);
+            if (   OK(clip.EditPos)
+                || IsCurSetting(typeof(Harmonics))) 
+                 MoveEdit(clip, -1);
+            else Shift(False);
 
             lblLeft.Mark();
         }
@@ -427,8 +429,10 @@ namespace IngameScript
 
         void Right(Clip clip)
         {
-            if (OK(clip.EditPos)) MoveEdit(clip, 1);
-            else                  Shift(True);
+            if (   OK(clip.EditPos)
+                || IsCurSetting(typeof(Harmonics))) 
+                 MoveEdit(clip, 1);
+            else Shift(True);
 
             lblRight.Mark();
         }

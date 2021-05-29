@@ -121,6 +121,11 @@ namespace IngameScript
                         TA_CENTER);
 
 
+                    // clip is moved/duplicated
+                    if (clip == ClipCopy)
+                        DrawRect(sprites, lx+2, ly+2, lw-4, lh-4, isPlayClip ? color6 : color5, 4);
+
+
                     // position in played clip
                     if (isPlayClip)
                     {

@@ -22,9 +22,8 @@ namespace IngameScript
                 CF_null,             
                 UpdateMixerMuteAll);
 
-            lblMixerShift = new Label(GetLabel("M Shift"), lbl => MixerShift);
-
-            lblCue = new Label(GetLabel("Cue"), lbl => CueClip);
+            lblCue        = new Label(GetLabel("Cue Clip"), lbl => CueClip);
+            lblMixerShift = new Label(GetLabel("M Shift"),  lbl => MixerShift);
 
             lblSession = new Label(GetLabel("Session"), 
                 lbl => 

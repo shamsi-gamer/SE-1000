@@ -128,18 +128,24 @@ namespace IngameScript
                     EditClip = -1;
                 }
                     
-                if (clip != EditedClip) EditedClip  = clip;
-                else                    ShowSession = False;
+                if (clip != EditedClip) 
+                {
+                    EditedClip = clip;
+                    UpdateClipDisplay();
+                }
+                else
+                    ShowSession = False;
             }
 
 
             void PlaceClip(int index)
             {
                      if (EditClip == 0) Clips[index] = Clip.Create(this); // create clip
-                else if (EditClip == 1) MoveClip(index);
-                else if (EditClip == 2) DuplicateClip(index);
+                else if (EditClip == 1
+                      || EditClip == 2) MoveClip(index);
 
                 EditedClip = Clips[index];
+                UpdateClipDisplay();
 
                 ClipCopy = Clip_null;
                 EditClip = -1;
@@ -152,10 +158,14 @@ namespace IngameScript
                 var srcIndex = srcTrack.Clips.IndexOf(ClipCopy);
 
 
-                // swap the clips
-                var swap = Clips[index];
-                Clips[index] = srcTrack.Clips[srcIndex];
-                srcTrack.Clips[srcIndex] = swap;
+                if (EditClip == 1) // move
+                { 
+                    var swap = Clips[index];
+                    Clips[index] = srcTrack.Clips[srcIndex];
+                    srcTrack.Clips[srcIndex] = swap;
+                }
+                else // duplicate
+                    Clips[index] = new Clip(srcTrack.Clips[srcIndex], this);
 
 
                 // update the clips' tracks in case they were
@@ -176,59 +186,15 @@ namespace IngameScript
                     PlayPat   = srcTrack.PlayPat;
                     NextPat   = srcTrack.NextPat;
 
-
-                    srcTrack.PlayTime  = long_NaN;
-                    srcTrack.StartTime = long_NaN;
-
-                    srcTrack.PlayClip = -1;
-                    srcTrack.NextClip = -1;
-                    srcTrack.PlayPat  = -1;
-                    srcTrack.NextPat  = -1;
-                }
-            }
-
-
-            void DuplicateClip(int index)
-            {
-                var srcTrack = ClipCopy.Track;
-                var srcIndex = srcTrack.Clips.IndexOf(ClipCopy);
-
-                if (   EditClip == 1
-                    && OK(Clips[index]))
-                {
-                    var swap = Clips[index];
-                    Clips[index] = srcTrack.Clips[srcIndex];
-                    srcTrack.Clips[srcIndex] = swap;
-
-                    // update the clips' tracks in case they were
-                    // swapped between different tracks
-                    Clips[index].Track = this;
-
-                    if (OK(srcTrack.Clips[srcIndex]))
-                        srcTrack.Clips[srcIndex].Track = srcTrack;
-                }
-                else
-                { 
-                    Clips[index] = new Clip(srcTrack.Clips[srcIndex], this);
-
-                    if (EditClip == 1) // move
-                        srcTrack.Clips[srcIndex] = Clip_null;
-
-                    if (    srcTrack.PlayClip == srcIndex // moved clip is playing
-                        && !OK(PlayPat)
-                        && !OK(PlayClip))
+                    if (srcTrack != this)
                     { 
-                        PlayClip = index;
-                        NextClip = index;
+                        srcTrack.PlayTime  = long_NaN;
+                        srcTrack.StartTime = long_NaN;
 
-                        PlayPat  = srcTrack.PlayPat;
-                        NextPat  = srcTrack.NextPat;
-
-                        srcTrack.PlayClip = -1;
-                        srcTrack.NextClip = -1;
-
-                        srcTrack.PlayPat  = -1;
-                        srcTrack.NextPat  = -1;
+                        srcTrack.PlayClip  = -1;
+                        srcTrack.NextClip  = -1;
+                        srcTrack.PlayPat   = -1;
+                        srcTrack.NextPat   = -1;
                     }
                 }
             }
@@ -246,6 +212,9 @@ namespace IngameScript
                     Clips[index] = Clip.Create(this);
                     EditedClip = Clips[index];
                 }
+
+                UpdateClipDisplay();
+
 
                 if (PlayClip == index)
                 { 
