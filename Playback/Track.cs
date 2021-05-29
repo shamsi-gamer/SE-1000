@@ -109,10 +109,23 @@ namespace IngameScript
                         }
                         else
                             NextClip = index;
+
+                        if (  !CueClip
+                            && OK(PlayClip))
+                        {
+                            PlayClip = NextClip;
+
+                            PlayPat  =  0;
+                            NextPat  = -1;
+
+                            PlayTime  %= g_patSteps * TicksPerStep;
+                            StartTime =  g_time - PlayTime;
+                        }
                     }
                     
                     else if (OK(PlayClip)
-                         && !OK(NextClip))
+                         && !OK(NextClip)
+                         && !CueClip)
                         PlayClip = -1; // force mute on second press
                     
                     else

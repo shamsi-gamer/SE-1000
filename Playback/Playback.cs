@@ -52,7 +52,8 @@ namespace IngameScript
                     if (!OK(track.PlayClip))
                         continue;
 
-                    if (OK(track.NextClip))
+                    if (   OK(track.NextClip)
+                        && CueClip)
                         track.NextClip = -1;
                     else
                     {
