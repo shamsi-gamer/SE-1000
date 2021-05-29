@@ -62,10 +62,10 @@ namespace IngameScript
 
             DrawSourceList(
                 sprites,
-                x + lw + (w - lw) / 3,
-                y + rh / 4,
-                (w - lw) * 2 / 3f,
-                instHeight - rh / 4,
+                x + lw + (w - lw)/3,
+                y + rh/4,
+                (w - lw)*2/3f,
+                instHeight - rh/4,
                 inst);
 
 

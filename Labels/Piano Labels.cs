@@ -72,19 +72,19 @@ namespace IngameScript
             { 
                 switch (lbl.Data)
                 { 
-                case 0: lbl.SetText("Clr");  break;
-                case 1: lbl.SetText("Rnd");  break;
-                                                        
-                case 2: lbl.SetText("Inst"); break;
+                case 0: lbl.SetText("Clr");          break;
+                case 1: lbl.SetText("Rnd");          break;
+                                                                
+                case 2: lbl.SetText("Inst");         break;
                 case 3: lbl.SetText("All Ch", 7.6f, 19.5f); break;
-                case 4: lbl.SetText("Pick"); break;
+                case 4: lbl.SetText("Pick");         break;
                                                         
-                case 5: lbl.SetText("◄∙∙");  break;
-                case 6: lbl.SetText("∙∙►");  break;
+                case 5: lbl.SetText("Copy",  9, 14); break;
+                case 6: lbl.SetText("Paste", 9, 14); break;
                                                         
-                case 7: lbl.SetText("1/4");  break;
-                case 8: lbl.SetText("1/8");  break;
-                case 9: lbl.SetText("Flip"); break;
+                case 7: lbl.SetText("1/4");          break;
+                case 8: lbl.SetText("1/8");          break;
+                case 9: lbl.SetText("Flip");         break;
                 }
             }
         }
@@ -176,7 +176,7 @@ namespace IngameScript
                   && EditedClip.ChordEdit)
                 return EditedClip.Chords[EditedClip.Chord].Contains(noteNum);
 
-            else if (IsPlaying 
+            else if (Playing 
                   && PlayChannel.Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
                 return True; // note is in the currently played channel
 
@@ -205,7 +205,7 @@ namespace IngameScript
                     if (ch == CurChan)
                         continue;
 
-                    if (   IsPlaying
+                    if (   Playing
                         && OK(PlayPattern.Channels[ch].Notes.Find(n => NoteIsPlaying(noteNum, n))))
                         return True;
                 }
@@ -236,7 +236,7 @@ namespace IngameScript
         
         bool NoteIsTriggered(int noteNum, Note note)
         {
-            var timeStep = IsPlaying ? PlayStep : TimeStep;
+            var timeStep = Playing ? PlayStep : TimeStep;
 
             return
                    noteNum == note.Number
@@ -290,7 +290,7 @@ namespace IngameScript
                    n.Step >= patStep
                 && n.Step <  patStep+1));
 
-            if (   IsPlaying
+            if (   Playing
                 && (int)PlayStep  == songStep
                 && CurPat == PlayPat)
                 return !on;

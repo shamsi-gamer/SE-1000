@@ -251,7 +251,7 @@ namespace IngameScript
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
                 var sTime =
-                    IsPlaying
+                    Playing
                     ? g_time - EditedClip.Track.StartTime
                     : 0;
 

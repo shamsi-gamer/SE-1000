@@ -35,7 +35,7 @@ namespace IngameScript
                 return;
 
 
-            if (  !IsPlaying // play
+            if (  !Playing // play
                 && play) 
             {
                 foreach (var track in Tracks)
@@ -93,7 +93,7 @@ namespace IngameScript
                    OK(track.PlayClip) 
                 || OK(track.NextClip)));
 
-            if (    IsPlaying
+            if (    Playing
                 && !playing)
                 Stop();
         }

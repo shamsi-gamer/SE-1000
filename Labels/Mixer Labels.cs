@@ -24,6 +24,8 @@ namespace IngameScript
 
             lblMixerShift = new Label(GetLabel("M Shift"), lbl => MixerShift);
 
+            lblCue = new Label(GetLabel("Cue"), lbl => CueClip);
+
             lblSession = new Label(GetLabel("Session"), 
                 lbl => 
                        ShowSession

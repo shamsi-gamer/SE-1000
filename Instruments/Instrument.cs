@@ -137,9 +137,9 @@ namespace IngameScript
                 switch (tag)
                 {
                     case strVol:  return Volume;
-                    case strTune: return Tune     ?? (Tune     = new Tune    (this, Source_null));
-                    case strFlt:  return Filter   ?? (Filter   = new Filter  (this, Source_null));
-                    case strDel:  return Delay    ?? (Delay    = new Delay   (this, Source_null));
+                    case strTune: return Tune   ?? (Tune   = new Tune  (this, Source_null));
+                    case strFlt:  return Filter ?? (Filter = new Filter(this, Source_null));
+                    case strDel:  return Delay  ?? (Delay  = new Delay (this, Source_null));
                 }
 
                 return Setting_null;
@@ -198,9 +198,9 @@ namespace IngameScript
                 {
                     switch (data[i])
                     { 
-                        case strTune: inst.Tune     = Tune    .Load(data, ref i, inst, -1); break;
-                        case strFlt:  inst.Filter   = Filter  .Load(data, ref i, inst, -1); break;
-                        case strDel:  inst.Delay    = Delay   .Load(data, ref i, inst, -1); break;
+                        case strTune: inst.Tune   = Tune  .Load(data, ref i, inst, -1); break;
+                        case strFlt:  inst.Filter = Filter.Load(data, ref i, inst, -1); break;
+                        case strDel:  inst.Delay  = Delay .Load(data, ref i, inst, -1); break;
                     }
                 }
 
@@ -230,9 +230,9 @@ namespace IngameScript
                 else
                 {
                     DrawFuncButton(sprites, strVol,  1, w, h, True, Volume.HasDeepParams(chan, -1));
-                    DrawFuncButton(sprites, strTune, 2, w, h, True, OK(Tune    ));
-                    DrawFuncButton(sprites, strFlt,  3, w, h, True, OK(Filter  ));
-                    DrawFuncButton(sprites, strDel,  4, w, h, True, OK(Delay   ));
+                    DrawFuncButton(sprites, strTune, 2, w, h, True, OK(Tune  ));
+                    DrawFuncButton(sprites, strFlt,  3, w, h, True, OK(Filter));
+                    DrawFuncButton(sprites, strDel,  4, w, h, True, OK(Delay ));
                 }
             }
         }

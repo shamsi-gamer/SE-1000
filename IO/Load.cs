@@ -102,6 +102,7 @@ namespace IngameScript
 
             var i = 0;
 
+            CueClip     = ReadBit(f, i++);
             ShowSession = ReadBit(f, i++);
             Move        = ReadBit(f, i++);
 
@@ -175,6 +176,12 @@ namespace IngameScript
                 if (!OK(track)) return False;
 
                 Tracks[t] = track;
+            }
+
+            if (!SessionHasClips)
+            {
+                Tracks[0].Clips[0] = Clip.Create(Tracks[0]);
+                EditedClip = Tracks[0].Clips[0];
             }
 
             return True;

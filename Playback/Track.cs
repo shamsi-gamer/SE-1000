@@ -22,13 +22,13 @@ namespace IngameScript
                            NextPat;
 
 
-            public bool    IsPlaying => OK(PlayClip);
+            public bool    Playing => OK(PlayClip);
 
 
             public float   PlayStep { get 
                            {
                                return
-                                   IsPlaying 
+                                   Playing 
                                    ? PlayTime / (float)TicksPerStep 
                                    : float_NaN; 
                            } }
@@ -89,77 +89,14 @@ namespace IngameScript
             { 
                 var clip = Clips[index];
 
-                if (   EditClip == 0
-                    || force)
-                {
-                    if (!OK(clip))
-                    {
-                        clip = new Clip(this);
-                        clip.Patterns.Add(new Pattern(Instruments[0], clip));
-
-                        Clips[index] = clip;
-                    }
-                    
-                    if (clip != EditedClip) EditedClip  = clip;
-                    else                    ShowSession = False;
-                }
-
-                else if (OK(ClipCopy))
-                {
-                    if (EditClip == 1)
-                    {
-                        var clipIndex = ClipCopy.Track.Clips.IndexOf(ClipCopy);
-                        ClipCopy.Track.Clips[clipIndex] = Clips[index];
-
-                        if (ClipCopy.Track != this)
-                        {
-                            if (ClipCopy.Track.PlayClip == clipIndex)
-                                ClipCopy.Track.PlayClip =
-                                ClipCopy.Track.NextClip = -1;
-                        }
-
-                        PlayClip =
-                        NextClip = index;
-                    }
-
-                    Clips[index] = new Clip(ClipCopy, this);
-                    EditedClip   = Clips[index];
-
-                    ClipCopy     = Clip_null;
-                    EditClip     = -1;
-                }
+                     if (EditClip == 0 || force) SetClip(clip, index);
+                else if (OK(ClipCopy))           PlaceClip(index);
 
                 else if (OK(clip))
                 { 
-                    if (EditClip == 1) // move clip
-                        ClipCopy = clip;
-
-                    else if (EditClip == 2) // duplicate clip
-                        ClipCopy = clip;
-
-                    else if (EditClip == 3) // delete clip
-                    {
-                        if (clip == EditedClip)
-                            EditedClip = GetClipAfterDelete(clip);
-
-                        Clips[index] = Clip_null;
-
-                        if (Tracks.Sum(t => t.Clips.Count(c => OK(c))) == 0) // check that this isn't the only clip
-                        { 
-                            Clips[index] = new Clip(this);
-                            Clips[index].Patterns.Add(new Pattern(Instruments[0], Clips[index]));
-
-                            EditedClip = Clips[index];
-                        }
-
-                        if (PlayClip == index)
-                        { 
-                            PlayClip =
-                            NextClip = -1;
-                        }
-
-                        EditClip = -1;
-                    }
+                         if (EditClip == 1                           // move clip
+                          || EditClip == 2) ClipCopy = clip;         // duplicate clip
+                    else if (EditClip == 3) DeleteClip(clip, index); // delete clip
 
                     else if (index != PlayClip) // queue next clip
                     { 
@@ -179,6 +116,147 @@ namespace IngameScript
                     else
                         NextClip = -1; // queue clip off
                 }
+            }
+
+
+            void SetClip(Clip clip, int index)
+            {
+                if (!OK(clip))
+                {
+                    clip = Clip.Create(this);
+                    Clips[index] = clip;
+                    EditClip = -1;
+                }
+                    
+                if (clip != EditedClip) EditedClip  = clip;
+                else                    ShowSession = False;
+            }
+
+
+            void PlaceClip(int index)
+            {
+                     if (EditClip == 0) Clips[index] = Clip.Create(this); // create clip
+                else if (EditClip == 1) MoveClip(index);
+                else if (EditClip == 2) DuplicateClip(index);
+
+                EditedClip = Clips[index];
+
+                ClipCopy = Clip_null;
+                EditClip = -1;
+            }
+
+
+            void MoveClip(int index)
+            {
+                var srcTrack = ClipCopy.Track;
+                var srcIndex = srcTrack.Clips.IndexOf(ClipCopy);
+
+
+                // swap the clips
+                var swap = Clips[index];
+                Clips[index] = srcTrack.Clips[srcIndex];
+                srcTrack.Clips[srcIndex] = swap;
+
+
+                // update the clips' tracks in case they were
+                // swapped between different tracks
+                Clips[index].Track = this;
+
+                if (OK(srcTrack.Clips[srcIndex]))
+                    srcTrack.Clips[srcIndex].Track = srcTrack;
+
+
+                if (srcTrack.PlayClip == srcIndex) // moved clip is playing
+                { 
+                    PlayTime  = srcTrack.PlayTime;
+                    StartTime = srcTrack.StartTime;
+
+                    PlayClip  = index;
+                    NextClip  = index;
+                    PlayPat   = srcTrack.PlayPat;
+                    NextPat   = srcTrack.NextPat;
+
+
+                    srcTrack.PlayTime  = long_NaN;
+                    srcTrack.StartTime = long_NaN;
+
+                    srcTrack.PlayClip = -1;
+                    srcTrack.NextClip = -1;
+                    srcTrack.PlayPat  = -1;
+                    srcTrack.NextPat  = -1;
+                }
+            }
+
+
+            void DuplicateClip(int index)
+            {
+                var srcTrack = ClipCopy.Track;
+                var srcIndex = srcTrack.Clips.IndexOf(ClipCopy);
+
+                if (   EditClip == 1
+                    && OK(Clips[index]))
+                {
+                    var swap = Clips[index];
+                    Clips[index] = srcTrack.Clips[srcIndex];
+                    srcTrack.Clips[srcIndex] = swap;
+
+                    // update the clips' tracks in case they were
+                    // swapped between different tracks
+                    Clips[index].Track = this;
+
+                    if (OK(srcTrack.Clips[srcIndex]))
+                        srcTrack.Clips[srcIndex].Track = srcTrack;
+                }
+                else
+                { 
+                    Clips[index] = new Clip(srcTrack.Clips[srcIndex], this);
+
+                    if (EditClip == 1) // move
+                        srcTrack.Clips[srcIndex] = Clip_null;
+
+                    if (    srcTrack.PlayClip == srcIndex // moved clip is playing
+                        && !OK(PlayPat)
+                        && !OK(PlayClip))
+                    { 
+                        PlayClip = index;
+                        NextClip = index;
+
+                        PlayPat  = srcTrack.PlayPat;
+                        NextPat  = srcTrack.NextPat;
+
+                        srcTrack.PlayClip = -1;
+                        srcTrack.NextClip = -1;
+
+                        srcTrack.PlayPat  = -1;
+                        srcTrack.NextPat  = -1;
+                    }
+                }
+            }
+
+
+            void DeleteClip(Clip clip, int index)
+            {
+                if (clip == EditedClip)
+                    EditedClip = GetClipAfterDelete(clip);
+
+                Clips[index] = Clip_null;
+
+                if (!SessionHasClips)
+                { 
+                    Clips[index] = Clip.Create(this);
+                    EditedClip = Clips[index];
+                }
+
+                if (PlayClip == index)
+                { 
+                    PlayClip = -1;
+                    NextClip = -1;
+
+                    PlayPat  = -1;
+                    NextPat  = -1;
+                }
+
+                EditClip = -1;
             }
 
 

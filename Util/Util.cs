@@ -1,7 +1,8 @@
-﻿using Sandbox.ModAPI.Ingame;
+﻿using System;
+using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 
 namespace IngameScript
@@ -425,23 +426,25 @@ namespace IngameScript
         static bool IsPressed(int   lbl) { return    g_lcdPressed.Contains(lbl); }
 
 
-        static int        CurPat        => EditedClip.CurPat;
+        static int        CurPat          => EditedClip.CurPat;
+                                          
+        static int        CurChan         { get { return EditedClip.CurChan; } set { EditedClip.CurChan = value; } }
+        static int        SelChan         { get { return EditedClip.SelChan; } set { EditedClip.SelChan = value; } }
+        static int        CurSrc          { get { return EditedClip.CurSrc;  } set { EditedClip.CurSrc  = value; } }
+        static int        CurSet          { get { return EditedClip.CurSet;  } set { EditedClip.CurSet  = value; } }
+                                          
+        static float      PlayStep        => EditedClip.Track.PlayStep;
+        static int        PlayPat         => EditedClip.Track.PlayPat;
+                                          
+        static Pattern    CurPattern      => EditedClip.CurPattern;
+        static Pattern    PlayPattern     => EditedClip.Patterns[PlayPat];
+        static Channel    CurChannel      => EditedClip.CurChannel;
+        static Channel    PlayChannel     => PlayPattern.Channels[CurChan];
+                                          
+        static Source     SelSource       => EditedClip.SelSource;
+        static Instrument SelInstrument   => EditedClip.SelInstrument;
+        static Channel    SelChannel      => EditedClip.SelChannel;
 
-        static int        CurChan       { get { return EditedClip.CurChan; } set { EditedClip.CurChan = value; } }
-        static int        SelChan       { get { return EditedClip.SelChan; } set { EditedClip.SelChan = value; } }
-        static int        CurSrc        { get { return EditedClip.CurSrc;  } set { EditedClip.CurSrc  = value; } }
-        static int        CurSet        { get { return EditedClip.CurSet;  } set { EditedClip.CurSet  = value; } }
-                                        
-        static float      PlayStep      => EditedClip.Track.PlayStep;
-        static int        PlayPat       => EditedClip.Track.PlayPat;
-                                        
-        static Pattern    CurPattern    => EditedClip.CurPattern;
-        static Pattern    PlayPattern   => EditedClip.Patterns[PlayPat];
-        static Channel    CurChannel    => EditedClip.CurChannel;
-        static Channel    PlayChannel   => PlayPattern.Channels[CurChan];
-                                        
-        static Source     SelSource     => EditedClip.SelSource;
-        static Instrument SelInstrument => EditedClip.SelInstrument;
-        static Channel    SelChannel    => EditedClip.SelChannel;
+        static bool       SessionHasClips => Tracks.Sum(t => t.Clips.Count(c => OK(c))) > 0;
     }
 }

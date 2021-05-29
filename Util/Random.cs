@@ -12,12 +12,12 @@ namespace IngameScript
         void Random()
         {
                  if (   SelChan < 0
-                     || !EditedClip.RndInst) RandomChannelNotes();
+                     || !EditedClip.RndInst) RandomPatternNotes();
             else if (EditedClip.ParamKeys
                   || EditedClip.ParamAuto)   RandomValues(CurChan);
-            else if (CurSet  > -1)        CurSetting   .Randomize(this);
-            else if (CurSrc  > -1)        SelSource    .Randomize(new List<Oscillator>(), this);
-            else if (SelChan > -1)        SelInstrument.Randomize(this);
+            else if (CurSet  > -1) CurSetting   .Randomize(this);
+            else if (CurSrc  > -1) SelSource    .Randomize(new List<Oscillator>(), this);
+            else if (SelChan > -1) SelInstrument.Randomize(this);
         }
 
 
@@ -34,20 +34,20 @@ namespace IngameScript
         }
 
             
-        //void RandomPatternNotes()
-        //{
-        //    var nChannels = g_rnd.Next(1, g_nChans/2);
+        void RandomPatternNotes()
+        {
+            var nChannels = g_rnd.Next(1, g_nChans/2);
 
-        //    var rndInst = new List<Instrument>();
+            var rndInst = new List<Instrument>();
 
-        //    for (int i = 0; i < nChannels; i++)
-        //    {
-        //        var ch = g_rnd.Next(0, g_nChans);
-        //        RandomNotes(ch, rndInst);
-        //    }
+            for (int i = 0; i < nChannels; i++)
+            {
+                var ch = g_rnd.Next(0, g_nChans);
+                RandomNotes(ch, rndInst);
+            }
 
-        //    UpdateInstOff(EditClip.CurChan);
-        //}
+            UpdateInstOff(EditedClip.CurChan);
+        }
 
 
         void RandomChannelNotes()

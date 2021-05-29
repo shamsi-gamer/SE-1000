@@ -331,6 +331,14 @@ namespace IngameScript
             }
 
 
+            public static Clip Create(Track track)
+            {
+                var clip = new Clip(track);
+                clip.Patterns.Add(new Pattern(Instruments[0], clip));
+                return clip;
+            }
+
+
             public void Clear()
             {
                 Name = "";
@@ -408,14 +416,14 @@ namespace IngameScript
 
             public void TrimCurrentNotes(int ch = -1)
             {
-                var timeStep = IsPlaying ? PlayStep : TimeStep;
+                var timeStep = Playing ? PlayStep : TimeStep;
 
                 foreach (var note in g_notes)
                 {
                     if (   ch < 0
                         || note.iChan == ch)
                     { 
-                        var noteStep = IsPlaying ? note.SongStep : note.Step;
+                        var noteStep = Playing ? note.SongStep : note.Step;
                         note.UpdateStepLength(timeStep - noteStep);
                     }
                 }
@@ -424,11 +432,11 @@ namespace IngameScript
 
             public void WrapCurrentNotes(int nWrapSteps)
             {
-                var timeStep = IsPlaying ? PlayStep : TimeStep;
+                var timeStep = Playing ? PlayStep : TimeStep;
 
                 foreach (var note in g_notes)
                 {
-                    var noteStep = IsPlaying ? note.SongStep : note.Step;
+                    var noteStep = Playing ? note.SongStep : note.Step;
 
                     if (   timeStep >= noteStep
                         && timeStep <  noteStep + note.StepLength)

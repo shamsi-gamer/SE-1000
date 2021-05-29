@@ -17,7 +17,7 @@ namespace IngameScript
                 }
                 else if (Mems[m] > -1)
                 {
-                    if (IsPlaying) Track.NextPat = Mems[m];
+                    if (Playing) Track.NextPat = Mems[m];
                     else           SetCurrentPattern(Mems[m]);
                 }
             }
@@ -146,7 +146,7 @@ namespace IngameScript
                     Patterns.Insert(destPat, pat);
                 }
 
-                if (IsPlaying)
+                if (Playing)
                     Track.PlayTime += GetPatTime(CurPat - destPat);
 
                 if (OK(EditPos))

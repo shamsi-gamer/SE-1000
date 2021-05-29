@@ -719,5 +719,17 @@ namespace IngameScript
                 chan.Shuffle = MinMax(0, sh, TicksPerStep - 1);
             }
         }
+
+
+        void Copy()
+        {
+
+        }
+
+
+        void Paste()
+        {
+
+        }
     }
 }

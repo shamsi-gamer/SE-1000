@@ -38,15 +38,15 @@ namespace IngameScript
         static Clip             EditedClip,
                                 ClipCopy;
                                 
-        static bool             ShowSession,
+        static bool             CueClip,
+                                ShowSession,
                                 MixerShift,
                                 Move;
                                 
         static int              EditClip; // 0 = edit, 1 = move, 2 = dup, 3 = del
 
                  
-
-        static bool IsPlaying => OK(Tracks.Find(track => track?.IsPlaying ?? False));
+        static bool Playing => OK(Tracks.Find(track => track?.Playing ?? False));
 
 
         static void CreateDefaultMachineState()
@@ -92,6 +92,7 @@ namespace IngameScript
             EditedClip   = 
             ClipCopy     = Clip_null;
                          
+            CueClip      = True;
             ShowSession  = True;
 
             MixerShift   = 
@@ -123,9 +124,7 @@ namespace IngameScript
             CreateTracks();
 
             var track = Tracks[0];
-            var clip  = new Clip(track);
-
-            clip.Patterns.Add(new Pattern(Instruments[0], clip));
+            var clip  = Clip.Create(track);
 
             EditedClip     = clip;
             track.Clips[0] = clip;

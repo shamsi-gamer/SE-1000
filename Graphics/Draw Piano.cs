@@ -50,7 +50,7 @@ namespace IngameScript
 
 
             // draw position line/s
-            if (   IsPlaying
+            if (   Playing
                 && PlayPat == pat)
             {
                 FillRect(sprites, x + xt + wt * ((int)PlayStep % g_patSteps), y, wt, rh, color6);

@@ -17,9 +17,6 @@
 
             lblEditStep   = new Label(GetLabel("Edit Step"),   CF_null, CF_null, UpdateEditStepLabel);
             lblEditLength = new Label(GetLabel("Edit Length"), CF_null, CF_null, UpdateEditLengthLabel);
-
-            lblCopy  = new Label(GetLabel("Copy"));
-            lblPaste = new Label(GetLabel("Paste"));
         }
 
 

@@ -20,6 +20,8 @@
                 case "save tracks": SaveTracks();                    break;
 
                 case "play":        Play();                          break;
+                case "cue clip":    CueClip = !CueClip;              break;
+                case "session":     ToggleSession();                 break;
 
                 case "bpm up":      SetStepLength(-1);               break;
                 case "bpm down":    SetStepLength( 1);               break;
@@ -66,8 +68,6 @@
                 case "tr down":     SetTranspose(-1);                break;
 
                 case "spread":      Spread();                        break;
-
-                case "session":     ToggleSession();                 break;
 
                 case "edit":        Edit();                          break;
                 case "rec":         Record();                        break;

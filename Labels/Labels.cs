@@ -9,14 +9,13 @@ namespace IngameScript
 {
     partial class Program
     {
-        static Label        lblPlay, 
+        static Label        lblPlay, lblCue, lblSession,
                             lblEdit, lblRec,
                             lblOctave, lblShuffle,
                             lblOctaveUp, lblOctaveDown,
                             lblLeft, lblRight,
                             lblStep, lblHold, 
                             lblEditStep, lblEditLength,
-                            lblCopy, lblPaste,
                             lblLoop, lblBlock, lblAllPatterns, lblFollow, lblAutoCue,
                             lblNew, lblDup, lblDel,
                             lblMove, lblPrev, lblNext, 
@@ -28,7 +27,7 @@ namespace IngameScript
                             lblUp, lblDown, lblShift,
                             lblChord, lblChord1, lblChord2, lblChord3, lblChord4, lblChordEdit, lblSpread,
                             lblMixerVolumeUp, lblMixerVolumeDown, lblMixerAll, lblMixerMuteAll,
-                            lblMixerShift, lblSession,
+                            lblMixerShift,
                             lblMemSet, lblMemory;
 
 
@@ -85,12 +84,12 @@ namespace IngameScript
         void InitTransportLabels()
         {
             lblPlay = new Label(GetLabel("Play"), 
-                lbl => IsPlaying,
+                lbl => Playing,
                 CF_null,
                 AL_null,
                 lbl =>
                 { 
-                    if (IsPlaying) lbl.SetText("Stop ▐█", 6.5f, 24);
+                    if (Playing) lbl.SetText("Stop ▐█", 6.5f, 24);
                     else           lbl.SetText("► Play",  7,    24);
                 },
                 0, 

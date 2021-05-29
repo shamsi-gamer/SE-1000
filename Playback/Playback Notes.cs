@@ -152,7 +152,7 @@ namespace IngameScript
             var chan = clip.CurPattern.Channels[ch];
 
             var patStep = 
-                  (IsPlaying
+                  (Playing
                    ? (clip.Track.PlayPat - clip.CurPat) * g_patSteps + (clip.Track.PlayStep % g_patSteps) 
                    : 0) 
                 + chordSpreadOffset;

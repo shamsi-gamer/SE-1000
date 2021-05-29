@@ -47,8 +47,8 @@ namespace IngameScript
             else if (h == 3) ToggleAllChannels();
             else if (h == 4) PickNote();  
                           
-            else if (h == 5) Shift(False);
-            else if (h == 6) Shift(True); 
+            else if (h == 5) Copy();//Shift(False);
+            else if (h == 6) Paste();//Shift(True); 
                           
             else if (h == 7) Flip(CurChan, 4); 
             else if (h == 8) Flip(CurChan, 8); 
