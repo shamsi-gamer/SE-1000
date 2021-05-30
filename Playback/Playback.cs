@@ -67,16 +67,9 @@ namespace IngameScript
                             && CurPat > b.First;
 
                         playClip.SetCurrentPattern(_block ? b.First : 0);
-
-                        track.NextPat   = -1;
-                        track.PlayPat   = -1;
-
                         playClip.TrimCurrentNotes();
 
-                        track.PlayTime  = long_NaN;
-                        track.StartTime = long_NaN;
-
-                        track.PlayClip  = -1;
+                        track.Stop();
 
                         if (!CueClip)
                             track.NextClip = -1;

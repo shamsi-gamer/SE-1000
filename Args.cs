@@ -13,6 +13,14 @@
                 case "load":        LoadSongExt();                   break;
                 case "save":        SaveSongExt();                   break;
 
+                case "log":
+                {
+                    for (int i = 0; i < Tracks.Count; i++)
+                        Log($"Tracks[{i}].PlayTime = {Tracks[i].PlayTime}");
+
+                    break;
+                }
+
                 case "load inst":   ImportInstruments();             break;
                 case "load tracks": LoadTracks();                    break;
 

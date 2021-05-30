@@ -77,11 +77,10 @@ namespace IngameScript
         {
             foreach (var track in Tracks)
             {
+                track.Stop();
+
                 for (int i = 0; i < g_nChans; i++)
                     track.Clips[i] = Clip_null;
-
-                track.PlayClip = -1;
-                track.NextClip = -1;
             }
         }
 
@@ -125,13 +124,12 @@ namespace IngameScript
             CreateTracks();
 
             var track = Tracks[0];
+            track.Stop();
+
             var clip  = Clip.Create(track);
 
             EditedClip     = clip;
             track.Clips[0] = clip;
-
-            track.PlayClip = -1;
-            track.NextClip = -1;
         }
 
 

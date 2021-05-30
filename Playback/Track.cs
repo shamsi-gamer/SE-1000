@@ -46,14 +46,7 @@ namespace IngameScript
                     Clips[i] = Clip_null;
                           
 
-                StartTime = 
-                PlayTime  = long_NaN;
-                          
-                PlayClip  = 
-                NextClip  = 
-                          
-                PlayPat   = 
-                NextPat   = -1;
+                Stop();
                           
                 DspVol    = new float[g_nChans];
 
@@ -85,6 +78,19 @@ namespace IngameScript
             }
 
 
+            public void Stop()
+            { 
+                PlayClip  = -1;
+                NextClip  = -1;
+                          
+                PlayPat   = -1;
+                NextPat   = -1;
+                          
+                PlayTime  = long_NaN;
+                StartTime = long_NaN;
+            }
+
+
             public void SetClip(int index, bool force = false)
             { 
                 var clip = Clips[index];
@@ -110,34 +116,36 @@ namespace IngameScript
                         else
                             NextClip = index;
 
+
                         if (!CueClip)
                         {
+                            var playTime = GetAnyCurrentPlayTime();
+
                             PlayClip = NextClip;
 
                             PlayPat  =  0;
                             NextPat  = -1;
+
+                            if (OK(playTime)) PlayTime  = playTime % (g_patSteps * TicksPerStep);
+                            else              PlayTime  = 0;
                         }
+                        else                  PlayTime %= g_patSteps * TicksPerStep;
 
-                        var playTime = GetAnyCurrentPlayTime();
-
-                        if (  !CueClip
-                            && OK(playTime)) PlayTime  = playTime % (g_patSteps * TicksPerStep);
-                        else                 PlayTime %=             g_patSteps * TicksPerStep;
 
                         StartTime = g_time - PlayTime;
                     }
                     
                     else if (OK(PlayClip)
                          && !OK(NextClip)
-                         && CueClip)
-                        PlayClip = -1; // force mute on second press
-                    
+                         &&  CueClip)
+                        Stop(); // force stop on second press
+                        
                     else
                     { 
                         NextClip = -1; // queue clip off
                         
-                        if (!CueClip) 
-                            PlayClip = -1;
+                        if (!CueClip)
+                            Stop();
                     }
                 }
             }
@@ -214,15 +222,7 @@ namespace IngameScript
                     NextPat   = srcTrack.NextPat;
 
                     if (srcTrack != this)
-                    { 
-                        srcTrack.PlayTime  = long_NaN;
-                        srcTrack.StartTime = long_NaN;
-
-                        srcTrack.PlayClip  = -1;
-                        srcTrack.NextClip  = -1;
-                        srcTrack.PlayPat   = -1;
-                        srcTrack.NextPat   = -1;
-                    }
+                        Stop();
                 }
             }
 
@@ -242,15 +242,8 @@ namespace IngameScript
 
                 UpdateClipDisplay();
 
-
                 if (PlayClip == index)
-                { 
-                    PlayClip = -1;
-                    NextClip = -1;
-
-                    PlayPat  = -1;
-                    NextPat  = -1;
-                }
+                    Stop();
 
                 EditClip = -1;
             }
@@ -333,7 +326,7 @@ namespace IngameScript
             public string Save()
             {
                 var cfg = 
-                     (PlayTime == long_NaN ? "?" : S(PlayTime))
+                     (OK(PlayTime) ? S(PlayTime) : "?")
                     + PS(PlayPat)
                     + PS(NextPat)
                     + PS(NextClip);
