@@ -141,7 +141,8 @@ namespace IngameScript
 
             // draw play position
             if (   Playing
-                && PlayPat < EditedClip.Patterns.Count)
+                && PlayPat < EditedClip.Patterns.Count
+                && EditedClipIsPlayed)
             {
                 var pl    = x  - pw * (nDsp * 4 + EditedClip.SongOff);
                 var xTick = pl + wt * (int)PlayStep;

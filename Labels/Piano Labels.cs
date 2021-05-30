@@ -217,9 +217,7 @@ namespace IngameScript
 
         bool NoteIsPlaying(int noteNum, Note note)
         {
-            var track = EditedClip.Track;
-
-            if (   track.Clips.IndexOf(EditedClip) != track.PlayClip
+            if (  !EditedClipIsPlayed
                 || noteNum != note.Number)
                 return False;
 
@@ -293,10 +291,8 @@ namespace IngameScript
                    n.Step >= patStep
                 && n.Step <  patStep+1));
 
-            var track = EditedClip.Track;
-
             if (   Playing
-                && track.Clips.IndexOf(EditedClip) == track.PlayClip
+                && EditedClipIsPlayed
                 && (int)PlayStep  == songStep
                 && CurPat == PlayPat)
                 return !on;

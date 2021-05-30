@@ -49,8 +49,10 @@ namespace IngameScript
 
             DrawPattern(sprites, x + xt, y, w - xt, rh, clip, pat, 2, isolated);
 
+            // playback position
             if (   Playing
-                && PlayPat == pat)
+                && PlayPat == pat
+                && EditedClipIsPlayed)
             {
                 FillRect(sprites, x + xt + wt * ((int)PlayStep % g_patSteps), y, wt, rh, color6);
                 DrawPatternNeg(sprites, x + xt, y, w - xt, rh, clip, pat, (int)PlayStep, isolated);

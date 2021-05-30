@@ -242,6 +242,9 @@ namespace IngameScript
         }
 
         
+        static bool EditedClipIsPlayed => EditedClip.Track.Clips.IndexOf(EditedClip) == EditedClip.Track.PlayClip;
+
+
         bool ShowPiano { get 
         {
             var tune = SelSource    ?.Tune
