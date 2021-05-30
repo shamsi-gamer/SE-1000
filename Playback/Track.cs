@@ -110,26 +110,35 @@ namespace IngameScript
                         else
                             NextClip = index;
 
-                        if (  !CueClip
-                            && OK(PlayClip))
+                        if (!CueClip)
                         {
                             PlayClip = NextClip;
 
                             PlayPat  =  0;
                             NextPat  = -1;
-
-                            PlayTime  %= g_patSteps * TicksPerStep;
-                            StartTime =  g_time - PlayTime;
                         }
+
+                        var playTime = GetAnyCurrentPlayTime();
+
+                        if (  !CueClip
+                            && OK(playTime)) PlayTime  = playTime % (g_patSteps * TicksPerStep);
+                        else                 PlayTime %=             g_patSteps * TicksPerStep;
+
+                        StartTime = g_time - PlayTime;
                     }
                     
                     else if (OK(PlayClip)
                          && !OK(NextClip)
-                         && !CueClip)
+                         && CueClip)
                         PlayClip = -1; // force mute on second press
                     
                     else
+                    { 
                         NextClip = -1; // queue clip off
+                        
+                        if (!CueClip) 
+                            PlayClip = -1;
+                    }
                 }
             }
 

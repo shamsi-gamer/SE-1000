@@ -217,7 +217,10 @@ namespace IngameScript
 
         bool NoteIsPlaying(int noteNum, Note note)
         {
-            if (noteNum != note.Number)
+            var track = EditedClip.Track;
+
+            if (   track.Clips.IndexOf(EditedClip) != track.PlayClip
+                || noteNum != note.Number)
                 return False;
 
             // note is at the playback position
@@ -290,7 +293,10 @@ namespace IngameScript
                    n.Step >= patStep
                 && n.Step <  patStep+1));
 
+            var track = EditedClip.Track;
+
             if (   Playing
+                && track.Clips.IndexOf(EditedClip) == track.PlayClip
                 && (int)PlayStep  == songStep
                 && CurPat == PlayPat)
                 return !on;

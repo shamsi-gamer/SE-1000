@@ -77,6 +77,9 @@ namespace IngameScript
                         track.StartTime = long_NaN;
 
                         track.PlayClip  = -1;
+
+                        if (!CueClip)
+                            track.NextClip = -1;
                     }
                 }
 

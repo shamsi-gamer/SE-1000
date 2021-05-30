@@ -231,6 +231,17 @@ namespace IngameScript
         }
 
 
+        static long GetAnyCurrentPlayTime()
+        {
+            var track = Tracks.Find(t => OK(t.PlayTime));
+
+            return 
+                OK(track) 
+                ? track.PlayTime
+                : long_NaN;
+        }
+
+        
         bool ShowPiano { get 
         {
             var tune = SelSource    ?.Tune
