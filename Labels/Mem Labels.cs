@@ -17,8 +17,8 @@
             var m = lbl.Data;
 
             lbl.SetText(
-                  S((char)(65 + m)) + " "
-                + (OK(EditedClip.Mems[m]) ? S(EditedClip.Mems[m] + 1).PadLeft(3) : " "));
+                  S((char)(65 + m)) + strEmpty
+                + (OK(EditedClip.Mems[m]) ? S(EditedClip.Mems[m] + 1).PadLeft(3) : strEmpty));
         }
     }
 }

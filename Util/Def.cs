@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using VRageMath;
+using VRage.Game.GUI.TextPanel;
+
+
 
 
 namespace IngameScript
@@ -45,5 +49,6 @@ namespace IngameScript
 
                        editColor6 = new Color(63, 25, 0),
                        editColor0 = new Color( 1,  0, 0);
+
     }
 }

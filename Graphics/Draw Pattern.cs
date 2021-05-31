@@ -84,7 +84,7 @@ namespace IngameScript
 
                 DrawString(sprites, 
                      S(c + 1).PadLeft(2)
-                    + " "
+                    + strEmpty
                     + chan.Instrument.Name,
                     6,
                     yLine + 6,

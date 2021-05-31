@@ -223,9 +223,9 @@ namespace IngameScript
                 width = 174;
 
                 return
-                      PrintValue(Attack .Value, 2, True, 0).PadLeft(4) + " "
-                    + PrintValue(Decay  .Value, 2, True, 0).PadLeft(4) + " "
-                    + PrintValue(Sustain.Value, 2, True, 0).PadLeft(4) + " "
+                      PrintValue(Attack .Value, 2, True, 0).PadLeft(4) + strEmpty
+                    + PrintValue(Decay  .Value, 2, True, 0).PadLeft(4) + strEmpty
+                    + PrintValue(Sustain.Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Release.Value, 2, True, 0).PadLeft(4);
             }
 

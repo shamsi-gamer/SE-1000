@@ -50,23 +50,23 @@
                                    k.Path == path
                                 && k.StepTime >= (EditedClip.EditPos % g_patSteps)
                                 && k.StepTime <  (EditedClip.EditPos % g_patSteps) + 1))
-                            ? "Move" : " ");
+                            ? "Move" : strEmpty);
                     }
                 }
                 else
-                    lbl.SetText(HasTag(CurSetting, strMod) ? "Conn" : " ");
+                    lbl.SetText(HasTag(CurSetting, strMod) ? "Conn" : strEmpty);
             }
             else
             {
                 if (OK(CurSrc)) lbl.SetText("On");
-                else            lbl.SetText(SelChan < 0 ? "Lock" : " ");
+                else            lbl.SetText(SelChan < 0 ? "Lock" : strEmpty);
             }
         }
 
 
         void UpdateCmd2(Label lbl)
         {
-            lbl.SetText(OK(CurSrc) ? "Osc ↕" : " ");
+            lbl.SetText(OK(CurSrc) ? "Osc ↕" : strEmpty);
         }
 
 
@@ -81,20 +81,20 @@
         void UpdateAdjustUp(Label lbl)
         {
             var str = AdjustArrowsAreVertical ? strUp : strRight;
-            lbl.SetText(CanAdjust ? str : " ");
+            lbl.SetText(CanAdjust ? str : strEmpty);
         }
 
 
         void UpdateAdjustDown(Label lbl)
         {
             var str = AdjustArrowsAreVertical ? strDown : strLeft;
-            lbl.SetText(CanAdjust ? str : " ");
+            lbl.SetText(CanAdjust ? str : strEmpty);
         }
 
 
         void UpdateAdjustShift(Label lbl)
         {
-            lbl.SetText(CanAdjust ? strShift : " ", 9, 14);
+            lbl.SetText(CanAdjust ? strShift : strEmpty, 9, 14);
         }
 
 
@@ -158,7 +158,7 @@
                             && n.SongStep <  EditedClip.EditPos+1
                             && OK(n.Keys.Find(k => k.Path == path))))
                         ? "X"
-                        : " ");
+                        : strEmpty);
                 }
                 else if (EditedClip.ParamAuto)
                 {
@@ -172,15 +172,15 @@
                             ? "X" : "+");
                     }
                     else
-                        lblCmd3.SetText(" ");
+                        lblCmd3.SetText(strEmpty);
                 }
                 else
-                    lblCmd3.SetText(CurSetting.CanDelete() ? "X" : " ");
+                    lblCmd3.SetText(CurSetting.CanDelete() ? "X" : strEmpty);
             }
             else
             {
                 if (OK(CurSrc))
-                    lblCmd3.SetText(" ");
+                    lblCmd3.SetText(strEmpty);
 
                 else
                     lblCmd3.SetText(     
@@ -189,7 +189,7 @@
                         // " ▀██   █▄█▄██▄█▄█▄█   ██▀ \n" +  
                         //   " ▀   ▀▀▀▀▀▀▀▀▀▀▀▀   ▀ " 
                         ? lblCmd3.Panel.CustomData
-                        : " ", 
+                        : strEmpty, 
                         2, 
                         32);
             }

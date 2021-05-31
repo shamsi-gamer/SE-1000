@@ -34,7 +34,7 @@
             if (   !IsCurParam(strTune)
                 || EditedClip.ParamKeys 
                 || EditedClip.ParamAuto)
-                lbl.SetText(EditedClip.ChordEdit ? " " : "Chord", 9, 12);
+                lbl.SetText(EditedClip.ChordEdit ? strEmpty : "Chord", 9, 12);
         }
 
 
@@ -81,7 +81,7 @@
                 lbl.SetText(
                        OK(tune)
                     && tune.UseChord 
-                    ? strAll : " ");
+                    ? strAll : strEmpty);
             }
             else
                 lbl.SetText(EditedClip.ChordMode ? strAll : "Edit");

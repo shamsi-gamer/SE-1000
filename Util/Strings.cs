@@ -4,6 +4,8 @@
     {                         
         const string strSE       = "SE-909_",
 
+                     strEmpty    = " ",
+
                      strVol      = "Vol",
                                  
                      strTune     = "Tune",

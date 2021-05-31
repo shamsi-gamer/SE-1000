@@ -104,9 +104,13 @@ namespace IngameScript
             lblPrev  = new Label(GetLabel("Prev"),  MoveIsBright, NavIsDim, UpdatePrev);
             lblNext  = new Label(GetLabel("Next"),  MoveIsBright, NavIsDim, UpdateNext);
 
-            lblOut   = new Label(GetLabel("Out"),   NavIsBright,  NavIsDim);
-            lblBack  = new Label(GetLabel("Back"),  NavIsBright,  NavIsDim);
-            lblEnter = new Label(GetLabel("Enter"), NavIsBright,  NavIsDim);
+            lblOut   = new Label(GetLabel("Out"),   BackIsBright,  BackIsDim);
+            lblBack  = new Label(GetLabel("Back"),  BackIsBright,  BackIsDim);
+
+            lblEnter = new Label(GetLabel("Enter"), 
+                EnterIsBright,  
+                EnterIsDim, 
+                UpdateEnter);
         }
 
 
@@ -139,15 +143,57 @@ namespace IngameScript
         }
         
 
-        bool NavIsDim(Label lbl) { return OK(SelChan) && !OK(CurSet); }
+        bool NavIsDim(Label lbl) 
+        { 
+            return 
+                    OK(SelChan)
+                && !OK(CurSet);
+        }
 
 
-        void UpdateNew (Label lbl) { lbl.SetText(CurSet < 0 ? "New"  : " "); }
-        void UpdateDup (Label lbl) { lbl.SetText(CurSet < 0 ? "Dup"  : " "); }
-        void UpdateDel (Label lbl) { lbl.SetText(CurSet < 0 ? "Del"  : " "); }
-        void UpdateMove(Label lbl) { lbl.SetText(CurSet < 0 ? "▲\n▼" : " ", 10, 20); }
-        void UpdatePrev(Label lbl) { lbl.SetText(CurSet < 0 ? "►"    : " "); }
-        void UpdateNext(Label lbl) { lbl.SetText(CurSet < 0 ? "◄"    : " "); }
+        bool BackIsBright(Label lbl) 
+        { 
+            return 
+                    OK(CurSrc)
+                && !g_labelsPressed.Contains(lbl); 
+        }
+        
+
+        bool BackIsDim(Label lbl) 
+        { 
+            return OK(SelChan); 
+        }
+
+
+        bool EnterIsBright(Label lbl) 
+        { 
+            return 
+                    OK(CurSrc)
+                && !OK(CurSet)
+                && !g_labelsPressed.Contains(lbl); 
+        }
+        
+
+        bool EnterIsDim(Label lbl) 
+        { 
+            return 
+                    OK(SelChan) 
+                && !OK(CurSet); 
+        }
+
+
+        void UpdateEnter(Label lbl)
+        {
+            lbl.SetText(!OK(CurSet) ? "└►" : strEmpty);
+        }
+
+
+        void UpdateNew (Label lbl) { lbl.SetText(CurSet < 0 ? "New"  : strEmpty); }
+        void UpdateDup (Label lbl) { lbl.SetText(CurSet < 0 ? "Dup"  : strEmpty); }
+        void UpdateDel (Label lbl) { lbl.SetText(CurSet < 0 ? "Del"  : strEmpty); }
+        void UpdateMove(Label lbl) { lbl.SetText(CurSet < 0 ? "▲\n▼" : strEmpty, 10, 20); }
+        void UpdatePrev(Label lbl) { lbl.SetText(CurSet < 0 ? "►"    : strEmpty); }
+        void UpdateNext(Label lbl) { lbl.SetText(CurSet < 0 ? "◄"    : strEmpty); }
 
         bool MoveIsBright(Label lbl) { return !OK(CurSet) && Move ^ OK(CurSrc); }
 

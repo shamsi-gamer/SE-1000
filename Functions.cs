@@ -28,10 +28,10 @@ namespace IngameScript
                 {
                     CurSetting.Func(func);
                 }
-                else 
+                else
                 {
-                    if (OK(CurSrc)) SetInstFunc(SelInstrument, func);
-                    else            SetSrcFunc (SelSource,     func);
+                    if (!OK(CurSrc)) SetInstFunc(SelInstrument, func);
+                    else             SetSrcFunc (SelSource,     func);
                 }
             }
 

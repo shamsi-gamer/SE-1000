@@ -201,9 +201,9 @@ namespace IngameScript
 
             var found =
                 g_notes.Find(n => 
-                        clip.Track.PlayStep >= n.Step 
+                       clip.Track.PlayStep >= n.Step 
                     && clip.Track.PlayStep <  n.Step + n.StepLength);
-                
+
             if (   OK(found)
                 && found.Number == note.Number
                 && found.StepLength == float_Inf)

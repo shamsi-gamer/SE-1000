@@ -251,9 +251,9 @@ namespace IngameScript
 
                 return
                      (Op == ModOp.Add ? "+ " : "* ")
-                    + strOsc + " "
-                    + PrintValue(Amplitude.Value, 2, True, 0).PadLeft(4) + " "
-                    + PrintValue(Frequency.Value, 2, True, 0).PadLeft(4) + " "
+                    + strOsc + strEmpty
+                    + PrintValue(Amplitude.Value, 2, True, 0).PadLeft(4) + strEmpty
+                    + PrintValue(Frequency.Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Offset   .Value, 2, True, 0).PadLeft(4);
             }
 

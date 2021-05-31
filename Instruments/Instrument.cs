@@ -122,10 +122,10 @@ namespace IngameScript
             {
                 DisplayVolume = float.NaN;
 
-                Volume   .Reset();
-                Tune    ?.Reset();
-                Filter  ?.Reset();
-                Delay   ?.Reset();
+                Volume .Reset();
+                Tune  ?.Reset();
+                Filter?.Reset();
+                Delay ?.Reset();
 
                 foreach (var src in Sources)
                     src.ResetValues();
@@ -150,10 +150,10 @@ namespace IngameScript
             {
                 // this method removes note and channel automation associated with this instrument
 
-                Volume   .Delete(clip, -1);
-                Tune    ?.Delete(clip, -1);
-                Filter  ?.Delete(clip, -1);
-                Delay   ?.Delete(clip, -1);
+                Volume .Delete(clip, -1);
+                Tune  ?.Delete(clip, -1);
+                Filter?.Delete(clip, -1);
+                Delay ?.Delete(clip, -1);
 
                 foreach (var src in Sources)
                     src.Delete(clip);
@@ -213,10 +213,10 @@ namespace IngameScript
 
             public void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
             {
-                Volume   .DrawLabels(sprites, x, y, dp);
-                Tune    ?.DrawLabels(sprites, x, y, dp);
-                Filter  ?.DrawLabels(sprites, x, y, dp);
-                Delay   ?.DrawLabels(sprites, x, y, dp);
+                Volume .DrawLabels(sprites, x, y, dp);
+                Tune  ?.DrawLabels(sprites, x, y, dp);
+                Filter?.DrawLabels(sprites, x, y, dp);
+                Delay ?.DrawLabels(sprites, x, y, dp);
             }                                           
 
 

@@ -142,8 +142,8 @@ namespace IngameScript
                 width = 138;
 
                 return
-                      PrintValue(Cutoff   .Value, 2, True, 0).PadLeft(4) + " "
-                    + PrintValue(Resonance.Value, 2, True, 0).PadLeft(4) + " "
+                      PrintValue(Cutoff   .Value, 2, True, 0).PadLeft(4) + strEmpty
+                    + PrintValue(Resonance.Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Sharpness.Value, 2, True, 0).PadLeft(4);
             }
 

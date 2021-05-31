@@ -66,7 +66,7 @@ namespace IngameScript
         void UpdatePianoHigh(Label lbl)
         {
             if (ShowPiano)
-                lbl.SetText(" ");
+                lbl.SetText(strEmpty);
 
             else
             { 
@@ -141,9 +141,9 @@ namespace IngameScript
             if (ShowPiano)
             {
                 if (-lbl.Data == 15) lbl.SetText("‡", 8, 17); 
-                else                 lbl.SetText(" ");
+                else                 lbl.SetText(strEmpty);
             } 
-            else                     lbl.SetText(" ");
+            else                     lbl.SetText(strEmpty);
         }
 
 
@@ -318,7 +318,7 @@ namespace IngameScript
             else if (ShowPiano)      val = CurChannel.Transpose;
             else                     val = CurChannel.Shuffle;
 
-            lbl.SetText((val == 15 ? "+" : " ") + S(val));
+            lbl.SetText((val == 15 ? "+" : strEmpty) + S(val));
         }
 
 

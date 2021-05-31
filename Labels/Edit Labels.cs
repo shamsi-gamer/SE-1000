@@ -27,7 +27,7 @@
                 lbl =>
                 { 
                     if (GetLongNotes(EditedClip).Count > 0) lbl.SetText("Cut", 9, 14);
-                    else                                    lbl.SetText(" ");
+                    else                                    lbl.SetText(strEmpty);
                 });
 
             lblEdit = new Label(GetLabel("Edit"),

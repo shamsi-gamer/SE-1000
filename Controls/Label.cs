@@ -80,7 +80,7 @@ namespace IngameScript
 
             public void SetText(string text, float size = 10, float pad = 10)
             {
-                Panel.WriteText(" ");
+                Panel.WriteText(strEmpty);
 
                 Panel.FontSize    = size;
                 Panel.TextPadding = pad;

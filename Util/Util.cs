@@ -425,7 +425,7 @@ namespace IngameScript
         IMyMotorBase     GetHinge  (string s)             { return GetMotor("Hinge " + s); }
         IMyTextPanel     GetLcd    (string s)             { return Get(s) as IMyTextPanel; }
         IMyTextPanel     GetLabel  (string s)             { return GetLcd("Label " + s); }
-        IMyTextPanel     GetDisplay(string s, int i = -1) { return GetLcd(s + " Display" + (OK(i) ? " " + S(i) : "")); }
+        IMyTextPanel     GetDisplay(string s, int i = -1) { return GetLcd(s + " Display" + (OK(i) ? strEmpty + S(i) : "")); }
 
 
         static void SkipWhiteSpace(string[] lines, ref int line)

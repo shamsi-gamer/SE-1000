@@ -281,8 +281,8 @@ namespace IngameScript
 
                 return
                       (Op == ModOp.Add ? "+ " : "* ")
-                    + PrintValue(Amount .Value, 2, True, 0).PadLeft(5) + " "
-                    + PrintValue(Attack .Value, 2, True, 0).PadLeft(4) + " "
+                    + PrintValue(Amount .Value, 2, True, 0).PadLeft(5) + strEmpty
+                    + PrintValue(Attack .Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Release.Value, 2, True, 0).PadLeft(4);
             }
 
