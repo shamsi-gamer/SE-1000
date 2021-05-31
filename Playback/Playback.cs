@@ -125,7 +125,8 @@ namespace IngameScript
             {
                 foreach (var track in Tracks)
                 {
-                    if (OK(track.NextClip))
+                    if (   OK(track.NextClip)
+                        && track.NextClip != track.PlayClip)
                         track.NextPat = 0;
                 }
             }

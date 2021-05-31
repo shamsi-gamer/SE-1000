@@ -73,7 +73,7 @@
                     + PS(SelChan)        
                     + PS(CurSrc)
 
-                    //+ W (CurSet > -1 ? CurSetting.GetPath(CurSrc) : "")
+                    //+ W (OK(CurSet) ? CurSetting.GetPath(CurSrc) : "")
 
                     + PS(EditStepIndex)
                     + PS(EditLengthIndex)     

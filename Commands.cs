@@ -8,10 +8,10 @@ namespace IngameScript
     {
         void New()
         {
-            if (CurSet > -1)
+            if (OK(CurSet))
                 return;
 
-            if (CurSrc > -1)
+            if (OK(CurSrc))
             {
                 g_settings.Clear();
 
@@ -32,7 +32,7 @@ namespace IngameScript
                 //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurSrc);
                 UpdateSrcOff();
             }
-            else if (SelChan > -1)
+            else if (OK(SelChan))
             {
                 g_settings.Clear();
 
@@ -59,10 +59,10 @@ namespace IngameScript
 
         void Duplicate()
         {
-            if (CurSet > -1)
+            if (OK(CurSet))
                 return;
 
-            if (CurSrc > -1)
+            if (OK(CurSrc))
             {
                 g_settings.Clear();
 
@@ -84,7 +84,7 @@ namespace IngameScript
                 //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurSrc);
                 UpdateSrcOff();
             }
-            else if (SelChan > -1)
+            else if (OK(SelChan))
             {
                 g_settings.Clear();
 
@@ -109,11 +109,11 @@ namespace IngameScript
 
         void Delete()
         {
-            if (CurSet > -1)
+            if (OK(CurSet))
                 return;
 
 
-            if (CurSrc > -1)
+            if (OK(CurSrc))
             {
                 g_settings.Clear();
 
@@ -139,7 +139,7 @@ namespace IngameScript
                 //UpdateSrcOff(CurrentInstrument(g_song), g_song.CurSrc);
                 UpdateSrcOff();
             }
-            else if (SelChan > -1)
+            else if (OK(SelChan))
             {
                 g_settings.Clear();
 
@@ -176,7 +176,7 @@ namespace IngameScript
 
         public void ToggleMove()
         {
-            if (CurSet > -1) 
+            if (OK(CurSet)) 
                 return;
 
             Move = !Move;
@@ -185,7 +185,7 @@ namespace IngameScript
 
         void MoveChan(int move)
         {
-            if (CurSet > -1)
+            if (OK(CurSet))
                 return;
 
 
@@ -263,7 +263,7 @@ namespace IngameScript
             var _curSet = False;
 
 
-            if (CurSet > -1)
+            if (OK(CurSet))
             {
                 if (IsCurParam())
                     CurSetting._IsCurrent = False;
@@ -275,7 +275,7 @@ namespace IngameScript
             }
 
 
-            if (     CurSrc > -1
+            if (   OK(CurSrc)
                 && !_curSet)
             {
                 CurSrc = -1;
@@ -288,7 +288,7 @@ namespace IngameScript
             }
             
 
-            if (     SelChan > -1
+            if (   OK(SelChan)
                 && !_curSet)
             {
                 SelChan = -1;
@@ -309,7 +309,7 @@ namespace IngameScript
         {
             Move = False;
 
-            if (CurSet > -1)
+            if (OK(CurSet))
             {
                 if (EditedClip.ParamKeys)
                 {
@@ -330,7 +330,7 @@ namespace IngameScript
                     g_settings.RemoveAt(g_settings.Count-1);
                 }
             }
-            else if (CurSrc > -1)
+            else if (OK(CurSrc))
             {
                 CurSrc = -1;
                 EditedClip.SrcOff =  0;
@@ -340,7 +340,7 @@ namespace IngameScript
                 UpdateInstName(True);
                 g_inputValid = False;
             }
-            else if (SelChan > -1)
+            else if (OK(SelChan))
             {
                 SelChan = -1;
 
@@ -363,7 +363,7 @@ namespace IngameScript
 
         void Enter()
         {
-            if (CurSet > -1)
+            if (OK(CurSet))
                 return;
 
             Move = False;
@@ -401,7 +401,7 @@ namespace IngameScript
 
                 else
                 { 
-                    ModDestConnecting.SrcSettings   .Add(CurSet > -1 ? CurSetting : Setting_null);
+                    ModDestConnecting.SrcSettings   .Add(OK(CurSet) ? CurSetting : Setting_null);
                     ModDestConnecting.SrcSources    .Add(SelSource);
                     ModDestConnecting.SrcInstruments.Add(SelInstrument);
 
@@ -440,14 +440,14 @@ namespace IngameScript
             }
             else
             {
-                if (CurSrc > -1)
+                if (OK(CurSrc))
                 {
                     var src = SelSource;
                     src.On = !src.On;
                 }
                 else
                 { 
-                    if (SelChan < 0)
+                    if (OK(SelChan))
                     { 
                         if (LockView == 0)
                             LockView = ShowPiano ? 2 : 1;
@@ -463,7 +463,7 @@ namespace IngameScript
 
         void Command2()
         {
-            if (CurSrc > -1)
+            if (OK(CurSrc))
             {
                 var src = SelSource;
 
@@ -474,7 +474,7 @@ namespace IngameScript
             else
             { 
                 var src =
-                    CurSrc > -1
+                    OK(CurSrc)
                     ? EditedClip.CurInstrument.Sources[CurSrc]
                     : Source_null;
 
@@ -510,7 +510,7 @@ namespace IngameScript
                     foreach (var note in notes)
                     { 
                         var iKey = note.Keys.FindIndex(k => k.Path == path);
-                        if (iKey > -1) note.Keys.RemoveAt(iKey);
+                        if (OK(iKey)) note.Keys.RemoveAt(iKey);
                     }
                 }
                 else if (EditedClip.ParamAuto
@@ -543,7 +543,7 @@ namespace IngameScript
                         EditedClip.UpdateAutoKeys();
                     }
                 }
-                else if (CurSet > -1)
+                else if (OK(CurSet))
                 {
                     if (CurSetting.CanDelete())
                         DeleteCurSetting();
@@ -551,7 +551,7 @@ namespace IngameScript
 
                 lblCmd3.Mark();
             }
-            else if (CurSet > -1)
+            else if (OK(CurSet))
             { 
                 if (CurSetting.CanDelete())
                 { 
@@ -593,7 +593,7 @@ namespace IngameScript
                     { 
                         var iKey = note.Keys.FindIndex(k => k.Path == path);
 
-                        if (iKey > -1)
+                        if (OK(iKey))
                             AdjustKey(note.Keys[iKey], delta);
                         else
                         {
@@ -626,7 +626,7 @@ namespace IngameScript
                     clip.UpdateAutoKeys();
                 }
             }
-            else if (clip.SelChan > -1)
+            else if (OK(clip.SelChan))
             {
                 if (IsParam(setting))
                     AdjustParam(clip, (Parameter)setting, delta);
@@ -697,7 +697,7 @@ namespace IngameScript
 
             CurChan = ch;
 
-            if (CurSrc > -1)
+            if (OK(CurSrc))
                 CurSrc = 0;
 
             UpdateInstOff(CurChan);

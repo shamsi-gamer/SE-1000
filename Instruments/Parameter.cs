@@ -388,8 +388,8 @@ namespace IngameScript
 
                      if (OK(proto )) param = proto;                                                    
                 else if (OK(parent)) param = (Parameter)parent.GetOrAddSettingFromTag(tag);            
-                else if (iSrc > -1)  param = (Parameter)inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
-                else                 param = (Parameter)inst.GetOrAddSettingFromTag(tag);              
+                else if (OK(iSrc))  param = (Parameter)inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
+                else                param = (Parameter)inst.GetOrAddSettingFromTag(tag);              
 
                 param.m_value = float.Parse(data[i++]);
 

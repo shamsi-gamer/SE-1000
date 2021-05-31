@@ -49,12 +49,15 @@ namespace IngameScript
             DrawPianoRoll(sprites, x + xt, y, w - xt, rh, clip, pat, 2);
 
 
+            var track = EditedClip.Track;
+
             // draw position line/s
             if (   Playing
-                && PlayPat == pat)
+                && track.PlayPat == pat
+                && EditedClipIsPlaying)
             {
-                FillRect(sprites, x + xt + wt * ((int)PlayStep % g_patSteps), y, wt, rh, color6);
-                DrawPianoNeg(sprites, x + xt, y, w - xt, rh, EditedClip, pat, (int)PlayStep, True);
+                FillRect(sprites, x + xt + wt * ((int)track.PlayStep % g_patSteps), y, wt, rh, color6);
+                DrawPianoNeg(sprites, x + xt, y, w - xt, rh, EditedClip, pat, (int)track.PlayStep, True);
             }
 
 

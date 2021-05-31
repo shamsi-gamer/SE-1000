@@ -74,16 +74,6 @@ namespace IngameScript
                     if (!OK(clip)) continue;
 
 
-                    // pattern marks
-                    for (int j = 1; j < clip.Patterns.Count; j++)
-                    {
-                        var pw = cw / clip.Patterns.Count;
-                        var jx = lx + j*pw;
-
-                        DrawLine(sprites, jx, ly, jx, ly + lh, isPlayClip ? color6 : color4, 1); 
-                    }
-
-
                     // next in queue
                     if (ix == track.NextClip)
                         DrawRect(sprites, lx+7, ly+7, lw-14, lh-14, color3, 14);
@@ -94,7 +84,8 @@ namespace IngameScript
                     { 
                         var editCol = color3;
 
-                             if (ix == track.NextClip) editCol = color4;
+                             if (ix == track.NextClip
+                              && ix == track.PlayClip) editCol = color4;
                         else if (isPlayClip)           editCol = color5;
 
                         var ew = cancel ?  0 : 14;
@@ -104,6 +95,16 @@ namespace IngameScript
                         var ey = ly - de + lh - 7;
 
                         DrawLine(sprites, lx+ew, ey, lx-ew+lw, ey, editCol, dh);
+                    }
+
+
+                    // pattern marks
+                    for (int j = 1; j < clip.Patterns.Count; j++)
+                    {
+                        var pw = cw / clip.Patterns.Count;
+                        var jx = lx - 2 + j*pw;
+
+                        DrawLine(sprites, jx, ly, jx, ly + lh, isPlayClip ? color6 : color4, 1); 
                     }
 
 

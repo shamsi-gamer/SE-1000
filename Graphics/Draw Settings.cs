@@ -220,7 +220,7 @@ namespace IngameScript
                 }
                 else
                 {
-                    var src = CurSrc > -1 ? SelSource : Source_null;
+                    var src = OK(CurSrc) ? SelSource : Source_null;
 
                     var _param = (Parameter)GetSettingFromPath(SelChannel.Instrument, path);
                     var val    = _param.Value;

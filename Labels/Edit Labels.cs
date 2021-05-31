@@ -17,6 +17,40 @@
 
             lblEditStep   = new Label(GetLabel("Edit Step"),   CF_null, CF_null, UpdateEditStepLabel);
             lblEditLength = new Label(GetLabel("Edit Length"), CF_null, CF_null, UpdateEditLengthLabel);
+
+            lblNote = new Label(GetLabel(strNote),
+                lbl => EditedClip.EditNotes.Count > 0);
+
+            lblCut  = new Label(GetLabel(strCut), 
+                CF_null, 
+                CF_null, 
+                lbl =>
+                { 
+                    if (GetLongNotes(EditedClip).Count > 0) lbl.SetText("Cut", 9, 14);
+                    else                                    lbl.SetText(" ");
+                });
+
+            lblEdit = new Label(GetLabel("Edit"),
+                lbl => OK(EditedClip.EditPos),
+                CF_null,
+                AL_null,
+                lbl => 
+                {
+                    lbl.ForeColor = editColor6;
+                    lbl.HalfColor = 
+                    lbl.BackColor = editColor0;
+                });
+
+            lblRec = new Label(GetLabel("Rec"),
+                lbl => EditedClip.Recording,
+                CF_null,
+                AL_null,
+                lbl => 
+                {
+                    lbl.ForeColor = recColor6;
+                    lbl.HalfColor = 
+                    lbl.BackColor = recColor0;
+                });
         }
 
 

@@ -10,12 +10,12 @@ namespace IngameScript
     partial class Program
     {
         static Label        lblCue, lblSession,
-                            lblEdit, lblRec,
                             lblOctave, lblShuffle,
                             lblOctaveUp, lblOctaveDown,
                             lblLeft, lblRight,
                             lblStep, lblHold, 
                             lblEditStep, lblEditLength,
+                            lblNote, lblCut, lblEdit, lblRec, 
                             lblLoop, lblBlock, lblAllPatterns, lblFollow, lblAutoCue,
                             lblNew, lblDup, lblDel,
                             lblMove, lblPrev, lblNext, 
@@ -65,7 +65,6 @@ namespace IngameScript
 
         void InitLabels()
         {
-            InitTransportLabels();
             InitEditLabels();
             InitPianoLabels();
             InitToggleLabels();
@@ -78,32 +77,6 @@ namespace IngameScript
 
             frontLight   = Get("Front Light") as IMyReflectorLight;
             warningLight = Get("Sat Light")   as IMyInteriorLight;
-        }
-
-
-        void InitTransportLabels()
-        {
-            lblEdit = new Label(GetLabel("Edit"),
-                lbl => OK(EditedClip.EditPos),
-                CF_null,
-                AL_null,
-                lbl => 
-                {
-                    lbl.ForeColor = editColor6;
-                    lbl.HalfColor = 
-                    lbl.BackColor = editColor0;
-                });
-
-            lblRec = new Label(GetLabel("Rec"),
-                lbl => EditedClip.Recording,
-                CF_null,
-                AL_null,
-                lbl => 
-                {
-                    lbl.ForeColor = recColor6;
-                    lbl.HalfColor = 
-                    lbl.BackColor = recColor0;
-                });
         }
 
 
@@ -124,8 +97,8 @@ namespace IngameScript
             lblDel   = new Label(GetLabel(strDel),  NavIsBright,  NavIsDim, UpdateDel);
 
             lblMove  = new Label(GetLabel("Move"),
-                lbl => (Move ^ (CurSrc > -1)) && CurSet < 0, 
-                lbl => SelChan > -1 && CurSet < 0 && !Move,
+                lbl => (Move ^ OK(CurSrc)) && !OK(CurSet), 
+                lbl => OK(SelChan) && !OK(CurSet) && !Move,
                 UpdateMove);
 
             lblPrev  = new Label(GetLabel("Prev"),  MoveIsBright, NavIsDim, UpdatePrev);
@@ -160,13 +133,13 @@ namespace IngameScript
         bool NavIsBright(Label lbl) 
         { 
             return 
-                   CurSrc > -1 
-                && CurSet <  0 
+                    OK(CurSrc)
+                && !OK(CurSet)
                 && !g_labelsPressed.Contains(lbl); 
         }
         
 
-        bool NavIsDim(Label lbl) { return SelChan > -1 && CurSet < 0; }
+        bool NavIsDim(Label lbl) { return OK(SelChan) && !OK(CurSet); }
 
 
         void UpdateNew (Label lbl) { lbl.SetText(CurSet < 0 ? "New"  : " "); }
@@ -176,9 +149,7 @@ namespace IngameScript
         void UpdatePrev(Label lbl) { lbl.SetText(CurSet < 0 ? "►"    : " "); }
         void UpdateNext(Label lbl) { lbl.SetText(CurSet < 0 ? "◄"    : " "); }
 
-
-        bool MoveIsBright(Label lbl) { return CurSet < 0 && Move ^ (CurSrc > -1); }
-        //bool MoveIsDim   (Label lbl) { return SelChan > -1 && !g_move; }
+        bool MoveIsBright(Label lbl) { return !OK(CurSet) && Move ^ OK(CurSrc); }
 
 
         void SetLabelColor(int iCol)

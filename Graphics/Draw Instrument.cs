@@ -84,7 +84,7 @@ namespace IngameScript
             var iInst = Instruments.IndexOf(chan.Instrument);
             var step  = 28.5f;
 
-            if (SelChan > -1 && CurSrc < 0)
+            if (OK(SelChan) && CurSrc < 0)
                 FillRect(sprites, x + sw, y + (iInst - EditedClip.InstOff) * step, w - sw, step, color6);
 
             for (int i = EditedClip.InstOff; i < Math.Min(EditedClip.InstOff + maxDspInst, Instruments.Count); i++)
@@ -98,13 +98,13 @@ namespace IngameScript
                     y + (i - EditedClip.InstOff) * step,
                     0.7f,
                     inst == chan.Instrument 
-                    ? (CurSrc > -1 ? color6 : color0) 
-                    : (CurSrc > -1 ? color3 : color6));
+                    ? (OK(CurSrc) ? color6 : color0) 
+                    : (OK(CurSrc) ? color3 : color6));
             }
 
             FillRect(sprites, x + w - 4, y, 4, h, color6);
 
-            if (SelChan > -1 && Instruments.Count > maxDspInst)
+            if (OK(SelChan) && Instruments.Count > maxDspInst)
             {
                 var bh = h / (float)Instruments.Count;
                 FillRect(sprites, x, y + bh * iInst, sw, bh, color6);
@@ -122,7 +122,7 @@ namespace IngameScript
             for (int i = EditedClip.SrcOff; i < Math.Min(EditedClip.SrcOff + maxDspSrc, nSrc); i++)
                 inst.Sources[i].DrawSource(sprites, x + sw, ref iy, w - sw, this);
 
-            if (CurSrc > -1 && nSrc > 8)
+            if (OK(CurSrc) && nSrc > 8)
             {
                 var bh = h / (float)nSrc;
                 FillRect(sprites, x, y + bh * CurSrc, sw, bh, color6);

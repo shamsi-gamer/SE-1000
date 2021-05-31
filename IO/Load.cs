@@ -199,7 +199,7 @@ namespace IngameScript
         //    {
         //        var f = g_session.Instruments.FindIndex(i => i.Name == l.Name);
 
-        //        if (f > -1) g_session.Instruments[f] = l;
+        //        if (OK(f)) g_session.Instruments[f] = l;
         //        else g_session.Instruments.Add(l);
         //    }
 

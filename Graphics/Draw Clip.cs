@@ -139,18 +139,20 @@ namespace IngameScript
             DrawRect(sprites, pxCur + 1, py, wt * g_patSteps - 2, ph, color6, 2);
 
 
+            var track = EditedClip.Track;
+
             // draw play position
             if (   Playing
-                && PlayPat < EditedClip.Patterns.Count
-                && EditedClipIsPlayed)
+                && track.PlayPat < EditedClip.Patterns.Count
+                && EditedClipIsPlaying)
             {
                 var pl    = x  - pw * (nDsp * 4 + EditedClip.SongOff);
-                var xTick = pl + wt * (int)PlayStep;
+                var xTick = pl + wt * (int)track.PlayStep;
 
                 FillRect(sprites, xTick, py, wt, ph, color6);
 
-                if (EditedClip.Piano) DrawPianoNeg  (sprites, pl, py, pw, ph, EditedClip, PlayPat, (int)PlayStep, False);
-                else                DrawPatternNeg(sprites, pl, py, pw, ph, EditedClip, PlayPat, (int)PlayStep, False);
+                if (EditedClip.Piano) DrawPianoNeg  (sprites, pl, py, pw, ph, EditedClip, track.PlayPat, (int)track.PlayStep, False);
+                else                  DrawPatternNeg(sprites, pl, py, pw, ph, EditedClip, track.PlayPat, (int)track.PlayStep, False);
             }
 
 
@@ -167,7 +169,7 @@ namespace IngameScript
                     FillRect(sprites, px + bw * p + 1, by, 1, sh, color4);
 
                     var m = Array.FindIndex(EditedClip.Mems, _m => _m == p);
-                    if (m > -1) DrawString(sprites, S((char)(65 + m)), px + 5, by - 30, 0.7f, color4);
+                    if (OK(m)) DrawString(sprites, S((char)(65 + m)), px + 5, by - 30, 0.7f, color4);
                 }
 
                 foreach (var b in EditedClip.Blocks)
@@ -186,8 +188,8 @@ namespace IngameScript
 
                 FillRect(sprites, px + bw * CurPat, by, bw, sh, color4);
 
-                if (OK(PlayStep))
-                    FillRect(sprites, px + bw / g_patSteps * PlayStep, by, 4, sh, color6);
+                if (OK(track.PlayStep))
+                    FillRect(sprites, px + bw / g_patSteps * track.PlayStep, by, 4, sh, color6);
             }
 
 
@@ -203,7 +205,7 @@ namespace IngameScript
                 DrawString(sprites, S(p + 1), px + 8, py - 28, 0.8f, c);
 
                 var m = Array.FindIndex(EditedClip.Mems, _m => _m == p);
-                if (m > -1) DrawString(sprites, S((char)(65 + m)), px + 8, py - 68, 1, color4);
+                if (OK(m)) DrawString(sprites, S((char)(65 + m)), px + 8, py - 68, 1, color4);
             }
 
 
@@ -243,7 +245,7 @@ namespace IngameScript
                 DrawButton(sprites, "Dup",  1, 6, w, h, IsPressed(lcdClip+ 1));
                 DrawButton(sprites, "New",  2, 6, w, h, IsPressed(lcdClip+ 2));
 
-                DrawButton(sprites, "Cue",  4, 6, w, h, EditedClip.Track.NextPat > -1);         
+                DrawButton(sprites, "Cue",  4, 6, w, h, OK(EditedClip.Track.NextPat));         
                 DrawButton(sprites, "◄",    5, 6, w, h, IsPressed(lcdClip+ 5) ^ EditedClip.MovePat); }
          else { DrawButton(sprites, "►",    0, 6, w, h, IsPressed(lcdClip+ 6) ^ EditedClip.MovePat);
                 DrawButton(sprites, "◄►",   1, 6, w, h, EditedClip.MovePat);

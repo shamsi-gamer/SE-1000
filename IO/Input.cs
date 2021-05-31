@@ -11,8 +11,8 @@ namespace IngameScript
         void UpdateInst()
         {
             if (   g_inputValid
-                && SelChan > -1
-                && CurSrc < 0)
+                &&  OK(SelChan)
+                && !OK(CurSrc))
             {
                 var sb = new StringBuilder();
                 dspMain.Panel.ReadText(sb, False);

@@ -219,7 +219,7 @@ namespace IngameScript
 
             public void Adjust(float delta)
             { 
-                if (CurTone > -1)
+                if (OK(CurTone))
                 {
                     var tone = Tones[CurTone];
                     tone.SetValue(tone.AdjustValue(tone.Value, delta, EditedClip.Shift), Note_null, -1);
@@ -283,7 +283,7 @@ namespace IngameScript
 
                 var hrm = new Harmonics(
                     inst, 
-                    iSrc > -1 ? inst.Sources[iSrc] : Source_null);
+                    OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
                 for (int j = 0; j < hrm.Tones.Length; j++)
                     hrm.Tones[j] = Parameter.Load(data, ref i, inst, iSrc, hrm, hrm.Tones[j]);
@@ -351,7 +351,7 @@ namespace IngameScript
                 }
 
                 // current tone
-                if (CurTone > -1) FillRect(sprites, xt + CurTone * wc, yt + ht + 10, wc,    20, color5);
+                if (OK(CurTone)) FillRect(sprites, xt + CurTone * wc, yt + ht + 10, wc,    20, color5);
                 else              FillRect(sprites, xt,                yt + ht + 10, wc*24, 20, color5);
 
                 // has param marks
@@ -444,7 +444,7 @@ namespace IngameScript
                 DrawFuncButton(sprites, "Pre ↕", 2, w, h, False, False, IsPressed(lcdMain+2));
                 DrawFuncButton(sprites, "Set",   3, w, h, False, False, IsPressed(lcdMain+3));
                 
-                if (CurTone > -1)
+                if (OK(CurTone))
                     DrawFuncButton(sprites, "Tone", 4, w, h, True, Tones[CurTone].HasDeepParams(chan, -1));
             }
 
@@ -468,7 +468,7 @@ namespace IngameScript
                     }
                     case 3: SetPreset(CurPreset); break; 
                     case 4:
-                        if (CurTone > -1) 
+                        if (OK(CurTone)) 
                             AddNextSetting(S(CurTone));
                         break;
                 }

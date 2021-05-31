@@ -207,7 +207,7 @@ namespace IngameScript
             {
                 var tag = data[i++];
 
-                var env = new Envelope(parent, inst, iSrc > -1 ? inst.Sources[iSrc] : Source_null);
+                var env = new Envelope(parent, inst, OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
                 env.Attack  = Parameter.Load(data, ref i, inst, iSrc, env, env.Attack );
                 env.Decay   = Parameter.Load(data, ref i, inst, iSrc, env, env.Decay  );

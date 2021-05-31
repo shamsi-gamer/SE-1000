@@ -77,6 +77,8 @@
 
                 case "spread":      Spread();                        break;
 
+                case "note":        ToggleNote(EditedClip);          break;
+                case "cut":         CutNotes(EditedClip);            break;
                 case "edit":        Edit();                          break;
                 case "rec":         Record();                        break;
 
@@ -137,13 +139,13 @@
                          if (arg.Length > 5 && arg.Substring(0, 5) == "high ") { int h; if (int_TryParse(arg.Substring(5), out h)) High(h); }
                     else if (arg.Length > 4 && arg.Substring(0, 4) == "low " ) { int l; if (int_TryParse(arg.Substring(4), out l)) Low (l); }
 
-                    else if ((val = GetInt(arg, "up "  )) > -1) SetVolume(val,  1);
-                    else if ((val = GetInt(arg, "down ")) > -1) SetVolume(val, -1);
+                    else if (OK(val = GetInt(arg, "up "  ))) SetVolume(val,  1);
+                    else if (OK(val = GetInt(arg, "down "))) SetVolume(val, -1);
 
-                    else if ((val = GetInt(arg, "solo ")) > -1) Solo(val);
-                    else if ((val = GetInt(arg, "mute ")) > -1) Mute(val);
+                    else if (OK(val = GetInt(arg, "solo "))) Solo(val);
+                    else if (OK(val = GetInt(arg, "mute "))) Mute(val);
 
-                    else if ((val = GetInt(arg, "mem " )) > -1) EditedClip.SetMem(val);
+                    else if (OK(val = GetInt(arg, "mem " ))) EditedClip.SetMem(val);
 
                     break;
             }

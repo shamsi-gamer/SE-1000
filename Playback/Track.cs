@@ -100,45 +100,15 @@ namespace IngameScript
 
                 else if (OK(clip))
                 { 
-                         if (EditClip == 1                           // move clip
-                          || EditClip == 2) ClipCopy = clip;         // duplicate clip
-                    else if (EditClip == 3) DeleteClip(clip, index); // delete clip
-
-                    else if (index != PlayClip) // queue next clip
-                    { 
-                        if (OK(NextClip))
-                        {
-                            NextClip =
-                                index == NextClip
-                                ? PlayClip
-                                : index;
-                        }
-                        else
-                            NextClip = index;
-
-
-                        if (!CueClip)
-                        {
-                            var playTime = GetAnyCurrentPlayTime();
-
-                            PlayClip = NextClip;
-
-                            PlayPat  =  0;
-                            NextPat  = -1;
-
-                            if (OK(playTime)) PlayTime  = playTime % (g_patSteps * TicksPerStep);
-                            else              PlayTime  = 0;
-                        }
-                        else                  PlayTime %= g_patSteps * TicksPerStep;
-
-
-                        StartTime = g_time - PlayTime;
-                    }
+                         if (EditClip == 1                        // move clip
+                          || EditClip == 2)      ClipCopy = clip; // duplicate clip
+                    else if (EditClip == 3)      DeleteClip(clip, index); 
+                                                 
+                    else if (PlayClip != index)  CueNextClip(index);
                     
                     else if (OK(PlayClip)
                          && !OK(NextClip)
-                         &&  CueClip)
-                        Stop(); // force stop on second press
+                         &&  CueClip)            NextClip = PlayClip;
                         
                     else
                     { 
@@ -148,6 +118,37 @@ namespace IngameScript
                             Stop();
                     }
                 }
+            }
+
+
+            void CueNextClip(int index)
+            {
+                if (OK(NextClip))
+                {
+                    NextClip =
+                        index == NextClip
+                        ? PlayClip
+                        : index;
+                }
+                else
+                    NextClip = index;
+
+
+                if (!CueClip)
+                {
+                    var playTime = GetAnyCurrentPlayTime();
+
+                    PlayClip = NextClip;
+
+                    PlayPat  =  0;
+                    NextPat  = -1;
+
+                    if (OK(playTime)) PlayTime  = playTime % (g_patSteps * TicksPerStep);
+                    else              PlayTime  = 0;
+                }
+
+
+                StartTime = g_time - PlayTime;
             }
 
 
@@ -255,7 +256,6 @@ namespace IngameScript
                     && !OK(NextClip))
                     return False;
 
-
                 if (      !OK(PlayPat)
                        && !OK(NextPat)
                     || PlayStep < (PlayPat + 1) * g_patSteps)
@@ -268,7 +268,6 @@ namespace IngameScript
                     PlayClip = NextClip;
                 }
 
-
                 if (!OK(PlayClip))
                 {
                     PlayPat = -1;
@@ -277,49 +276,55 @@ namespace IngameScript
                 }
 
 
-                //if (PlayStep >= Clips[PlayClip].Patterns.Count * g_patSteps)
-                //{
-                    var clip = Clips[PlayClip];
+                var clip = Clips[PlayClip];
 
-                    clip.Length = clip.Patterns.Count * g_patSteps;
+                clip.Length = clip.Patterns.Count * g_patSteps;
 
-                    if (NextPat > -1)
-                    {
-                        var b = clip.GetBlock(PlayPat);
-
-                        if (clip.Block && OK(b))
-                            PlayPat = b.Last;
-                    }
-
-
-                    int start, end;
-                    clip.GetPosLimits(PlayPat, out start, out end);
-                    end = start + Math.Min(end - start, clip.Length);
-
-                    if (NextPat > -1)
-                    {
-                        var b = clip.GetBlock(NextPat);
-                        if (clip.Block && OK(b))
-                            NextPat = b.First;
-
-                        PlayTime  = GetPatTime(NextPat);
-                        StartTime = g_time - PlayTime;
-
-                        NextPat = -1;
-                    }
-                    else if (PlayStep >= end)
-                    {
-                        clip.WrapCurrentNotes(end - start);
-
-                        PlayTime  -= (end - start) * TicksPerStep;
-                        StartTime += (end - start) * TicksPerStep;
-                    }
-                //}
+                UpdateBlockPat(clip);
+                UpdatePlayTime(clip);
 
 
                 PlayPat = (int)(PlayStep / g_patSteps);
 
                 return True;
+            }
+
+
+            void UpdateBlockPat(Clip clip)
+            {
+                if (   OK(NextPat)
+                    && clip.Block)
+                {
+                    var b = clip.GetBlock(PlayPat);
+                    if (OK(b)) PlayPat = b.Last;
+                }
+            }
+
+
+            void UpdatePlayTime(Clip clip)
+            {
+                int start, end;
+                clip.GetPosLimits(PlayPat, out start, out end);
+                end = start + Math.Min(end - start, clip.Length);
+
+                if (OK(NextPat))
+                {
+                    var b = clip.GetBlock(NextPat);
+                    if (clip.Block && OK(b))
+                        NextPat = b.First;
+
+                    PlayTime  = GetPatTime(NextPat);
+                    StartTime = g_time - PlayTime;
+
+                    NextPat = -1;
+                }
+                else if (PlayStep >= end)
+                {
+                    clip.WrapCurrentNotes(end - start);
+
+                    PlayTime  -= (end - start) * TicksPerStep;
+                    StartTime += (end - start) * TicksPerStep;
+                }
             }
 
 

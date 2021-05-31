@@ -24,8 +24,11 @@ namespace IngameScript
 
             if (_loadStep > OscCount)
             {
-                if ((update & UpdateType.Update1)  != 0) Update1();
-                if ((update & UpdateType.Update10) != 0) Update10();
+                Update1();
+                
+                if ((update & UpdateType.Update10) != 0) 
+                    Update10();
+
 
                 g_time++;
 
@@ -38,9 +41,10 @@ namespace IngameScript
                         && OK(track.PlayTime))
                         track.PlayTime++;
                 }
-            }
 
-            UpdateRuntimeInfo();
+
+                UpdateRuntimeInfo();
+            }
 
 
             //pnlInfoLog.CustomData = "";

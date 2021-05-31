@@ -165,22 +165,23 @@ namespace IngameScript
             if (IsCurParam(strTune))
             {
                 var tune =
-                    CurSrc > -1
+                    OK(CurSrc)
                     ? SelSource    .Tune
                     : SelInstrument.Tune;
 
                 return tune.Chord.Contains(noteNum);
             }
 
-            else if (EditedClip.Chord > -1
+            else if (OK(EditedClip.Chord)
                   && EditedClip.ChordEdit)
                 return EditedClip.Chords[EditedClip.Chord].Contains(noteNum);
 
             else if (Playing 
-                  && PlayChannel.Notes.FindIndex(n => NoteIsPlaying(noteNum, n)) > -1)
+                  && OK(EditedClip.Track.PlayPat)
+                  && OK(PlayChannel.Notes.FindIndex(n => NoteIsPlaying(noteNum, n))))
                 return True; // note is in the currently played channel
 
-            else if (g_notes.FindIndex(n => NoteIsTriggered(noteNum, n)) > -1)
+            else if (OK(g_notes.FindIndex(n => NoteIsTriggered(noteNum, n))))
                 return True; // note is being played on the piano
 
             return False;
@@ -192,13 +193,13 @@ namespace IngameScript
             if (IsCurParam(strTune))
             {
                 var tune =
-                    CurSrc > -1
+                    OK(CurSrc)
                     ? SelSource    .Tune
                     : SelInstrument.Tune;
 
                 return tune.FinalChord.Contains(noteNum);
             }
-            else
+            else if (OK(EditedClip.Track.PlayPat))
             { 
                 for (int ch = 0; ch < g_nChans; ch++)
                 {
@@ -217,13 +218,15 @@ namespace IngameScript
 
         bool NoteIsPlaying(int noteNum, Note note)
         {
-            if (  !EditedClipIsPlayed
+            if (  !EditedClipIsPlaying
                 || noteNum != note.Number)
                 return False;
 
+            var track = EditedClip.Track;
+
             // note is at the playback position
-            if (   PlayStep >= note.SongStep + note.ShOffset
-                && PlayStep <  note.SongStep + note.ShOffset + note.StepLength)
+            if (   track.PlayStep >= note.SongStep + note.ShOffset
+                && track.PlayStep <  note.SongStep + note.ShOffset + note.StepLength)
                 return True;
 
             // note is at edit position
@@ -237,7 +240,7 @@ namespace IngameScript
         
         bool NoteIsTriggered(int noteNum, Note note)
         {
-            var timeStep = Playing ? PlayStep : TimeStep;
+            var timeStep = Playing ? EditedClip.Track.PlayStep : TimeStep;
 
             return
                    noteNum == note.Number
@@ -291,10 +294,12 @@ namespace IngameScript
                    n.Step >= patStep
                 && n.Step <  patStep+1));
 
+            var track = EditedClip.Track;
+
             if (   Playing
-                && EditedClipIsPlayed
-                && (int)PlayStep  == songStep
-                && CurPat == PlayPat)
+                && EditedClipIsPlaying
+                && (int)track.PlayStep  == songStep
+                && CurPat == track.PlayPat)
                 return !on;
             else if (on)
                 return True;

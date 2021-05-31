@@ -220,7 +220,7 @@ namespace IngameScript
                 var lfo = new LFO(
                     parent, 
                     inst, 
-                    iSrc > -1 ? inst.Sources[iSrc] : Source_null);
+                    OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
                 lfo.Op   = (ModOp)  int_Parse(data[i++]);
                 lfo.Type = (LfoType)int_Parse(data[i++]);

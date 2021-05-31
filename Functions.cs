@@ -22,24 +22,16 @@ namespace IngameScript
 
         void SetFunc(int func)
         {
-            if (SelChan > -1)
+            if (OK(SelChan))
             {
-                if (CurSet > -1)
+                if (OK(CurSet))
                 {
                     CurSetting.Func(func);
                 }
                 else 
                 {
-                    if (CurSrc < 0) SetInstFunc(SelInstrument, func);
-                    else                   SetSrcFunc (SelSource,     func);
-                }
-            }
-            else
-            {
-                switch (func)
-                {
-                case 2: ToggleNote(EditedClip); break;
-                case 3: CutNotes(EditedClip);   break;
+                    if (OK(CurSrc)) SetInstFunc(SelInstrument, func);
+                    else            SetSrcFunc (SelSource,     func);
                 }
             }
 
@@ -93,14 +85,14 @@ namespace IngameScript
             if (!OK(inst))   inst = SelInstrument;
             if (iSrc == -2) iSrc = CurSrc;
 
-            if (CurSet > -1)
+            if (OK(CurSet))
                 CurSetting._IsCurrent = False;
 
             Setting setting;
 
-                 if (CurSet > -1) setting = CurSetting        .GetOrAddSettingFromTag(tag);
-            else if (iSrc   > -1) setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
-            else                  setting = inst              .GetOrAddSettingFromTag(tag);
+                 if (OK(CurSet)) setting = CurSetting        .GetOrAddSettingFromTag(tag);
+            else if (OK(iSrc))   setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
+            else                 setting = inst              .GetOrAddSettingFromTag(tag);
 
             g_settings.Add(setting);
 

@@ -31,7 +31,7 @@ namespace IngameScript
         static List<Setting> g_settings   = new List<Setting>();
 
         static Setting   LastSetting  => g_settings.Count > 0 ? g_settings.Last()  : Setting_null;
-        static Setting   CurSetting   => CurSet > -1          ? g_settings[CurSet] : Setting_null;
+        static Setting   CurSetting   => OK(CurSet)           ? g_settings[CurSet] : Setting_null;
 
         static Parameter CurParam     => (Parameter)CurSetting;
         static Modulate  CurModulate  => (Modulate) CurSetting;
@@ -58,7 +58,7 @@ namespace IngameScript
         static bool IsCurSetting(Type type)
         {
             //return
-            //       CurSet > -1
+            //       OK(CurSet)
             //    && g_settings[CurSet].GetType() == type;
 
             return CurSetting?.GetType() == type;
@@ -68,7 +68,7 @@ namespace IngameScript
         bool IsCurOrParentSetting(Type type)
         {
             return
-                   CurSet > -1
+                   OK(CurSet)
                 && (   IsCurSetting(type)
                     ||    OK(CurSetting.Parent)
                        && CurSetting.Parent.GetType() == type);
@@ -242,7 +242,7 @@ namespace IngameScript
         }
 
         
-        static bool EditedClipIsPlayed => EditedClip.Track.Clips.IndexOf(EditedClip) == EditedClip.Track.PlayClip;
+        static bool EditedClipIsPlaying => EditedClip.Track.Clips.IndexOf(EditedClip) == EditedClip.Track.PlayClip;
 
 
         bool ShowPiano { get 
@@ -253,7 +253,7 @@ namespace IngameScript
             return
                    EditedClip.Piano
                 ||    EditedClip.ChordEdit 
-                   && EditedClip.Chord > -1
+                   && OK(EditedClip.Chord)
                 ||    IsCurParam(strTune)
                    && (tune?.UseChord ?? False)
                    && !(   EditedClip.ParamKeys 
@@ -287,8 +287,8 @@ namespace IngameScript
 
         static void UpdateInstName(bool add = True)
         {
-            if (   CurPat  > -1
-                && SelChan > -1)
+            if (   OK(CurPat)
+                && OK(SelChan))
                 dspMain.Panel.WriteText(add ? SelChannel.Instrument.Name : "", False);
         }
 
@@ -425,7 +425,7 @@ namespace IngameScript
         IMyMotorBase     GetHinge  (string s)             { return GetMotor("Hinge " + s); }
         IMyTextPanel     GetLcd    (string s)             { return Get(s) as IMyTextPanel; }
         IMyTextPanel     GetLabel  (string s)             { return GetLcd("Label " + s); }
-        IMyTextPanel     GetDisplay(string s, int i = -1) { return GetLcd(s + " Display" + (i > -1 ? " " + S(i) : "")); }
+        IMyTextPanel     GetDisplay(string s, int i = -1) { return GetLcd(s + " Display" + (OK(i) ? " " + S(i) : "")); }
 
 
         static void SkipWhiteSpace(string[] lines, ref int line)
@@ -461,11 +461,8 @@ namespace IngameScript
         static int        CurSrc          { get { return EditedClip.CurSrc;  } set { EditedClip.CurSrc  = value; } }
         static int        CurSet          { get { return EditedClip.CurSet;  } set { EditedClip.CurSet  = value; } }
                                           
-        static float      PlayStep        => EditedClip.Track.PlayStep;
-        static int        PlayPat         => EditedClip.Track.PlayPat;
-                                          
         static Pattern    CurPattern      => EditedClip.CurPattern;
-        static Pattern    PlayPattern     => EditedClip.Patterns[PlayPat];
+        static Pattern    PlayPattern     => EditedClip.Patterns[EditedClip.Track.PlayPat];
         static Channel    CurChannel      => EditedClip.CurChannel;
         static Channel    PlayChannel     => PlayPattern.Channels[CurChan];
                                           

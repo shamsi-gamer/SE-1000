@@ -126,7 +126,7 @@ namespace IngameScript
  
                 var flt = new Filter(
                     inst, 
-                    iSrc > -1 ? inst.Sources[iSrc] : Source_null);
+                    OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
                 flt.Pass      = (FilterPass)int_Parse(data[i++]);
                 flt.Cutoff    = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Cutoff   );

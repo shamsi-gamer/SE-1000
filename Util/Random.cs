@@ -15,9 +15,9 @@ namespace IngameScript
                      || !EditedClip.RndInst) RandomNotes();
             else if (EditedClip.ParamKeys
                   || EditedClip.ParamAuto)   RandomValues(CurChan);
-            else if (CurSet  > -1) CurSetting   .Randomize(this);
-            else if (CurSrc  > -1) SelSource    .Randomize(new List<Oscillator>(), this);
-            else if (SelChan > -1) SelInstrument.Randomize(this);
+            else if (OK(CurSet))  CurSetting   .Randomize(this);
+            else if (OK(CurSrc))  SelSource    .Randomize(new List<Oscillator>(), this);
+            else if (OK(SelChan)) SelInstrument.Randomize(this);
         }
 
 
@@ -148,7 +148,7 @@ namespace IngameScript
 
                             if (EditedClip.ChordMode)
                             {
-                                if (EditedClip.Chord > -1)
+                                if (OK(EditedClip.Chord))
                                 {
                                     var chord = EditedClip.Chords[EditedClip.Chord];
 
@@ -212,7 +212,7 @@ namespace IngameScript
 
                 var rndValue = (float)(param.NormalMin + RND * (param.NormalMax - param.NormalMin));
 
-                if (index > -1)
+                if (OK(index))
                     note.Keys[index].Value = rndValue;
                 else
                     note.Keys.Add(new Key(CurSrc, param, rndValue, note.Step, chan));
@@ -236,7 +236,7 @@ namespace IngameScript
                        k.Path == param.GetPath(CurSrc) 
                     && k.StepTime == step);
 
-                if (index > -1)
+                if (OK(index))
                     chan.AutoKeys[index].Value = rndValue;
                 else
                     chan.AutoKeys.Add(new Key(CurSrc, param, rndValue, step, chan));

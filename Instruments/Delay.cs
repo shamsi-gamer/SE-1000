@@ -170,7 +170,7 @@ namespace IngameScript
  
                 var del = new Delay(
                     inst, 
-                    iSrc > -1 ? inst.Sources[iSrc] : Source_null);
+                    OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
                 del.Dry   = Parameter.Load(data, ref i, inst, iSrc, del, del.Dry  );
                 del.Count = Parameter.Load(data, ref i, inst, iSrc, del, del.Count);

@@ -15,7 +15,7 @@ namespace IngameScript
                     Mems[m] = Mems[m] < 0 || Mems[m] != CurPat ? CurPat : -1;
                     MemSet = False;
                 }
-                else if (Mems[m] > -1)
+                else if (OK(Mems[m]))
                 {
                     if (Playing) Track.NextPat = Mems[m];
                     else           SetCurrentPattern(Mems[m]);

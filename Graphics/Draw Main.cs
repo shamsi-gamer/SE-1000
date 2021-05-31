@@ -20,7 +20,7 @@ namespace IngameScript
 
             var sprites = new List<MySprite>();
 
-            if (   SelChan > -1
+            if (   OK(SelChan)
                 && IsCurParam()
                 && (   EditedClip.ParamKeys
                     || EditedClip.ParamAuto))
@@ -28,7 +28,7 @@ namespace IngameScript
                 if (EditedClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True);
                 else                  DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, True);
             }
-            else if (SelChan > -1)
+            else if (OK(SelChan))
             {
                 if (IsCurSetting(typeof(Harmonics)))
                 {
@@ -52,18 +52,10 @@ namespace IngameScript
             var bw =  w/6;
             var x0 = bw/2;
 
-            if (SelChan > -1)
+            if (OK(SelChan))
             {
                 if (CurSrc < 0) SelInstrument.DrawFuncButtons(sprites, w, y, SelChannel);
                 else            SelSource    .DrawFuncButtons(sprites, w, y, SelChannel);
-            }
-            else
-            {
-                if (GetEditNotes(clip, True).Count > 0)
-                    DrawFuncButton(sprites, "Note", 2, w, y, False, False, clip.EditNotes.Count > 0);
-
-                if (GetLongNotes(clip).Count > 0)
-                    DrawFuncButton(sprites, strCut, 3, w, y, False, False);
             }
         }
 

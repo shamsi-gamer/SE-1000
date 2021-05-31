@@ -222,7 +222,7 @@ namespace IngameScript
 
             public void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                if (CurSet > -1)
+                if (OK(CurSet))
                 { 
                     var setting = g_settings[CurSet];
                     setting.DrawFuncButtons(sprites, w, h, chan);

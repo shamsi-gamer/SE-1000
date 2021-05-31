@@ -109,7 +109,7 @@ namespace IngameScript
             {
                 var tune = new Tune(
                     inst, 
-                    iSrc > -1 ? inst.Sources[iSrc] : Source_null);
+                    OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
                 Parameter.Load(data, ref i, inst, iSrc, Setting_null, tune);
 

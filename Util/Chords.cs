@@ -43,7 +43,7 @@ namespace IngameScript
         {
             var chordNotes = new List<int>();
 
-            if (    EditedClip.Chord > -1
+            if (    OK(EditedClip.Chord)
                 && !IsCurParam(strTune))
             {
                 var chord = EditedClip.Chords[EditedClip.Chord];
@@ -208,7 +208,7 @@ namespace IngameScript
                 }
 
                 var inst = SelInstrument;
-                var src  = CurSrc > -1 ? inst.Sources[CurSrc] : Source_null;
+                var src  = OK(CurSrc) ? inst.Sources[CurSrc] : Source_null;
 
                 tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
 

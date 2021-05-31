@@ -54,7 +54,7 @@ namespace IngameScript
                     setting = setting.Parent;
                 }
 
-                if (src > -1)
+                if (OK(src))
                     path.Insert(0, src + "/");
 
                 return S(path);

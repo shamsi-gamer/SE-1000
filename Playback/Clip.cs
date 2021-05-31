@@ -102,9 +102,9 @@ namespace IngameScript
             public Pattern       CurPattern     => Patterns[CurPat];
             public Channel       CurChannel     => CurPattern.Channels[CurChan];
             public Instrument    CurInstrument  => CurChannel.Instrument;
-            public Channel       SelChannel     => SelChan > -1 ? CurPattern.Channels[SelChan] : Channel_null;
+            public Channel       SelChannel     => OK(SelChan) ? CurPattern.Channels[SelChan] : Channel_null;
             public Instrument    SelInstrument  => SelChannel?.Instrument ?? Instrument_null;
-            public Source        SelSource      => CurSrc > -1 ? SelInstrument.Sources[CurSrc] : Source_null;
+            public Source        SelSource      => OK(CurSrc) ? SelInstrument.Sources[CurSrc] : Source_null;
 
 
             public float         EditStep       => g_steps[EditStepIndex  ];
@@ -417,7 +417,7 @@ namespace IngameScript
 
             public void TrimCurrentNotes(int ch = -1)
             {
-                var timeStep = Playing ? PlayStep : TimeStep;
+                var timeStep = Playing ? Track.PlayStep : TimeStep;
 
                 foreach (var note in g_notes)
                 {
@@ -433,7 +433,7 @@ namespace IngameScript
 
             public void WrapCurrentNotes(int nWrapSteps)
             {
-                var timeStep = Playing ? PlayStep : TimeStep;
+                var timeStep = Playing ? Track.PlayStep : TimeStep;
 
                 foreach (var note in g_notes)
                 {

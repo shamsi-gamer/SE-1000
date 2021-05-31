@@ -33,14 +33,14 @@ namespace IngameScript
             if (OK(clip.EditPos))
             {
                 if (  !clip.ChordMode 
-                    || clip.Chord > -1)
+                    || OK(clip.Chord))
                 {
                     var chan = CurPattern.Channels[ch];
 
                     int found;
-                    while ((found = chan.Notes.FindIndex(n => 
+                    while (OK(found = chan.Notes.FindIndex(n => 
                                CurPat * g_patSteps + n.Step >= clip.EditPos 
-                            && CurPat * g_patSteps + n.Step <  clip.EditPos + 1)) > -1)
+                            && CurPat * g_patSteps + n.Step <  clip.EditPos + 1)))
                         chan.Notes.RemoveAt(found);
 
                     lastNotes.Clear();
@@ -262,6 +262,9 @@ namespace IngameScript
 
         void ToggleNote(Clip clip)
         {
+            if (!OK(SelChan))
+                return;
+
             if (OK(clip.EditPos))
             { 
                 clip.Inter = Note_null;
@@ -284,9 +287,12 @@ namespace IngameScript
 
         void CutNotes(Clip clip)
         {
+            if (!OK(SelChan))
+                return;
+
             for (int p = 0; p <= CurPat; p++)
             {
-                var patStart =  CurPat   *g_patSteps;
+                var patStart =  CurPat    *g_patSteps;
                 var patEnd   = (CurPat +1)*g_patSteps;
 
                 var pat  = clip.Patterns[p];
@@ -303,7 +309,7 @@ namespace IngameScript
                 }
             }
 
-            g_lcdPressed.Add(lcdMain+3);
+            g_labelsPressed.Add(lblCut);
         }
 
 

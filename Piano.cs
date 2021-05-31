@@ -21,14 +21,14 @@ namespace IngameScript
                 UpdateFinalTuneChord(tune, HighToNote(h));
 
             else if (EditedClip.ChordEdit
-                  && EditedClip.Chord > -1)
+                  && OK(EditedClip.Chord))
                 EditChord(HighToNote(h));
 
             else if (EditedClip.Piano)
                 PlayNote(
                     EditedClip,
                     HighToNote(h), 
-                       EditedClip.Chord > -1 
+                       OK(EditedClip.Chord) 
                     && EditedClip.ChordMode 
                     ? EditedClip.Chords[EditedClip.Chord] 
                     : null,
@@ -86,7 +86,7 @@ namespace IngameScript
                 UpdateFinalTuneChord(tune, LowToNote(l));
 
             else if (EditedClip.ChordEdit
-                  && EditedClip.Chord > -1)
+                  && OK(EditedClip.Chord))
                 EditChord(LowToNote(l));
 
             else if (EditedClip.Piano)
@@ -97,7 +97,7 @@ namespace IngameScript
                 else PlayNote( // l < 15
                     EditedClip,
                     LowToNote(l),
-                       EditedClip.Chord > -1 
+                       OK(EditedClip.Chord)
                     && EditedClip.ChordMode 
                     ? EditedClip.Chords[EditedClip.Chord]
                     : null,
@@ -304,7 +304,7 @@ namespace IngameScript
                         var param = GetCurrentParam(note.Instrument);
 
                         var index = 0;
-                        while ((index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSrc))) > -1)
+                        while (OK(index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSrc))))
                             note.Keys.RemoveAt(index);
                     }
                 }
@@ -313,7 +313,7 @@ namespace IngameScript
                     var param = GetCurrentParam(chan.Instrument);
                     var index = 0;
                         
-                    while ((index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(CurSrc))) > -1)
+                    while (OK(index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(CurSrc))))
                         chan.AutoKeys.RemoveAt(index);
                 }
                 else

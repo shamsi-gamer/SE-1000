@@ -248,7 +248,7 @@ namespace IngameScript
                 var mod = new Modulate(
                     parent, 
                     inst, 
-                    iSrc > -1 ? inst.Sources[iSrc] : Source_null);
+                    OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
 
                 var nSources = int_Parse(data[d++]);
@@ -262,7 +262,7 @@ namespace IngameScript
                     var _inst = Instruments.Find(_i => _i.Name == modInst);
 
                     mod.SrcInstruments.Add(_inst);
-                    mod.SrcSources    .Add(modSrcIndex > -1 ? _inst.Sources[modSrcIndex] : Source_null);
+                    mod.SrcSources    .Add(OK(modSrcIndex) ? _inst.Sources[modSrcIndex] : Source_null);
                     mod.SrcSettings   .Add(GetSettingFromPath(_inst, setPath));
                 }
 

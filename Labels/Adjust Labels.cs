@@ -19,10 +19,10 @@
         {
             return
                    OK(ModDestConnecting)
-                ||    CurSrc > -1
-                   && CurSet <  0
+                ||     OK(CurSrc)
+                   && !OK(CurSet)
                    && SelSource.On
-                ||    SelChan < 0
+                ||    !OK(SelChan)
                    && LockView > 0;
         }
 
@@ -34,7 +34,7 @@
                 lbl.SetText("Conn");
                 return;
             }
-            else if (CurSet > -1)
+            else if (OK(CurSet))
             {
                 var path = g_settings.Last().GetPath(CurSrc);
 
@@ -58,15 +58,15 @@
             }
             else
             {
-                if (CurSrc > -1) lbl.SetText("On");
-                else             lbl.SetText(SelChan < 0 ? "Lock" : " ");
+                if (OK(CurSrc)) lbl.SetText("On");
+                else            lbl.SetText(SelChan < 0 ? "Lock" : " ");
             }
         }
 
 
         void UpdateCmd2(Label lbl)
         {
-            lbl.SetText(CurSrc > -1 ? "Osc ↕" : " ");
+            lbl.SetText(OK(CurSrc) ? "Osc ↕" : " ");
         }
 
 
@@ -146,7 +146,7 @@
 
         void UpdateCmd3(Label lbl)
         {
-            if (CurSet > -1)
+            if (OK(CurSet))
             {
                 var path = g_settings.Last().GetPath(CurSrc);
 
@@ -179,7 +179,7 @@
             }
             else
             {
-                if (CurSrc > -1)
+                if (OK(CurSrc))
                     lblCmd3.SetText(" ");
 
                 else
