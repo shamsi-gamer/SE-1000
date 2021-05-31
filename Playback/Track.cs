@@ -143,8 +143,8 @@ namespace IngameScript
                     PlayPat  =  0;
                     NextPat  = -1;
 
-                    if (OK(playTime)) PlayTime  = playTime % (g_patSteps * TicksPerStep);
-                    else              PlayTime  = 0;
+                    if (OK(playTime)) PlayTime = playTime % (Clips[NextClip].Patterns.Count * g_patSteps * TicksPerStep);
+                    else              PlayTime = 0;
                 }
 
 
