@@ -248,7 +248,6 @@ namespace IngameScript
             var tp = new TimeParams(
                 g_time, 
                 0, 
-                g_time - note.Channel.Pattern.Clip.Track.StartTime, 
                 note, 
                 sndLen, 
                 src.Index, 

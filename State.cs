@@ -38,12 +38,13 @@ namespace IngameScript
         static Clip             EditedClip,
                                 ClipCopy;
                                 
-        static bool             CueClip,
-                                ShowSession,
+        static bool             ShowClip,
+                                ShowMixer,
+                                CueClip, 
                                 MixerShift,
                                 Move;
                                 
-        static int              EditClip; // 0 = edit, 1 = move, 2 = dup, 3 = del
+        static int              EditClip; // 0 = move, 1 = dup, 2 = del
 
                  
         static bool Playing => OK(Tracks.Find(track => track?.Playing ?? False));
@@ -92,10 +93,11 @@ namespace IngameScript
             EditedClip   = 
             ClipCopy     = Clip_null;
                          
-            CueClip      = True;
-            ShowSession  = True;
-
-            MixerShift   = 
+            ShowClip     = 
+            CueClip      = 
+            MixerShift   = True;
+                        
+            ShowMixer    = 
             Move         = False;
                          
             EditClip     = -1;
@@ -158,23 +160,6 @@ namespace IngameScript
             }
 
             return Clip_null;
-        }
-
-
-        void ToggleSession()
-        {
-            if (ShowSession) 
-            {
-                EditClip = 
-                    EditClip != 0
-                    ?  0
-                    : -1;
-            }
-            else
-            { 
-                ShowSession =  True;
-                EditClip    = -1;
-            }
         }
     }
 }

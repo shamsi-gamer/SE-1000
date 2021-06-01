@@ -55,9 +55,10 @@ namespace IngameScript
             uint f = 0;
             var  i = 0;
 
-            WriteBit(ref f, CueClip,     i++);
-            WriteBit(ref f, ShowSession, i++);
-            WriteBit(ref f, Move,        i++);
+            WriteBit(ref f, ShowClip,  i++);
+            WriteBit(ref f, ShowMixer, i++);
+            WriteBit(ref f, CueClip,   i++);
+            WriteBit(ref f, Move,      i++);
 
             return f;
         }

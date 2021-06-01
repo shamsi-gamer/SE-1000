@@ -128,14 +128,14 @@ namespace IngameScript
             }
 
 
-            public float GetVolume(long gTime, long sTime, Program prog)
+            public float GetVolume(long gTime, Program prog)
             {
                 if (prog.TooComplex) return 0;
 
                 var lTime = gTime - Time; // local time
 
-                var tpInst = new TimeParams(gTime, lTime, sTime, Note, Length, -1,           TriggerValues, prog);
-                var tpSrc  = new TimeParams(gTime, lTime, sTime, Note, Length, Source.Index, TriggerValues, prog);
+                var tpInst = new TimeParams(gTime, lTime, Note, Length, -1,           TriggerValues, prog);
+                var tpSrc  = new TimeParams(gTime, lTime, Note, Length, Source.Index, TriggerValues, prog);
 
                 var vol = 
                       Instrument.Volume.UpdateValue(tpInst)
@@ -166,7 +166,7 @@ namespace IngameScript
                 var lTime = g_time - Time;
                 var sTime = g_time - EditedClip.Track.StartTime;
 
-                var tp = new TimeParams(g_time, lTime, sTime, Note, Length, SourceIndex, TriggerValues, prog);
+                var tp = new TimeParams(g_time, lTime, Note, Length, SourceIndex, TriggerValues, prog);
 
                 float vol = 0;
 
@@ -175,7 +175,7 @@ namespace IngameScript
                     var updateVol = 
                         EditedClip.Track.PlayTime < Time + Length + ReleaseLength
                         //&& !prog.TooComplex
-                        ? GetVolume(g_time, EditedClip.Track.StartTime, prog)
+                        ? GetVolume(g_time, prog)
                         : 0;
 
                     vol = 

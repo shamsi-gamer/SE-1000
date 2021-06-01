@@ -28,8 +28,10 @@
                 case "save tracks": SaveTracks();                    break;
 
                 case "play":        Play();                          break;
-                case "cue clip":    CueClip = !CueClip;              break;
-                case "session":     ToggleSession();                 break;
+
+                case "show clip":   ShowClip  = !ShowClip;           break;
+                case "mix":         ShowMixer = !ShowMixer;          break;
+                case "cue clip":    CueClip   = !CueClip;            break;
 
                 case "bpm up":      SetStepLength(-1);               break;
                 case "bpm down":    SetStepLength( 1);               break;

@@ -263,14 +263,14 @@ namespace IngameScript
 
         void SetVolumeAll(float dv)
         {
-            if (ShowSession)
+            if (!ShowMixer)
             {
                 if (dv < 0)
                 {
                     if (EditClip == 1)
                         ClipCopy = Clip_null;
 
-                    EditClip = EditClip != 1 ? 1 : -1;
+                    EditClip = EditClip != 0 ? 0 : -1;
                 }
             }
             else

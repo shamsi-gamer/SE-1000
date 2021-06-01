@@ -12,10 +12,10 @@ namespace IngameScript
             InitPianoLabelsHigh();
             InitPianoLabelsLow();
 
-            lblOctave     = new Label(GetLabel("Octave"),  CF_null, CF_null, UpdateOctaveLabel);
-            lblShuffle    = new Label(GetLabel("Shuffle"), CF_null, CF_null, UpdateShuffleLabel);
-            lblOctaveUp   = new Label(GetLabel("Octave Up"));
-            lblOctaveDown = new Label(GetLabel("Octave Down"));
+            lblOctave     = new Label(1, GetLabel("Octave"),      CF_null, CF_null, UpdateOctaveLabel);
+            lblShuffle    = new Label(1, GetLabel("Shuffle"),     CF_null, CF_null, UpdateShuffleLabel);
+            lblOctaveUp   = new Label(1, GetLabel("Octave Up"),   CF_null, CF_null, lbl => lbl.SetText("►"));
+            lblOctaveDown = new Label(1, GetLabel("Octave Down"), CF_null, CF_null, lbl => lbl.SetText("◄"));
         }
 
 
@@ -29,8 +29,7 @@ namespace IngameScript
 
             for (int h = 0; h < 10; h++)
             { 
-                lblHigh.Add(new Label(
-                    high[h], 
+                lblHigh.Add(new Label(1, high[h], 
                     PianoHighIsBright, 
                     PianoHighIsDim, 
                     UpdatePianoHigh, 
@@ -39,7 +38,7 @@ namespace IngameScript
                     True));
             }
 
-            lblHigh.Add(new Label(high[10],
+            lblHigh.Add(new Label(1, high[10],
                 lbl => IsPressed(lbl),
                 CF_null,
                 UpdatePianoToggle));
@@ -92,7 +91,10 @@ namespace IngameScript
 
         void UpdatePianoHighColor(Label lbl)
         {
-            lbl.BackColor = ShowPiano ? color1 : color0;
+            lbl.BackColor = 
+                   ShowPiano 
+                ? color1 
+                : color0;
         }
 
 
@@ -106,8 +108,7 @@ namespace IngameScript
 
             for (int l = 0; l < low.Count; l++)
             { 
-                lblLow.Add(new Label(
-                    low[l], 
+                lblLow.Add(new Label(1, low[l], 
                     PianoLowIsBright, 
                     PianoLowIsDim, 
                     UpdatePianoLow, 
@@ -161,7 +162,7 @@ namespace IngameScript
 
 
         bool NoteIsBright(int noteNum)
-        { 
+        {
             if (IsCurParam(strTune))
             {
                 var tune =
@@ -310,15 +311,13 @@ namespace IngameScript
 
         void UpdateOctaveLabel(Label lbl)
         {
-            if (TooComplex) return;
-
             int val;
 
                  if (EditedClip.Spread) val = EditedClip.ChordSpread;
-            else if (ShowPiano)      val = CurChannel.Transpose;
-            else                     val = CurChannel.Shuffle;
+            else if (ShowPiano)         val = CurChannel.Transpose;
+            else                        val = CurChannel.Shuffle;
 
-            lbl.SetText((val == 15 ? "+" : strEmpty) + S(val));
+            lbl.SetText((val > 0 ? "+" : "") + S(val));
         }
 
 

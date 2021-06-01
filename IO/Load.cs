@@ -106,9 +106,10 @@ namespace IngameScript
 
             var i = 0;
 
-            CueClip     = ReadBit(f, i++);
-            ShowSession = ReadBit(f, i++);
-            Move        = ReadBit(f, i++);
+            ShowClip  = ReadBit(f, i++);
+            ShowMixer = ReadBit(f, i++);
+            CueClip   = ReadBit(f, i++);
+            Move      = ReadBit(f, i++);
 
             return True;
         }

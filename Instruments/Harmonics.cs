@@ -172,11 +172,10 @@ namespace IngameScript
                     if (i == 0) snd0 = snd;
 
                     var lTime = g_time - sndTime;
-                    var sTime = Playing ? g_time - EditedClip.Track.StartTime : lTime;
 
                     if (!prog.TooComplex)
                     { 
-                        var tp = new TimeParams(g_time, lTime, sTime, note, sndLen, iSrc, snd.TriggerValues, prog);
+                        var tp = new TimeParams(g_time, lTime, note, sndLen, iSrc, snd.TriggerValues, prog);
                         Tones[i].UpdateValue(tp);
                         sounds.Add(snd);
                     }

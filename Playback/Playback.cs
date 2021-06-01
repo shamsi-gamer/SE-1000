@@ -5,30 +5,6 @@ namespace IngameScript
 {
     partial class Program
     {
-        //void InitPlaybackAfterLoad(long playTime)
-        //{
-        //    foreach (var track in g_session.Tracks)
-        //    {
-        //        if (track.PlayClip < 0) continue;
-        //        var playClip = track.Clips[track.PlayClip];
-
-        //        playClip.SetCurrentPattern(nextClip.CurPat);
-
-        //        track.PlayTime = playTime % (playClip.Patterns.Count * g_patSteps * g_session.TicksPerStep);
-
-        //        track.StartTime =
-        //            Playing
-        //            ? g_time - track.PlayTime        
-        //            : long_NaN;
-
-        //        if (playClip.AutoCue)
-        //            playClip.SetCue();
-
-        //        track.CueNextPattern();
-        //    }
-        //}
-
-
         void Play(bool play = True)
         {
             if (!OK(Tracks))

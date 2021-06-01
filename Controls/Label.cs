@@ -30,13 +30,13 @@ namespace IngameScript
           //public bool          NeedsUpdate;
 
 
-            public Label(IMyTextPanel  panel,
+            public Label(int           category, 
+                         IMyTextPanel  panel,
                          CondFunc      condBright     = CF_null, 
                          CondFunc      condDim        = CF_null, 
                          Action<Label> updateFunc     = AL_null, 
                          Action<Label> colorFunc      = AL_null, 
                          int           data           = 0,
-                         bool          fast           = False,
                          bool          usedForSession = False)
             {
                 Panel           = panel;
@@ -57,8 +57,9 @@ namespace IngameScript
 
               //NeedsUpdate     = T;
 
-                if (fast) g_fastLabels.Add(this);
-                else      g_slowLabels.Add(this);
+                     if (category == 2) g_fastLabels.Add(this);
+                else if (category == 1) g_clipLabels.Add(this);
+                else                    g_slowLabels.Add(this);
             }
 
 

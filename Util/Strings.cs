@@ -70,6 +70,8 @@
                      strClip     = "Clip",
                      strMixer    = "Mixer",
                      strNote     = "Note",
+                     strEdit     = "Edit",
+                     strRec      = "Rec",
                     
                      strLight    = "Light",
                      strStorage  = "Storage";

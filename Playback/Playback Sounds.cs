@@ -10,9 +10,8 @@ namespace IngameScript
             if (!OK(del)) return;
 
             var lTime = g_time - snd.Note.Time;
-            var sTime = g_time - EditedClip.Track.StartTime;
 
-            var tp = new TimeParams(g_time, lTime, sTime, snd.Note, snd.Length, snd.SourceIndex, snd.TriggerValues, this);
+            var tp = new TimeParams(g_time, lTime, snd.Note, snd.Length, snd.SourceIndex, snd.TriggerValues, this);
 
             var dc = del.Count.UpdateValue(tp);
             var dt = del.Time .UpdateValue(tp);

@@ -9,7 +9,6 @@ namespace IngameScript
         {
             public long               GlobalTime;
             public long               LocalTime;
-            public long               SongTime;
                                       
             public Note               Note;
             public int                NoteLength;
@@ -20,11 +19,10 @@ namespace IngameScript
             public Program            Program;
 
 
-            public TimeParams(long gTime, long lTime, long sTime, Program prog)
+            public TimeParams(long gTime, long lTime, Program prog)
             {
                 GlobalTime    = gTime;
                 LocalTime     = lTime;
-                SongTime      = sTime;
                               
                 Note          = Note_null;
                 NoteLength    = 0;
@@ -40,7 +38,6 @@ namespace IngameScript
             {
                 GlobalTime    = tp.GlobalTime;
                 LocalTime     = tp.LocalTime;
-                SongTime      = tp.SongTime;
                               
                 Note          = tp.Note;
                 NoteLength    = tp.NoteLength;
@@ -60,8 +57,8 @@ namespace IngameScript
             }
 
 
-            public TimeParams(long gTime, long lTime, long sTime, Note note, int noteLen, int iSrc, List<TriggerValue> triggerValues, Program prog)
-                : this(gTime, lTime, sTime, prog)
+            public TimeParams(long gTime, long lTime, Note note, int noteLen, int iSrc, List<TriggerValue> triggerValues, Program prog)
+                : this(gTime, lTime, prog)
             {
                 Note          = note;
                 NoteLength    = noteLen;

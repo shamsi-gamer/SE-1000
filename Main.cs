@@ -61,9 +61,12 @@ namespace IngameScript
             //foreach (var track in g_session.Tracks)
             //    track.UpdateNotesArePlaying();
 
-            if (!TooComplex)
+            if (  !TooComplex
+                && ShowClip)
+            { 
                 foreach (var lbl in g_fastLabels)
                     lbl.Update();
+            }
         }
 
 
@@ -86,6 +89,31 @@ namespace IngameScript
                 if (!TooComplex)
                     foreach (var lbl in g_slowLabels)
                         lbl.Update();
+
+
+                if (!TooComplex)
+                {
+                    if (ShowClip)
+                    {
+                        foreach (var lbl in g_clipLabels)
+                            lbl.Update();
+                    }
+                    else 
+                    {
+                        foreach (var lbl in g_fastLabels)
+                        {
+                            lbl.SetText(strEmpty);
+                            lbl.BackColor = color0;
+                        }
+
+                        foreach (var lbl in g_clipLabels)
+                        { 
+                            lbl.SetText(strEmpty);
+                            lbl.BackColor = color0;
+                        }
+                    }
+                }
+
 
 
                 foreach (var track in Tracks)

@@ -118,7 +118,7 @@ namespace IngameScript
                         cx + w/12,
                         cy + h/8 - 15 - (nNameLines-1)*20,
                         1,
-                        isPlayClip ? color0 : color4,
+                        isPlayClip ? color6 : color5,
                         TA_CENTER);
 
 

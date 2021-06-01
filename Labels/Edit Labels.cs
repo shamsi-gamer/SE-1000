@@ -4,24 +4,27 @@
     {
         void InitEditLabels()
         {
-            lblLeft  = new Label(GetLabel("Left"),  CF_null, lbl => EditedClip.EditNotes.Count > 0);
-            lblRight = new Label(GetLabel("Right"), CF_null, lbl => EditedClip.EditNotes.Count > 0);
+            lblLeft  = new Label(1, GetLabel("Left"),  CF_null, lbl => EditedClip.EditNotes.Count > 0, lbl => lbl.SetText("◄"));
+            lblRight = new Label(1, GetLabel("Right"), CF_null, lbl => EditedClip.EditNotes.Count > 0, lbl => lbl.SetText("►"));
+            lblStep  = new Label(1, GetLabel("Step"),  CF_null, CF_null,                               lbl => lbl.SetText("Step"));
 
-            lblStep  = new Label(GetLabel("Step"));
-
-            lblHold  = new Label(GetLabel("Hold"),
+            lblHold  = new Label(1, GetLabel("Hold"),
                 lbl => 
                        EditedClip.Hold 
                     && (  !OK(EditedClip.EditPos) 
-                        || EditedClip.EditNotes.Count > 0));
+                        || EditedClip.EditNotes.Count > 0),
+                CF_null,
+                lbl => lbl.SetText("Hold"));
 
-            lblEditStep   = new Label(GetLabel("Edit Step"),   CF_null, CF_null, UpdateEditStepLabel);
-            lblEditLength = new Label(GetLabel("Edit Length"), CF_null, CF_null, UpdateEditLengthLabel);
+            lblEditStep   = new Label(1, GetLabel("Edit Step"),   CF_null, CF_null, UpdateEditStepLabel);
+            lblEditLength = new Label(1, GetLabel("Edit Length"), CF_null, CF_null, UpdateEditLengthLabel);
 
-            lblNote = new Label(GetLabel(strNote),
-                lbl => EditedClip.EditNotes.Count > 0);
+            lblNote = new Label(1, GetLabel(strNote),
+                lbl => EditedClip.EditNotes.Count > 0,
+                CF_null,
+                lbl => lbl.SetText("Note"));
 
-            lblCut  = new Label(GetLabel(strCut), 
+            lblCut  = new Label(1, GetLabel(strCut), 
                 CF_null, 
                 CF_null, 
                 lbl =>
@@ -30,10 +33,10 @@
                     else                                    lbl.SetText(strEmpty);
                 });
 
-            lblEdit = new Label(GetLabel("Edit"),
+            lblEdit = new Label(1, GetLabel(strEdit),
                 lbl => OK(EditedClip.EditPos),
                 CF_null,
-                AL_null,
+                lbl => lbl.SetText(strEdit),
                 lbl => 
                 {
                     lbl.ForeColor = editColor6;
@@ -41,10 +44,10 @@
                     lbl.BackColor = editColor0;
                 });
 
-            lblRec = new Label(GetLabel("Rec"),
+            lblRec = new Label(1, GetLabel(strRec),
                 lbl => EditedClip.Recording,
                 CF_null,
-                AL_null,
+                lbl => lbl.SetText(strRec),
                 lbl => 
                 {
                     lbl.ForeColor = recColor6;

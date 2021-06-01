@@ -91,33 +91,49 @@ namespace IngameScript
             }
 
 
-            public void SetClip(int index, bool force = false)
+            public void SetClip(int index)
             { 
                 var clip = Clips[index];
 
-                     if (EditClip == 0 || force) SetClip(clip, index);
-                else if (OK(ClipCopy))           PlaceClip(index);
+                     if (OK(ClipCopy))          PlaceClip(index);
 
                 else if (OK(clip))
                 { 
-                         if (EditClip == 1                        // move clip
-                          || EditClip == 2)      ClipCopy = clip; // duplicate clip
-                    else if (EditClip == 3)      DeleteClip(clip, index); 
+                         if (EditClip == 0  // move clip
+                          || EditClip == 1) // duplicate clip    
+                        ClipCopy = clip; 
+                    
+                    else if (EditClip == 2)     
+                        DeleteClip(clip, index); 
                                                  
-                    else if (PlayClip != index)  CueNextClip(index);
+                    else if (PlayClip != index)
+                        CueNextClip(index);
                     
                     else if (OK(PlayClip)
                          && !OK(NextClip)
-                         &&  CueClip)            NextClip = PlayClip;
-                        
+                         &&  CueClip)
+                    { 
+                        NextClip = PlayClip; // cancel cue
+                        CueNextClip(index);
+                    }
+
                     else
                     { 
-                        NextClip = -1; // queue clip off
+                        NextClip = -1; // cue clip off
                         
                         if (!CueClip)
                             Stop();
                     }
                 }
+                else
+                { 
+                    Clips[index] = Clip.Create(this);
+                    CueNextClip(index);
+                }
+
+
+                if (OK(NextClip)) 
+                    SetEditedClip(Clips[NextClip]);
             }
 
 
@@ -154,32 +170,21 @@ namespace IngameScript
             }
 
 
-            void SetClip(Clip clip, int index)
+            void SetEditedClip(Clip clip)
             {
-                if (!OK(clip))
-                {
-                    clip = Clip.Create(this);
-                    Clips[index] = clip;
-                    EditClip = -1;
-                }
-                    
                 if (clip != EditedClip) 
                 {
                     EditedClip = clip;
                     UpdateClipDisplay();
+                    UpdateInstName();
                 }
-                else
-                    ShowSession = False;
-
-                UpdateInstName();
             }
 
 
             void PlaceClip(int index)
             {
-                     if (EditClip == 0) Clips[index] = Clip.Create(this); // create clip
-                else if (EditClip == 1
-                      || EditClip == 2) MoveClip(index);
+                     if (EditClip == 0
+                      || EditClip == 1) MoveClip(index);
 
                 EditedClip = Clips[index];
                 UpdateClipDisplay();
@@ -195,7 +200,7 @@ namespace IngameScript
                 var srcIndex = srcTrack.Clips.IndexOf(ClipCopy);
 
 
-                if (EditClip == 1) // move
+                if (EditClip == 0) // move
                 { 
                     var swap = Clips[index];
                     Clips[index] = srcTrack.Clips[srcIndex];
@@ -271,7 +276,11 @@ namespace IngameScript
                     NextPat  = 0;
                     PlayClip = NextClip;
 
-                    UpdateInstName();
+                    //if (   EditClip == 0
+                    //    && OK(PlayClip)) 
+                    //    SetClip(Clips[PlayClip], PlayClip);
+
+                    //UpdateInstName();
                 }
 
                 if (!OK(PlayClip))

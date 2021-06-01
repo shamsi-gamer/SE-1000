@@ -112,7 +112,7 @@ namespace IngameScript
             public int           EditLength     => (int)(EditStepLength * TicksPerStep);
 
 
-            public Clip(Track track, string name = "Clip")
+            public Clip(Track track, string name = strClip)
             {
                 Track       = track;
                 Name        = name;

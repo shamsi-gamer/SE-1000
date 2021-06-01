@@ -21,7 +21,7 @@ namespace IngameScript
 
             var _dummy = new List<TriggerValue>();
 
-            var tp = new TimeParams(g_time, 0, g_time - EditedClip.Track.StartTime, Note_null, EditedClip.EditLength, CurSrc, _dummy, this);
+            var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, CurSrc, _dummy, this);
 
 
             var xt = 340;

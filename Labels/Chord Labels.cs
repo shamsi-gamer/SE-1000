@@ -4,13 +4,13 @@
     {
         void InitChordLabels()
         {
-            lblChord     = new Label(GetLabel("Chord"),      ChordIsBright,     CF_null,       UpdateChord);
-            lblChord1    = new Label(GetLabel("Chord 1"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, AL_null, 1);
-            lblChord2    = new Label(GetLabel("Chord 2"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, AL_null, 2);
-            lblChord3    = new Label(GetLabel("Chord 3"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, AL_null, 3);
-            lblChord4    = new Label(GetLabel("Chord 4"),    ChordNumIsBright,  ChordNumIsDim, UpdateChordNum, AL_null, 4);
-            lblChordEdit = new Label(GetLabel("Chord Edit"), ChordEditIsBright, CF_null,       UpdateChordEdit);
-            lblSpread    = new Label(GetLabel("Spread"),     lbl => EditedClip.Spread);
+            lblChord     = new Label(1, GetLabel("Chord"),      ChordIsBright,            CF_null,       UpdateChord);
+            lblChord1    = new Label(1, GetLabel("Chord 1"),    ChordNumIsBright,         ChordNumIsDim, UpdateChordNum, AL_null, 1);
+            lblChord2    = new Label(1, GetLabel("Chord 2"),    ChordNumIsBright,         ChordNumIsDim, UpdateChordNum, AL_null, 2);
+            lblChord3    = new Label(1, GetLabel("Chord 3"),    ChordNumIsBright,         ChordNumIsDim, UpdateChordNum, AL_null, 3);
+            lblChord4    = new Label(1, GetLabel("Chord 4"),    ChordNumIsBright,         ChordNumIsDim, UpdateChordNum, AL_null, 4);
+            lblChordEdit = new Label(1, GetLabel("Chord Edit"), ChordEditIsBright,        CF_null,       UpdateChordEdit);
+            lblSpread    = new Label(1, GetLabel("Spread"),     lbl => EditedClip.Spread, CF_null,       lbl => lbl.SetText("Spread", 8, 18));;
         }
 
 
@@ -84,7 +84,7 @@
                     ? strAll : strEmpty);
             }
             else
-                lbl.SetText(EditedClip.ChordMode ? strAll : "Edit");
+                lbl.SetText(EditedClip.ChordMode ? strAll : strEdit);
         }
 
 

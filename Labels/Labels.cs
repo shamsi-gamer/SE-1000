@@ -9,7 +9,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        static Label        lblCue, lblSession,
+        static Label        lblShowClip, lblMix, lblCueClip, 
                             lblOctave, lblShuffle,
                             lblOctaveUp, lblOctaveDown,
                             lblLeft, lblRight,
@@ -43,6 +43,7 @@ namespace IngameScript
 
         static  List<Label> g_fastLabels    = new List<Label>(),
                             g_slowLabels    = new List<Label>(),
+                            g_clipLabels    = new List<Label>(),
 
                             g_labelsPressed = new List<Label>(),
                              _labelsPressed = new List<Label>();
@@ -82,120 +83,25 @@ namespace IngameScript
 
         void InitToggleLabels()
         {
-            lblLoop        = new Label(GetLabel("Loop"),         lbl => EditedClip.Loop);
-            lblBlock       = new Label(GetLabel("Block"),        lbl => EditedClip.Block);
-            lblAllPatterns = new Label(GetLabel("All Patterns"), lbl => EditedClip.AllPats);
-            lblFollow      = new Label(GetLabel("Follow"),       lbl => EditedClip.Follow);
-            lblAutoCue     = new Label(GetLabel("Auto Cue"),     lbl => EditedClip.AutoCue);
-        }
-
-
-        void InitNavLabels()
-        {
-            lblNew   = new Label(GetLabel("New"),   NavIsBright,  NavIsDim, UpdateNew);
-            lblDup   = new Label(GetLabel("Dup"),   NavIsBright,  NavIsDim, UpdateDup);
-            lblDel   = new Label(GetLabel(strDel),  NavIsBright,  NavIsDim, UpdateDel);
-
-            lblMove  = new Label(GetLabel("Move"),
-                lbl => (Move ^ OK(CurSrc)) && !OK(CurSet), 
-                lbl => OK(SelChan) && !OK(CurSet) && !Move,
-                UpdateMove);
-
-            lblPrev  = new Label(GetLabel("Prev"),  MoveIsBright, NavIsDim, UpdatePrev);
-            lblNext  = new Label(GetLabel("Next"),  MoveIsBright, NavIsDim, UpdateNext);
-
-            lblOut   = new Label(GetLabel("Out"),   BackIsBright,  BackIsDim);
-            lblBack  = new Label(GetLabel("Back"),  BackIsBright,  BackIsDim);
-
-            lblEnter = new Label(GetLabel("Enter"), 
-                EnterIsBright,  
-                EnterIsDim, 
-                UpdateEnter);
-        }
-
-
-        void UpdateSessionLabel(Label lbl)
-        {
-            if (ShowSession) lbl.SetText("Clip",    8, 18);
-            else             lbl.SetText("Session", 7, 21);
+            lblLoop        = new Label(1, GetLabel("Loop"),         lbl => EditedClip.Loop,    CF_null, lbl => lbl.SetText("Loop",     9,    14));
+            lblBlock       = new Label(1, GetLabel("Block"),        lbl => EditedClip.Block,   CF_null, lbl => lbl.SetText("Block",    8,    18));
+            lblAllPatterns = new Label(1, GetLabel("All Patterns"), lbl => EditedClip.AllPats, CF_null, lbl => lbl.SetText("All Pat",  6.5f, 26));
+            lblFollow      = new Label(1, GetLabel("Follow"),       lbl => EditedClip.Follow,  CF_null, lbl => lbl.SetText("Follow",   8,    18));
+            lblAutoCue     = new Label(1, GetLabel("Auto Cue"),     lbl => EditedClip.AutoCue, CF_null, lbl => lbl.SetText("Auto Cue", 6.3f, 26));
         }
 
 
         void InitSideLabels()
         {
-            lblLock     = new Label(GetLabel("Lock"),      lbl => OK(g_locks.Find(l => l.IsLocked)),  CF_null, AL_null, AL_null, 0, False, True);
-            lblAutoLock = new Label(GetLabel("Auto Lock"), lbl => OK(g_locks.Find(l => l.AutoLock)),  CF_null, AL_null, AL_null, 0, False, True);
+            lblLock     = new Label(0, GetLabel("Lock"),      lbl => OK(g_locks.Find(l => l.IsLocked)),   CF_null, AL_null, AL_null, 0, True);
+            lblAutoLock = new Label(0, GetLabel("Auto Lock"), lbl => OK(g_locks.Find(l => l.AutoLock)),   CF_null, AL_null, AL_null, 0, True);
 
-            lblFold     = new Label(GetLabel("Fold"),      CF_null, CF_null, AL_null, AL_null, 0, False, True);
-            lblTimers   = new Label(GetLabel("Timers"),    lbl => !OK(g_timers.Find(t => !t.Enabled)), CF_null, AL_null, AL_null, 0, False, True);
+            lblFold     = new Label(0, GetLabel("Fold"),      CF_null,                                    CF_null, AL_null, AL_null, 0, True);
+            lblTimers   = new Label(0, GetLabel("Timers"),    lbl => !OK(g_timers.Find(t => !t.Enabled)), CF_null, AL_null, AL_null, 0, True);
 
-            lblGyro     = new Label(GetLabel("Gyro"),      lbl => !OK(g_gyros .Find(g => !g.Enabled)), CF_null, AL_null, AL_null, 0, False, True);
-            lblMass     = new Label(GetLabel("Mass"),      lbl => !OK(g_mass  .Find(g => !g.Enabled)), CF_null, AL_null, AL_null, 0, False, True);
+            lblGyro     = new Label(0, GetLabel("Gyro"),      lbl => !OK(g_gyros .Find(g => !g.Enabled)), CF_null, AL_null, AL_null, 0, True);
+            lblMass     = new Label(0, GetLabel("Mass"),      lbl => !OK(g_mass  .Find(g => !g.Enabled)), CF_null, AL_null, AL_null, 0, True);
         }
-
-
-        bool NavIsBright(Label lbl) 
-        { 
-            return 
-                    OK(CurSrc)
-                && !OK(CurSet)
-                && !g_labelsPressed.Contains(lbl); 
-        }
-        
-
-        bool NavIsDim(Label lbl) 
-        { 
-            return 
-                    OK(SelChan)
-                && !OK(CurSet);
-        }
-
-
-        bool BackIsBright(Label lbl) 
-        { 
-            return 
-                    OK(CurSrc)
-                && !g_labelsPressed.Contains(lbl); 
-        }
-        
-
-        bool BackIsDim(Label lbl) 
-        { 
-            return OK(SelChan); 
-        }
-
-
-        bool EnterIsBright(Label lbl) 
-        { 
-            return 
-                    OK(CurSrc)
-                && !OK(CurSet)
-                && !g_labelsPressed.Contains(lbl); 
-        }
-        
-
-        bool EnterIsDim(Label lbl) 
-        { 
-            return 
-                    OK(SelChan) 
-                && !OK(CurSet); 
-        }
-
-
-        void UpdateEnter(Label lbl)
-        {
-            lbl.SetText(!OK(CurSet) ? "└►" : strEmpty);
-        }
-
-
-        void UpdateNew (Label lbl) { lbl.SetText(CurSet < 0 ? "New"  : strEmpty); }
-        void UpdateDup (Label lbl) { lbl.SetText(CurSet < 0 ? "Dup"  : strEmpty); }
-        void UpdateDel (Label lbl) { lbl.SetText(CurSet < 0 ? "Del"  : strEmpty); }
-        void UpdateMove(Label lbl) { lbl.SetText(CurSet < 0 ? "▲\n▼" : strEmpty, 10, 20); }
-        void UpdatePrev(Label lbl) { lbl.SetText(CurSet < 0 ? "►"    : strEmpty); }
-        void UpdateNext(Label lbl) { lbl.SetText(CurSet < 0 ? "◄"    : strEmpty); }
-
-        bool MoveIsBright(Label lbl) { return !OK(CurSet) && Move ^ OK(CurSrc); }
 
 
         void SetLabelColor(int iCol)

@@ -306,24 +306,19 @@ namespace IngameScript
 
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
-                var sTime = 
-                    Playing
-                    ? g_time - EditedClip.Track.StartTime
-                    : 0;
-
-                var tp = new TimeParams(g_time, 0, sTime, Note_null, EditedClip.EditLength, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, -1, _triggerDummy, dp.Program);
 
                 Amount .UpdateValue(tp);
                 Attack .UpdateValue(tp);
                 Release.UpdateValue(tp);
 
-
-                var w0    = 240f;
-                var h0    = 120f;
-
                 var isAmt = IsCurParam(strAmt);
                 var isAtt = IsCurParam(strAtt);
                 var isRel = IsCurParam(strRel);
+
+
+                var w0 = 240f;
+                var h0 = 120f;
 
                 var x0 = x + w/2 - w0/2;
                 var y0 = y + h/2 - h0/4;

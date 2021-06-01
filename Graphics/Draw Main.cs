@@ -20,28 +20,34 @@ namespace IngameScript
 
             var sprites = new List<MySprite>();
 
-            if (   OK(SelChan)
-                && IsCurParam()
-                && (   EditedClip.ParamKeys
-                    || EditedClip.ParamAuto))
-            {
-                if (EditedClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True);
+            if (ShowClip)
+            { 
+                if (   OK(SelChan)
+                    && IsCurParam()
+                    && (   EditedClip.ParamKeys
+                        || EditedClip.ParamAuto))
+                {
+                    if (EditedClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True);
+                    else                  DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, True);
+                }
+                else if (OK(SelChan))
+                {
+                    if (IsCurSetting(typeof(Harmonics)))
+                    {
+                        var hrm = CurOrParentHarmonics;
+                        hrm.DrawSetting(sprites, x, y, w, h, CurChannel, this);
+                    }
+                    else 
+                        DrawInstrument(sprites, x, y, w, h);
+                }
+                else if ( EditedClip.Piano 
+                       && LockView != 1
+                    || LockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True);
                 else                  DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, True);
             }
-            else if (OK(SelChan))
-            {
-                if (IsCurSetting(typeof(Harmonics)))
-                {
-                    var hrm = CurOrParentHarmonics;
-                    hrm.DrawSetting(sprites, x, y, w, h, CurChannel, this);
-                }
-                else 
-                    DrawInstrument(sprites, x, y, w, h);
-            }
-            else if ( EditedClip.Piano 
-                   && LockView != 1
-                || LockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True);
-            else                  DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, True);
+            else
+                FillRect(sprites, x, y, w, h, color0);
+
 
             dsp.Draw(sprites);
         }

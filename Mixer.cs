@@ -10,17 +10,17 @@
 
         void EnableChannels(bool on)
         {
-            if (ShowSession)
+            if (!ShowMixer)
             { 
                 if (on) 
                 {
-                    if (EditClip == 2)
+                    if (EditClip == 0)
                         ClipCopy = Clip_null;
 
-                    EditClip = EditClip != 2 ? 2 : -1;
+                    EditClip = EditClip != 1 ? 1 : -1;
                 }
                 else 
-                    EditClip = EditClip != 3 ? 3 : -1;
+                    EditClip = EditClip != 2 ? 2 : -1;
             }
             else
             { 
@@ -53,7 +53,7 @@
 
         public void SetVolume(int ch, float dv)
         {
-            if (ShowSession)
+            if (!ShowMixer)
             { 
                 Tracks[dv > 0 ? 0 : 1].SetClip(ch);
                 CheckIfMustStop();
@@ -79,7 +79,7 @@
 
         void Solo(int ch)
         {
-            if (ShowSession)
+            if (!ShowMixer)
             { 
                 Tracks[2].SetClip(ch);
                 CheckIfMustStop();
@@ -119,7 +119,7 @@
 
         void Mute(int ch)
         {
-            if (ShowSession)
+            if (!ShowMixer)
             { 
                 Tracks[3].SetClip(ch);
                 CheckIfMustStop();
