@@ -99,31 +99,5 @@ namespace IngameScript
                 ? P(setting.Save())
                 : "";
         }
-
-
-        //String SaveEdit()
-        //{
-        //    var str = "";
-        //    var s   = ";";
-
-        //    str += S(g_song.EditNotes.Count);
-
-        //    foreach (var n in g_song.EditNotes)
-        //    {
-        //        str +=
-        //          s + S(g_song.Patterns.FindIndex(p => p.Channels.Contains(n.Channel)))
-        //        + s + S(n.iChan)
-        //        + s + S(n.Channel.Notes.IndexOf(n));
-        //    }
-
-        //    str += "\n";
-
-        //    return str;
-        //}
-
-
-        //static void Add(List<byte> b, short s) { b.AddArray(BitConverter.GetBytes(s)); }
-        //static void Add(List<byte> b, int   i) { b.AddArray(BitConverter.GetBytes(i)); }
-        //static void Add(List<byte> b, float f) { b.AddArray(BitConverter.GetBytes(f)); }
     }
 }

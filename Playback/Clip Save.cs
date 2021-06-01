@@ -95,6 +95,27 @@
             }
 
 
+            //String SaveEdit()
+            //{
+            //    var str = "";
+            //    var s   = ";";
+
+            //    str += S(g_song.EditNotes.Count);
+
+            //    foreach (var n in g_song.EditNotes)
+            //    {
+            //        str +=
+            //          s + S(g_song.Patterns.FindIndex(p => p.Channels.Contains(n.Channel)))
+            //        + s + S(n.iChan)
+            //        + s + S(n.Channel.Notes.IndexOf(n));
+            //    }
+
+            //    str += "\n";
+
+            //    return str;
+            //}
+
+
             string SaveMems()
             {
                 var mems = "";

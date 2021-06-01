@@ -139,12 +139,9 @@ namespace IngameScript
 
         void UpdatePianoLow(Label lbl)
         {
-            if (ShowPiano)
-            {
-                if (-lbl.Data == 15) lbl.SetText("‡", 8, 17); 
-                else                 lbl.SetText(strEmpty);
-            } 
-            else                     lbl.SetText(strEmpty);
+            if (   ShowPiano
+                && -lbl.Data == 15) lbl.SetText("‡", 8, 17); 
+            else                    lbl.SetText(strEmpty);
         }
 
 
@@ -177,13 +174,11 @@ namespace IngameScript
                   && EditedClip.ChordEdit)
                 return EditedClip.Chords[EditedClip.Chord].Contains(noteNum);
 
-            else if (Playing 
-                  && OK(EditedClip.Track.PlayPat)
-                  && OK(PlayChannel.Notes.FindIndex(n => NoteIsPlaying(noteNum, n))))
-                return True; // note is in the currently played channel
+            else if (OK(CurChannel.Notes.FindIndex(n => NoteIsEdited(noteNum, n))))
+                return True; // note is being edited
 
             else if (OK(g_notes.FindIndex(n => NoteIsTriggered(noteNum, n))))
-                return True; // note is being played on the piano
+                return True; // note is being played
 
             return False;
         }
@@ -200,35 +195,35 @@ namespace IngameScript
 
                 return tune.FinalChord.Contains(noteNum);
             }
-            else if (OK(EditedClip.Track.PlayPat))
-            { 
-                for (int ch = 0; ch < g_nChans; ch++)
-                {
-                    if (ch == CurChan)
-                        continue;
+            //else if (OK(EditedClip.Track.PlayPat))
+            //{ 
+            //    for (int ch = 0; ch < g_nChans; ch++)
+            //    {
+            //        if (ch == CurChan)
+            //            continue;
 
-                    if (   Playing
-                        && OK(PlayPattern.Channels[ch].Notes.Find(n => NoteIsPlaying(noteNum, n))))
-                        return True;
-                }
-            }
+            //        if (   Playing
+            //            && OK(PlayPattern.Channels[ch].Notes.Find(n => NoteIsEdited(noteNum, n))))
+            //            return True;
+            //    }
+            //}
 
             return False;
         }
 
 
-        bool NoteIsPlaying(int noteNum, Note note)
+        bool NoteIsEdited(int noteNum, Note note)
         {
             if (  !EditedClipIsPlaying
                 || noteNum != note.Number)
                 return False;
 
-            var track = EditedClip.Track;
+            //var track = EditedClip.Track;
 
-            // note is at the playback position
-            if (   track.PlayStep >= note.SongStep + note.ShOffset
-                && track.PlayStep <  note.SongStep + note.ShOffset + note.StepLength)
-                return True;
+            //// note is at the playback position
+            //if (   track.PlayStep >= note.SongStep + note.ShOffset
+            //    && track.PlayStep <  note.SongStep + note.ShOffset + note.StepLength)
+            //    return True;
 
             // note is at edit position
             if (   note.SongStep >= EditedClip.EditPos 
@@ -243,7 +238,7 @@ namespace IngameScript
         {
             var timeStep = 
                 Playing 
-                ? (EditedClip.Track.StartTime + EditedClip.Track.PlayTime) / TicksPerStep 
+                ? (float)(EditedClip.Track.StartTime + EditedClip.Track.PlayTime) / TicksPerStep 
                 : TimeStep;
 
             return

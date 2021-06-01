@@ -158,6 +158,32 @@ namespace IngameScript
             }
 
 
+            //bool LoadEdit(string[] lines, ref int line)
+            //{
+            //    g_song.EditNotes.Clear();
+
+            //    var cfg = lines[line++].Split(';');
+            //    if (cfg.Length == 0) return F;
+
+            //    var c = 0;
+
+            //    int nNotes;
+            //    if (!int_TryParse(cfg[c++], out nNotes)) return F;
+
+            //    for (int i = 0; i < nNotes; i++)
+            //    {
+            //        int p, ch, n;
+            //        if (!int_TryParse(cfg[c++], out p )) return F;
+            //        if (!int_TryParse(cfg[c++], out ch)) return F;
+            //        if (!int_TryParse(cfg[c++], out n )) return F;
+
+            //        g_song.EditNotes.Add(g_song.Patterns[p].Channels[ch].Notes[n]);
+            //    }
+
+            //    return T;
+            //}
+
+
             bool LoadMems(string line)
             {
                 var mems = line.Split(';');

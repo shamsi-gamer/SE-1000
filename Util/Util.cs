@@ -475,9 +475,9 @@ namespace IngameScript
         static int        CurSet          { get { return EditedClip.CurSet;  } set { EditedClip.CurSet  = value; } }
                                           
         static Pattern    CurPattern      => EditedClip.CurPattern;
-        static Pattern    PlayPattern     => EditedClip.Patterns[EditedClip.Track.PlayPat];
         static Channel    CurChannel      => EditedClip.CurChannel;
-        static Channel    PlayChannel     => PlayPattern.Channels[CurChan];
+        static Pattern    PlayPattern     => EditedClip.Patterns[EditedClip.Track.PlayPat];
+        //static Channel    PlayChannel     => PlayPattern.Channels[CurChan];
                                           
         static Source     SelSource       => EditedClip.SelSource;
         static Instrument SelInstrument   => EditedClip.SelInstrument;
