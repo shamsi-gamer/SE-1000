@@ -95,22 +95,14 @@ namespace IngameScript
                 {
                     if (ShowClip)
                     {
-                        foreach (var lbl in g_clipLabels)
-                            lbl.Update();
+                        foreach (var lbl in g_clipLabels)   lbl.Update();
+                        foreach (var lbl in g_adjustLabels) lbl.Update();
                     }
-                    else 
+                    else
                     {
-                        foreach (var lbl in g_fastLabels)
-                        {
-                            lbl.SetText(strEmpty);
-                            lbl.BackColor = color0;
-                        }
-
-                        foreach (var lbl in g_clipLabels)
-                        { 
-                            lbl.SetText(strEmpty);
-                            lbl.BackColor = color0;
-                        }
+                        ClearLabels(g_fastLabels);
+                        ClearLabels(g_clipLabels);
+                        ClearLabels(g_adjustLabels);
                     }
                 }
 

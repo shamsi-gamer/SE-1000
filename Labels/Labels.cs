@@ -44,6 +44,7 @@ namespace IngameScript
         static  List<Label> g_fastLabels    = new List<Label>(),
                             g_slowLabels    = new List<Label>(),
                             g_clipLabels    = new List<Label>(),
+                            g_adjustLabels  = new List<Label>(),
 
                             g_labelsPressed = new List<Label>(),
                              _labelsPressed = new List<Label>();

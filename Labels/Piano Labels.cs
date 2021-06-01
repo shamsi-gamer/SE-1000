@@ -29,7 +29,7 @@ namespace IngameScript
 
             for (int h = 0; h < 10; h++)
             { 
-                lblHigh.Add(new Label(1, high[h], 
+                lblHigh.Add(new Label(3, high[h], 
                     PianoHighIsBright, 
                     PianoHighIsDim, 
                     UpdatePianoHigh, 
@@ -38,7 +38,7 @@ namespace IngameScript
                     True));
             }
 
-            lblHigh.Add(new Label(1, high[10],
+            lblHigh.Add(new Label(3, high[10],
                 lbl => IsPressed(lbl),
                 CF_null,
                 UpdatePianoToggle));
@@ -108,7 +108,7 @@ namespace IngameScript
 
             for (int l = 0; l < low.Count; l++)
             { 
-                lblLow.Add(new Label(1, low[l], 
+                lblLow.Add(new Label(3, low[l], 
                     PianoLowIsBright, 
                     PianoLowIsDim, 
                     UpdatePianoLow, 

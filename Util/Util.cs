@@ -285,6 +285,16 @@ namespace IngameScript
         }
 
 
+        void ClearLabels(List<Label> labels)
+        {
+            foreach (var lbl in labels) 
+            { 
+                lbl.SetText(strEmpty); 
+                lbl.BackColor = color0;
+            }
+        }
+
+
         static void UpdateInstName(bool add = True)
         {
             if (    OK(SelChan)

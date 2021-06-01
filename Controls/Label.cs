@@ -57,9 +57,10 @@ namespace IngameScript
 
               //NeedsUpdate     = T;
 
-                     if (category == 2) g_fastLabels.Add(this);
-                else if (category == 1) g_clipLabels.Add(this);
-                else                    g_slowLabels.Add(this);
+                     if (category == 3) g_fastLabels  .Add(this);
+                     if (category == 2) g_adjustLabels.Add(this);
+                else if (category == 1) g_clipLabels  .Add(this);
+                else                    g_slowLabels  .Add(this);
             }
 
 
