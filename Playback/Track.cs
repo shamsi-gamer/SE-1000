@@ -48,7 +48,7 @@ namespace IngameScript
 
                 Stop();
                           
-                DspVol    = new float[g_nChans];
+                DspVol = new float[g_nChans];
 
                 //NotesArePlaying = F;
             }
@@ -95,7 +95,8 @@ namespace IngameScript
             { 
                 var clip = Clips[index];
 
-                     if (OK(ClipCopy))          PlaceClip(index);
+                if (OK(ClipCopy))          
+                    PlaceClip(index);
 
                 else if (OK(clip))
                 { 
@@ -183,8 +184,9 @@ namespace IngameScript
 
             void PlaceClip(int index)
             {
-                     if (EditClip == 0
-                      || EditClip == 1) MoveClip(index);
+                if (   EditClip == 0
+                    || EditClip == 1) 
+                    MoveClip(index);
 
                 EditedClip = Clips[index];
                 UpdateClipDisplay();
@@ -201,11 +203,8 @@ namespace IngameScript
 
 
                 if (EditClip == 0) // move
-                { 
-                    var swap = Clips[index];
-                    Clips[index] = srcTrack.Clips[srcIndex];
-                    srcTrack.Clips[srcIndex] = swap;
-                }
+                    Swap(ref Clips[index], ref srcTrack.Clips[srcIndex]);
+
                 else // duplicate
                 { 
                     Clips[index] = new Clip(srcTrack.Clips[srcIndex], this);
@@ -223,16 +222,42 @@ namespace IngameScript
 
                 if (srcTrack.PlayClip == srcIndex) // moved clip is playing
                 { 
-                    PlayTime  = srcTrack.PlayTime;
-                    StartTime = srcTrack.StartTime;
+                    if (this != srcTrack)
+                    { 
+                        if (EditClip == 0) // move
+                        { 
+                            Swap(ref PlayPat,   ref srcTrack.PlayPat);
+                            Swap(ref NextPat,   ref srcTrack.NextPat);
 
-                    PlayClip  = index;
-                    NextClip  = index;
-                    PlayPat   = srcTrack.PlayPat;
-                    NextPat   = srcTrack.NextPat;
+                            Swap(ref PlayTime,  ref srcTrack.PlayTime);
+                            Swap(ref StartTime, ref srcTrack.StartTime);
 
-                    if (srcTrack != this)
-                        Stop();
+                            if (PlayClip == srcTrack.PlayClip)
+                            {
+                                Swap(ref PlayClip, ref srcTrack.PlayClip);
+                                Swap(ref NextClip, ref srcTrack.NextClip);
+                            }
+                            else
+                            {
+                                PlayClip  = srcTrack.PlayClip;
+                                NextClip  = srcTrack.NextClip;
+                            }
+                        }
+                        else // duplicate
+                        { 
+                            PlayPat   = srcTrack.PlayPat;
+                            NextPat   = srcTrack.NextPat;
+
+                            PlayTime  = srcTrack.PlayTime;
+                            StartTime = srcTrack.StartTime;
+
+                            PlayClip  = srcTrack.PlayClip;
+                            NextClip  = srcTrack.NextClip;
+
+                            if (srcTrack != this)
+                                Stop();
+                        }
+                    }
                 }
             }
 

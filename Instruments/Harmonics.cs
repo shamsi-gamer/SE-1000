@@ -330,7 +330,9 @@ namespace IngameScript
                 var wc  = wt / Tones.Length;
 
                 var dp = new DrawParams(False, prog);
-                SelSource.DrawLabels(sprites, x + 5, y + 10, dp);
+
+                if (OK(CurSrc)) SelSource    .DrawLabels(sprites, x+5, y+10, dp);
+                else            SelInstrument.DrawLabels(sprites, x+5, y+10, dp);
 
                 DrawSample(sprites, x + 100, y + 150, 100, 60);
 

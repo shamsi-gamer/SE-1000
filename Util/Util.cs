@@ -425,6 +425,14 @@ namespace IngameScript
         }
 
 
+        static void Swap<T>(ref T clip1, ref T clip2) 
+        {
+            var swap  = clip2;
+                clip2 = clip1;
+                clip1 = swap;
+        }
+
+
         bool TooComplex =>
                Runtime.CurrentCallChainDepth   / (float)Runtime.MaxCallChainDepth   > 0.8f
             || Runtime.CurrentInstructionCount / (float)Runtime.MaxInstructionCount > 0.8f;
