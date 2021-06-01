@@ -154,7 +154,7 @@ namespace IngameScript
             var patStep = 
                   (Playing
                    ?   (float)track.StartTime/TicksPerStep 
-                     + (track.PlayPat - clip.CurPat) * g_patSteps 
+                     +  track.PlayPat * g_patSteps 
                      + (track.PlayStep % g_patSteps) 
                    : TimeStep) 
                 + chordSpreadOffset;
