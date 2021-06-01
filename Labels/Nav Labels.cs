@@ -71,8 +71,8 @@
         }
 
 
-        void UpdateOut  (Label lbl) { lbl.SetText(!OK(CurSet) ? "◄◄" : strEmpty); }
-        void UpdateBack (Label lbl) { lbl.SetText(!OK(CurSet) ? "◄┐" : strEmpty); }
+        void UpdateOut  (Label lbl) { lbl.SetText("◄◄"); }
+        void UpdateBack (Label lbl) { lbl.SetText("◄┐"); }
         void UpdateEnter(Label lbl) { lbl.SetText(!OK(CurSet) ? "└►" : strEmpty); }
 
 

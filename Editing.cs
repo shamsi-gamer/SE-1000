@@ -262,7 +262,7 @@ namespace IngameScript
 
         void ToggleNote(Clip clip)
         {
-            if (!OK(SelChan))
+            if (OK(SelChan))
                 return;
 
             if (OK(clip.EditPos))
