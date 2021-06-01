@@ -128,6 +128,7 @@ namespace IngameScript
                 var lTime = g_time - EditedClip.Track.StartTime - note.SongTime;
                 var sTime = Playing ? g_time - EditedClip.Track.StartTime : lTime;
 
+
                 var tp = new TimeParams(sndTime, lTime, sTime, note, note.FrameLength, Index, triggerValues, prog);
 
 

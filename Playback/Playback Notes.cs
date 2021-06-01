@@ -156,10 +156,6 @@ namespace IngameScript
                    : 0) 
                 + chordSpreadOffset;
 
-            var found = g_notes.Find(n =>
-                   n.iChan  == ch
-                && n.Number == num);
-
             AddNoteAndSounds(new Note(chan, ch, 1, num, patStep, len));
         }
 
@@ -194,20 +190,23 @@ namespace IngameScript
             var inst = note.Instrument;
             note.Sounds.Clear();
 
-            var clip = note.Channel.Pattern.Clip;
 
+            var clip  = note.Channel.Pattern.Clip;
+            var track = clip.Track;
 
-            var sh = (int)clip.Track.PlayStep % 2 != 0 ? note.Channel.Shuffle : 0;
+            var sh = (int)track.PlayStep % 2 != 0 ? note.Channel.Shuffle : 0;
+
 
             var found =
                 g_notes.Find(n => 
-                       clip.Track.PlayStep >= n.Step 
-                    && clip.Track.PlayStep <  n.Step + n.StepLength);
+                       track.PlayStep >= n.Step 
+                    && track.PlayStep <  n.Step + n.StepLength);
 
             if (   OK(found)
-                && found.Number == note.Number
+                && found.Number     == note.Number
                 && found.StepLength == float_Inf)
                 return;
+
 
             foreach (var src in inst.Sources)
             {
@@ -217,7 +216,8 @@ namespace IngameScript
                     src.CreateSounds(note.Sounds, note, this);
             }
 
-            g_notes.Add(note);
+
+            g_notes .Add     (note);
             g_sounds.AddRange(note.Sounds);
         }
 

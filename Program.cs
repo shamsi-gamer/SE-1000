@@ -7,10 +7,10 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        const int                     NoteScale          = 2;
-        const float                   ControlSensitivity = 12;
+        const int                     OscCount           = 13,
                                       
-        const int                     OscCount           = 13;
+                                      NoteScale          = 2;
+        const float                   ControlSensitivity = 12;
                                          
                                          
         static  List<string>          g_samples = new List<string>();
@@ -94,10 +94,6 @@ namespace IngameScript
             InitDisplays();
             InitLabels();
             InitFuncButtons(); 
-
-
-            //foreach (var track in g_session.Tracks)
-            //    track.ResetDisplayVolumes();
 
 
             Get(g_locks, b => !b.CustomName.Contains("Fold"));

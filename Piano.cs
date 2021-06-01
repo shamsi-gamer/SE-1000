@@ -140,8 +140,7 @@ namespace IngameScript
             else if (EditedClip.Pick)
             {
                 EditedClip.CurNote = found[0].Number;
-
-                EditedClip.Pick = False;
+                EditedClip.Pick    = False;
 
                 TriggerNote(
                     EditedClip,

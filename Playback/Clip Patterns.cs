@@ -54,7 +54,7 @@ namespace IngameScript
             public void NextPattern()
             {
                 if (MovePat) MovePatterns(CurPat + 1);
-                else SetCurrentPattern(CurPat + 1);
+                else         SetCurrentPattern(CurPat + 1);
 
                 g_lcdPressed.Add(lcdClip+6);
             }

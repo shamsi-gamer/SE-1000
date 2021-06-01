@@ -287,7 +287,10 @@ namespace IngameScript
 
         static void UpdateInstName(bool add = True)
         {
-            if (   OK(CurPat)
+            if (    OK(SelChan)
+                &&  OK(CurPat)
+                && !OK(CurSrc)
+                && !OK(CurSet)
                 && OK(SelChan))
                 dspMain.Panel.WriteText(add ? SelChannel.Instrument.Name : "", False);
         }

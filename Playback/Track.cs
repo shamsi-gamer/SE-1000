@@ -145,6 +145,8 @@ namespace IngameScript
 
                     if (OK(playTime)) PlayTime = playTime % (Clips[NextClip].Patterns.Count * g_patSteps * TicksPerStep);
                     else              PlayTime = 0;
+
+                    UpdateInstName();
                 }
 
 
@@ -168,6 +170,8 @@ namespace IngameScript
                 }
                 else
                     ShowSession = False;
+
+                UpdateInstName();
             }
 
 
@@ -266,6 +270,8 @@ namespace IngameScript
                 { 
                     NextPat  = 0;
                     PlayClip = NextClip;
+
+                    UpdateInstName();
                 }
 
                 if (!OK(PlayClip))
