@@ -241,7 +241,10 @@ namespace IngameScript
         
         bool NoteIsTriggered(int noteNum, Note note)
         {
-            var timeStep = Playing ? EditedClip.Track.PlayStep : TimeStep;
+            var timeStep = 
+                Playing 
+                ? (EditedClip.Track.StartTime + EditedClip.Track.PlayTime) / TicksPerStep 
+                : TimeStep;
 
             return
                    noteNum == note.Number

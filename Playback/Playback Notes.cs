@@ -148,12 +148,15 @@ namespace IngameScript
 
         void TriggerNote(Clip clip, int num, int ch, float len, float chordSpreadOffset)
         {
-            var chan = clip.CurPattern.Channels[ch];
+            var chan  = clip.CurPattern.Channels[ch];
+            var track = clip.Track;
 
             var patStep = 
                   (Playing
-                   ? (clip.Track.PlayPat - clip.CurPat) * g_patSteps + (clip.Track.PlayStep % g_patSteps) 
-                   : 0) 
+                   ?   (float)track.StartTime/TicksPerStep 
+                     + (track.PlayPat - clip.CurPat) * g_patSteps 
+                     + (track.PlayStep % g_patSteps) 
+                   : TimeStep) 
                 + chordSpreadOffset;
 
             AddNoteAndSounds(new Note(chan, ch, 1, num, patStep, len));
