@@ -2,8 +2,12 @@
 {
     partial class Program
     {
-        void ProcessArg(string arg)
+        bool ProcessArg(string arg)
         {
+            if (arg.Length == 0)
+                return False;
+
+
             arg = arg.ToLower().Trim();
 
             int val;
@@ -151,6 +155,9 @@
 
                     break;
             }
+
+
+            return True;
         }
     }
 }

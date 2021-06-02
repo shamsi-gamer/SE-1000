@@ -68,8 +68,8 @@ namespace IngameScript
 
 
             DrawComplexityInfo(sprites, x, y +  60);
-            DrawRuntimeInfo   (sprites, x, y + 100);
-            DrawPolyphonyInfo (sprites, x, y + 140);
+            DrawRuntimeInfo   (sprites, x, y +  95);
+            DrawPolyphonyInfo (sprites, x, y + 130);
 
 
             //var oy = new int[dance.Length];
@@ -93,8 +93,8 @@ namespace IngameScript
             var cx = x + 137;
 
             DrawString(sprites, "CMP",  x + 20, y - 4, 1.2f,    color6);
-            DrawRect  (sprites,        cx -  1, y + 1, 355, 28, color6, 2);
-            FillRect  (sprites,        cx,      y + 2, 353 * g_dspCount / Runtime.MaxInstructionCount, 26, color6);
+            DrawRect  (sprites,        cx -  1, y + 1, 355, 27, color6, 2);
+            FillRect  (sprites,        cx,      y + 2, 353 * g_dspCount / Runtime.MaxInstructionCount, 25, color6);
         }
 
 
@@ -103,13 +103,13 @@ namespace IngameScript
             var cx = x + 137;
 
             DrawString(sprites, "RUN",  x + 20, y - 4, 1.2f,    color6);
-            DrawRect  (sprites,        cx -  1, y + 1, 355, 28, color6, 2);
+            DrawRect  (sprites,        cx -  1, y + 1, 355, 27, color6, 2);
 
             var avg = g_runtimeMs.Sum() / g_runtimeMs.Length;
-            FillRect  (sprites,        cx,      y + 2, 353 * Math.Min(avg, 1), 26, color3);
+            FillRect  (sprites,        cx,      y + 2, 353 * Math.Min(avg, 1), 25, color3);
 
             for (int i = 0; i < g_runtimeMs.Length; i++)
-                FillRect(sprites, cx + 2, y + 4 + i*4, 40 * g_runtimeMs[i] / g_maxRuntimeMs, 2, color5);
+                FillRect(sprites, cx + 2, y + 5 + i*2, 40 * g_runtimeMs[i] / g_maxRuntimeMs, 1, color5);
 
             Array.Sort(g_runtimeMs);
             var med = (g_runtimeMs[2] + g_runtimeMs[3])/2;
@@ -126,8 +126,8 @@ namespace IngameScript
             var cx = x + 137;
 
             DrawString(sprites, "POLY",  x + 20, y - 4, 1.2f,    color6);
-            DrawRect  (sprites,         cx -  1, y + 1, 355, 28, color6, 2);
-            FillRect  (sprites,         cx,      y + 2, 353 * Math.Min(g_sm.UsedRatio, 1), 26, color6);
+            DrawRect  (sprites,         cx -  1, y + 1, 355, 27, color6, 2);
+            FillRect  (sprites,         cx,      y + 2, 353 * Math.Min(g_sm.UsedRatio, 1), 25, color6);
         }
         
         

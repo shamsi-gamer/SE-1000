@@ -133,7 +133,8 @@ namespace IngameScript
                 }
 
 
-                if (OK(NextClip)) 
+                if (   OK(NextClip)
+                    && OK(Clips[NextClip])) 
                     SetEditedClip(Clips[NextClip]);
             }
 

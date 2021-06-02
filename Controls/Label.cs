@@ -27,8 +27,6 @@ namespace IngameScript
 
             public bool          UsedForSession;
 
-          //public bool          NeedsUpdate;
-
 
             public Label(int           category, 
                          IMyTextPanel  panel,
@@ -55,10 +53,9 @@ namespace IngameScript
 
                 UsedForSession  = usedForSession;
 
-              //NeedsUpdate     = T;
 
                      if (category == 3) g_fastLabels  .Add(this);
-                     if (category == 2) g_adjustLabels.Add(this);
+                else if (category == 2) g_adjustLabels.Add(this);
                 else if (category == 1) g_clipLabels  .Add(this);
                 else                    g_slowLabels  .Add(this);
             }

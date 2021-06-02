@@ -199,7 +199,6 @@ namespace IngameScript
 
             case strTune: return strTune;
 
-            case strTrig: return "Trigger";
             case strEnv:  return "Envelope";
             case strAtt:  return "Attack";
             case strDec:  return "Decay";
@@ -238,7 +237,6 @@ namespace IngameScript
             { 
             case strVol:  return new Parameter(tag,    0,           2,   0.5f,  1,    0.01f,  0.1f,  1,    parent, inst, src);
                                                                                        
-            case strTrig: return new Parameter((Parameter)parent, parent, tag, False);
             case strEnv:  return new Envelope(parent, inst, src);                                  
             case strAtt:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    parent, inst, src);
             case strDec:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, parent, inst, src);

@@ -39,7 +39,7 @@ namespace IngameScript
                     Channels[ch].AutoKeys.Clear();
                 }
             }
-
+            
 
             public string Save()
             {

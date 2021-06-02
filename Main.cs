@@ -8,26 +8,26 @@ namespace IngameScript
     {
         public void Main(string arg, UpdateType update)
         {
-            pnlInfoLog.CustomData = "";
+            //pnlInfoLog.CustomData = "";
 
 
             if (!g_init) return;
             FinishStartup();
 
-            if (arg.Length > 0)
-            {
-                ProcessArg(arg);
+
+            if (ProcessArg(arg))
                 return;
-            }
+
 
             _triggerDummy.Clear();
+
 
             if (_loadStep > OscCount)
             {
                 Update1();
                 
-                if ((update & UpdateType.Update10) != 0) 
-                    Update10();
+                if ((update & UpdateType.Update10 ) != 0) Update10 ();
+                if ((update & UpdateType.Update100) != 0) Update100();
 
 
                 g_time++;
@@ -61,8 +61,8 @@ namespace IngameScript
             //foreach (var track in g_session.Tracks)
             //    track.UpdateNotesArePlaying();
 
-            if (  !TooComplex
-                && ShowClip)
+            if (    ShowClip
+                && !TooComplex)
             { 
                 foreach (var lbl in g_fastLabels)
                     lbl.Update();
@@ -91,43 +91,49 @@ namespace IngameScript
                         lbl.Update();
 
 
-                if (!TooComplex)
-                {
-                    if (ShowClip)
-                    {
-                        foreach (var lbl in g_clipLabels)   lbl.Update();
-                        foreach (var lbl in g_adjustLabels) lbl.Update();
-                    }
-                    else
-                    {
-                        ClearLabels(g_fastLabels);
-                        ClearLabels(g_clipLabels);
-                        ClearLabels(g_adjustLabels);
-                    }
-                }
-
-
-
-                foreach (var track in Tracks)
-                {
-                    track.DampenDisplayVolumes();
-                    //track.NotesArePlaying = F;
+                if (    ShowClip
+                    && !TooComplex)
+                { 
+                    foreach (var lbl in g_clipLabels)   lbl.Update();
+                    foreach (var lbl in g_adjustLabels) lbl.Update();
                 }
 
 
                 if (!TooComplex)
+                { 
+                    foreach (var track in Tracks)
+                    {
+                        track.DampenDisplayVolumes();
+                        //track.NotesArePlaying = F;
+                    }
+
                     UnmarkAllLabels();
+                }
             }
 
 
             ResetRuntimeInfo();
 
 
-            g_dspCount = g_instCount;
+            g_dspCount  = g_instCount;
             g_instCount = 0;
 
 
-            warningLight.Enabled = g_sm.UsedRatio > 0.9f;
+            warningLight.Enabled = 
+                   TooComplex 
+                || g_sm.UsedRatio > 0.9f;
+        }
+
+
+        void Update100()
+        {
+            if (   _loadStep > 10
+                && !ShowClip)
+            {
+                ClearLabels(g_fastLabels);
+                ClearLabels(g_clipLabels);
+                ClearLabels(g_adjustLabels);
+            }
         }
 
 

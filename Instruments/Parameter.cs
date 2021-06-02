@@ -26,7 +26,6 @@ namespace IngameScript
                              Delta,
                              BigDelta;
 
-            public Parameter Trigger;
             public Envelope  Envelope;
             public LFO       Lfo;
             public Modulate  Modulate;
@@ -49,7 +48,6 @@ namespace IngameScript
                 Delta     = delta;
                 BigDelta  = bigDelta;
 
-                Trigger   = Parameter_null;
                 Envelope  =  Envelope_null;
                 Lfo       =       LFO_null;
                 Modulate  =  Modulate_null;
@@ -70,7 +68,6 @@ namespace IngameScript
                 Delta     = param.Delta;
                 BigDelta  = param.BigDelta;
 
-                Trigger   = copy ? param.Trigger ?.Copy(this) : Parameter_null;
                 Envelope  = copy ? param.Envelope?.Copy(this) :  Envelope_null;
                 Lfo       = copy ? param.Lfo     ?.Copy(this) :       LFO_null;
                 Modulate  = copy ? param.Modulate?.Copy(this) :  Modulate_null;
@@ -242,7 +239,6 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case strTrig: return GetOrAddParamFromTag(Trigger, tag);
                     case strEnv:  return Envelope ?? (Envelope = new Envelope(this, Instrument, Source));
                     case strLfo:  return Lfo      ?? (Lfo      = new LFO     (this, Instrument, Source));
                     case strMod:  return Modulate ?? (Modulate = new Modulate(this, Instrument, Source));
@@ -255,8 +251,7 @@ namespace IngameScript
             public override bool HasDeepParams(Channel chan, int src)
             {
                 return
-                       OK(Trigger )
-                    || OK(Envelope)
+                       OK(Envelope)
                     || OK(Lfo     )
                     || OK(Modulate)
                     || (chan?.HasKeys(GetPath(src)) ?? False)
@@ -266,8 +261,7 @@ namespace IngameScript
 
             public override void DeleteSetting(Setting setting)
             {
-                     if (setting == Trigger )                           Trigger  = Parameter_null;
-                else if (setting == Envelope)                           Envelope =  Envelope_null;
+                     if (setting == Envelope)                           Envelope =  Envelope_null;
                 else if (setting == Lfo     ) { g_lfo.Remove(Lfo);      Lfo      =       LFO_null; }
                 else if (setting == Modulate) { g_mod.Remove(Modulate); Modulate =  Modulate_null; }
             }
@@ -277,13 +271,11 @@ namespace IngameScript
             {
                 m_value = Default;
 
-                Trigger ?.Clear();
                 Envelope?.Clear();
                 Lfo     ?.Clear();
                 Modulate?.Clear();
 
-                Trigger  = Parameter_null;
-                Envelope =  Envelope_null;
+                Envelope = Envelope_null;
 
                 if (OK(Lfo)) g_lfo.Remove(Lfo);
                 Lfo = LFO_null;
@@ -297,7 +289,6 @@ namespace IngameScript
             {
                 base.Reset();
 
-                Trigger ?.Reset();
                 Envelope?.Reset();
                 Lfo     ?.Reset();
                 Modulate?.Reset();
@@ -351,7 +342,6 @@ namespace IngameScript
                     }
                 }
 
-                Trigger ?.Delete(clip, iSrc);
                 Envelope?.Delete(clip, iSrc);
                 Lfo     ?.Delete(clip, iSrc);
                 Modulate?.Delete(clip, iSrc);
@@ -362,7 +352,6 @@ namespace IngameScript
             {
                 var nSettings = 0;
                 
-                if (OK(Trigger )) nSettings++;
                 if (OK(Envelope)) nSettings++;
                 if (OK(Lfo     )) nSettings++;
                 if (OK(Modulate)) nSettings++;
@@ -373,10 +362,9 @@ namespace IngameScript
                     + WS(m_value.ToString("0.######")) 
                     +  S(nSettings)
 
-                    + Program.SaveSetting(Trigger)
-                    + Program.SaveSetting(Envelope)
-                    + Program.SaveSetting(Lfo)
-                    + Program.SaveSetting(Modulate);
+                    + SaveSetting(Envelope)
+                    + SaveSetting(Lfo)
+                    + SaveSetting(Modulate);
             }
 
 
@@ -388,8 +376,8 @@ namespace IngameScript
 
                      if (OK(proto )) param = proto;                                                    
                 else if (OK(parent)) param = (Parameter)parent.GetOrAddSettingFromTag(tag);            
-                else if (OK(iSrc))  param = (Parameter)inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
-                else                param = (Parameter)inst.GetOrAddSettingFromTag(tag);              
+                else if (OK(iSrc))   param = (Parameter)inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
+                else                 param = (Parameter)inst.GetOrAddSettingFromTag(tag);              
 
                 param.m_value = float.Parse(data[i++]);
 
@@ -399,7 +387,6 @@ namespace IngameScript
                 {
                     switch (data[i])
                     { 
-                        case strTrig: param.Trigger  =           Load(data, ref i, inst, iSrc, param); break;
                         case strEnv:  param.Envelope = Envelope .Load(data, ref i, inst, iSrc, param); break;
                         case strLfo:  param.Lfo      = LFO      .Load(data, ref i, inst, iSrc, param); break;
                         case strMod:  param.Modulate = Modulate .Load(data, ref i, inst, iSrc, param); break;
@@ -430,7 +417,6 @@ namespace IngameScript
 
                 base.DrawLabels(sprites, x, y, dp);
 
-                Trigger ?.DrawLabels(sprites, x, y, dp); 
                 Envelope?.DrawLabels(sprites, x, y, dp); 
                 Lfo     ?.DrawLabels(sprites, x, y, dp); 
                 Modulate?.DrawLabels(sprites, x, y, dp); 
@@ -539,12 +525,8 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                if (   !AnyParentIsEnvelope
-                    && !HasTagOrAnyParent(this,strTrig))
-                {
-                    DrawFuncButton(sprites, strTrig, 0, w, h, True, OK(Trigger));
-                    DrawFuncButton(sprites, strEnv,  1, w, h, True, OK(Envelope));
-                }
+                if (!AnyParentIsEnvelope)
+                    DrawFuncButton(sprites, strEnv, 1, w, h, True, OK(Envelope));
 
                 DrawFuncButton(sprites, strLfo, 2, w, h, True, OK(Lfo));
                 DrawFuncButton(sprites, strMod, 3, w, h, True, OK(Modulate));
@@ -557,12 +539,6 @@ namespace IngameScript
             {
                 switch (func)
                 {
-                case 0:
-                    if (   AnyParentIsEnvelope
-                        || HasTagOrAnyParent(this, strTrig)) break;
-                    AddNextSetting(strTrig);
-                    break;
-
                 case 1:
                     if (AnyParentIsEnvelope) break;
                     AddNextSetting(strEnv);

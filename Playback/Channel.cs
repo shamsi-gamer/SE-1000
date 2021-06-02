@@ -119,17 +119,18 @@ namespace IngameScript
 
             public string Save()
             {
-                var save =
-                      WS(Pattern.Channels.IndexOf(this))
-                    + W (Instrument.Name)
+                var save = "";
 
-                    + WB(On)
-                    + WS(Volume)
-                    + WS(Shuffle)
-                    + WS(Transpose)
+                save += WS(Pattern.Channels.IndexOf(this));
+                save += W (Instrument.Name);
 
-                    + SaveNotes()
-                    + SaveAutoKeys();
+                save += WB(On);
+                save += WS(Volume);
+                save += WS(Shuffle);
+                save += WS(Transpose);
+
+                save += SaveNotes();
+                save += SaveAutoKeys();
 
                 return save;
             }

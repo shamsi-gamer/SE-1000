@@ -16,7 +16,7 @@ namespace IngameScript
                        g_init           = False;
 
         static int     g_curRuntimeTick = 0;
-        static float[] g_runtimeMs      = new float[6];
+        static float[] g_runtimeMs      = new float[10];
         static float   g_maxRuntimeMs   = 0;
 
         float          g_instCount      = 0,

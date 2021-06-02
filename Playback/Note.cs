@@ -146,7 +146,7 @@ namespace IngameScript
                 var note = new Note();
 
                 note.Number     = int  .Parse(data[i++]);
-                note.Step    = float.Parse(data[i++]);
+                note.Step       = float.Parse(data[i++]);
                 note.StepLength = float.Parse(data[i++]);
                 note.Volume     = float.Parse(data[i++]);
 
