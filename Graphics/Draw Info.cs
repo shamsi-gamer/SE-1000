@@ -29,59 +29,65 @@ namespace IngameScript
 
             FillRect(sprites, x, y, w, h, color0);
 
-            //if (g_session.IsPlaying)
-            //{
-            //    var sec = (int)(PlayStep * g_session.TicksPerStep / FPS);
-            //    var min = sec / 60;
-            //    sec %= 60;
+            if (OK(g_ioAction)) // loading or saving
+                DrawIoInfo(sprites, x, y + 130);
 
-            //    FillRect(sprites, x + 50, y + h - 192, 250, 64, color6);
-            //    DrawString(sprites, S(min) + ":" + sec.ToString("00"), x + 175, y + h - 191, 2f, color0, TaC);
-            //}
+            else
+            { 
+                //if (g_session.IsPlaying)
+                //{
+                //    var sec = (int)(PlayStep * g_session.TicksPerStep / FPS);
+                //    var min = sec / 60;
+                //    sec %= 60;
 
-
-            DrawButton(sprites, "Load",  0, 3, w, 50, IsPressed(lcdInfo+0));
-            DrawButton(sprites, "Save",  1, 3, w, 50, IsPressed(lcdInfo+1));
-
-            DrawButton(sprites, strDown, 0, 3, w, h,  IsPressed(lcdInfo+2));
-            DrawButton(sprites, strUp,   1, 3, w, h,  IsPressed(lcdInfo+3));
-
-            var strPlay = Playing ? "Stop ■" : "Play ►";
-            DrawButton(sprites, strPlay, 2, 3, w, h, Playing);
+                //    FillRect(sprites, x + 50, y + h - 192, 250, 64, color6);
+                //    DrawString(sprites, S(min) + ":" + sec.ToString("00"), x + 175, y + h - 191, 2f, color0, TaC);
+                //}
 
 
-            DrawString(sprites, S0(GetBPM()), x + 173, y + h - 122, 2.5f, color6, TA_CENTER);
-            DrawString(sprites, "BPM",        x + 142, y + h - 43, 1f, color6);
+                DrawButton(sprites, "Load",  0, 3, w, 50, IsPressed(lcdInfo+0));
+                DrawButton(sprites, "Save",  1, 3, w, 50, IsPressed(lcdInfo+1));
+
+                DrawButton(sprites, strDown, 0, 3, w, h,  IsPressed(lcdInfo+2));
+                DrawButton(sprites, strUp,   1, 3, w, h,  IsPressed(lcdInfo+3));
+
+                var strPlay = Playing ? "Stop ■" : "Play ►";
+                DrawButton(sprites, strPlay, 2, 3, w, h, Playing);
 
 
-            var nameLines = EditedClip.Name.Split('\n');
+                DrawString(sprites, S0(GetBPM()), x + 173, y + h - 122, 2.5f, color6, TA_CENTER);
+                DrawString(sprites, "BPM",        x + 142, y + h - 43, 1f, color6);
 
-            if (nameLines.Length > 0) 
-                DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TA_CENTER);
 
-            if (nameLines.Length > 1) 
-            {
-                for (var i = 1; i < Math.Min(nameLines.Length, 4); i++)
-                    DrawString(sprites, nameLines[i], x + w/2, y + 211 + i * 30, 1, color6, TA_CENTER);
+                var nameLines = EditedClip.Name.Split('\n');
+
+                if (nameLines.Length > 0) 
+                    DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TA_CENTER);
+
+                if (nameLines.Length > 1) 
+                {
+                    for (var i = 1; i < Math.Min(nameLines.Length, 4); i++)
+                        DrawString(sprites, nameLines[i], x + w/2, y + 211 + i * 30, 1, color6, TA_CENTER);
+                }
+
+
+
+                DrawComplexityInfo(sprites, x, y +  60);
+                DrawRuntimeInfo   (sprites, x, y +  95);
+                DrawPolyphonyInfo (sprites, x, y + 130);
+
+
+                //var oy = new int[dance.Length];
+                //for (int i = 0; i < oy.Length; i++) oy[0] = 0;
+
+
+                //var iMan =
+                //    OK(g_song.PlayTime)
+                //    ? (int)(g_song.PlayStep / 2) % dance.Length
+                //    : 3;
+
+                //dsp.Add(ref frame, DrawString(dance[iMan], x + 30, y + 330 - oy[iMan], 1.8f, color6));
             }
-
-
-
-            DrawComplexityInfo(sprites, x, y +  60);
-            DrawRuntimeInfo   (sprites, x, y +  95);
-            DrawPolyphonyInfo (sprites, x, y + 130);
-
-
-            //var oy = new int[dance.Length];
-            //for (int i = 0; i < oy.Length; i++) oy[0] = 0;
-
-
-            //var iMan =
-            //    OK(g_song.PlayTime)
-            //    ? (int)(g_song.PlayStep / 2) % dance.Length
-            //    : 3;
-
-            //dsp.Add(ref frame, DrawString(dance[iMan], x + 30, y + 330 - oy[iMan], 1.8f, color6));
 
 
             dsp.Draw(sprites);
@@ -93,8 +99,7 @@ namespace IngameScript
             var cx = x + 137;
 
             DrawString(sprites, "CMP",  x + 20, y - 4, 1.2f,    color6);
-            DrawRect  (sprites,        cx -  1, y + 1, 355, 27, color6, 2);
-            FillRect  (sprites,        cx,      y + 2, 353 * g_dspCount / Runtime.MaxInstructionCount, 25, color6);
+            DrawProgressBar(sprites, cx-1, y, 355, 27, g_dspCount / Runtime.MaxInstructionCount);
         }
 
 
@@ -126,11 +131,37 @@ namespace IngameScript
             var cx = x + 137;
 
             DrawString(sprites, "POLY",  x + 20, y - 4, 1.2f,    color6);
-            DrawRect  (sprites,         cx -  1, y + 1, 355, 27, color6, 2);
-            FillRect  (sprites,         cx,      y + 2, 353 * Math.Min(g_sm.UsedRatio, 1), 25, color6);
+            DrawProgressBar(sprites, cx-1, y, 355, 27, Math.Min(g_sm.UsedRatio, 1));
         }
         
         
+        void DrawIoInfo(List<MySprite> sprites, float x, float y)
+        {
+            var cx = x + 137;
+
+            var val = 1f;
+
+            if (g_ioAction == 1) // save
+            {
+                var total = Instruments.Count + Tracks.Count;
+                var done  = (g_ioState == 1 ? Instruments.Count : 0) + g_ioPos;
+
+                if (total > 1)
+                    val = (float)(done+1) / (total-1);
+            }
+
+            DrawString(sprites, g_ioAction == 0 ? "LOAD" : "SAVE", x + 20, y - 4, 1.2f, color6);
+            DrawProgressBar(sprites, cx-1, y, 355, 27, val);
+        }
+
+
+        void DrawProgressBar(List<MySprite> sprites, float x, float y, float w, float h, float val)
+        {
+            DrawRect(sprites, x,   y,    w,          h,   color6, 2);
+            FillRect(sprites, x+1, y+1, (w-2) * val, h-2, color6);
+        }
+
+
         void DrawIO()
         {
             var dsp = dspIO;

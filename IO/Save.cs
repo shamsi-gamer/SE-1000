@@ -11,20 +11,60 @@ namespace IngameScript
         {
             Save();
 
-            dspIO.Panel.WriteText(
-                  pnlStorageState      .GetText()
-                + pnlStorageInstruments.GetText()
-                + pnlStorageTracks     .GetText());
+            g_ioAction = 1; // save
+            g_ioState  = 0; // instruments
+            g_ioPos    = 0;
+
+            g_ioString = "";
 
             g_lcdPressed.Add(lcdInfo+1);
+        }
+
+
+        void UpdateSave()
+        {
+            if (g_ioState == 0) // instruments
+            {
+                if (g_ioPos < Instruments.Count) // save next instrument
+                {
+                    if (g_ioPos > 0) g_ioString += "\n";
+                    g_ioString += Instruments[g_ioPos++].Save();
+                }
+                else // end of instruments
+                {
+                    pnlStorageInstruments.WriteText(g_ioString);
+                    ResetIO();
+
+                    g_ioState = 1; // tracks
+                    g_ioPos   = 0; // clip
+                }
+            }
+            else //if (g_ioState == 1) // tracks
+            {
+                if (g_ioPos < Tracks.Count)
+                { 
+                    if (g_ioPos > 0) g_ioString += "\n";
+                    g_ioString += Tracks[g_ioPos++].Save();
+                }
+                else // end of tracks
+                {
+                    pnlStorageTracks.WriteText(g_ioString);
+                    ResetIO();
+                }
+            }
+
+            // at the end
+
+            //dspIO.Panel.WriteText(
+            //      pnlStorageState      .GetText()
+            //    + pnlStorageInstruments.GetText()
+            //    + pnlStorageTracks     .GetText());
         }
 
 
         void Save()
         {
             SaveMachineState();
-            SaveInstruments();
-            SaveTracks();
         }
 
 
@@ -64,32 +104,32 @@ namespace IngameScript
         }
 
 
-        void SaveInstruments()
-        {
-            var inst = "";
+        //void SaveInstruments()
+        //{
+        //    var inst = "";
 
-            for (int i = 0; i < Instruments.Count; i++)
-            { 
-                if (i > 0) inst += "\n";
-                inst += Instruments[i].Save();
-            }
+        //    for (int i = 0; i < Instruments.Count; i++)
+        //    { 
+        //        if (i > 0) inst += "\n";
+        //        inst += Instruments[i].Save();
+        //    }
 
-            pnlStorageInstruments.WriteText(inst);
-        }
+        //    pnlStorageInstruments.WriteText(inst);
+        //}
 
 
-        void SaveTracks()
-        {
-            var tracks = "";
+        //void SaveTracks()
+        //{
+        //    var tracks = "";
 
-            for (int t = 0; t < Tracks.Count; t++)
-            {
-                if (t > 0) tracks += "\n";
-                tracks += Tracks[t].Save();
-            }
+        //    for (int t = 0; t < Tracks.Count; t++)
+        //    {
+        //        if (t > 0) tracks += "\n";
+        //        tracks += Tracks[t].Save();
+        //    }
 
-            pnlStorageTracks.WriteText(tracks);
-        }
+        //    pnlStorageTracks.WriteText(tracks);
+        //}
 
 
         static string SaveSetting(Setting setting)

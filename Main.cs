@@ -24,24 +24,13 @@ namespace IngameScript
 
             if (_loadStep > OscCount)
             {
-                Update1();
+                if (OK(g_ioAction)) UpdateIO();
+                else                Update1();
                 
                 if ((update & UpdateType.Update10 ) != 0) Update10 ();
                 if ((update & UpdateType.Update100) != 0) Update100();
 
-
-                g_time++;
-
-                foreach (var lfo in g_lfo) lfo.AdvanceTime();
-                foreach (var mod in g_mod) mod.AdvanceTime();
-
-                foreach (var track in Tracks)
-                { 
-                    if (   Playing
-                        && OK(track.PlayTime))
-                        track.PlayTime++;
-                }
-
+                UpdateTime();
 
                 UpdateRuntimeInfo();
             }
@@ -87,9 +76,7 @@ namespace IngameScript
                 
 
                 if (!TooComplex)
-                    foreach (var lbl in g_slowLabels)
-                        lbl.Update();
-
+                    foreach (var lbl in g_slowLabels) lbl.Update();
 
                 if (    ShowClip
                     && !TooComplex)
@@ -133,6 +120,22 @@ namespace IngameScript
                 ClearLabels(g_fastLabels);
                 ClearLabels(g_clipLabels);
                 ClearLabels(g_adjustLabels);
+            }
+        }
+
+
+        void UpdateTime()
+        {
+            g_time++;
+
+            foreach (var lfo in g_lfo) lfo.AdvanceTime();
+            foreach (var mod in g_mod) mod.AdvanceTime();
+
+            foreach (var track in Tracks)
+            { 
+                if (   Playing
+                    && OK(track.PlayTime))
+                    track.PlayTime++;
             }
         }
 

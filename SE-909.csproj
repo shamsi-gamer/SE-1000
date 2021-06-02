@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Args.cs" />
     <Compile Include="Controls\Label.cs" />
+    <Compile Include="IO\IO.cs" />
     <Compile Include="Labels\Adjust Labels.cs" />
     <Compile Include="Labels\Chord Labels.cs" />
     <Compile Include="Labels\Edit Labels.cs" />

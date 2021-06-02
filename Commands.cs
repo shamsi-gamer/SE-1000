@@ -301,7 +301,7 @@ namespace IngameScript
 
             lblOut.Mark();
 
-            SaveInstruments();
+            //SaveInstruments();
         }
 
 
@@ -357,7 +357,7 @@ namespace IngameScript
 
             lblBack.Mark();
 
-            SaveInstruments();
+            //SaveInstruments();
         }
 
 

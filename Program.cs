@@ -52,10 +52,6 @@ namespace IngameScript
                                       g_hingeR;
                                       
 
-        static int                    g_saveTrack, 
-                                      g_saveClip;
-
-
         static List<Note>             lastNotes = new List<Note>();
                                                    
         Channel                       copyChan  = Channel_null;
@@ -96,6 +92,9 @@ namespace IngameScript
                 g_random[i] = RND;
 
 
+            ResetIO();
+
+
             InitDisplays();
             InitLabels();
             InitFuncButtons(); 
@@ -115,10 +114,6 @@ namespace IngameScript
             g_hingeR      = GetHinge("R");
 
             g_remote      = Get("Remote Control") as IMyRemoteControl;
-
-
-            g_saveTrack   =
-            g_saveClip    = -1;
 
 
             g_init = True;

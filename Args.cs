@@ -28,8 +28,8 @@
                 case "load inst":   ImportInstruments();             break;
                 case "load tracks": LoadTracks();                    break;
 
-                case "save inst":   SaveInstruments();               break;
-                case "save tracks": SaveTracks();                    break;
+                //case "save inst":   SaveInstruments();               break;
+                //case "save tracks": SaveTracks();                    break;
 
                 case "play":        Play();                          break;
 

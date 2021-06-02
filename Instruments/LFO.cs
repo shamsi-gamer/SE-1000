@@ -28,8 +28,6 @@ namespace IngameScript
             int                 m_count;
             int                 MaxCount = 4;
 
- 
-
 
             public LFO(Setting parent, Instrument inst, Source src) 
                 : base(strLfo, parent, Setting_null, inst, src) 
@@ -103,8 +101,7 @@ namespace IngameScript
 
             public float UpdateValue(TimeParams tp)
             {
-                if ( /*m_valid 
-                    ||*/tp.Program.TooComplex) 
+                if (tp.Program.TooComplex) 
                     return 0;
 
                 var amp  = Amplitude.UpdateValue(tp);
