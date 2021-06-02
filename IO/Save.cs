@@ -33,13 +33,14 @@ namespace IngameScript
                 else // end of instruments
                 {
                     pnlStorageInstruments.WriteText(g_ioString);
-                    ResetIO();
 
-                    g_ioState = 1; // tracks
-                    g_ioPos   = 0; // clip
+                    g_ioState  = 1; // tracks
+                    g_ioPos    = 0; // clip
+
+                    g_ioString = "";
                 }
             }
-            else //if (g_ioState == 1) // tracks
+            else if (g_ioState == 1) // tracks
             {
                 if (g_ioPos < Tracks.Count)
                 { 

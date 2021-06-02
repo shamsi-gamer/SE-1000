@@ -30,8 +30,12 @@ namespace IngameScript
             FillRect(sprites, x, y, w, h, color0);
 
             if (OK(g_ioAction)) // loading or saving
+            { 
                 DrawIoInfo(sprites, x, y + 130);
 
+                if (g_ioAction == 0) DrawButton(sprites, "Load", 0, 3, w, 50, IsPressed(lcdInfo+0));
+                else                 DrawButton(sprites, "Save", 1, 3, w, 50, IsPressed(lcdInfo+1));
+            }
             else
             { 
                 //if (g_session.IsPlaying)
@@ -96,22 +100,22 @@ namespace IngameScript
 
         void DrawComplexityInfo(List<MySprite> sprites, float x, float y)
         {
-            var cx = x + 137;
+            var cx = x + 136;
 
             DrawString(sprites, "CMP",  x + 20, y - 4, 1.2f,    color6);
-            DrawProgressBar(sprites, cx-1, y, 355, 27, g_dspCount / Runtime.MaxInstructionCount);
+            DrawProgressBar(sprites,    cx,     y, 355, 27, g_dspCount / Runtime.MaxInstructionCount);
         }
 
 
         void DrawRuntimeInfo(List<MySprite> sprites, float x, float y)
         {
-            var cx = x + 137;
+            var cx = x + 136;
 
             DrawString(sprites, "RUN",  x + 20, y - 4, 1.2f,    color6);
-            DrawRect  (sprites,        cx -  1, y + 1, 355, 27, color6, 2);
+            DrawRect  (sprites,        cx,      y,     355, 27, color6, 2);
 
             var avg = g_runtimeMs.Sum() / g_runtimeMs.Length;
-            FillRect  (sprites,        cx,      y + 2, 353 * Math.Min(avg, 1), 25, color3);
+            FillRect  (sprites,        cx,      y + 1, 353 * Math.Min(avg, 1), 25, color3);
 
             for (int i = 0; i < g_runtimeMs.Length; i++)
                 FillRect(sprites, cx + 2, y + 5 + i*2, 40 * g_runtimeMs[i] / g_maxRuntimeMs, 1, color5);
@@ -122,22 +126,22 @@ namespace IngameScript
             var strMed = PrintValue(med,            -3, True, 0);
             var strMax = PrintValue(g_maxRuntimeMs, -3, True, 0);
 
-            DrawString(sprites, "med " + strMed + ", max " + strMax + " ms", cx + 55, y + 7, 0.5f, color6);
+            DrawString(sprites, "med " + strMed + ", max " + strMax + " ms", cx + 55, y + 6, 0.5f, color6);
         }
         
         
         void DrawPolyphonyInfo(List<MySprite> sprites, float x, float y)
         {
-            var cx = x + 137;
+            var cx = x + 136;
 
             DrawString(sprites, "POLY",  x + 20, y - 4, 1.2f,    color6);
-            DrawProgressBar(sprites, cx-1, y, 355, 27, Math.Min(g_sm.UsedRatio, 1));
+            DrawProgressBar(sprites,     cx,     y, 355, 27, Math.Min(g_sm.UsedRatio, 1));
         }
         
         
         void DrawIoInfo(List<MySprite> sprites, float x, float y)
         {
-            var cx = x + 137;
+            var cx = x + 20;
 
             var val = 1f;
 
@@ -150,8 +154,7 @@ namespace IngameScript
                     val = (float)(done+1) / (total-1);
             }
 
-            DrawString(sprites, g_ioAction == 0 ? "LOAD" : "SAVE", x + 20, y - 4, 1.2f, color6);
-            DrawProgressBar(sprites, cx-1, y, 355, 27, val);
+            DrawProgressBar(sprites, cx, y, 471, 27, val);
         }
 
 

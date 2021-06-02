@@ -8,7 +8,7 @@ namespace IngameScript
     {
         public void Main(string arg, UpdateType update)
         {
-            //pnlInfoLog.CustomData = "";
+            pnlInfoLog.CustomData = "";
 
 
             if (!g_init) return;
@@ -30,7 +30,8 @@ namespace IngameScript
                 if ((update & UpdateType.Update10 ) != 0) Update10 ();
                 if ((update & UpdateType.Update100) != 0) Update100();
 
-                UpdateTime();
+                //if (!OK(g_ioAction))
+                    UpdateTime();
 
                 UpdateRuntimeInfo();
             }

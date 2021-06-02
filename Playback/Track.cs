@@ -116,6 +116,7 @@ namespace IngameScript
                     { 
                         NextClip = PlayClip; // cancel cue
                         CueNextClip(index);
+                        UpdateClipName();
                     }
 
                     else

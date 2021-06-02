@@ -24,7 +24,7 @@ namespace IngameScript
         }
 
 
-        void UpdateClipName()
+        static void UpdateClipName()
         {
             var sb = new StringBuilder();
             dspInfo.Panel.ReadText(sb, False);
