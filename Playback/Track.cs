@@ -284,28 +284,23 @@ namespace IngameScript
             }
 
 
-            public bool CueNextPattern()
+            public bool GetCueNextPattern()
             {
                 if (   !OK(PlayClip)
                     && !OK(NextClip))
                     return False;
 
-                if (      !OK(PlayPat)
-                       && !OK(NextPat)
-                    || PlayStep < (PlayPat + 1) * g_patSteps)
+                if (   !OK(PlayPat)
+                    && !OK(NextPat))
                     return False;
 
+                if (PlayStep < (PlayPat + 1) * g_patSteps)
+                    return False;
 
                 if (NextClip != PlayClip)
                 { 
                     NextPat  = 0;
                     PlayClip = NextClip;
-
-                    //if (   EditClip == 0
-                    //    && OK(PlayClip)) 
-                    //    SetClip(Clips[PlayClip], PlayClip);
-
-                    //UpdateInstName();
                 }
 
                 if (!OK(PlayClip))
@@ -315,18 +310,18 @@ namespace IngameScript
                     return False;
                 }
 
+                return True;
+            }
 
-                var clip = Clips[PlayClip];
 
+            public void CueNextPattern(Clip clip)
+            {
                 clip.Length = clip.Patterns.Count * g_patSteps;
 
                 UpdateBlockPat(clip);
                 UpdatePlayTime(clip);
 
-
                 PlayPat = (int)(PlayStep / g_patSteps);
-
-                return True;
             }
 
 

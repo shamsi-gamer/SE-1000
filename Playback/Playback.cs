@@ -77,24 +77,7 @@ namespace IngameScript
             var cueNext = False;
 
             foreach (var track in Tracks)
-            {
-                if (   !OK(track.PlayClip)
-                    && !OK(track.NextClip))
-                    continue;
-
-                cueNext |= track.CueNextPattern();
-
-                if (!OK(track.PlayClip))
-                    continue;
-
-                var clip = track.Clips[track.PlayClip];
-
-                if (   clip == EditedClip
-                    && clip.Follow) 
-                    clip.SetCurrentPattern(track.PlayPat);
-
-                AddPlaybackNotes(clip);
-            }
+                cueNext |= track.GetCueNextPattern();
 
 
             if (cueNext)
@@ -105,6 +88,24 @@ namespace IngameScript
                         && track.NextClip != track.PlayClip)
                         track.NextPat = 0;
                 }
+            }
+
+
+            foreach (var track in Tracks)
+            {                
+                if (!OK(track.PlayClip))
+                    continue;
+
+                var clip = track.Clips[track.PlayClip];
+                if (!OK(clip)) continue;
+
+                track.CueNextPattern(clip);
+
+                if (   clip == EditedClip
+                    && clip.Follow) 
+                    clip.SetCurrentPattern(track.PlayPat);
+
+                AddPlaybackNotes(clip);
             }
 
 
