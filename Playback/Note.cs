@@ -51,14 +51,14 @@ namespace IngameScript
             }
 
 
-            public Note(Note note)
+            public Note(Note note, Channel chan = Channel_null)
             {
-                Channel     = note.Channel;
-                iChan       = note.iChan;
-                Number      = note.Number;
-                Volume      = note.Volume;
-                Step     = note.Step;
-                StepLength  = note.StepLength;
+                Channel    = chan ?? note.Channel;
+                iChan      = note.iChan;
+                Number     = note.Number;
+                Volume     = note.Volume;
+                Step       = note.Step;
+                StepLength = note.StepLength;
 
                 Sounds = new List<Sound>();
 

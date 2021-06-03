@@ -50,7 +50,8 @@
                                    k.Path == path
                                 && k.StepTime >= (EditedClip.EditPos % g_patSteps)
                                 && k.StepTime <  (EditedClip.EditPos % g_patSteps) + 1))
-                            ? "Move" : strEmpty);
+                            ? "Move" 
+                            : strEmpty);
                     }
                 }
                 else

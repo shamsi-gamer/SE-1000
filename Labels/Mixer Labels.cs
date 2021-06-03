@@ -59,8 +59,8 @@ namespace IngameScript
 
         void UpdateMixerMuteAll(Label lbl)
         {
-                 if ( ShowMixer) lbl.SetText(ShowClip ? strEmpty : "Mute", 8, 18);
-            else if (!ShowClip ) lbl.SetText("Del");
+            if (ShowClip) lbl.SetText(ShowMixer ? "Mute" : strEmpty, 8, 18);
+            else          lbl.SetText("Del");
         }
     }
 }

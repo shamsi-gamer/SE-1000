@@ -83,12 +83,7 @@
 
         public void SetVolume(int ch, float dv)
         {
-            if (!ShowMixer)
-            { 
-                Tracks[dv > 0 ? 0 : 1].SetClip(ch);
-                CheckIfMustStop();
-            }
-            else
+            if (ShowMixer)
             { 
                 var vol = CurPattern.Channels[ch].Volume;
                 var mod = (MixerShift ? 10 : 1) * dv;
@@ -104,18 +99,20 @@
 
                 g_lcdPressed.Add(lcdMixer+ch);
             }
+            else
+            { 
+                if (MixerShift) SetAllTrackClips(ch);
+                else            Tracks[dv > 0 ? 0 : 1].SetClip(ch);
+
+                CheckIfMustStop();
+            }
         }
 
 
         void Solo(int ch)
         {
-            if (!ShowMixer)
+            if (ShowMixer)
             { 
-                Tracks[2].SetClip(ch);
-                CheckIfMustStop();
-            }
-            else
-            {
                 if (EditedClip.Solo >= 0)
                 {
                     int _first, _last;
@@ -131,10 +128,8 @@
                     return;
                 }
 
-
                 for (int _ch = 0; _ch < g_nChans; _ch++)
                     EditedClip.ChanOn[_ch] = CurPattern.Channels[_ch].On;
-
 
                 int first, last;
                 EditedClip.GetCurPatterns(out first, out last);
@@ -144,17 +139,19 @@
 
                 EditedClip.Solo = EditedClip.Solo == ch ? -1 : ch;
             }
+            else
+            {
+                if (MixerShift) SetAllTrackClips(ch);
+                else            Tracks[2].SetClip(ch);
+
+                CheckIfMustStop();
+            }
         }
 
 
         void Mute(int ch)
         {
-            if (!ShowMixer)
-            { 
-                Tracks[3].SetClip(ch);
-                CheckIfMustStop();
-            }
-            else
+            if (ShowMixer)
             { 
                 var on = !CurPattern.Channels[ch].On;
 
@@ -166,6 +163,13 @@
 
                 if (!on)
                     EditedClip.TrimCurrentNotes(ch);
+            }
+            else
+            {
+                if (MixerShift) SetAllTrackClips(ch);
+                else            Tracks[3].SetClip(ch);
+
+                CheckIfMustStop();
             }
         }
 

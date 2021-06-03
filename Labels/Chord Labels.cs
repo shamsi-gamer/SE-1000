@@ -64,7 +64,7 @@
         void UpdateChordNum(Label lbl)
         {
             var chord = lbl.Data;
-            lbl.SetText(GetChordName(EditedClip.Chords[chord-1], S(chord)));
+            lbl.SetText(S(chord));//GetChordName(EditedClip.Chords[chord-1], S(chord)));
         }
 
 

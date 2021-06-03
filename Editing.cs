@@ -15,14 +15,14 @@ namespace IngameScript
 
         void PasteChan(Clip clip, int p, int ch)
         {
-            if (!OK(copyChan))
+            if (!OK(g_copyChan))
                 return;
 
             int f, l;
             clip.GetPatterns(p, out f, out l);
 
             for (int i = f; i <= l; i++)
-                clip.Patterns[i].Channels[ch] = new Channel(copyChan);
+                clip.Patterns[i].Channels[ch] = new Channel(g_copyChan);
 
             UpdateInstOff(clip.CurChan);
         }

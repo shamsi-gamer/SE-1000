@@ -261,6 +261,16 @@ namespace IngameScript
         }}
 
 
+        void SetAllTrackClips(int col)
+        {
+            foreach (var track in Tracks)
+            { 
+                if (OK(track.Clips[col]))
+                    track.SetClip(col);
+                else
+                    track.NextClip = -1;
+            }
+        }
 
 
         static void UpdateInstName(bool add = True)

@@ -447,14 +447,12 @@ namespace IngameScript
                 }
                 else
                 { 
-                    if (OK(SelChan))
+                    if (!OK(SelChan))
                     { 
                         if (LockView == 0)
                             LockView = ShowPiano ? 2 : 1;
                         else
                             LockView = 0;
-
-                        //CopyChan(EditClip, CurPat, CurChan);
                     }
                 }
             }
@@ -486,7 +484,7 @@ namespace IngameScript
                     for (int p = f; p <= l; p++)
                         PasteChan(EditedClip, p, CurChan);
 
-                    copyChan = Channel_null;
+                    g_copyChan = Channel_null;
                 }
             }
 
@@ -723,13 +721,17 @@ namespace IngameScript
 
         void Copy()
         {
-
+            g_copyChan = new Channel(EditedClip.CurChannel);
         }
 
 
         void Paste()
         {
+            if (EditedClip.RndInst)
+                CurChannel.Instrument = g_copyChan.Instrument;
 
+            foreach (var note in g_copyChan.Notes)
+                CurChannel.Notes.Add(new Note(note, CurChannel));
         }
     }
 }

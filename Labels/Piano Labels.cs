@@ -57,8 +57,11 @@ namespace IngameScript
         bool PianoHighIsDim(Label lbl)
         {
             return
-                   ShowPiano
-                && NoteIsDim(HighToNote(lbl.Data));
+                      ShowPiano
+                   && NoteIsDim(HighToNote(lbl.Data))
+                ||   !ShowPiano
+                   && OK(g_copyChan)
+                   && (lbl == lblHigh[5] || lbl == lblHigh[6]);
         }
 
 
