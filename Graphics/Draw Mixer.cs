@@ -53,7 +53,9 @@ namespace IngameScript
                 DrawSoundLevel(sprites, rx + vb/2, y, rw - vb, h - 15, chan.Volume, EditedClip.Track.DspVol[ch], chan, 2);
             }
 
-            dsp.Draw(sprites);
+
+            if (!TooComplex)
+                dsp.Draw(sprites);
         }
     }
 }

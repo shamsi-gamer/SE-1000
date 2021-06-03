@@ -104,7 +104,14 @@ namespace IngameScript
                         var pw = cw / clip.Patterns.Count;
                         var jx = lx - 2 + j*pw;
 
-                        DrawLine(sprites, jx, ly, jx, ly + lh, isPlayClip ? color6 : color4, 1); 
+                        DrawLine(
+                            sprites, 
+                            jx, 
+                            ly, 
+                            jx, 
+                            ly + lh, 
+                            isPlayClip ? color6 : (j%4 == 0 ? color5 : color4),
+                            isPlayClip ? 2 : 1);
                     }
 
 

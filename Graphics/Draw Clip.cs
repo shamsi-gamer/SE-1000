@@ -235,7 +235,8 @@ namespace IngameScript
                 FillRect(sprites, x, y, w, h, color0);
 
 
-            dsp.Draw(sprites);
+            if (!TooComplex)
+                dsp.Draw(sprites);
         }
 
 

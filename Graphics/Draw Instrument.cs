@@ -53,20 +53,22 @@ namespace IngameScript
             SelInstrument.DrawLabels(sprites, x + lw + w2 + 21, y + 5, dpInst);
 
 
-            DrawCurrentSetting(
-                sprites, 
-                x + lw, 
-                y + rh/4, 
-                (w-lw)/3, 
-                instHeight - rh/4);
+            if (!TooComplex)
+                DrawCurrentSetting(
+                    sprites, 
+                    x + lw, 
+                    y + rh/4, 
+                    (w-lw)/3, 
+                    instHeight - rh/4);
 
-            DrawSourceList(
-                sprites,
-                x + lw + (w - lw)/3,
-                y + rh/4,
-                (w - lw)*2/3f,
-                instHeight - rh/4,
-                inst);
+            if (!TooComplex)
+                DrawSourceList(
+                    sprites,
+                    x + lw + (w - lw)/3,
+                    y + rh/4,
+                    (w - lw)*2/3f,
+                    instHeight - rh/4,
+                    inst);
 
 
             // bottom func separator
@@ -89,6 +91,8 @@ namespace IngameScript
 
             for (int i = EditedClip.InstOff; i < Math.Min(EditedClip.InstOff + maxDspInst, Instruments.Count); i++)
             {
+                if (TooComplex) break;
+
                 var inst = Instruments[i];
 
                 DrawString(
@@ -120,7 +124,10 @@ namespace IngameScript
             var iy = y - EditedClip.SrcOff;
 
             for (int i = EditedClip.SrcOff; i < Math.Min(EditedClip.SrcOff + maxDspSrc, nSrc); i++)
+            {
+                if (TooComplex) break;
                 inst.Sources[i].DrawSource(sprites, x + sw, ref iy, w - sw, this);
+            }
 
             if (OK(CurSrc) && nSrc > 8)
             {
