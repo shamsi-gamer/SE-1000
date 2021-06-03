@@ -129,8 +129,8 @@ namespace IngameScript
         {
             g_time++;
 
-            foreach (var lfo in g_lfo) lfo.AdvanceTime();
-            foreach (var mod in g_mod) mod.AdvanceTime();
+            foreach (var lfo in g_lfo) if (!TooComplex) lfo.AdvanceTime();
+            foreach (var mod in g_mod) if (!TooComplex) mod.AdvanceTime();
 
             foreach (var track in Tracks)
             { 

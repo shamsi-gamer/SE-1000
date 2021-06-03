@@ -163,8 +163,12 @@ namespace IngameScript
                 }
 
 
+                var clip  = Note.Channel.Pattern.Clip;
+                var track = clip.Track;
+
+
                 var lTime = g_time - Time;
-                var sTime = g_time - EditedClip.Track.StartTime;
+                var sTime = g_time - track.StartTime;
 
                 var tp = new TimeParams(g_time, lTime, Note, Length, SourceIndex, TriggerValues, prog);
 
@@ -173,8 +177,7 @@ namespace IngameScript
                 if (OK(Cache)) // not echo
                 {
                     var updateVol = 
-                        EditedClip.Track.PlayTime < Time + Length + ReleaseLength
-                        //&& !prog.TooComplex
+                        track.PlayTime < Time + Length + ReleaseLength
                         ? GetVolume(g_time, prog)
                         : 0;
 
@@ -182,7 +185,7 @@ namespace IngameScript
                           TriggerVolume
                         * updateVol
                         * Channel.Volume
-                        * EditedClip.Volume;
+                        * clip.Volume;
 
                     // this is for the fake "current volume"
                     if (   (   Source.Oscillator == OscSlowSweepDown
@@ -237,17 +240,16 @@ namespace IngameScript
                 }
 
 
-                UpdateSpeakers(vol, prog);
+                if (!prog.TooComplex)
+                    UpdateSpeakers(vol);
+
 
                 ElapsedTime = g_time - Time;
             }
 
 
-            void UpdateSpeakers(float vol, Program prog)
+            void UpdateSpeakers(float vol)
             {
-                if (prog.TooComplex) return;
-
-
                 var v = (float)Math.Pow(vol, 2);
 
                 if (Speakers.Count == 0)

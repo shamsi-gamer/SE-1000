@@ -100,14 +100,14 @@ namespace IngameScript
 
                 else if (OK(clip))
                 { 
-                         if (EditClip == 0  // move clip
-                          || EditClip == 1) // duplicate clip    
+                    if (EditClip == 1  // move clip
+                          || EditClip == 2) // duplicate clip
                         ClipCopy = clip; 
                     
-                    else if (EditClip == 2)     
+                    else if (EditClip == 3) // delete clip
                         DeleteClip(clip, index); 
                                                  
-                    else if (PlayClip != index)
+                    else if (index != PlayClip)
                         CueNextClip(index);
                     
                     else if (OK(PlayClip)
@@ -127,7 +127,7 @@ namespace IngameScript
                             Stop();
                     }
                 }
-                else
+                else if (EditClip == 0)
                 { 
                     Clips[index] = Clip.Create(this);
                     CueNextClip(index);
@@ -151,6 +151,18 @@ namespace IngameScript
                 }
                 else
                     NextClip = index;
+
+
+                if (EditClip == 0)
+                { 
+                    foreach (var track in Tracks)
+                    {
+                        if (track == this) continue;
+                        track.NextClip = -1;
+                    }
+
+                    EditClip = -1;
+                }
 
 
                 if (!CueClip)
@@ -186,8 +198,8 @@ namespace IngameScript
 
             void PlaceClip(int index)
             {
-                if (   EditClip == 0
-                    || EditClip == 1) 
+                if (   EditClip == 1
+                    || EditClip == 2) 
                     MoveClip(index);
 
                 EditedClip = Clips[index];
@@ -204,7 +216,7 @@ namespace IngameScript
                 var srcIndex = srcTrack.Clips.IndexOf(ClipCopy);
 
 
-                if (EditClip == 0) // move
+                if (EditClip == 1) // move
                     Swap(ref Clips[index], ref srcTrack.Clips[srcIndex]);
 
                 else // duplicate
@@ -226,7 +238,7 @@ namespace IngameScript
                 { 
                     if (this != srcTrack)
                     { 
-                        if (EditClip == 0) // move
+                        if (EditClip == 1) // move
                         { 
                             Swap(ref PlayPat,   ref srcTrack.PlayPat);
                             Swap(ref NextPat,   ref srcTrack.NextPat);
@@ -445,7 +457,11 @@ namespace IngameScript
                 {
                     if (prog.TooComplex) return;
 
-                    var snd   = g_sounds[i];
+                    var snd = g_sounds[i];
+
+                    if (snd.Channel.Pattern.Clip.Track != this)
+                        continue;
+
                     var lTime = g_time - snd.Time;
 
                     if (lTime < snd.Length + snd.ReleaseLength)
@@ -453,11 +469,17 @@ namespace IngameScript
                         var instVol = snd.Source.Instrument.DisplayVolume;
                         if (!OK(instVol)) instVol = 0;
 
+                        var playVol =
+                               OK(PlayClip)
+                            && OK(Clips[PlayClip])
+                            ?   instVol
+                              * snd.Channel.Volume
+                              * Clips[PlayClip].Volume
+                            : 0;
+
                         DspVol[snd.iChan] = Math.Max(
                             DspVol[snd.iChan],
-                              instVol
-                            * snd.Channel.Volume
-                            * EditedClip.Volume);
+                            playVol);
                     }
                 }
             }
@@ -466,7 +488,7 @@ namespace IngameScript
             public void DampenDisplayVolumes()
             {
                 for (int i = 0; i < DspVol.Length; i++)
-                    DspVol[i] *= 0.6f;
+                    DspVol[i] *= 0.2f;
             }
 
 

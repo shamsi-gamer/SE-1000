@@ -44,7 +44,7 @@ namespace IngameScript
                                 MixerShift,
                                 Move;
                                 
-        static int              EditClip; // 0 = move, 1 = dup, 2 = del
+        static int              EditClip; // 0 = set, 1 = move, 2 = dup, 3 = del
 
                  
         static bool Playing => OK(Tracks.Find(track => track?.Playing ?? False));

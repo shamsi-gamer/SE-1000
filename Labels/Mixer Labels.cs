@@ -5,20 +5,23 @@ namespace IngameScript
     {
         void InitMixerLabels()
         { 
-            lblMixerVolumeUp = new Label(0, GetLabel("Volume Up"), CF_null, CF_null, UpdateVolumeUpAll);
+            lblMixerVolumeUp = new Label(0, GetLabel("Volume Up"),
+                lbl => !ShowClip && EditClip == 0, 
+                CF_null,
+                UpdateVolumeUpAll);
 
             lblMixerVolumeDown = new Label(0, GetLabel("Volume Down"), 
-                lbl => EditClip == 0 && !OK(ClipCopy), 
-                lbl => EditClip == 0 &&  OK(ClipCopy), 
+                lbl => !ShowClip && EditClip == 1 && !OK(ClipCopy), 
+                lbl => !ShowClip && EditClip == 1 &&  OK(ClipCopy), 
                 UpdateVolumeDownAll);
 
             lblMixerAll = new Label(0, GetLabel("Solo"),
-                lbl => EditClip == 1 && !OK(ClipCopy), 
-                lbl => EditClip == 1 &&  OK(ClipCopy), 
+                lbl => !ShowClip && EditClip == 2 && !OK(ClipCopy), 
+                lbl => !ShowClip && EditClip == 2 &&  OK(ClipCopy), 
                 UpdateMixerAll);
 
             lblMixerMuteAll = new Label(0, GetLabel("Mute"),
-                lbl => EditClip == 2, 
+                lbl => !ShowClip && EditClip == 3, 
                 CF_null,             
                 UpdateMixerMuteAll);
 
@@ -27,35 +30,37 @@ namespace IngameScript
             lblShowClip   = new Label(0, GetLabel("Show Clip"), lbl => ShowClip);
             lblMix        = new Label(0, GetLabel("Mix"),       lbl => ShowMixer);
             lblCueClip    = new Label(0, GetLabel("Cue Clip"),  lbl => CueClip);
-
         }
 
 
         void UpdateVolumeUpAll(Label lbl)
         {
-            if (!ShowMixer) lbl.SetText("Scn");
-            else            lbl.SetText("Vol ►", 8, 18);
+            if (   ShowMixer
+                || ShowClip) lbl.SetText("Vol ►", 8, 18);
+            else             lbl.SetText("Set");
         }
 
 
         void UpdateVolumeDownAll(Label lbl)
         {
-            if (!ShowMixer) lbl.SetText("Move");
-            else            lbl.SetText("◄ Vol", 8, 18);
+            if (   ShowMixer
+                || ShowClip) lbl.SetText("◄ Vol", 8, 18);
+            else             lbl.SetText("Move");
         }
 
 
         void UpdateMixerAll(Label lbl)
         {
-            if (!ShowMixer) lbl.SetText("Dup");
-            else            lbl.SetText("Solo", 8, 18);
+            if (   ShowMixer
+                || ShowClip) lbl.SetText("Solo", 8, 18);
+            else             lbl.SetText("Dup");
         }
 
 
         void UpdateMixerMuteAll(Label lbl)
         {
-            if (!ShowMixer) lbl.SetText("Del");
-            else            lbl.SetText("Mute", 8, 18);
+                 if ( ShowMixer) lbl.SetText(ShowClip ? strEmpty : "Mute", 8, 18);
+            else if (!ShowClip ) lbl.SetText("Del");
         }
     }
 }

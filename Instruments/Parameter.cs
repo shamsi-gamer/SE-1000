@@ -415,11 +415,14 @@ namespace IngameScript
 
                 var dp = new DrawParams(_dp);
 
-                base.DrawLabels(sprites, x, y, dp);
+                if (!_dp.Program.TooComplex)
+                {
+                    base.DrawLabels(sprites, x, y, dp);
 
-                Envelope?.DrawLabels(sprites, x, y, dp); 
-                Lfo     ?.DrawLabels(sprites, x, y, dp); 
-                Modulate?.DrawLabels(sprites, x, y, dp); 
+                    Envelope?.DrawLabels(sprites, x, y, dp); 
+                    Lfo     ?.DrawLabels(sprites, x, y, dp); 
+                    Modulate?.DrawLabels(sprites, x, y, dp); 
+                }
 
                 _dp.Next(dp);
             }

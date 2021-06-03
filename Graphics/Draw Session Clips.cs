@@ -59,24 +59,38 @@ namespace IngameScript
                            OK(track.NextClip) 
                         || !isPlayClip;
 
-                    // clip rectangle
-                    var cnw = cancel ? 0 : 14;
+                    Color colTop, colBottom; 
                     
-                    Color col; 
-                    
-                         if (!OK(clip))  col = color1;
-                    else if (isPlayClip) col = color3;
-                    else                 col = color2;
+                         if (!OK(clip))  { colTop = color1; colBottom = color1; }
+                    else if (isPlayClip) { colTop = color3; colBottom = color4; }
+                    else                 { colTop = color2; colBottom = color3; }
 
-                    FillRect(sprites, lx + cnw, ly + cnw, lw - cnw*2, lh - cnw*2, col);
+                    FillRect(sprites, lx, ly, lw, lh, colTop);
+
+
+                    float vol = 0;
+
+                    foreach (var v in track.DspVol)
+                        vol = Math.Max(v, vol);
+
+                    vol = Math.Min(vol, 1);
+
+
+                    // draw rectangle
+                    if (isPlayClip)
+                        FillRect(sprites, lx, ly+lh, lw, -vol*lh, colBottom);
 
 
                     if (!OK(clip)) continue;
 
 
                     // next in queue
-                    if (ix == track.NextClip)
+                    if (  !isPlayClip 
+                        && ix == track.NextClip
+                        && track.NextClip != track.PlayClip)
                         DrawRect(sprites, lx+7, ly+7, lw-14, lh-14, color3, 14);
+                    else if (isPlayClip && !OK(track.NextClip))
+                        DrawRect(sprites, lx+7, ly+7, lw-14, lh-14, color0, 14);
 
 
                     // edited clip
@@ -85,7 +99,7 @@ namespace IngameScript
                         var editCol = color3;
 
                              if (ix == track.NextClip
-                              && ix == track.PlayClip) editCol = color4;
+                              && ix == track.PlayClip) editCol = vol > 14/lh ? color5 : color4;
                         else if (isPlayClip)           editCol = color5;
 
                         var ew = cancel ?  0 : 14;
@@ -101,7 +115,7 @@ namespace IngameScript
                     // pattern marks
                     for (int j = 1; j < clip.Patterns.Count; j++)
                     {
-                        var pw = cw / clip.Patterns.Count;
+                        var pw = (cw-gap) / clip.Patterns.Count;
                         var jx = lx - 2 + j*pw;
 
                         DrawLine(
@@ -113,6 +127,16 @@ namespace IngameScript
                             isPlayClip ? color6 : color5,
                             j % 4 == 0 ? 3 : 1);
                     }
+
+
+                    // set volume
+                    FillRect(
+                        sprites, 
+                        lx+lw-6, 
+                        ly+lh, 
+                        6, 
+                        -lh*clip.Volume, 
+                        isPlayClip ? color6 : color3);
 
 
                     // clip name
@@ -139,9 +163,9 @@ namespace IngameScript
                     {
                         var pw       = lw / clip.Patterns.Count;
                         var px       = lx + (track.PlayStep / g_patSteps) * pw;
-                        var patStart = track.PlayStep - track.PlayPat * g_patSteps <= 1;
+                        //var patStart = track.PlayStep - track.PlayPat * g_patSteps <= 1;
 
-                        DrawLine(sprites, px, ly, px, ly + lh, color6, patStart ? 11 : 7); 
+                        DrawLine(sprites, px, ly, px, ly + lh, color6, 9); 
                     }
                 }
             }

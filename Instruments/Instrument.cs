@@ -213,7 +213,10 @@ namespace IngameScript
 
             public void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
             {
-                Volume .DrawLabels(sprites, x, y, dp);
+                if (dp.Program.TooComplex)
+                    return;
+
+                Volume.DrawLabels(sprites, x, y, dp);
                 Tune  ?.DrawLabels(sprites, x, y, dp);
                 Filter?.DrawLabels(sprites, x, y, dp);
                 Delay ?.DrawLabels(sprites, x, y, dp);

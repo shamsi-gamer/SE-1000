@@ -8,21 +8,39 @@
         }
 
 
-        void EnableChannels(bool on)
+        void SetVolumeAll(float dv)
         {
-            if (!ShowMixer)
+            if (   ShowMixer
+                || ShowClip)
             { 
-                if (on) 
+                var mod = (MixerShift ? 10 : 1) * dv;
+                EditedClip.Volume = MinMax(0, EditedClip.Volume + dVol * mod, 2);
+
+                (dv > 0
+                 ? lblMixerVolumeUp
+                 : lblMixerVolumeDown).Mark();
+            }
+            else
+            {
+                if (dv > 0)
                 {
-                    if (EditClip == 0)
+                    EditClip = EditClip != 0 ? 0 : -1;
+                }
+                else
+                {
+                    if (EditClip == 2)
                         ClipCopy = Clip_null;
 
                     EditClip = EditClip != 1 ? 1 : -1;
                 }
-                else 
-                    EditClip = EditClip != 2 ? 2 : -1;
             }
-            else
+        }
+
+
+        void EnableChannels(bool on)
+        {
+            if (   ShowMixer
+                || (on && ShowClip))
             { 
                 for (int ch = 0; ch < g_nChans; ch++)
                     EnableChannel(ch, on);
@@ -30,6 +48,18 @@
                 (on
                  ? lblMixerAll
                  : lblMixerMuteAll).Mark();
+            }
+            else if (!ShowClip)
+            { 
+                if (on) 
+                {
+                    if (EditClip == 1)
+                        ClipCopy = Clip_null;
+
+                    EditClip = EditClip != 2 ? 2 : -1;
+                }
+                else 
+                    EditClip = EditClip != 3 ? 3 : -1;
             }
         }
 

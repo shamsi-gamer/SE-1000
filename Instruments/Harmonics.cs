@@ -301,12 +301,15 @@ namespace IngameScript
 
                 var dp = new DrawParams(_dp);
 
-                base.DrawLabels(sprites, x, y, dp);
+                if (!_dp.Program.TooComplex)
+                {
+                    base.DrawLabels(sprites, x, y, dp);
 
-                for (int i = 0; i < Tones.Length; i++)
-                { 
-                    if (Tones[i].HasDeepParams(CurChannel, CurSrc)) 
-                        Tones[i].DrawLabels(sprites, x, y, dp); 
+                    for (int i = 0; i < Tones.Length; i++)
+                    { 
+                        if (Tones[i].HasDeepParams(CurChannel, CurSrc)) 
+                            Tones[i].DrawLabels(sprites, x, y, dp); 
+                    }
                 }
 
                 _dp.Next(dp);
@@ -353,7 +356,7 @@ namespace IngameScript
 
                 // current tone
                 if (OK(CurTone)) FillRect(sprites, xt + CurTone * wc, yt + ht + 10, wc,    20, color5);
-                else              FillRect(sprites, xt,                yt + ht + 10, wc*24, 20, color5);
+                else             FillRect(sprites, xt,                yt + ht + 10, wc*24, 20, color5);
 
                 // has param marks
                 for (int i = 0; i < Tones.Length; i++)

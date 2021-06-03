@@ -198,5 +198,15 @@ namespace IngameScript
             g_labelsPressed.Clear();
                g_lcdPressed.Clear();
         }
+
+
+        void ClearLabels(List<Label> labels)
+        {
+            foreach (var lbl in labels) 
+            { 
+                lbl.SetText(strEmpty); 
+                lbl.BackColor = color0;
+            }
+        }
     }
 }

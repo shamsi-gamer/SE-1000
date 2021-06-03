@@ -155,10 +155,13 @@ namespace IngameScript
 
                 var dp = new DrawParams(_dp);
 
-                base.DrawLabels(sprites, x, y, dp);
+                if (!_dp.Program.TooComplex)
+                {
+                    base.DrawLabels(sprites, x, y, dp);
 
-                if (Cutoff   .HasDeepParams(CurChannel, CurSrc)) Cutoff   .DrawLabels(sprites, x, y, dp);
-                if (Resonance.HasDeepParams(CurChannel, CurSrc)) Resonance.DrawLabels(sprites, x, y, dp);
+                    if (Cutoff   .HasDeepParams(CurChannel, CurSrc)) Cutoff   .DrawLabels(sprites, x, y, dp);
+                    if (Resonance.HasDeepParams(CurChannel, CurSrc)) Resonance.DrawLabels(sprites, x, y, dp);
+                }
 
                 _dp.Next(dp);
             }

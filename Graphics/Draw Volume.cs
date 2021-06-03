@@ -12,8 +12,9 @@ namespace IngameScript
         {
             float maxVol = 0;
 
-            foreach (var vol in EditedClip.Track.DspVol)
-                maxVol = Math.Max(vol, maxVol);
+            foreach (var track in Tracks)
+                foreach (var vol in track.DspVol)
+                    maxVol = Math.Max(vol, maxVol);
 
             if (!TooComplex) DrawVolume(maxVol, dspVol1, 2);
             if (!TooComplex) DrawVolume(maxVol, dspVol2, 1);

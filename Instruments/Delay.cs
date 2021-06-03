@@ -201,12 +201,15 @@ namespace IngameScript
 
                 var dp = new DrawParams(_dp);
 
-                base.DrawLabels(sprites, x, y, dp);
+                if (!_dp.Program.TooComplex)
+                {
+                    base.DrawLabels(sprites, x, y, dp);
 
-                if (Count.HasDeepParams(CurChannel, CurSrc)) Count.DrawLabels(sprites, x, y, dp);
-                if (Time .HasDeepParams(CurChannel, CurSrc)) Time .DrawLabels(sprites, x, y, dp);
-                if (Level.HasDeepParams(CurChannel, CurSrc)) Level.DrawLabels(sprites, x, y, dp);
-                if (Power.HasDeepParams(CurChannel, CurSrc)) Power.DrawLabels(sprites, x, y, dp);
+                    if (Count.HasDeepParams(CurChannel, CurSrc)) Count.DrawLabels(sprites, x, y, dp);
+                    if (Time .HasDeepParams(CurChannel, CurSrc)) Time .DrawLabels(sprites, x, y, dp);
+                    if (Level.HasDeepParams(CurChannel, CurSrc)) Level.DrawLabels(sprites, x, y, dp);
+                    if (Power.HasDeepParams(CurChannel, CurSrc)) Power.DrawLabels(sprites, x, y, dp);
+                }
 
                 _dp.Next(dp);
             }

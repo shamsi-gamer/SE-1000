@@ -120,11 +120,13 @@ namespace IngameScript
                 var  inst   = Instrument;
                 var _sounds = new List<Sound>();
 
+                var  track  = note.Channel.Pattern.Clip.Track;
+
                 var triggerValues = new List<TriggerValue>();
 
 
                 var sndTime = note.Time + 1;
-                var lTime   = g_time - EditedClip.Track.StartTime - note.SongTime;
+                var lTime   = g_time - track.StartTime - note.SongTime;
 
                 var tp = new TimeParams(sndTime, lTime, note, note.FrameLength, Index, triggerValues, prog);
 
@@ -139,6 +141,10 @@ namespace IngameScript
                     && (   noteNum % NoteScale > 0
                         || noteNum >= (12 + OscSample.Samples.Count) * NoteScale))
                     return;
+
+                if (noteNum < 24*NoteScale)
+                    return;
+
 
                 var vol = note.Volume;
                 
@@ -312,13 +318,13 @@ namespace IngameScript
 
                     + Volume.Save()
                     
-                    + Program.SaveSetting(Offset)
-                    + Program.SaveSetting(Tune)
+                    + SaveSetting(Offset)
+                    + SaveSetting(Tune)
 
-                    + Program.SaveSetting(Harmonics)
-                    + Program.SaveSetting(Filter)
+                    + SaveSetting(Harmonics)
+                    + SaveSetting(Filter)
 
-                    + Program.SaveSetting(Delay);
+                    + SaveSetting(Delay);
             }
 
 
@@ -356,6 +362,9 @@ namespace IngameScript
 
             public void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
             {
+                if (dp.Program.TooComplex)
+                    return;
+
                 Offset   ?.DrawLabels(sprites, x, y, dp); 
                 Volume    .DrawLabels(sprites, x, y, dp); 
                 Tune     ?.DrawLabels(sprites, x, y, dp); 
@@ -462,7 +471,7 @@ namespace IngameScript
                 else
                 {
                     DrawFuncButton(sprites, strOff,  0, w, y, True, OK(Offset   ));
-                    DrawFuncButton(sprites, strVol,  1, w, y, True,    Volume.HasDeepParams(chan, Index));
+                    DrawFuncButton(sprites, strVol,  1, w, y, True, Volume.HasDeepParams(chan, Index));
                     DrawFuncButton(sprites, strTune, 2, w, y, True, OK(Tune     ));
                     DrawFuncButton(sprites, strHrm,  3, w, y, True, OK(Harmonics));
                     DrawFuncButton(sprites, strFlt,  4, w, y, True, OK(Filter   ));

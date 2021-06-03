@@ -261,38 +261,6 @@ namespace IngameScript
         }}
 
 
-        void SetVolumeAll(float dv)
-        {
-            if (!ShowMixer)
-            {
-                if (dv < 0)
-                {
-                    if (EditClip == 1)
-                        ClipCopy = Clip_null;
-
-                    EditClip = EditClip != 0 ? 0 : -1;
-                }
-            }
-            else
-            { 
-                var mod = (MixerShift ? 10 : 1) * dv;
-                EditedClip.Volume = MinMax(0, EditedClip.Volume + dVol * mod, 2);
-
-                (dv > 0
-                 ? lblMixerVolumeUp
-                 : lblMixerVolumeDown).Mark();
-            }
-        }
-
-
-        void ClearLabels(List<Label> labels)
-        {
-            foreach (var lbl in labels) 
-            { 
-                lbl.SetText(strEmpty); 
-                lbl.BackColor = color0;
-            }
-        }
 
 
         static void UpdateInstName(bool add = True)
