@@ -110,8 +110,8 @@ namespace IngameScript
                             ly, 
                             jx, 
                             ly + lh, 
-                            isPlayClip ? color6 : (j%4 == 0 ? color5 : color4),
-                            isPlayClip ? 2 : 1);
+                            isPlayClip ? color6 : color5,
+                            j % 4 == 0 ? 3 : 1);
                     }
 
 
@@ -141,7 +141,7 @@ namespace IngameScript
                         var px       = lx + (track.PlayStep / g_patSteps) * pw;
                         var patStart = track.PlayStep - track.PlayPat * g_patSteps <= 1;
 
-                        DrawLine(sprites, px, ly, px, ly + lh, color6, patStart ? 9 : 5); 
+                        DrawLine(sprites, px, ly, px, ly + lh, color6, patStart ? 11 : 7); 
                     }
                 }
             }
