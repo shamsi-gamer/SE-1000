@@ -3,7 +3,7 @@
     partial class Program
     {
         static int    g_ioAction, // 0 = load, 1 = save
-                      g_ioState,  // 0 = instruments, 1 = tracks
+                      g_ioState,  // 0 = instruments, 1 = tracks, 2 = save external
                       g_ioPos;    // instrument or track
 
         static string g_ioString;

@@ -18,7 +18,7 @@
                 case "save":        SaveSongExt();                   break;
 
                 case "load inst":   ImportInstruments();             break;
-                case "load tracks": LoadTracks();                    break;
+                case "load tracks": LoadTracks(pnlStorageTracks.GetText()); break;
 
                 case "play":        Play();                          break;
 

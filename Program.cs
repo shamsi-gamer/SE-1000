@@ -129,7 +129,10 @@ namespace IngameScript
             {
                 _loadStep++;
 
-                Load();
+                Load(
+                    pnlStorageState.GetText(),
+                    pnlStorageInstruments.GetText(),
+                    pnlStorageTracks.GetText());
 
                 SetLabelColor(EditedClip.ColorIndex);
             }

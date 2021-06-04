@@ -50,16 +50,20 @@ namespace IngameScript
                 else // end of tracks
                 {
                     pnlStorageTracks.WriteText(g_ioString);
-                    ResetIO();
+                    g_ioState = 2;
                 }
             }
-
-            // at the end
-
-            //dspIO.Panel.WriteText(
-            //      pnlStorageState      .GetText()
-            //    + pnlStorageInstruments.GetText()
-            //    + pnlStorageTracks     .GetText());
+            else if (g_ioState == 2) // save external
+            { 
+                dspIO.Panel.WriteText(
+                         pnlStorageState.GetText()
+                    + PN("%%%")
+                    + PN(pnlStorageInstruments.GetText())
+                    + PN("%%%")
+                    + PN(pnlStorageTracks.GetText()));
+                
+                ResetIO();
+            }
         }
 
 

@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿using System;
 using System.Collections.Generic;
 
 
@@ -8,17 +8,26 @@ namespace IngameScript
     {
         void LoadSongExt()
         {
-            //var clip = new StringBuilder();
-            //dspIO.Surface.ReadText(clip, F);
+            var data = dspIO.Panel.GetText();
 
-            //if (!LoadSong(S(clip)))
-            //    NewSong();
+            if (data.Trim() == "")
+            { 
+                Load("", pnlStorageInstruments.GetText(), "");
+                return;
+            }
+
+
+            var ext = data.Split(new string[] {"%%%"}, StringSplitOptions.None);
+            if (ext.Length != 3) return;
+
+            Load(ext[0], ext[1], ext[2]);
+            SetLabelColor(EditedClip.ColorIndex);
 
             g_lcdPressed.Add(lcdInfo + 0);
         }
 
 
-        void Load()
+        void Load(string stateData, string instData, string trackData)
         {
             Stop();
 
@@ -34,21 +43,25 @@ namespace IngameScript
                 copyTrack,
                 copyIndex;
 
-            if (!LoadMachineState(out editTrack, out editIndex, out copyTrack, out copyIndex)) 
-                                    CreateDefaultMachineState();
-            if (!LoadInstruments()) CreateDefaultInstruments();
-            if (!LoadTracks     ()) CreateDefaultTracks();
+            if (!LoadMachineState(stateData, out editTrack, out editIndex, out copyTrack, out copyIndex))
+                CreateDefaultMachineState();
+
+            if (!LoadInstruments(instData))
+                CreateDefaultInstruments();
+
+            if (!LoadTracks(trackData))
+                CreateDefaultTracks();
 
 
             if (!OK(EditedClip))
-            { 
+            {
                 EditedClip = Tracks[editTrack].Clips[editIndex];
                 UpdateClipDisplay();
             }
 
-            
+
             if (   OK(copyTrack) 
-                && OK(copyIndex)) 
+                && OK(copyIndex))
                 ClipCopy = Tracks[copyTrack].Clips[copyIndex];
 
 
@@ -63,13 +76,11 @@ namespace IngameScript
             //    ModDestChannel    = EditClip.Patterns[modPat].Channels[modChan];
             //    ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
             //}
-
-
-            return;
         }
 
 
-        bool LoadMachineState(out int editTrack, out int editIndex, 
+        bool LoadMachineState(string data,
+                              out int editTrack, out int editIndex, 
                               out int copyTrack, out int copyIndex)
         {
             ClearMachineState();
@@ -78,10 +89,10 @@ namespace IngameScript
             editTrack = editIndex =
             copyTrack = copyIndex = -1;
 
-            if (!pnlStorageState.GetText().Contains(";"))
+            if (!data.Contains(";"))
                 return False;
 
-            var state = pnlStorageState.GetText().Split(';');
+            var state = data.Split(';');
             var s = 0;
 
             SessionName = state[s++];
@@ -115,15 +126,12 @@ namespace IngameScript
         }
 
 
-        bool LoadInstruments()
+        bool LoadInstruments(string data)
         {
             Instruments = new List<Instrument>();
 
 
-            var sb = new StringBuilder();
-            pnlStorageInstruments.ReadText(sb);
-
-            var lines = sb.ToString().Split('\n');
+            var lines = data.Split('\n');
             var line  = 0;
 
 
@@ -142,7 +150,7 @@ namespace IngameScript
 
         public void ImportInstruments()
         {
-            LoadInstruments();
+            LoadInstruments(pnlStorageInstruments.GetText());
 
             // set all instruments to first
 
@@ -166,11 +174,11 @@ namespace IngameScript
         }
 
 
-        bool LoadTracks()
+        bool LoadTracks(string data)
         {
             CreateTracks();
 
-            var lines = pnlStorageTracks.GetText().Split('\n');
+            var lines = data.Split('\n');
             var line  = 0;
 
             for (int t = 0; t < Tracks.Count; t++)
