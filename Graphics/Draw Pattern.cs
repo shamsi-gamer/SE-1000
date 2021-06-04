@@ -40,8 +40,8 @@ namespace IngameScript
                 FillRect(
                     sprites, 
                     x + xt + wt * (clip.EditPos % g_patSteps), 
-                    y, 
-                    wt,
+                    y,
+                    wt / (EditedClip.EditStepLength == 0.25f || EditedClip.EditStepLength == 0.5f ? 2 : 1),
                     EditedClip.ParamKeys || EditedClip.ParamAuto ? h : rh,
                     color3);
             }
