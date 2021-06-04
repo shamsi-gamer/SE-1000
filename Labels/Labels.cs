@@ -206,6 +206,7 @@ namespace IngameScript
             { 
                 lbl.SetText(strEmpty); 
                 lbl.BackColor = color0;
+                lbl.Panel.BackgroundColor = color0;
             }
         }
     }

@@ -324,7 +324,7 @@ namespace IngameScript
                 foreach (var note in chan.Notes)
                 {
                     if (   note.SongStep >= clip.EditPos
-                        && note.SongStep <  clip.EditPos + EditedClip.EditStepIndex)
+                        && note.SongStep <  clip.EditPos + EditedClip.EditStep)
                         notes.Add(note);
                 }
 

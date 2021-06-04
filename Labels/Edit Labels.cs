@@ -39,7 +39,7 @@
                 lbl => lbl.SetText(strEdit),
                 lbl => 
                 {
-                    lbl.ForeColor = editColor6;
+                    lbl.ForeColor = ShowClip ? editColor6 : editColor0;
                     lbl.HalfColor = 
                     lbl.BackColor = editColor0;
                 });
@@ -50,7 +50,7 @@
                 lbl => lbl.SetText(strRec),
                 lbl => 
                 {
-                    lbl.ForeColor = recColor6;
+                    lbl.ForeColor = ShowClip ? recColor6 : recColor0;
                     lbl.HalfColor = 
                     lbl.BackColor = recColor0;
                 });

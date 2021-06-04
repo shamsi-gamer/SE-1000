@@ -64,8 +64,7 @@ namespace IngameScript
         {
             Runtime.UpdateFrequency =
                   UpdateFrequency.Update1
-                | UpdateFrequency.Update10
-                | UpdateFrequency.Update100;
+                | UpdateFrequency.Update10;
 
 
             pnlInfoLog = Get("Info Display") as IMyTextPanel;

@@ -27,8 +27,8 @@ namespace IngameScript
                 if (OK(g_ioAction)) UpdateIO();
                 else                Update1();
                 
-                if ((update & UpdateType.Update10 ) != 0) Update10 ();
-                if ((update & UpdateType.Update100) != 0) Update100();
+                if ((update & UpdateType.Update10) != 0) 
+                    Update10();
 
                 //if (!OK(g_ioAction))
                     UpdateTime();
@@ -47,9 +47,6 @@ namespace IngameScript
 
             if (!TooComplex)
                 UpdatePlayback();
-
-            //foreach (var track in g_session.Tracks)
-            //    track.UpdateNotesArePlaying();
 
             if (    ShowClip
                 && !TooComplex)
@@ -79,21 +76,29 @@ namespace IngameScript
                 if (!TooComplex)
                     foreach (var lbl in g_slowLabels) lbl.Update();
 
-                if (    ShowClip
-                    && !TooComplex)
+                if (!TooComplex)
                 { 
-                    foreach (var lbl in g_clipLabels)   lbl.Update();
-                    foreach (var lbl in g_adjustLabels) lbl.Update();
+                    if (ShowClip)
+                    { 
+                        foreach (var lbl in g_clipLabels)   lbl.Update();
+                        foreach (var lbl in g_adjustLabels) lbl.Update();
+                    }
+                    
+                    if (HideClip)
+                    {
+                        ClearLabels(g_fastLabels);
+                        ClearLabels(g_clipLabels);
+                        ClearLabels(g_adjustLabels);
+
+                        HideClip = False;
+                    }
                 }
 
 
                 if (!TooComplex)
                 { 
                     foreach (var track in Tracks)
-                    {
                         track.DampenDisplayVolumes();
-                        //track.NotesArePlaying = F;
-                    }
 
                     UnmarkAllLabels();
                 }
@@ -110,18 +115,6 @@ namespace IngameScript
             warningLight.Enabled = 
                    TooComplex 
                 || g_sm.UsedRatio > 0.9f;
-        }
-
-
-        void Update100()
-        {
-            if (   _loadStep > 10
-                && !ShowClip)
-            {
-                ClearLabels(g_fastLabels);
-                ClearLabels(g_clipLabels);
-                ClearLabels(g_adjustLabels);
-            }
         }
 
 

@@ -17,7 +17,7 @@ namespace IngameScript
 
             lblMixerAll = new Label(0, GetLabel("Solo"),
                 lbl => !ShowClip && EditClip == 2 && !OK(ClipCopy), 
-                lbl => !ShowClip && EditClip == 2 &&  OK(ClipCopy), 
+                lbl => !ShowClip && (EditClip == 0 || EditClip == 2) &&  OK(ClipCopy), 
                 UpdateMixerAll);
 
             lblMixerMuteAll = new Label(0, GetLabel("Mute"),

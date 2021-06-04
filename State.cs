@@ -39,6 +39,7 @@ namespace IngameScript
                                 ClipCopy;
                                 
         static bool             ShowClip,
+                                HideClip,
                                 ShowMixer,
                                 CueClip, 
                                 MixerShift,
@@ -96,7 +97,8 @@ namespace IngameScript
             ShowClip     = 
             CueClip      = 
             MixerShift   = True;
-                        
+
+            HideClip     =                         
             ShowMixer    = 
             Move         = False;
                          

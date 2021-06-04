@@ -36,8 +36,6 @@ namespace IngameScript
             
             public float[] DspVol;
 
-            //public bool  NotesArePlaying;
-            
 
             public Track()
             {
@@ -49,8 +47,6 @@ namespace IngameScript
                 Stop();
                           
                 DspVol = new float[g_nChans];
-
-                //NotesArePlaying = F;
             }
 
 
@@ -73,8 +69,6 @@ namespace IngameScript
                 NextPat   = track.NextPat;
                           
                 DspVol    = new float[g_nChans];
-
-                //NotesArePlaying = track.NotesArePlaying;
             }
 
 
@@ -511,13 +505,6 @@ namespace IngameScript
                 for (int i = 0; i < DspVol.Length; i++)
                     DspVol[i] = 0;
             }
-
-
-            //public void UpdateNotesArePlaying()
-            //{
-            //    if (OK(g_notes.Find(n => n.Channel.Pattern.Clip.Track == this)))
-            //        NotesArePlaying = T;
-            //}
         }
 
 
