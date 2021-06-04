@@ -51,9 +51,8 @@ namespace IngameScript
 
         void UpdateMixerAll(Label lbl)
         {
-            if (   ShowMixer
-                || ShowClip) lbl.SetText("Solo", 8, 18);
-            else             lbl.SetText("Dup");
+            if (ShowClip) lbl.SetText(ShowMixer ? "Solo" : strEmpty, 8, 18);
+            else          lbl.SetText("Dup");
         }
 
 

@@ -311,18 +311,18 @@ namespace IngameScript
                 if (PlayStep < (PlayPat + 1) * g_patSteps)
                     return False;
 
-                if (NextClip != PlayClip)
-                { 
-                    NextPat  = 0;
-                    PlayClip = NextClip;
-                }
+                //if (NextClip != PlayClip)
+                //{ 
+                //    NextPat  = 0;
+                //    PlayClip = NextClip;
+                //}
 
-                if (!OK(PlayClip))
-                {
-                    PlayPat = -1;
-                    NextPat = -1;
-                    return False;
-                }
+                //if (!OK(PlayClip))
+                //{
+                //    PlayPat = -1;
+                //    NextPat = -1;
+                //    return False;
+                //}
 
                 return True;
             }

@@ -84,9 +84,15 @@ namespace IngameScript
             {
                 foreach (var track in Tracks)
                 {
-                    if (   OK(track.NextClip)
-                        && track.NextClip != track.PlayClip)
-                        track.NextPat = 0;
+                    if (track.NextClip != track.PlayClip)
+                    {
+                        track.PlayClip = track.NextClip;
+                        track.NextPat  = 0;
+                    }
+
+                    //if (   OK(track.NextClip)
+                    //    && track.NextClip != track.PlayClip)
+                    //    track.NextPat = 0;
                 }
             }
 
@@ -94,7 +100,11 @@ namespace IngameScript
             foreach (var track in Tracks)
             {                
                 if (!OK(track.PlayClip))
+                {
+                    track.PlayPat = -1;
+                    track.NextPat = -1;
                     continue;
+                }
 
                 var clip = track.Clips[track.PlayClip];
                 if (!OK(clip)) continue;

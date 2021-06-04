@@ -73,7 +73,7 @@ namespace IngameScript
                     foreach (var v in track.DspVol)
                         vol = Math.Max(v, vol);
 
-                    vol = Math.Min(vol, 1);
+                    vol = Math.Min(vol*2/3f, 1);
 
 
                     // draw rectangle
@@ -135,8 +135,18 @@ namespace IngameScript
                         lx+lw-6, 
                         ly+lh, 
                         6, 
-                        -lh*clip.Volume, 
+                        -lh*clip.Volume*2/3f, 
                         isPlayClip ? color6 : color3);
+
+                    FillRect(
+                        sprites, 
+                        lx+lw-6, 
+                        ly+lh/3, 
+                        6, 
+                        4, 
+                        isPlayClip 
+                        ? (clip.Volume > 1 ? color4 : color6) 
+                        : (clip.Volume > 1 ? color2 : color3));
 
 
                     // clip name
