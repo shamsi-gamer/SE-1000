@@ -47,7 +47,7 @@ namespace IngameScript
 
                         track.Stop();
 
-                        if (!CueClip)
+                        if (!CueClip) // stop is not cancellable, a double click is like a panic button
                             track.NextClip = -1;
                     }
                 }
@@ -85,14 +85,12 @@ namespace IngameScript
                 foreach (var track in Tracks)
                 {
                     if (track.NextClip != track.PlayClip)
-                    {
+                    { 
                         track.PlayClip = track.NextClip;
-                        track.NextPat  = 0;
-                    }
 
-                    //if (   OK(track.NextClip)
-                    //    && track.NextClip != track.PlayClip)
-                    //    track.NextPat = 0;
+                        if (OK(track.PlayClip)) 
+                            track.NextPat  = 0;
+                    }
                 }
             }
 

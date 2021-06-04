@@ -100,8 +100,8 @@ namespace IngameScript
 
                 else if (OK(clip))
                 { 
-                    if (EditClip == 1  // move clip
-                          || EditClip == 2) // duplicate clip
+                    if (   EditClip == 1  // move clip
+                        || EditClip == 2) // duplicate clip
                         ClipCopy = clip; 
                     
                     else if (EditClip == 3) // delete clip
@@ -111,10 +111,18 @@ namespace IngameScript
                         CueNextClip(index);
                     
                     else if (OK(PlayClip)
+                         &&  OK(NextClip)
+                         &&  NextClip != PlayClip)
+                    { 
+                        NextClip = PlayClip; // cancel clip cue
+                        CueNextClip(index);
+                        UpdateClipName();
+                    }
+                    else if (OK(PlayClip)
                          && !OK(NextClip)
                          &&  CueClip)
                     { 
-                        NextClip = PlayClip; // cancel cue
+                        NextClip = PlayClip; // cancel clip off
                         CueNextClip(index);
                         UpdateClipName();
                     }
@@ -219,10 +227,16 @@ namespace IngameScript
                 if (EditClip == 1) // move
                     Swap(ref Clips[index], ref srcTrack.Clips[srcIndex]);
 
-                else // duplicate
-                { 
-                    Clips[index] = new Clip(srcTrack.Clips[srcIndex], this);
-                    UpdateClipName(Clips[index], Clips);
+                else  // duplicate
+                {
+                    if (   OK(Clips[index]) 
+                        && Clips[index] == ClipCopy)
+                        ClipCopy = Clip_null;
+                    else
+                    { 
+                        Clips[index] = new Clip(srcTrack.Clips[srcIndex], this);
+                        UpdateClipName(Clips[index], Clips);
+                    }
                 }
 
 
@@ -504,6 +518,16 @@ namespace IngameScript
             //    if (OK(g_notes.Find(n => n.Channel.Pattern.Clip.Track == this)))
             //        NotesArePlaying = T;
             //}
+        }
+
+
+        void SetAllTrackClips(int col)
+        {
+            foreach (var track in Tracks)
+            {
+                if (OK(track.Clips[col])) track.SetClip(col);
+                else                      track.NextClip = -1;
+            }
         }
     }
 }
