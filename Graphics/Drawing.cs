@@ -10,6 +10,8 @@ namespace IngameScript
     {
         void DrawDisplays()
         {
+            DrawVolume();
+
             if (!TooComplex) DrawMain();
             if (!TooComplex) DrawInfo();
             if (!TooComplex) DrawClip();
@@ -20,8 +22,6 @@ namespace IngameScript
                 if (ShowMixer) DrawMixer();
                 else           DrawSessionClips();
             }
-
-            DrawVolume();
         }
 
 

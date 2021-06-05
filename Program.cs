@@ -146,15 +146,15 @@ namespace IngameScript
             dspIO     = new Display(GetDisplay("IO"));
             dspInfo   = new Display(GetDisplay("Info"));
             
-            dspClip1  = new Display(GetDisplay(strClip,  1));
-            dspClip2  = new Display(GetDisplay(strClip,  2));
+            dspClip1  = new Display(GetDisplay(strClip, 1));
+            dspClip2  = new Display(GetDisplay(strClip, 2));
             
             dspMixer1 = new Display(GetDisplay(strMixer, 1));
             dspMixer2 = new Display(GetDisplay(strMixer, 2));
 
-            dspVol1   = new Display(GetDisplay(strVol,   1));
-            dspVol2   = new Display(GetDisplay(strVol,   2));
-            dspVol3   = new Display(GetDisplay(strVol,   3));
+            dspVol1   = new Display(GetDisplay(strVol, 1));
+            dspVol2   = new Display(GetDisplay(strVol, 2));
+            dspVol3   = new Display(GetDisplay(strVol, 3));
         }
     }
 }

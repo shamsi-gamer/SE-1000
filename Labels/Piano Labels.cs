@@ -95,7 +95,7 @@ namespace IngameScript
         void UpdatePianoHighColor(Label lbl)
         {
             lbl.BackColor = 
-                   ShowPiano 
+                ShowPiano 
                 ? color1 
                 : color0;
         }
@@ -125,7 +125,7 @@ namespace IngameScript
         bool PianoLowIsBright(Label lbl)
         {
             return
-                   ShowPiano
+                ShowPiano
                 ?    -lbl.Data == 15 && EditedClip.HalfSharp
                   || NoteIsBright(LowToNote(-lbl.Data))
                 : StepIsBright(lbl);
@@ -180,7 +180,10 @@ namespace IngameScript
             else if (OK(CurChannel.Notes.FindIndex(n => NoteIsEdited(noteNum, n))))
                 return True; // note is being edited
 
-            else if (OK(g_notes.FindIndex(n => NoteIsTriggered(noteNum, n))))
+            else if (OK(g_notes.FindIndex(n => 
+                           NoteIsTriggered(noteNum, n)
+                        && n.Channel.Pattern.Clip == EditedClip
+                        && n.iChan == CurChan)))
                 return True; // note is being played
 
             return False;
@@ -198,6 +201,9 @@ namespace IngameScript
 
                 return tune.FinalChord.Contains(noteNum);
             }
+            else if (OK(g_notes.FindIndex(n => NoteIsTriggered(noteNum, n))))
+                return True; // note is being played
+
             //else if (OK(EditedClip.Track.PlayPat))
             //{ 
             //    for (int ch = 0; ch < g_nChans; ch++)
