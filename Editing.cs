@@ -163,15 +163,20 @@ namespace IngameScript
 
         void EnableKeyMove(Clip clip)
         {
-            if (   IsCurParam()
+            if (OK(g_editKey))
+                g_editKey = Key_null;
+
+            else if (   IsCurParam()
                 && OK(clip.EditPos)
                 && clip.ParamAuto)
             {
-                var key = clip.SelChannel.AutoKeys.Find(k => 
-                         k.Step >= (clip.EditPos % g_patSteps)
-                      && k.Step <  (clip.EditPos % g_patSteps) + 1);
+                var localPos = clip.EditPos % g_patSteps;
 
-                g_editKey = g_editKey ?? key;
+                var key = clip.SelChannel.AutoKeys.Find(k => 
+                         k.Step >= localPos
+                      && k.Step <  localPos + 1);
+
+                g_editKey = key;
             }
         }
 
@@ -456,7 +461,7 @@ namespace IngameScript
             else if (OK(g_editKey))
             {
                 g_editKey.Step += move * EditedClip.EditStep;
-                clip.EditPos       += move * EditedClip.EditStep;
+                clip.EditPos   += move * EditedClip.EditStep;
 
                 clip.LimitRecPosition();
 

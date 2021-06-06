@@ -23,7 +23,8 @@
                    && !OK(CurSet)
                    && SelSource.On
                 ||    !OK(SelChan)
-                   && LockView > 0;
+                   && LockView > 0
+                || OK(g_editKey);
         }
 
 

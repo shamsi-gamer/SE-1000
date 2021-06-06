@@ -417,10 +417,13 @@ namespace IngameScript
             {
                 if (OK(EditedClip.EditPos))
                 {
-                         if (EditedClip.ParamKeys) Interpolate(EditedClip);
-                    else if (EditedClip.ParamAuto) EnableKeyMove(EditedClip);
-
-                    lblCmd1.Mark();
+                    if (EditedClip.ParamKeys)
+                    {
+                        Interpolate  (EditedClip);
+                        lblCmd1.Mark();
+                    }
+                    else if (EditedClip.ParamAuto) 
+                        EnableKeyMove(EditedClip);
                 }
             }
             else if (IsCurSetting(typeof(Modulate)))
