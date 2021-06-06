@@ -260,9 +260,9 @@ namespace IngameScript
         bool ToggleIsBright(Label lbl)
         {
             return
-                   lbl.Data == 2 && EditedClip.RndInst
+                   lbl.Data == 2 && EditedClip.Pick
                 || lbl.Data == 3 && EditedClip.AllChan
-                || lbl.Data == 4 && EditedClip.Pick;
+                || lbl.Data == 4 && EditedClip.RndInst;
         }
 
 

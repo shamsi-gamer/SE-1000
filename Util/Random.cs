@@ -11,13 +11,13 @@ namespace IngameScript
 
         void Random()
         {
-                 if (   SelChan < 0
-                     || !EditedClip.RndInst) RandomNotes();
-            else if (EditedClip.ParamKeys
-                  || EditedClip.ParamAuto)   RandomValues(CurChan);
+                 if (EditedClip.ParamKeys
+                  || EditedClip.ParamAuto)      RandomValues(CurChan);
             else if (OK(CurSet))  CurSetting   .Randomize(this);
             else if (OK(CurSrc))  SelSource    .Randomize(new List<Oscillator>(), this);
             else if (OK(SelChan)) SelInstrument.Randomize(this);
+            else if (   SelChan < 0
+                     || !EditedClip.RndInst)    RandomNotes();
         }
 
 
@@ -31,9 +31,12 @@ namespace IngameScript
                      if (EditedClip.ParamKeys) RandomParamKeys(p, ch);
                 else if (EditedClip.ParamAuto) RandomParamAuto(p, ch);
             }
+
+            if (EditedClip.ParamAuto)
+                EditedClip.UpdateAutoKeys();
         }
 
-            
+
         void RandomPatternNotes()
         {
             var nChannels = g_rnd.Next(1, g_nChans/2);
