@@ -128,7 +128,7 @@ namespace IngameScript
                 var sndTime = note.Time + 1;
                 var lTime   = g_time - track.StartTime - note.SongTime;
 
-                var tp = new TimeParams(sndTime, lTime, note, note.FrameLength, Index, triggerValues, prog);
+                var tp = new TimeParams(sndTime, lTime, note, note.FrameLength, Index, triggerValues, note.Clip, prog);
 
 
                 if (OK(Offset))

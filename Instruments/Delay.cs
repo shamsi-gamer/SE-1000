@@ -240,7 +240,7 @@ namespace IngameScript
                 var dx = 0f;
 
 
-                var tpSet = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, CurSrc, _triggerDummy, _dp.Program);
+                var tpSet = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, CurSrc, _triggerDummy, EditedClip, _dp.Program);
 
                 for (int i = 0; i < (int)dc && dx < w - dt; i++)
                 {
@@ -305,7 +305,7 @@ namespace IngameScript
                     var px  = x0 + MinMax(90, dt*(dc-1)/2, w0);
                     var dim = dc > 1 && Math.Abs(px - lx) > 20 ? color6 : color3;
 
-                    var tp  = new TimeParams(0, 0, Note_null, EditedClip.EditLength, CurSrc, _triggerDummy, _dp.Program);
+                    var tp  = new TimeParams(0, 0, Note_null, EditedClip.EditLength, CurSrc, _triggerDummy, EditedClip, _dp.Program);
                     var vol = GetVolume(Math.Max(0, (int)dc/2 - 1), tp);
 
                     DrawString(

@@ -48,8 +48,8 @@
                         lbl.SetText(
                             OK(SelChannel.AutoKeys.Find(k =>
                                    k.Path == path
-                                && k.StepTime >= (EditedClip.EditPos % g_patSteps)
-                                && k.StepTime <  (EditedClip.EditPos % g_patSteps) + 1))
+                                && k.Step >= (EditedClip.EditPos % g_patSteps)
+                                && k.Step <  (EditedClip.EditPos % g_patSteps) + 1))
                             ? "Move" 
                             : strEmpty);
                     }
@@ -155,8 +155,8 @@
                 {
                     lblCmd3.SetText(
                         OK(SelChannel.Notes.Find(n =>
-                               n.SongStep >= EditedClip.EditPos
-                            && n.SongStep <  EditedClip.EditPos+1
+                               n.ClipStep >= EditedClip.EditPos
+                            && n.ClipStep <  EditedClip.EditPos+1
                             && OK(n.Keys.Find(k => k.Path == path))))
                         ? "X"
                         : strEmpty);
@@ -168,8 +168,8 @@
                         lblCmd3.SetText(
                             OK(SelChannel.AutoKeys.Find(k =>
                                 k.Path == path
-                                && k.StepTime >= (EditedClip.EditPos % g_patSteps)
-                                && k.StepTime <  (EditedClip.EditPos % g_patSteps) + 1))
+                                && k.Step >= (EditedClip.EditPos % g_patSteps)
+                                && k.Step <  (EditedClip.EditPos % g_patSteps) + 1))
                             ? "X" : "+");
                     }
                     else

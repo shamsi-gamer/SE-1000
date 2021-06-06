@@ -1,4 +1,7 @@
-﻿namespace IngameScript
+﻿using System.Linq;
+
+
+namespace IngameScript
 {
     partial class Program
     {
@@ -10,17 +13,17 @@
             public string    Path => Parameter.GetPath(SourceIndex);
 
             public float     Value,
-                             StepTime;
+                             Step;
 
             public Channel   Channel;
 
 
-            public Key(int srcIndex, Parameter param, float val, float stepTime, Channel chan = Channel_null)
+            public Key(int srcIndex, Parameter param, float val, float step, Channel chan = Channel_null)
             {
                 SourceIndex = srcIndex;
                 Parameter   = param;
                 Value       = val;
-                StepTime    = stepTime;
+                Step        = step;
                 Channel     = chan;
             }
 
@@ -30,7 +33,7 @@
                 SourceIndex = key.SourceIndex;
                 Parameter   = key.Parameter;
                 Value       = key.Value;
-                StepTime    = key.StepTime;
+                Step        = key.Step;
                 Channel     = key.Channel;
             }
 
@@ -41,7 +44,7 @@
                       WS(SourceIndex)
                     + W (Path)
                     + WS(Value)
-                    +  S(StepTime);
+                    +  S(Step);
             }
 
 
@@ -58,6 +61,39 @@
                     value,
                     stepTime);
             }
+        }
+
+
+        static Key PrevClipAutoKey(Clip clip, float clipStep, int ch, string path)
+        {
+            var prevKeys = clip.ChannelAutoKeys[ch]
+                .Where(k => 
+                       (   path == ""
+                        || path == k.Path)
+                    && k.Step < clipStep - clip.Track.StartStep)
+                .ToList();
+            
+            return 
+                prevKeys.Count > 0
+                ? prevKeys.Last()
+                : Key_null;
+        }
+
+
+        static Key NextClipAutoKey(Clip clip, float clipStep, int ch, string path, bool forDisplay = False)
+        {
+            var nextKeys = clip.ChannelAutoKeys[ch]
+                .Where(k => 
+                       (   path == ""
+                        || path == k.Path)
+                    && (    forDisplay && k.Step >  clipStep
+                        || !forDisplay && k.Step >= clipStep - clip.Track.StartStep))
+                .ToList();
+
+            return
+                nextKeys.Count > 0
+                ? nextKeys[0]
+                : Key_null;
         }
     }
 }

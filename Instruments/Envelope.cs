@@ -253,7 +253,7 @@ namespace IngameScript
 
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
-                var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, -1, _triggerDummy, dp.Program);
+                var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, -1, _triggerDummy, EditedClip, dp.Program);
 
                 Attack .UpdateValue(tp);
                 Decay  .UpdateValue(tp);

@@ -134,8 +134,8 @@ namespace IngameScript
 
                 var lTime = gTime - Time; // local time
 
-                var tpInst = new TimeParams(gTime, lTime, Note, Length, -1,           TriggerValues, prog);
-                var tpSrc  = new TimeParams(gTime, lTime, Note, Length, Source.Index, TriggerValues, prog);
+                var tpInst = new TimeParams(gTime, lTime, Note, Length, -1,           TriggerValues, Note.Clip, prog);
+                var tpSrc  = new TimeParams(gTime, lTime, Note, Length, Source.Index, TriggerValues, Note.Clip, prog);
 
                 var vol = 
                       Instrument.Volume.UpdateValue(tpInst)
@@ -163,14 +163,13 @@ namespace IngameScript
                 }
 
 
-                var clip  = Note.Channel.Pattern.Clip;
-                var track = clip.Track;
+                var track = Note.Clip.Track;
 
 
                 var lTime = g_time - Time;
                 var sTime = g_time - track.StartTime;
 
-                var tp = new TimeParams(g_time, lTime, Note, Length, SourceIndex, TriggerValues, prog);
+                var tp = new TimeParams(g_time, lTime, Note, Length, SourceIndex, TriggerValues, Note.Clip, prog);
 
                 float vol = 0;
 
@@ -185,7 +184,7 @@ namespace IngameScript
                           TriggerVolume
                         * updateVol
                         * Channel.Volume
-                        * clip.Volume;
+                        * Note.Clip.Volume;
 
                     // this is for the fake "current volume"
                     if (   (   Source.Oscillator == OscSlowSweepDown

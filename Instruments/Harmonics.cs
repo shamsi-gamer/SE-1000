@@ -175,7 +175,7 @@ namespace IngameScript
 
                     if (!prog.TooComplex)
                     { 
-                        var tp = new TimeParams(g_time, lTime, note, sndLen, iSrc, snd.TriggerValues, prog);
+                        var tp = new TimeParams(g_time, lTime, note, sndLen, iSrc, snd.TriggerValues, note.Clip, prog);
                         Tones[i].UpdateValue(tp);
                         sounds.Add(snd);
                     }

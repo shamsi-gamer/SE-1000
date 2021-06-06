@@ -40,16 +40,16 @@ namespace IngameScript
 
         void BeatHigh(int h)
         {
-                 if (h == 0) ClearNotes();
-            else if (h == 1) Random();
-                                   
-            else if (h == 2) RandomInstrument();
+                 if (h == 0) Copy();
+            else if (h == 1) Paste(); 
+                          
+            else if (h == 2) PickNote();  
             else if (h == 3) ToggleAllChannels();
-            else if (h == 4) PickNote();  
+            else if (h == 4) RandomInstrument();
                           
-            else if (h == 5) Copy();
-            else if (h == 6) Paste(); 
-                          
+            else if (h == 5) ClearNotes();
+            else if (h == 6) Random();
+                                   
             else if (h == 7) Flip(CurChan, 4); 
             else if (h == 8) Flip(CurChan, 8); 
             else if (h == 9) Flip(CurChan, 16);

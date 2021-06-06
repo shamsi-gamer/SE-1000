@@ -65,16 +65,6 @@ namespace IngameScript
         }
 
 
-        bool IsCurOrParentSetting(Type type)
-        {
-            return
-                   OK(CurSet)
-                && (   IsCurSetting(type)
-                    ||    OK(CurSetting.Parent)
-                       && CurSetting.Parent.GetType() == type);
-        }
-
-
         static void UpdateDspOffset(ref int off, int pos, int count, int max, int dOff1, int dOff2)
         {
             if (   pos >= max/2         + off
@@ -87,22 +77,6 @@ namespace IngameScript
             else if (pos <  off        ) off = pos;
             else if (off <  0          ) off = 0;
         }
-
-
-        //void UpdateSongOff(int pat)
-        //{
-        //    if (   pat >= maxDspPats/2     + songOff
-        //        || pat <  maxDspPats/2 - 1 + songOff)
-        //        songOff = pat - maxDspPats / 2 + 1;
-
-        //    var nPats = g_song.Patterns.Count;
-
-        //         if (maxDspPats >= nPats)             songOff = 0;
-        //    else if (songOff >  nPats - maxDspPats)   songOff = nPats - maxDspPats;
-        //    else if (pat     >= maxDspPats + songOff) songOff = Math.Max(0, pat - maxDspPats + 1);
-        //    else if (pat     <  songOff)              songOff = pat;
-        //    else if (songOff <  0)                    songOff = 0;
-        //}
 
 
         static void UpdateSongOff()
@@ -134,38 +108,6 @@ namespace IngameScript
                 0,
                 0);
         }
-
-
-        //void UpdateInstOff(int ch)
-        //{
-        //    var inst = g_session.Instruments.IndexOf(CurrentPattern(g_song).Channels[ch].Instrument);
-
-        //    if (   inst >= maxDspInst/2 + instOff
-        //        || inst <  maxDspInst/2 + instOff)
-        //        instOff = inst - maxDspInst/2 + 1;
-
-        //         if (maxDspInst >= g_session.Instruments.Count)           instOff = 0;
-        //    else if (instOff >  g_session.Instruments.Count - maxDspInst) instOff = g_session.Instruments.Count - maxDspInst;
-        //    else if (inst    >= maxDspInst + instOff)      instOff = Math.Max(0, inst - maxDspInst + 1);
-        //    else if (inst    <  instOff)                   instOff = inst;
-        //    else if (instOff <  0)                         instOff = 0;
-        //}
-
-
-        //void UpdateSrcOff(Instrument inst, int src)
-        //{
-        //    var nSrc = inst.Sources.Count;
-
-        //    if (   src >= maxDspSrc/2 + srcOff
-        //        || src <  maxDspSrc/2 + srcOff)
-        //        srcOff = src - maxDspSrc/2;
-
-        //         if (maxDspSrc        >= nSrc           ) srcOff = 0;
-        //    else if (srcOff        >  nSrc - maxDspSrc  ) srcOff = nSrc - maxDspSrc;
-        //    else if (CurSrc >= maxDspSrc + srcOff) srcOff = Math.Max(0, g_song.CurSrc - maxDspSrc + 1);
-        //    else if (CurSrc <  srcOff            ) srcOff = g_song.CurSrc;
-        //    else if (srcOff        <  0                 ) srcOff = 0;
-        //}
 
 
         void SetCurInst(Instrument inst)
@@ -451,7 +393,6 @@ namespace IngameScript
         static Pattern    CurPattern      => EditedClip.CurPattern;
         static Channel    CurChannel      => EditedClip.CurChannel;
         static Pattern    PlayPattern     => EditedClip.Patterns[EditedClip.Track.PlayPat];
-        //static Channel    PlayChannel     => PlayPattern.Channels[CurChan];
                                           
         static Source     SelSource       => EditedClip.SelSource;
         static Instrument SelInstrument   => EditedClip.SelInstrument;

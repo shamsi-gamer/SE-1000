@@ -153,7 +153,7 @@ namespace IngameScript
 
             var patStep = 
                   (Playing
-                   ?   (float)track.StartTime/TicksPerStep 
+                   ?    track.StartStep
                      +  track.PlayPat * g_patSteps 
                      + (track.PlayStep % g_patSteps) 
                    : TimeStep) 
@@ -194,8 +194,7 @@ namespace IngameScript
             note.Sounds.Clear();
 
 
-            var clip  = note.Channel.Pattern.Clip;
-            var track = clip.Track;
+            var track = note.Clip.Track;
 
             var sh = (int)track.PlayStep % 2 != 0 ? note.Channel.Shuffle : 0;
 
@@ -255,6 +254,7 @@ namespace IngameScript
                 sndLen, 
                 src.Index, 
                 _triggerDummy, 
+                note.Clip,
                 prog);
 
             _noteNum += inst.Tune?.UpdateValue(tp) * NoteScale ?? 0;

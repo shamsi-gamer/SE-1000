@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
-using VRageMath;
 
 
 namespace IngameScript
@@ -146,7 +145,8 @@ namespace IngameScript
                 if (OK(tp.Note))
                 { 
                     var val = GetAutoValue(
-                        tp.Note.PatIndex, 
+                        tp.Clip,
+                        tp.Note.Step, // not ClipStep because played notes are in clip time already
                         tp.Note.iChan, 
                         path);
                     
@@ -176,21 +176,20 @@ namespace IngameScript
                     var key = note.Keys.Find(k => k.Path == GetPath(src));
                     return key?.Value ?? m_value; 
                 }
-
                 else return m_value;
             }
 
 
-            public static float GetAutoValue(float songStep, int pat, string path)
+            public static float GetAutoValue(Clip clip, float clipStep, int ch, string path)
             {
-                var prevKey = PrevClipAutoKey(songStep, pat, path);
-                var nextKey = NextClipAutoKey(songStep, pat, path);
+                var prevKey = PrevClipAutoKey(clip, clipStep, ch, path);
+                var nextKey = NextClipAutoKey(clip, clipStep, ch, path);
 
                      if (!OK(prevKey) && !OK(nextKey)) return float_NaN;
                 else if ( OK(prevKey) && !OK(nextKey)) return prevKey.Value;
                 else if (!OK(prevKey) &&  OK(nextKey)) return nextKey.Value;
                 else
-                    return prevKey.Value + (nextKey.Value - prevKey.Value) * (songStep - prevKey.StepTime) / (nextKey.StepTime - prevKey.StepTime);
+                    return prevKey.Value + (nextKey.Value - prevKey.Value) * (clipStep - clip.Track.StartStep - prevKey.Step) / (nextKey.Step - prevKey.Step);
             }
 
 

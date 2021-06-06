@@ -25,13 +25,8 @@ namespace IngameScript
             public bool    Playing => OK(PlayClip);
 
 
-            public float   PlayStep { get 
-                           {
-                               return
-                                   Playing 
-                                   ? PlayTime / (float)TicksPerStep 
-                                   : float_NaN; 
-                           } }
+            public float   PlayStep  => Playing ? PlayTime /(float)TicksPerStep : float_NaN; 
+            public float   StartStep => Playing ? StartTime/(float)TicksPerStep : float_NaN; 
 
             
             public float[] DspVol;
@@ -467,7 +462,7 @@ namespace IngameScript
 
                     var snd = g_sounds[i];
 
-                    if (snd.Channel.Pattern.Clip.Track != this)
+                    if (snd.Note.Clip.Track != this)
                         continue;
 
                     var lTime = g_time - snd.Time;

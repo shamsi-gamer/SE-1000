@@ -74,16 +74,16 @@ namespace IngameScript
             { 
                 switch (lbl.Data)
                 { 
-                case 0: lbl.SetText("Clr");          break;
-                case 1: lbl.SetText("Rnd");          break;
-                                                                
-                case 2: lbl.SetText("Inst");         break;
+                case 0: lbl.SetText("Copy",  9, 14); break;
+                case 1: lbl.SetText("Paste", 9, 14); break;
+                                                        
+                case 2: lbl.SetText("Pick");         break;
                 case 3: lbl.SetText("All Ch", 7.6f, 19.5f); break;
-                case 4: lbl.SetText("Pick");         break;
+                case 4: lbl.SetText("Inst");         break;
                                                         
-                case 5: lbl.SetText("Copy",  9, 14); break;
-                case 6: lbl.SetText("Paste", 9, 14); break;
-                                                        
+                case 5: lbl.SetText("Clr");          break;
+                case 6: lbl.SetText("Rnd");          break;
+                                                                
                 case 7: lbl.SetText("1/4");          break;
                 case 8: lbl.SetText("1/8");          break;
                 case 9: lbl.SetText("Flip");         break;
@@ -182,7 +182,7 @@ namespace IngameScript
 
             else if (OK(g_notes.FindIndex(n => 
                            NoteIsTriggered(noteNum, n)
-                        && n.Channel.Pattern.Clip == EditedClip
+                        && n.Clip  == EditedClip
                         && n.iChan == CurChan)))
                 return True; // note is being played
 
@@ -235,8 +235,8 @@ namespace IngameScript
             //    return True;
 
             // note is at edit position
-            if (   note.SongStep >= EditedClip.EditPos 
-                && note.SongStep <  EditedClip.EditPos + EditedClip.EditStepLength)
+            if (   note.ClipStep >= EditedClip.EditPos 
+                && note.ClipStep <  EditedClip.EditPos + EditedClip.EditStepLength)
                 return True;
 
             return False;
@@ -247,7 +247,7 @@ namespace IngameScript
         {
             var timeStep = 
                 Playing 
-                ? (float)(EditedClip.Track.StartTime + EditedClip.Track.PlayTime) / TicksPerStep 
+                ? EditedClip.Track.StartStep + EditedClip.Track.PlayStep
                 : TimeStep;
 
             return
@@ -296,7 +296,7 @@ namespace IngameScript
         bool StepIsBright(Label lbl)
         {
             var patStep  = -lbl.Data;
-            var songStep =  CurPat * g_patSteps + patStep;
+            var clipStep =  CurPat * g_patSteps + patStep;
 
             var on = OK(CurChannel.Notes.Find(n => 
                    n.Step >= patStep
@@ -306,7 +306,7 @@ namespace IngameScript
 
             if (   Playing
                 && EditedClipIsPlaying
-                && (int)track.PlayStep  == songStep
+                && (int)track.PlayStep  == clipStep
                 && CurPat == track.PlayPat)
                 return !on;
             else if (on)

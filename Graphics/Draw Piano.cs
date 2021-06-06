@@ -21,7 +21,7 @@ namespace IngameScript
 
             var _dummy = new List<TriggerValue>();
 
-            var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, CurSrc, _dummy, this);
+            var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, CurSrc, _dummy, clip, this);
 
 
             var xt = 340;
@@ -129,7 +129,7 @@ namespace IngameScript
                         || n.Number > max)
                         continue;
 
-                    var noteStart = n.SongStep + n.ShOffset;
+                    var noteStart = n.ClipStep + n.ShOffset;
                     var noteEnd   = noteStart + n.StepLength;
 
                     if (   noteEnd   <= patStart
@@ -194,7 +194,7 @@ namespace IngameScript
                             || n.Number > max)
                             continue;
 
-                        var noteStart = n.SongStep + n.ShOffset;
+                        var noteStart = n.ClipStep + n.ShOffset;
                         var noteEnd   = noteStart + n.StepLength;
 
                         if (   noteEnd   <= patStart

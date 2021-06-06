@@ -296,7 +296,7 @@ namespace IngameScript
             }
 
 
-            public void ClearAudoKeys()
+            public void ClearAutoKeys()
             {
                 foreach (var keys in ChannelAutoKeys)
                     keys.Clear();
@@ -321,12 +321,12 @@ namespace IngameScript
                                 keys[k].SourceIndex,
                                 keys[k].Parameter,
                                 keys[k].Value, 
-                                keys[k].StepTime + p*g_patSteps,
+                                keys[k].Step + p*g_patSteps,
                                 keys[k].Channel));
                         }
                     }
 
-                    chanKeys.Sort((a, b) => a.StepTime.CompareTo(b.StepTime));
+                    chanKeys.Sort((a, b) => a.Step.CompareTo(b.Step));
                 }
             }
 
@@ -365,7 +365,7 @@ namespace IngameScript
 
 
             public int   GetKeyPat(Key key) { return Patterns.FindIndex(p => OK(Array.Find(p.Channels, c => c.AutoKeys.Contains(key)))); }
-            public float GetStep  (Key key) { return GetKeyPat(key) * g_patSteps + key.StepTime; }
+            public float GetStep  (Key key) { return GetKeyPat(key) * g_patSteps + key.Step; }
 
 
             public Block GetBlock(int pat)
@@ -424,7 +424,7 @@ namespace IngameScript
                     if (   ch < 0
                         || note.iChan == ch)
                     { 
-                        var noteStep = Playing ? note.SongStep : note.Step;
+                        var noteStep = Playing ? note.ClipStep : note.Step;
                         note.UpdateStepLength(timeStep - noteStep);
                     }
                 }
@@ -437,7 +437,7 @@ namespace IngameScript
 
                 foreach (var note in g_notes)
                 {
-                    var noteStep = Playing ? note.SongStep : note.Step;
+                    var noteStep = Playing ? note.ClipStep : note.Step;
 
                     if (   timeStep >= noteStep
                         && timeStep <  noteStep + note.StepLength)

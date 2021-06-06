@@ -108,7 +108,7 @@ namespace IngameScript
                 }
 
 
-                // draw keys
+                // draw patterns
                 for (int p = first; p < next; p++)
                 {
                     var _p = p - EditedClip.SongOff;

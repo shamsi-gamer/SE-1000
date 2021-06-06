@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 
 namespace IngameScript
@@ -109,19 +108,19 @@ namespace IngameScript
                 clip.StopEdit();
 
                 clip.Inter = clip.CurChannel.Notes.Find(n =>
-                       n.SongStep >= clip.EditPos
-                    && n.SongStep <  clip.EditPos + EditedClip.EditStepIndex);
+                       n.ClipStep >= clip.EditPos
+                    && n.ClipStep <  clip.EditPos + EditedClip.EditStepIndex);
             }
             else
             {
                 var note = clip.CurChannel.Notes.Find(n =>
-                       n.SongStep >= clip.EditPos
-                    && n.SongStep <  clip.EditPos + EditedClip.EditStepIndex);
+                       n.ClipStep >= clip.EditPos
+                    && n.ClipStep <  clip.EditPos + EditedClip.EditStepIndex);
 
                 if (OK(note))
                 {
-                    var si = clip.Inter.SongStep;
-                    var sn = note      .SongStep;
+                    var si = clip.Inter.ClipStep;
+                    var sn = note      .ClipStep;
 
                     var path  = g_settings.Last().GetPath(CurSrc);
                     var param = (Parameter)GetSettingFromPath(note.Instrument, path);
@@ -137,11 +136,11 @@ namespace IngameScript
                     {
                         foreach (var n in clip.Patterns[p].Channels[clip.CurChan].Notes)
                         {
-                            if (   n.SongStep <  Math.Min(si, sn)
-                                || n.SongStep >= Math.Max(si, sn))
+                            if (   n.ClipStep <  Math.Min(si, sn)
+                                || n.ClipStep >= Math.Max(si, sn))
                                 continue;
 
-                            var val = start + (end - start) * Math.Abs(n.SongStep - si) / Math.Max(1, Math.Abs(sn - si));
+                            var val = start + (end - start) * Math.Abs(n.ClipStep - si) / Math.Max(1, Math.Abs(sn - si));
 
                             var nParam = (Parameter)GetSettingFromPath(n.Instrument, path);
                             var key = n.Keys.Find(k => k.Path == path);
@@ -150,7 +149,7 @@ namespace IngameScript
                                 SetKeyValue(key, val);
                             else
                             {
-                                n.Keys.Add(new Key(CurSrc, param, nParam.Value, n.SongStep));
+                                n.Keys.Add(new Key(CurSrc, param, nParam.Value, n.ClipStep));
                                 SetKeyValue(n.Keys.Last(), val);
                             }
                         }
@@ -169,8 +168,8 @@ namespace IngameScript
                 && clip.ParamAuto)
             {
                 var key = clip.SelChannel.AutoKeys.Find(k => 
-                         k.StepTime >= (clip.EditPos % g_patSteps)
-                      && k.StepTime <  (clip.EditPos % g_patSteps) + 1);
+                         k.Step >= (clip.EditPos % g_patSteps)
+                      && k.Step <  (clip.EditPos % g_patSteps) + 1);
 
                 g_editKey = g_editKey ?? key;
             }
@@ -228,38 +227,6 @@ namespace IngameScript
         }
 
 
-        static Key PrevClipAutoKey(float pos, int ch, string path)
-        {
-            var prevKeys = EditedClip.ChannelAutoKeys[ch]
-                .Where(k => 
-                       (   path == ""
-                        || k.Path == path)
-                    && k.StepTime < pos)
-                .ToList();
-            
-            return 
-                prevKeys.Count > 0
-                ? prevKeys.Last()
-                : Key_null;
-        }
-
-
-        static Key NextClipAutoKey(float pos, int ch, string path)
-        {
-            var nextKeys = EditedClip.ChannelAutoKeys[ch]
-                .Where(k =>
-                       (   path == ""
-                        || k.Path == path)
-                    && k.StepTime > pos)
-                .ToList();
-
-            return
-                nextKeys.Count > 0
-                ? nextKeys[0]
-                : Key_null;
-        }
-
-
         void ToggleNote(Clip clip)
         {
             if (OK(SelChan))
@@ -303,9 +270,9 @@ namespace IngameScript
 
                 foreach (var note in chan.Notes)
                 {
-                    if (   clip.EditPos > note.SongStep
-                        && clip.EditPos < note.SongStep + note.StepLength)
-                        note.StepLength = clip.EditPos - note.SongStep + 1;
+                    if (   clip.EditPos > note.ClipStep
+                        && clip.EditPos < note.ClipStep + note.StepLength)
+                        note.StepLength = clip.EditPos - note.ClipStep + 1;
                 }
             }
 
@@ -323,8 +290,8 @@ namespace IngameScript
                 
                 foreach (var note in chan.Notes)
                 {
-                    if (   note.SongStep >= clip.EditPos
-                        && note.SongStep <  clip.EditPos + EditedClip.EditStep)
+                    if (   note.ClipStep >= clip.EditPos
+                        && note.ClipStep <  clip.EditPos + clip.EditStep)
                         notes.Add(note);
                 }
 
@@ -356,8 +323,8 @@ namespace IngameScript
 
                     foreach (var note in chan.Notes)
                     {
-                        if (   clip.EditPos > note.SongStep
-                            && clip.EditPos < note.SongStep + note.StepLength - 1)
+                        if (   clip.EditPos > note.ClipStep
+                            && clip.EditPos < note.ClipStep + note.StepLength - 1)
                             notes.Add(note);
                     }
                 }
@@ -488,16 +455,16 @@ namespace IngameScript
             }
             else if (OK(g_editKey))
             {
-                g_editKey.StepTime += move * EditedClip.EditStep;
+                g_editKey.Step += move * EditedClip.EditStep;
                 clip.EditPos       += move * EditedClip.EditStep;
 
                 clip.LimitRecPosition();
 
-                if (   g_editKey.StepTime < 0
-                    || g_editKey.StepTime >= g_patSteps)
+                if (   g_editKey.Step < 0
+                    || g_editKey.Step >= g_patSteps)
                 { 
                     g_editKey.Channel.AutoKeys.Remove(g_editKey);
-                    g_editKey.StepTime -= move * g_patSteps;
+                    g_editKey.Step -= move * g_patSteps;
 
                     chan.AutoKeys.Add(g_editKey);
                     g_editKey.Channel = chan;

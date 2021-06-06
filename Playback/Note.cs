@@ -18,14 +18,16 @@ namespace IngameScript
             public float       Step,
                                StepLength;
             
-            public int         PatIndex    => Channel.Pattern.Clip.Patterns.IndexOf(Channel.Pattern);
+            public Clip        Clip        => Channel.Pattern.Clip;
+            public int         PatIndex    => Clip.Patterns.IndexOf(Channel.Pattern);
 
-            public float       SongStep    => PatIndex * g_patSteps + Step;
+            public float       ClipStep    => PatIndex * g_patSteps + Step;
 
             public long        Time        => (long)(Step * TicksPerStep);
             public long        SongTime    => GetPatTime(PatIndex) + Time;
 
             public int         FrameLength => (int)(StepLength * TicksPerStep);
+
 
             public List<Sound> Sounds;
 
@@ -35,6 +37,8 @@ namespace IngameScript
             // this is in frames, but it's a float because of the
             // variability that needs to be accounted for
             public float       ArpPlayTime; // this gets offset 
+
+
 
 
             public Note()

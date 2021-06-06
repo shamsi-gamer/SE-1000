@@ -11,7 +11,7 @@ namespace IngameScript
 
             var lTime = g_time - snd.Note.Time;
 
-            var tp = new TimeParams(g_time, lTime, snd.Note, snd.Length, snd.SourceIndex, snd.TriggerValues, this);
+            var tp = new TimeParams(g_time, lTime, snd.Note, snd.Length, snd.SourceIndex, snd.TriggerValues, snd.Note.Clip, this);
 
             var dc = del.Count.UpdateValue(tp);
             var dt = del.Time .UpdateValue(tp);

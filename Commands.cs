@@ -518,12 +518,12 @@ namespace IngameScript
 
                     var key = chan.AutoKeys.Find(k =>
                            k.Path == path
-                        && k.StepTime >= (EditedClip.EditPos % g_patSteps)
-                        && k.StepTime <  (EditedClip.EditPos % g_patSteps) + 1);
+                        && k.Step >= (EditedClip.EditPos % g_patSteps)
+                        && k.Step <  (EditedClip.EditPos % g_patSteps) + 1);
 
                     if (!OK(key)) // create
                     {
-                        var val = Parameter.GetAutoValue(EditedClip.EditPos, CurPat, path);
+                        var val = Parameter.GetAutoValue(EditedClip, EditedClip.EditPos, CurPat, path);
 
                         var newKey = new Key(
                             CurSrc,
@@ -596,7 +596,7 @@ namespace IngameScript
                         else
                         {
                             var param = (Parameter)GetSettingFromPath(chan.Instrument, path);
-                            note.Keys.Add(new Key(CurSrc, param, param.Value, note.SongStep));
+                            note.Keys.Add(new Key(CurSrc, param, param.Value, note.ClipStep));
                             AdjustKey(note.Keys.Last(), delta);
                         }
                     }
@@ -607,8 +607,8 @@ namespace IngameScript
                     { 
                         var key = chan.AutoKeys.Find(
                                k => k.Path == path
-                            && k.StepTime >= (clip.EditPos % g_patSteps) 
-                            && k.StepTime <  (clip.EditPos % g_patSteps) + 1);
+                            && k.Step >= (clip.EditPos % g_patSteps) 
+                            && k.Step <  (clip.EditPos % g_patSteps) + 1);
 
                         if (OK(key))
                             AdjustKey(key, delta);

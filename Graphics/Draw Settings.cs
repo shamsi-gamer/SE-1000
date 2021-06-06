@@ -209,8 +209,8 @@ namespace IngameScript
             {
                 var key = SelChannel.AutoKeys.Find(
                        k => k.Path == path
-                    && k.StepTime >= (clip.EditPos % g_patSteps) 
-                    && k.StepTime <  (clip.EditPos % g_patSteps) + 1);
+                    && k.Step >= (clip.EditPos % g_patSteps) 
+                    && k.Step <  (clip.EditPos % g_patSteps) + 1);
 
                 var strVal = "";
                     
@@ -270,8 +270,8 @@ namespace IngameScript
                 // draw interpolation circle
                 if (   note == clip.Inter
                     ||    OK(clip.Inter)
-                       && note.SongStep >= clip.EditPos
-                       && note.SongStep <  clip.EditPos+1)
+                       && note.ClipStep >= clip.EditPos
+                       && note.ClipStep <  clip.EditPos+1)
                 {      
                     FillCircle(sprites, p0.X, p0.Y, cd/2+dr,   color0);
                     FillCircle(sprites, p0.X, p0.Y, cd/2+dr*2, color6);
@@ -282,8 +282,8 @@ namespace IngameScript
 
 
                 // draw shadow
-                if (   note.SongStep >= clip.EditPos
-                    && note.SongStep <  clip.EditPos+1)
+                if (   note.ClipStep >= clip.EditPos
+                    && note.ClipStep <  clip.EditPos+1)
                 {
                     DrawLine  (sprites, pt.X, pt.Y, p0.X, p0.Y, color0, w/250+2);
                     FillCircle(sprites, p0.X, p0.Y, cd/2+1, color0);
@@ -298,8 +298,8 @@ namespace IngameScript
 
 
             var curNote = chan.Notes.Find(n =>
-                   n.SongStep >= clip.EditPos
-                && n.SongStep <  clip.EditPos+1);
+                   n.ClipStep >= clip.EditPos
+                && n.ClipStep <  clip.EditPos+1);
 
             // draw interpolation line
             if (   OK(clip.Inter)
@@ -317,6 +317,8 @@ namespace IngameScript
 
         void DrawParamAuto(List<MySprite> sprites, float x, float y, float w, float h, float wTotal, Clip clip, int p, int ch)
         {
+            if (!OK(CurParam)) return;
+
             var wt = w/g_patSteps;
             var cd = w/ 65; // circle diameter
             var dr = w/250;
@@ -327,29 +329,29 @@ namespace IngameScript
             var param = CurParam;
             var path  = param.GetPath(CurSrc);
 
-            var songKeys = clip.ChannelAutoKeys[ch].Where(k => k.Path == path).ToList();
+            var clipKeys = clip.ChannelAutoKeys[ch].Where(k => k.Path == path).ToList();
 
-            songKeys.Sort((a, b) => a.StepTime.CompareTo(b.StepTime));
+            clipKeys.Sort((a, b) => a.Step.CompareTo(b.Step));
 
             // draw keys
-            if (songKeys.Count > 0)
+            if (clipKeys.Count > 0)
             {
                 // draw middle sections
-                for (int i = 0; i < songKeys.Count-1; i++)
+                for (int i = 0; i < clipKeys.Count-1; i++)
                 {
-                    var p0 = KeyPos(x, y, w, h, p, AltChanKey(songKeys[i  ]), clip);
-                    var p1 = KeyPos(x, y, w, h, p, AltChanKey(songKeys[i+1]), clip);
+                    var p0 = KeyPos(x, y, w, h, p, AltChanKey(clipKeys[i  ]), clip);
+                    var p1 = KeyPos(x, y, w, h, p, AltChanKey(clipKeys[i+1]), clip);
                     DrawLine(sprites, p0, p1, color6);
                 }
 
 
                 // draw key points
-                for (int i = 0; i < songKeys.Count; i++)
+                for (int i = 0; i < clipKeys.Count; i++)
                 {
-                    var pc = KeyPos(x, y, w, h, p, AltChanKey(songKeys[i]), clip);
+                    var pc = KeyPos(x, y, w, h, p, AltChanKey(clipKeys[i]), clip);
 
                     // draw move circle
-                    if (songKeys[i] == g_editKey)
+                    if (clipKeys[i] == g_editKey)
                     {
                         FillCircle(sprites, pc.X, pc.Y, cd/2 + dr*2, color6);
                         FillCircle(sprites, pc.X, pc.Y, cd/2 + dr,   color0);
@@ -361,15 +363,14 @@ namespace IngameScript
 
 
                 // draw first section
-                var f1 = KeyPos(x, y, w, h, p, AltChanKey(songKeys[0]), clip);
-                var prevKey = PrevClipAutoKey(songKeys[0].StepTime, p, path);
+                var f1 = KeyPos(x, y, w, h, p, AltChanKey(clipKeys[0]), clip);
+                var prevKey = PrevClipAutoKey(EditedClip, clipKeys[0].Step, ch, path);
                 var f0 = OK(prevKey) ? KeyPos(x, y, w, h, p, prevKey, clip) : new Vector2(x, f1.Y);
                 DrawLine(sprites, f0, f1, color6);
 
-
                 // draw last section
-                var l0 = KeyPos(x, y, w, h, p, AltChanKey(songKeys.Last()), clip);
-                var nextKey = NextClipAutoKey(songKeys.Last().StepTime, p, path);
+                var l0 = KeyPos(x, y, w, h, p, AltChanKey(clipKeys.Last()), clip);
+                var nextKey = NextClipAutoKey(EditedClip, clipKeys.Last().Step, ch, path, True);
                 var l1 = OK(nextKey) ? KeyPos(x, y, w, h, p, nextKey, clip) : new Vector2(x + wTotal, l0.Y);
                 DrawLine(sprites, l0, l1, color6);
             }
@@ -395,7 +396,7 @@ namespace IngameScript
                 case strCnt: val /= 4; break;
             }
 
-            return new Key(from.SourceIndex, from.Parameter, val, from.StepTime);
+            return new Key(from.SourceIndex, from.Parameter, val, from.Step);
         }
 
 
@@ -425,8 +426,10 @@ namespace IngameScript
             var chan    = SelChannel;
             var inst    = chan.Instrument;
             var setting = GetSettingFromPath(inst, key.Path);
-            var val     = key.Value;
             var wt      = w/g_patSteps;
+
+
+            var val = key.Value;
 
             switch (setting.Tag)
             {
@@ -439,10 +442,10 @@ namespace IngameScript
             float yo;
 
             if (setting.Tag == strTune) yo = h/2;
-            else                       yo = h;
+            else                        yo = h;
 
             var kp = new Vector2(
-                x + wt * (key.StepTime - p*g_patSteps) + wt/2, 
+                x + wt * (key.Step - p*g_patSteps) + wt/2, 
                 y + yo - h * val);
 
             return kp;

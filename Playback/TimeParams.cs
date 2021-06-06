@@ -16,10 +16,11 @@ namespace IngameScript
             public int                SourceIndex;
             public List<TriggerValue> TriggerValues;
 
+            public Clip               Clip;
             public Program            Program;
 
 
-            public TimeParams(long gTime, long lTime, Program prog)
+            public TimeParams(long gTime, long lTime, Clip clip, Program prog)
             {
                 GlobalTime    = gTime;
                 LocalTime     = lTime;
@@ -30,6 +31,7 @@ namespace IngameScript
                 SourceIndex   = -1;
                 TriggerValues = null;
 
+                Clip          = clip;
                 Program       = prog;
             }
 
@@ -53,12 +55,13 @@ namespace IngameScript
                 else
                     TriggerValues = null;
 
+                Clip          = tp.Clip;
                 Program       = tp.Program;
             }
 
 
-            public TimeParams(long gTime, long lTime, Note note, int noteLen, int iSrc, List<TriggerValue> triggerValues, Program prog)
-                : this(gTime, lTime, prog)
+            public TimeParams(long gTime, long lTime, Note note, int noteLen, int iSrc, List<TriggerValue> triggerValues, Clip clip, Program prog)
+                : this(gTime, lTime, clip, prog)
             {
                 Note          = note;
                 NoteLength    = noteLen;

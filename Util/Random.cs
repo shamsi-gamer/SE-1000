@@ -234,7 +234,7 @@ namespace IngameScript
 
                 var index = chan.AutoKeys.FindIndex(k => 
                        k.Path == param.GetPath(CurSrc) 
-                    && k.StepTime == step);
+                    && k.Step == step);
 
                 if (OK(index))
                     chan.AutoKeys[index].Value = rndValue;
