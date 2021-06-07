@@ -57,17 +57,8 @@ namespace IngameScript
                 EditedClip = Tracks[editTrack].Clips[editIndex];
 
             if (!OK(EditedClip))
-            {
-                foreach (var track in Tracks)
-                    foreach (var clip in track.Clips)
-                        if (OK(clip))
-                        {
-                            EditedClip = clip;
-                            goto OK_EditedClip;
-                        }
-            }
+                SetAnyEditedClip();
 
-        OK_EditedClip:
             UpdateClipDisplay();
 
             if (   OK(copyTrack) 
@@ -85,6 +76,18 @@ namespace IngameScript
             //    ModDestChannel    = EditClip.Patterns[modPat].Channels[modChan];
             //    ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
             //}
+        }
+
+
+        void SetAnyEditedClip()
+        {
+            foreach (var track in Tracks)
+                foreach (var clip in track.Clips)
+                    if (OK(clip))
+                    {
+                        EditedClip = clip;
+                        return;
+                    }
         }
 
 

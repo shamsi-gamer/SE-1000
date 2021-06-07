@@ -49,8 +49,12 @@ namespace IngameScript
                 color6);
 
 
+            ClipDraw(sprites, x + lw + w2, 0, w - x - lw - w2, rh/4);
+
             var dpInst = new DrawParams(this);
             EditedClip.SelInstrument.DrawLabels(sprites, x + lw + w2 + 21, y + 5, dpInst);
+
+            ClearClip(sprites);
 
 
             if (!TooComplex)
@@ -120,6 +124,8 @@ namespace IngameScript
 
         void DrawSourceList(List<MySprite> sprites, float x, float y, float w, float h, Instrument inst)
         {
+            ClipDraw(sprites, x, y, w, h);
+
             var nSrc = inst.Sources.Count;
             var sw   = 20;
 
@@ -136,6 +142,8 @@ namespace IngameScript
                 var bh = h / (float)nSrc;
                 FillRect(sprites, x, y + bh * EditedClip.CurSrc, sw, bh, color6);
             }
+
+            ClearClip(sprites);
         }
     }
 }

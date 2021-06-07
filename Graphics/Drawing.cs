@@ -25,6 +25,18 @@ namespace IngameScript
         }
 
 
+        static void ClipDraw(List<MySprite> sprites, float x, float y, float w, float h)
+        {
+            sprites.Add(MySprite.CreateClipRect(new Rectangle((int)x, (int)y, (int)w, (int)h)));
+        }
+
+
+        static void ClearClip(List<MySprite> sprites)
+        {
+            sprites.Add(MySprite.CreateClearClipRect());
+        }
+
+
         static void DrawString(List<MySprite> sprites, string str, float x, float y, float scale, Color c, TextAlignment align = TextAlignment.LEFT)
         {
             sprites.Add(new MySprite()
