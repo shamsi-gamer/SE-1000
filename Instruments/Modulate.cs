@@ -182,12 +182,12 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Clip clip, Program prog)
+            public override void AdjustFromController(Clip clip)
             {
-                if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(clip, Amount,  -g_remote.MoveIndicator    .Z/ControlSensitivity);
+                if (g_remote.MoveIndicator    .Z != 0) Program.AdjustFromController(clip, Amount, -g_remote.MoveIndicator    .Z/ControlSensitivity);
 
-                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(clip, Attack,  -g_remote.RotationIndicator.X/ControlSensitivity);
-                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(clip, Release,  g_remote.RotationIndicator.Y/ControlSensitivity);
+                if (g_remote.RotationIndicator.X != 0) Program.AdjustFromController(clip, Attack, -g_remote.RotationIndicator.X/ControlSensitivity);
+                if (g_remote.RotationIndicator.Y != 0) Program.AdjustFromController(clip, Release, g_remote.RotationIndicator.Y/ControlSensitivity);
             }
 
 
@@ -217,8 +217,9 @@ namespace IngameScript
             public override string Save()
             {
                 var save = 
-                      W (Tag)
-                    +  S(SrcSettings.Count);
+                      Tag
+                    + PS((int)Op)
+                    + PS(SrcSettings.Count);
 
                 for (int i = 0; i < SrcSettings.Count; i++)
                 { 
@@ -227,9 +228,9 @@ namespace IngameScript
                     var inst = SrcInstruments[i];
 
                     save += 
-                          P (OK(set)  ? set .GetPath(src.Index) : "")
-                        + PS(OK(src)  ? src .Index              : -1)
-                        + P (OK(inst) ? inst.Name               : "");
+                          P (OK(src) && OK(set)  ? set .GetPath(src.Index) : "")
+                        + PS(OK(src)             ? src .Index              : -1)
+                        + P (OK(inst)            ? inst.Name               : "");
                 }
 
                 save +=
@@ -251,12 +252,20 @@ namespace IngameScript
                     OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
 
-                var nSources = int_Parse(data[d++]);
+                int modOp;
+                if (!int_TryParse(data[d++], out modOp)) return Modulate_null;
+
+                mod.Op = (ModOp)modOp;
+
+
+                int nSources;
+                if (!int_TryParse(data[d++], out nSources)) return Modulate_null;
+
 
                 for (int i = 0; i < nSources; i++)
                 {
                     var setPath     = data[d++];
-                    var modSrcIndex = int_Parse(data[d++]);
+                    int modSrcIndex = int_Parse(data[d++]);
                     var modInst     = data[d++];
 
                     var _inst = Instruments.Find(_i => _i.Name == modInst);
@@ -298,9 +307,9 @@ namespace IngameScript
                 {
                     base.DrawLabels(sprites, x, y, dp);
 
-                    if (Amount .HasDeepParams(CurChannel, CurSrc)) Amount .DrawLabels(sprites, x, y, dp);
-                    if (Attack .HasDeepParams(CurChannel, CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
-                    if (Release.HasDeepParams(CurChannel, CurSrc)) Release.DrawLabels(sprites, x, y, dp);
+                    if (Amount .HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Amount .DrawLabels(sprites, x, y, dp);
+                    if (Attack .HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
+                    if (Release.HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
                 }
 
                 _dp.Next(dp);
@@ -330,6 +339,8 @@ namespace IngameScript
 
                 GetEnvelopeCoords(x0, y0, w0, h0, False, out p0, out p1, out p2);
                 DrawEnvelopeSupportsAndInfo(sprites, p0, p1, p2, w0, y0, h0, isAmt, isAtt, isRel);
+
+                FillRect(sprites, p0.X, y0 + h0/2, w0, -CurValue*h/2, color3);
 
                 GetEnvelopeCoords(x0, y0, w0, h0, True, out p0, out p1, out p2);
                 DrawEnvelope(sprites, p0, p1, p2, color3, False, False, False);
@@ -467,7 +478,7 @@ namespace IngameScript
 
 
 
-        void ResetModConnecting()
+        static void ResetModConnecting()
         {
             ModDestConnecting = Modulate_null;
             ModDestSrcIndex   = -1;

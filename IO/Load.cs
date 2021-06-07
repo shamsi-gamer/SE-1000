@@ -120,7 +120,6 @@ namespace IngameScript
             ShowClip  = ReadBit(f, i++);
             ShowMixer = ReadBit(f, i++);
             CueClip   = ReadBit(f, i++);
-            Move      = ReadBit(f, i++);
 
             return True;
         }

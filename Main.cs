@@ -43,7 +43,7 @@ namespace IngameScript
 
         void Update1()
         {
-            CurSetting?.AdjustFromController(EditedClip, this);
+            EditedClip.CurSetting?.AdjustFromController(EditedClip);
 
             if (!TooComplex)
                 UpdatePlayback();
@@ -61,7 +61,7 @@ namespace IngameScript
         {
             if (g_started)
             {
-                UpdateInst();
+                UpdateInstName();
                 UpdateClipName();
             }
             else

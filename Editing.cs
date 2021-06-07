@@ -12,7 +12,7 @@ namespace IngameScript
         //}
 
 
-        void PasteChan(Clip clip, int p, int ch)
+        static void PasteChan(Clip clip, int p, int ch)
         {
             if (!OK(g_copyChan))
                 return;
@@ -34,12 +34,12 @@ namespace IngameScript
                 if (  !clip.ChordMode 
                     || OK(clip.Chord))
                 {
-                    var chan = CurPattern.Channels[ch];
+                    var chan = clip.CurPattern.Channels[ch];
 
                     int found;
                     while (OK(found = chan.Notes.FindIndex(n => 
-                               CurPat * g_patSteps + n.Step >= clip.EditPos 
-                            && CurPat * g_patSteps + n.Step <  clip.EditPos + 1)))
+                               clip.CurPat * g_patSteps + n.Step >= clip.EditPos 
+                            && clip.CurPat * g_patSteps + n.Step <  clip.EditPos + 1)))
                         chan.Notes.RemoveAt(found);
 
                     lastNotes.Clear();
@@ -92,7 +92,7 @@ namespace IngameScript
         }
 
 
-        void Interpolate(Clip clip)
+        static void Interpolate(Clip clip)
         {
             if (!OK(clip.EditPos))
                 return;
@@ -122,11 +122,11 @@ namespace IngameScript
                     var si = clip.Inter.ClipStep;
                     var sn = note      .ClipStep;
 
-                    var path  = g_settings.Last().GetPath(CurSrc);
+                    var path  = clip.Settings.Last().GetPath(clip.CurSrc);
                     var param = (Parameter)GetSettingFromPath(note.Instrument, path);
 
-                    var start = param.GetKeyValue(clip.Inter, CurSrc);
-                    var end   = param.GetKeyValue(note,       CurSrc);
+                    var start = param.GetKeyValue(clip.Inter, clip.CurSrc);
+                    var end   = param.GetKeyValue(note,       clip.CurSrc);
 
                     int f = (int)(si / g_patSteps);
                     int l = (int)(sn / g_patSteps);
@@ -149,7 +149,7 @@ namespace IngameScript
                                 SetKeyValue(key, val);
                             else
                             {
-                                n.Keys.Add(new Key(CurSrc, param, nParam.Value, n.ClipStep));
+                                n.Keys.Add(new Key(clip.CurSrc, param, nParam.Value, n.ClipStep));
                                 SetKeyValue(n.Keys.Last(), val);
                             }
                         }
@@ -161,14 +161,14 @@ namespace IngameScript
         }
 
 
-        void EnableKeyMove(Clip clip)
+        static void EnableKeyMove(Clip clip)
         {
             if (OK(g_editKey))
                 g_editKey = Key_null;
 
-            else if (   IsCurParam()
-                && OK(clip.EditPos)
-                && clip.ParamAuto)
+            else if (IsCurParam()
+                  && OK(clip.EditPos)
+                  && clip.ParamAuto)
             {
                 var localPos = clip.EditPos % g_patSteps;
 
@@ -181,7 +181,7 @@ namespace IngameScript
         }
 
 
-        void SetKeyValue(Key key, float val)
+        static void SetKeyValue(Key key, float val)
         {
             switch (key.Path.Split('/').Last())
             {
@@ -212,12 +212,12 @@ namespace IngameScript
             EditedClip.EditPos =
                 OK(EditedClip.EditPos)
                 ? float.NaN
-                : (OK(EditedClip.LastEditPos) ? EditedClip.LastEditPos : CurPat * g_patSteps);
+                : (OK(EditedClip.LastEditPos) ? EditedClip.LastEditPos : EditedClip.CurPat * g_patSteps);
 
             EditedClip.StopEdit();
 
             if (EditedClip.Hold)
-                EditedClip.TrimCurrentNotes(CurChan);
+                EditedClip.TrimCurrentNotes(EditedClip.CurChan);
 
             EditedClip.Hold = False;
 
@@ -234,7 +234,7 @@ namespace IngameScript
 
         void ToggleNote(Clip clip)
         {
-            if (OK(SelChan))
+            if (OK(clip.SelChan))
                 return;
 
             if (OK(clip.EditPos))
@@ -259,16 +259,16 @@ namespace IngameScript
 
         void CutNotes(Clip clip)
         {
-            if (!OK(SelChan))
+            if (!OK(clip.SelChan))
                 return;
 
-            for (int p = 0; p <= CurPat; p++)
+            for (int p = 0; p <= clip.CurPat; p++)
             {
-                var patStart =  CurPat    *g_patSteps;
-                var patEnd   = (CurPat +1)*g_patSteps;
+                var patStart =  clip.CurPat    *g_patSteps;
+                var patEnd   = (clip.CurPat +1)*g_patSteps;
 
                 var pat  = clip.Patterns[p];
-                var chan = pat.Channels[CurChan];
+                var chan = pat.Channels[clip.CurChan];
 
                 var min  = (60 + chan.Transpose*12) * NoteScale;
                 var max  = (84 + chan.Transpose*12) * NoteScale;
@@ -285,9 +285,9 @@ namespace IngameScript
         }
 
 
-        List<Note> GetEditNotes(Clip clip, bool onlyEdit = False)
+        static List<Note> GetEditNotes(Clip clip, bool onlyEdit = False)
         {
-            var chan = CurChannel;
+            var chan = clip.CurChannel;
 
             if (OK(clip.EditPos))
             { 
@@ -315,7 +315,7 @@ namespace IngameScript
             {
                 var notes = new List<Note>();
 
-                for (int p = 0; p <= CurPat; p++)
+                for (int p = 0; p <= clip.CurPat; p++)
                 {
                     var patStart =  clip.CurPat   *g_patSteps;
                     var patEnd   = (clip.CurPat+1)*g_patSteps;
@@ -422,7 +422,7 @@ namespace IngameScript
 
             if (IsCurSetting(typeof(Harmonics)))
             {
-                CurHarmonics.MoveEdit(move);
+                clip.CurHarmonics.MoveEdit(move);
             }
             else if (clip.EditNotes.Count > 0)
             {
@@ -507,12 +507,12 @@ namespace IngameScript
         }
 
 
-        void Transpose(Clip clip, int ch, float tr)
+        static void Transpose(Clip clip, int ch, float tr)
         {
             if (clip.EditNotes.Count > 0)
             {
                 foreach (var note in clip.EditNotes)
-                    Transpose(note, tr);
+                    Transpose(clip, note, tr);
             }
             else
             {
@@ -525,18 +525,18 @@ namespace IngameScript
         }
 
 
-        void Transpose(Clip clip, int pat, int ch, float tr)
+        static void Transpose(Clip clip, int pat, int ch, float tr)
         {
             var chan = clip.Patterns[pat].Channels[ch];
 
             foreach (var note in chan.Notes)
-                Transpose(note, tr);
+                Transpose(clip, note, tr);
         }
 
 
-        void Transpose(Note note, float tr)
+        static void Transpose(Clip clip, Note note, float tr)
         {
-            note.Number = (int)Math.Round(note.Number + tr * (EditedClip.Shift ? 12 : 1) * (EditedClip.HalfSharp ? 1 : 2));
+            note.Number = (int)Math.Round(note.Number + tr * (clip.Shift ? 12 : 1) * (clip.HalfSharp ? 1 : 2));
         }
 
 

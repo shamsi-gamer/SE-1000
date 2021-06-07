@@ -42,10 +42,11 @@ namespace IngameScript
                                  
                                  Piano,
                                  
-                                 Transpose  = False,
-                                 Spread     = False,
+                                 Transpose = False,
+                                 Spread    = False,
                                         
-                                 Shift      = False,
+                                 Shift     = False,
+                                 Move      = False,
                                  
                                  Hold,
                                  Pick,
@@ -97,7 +98,9 @@ namespace IngameScript
                                  
                                  
             public int[]         Mems = new int[nMems];
-                                 
+
+            public List<Setting> Settings;
+
 
             public Pattern       CurPattern     => Patterns[CurPat];
             public Channel       CurChannel     => CurPattern.Channels[CurChan];
@@ -118,9 +121,9 @@ namespace IngameScript
                 Name        = name;
                             
                 Length      = -1;
-                            
+                
+                Settings    = new List<Setting>();
                 Patterns    = new List<Pattern>();
-
                 Blocks      = new List<Block>();
 
                 for (int i = 0; i < ChannelAutoKeys.Length; i++)
@@ -148,6 +151,8 @@ namespace IngameScript
                 Shift           = 
                 MixerShift      = 
                                 
+                Move            =
+
                 Hold            = 
                 Pick            = 
                                 
@@ -209,6 +214,8 @@ namespace IngameScript
 
                 Length   = clip.Length;
 
+                Settings = new List<Setting>();
+
                 Patterns = new List<Pattern>();
                 foreach (var pat in clip.Patterns)
                 { 
@@ -243,6 +250,8 @@ namespace IngameScript
                                 
                 Shift           = clip.Shift;
                                 
+                Move            = clip.Move;
+
                 Hold            = clip.Hold;
                 Pick            = clip.Pick;
                                 
@@ -261,7 +270,7 @@ namespace IngameScript
                 CurChan         = clip.CurChan;
                 SelChan         = clip.SelChan;
                 CurSrc          = clip.CurSrc;
-                CurSet          = clip.CurSet;
+                CurSet          = -1;//clip.CurSet;
 
                 EditStepIndex   = clip.EditStepIndex;
                 EditLengthIndex = clip.EditLengthIndex;
@@ -625,6 +634,19 @@ namespace IngameScript
                 var cp = (int)(EditPos / g_patSteps);
                 if (cp != CurPat) SetCurrentPattern(cp);
             }
+
+
+            public Setting   LastSetting  => Settings.Count > 0 ? Settings.Last()  : Setting_null;
+            public Setting   CurSetting   => OK(CurSet)         ? Settings[CurSet] : Setting_null;
+
+            public Parameter CurParam     => (Parameter)CurSetting;
+            public Modulate  CurModulate  => (Modulate) CurSetting;
+                             
+            public Harmonics CurHarmonics => (Harmonics)CurSetting;
+            public Harmonics CurOrParentHarmonics =>
+                IsCurSetting(typeof(Harmonics))
+                ? CurHarmonics
+                : (Harmonics)CurSetting.Parent;
         }
     }
 }

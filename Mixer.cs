@@ -85,11 +85,11 @@
         {
             if (ShowMixer)
             { 
-                var vol = CurPattern.Channels[ch].Volume;
+                var vol = EditedClip.CurPattern.Channels[ch].Volume;
                 var mod = (MixerShift ? 10 : 1) * dv;
 
                 int first, last;
-                EditedClip.GetPatterns(CurPat, out first, out last);
+                EditedClip.GetPatterns(EditedClip.CurPat, out first, out last);
 
                 for (int p = first; p <= last; p++)
                 {
@@ -129,7 +129,7 @@
                 }
 
                 for (int _ch = 0; _ch < g_nChans; _ch++)
-                    EditedClip.ChanOn[_ch] = CurPattern.Channels[_ch].On;
+                    EditedClip.ChanOn[_ch] = EditedClip.CurPattern.Channels[_ch].On;
 
                 int first, last;
                 EditedClip.GetCurPatterns(out first, out last);
@@ -153,7 +153,7 @@
         {
             if (ShowMixer)
             { 
-                var on = !CurPattern.Channels[ch].On;
+                var on = !EditedClip.CurPattern.Channels[ch].On;
 
                 int first, last;
                 EditedClip.GetCurPatterns(out first, out last);

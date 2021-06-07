@@ -307,7 +307,7 @@ namespace IngameScript
 
                     for (int i = 0; i < Tones.Length; i++)
                     { 
-                        if (Tones[i].HasDeepParams(CurChannel, CurSrc)) 
+                        if (Tones[i].HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) 
                             Tones[i].DrawLabels(sprites, x, y, dp); 
                     }
                 }
@@ -334,8 +334,8 @@ namespace IngameScript
 
                 var dp = new DrawParams(False, prog);
 
-                if (OK(CurSrc)) SelSource    .DrawLabels(sprites, x+5, y+10, dp);
-                else            SelInstrument.DrawLabels(sprites, x+5, y+10, dp);
+                if (OK(EditedClip.CurSrc)) EditedClip.SelSource    .DrawLabels(sprites, x+5, y+10, dp);
+                else                       EditedClip.SelInstrument.DrawLabels(sprites, x+5, y+10, dp);
 
                 DrawSample(sprites, x + 100, y + 150, 100, 60);
 
@@ -472,7 +472,7 @@ namespace IngameScript
                     }
                     case 3: SetPreset(CurPreset); break; 
                     case 4:
-                        if (OK(CurTone)) 
+                        if (OK(CurTone))
                             AddNextSetting(S(CurTone));
                         break;
                 }

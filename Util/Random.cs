@@ -12,12 +12,12 @@ namespace IngameScript
         void Random()
         {
                  if (EditedClip.ParamKeys
-                  || EditedClip.ParamAuto)      RandomValues(CurChan);
-            else if (OK(CurSet))  CurSetting   .Randomize(this);
-            else if (OK(CurSrc))  SelSource    .Randomize(new List<Oscillator>(), this);
-            else if (OK(SelChan)) SelInstrument.Randomize(this);
-            else if (   SelChan < 0
-                     || !EditedClip.RndInst)    RandomNotes();
+                  || EditedClip.ParamAuto)                         RandomValues(EditedClip.CurChan);
+            else if (EditedClip.RndInst && OK(EditedClip.CurSet )) EditedClip.CurSetting   .Randomize(this);
+            else if (EditedClip.RndInst && OK(EditedClip.CurSrc )) EditedClip.SelSource    .Randomize(new List<Oscillator>(), this);
+            else if (EditedClip.RndInst && OK(EditedClip.SelChan)) EditedClip.SelInstrument.Randomize(this);
+            else if (    EditedClip.SelChan < 0
+                     || !EditedClip.RndInst)                       RandomNotes();
         }
 
 
@@ -56,7 +56,7 @@ namespace IngameScript
         void RandomNotes()
         {
             if (EditedClip.AllChan) RandomPatternNotes();
-            else                    RandomNotes(CurChan, null);
+            else                    RandomNotes(EditedClip.CurChan, null);
         }
 
 
@@ -211,14 +211,14 @@ namespace IngameScript
             foreach (var note in chan.Notes)
             {
                 var param = GetCurrentParam(note.Instrument);
-                var index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSrc));
+                var index = note.Keys.FindIndex(k => k.Path == param.GetPath(EditedClip.CurSrc));
 
                 var rndValue = (float)(param.NormalMin + RND * (param.NormalMax - param.NormalMin));
 
                 if (OK(index))
                     note.Keys[index].Value = rndValue;
                 else
-                    note.Keys.Add(new Key(CurSrc, param, rndValue, note.Step, chan));
+                    note.Keys.Add(new Key(EditedClip.CurSrc, param, rndValue, note.Step, chan));
             }
         }
 
@@ -236,13 +236,13 @@ namespace IngameScript
                 var rndValue = (float)(param.NormalMin + RND * (param.NormalMax - param.NormalMin));
 
                 var index = chan.AutoKeys.FindIndex(k => 
-                       k.Path == param.GetPath(CurSrc) 
+                       k.Path == param.GetPath(EditedClip.CurSrc) 
                     && k.Step == step);
 
                 if (OK(index))
                     chan.AutoKeys[index].Value = rndValue;
                 else
-                    chan.AutoKeys.Add(new Key(CurSrc, param, rndValue, step, chan));
+                    chan.AutoKeys.Add(new Key(EditedClip.CurSrc, param, rndValue, step, chan));
             }
 
             EditedClip.UpdateAutoKeys();

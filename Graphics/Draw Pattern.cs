@@ -21,11 +21,11 @@ namespace IngameScript
             var xt = 340;
             var wt = (w - xt) / g_patSteps;
 
-            DrawGrid(sprites, x + xt, y, w - xt, rh, CurPat);
+            DrawGrid(sprites, x + xt, y, w - xt, rh, EditedClip.CurPat);
 
 
             var ch = rh / g_nChans;
-            var cy = y + rh - (CurChan + 1) * ch;
+            var cy = y + rh - (EditedClip.CurChan + 1) * ch;
 
             FillRect(sprites, xt, cy, w - xt, ch, color3);
 
@@ -34,8 +34,8 @@ namespace IngameScript
 
 
             // edit position
-            if (   clip.EditPos >= CurPat      * g_patSteps
-                && clip.EditPos < (CurPat + 1) * g_patSteps)
+            if (   clip.EditPos >= EditedClip.CurPat      * g_patSteps
+                && clip.EditPos < (EditedClip.CurPat + 1) * g_patSteps)
             {
                 FillRect(
                     sprites, 
@@ -64,9 +64,9 @@ namespace IngameScript
             FillRect(sprites, x, y + rh, w, 1, color6);
 
             if (IsCurParam())
-                DrawKeysAndAuto(sprites, CurParam, x, y, w, h, xt, rh, clip, pat);
+                DrawKeysAndAuto(sprites, EditedClip.CurParam, x, y, w, h, xt, rh, clip, pat);
 
-            if (SelChan < 0)
+            if (EditedClip.SelChan < 0)
                 DrawFuncButtons(sprites, w, h, clip);
         }
 
@@ -75,12 +75,12 @@ namespace IngameScript
         {
             var ch = h / g_nChans;
 
-            FillRect(sprites, x, y + h - CurChan * ch - 35, w, ch, CurChannel.On ? color6 : color3);
+            FillRect(sprites, x, y + h - EditedClip.CurChan * ch - 35, w, ch, EditedClip.CurChannel.On ? color6 : color3);
 
             for (int c = 0; c < g_nChans; c++)
             {
                 var yLine = y + h - c * ch - 40;
-                var chan  = CurPattern.Channels[c];
+                var chan  = EditedClip.CurPattern.Channels[c];
 
                 DrawString(sprites, 
                      S(c + 1).PadLeft(2)
@@ -89,7 +89,7 @@ namespace IngameScript
                     6,
                     yLine + 6,
                     1,
-                    c == CurChan ? color0 : (chan.Notes.Count > 0 ? (chan.On ? color6 : color3) : color2));
+                    c == EditedClip.CurChan ? color0 : (chan.Notes.Count > 0 ? (chan.On ? color6 : color3) : color2));
             }
         }
 

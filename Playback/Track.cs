@@ -174,7 +174,7 @@ namespace IngameScript
                     if (OK(playTime)) PlayTime = playTime % (Clips[NextClip].Patterns.Count * g_patSteps * TicksPerStep);
                     else              PlayTime = 0;
 
-                    UpdateInstName();
+                    SetInstName();
                 }
 
 
@@ -188,7 +188,7 @@ namespace IngameScript
                 {
                     EditedClip = clip;
                     UpdateClipDisplay();
-                    UpdateInstName();
+                    SetInstName();
                 }
             }
 

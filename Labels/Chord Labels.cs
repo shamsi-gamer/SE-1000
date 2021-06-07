@@ -18,7 +18,7 @@
         {
             var tune =
                 IsCurParam(strTune)
-                ? (Tune)GetCurrentParam(SelInstrument) 
+                ? (Tune)GetCurrentParam(EditedClip.SelInstrument) 
                 : Tune_null;
 
             if (   !(EditedClip.ParamKeys || EditedClip.ParamAuto)
@@ -75,7 +75,7 @@
             {
                 var tune =
                     IsCurParam(strTune)
-                    ? (Tune)GetCurrentParam(SelInstrument) 
+                    ? (Tune)GetCurrentParam(EditedClip.SelInstrument) 
                     : Tune_null;
 
                 lbl.SetText(
@@ -92,7 +92,7 @@
         {
             var tune =
                 IsCurParam(strTune)
-                ? (Tune)GetCurrentParam(SelInstrument)
+                ? (Tune)GetCurrentParam(EditedClip.SelInstrument)
                 : Tune_null;
 
             if (   IsCurParam(strTune)

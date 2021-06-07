@@ -115,13 +115,13 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Clip clip, Program prog)
+            public override void AdjustFromController(Clip clip)
             {
-                if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(clip, Count, -g_remote.MoveIndicator    .Z/ControlSensitivity);
-                if (g_remote.MoveIndicator    .X != 0) prog.AdjustFromController(clip, Time,   g_remote.MoveIndicator    .X/ControlSensitivity);
+                if (g_remote.MoveIndicator    .Z != 0) Program.AdjustFromController(clip, Count, -g_remote.MoveIndicator    .Z/ControlSensitivity);
+                if (g_remote.MoveIndicator    .X != 0) Program.AdjustFromController(clip, Time,   g_remote.MoveIndicator    .X/ControlSensitivity);
 
-                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(clip, Level, -g_remote.RotationIndicator.X/ControlSensitivity);
-                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(clip, Power,  g_remote.RotationIndicator.Y/ControlSensitivity);
+                if (g_remote.RotationIndicator.X != 0) Program.AdjustFromController(clip, Level, -g_remote.RotationIndicator.X/ControlSensitivity);
+                if (g_remote.RotationIndicator.Y != 0) Program.AdjustFromController(clip, Power,  g_remote.RotationIndicator.Y/ControlSensitivity);
             }
 
 
@@ -205,10 +205,10 @@ namespace IngameScript
                 {
                     base.DrawLabels(sprites, x, y, dp);
 
-                    if (Count.HasDeepParams(CurChannel, CurSrc)) Count.DrawLabels(sprites, x, y, dp);
-                    if (Time .HasDeepParams(CurChannel, CurSrc)) Time .DrawLabels(sprites, x, y, dp);
-                    if (Level.HasDeepParams(CurChannel, CurSrc)) Level.DrawLabels(sprites, x, y, dp);
-                    if (Power.HasDeepParams(CurChannel, CurSrc)) Power.DrawLabels(sprites, x, y, dp);
+                    if (Count.HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Count.DrawLabels(sprites, x, y, dp);
+                    if (Time .HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Time .DrawLabels(sprites, x, y, dp);
+                    if (Level.HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Level.DrawLabels(sprites, x, y, dp);
+                    if (Power.HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Power.DrawLabels(sprites, x, y, dp);
                 }
 
                 _dp.Next(dp);
@@ -240,7 +240,7 @@ namespace IngameScript
                 var dx = 0f;
 
 
-                var tpSet = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, CurSrc, _triggerDummy, EditedClip, _dp.Program);
+                var tpSet = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, EditedClip.CurSrc, _triggerDummy, EditedClip, _dp.Program);
 
                 for (int i = 0; i < (int)dc && dx < w - dt; i++)
                 {
@@ -271,7 +271,7 @@ namespace IngameScript
                     S(Math.Round(dc-1)), // -1 because 0 is the source sound
                     x0,
                     y0 + h0 - b + 8, 
-                    fs, 
+                    fs,
                     IsCurParam(strCnt) ? color6 : color3);
 
 
@@ -305,7 +305,7 @@ namespace IngameScript
                     var px  = x0 + MinMax(90, dt*(dc-1)/2, w0);
                     var dim = dc > 1 && Math.Abs(px - lx) > 20 ? color6 : color3;
 
-                    var tp  = new TimeParams(0, 0, Note_null, EditedClip.EditLength, CurSrc, _triggerDummy, EditedClip, _dp.Program);
+                    var tp  = new TimeParams(0, 0, Note_null, EditedClip.EditLength, EditedClip.CurSrc, _triggerDummy, EditedClip, _dp.Program);
                     var vol = GetVolume(Math.Max(0, (int)dc/2 - 1), tp);
 
                     DrawString(
@@ -334,7 +334,7 @@ namespace IngameScript
             {
                 switch (func)
                 {
-                    case 0: AddNextSetting(strDry);   break;
+                    case 0: AddNextSetting(strDry);  break;
                     case 1: AddNextSetting(strCnt);  break;
                     case 2: AddNextSetting(strTime); break;
                     case 3: AddNextSetting(strLvl);  break;

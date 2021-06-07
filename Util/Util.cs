@@ -28,42 +28,7 @@ namespace IngameScript
 
     partial class Program
     {                                                                              
-        static List<Setting> g_settings   = new List<Setting>();
-
-        static Setting   LastSetting  => g_settings.Count > 0 ? g_settings.Last()  : Setting_null;
-        static Setting   CurSetting   => OK(CurSet)           ? g_settings[CurSet] : Setting_null;
-
-        static Parameter CurParam     => (Parameter)CurSetting;
-        static Modulate  CurModulate  => (Modulate) CurSetting;
-
-        static Harmonics CurHarmonics => (Harmonics)CurSetting;
-        static Harmonics CurOrParentHarmonics =>
-            IsCurSetting(typeof(Harmonics))
-            ? CurHarmonics
-            : (Harmonics)CurSetting.Parent;
-
-
-        static bool IsCurParam()
-        {
-            return IsParam(CurSetting);
-        }
-
-
-        static bool IsCurParam(string tag)
-        {
-            return HasTag(CurSetting, tag);
-        }
-
-
-        static bool IsCurSetting(Type type)
-        {
-            //return
-            //       OK(CurSet)
-            //    && g_settings[CurSet].GetType() == type;
-
-            return CurSetting?.GetType() == type;
-        }
-
+                             
 
         static void UpdateDspOffset(ref int off, int pos, int count, int max, int dOff1, int dOff2)
         {
@@ -76,47 +41,6 @@ namespace IngameScript
             else if (pos >= max + off  ) off = Math.Max(0, pos - max + 1);
             else if (pos <  off        ) off = pos;
             else if (off <  0          ) off = 0;
-        }
-
-
-        static void UpdateSongOff()
-        {
-            UpdateDspOffset(
-                ref EditedClip.SongOff, 
-                CurPat, 
-                EditedClip.Patterns.Count, 
-                maxDspPats, 
-                1,
-                1);
-        }
-
-
-        void UpdateInstOff(int ch)
-        {
-            var curInst = Instruments.IndexOf(CurPattern.Channels[ch].Instrument);
-            UpdateDspOffset(ref EditedClip.InstOff, curInst, Instruments.Count, maxDspInst, 0, 1);
-        }
-
-
-        void UpdateSrcOff()
-        {
-            UpdateDspOffset(
-                ref EditedClip.SrcOff, 
-                CurSrc, 
-                EditedClip.CurInstrument.Sources.Count, 
-                maxDspSrc, 
-                0,
-                0);
-        }
-
-
-        void SetCurInst(Instrument inst)
-        {
-            int first, last;
-            EditedClip.GetCurPatterns(out first, out last);
-
-            for (int p = first; p <= last; p++)
-                EditedClip.Patterns[p].Channels[CurChan].Instrument = inst;
         }
 
 
@@ -187,10 +111,10 @@ namespace IngameScript
         static bool EditedClipIsPlaying => EditedClip.Track.Clips.IndexOf(EditedClip) == EditedClip.Track.PlayClip;
 
 
-        bool ShowPiano { get 
+        static bool ShowPiano { get 
         {
-            var tune = SelSource    ?.Tune
-                    ?? SelInstrument?.Tune;
+            var tune = EditedClip.SelSource    ?.Tune
+                    ?? EditedClip.SelInstrument?.Tune;
 
             return
                    EditedClip.Piano
@@ -201,17 +125,6 @@ namespace IngameScript
                    && !(   EditedClip.ParamKeys 
                         || EditedClip.ParamAuto);
         }}
-
-
-        static void UpdateInstName(bool add = True)
-        {
-            if (    OK(SelChan)
-                &&  OK(CurPat)
-                && !OK(CurSrc)
-                && !OK(CurSet)
-                && OK(SelChan))
-                dspMain.Panel.WriteText(add ? SelChannel.Instrument.Name : "", False);
-        }
 
 
         float GetBPM()
@@ -383,20 +296,20 @@ namespace IngameScript
         static bool IsPressed(int   lbl) { return    g_lcdPressed.Contains(lbl); }
 
 
-        static int        CurPat          => EditedClip.CurPat;
+        //static int        CurPat          => EditedClip.CurPat;
                                           
-        static int        CurChan         { get { return EditedClip.CurChan; } set { EditedClip.CurChan = value; } }
-        static int        SelChan         { get { return EditedClip.SelChan; } set { EditedClip.SelChan = value; } }
-        static int        CurSrc          { get { return EditedClip.CurSrc;  } set { EditedClip.CurSrc  = value; } }
-        static int        CurSet          { get { return EditedClip.CurSet;  } set { EditedClip.CurSet  = value; } }
+        //static int        CurChan         { get { return EditedClip.CurChan; } set { EditedClip.CurChan = value; } }
+        //static int        SelChan         { get { return EditedClip.SelChan; } set { EditedClip.SelChan = value; } }
+        //static int        CurSrc          { get { return EditedClip.CurSrc;  } set { EditedClip.CurSrc  = value; } }
+        //static int        CurSet          { get { return EditedClip.CurSet;  } set { EditedClip.CurSet  = value; } }
                                           
-        static Pattern    CurPattern      => EditedClip.CurPattern;
-        static Channel    CurChannel      => EditedClip.CurChannel;
-        static Pattern    PlayPattern     => EditedClip.Patterns[EditedClip.Track.PlayPat];
+        //static Pattern    CurPattern      => EditedClip.CurPattern;
+        //static Channel    CurChannel      => EditedClip.CurChannel;
+        //static Pattern    PlayPattern     => EditedClip.Patterns[EditedClip.Track.PlayPat];
                                           
-        static Source     SelSource       => EditedClip.SelSource;
-        static Instrument SelInstrument   => EditedClip.SelInstrument;
-        static Channel    SelChannel      => EditedClip.SelChannel;
+        //static Source     SelSource       => EditedClip.SelSource;
+        //static Instrument SelInstrument   => EditedClip.SelInstrument;
+        //static Channel    SelChannel      => EditedClip.SelChannel;
 
         static bool       SessionHasClips => Tracks.Exists(t => Array.Exists(t.Clips, c => OK(c)));
     }

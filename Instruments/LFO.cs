@@ -164,12 +164,12 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Clip clip, Program prog)
+            public override void AdjustFromController(Clip clip)
             {
-                if (g_remote.MoveIndicator    .X != 0) prog.AdjustFromController(clip, Offset,    g_remote.MoveIndicator    .X/ControlSensitivity);
+                if (g_remote.MoveIndicator    .X != 0) Program.AdjustFromController(clip, Offset,    g_remote.MoveIndicator    .X/ControlSensitivity);
 
-                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(clip, Amplitude, g_remote.RotationIndicator.X/ControlSensitivity);
-                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(clip, Frequency, g_remote.RotationIndicator.Y/ControlSensitivity);
+                if (g_remote.RotationIndicator.X != 0) Program.AdjustFromController(clip, Amplitude, g_remote.RotationIndicator.X/ControlSensitivity);
+                if (g_remote.RotationIndicator.Y != 0) Program.AdjustFromController(clip, Frequency, g_remote.RotationIndicator.Y/ControlSensitivity);
             }
 
 
@@ -266,9 +266,9 @@ namespace IngameScript
                 {
                     base.DrawLabels(sprites, x, y, dp);
 
-                    if (Frequency.HasDeepParams(CurChannel, CurSrc)) Frequency.DrawLabels(sprites, x, y, dp);                
-                    if (Amplitude.HasDeepParams(CurChannel, CurSrc)) Amplitude.DrawLabels(sprites, x, y, dp);
-                    if (Offset   .HasDeepParams(CurChannel, CurSrc)) Offset   .DrawLabels(sprites, x, y, dp);
+                    if (Frequency.HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Frequency.DrawLabels(sprites, x, y, dp);                
+                    if (Amplitude.HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Amplitude.DrawLabels(sprites, x, y, dp);
+                    if (Offset   .HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Offset   .DrawLabels(sprites, x, y, dp);
                 }
 
                 _dp.Next(dp);
@@ -289,9 +289,9 @@ namespace IngameScript
                 var freq   = Frequency.CurValue;
                 var off    = Offset   .CurValue;
 
-                var isAmp  = IsCurParam(strAmp );
+                var isAmp  = IsCurParam(strAmp);
                 var isFreq = IsCurParam(strFreq);
-                var isOff  = IsCurParam(strOff );
+                var isOff  = IsCurParam(strOff);
 
 
                 // draw axes

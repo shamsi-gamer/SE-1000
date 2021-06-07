@@ -19,10 +19,10 @@
         {
             return
                    OK(ModDestConnecting)
-                ||     OK(CurSrc)
-                   && !OK(CurSet)
-                   && SelSource.On
-                ||    !OK(SelChan)
+                ||     OK(EditedClip.CurSrc)
+                   && !OK(EditedClip.CurSet)
+                   && EditedClip.SelSource.On
+                ||    !OK(EditedClip.SelChan)
                    && LockView > 0
                 || OK(g_editKey);
         }
@@ -35,9 +35,9 @@
                 lbl.SetText("Conn");
                 return;
             }
-            else if (OK(CurSet))
+            else if (OK(EditedClip.CurSet))
             {
-                var path = g_settings.Last().GetPath(CurSrc);
+                var path = EditedClip.Settings.Last().GetPath(EditedClip.CurSrc);
 
                 if (EditedClip.ParamKeys)
                     lbl.SetText("Inter");
@@ -47,7 +47,7 @@
                     if (OK(EditedClip.EditPos))
                     {
                         lbl.SetText(
-                            OK(SelChannel.AutoKeys.Find(k =>
+                            OK(EditedClip.SelChannel.AutoKeys.Find(k =>
                                    k.Path == path
                                 && k.Step >= (EditedClip.EditPos % g_patSteps)
                                 && k.Step <  (EditedClip.EditPos % g_patSteps) + 1))
@@ -56,25 +56,25 @@
                     }
                 }
                 else
-                    lbl.SetText(HasTag(CurSetting, strMod) ? "Conn" : strEmpty);
+                    lbl.SetText(HasTag(EditedClip.CurSetting, strMod) ? "Conn" : strEmpty);
             }
             else
             {
-                if (OK(CurSrc)) lbl.SetText("On");
-                else            lbl.SetText(SelChan < 0 ? "Lock" : strEmpty);
+                if (OK(EditedClip.CurSrc)) lbl.SetText("On");
+                else                       lbl.SetText(EditedClip.SelChan < 0 ? "Lock" : strEmpty);
             }
         }
 
 
         void UpdateCmd2(Label lbl)
         {
-            lbl.SetText(OK(CurSrc) ? "Osc ↕" : strEmpty);
+            lbl.SetText(OK(EditedClip.CurSrc) ? "Osc ↕" : strEmpty);
         }
 
 
         bool AdjustIsBright(Label lbl)
         {
-            return 
+            return
                    CanAdjust 
                 && EditedClip.Shift;
         }
@@ -100,39 +100,12 @@
         }
 
 
-        bool CanAdjust { get
-        {
-            return
-                   IsCurParam()
-                || IsCurSetting(typeof(Harmonics))
-                ||    EditedClip.Transpose
-                   && SelChan < 0;
-        } }
-
-
-        bool AdjustArrowsAreVertical { get 
-        {
-            return
-                       CanAdjust
-                    && (   IsCurParam(strVol)
-                        || IsCurParam(strTune)
-                        || IsCurParam(strSus)
-                        || IsCurParam(strAmp)
-                        || IsCurParam(strLvl)
-                        || IsCurParam(strPow)
-                        ||     IsCurParam(strCnt)
-                            && (EditedClip.ParamKeys || EditedClip.ParamAuto)
-                        || IsCurSetting(typeof(Harmonics)))
-                || EditedClip.Transpose;
-        } }
-
-
         bool Cmd3IsBright(Label lbl)
         {
             return
-                   CurSet  < 0
-                && CurSrc  < 0
-                && SelChan < 0
+                   EditedClip.CurSet  < 0
+                && EditedClip.CurSrc  < 0
+                && EditedClip.SelChan < 0
                 && EditedClip.Transpose;
         }
 
@@ -140,22 +113,22 @@
         bool Cmd3IsDim(Label lbl)
         {
             return
-                   CurSet < 0
-                && CurSrc < 0
+                   EditedClip.CurSet < 0
+                && EditedClip.CurSrc < 0
                 && EditedClip.EditNotes.Count > 0;
         }
 
 
         void UpdateCmd3(Label lbl)
         {
-            if (OK(CurSet))
+            if (OK(EditedClip.CurSet))
             {
-                var path = g_settings.Last().GetPath(CurSrc);
+                var path = EditedClip.Settings.Last().GetPath(EditedClip.CurSrc);
 
                 if (EditedClip.ParamKeys)
                 {
                     lblCmd3.SetText(
-                        OK(SelChannel.Notes.Find(n =>
+                        OK(EditedClip.SelChannel.Notes.Find(n =>
                                n.ClipStep >= EditedClip.EditPos
                             && n.ClipStep <  EditedClip.EditPos+1
                             && OK(n.Keys.Find(k => k.Path == path))))
@@ -167,7 +140,7 @@
                     if (OK(EditedClip.EditPos))
                     { 
                         lblCmd3.SetText(
-                            OK(SelChannel.AutoKeys.Find(k =>
+                            OK(EditedClip.SelChannel.AutoKeys.Find(k =>
                                 k.Path == path
                                 && k.Step >= (EditedClip.EditPos % g_patSteps)
                                 && k.Step <  (EditedClip.EditPos % g_patSteps) + 1))
@@ -177,16 +150,16 @@
                         lblCmd3.SetText(strEmpty);
                 }
                 else
-                    lblCmd3.SetText(CurSetting.CanDelete() ? "X" : strEmpty);
+                    lblCmd3.SetText(EditedClip.CurSetting.CanDelete() ? "X" : strEmpty);
             }
             else
             {
-                if (OK(CurSrc))
+                if (OK(EditedClip.CurSrc))
                     lblCmd3.SetText(strEmpty);
 
                 else
-                    lblCmd3.SetText(     
-                        SelChan < 0 
+                    lblCmd3.SetText(
+                        EditedClip.SelChan < 0 
                         //? " ▄█   █ █ ██ █ █ █   █▄ \n" +
                         // " ▀██   █▄█▄██▄█▄█▄█   ██▀ \n" +  
                         //   " ▀   ▀▀▀▀▀▀▀▀▀▀▀▀   ▀ " 

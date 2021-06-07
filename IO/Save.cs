@@ -103,7 +103,6 @@ namespace IngameScript
             WriteBit(ref f, ShowClip,  i++);
             WriteBit(ref f, ShowMixer, i++);
             WriteBit(ref f, CueClip,   i++);
-            WriteBit(ref f, Move,      i++);
 
             return f;
         }

@@ -54,7 +54,7 @@ namespace IngameScript
 
         static List<Note>             lastNotes = new List<Note>();
 
-        Channel                       g_copyChan  = Channel_null;
+        static Channel                g_copyChan = Channel_null;
 
 
         static List<TriggerValue>    _triggerDummy = new List<TriggerValue>();

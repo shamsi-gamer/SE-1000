@@ -5,31 +5,34 @@ namespace IngameScript
 {
     partial class Program
     {
-        public bool g_inputValid = True;
+        static bool g_inputValid = True;
 
 
-        void UpdateInst()
+        static void UpdateInstName()
         {
             if (   g_inputValid
-                &&  OK(SelChan)
-                && !OK(CurSrc))
-            {
-                var sb = new StringBuilder();
-                dspMain.Panel.ReadText(sb, False);
-
-                EditedClip.CurInstrument.Name = S(sb).Trim().Trim(new char[] {';'});
-            }
+                &&  OK(EditedClip.SelChan)
+                && !OK(EditedClip.CurSrc))
+                EditedClip.CurInstrument.Name = dspMain.Panel.GetText().Trim().Trim(';');
 
             g_inputValid = True;
         }
 
 
+        static void SetInstName(bool add = True)
+        {
+            if (    OK(EditedClip.SelChan)
+                &&  OK(EditedClip.CurPat)
+                && !OK(EditedClip.CurSrc)
+                && !OK(EditedClip.CurSet)
+                &&  OK(EditedClip.SelChan))
+                dspMain.Panel.WriteText(add ? EditedClip.SelChannel.Instrument.Name : "", False);
+        }
+
+
         static void UpdateClipName()
         {
-            var sb = new StringBuilder();
-            dspInfo.Panel.ReadText(sb, False);
-
-            EditedClip.Name = S(sb).Trim();
+            EditedClip.Name = dspInfo.Panel.GetText().Trim();
         }
 
 

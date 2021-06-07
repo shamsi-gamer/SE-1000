@@ -153,16 +153,16 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Clip clip, Program prog)
+            public override void AdjustFromController(Clip clip)
             {
                 var mi = g_remote.MoveIndicator;
                 var ri = g_remote.RotationIndicator;
 
-                if (mi.Z != 0) prog.AdjustFromController(clip, Attack,  -mi.Z/ControlSensitivity);
-                if (mi.X != 0) prog.AdjustFromController(clip, Decay,    mi.X/ControlSensitivity);
+                if (mi.Z != 0) Program.AdjustFromController(clip, Attack,  -mi.Z/ControlSensitivity);
+                if (mi.X != 0) Program.AdjustFromController(clip, Decay,    mi.X/ControlSensitivity);
 
-                if (ri.X != 0) prog.AdjustFromController(clip, Sustain, -ri.X/ControlSensitivity);
-                if (ri.Y != 0) prog.AdjustFromController(clip, Release,  ri.Y/ControlSensitivity);
+                if (ri.X != 0) Program.AdjustFromController(clip, Sustain, -ri.X/ControlSensitivity);
+                if (ri.Y != 0) Program.AdjustFromController(clip, Release,  ri.Y/ControlSensitivity);
             }
 
 
@@ -241,10 +241,10 @@ namespace IngameScript
                 {
                     base.DrawLabels(sprites, x, y, dp);
 
-                    if (Attack .HasDeepParams(CurChannel, CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
-                    if (Decay  .HasDeepParams(CurChannel, CurSrc)) Decay  .DrawLabels(sprites, x, y, dp);
-                    if (Sustain.HasDeepParams(CurChannel, CurSrc)) Sustain.DrawLabels(sprites, x, y, dp);
-                    if (Release.HasDeepParams(CurChannel, CurSrc)) Release.DrawLabels(sprites, x, y, dp);
+                    if (Attack .HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
+                    if (Decay  .HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Decay  .DrawLabels(sprites, x, y, dp);
+                    if (Sustain.HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Sustain.DrawLabels(sprites, x, y, dp);
+                    if (Release.HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
                 }
 
                 _dp.Next(dp);
@@ -276,6 +276,8 @@ namespace IngameScript
 
                 GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), False, out p0, out p1, out p2, out p3, out p4);
                 DrawEnvelopeSupportsAndInfo(sprites, p0, p1, p2, p3, p4, y0, h0, isAtt, isDec, isSus, isRel);
+
+                FillRect(sprites, p0.X, y0 + h0/2, w0, -CurValue*h/2, color3);
 
                 GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), True, out p0, out p1, out p2, out p3, out p4);
                 DrawEnvelope(sprites, p0, p1, p2, p3, p4, color3, False, False, False, False, Decay.CurValue);

@@ -64,9 +64,9 @@
 
                 case "cmd1":        Command1();                      break;
                 case "cmd2":        Command2();                      break;
-                case "up":          Adjust(EditedClip, CurSetting,  1); break;
-                case "down":        Adjust(EditedClip, CurSetting, -1); break;
-                case "shift":       Shift();                         break;
+                case "up":          Adjust(EditedClip, EditedClip.CurSetting,  1); break;
+                case "down":        Adjust(EditedClip, EditedClip.CurSetting, -1); break;
+                case "shift":       ToggleShift();                   break;
                 case "cmd3":        Command3();                      break;
 
                 case "tr up":       SetTranspose( 1);                break;
@@ -89,7 +89,7 @@
                 case "edit step":   ChangeEditStep();                break;
                 case "edit len":    ChangeEditLength();              break;
 
-                case "step":        Step(EditedClip, CurChan);       break;
+                case "step":        Step(EditedClip, EditedClip.CurChan);       break;
                 case "hold":        Hold(EditedClip);                break;
 
                 case "left":        Left (EditedClip);               break;

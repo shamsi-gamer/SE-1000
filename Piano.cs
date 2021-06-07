@@ -9,8 +9,8 @@ namespace IngameScript
     {
         void High(int h)
         {
-            var tune = SelSource    ?.Tune
-                    ?? SelInstrument?.Tune;
+            var tune = EditedClip.SelSource    ?.Tune
+                    ?? EditedClip.SelInstrument?.Tune;
 
             if (h == 10) // here and not in BeatHigh() because TogglePiano() needs to know about tune
                 TogglePiano(tune);
@@ -32,7 +32,7 @@ namespace IngameScript
                     && EditedClip.ChordMode 
                     ? EditedClip.Chords[EditedClip.Chord] 
                     : null,
-                    CurChan);
+                    EditedClip.CurChan);
             else
                 BeatHigh(h);
         }
@@ -50,9 +50,9 @@ namespace IngameScript
             else if (h == 5) ClearNotes();
             else if (h == 6) Random();
                                    
-            else if (h == 7) Flip(CurChan, 4); 
-            else if (h == 8) Flip(CurChan, 8); 
-            else if (h == 9) Flip(CurChan, 16);
+            else if (h == 7) Flip(EditedClip.CurChan, 4); 
+            else if (h == 8) Flip(EditedClip.CurChan, 8); 
+            else if (h == 9) Flip(EditedClip.CurChan, 16);
 
             if (h < 2 || h > 4)
                 lblHigh[h].Mark();
@@ -63,9 +63,9 @@ namespace IngameScript
         { 
             if (   IsCurParam(strTune)
                 && (tune?.UseChord ?? False))
-            { 
-                g_settings.RemoveLast();
-                CurSet--;
+            {
+                EditedClip.Settings.RemoveLast();
+                EditedClip.CurSet--;
                 EditedClip.Piano = False;
             }
             else
@@ -78,8 +78,8 @@ namespace IngameScript
 
         void Low(int l)
         {
-            var tune = SelSource    ?.Tune
-                    ?? SelInstrument?.Tune;
+            var tune = EditedClip.SelSource    ?.Tune
+                    ?? EditedClip.SelInstrument?.Tune;
 
             if (   IsCurParam(strTune)
                 && (tune?.UseChord ?? False))
@@ -101,10 +101,10 @@ namespace IngameScript
                     && EditedClip.ChordMode 
                     ? EditedClip.Chords[EditedClip.Chord]
                     : null,
-                    CurChan);
+                    EditedClip.CurChan);
             }
             else
-                Tick(CurChan, l);
+                Tick(EditedClip.CurChan, l);
         }
 
 
@@ -167,7 +167,7 @@ namespace IngameScript
                     Shift(i, fwd);
             }
             else
-                Shift(CurChan, fwd);
+                Shift(EditedClip.CurChan, fwd);
         }
 
 
@@ -283,7 +283,7 @@ namespace IngameScript
                     ClearNotes(i);
             }
             else
-                ClearNotes(CurChan);
+                ClearNotes(EditedClip.CurChan);
         }
 
 
@@ -303,7 +303,7 @@ namespace IngameScript
                         var param = GetCurrentParam(note.Instrument);
 
                         var index = 0;
-                        while (OK(index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSrc))))
+                        while (OK(index = note.Keys.FindIndex(k => k.Path == param.GetPath(EditedClip.CurSrc))))
                             note.Keys.RemoveAt(index);
                     }
                 }
@@ -312,7 +312,7 @@ namespace IngameScript
                     var param = GetCurrentParam(chan.Instrument);
                     var index = 0;
                         
-                    while (OK(index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(CurSrc))))
+                    while (OK(index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(EditedClip.CurSrc))))
                         chan.AutoKeys.RemoveAt(index);
                 }
                 else
@@ -341,7 +341,7 @@ namespace IngameScript
             if (high > 6) h++;
 
             return 
-                  (60 + CurChannel.Transpose * 12 + h) * NoteScale 
+                  (60 + EditedClip.CurChannel.Transpose * 12 + h) * NoteScale 
                 + (EditedClip.HalfSharp ? 1 : 0);
         }
 
@@ -356,7 +356,7 @@ namespace IngameScript
             if (low > 13) l--;
 
             return 
-                  (60 + CurChannel.Transpose * 12 + l) * NoteScale
+                  (60 + EditedClip.CurChannel.Transpose * 12 + l) * NoteScale
                 + (EditedClip.HalfSharp ? 1 : 0);
         }
     }

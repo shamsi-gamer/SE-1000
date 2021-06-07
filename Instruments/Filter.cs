@@ -76,12 +76,12 @@ namespace IngameScript
             }
 
 
-            public override void AdjustFromController(Clip clip, Program prog)
+            public override void AdjustFromController(Clip clip)
             {
-                if (g_remote.MoveIndicator    .Z != 0) prog.AdjustFromController(clip, Sharpness, -g_remote.MoveIndicator    .Z/ControlSensitivity);
+                if (g_remote.MoveIndicator    .Z != 0) Program.AdjustFromController(clip, Sharpness, -g_remote.MoveIndicator    .Z/ControlSensitivity);
 
-                if (g_remote.RotationIndicator.Y != 0) prog.AdjustFromController(clip, Cutoff,     g_remote.RotationIndicator.Y/ControlSensitivity);
-                if (g_remote.RotationIndicator.X != 0) prog.AdjustFromController(clip, Resonance, -g_remote.RotationIndicator.X/ControlSensitivity);
+                if (g_remote.RotationIndicator.Y != 0) Program.AdjustFromController(clip, Cutoff,     g_remote.RotationIndicator.Y/ControlSensitivity);
+                if (g_remote.RotationIndicator.X != 0) Program.AdjustFromController(clip, Resonance, -g_remote.RotationIndicator.X/ControlSensitivity);
             }
 
 
@@ -159,8 +159,8 @@ namespace IngameScript
                 {
                     base.DrawLabels(sprites, x, y, dp);
 
-                    if (Cutoff   .HasDeepParams(CurChannel, CurSrc)) Cutoff   .DrawLabels(sprites, x, y, dp);
-                    if (Resonance.HasDeepParams(CurChannel, CurSrc)) Resonance.DrawLabels(sprites, x, y, dp);
+                    if (Cutoff   .HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Cutoff   .DrawLabels(sprites, x, y, dp);
+                    if (Resonance.HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Resonance.DrawLabels(sprites, x, y, dp);
                 }
 
                 _dp.Next(dp);
@@ -263,7 +263,7 @@ namespace IngameScript
             if (pass == FilterPass.Low)
             {
                 var cw = Nozero((1+rw) * cut);
-                var c  = 1 - (float)Math.Pow(f/cw, (6.4f/rw-1)*cut + 1);
+                var c  =  1 - (float)Math.Pow(f/cw, (6.4f/rw-1)*cut + 1);
                 var r  = (1 - (float)Math.Cos(1/rw*Tau*MinMax(0, f + rw - cw, rw))) / 3;
 
                 val = c + r * res;

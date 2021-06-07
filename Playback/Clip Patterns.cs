@@ -203,9 +203,9 @@ namespace IngameScript
                 //}
 
 
-                UpdateSongOff();//g_song.CurPat);
+                UpdateClipOff();//g_song.CurPat);
             
-                UpdateInstName();
+                SetInstName();
             }
 
 

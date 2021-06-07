@@ -119,8 +119,8 @@ namespace IngameScript
 
 
             var brightCol = 
-                      OK(SelChan) 
-                   && LastSetting == SelInstrument.Volume 
+                      OK(EditedClip.SelChan) 
+                   && EditedClip.LastSetting == EditedClip.SelInstrument.Volume 
                 || scale != 1 
                 ? color6 
                 : color4;

@@ -75,6 +75,8 @@ namespace IngameScript
                        
                 MemSet     = ReadBit(f, i++);
 
+                Move       = ReadBit(f, i++);
+
                 return True;
             }
 

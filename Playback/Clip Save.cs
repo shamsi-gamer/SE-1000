@@ -57,6 +57,8 @@
 
                 WriteBit(ref f, MemSet,     i++);
 
+                WriteBit(ref f, Move,       i++);
+
                 return f;
             }
 

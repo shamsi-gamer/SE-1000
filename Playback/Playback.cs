@@ -40,7 +40,7 @@ namespace IngameScript
                         var _block =
                                playClip.Block
                             && OK(b)
-                            && CurPat > b.First;
+                            && playClip.CurPat > b.First;
 
                         playClip.SetCurrentPattern(_block ? b.First : 0);
                         playClip.TrimCurrentNotes();

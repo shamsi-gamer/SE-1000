@@ -5,27 +5,27 @@ namespace IngameScript
 {
     partial class Program
     {
-        const  float   float_Inf = 65536f;
-        static float[] g_steps   = { 0.25f, 0.5f, 1, 2, 4, 8, 16, float_Inf };
-
-
-        static long    g_time           = -1; // in ticks
-        static float   TimeStep         => (float)g_time / TicksPerStep;
-
-        static bool    g_started        = False,
-                       g_init           = False;
-
-        static int     g_curRuntimeTick = 0;
-        static float[] g_runtimeMs      = new float[10];
-        static float   g_maxRuntimeMs   = 0;
-
-        float          g_instCount      = 0,
-                       g_dspCount       = 0;
-
-                        
-        static int     LockView       = 0; // 1 = pattern, 2 = piano
-
-        Key            g_editKey      = Key_null;
+        const  float            float_Inf = 65536f;
+        static float[]          g_steps   = { 0.25f, 0.5f, 1, 2, 4, 8, 16, float_Inf };
+                                
+                                
+        static long             g_time           = -1; // in ticks
+        static float            TimeStep         => (float)g_time / TicksPerStep;
+                                
+        static bool             g_started        = False,
+                                g_init           = False;
+                                
+        static int              g_curRuntimeTick = 0;
+        static float[]          g_runtimeMs      = new float[10];
+        static float            g_maxRuntimeMs   = 0;
+                                
+        float                   g_instCount      = 0,
+                                g_dspCount       = 0;
+                                
+                                 
+        static int              LockView         = 0; // 1 = pattern, 2 = piano
+                                                
+        static Key              g_editKey        = Key_null;
 
 
         static string           SessionName;
@@ -42,8 +42,7 @@ namespace IngameScript
                                 HideClip,
                                 ShowMixer,
                                 CueClip, 
-                                MixerShift,
-                                Move;
+                                MixerShift;
                                 
         static int              EditClip; // 0 = set, 1 = move, 2 = dup, 3 = del
 
@@ -99,8 +98,7 @@ namespace IngameScript
             MixerShift   = True;
 
             HideClip     =                         
-            ShowMixer    = 
-            Move         = False;
+            ShowMixer    = False;
                          
             EditClip     = -1;
         }

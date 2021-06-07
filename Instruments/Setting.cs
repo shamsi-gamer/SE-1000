@@ -23,18 +23,18 @@ namespace IngameScript
 
             public bool      _IsCurrent;
 
-            protected bool   m_valid;
+            protected bool    m_valid;
 
 
             public Setting(string tag, Setting parent, Setting proto, Instrument inst, Source src)
             {
-                Tag         = tag;
-                Parent      = parent;
-                Prototype   = proto;
-                Instrument  = inst;
-                Source      = src;
-               _IsCurrent   = False;
-                m_valid     = False;
+                Tag        = tag;
+                Parent     = parent;
+                Prototype  = proto;
+                Instrument = inst;
+                Source     = src;
+               _IsCurrent  = False;
+                m_valid    = False;
             }
 
 
@@ -82,7 +82,7 @@ namespace IngameScript
 
 
             public virtual void Randomize(Program prog) {}
-            public virtual void AdjustFromController(Clip clip, Program prog) {}
+            public virtual void AdjustFromController(Clip clip) {}
 
 
             public virtual string GetLabel(out float width) 
@@ -102,9 +102,9 @@ namespace IngameScript
                 if (!OK(sprites)) return;
 
 
-                var textCol = this == CurSetting ? color0 : color6;
-                var lineCol = this == CurSetting ? color6 : color4;
-                var boxCol  = this == CurSetting ? color6 : color3;
+                var textCol = this == EditedClip.CurSetting ? color0 : color6;
+                var lineCol = this == EditedClip.CurSetting ? color6 : color4;
+                var boxCol  = this == EditedClip.CurSetting ? color6 : color3;
 
 
                 var dx = 8f;
@@ -167,7 +167,7 @@ namespace IngameScript
 
         static Parameter GetCurrentParam(Instrument inst)
         {
-            return (Parameter)GetSettingFromPath(inst, CurSetting.GetPath(CurSrc));
+            return (Parameter)GetSettingFromPath(inst, EditedClip.CurSetting.GetPath(EditedClip.CurSrc));
         }
 
 
