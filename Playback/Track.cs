@@ -503,12 +503,25 @@ namespace IngameScript
         }
 
 
-        void SetAllTrackClips(int col)
+        void SetAllTrackClips(int index, int refTrack)
         {
+            var tracks = new List<Track>();
+
             foreach (var track in Tracks)
+                tracks.Add(track);
+
+            // make the ref track last so that double clicking works when Shift is enabled
+            if (refTrack < tracks.Count-1)
+            { 
+                var temp = tracks[refTrack];
+                tracks[refTrack] = tracks.Last();
+                tracks[tracks.Count-1] = temp;
+            }
+
+            foreach (var track in tracks)
             {
-                if (OK(track.Clips[col])) track.SetClip(col);
-                else                      track.NextClip = -1;
+                if (OK(track.Clips[index])) track.SetClip(index);
+                else                        track.NextClip = -1;
             }
         }
     }
