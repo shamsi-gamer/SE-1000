@@ -54,16 +54,25 @@ namespace IngameScript
 
 
             if (!OK(EditedClip))
-            {
                 EditedClip = Tracks[editTrack].Clips[editIndex];
-                UpdateClipDisplay();
+
+            if (!OK(EditedClip))
+            {
+                foreach (var track in Tracks)
+                    foreach (var clip in track.Clips)
+                        if (OK(clip))
+                        {
+                            EditedClip = clip;
+                            goto OK_EditedClip;
+                        }
             }
 
+        OK_EditedClip:
+            UpdateClipDisplay();
 
             if (   OK(copyTrack) 
                 && OK(copyIndex))
                 ClipCopy = Tracks[copyTrack].Clips[copyIndex];
-
 
             SetLabelColor(EditedClip.ColorIndex);
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 
 namespace IngameScript
@@ -469,24 +470,7 @@ namespace IngameScript
                 if (newOsc > (int)OscType.Crunch) newOsc = 0;
                 src.Oscillator = OscillatorFromType((OscType)newOsc);
             }
-            else
-            { 
-                var src =
-                    OK(EditedClip.CurSrc)
-                    ? EditedClip.CurInstrument.Sources[EditedClip.CurSrc]
-                    : Source_null;
 
-                if (EditedClip.SelChan < 0)
-                {
-                    int f, l;
-                    EditedClip.GetCurPatterns(out f, out l);
-
-                    for (int p = f; p <= l; p++)
-                        PasteChan(EditedClip, p, EditedClip.CurChan);
-
-                    g_copyChan = Channel_null;
-                }
-            }
 
             lblCmd2.Mark();
         }
@@ -512,12 +496,12 @@ namespace IngameScript
                     }
                 }
                 else if (EditedClip.ParamAuto
-                        && OK(EditedClip.EditPos))
+                      && OK(EditedClip.EditPos))
                 {
                     var chan = EditedClip.SelChannel;
 
                     var key = chan.AutoKeys.Find(k =>
-                            k.Path == path
+                           k.Path == path
                         && k.Step >= (EditedClip.EditPos % g_patSteps)
                         && k.Step <  (EditedClip.EditPos % g_patSteps) + 1);
 
@@ -719,19 +703,42 @@ namespace IngameScript
         }
 
 
-        void Copy()
+        static void Copy()
         {
-            g_copyChan = new Channel(EditedClip.CurChannel);
+            g_copyChans.Clear();
+
+            int first, last;
+            EditedClip.GetCurPatterns(out first, out last);
+
+            for (int p = first; p <= last; p++)
+            {
+                var pat  = EditedClip.Patterns[p];
+                var chan = pat.Channels[EditedClip.CurChan];
+
+                g_copyChans.Add(new Channel(chan));
+            }
         }
 
 
-        void Paste()
+        static void Paste()
         {
-            if (EditedClip.RndInst)
-                EditedClip.CurChannel.Instrument = g_copyChan.Instrument;
+            int first, last;
+            EditedClip.GetCurPatterns(out first, out last);
 
-            foreach (var note in g_copyChan.Notes)
-                EditedClip.CurChannel.Notes.Add(new Note(note, EditedClip.CurChannel));
+            first += EditedClip.CurPat;
+            last  += EditedClip.CurPat;
+
+            for (int p = 0; p < Math.Min(last - first + 1, g_copyChans.Count); p++)
+            {
+                var srcChan = g_copyChans[p];
+                var dstChan = EditedClip.Patterns[first + p].Channels[EditedClip.CurChan];
+
+                if (EditedClip.RndInst)
+                    dstChan.Instrument = srcChan.Instrument;
+
+                foreach (var note in srcChan.Notes)
+                    dstChan.Notes.Add(new Note(note, dstChan));
+            }
         }
     }
 }

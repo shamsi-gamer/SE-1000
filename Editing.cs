@@ -12,19 +12,19 @@ namespace IngameScript
         //}
 
 
-        static void PasteChan(Clip clip, int p, int ch)
-        {
-            if (!OK(g_copyChan))
-                return;
+        //static void PasteChan(Clip clip, int p, int ch)
+        //{
+        //    if (g_copyChans.Count == 0)
+        //        return;
 
-            int f, l;
-            clip.GetPatterns(p, out f, out l);
+        //    int f, l;
+        //    clip.GetPatterns(p, out f, out l);
 
-            for (int i = f; i <= l; i++)
-                clip.Patterns[i].Channels[ch] = new Channel(g_copyChan);
+        //    for (int i = f; i <= l; i++)
+        //        clip.Patterns[i].Channels[ch] = new Channel(g_copyChan);
 
-            UpdateInstOff(clip.CurChan);
-        }
+        //    UpdateInstOff(clip.CurChan);
+        //}
 
 
         void Step(Clip clip, int ch)

@@ -60,8 +60,8 @@ namespace IngameScript
                       ShowPiano
                    && NoteIsDim(HighToNote(lbl.Data))
                 ||   !ShowPiano
-                   && OK(g_copyChan)
-                   && (lbl == lblHigh[5] || lbl == lblHigh[6]);
+                   && g_copyChans.Count > 0
+                   && (lbl == lblHigh[0] || lbl == lblHigh[1]);
         }
 
 
