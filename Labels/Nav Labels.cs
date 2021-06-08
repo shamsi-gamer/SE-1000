@@ -26,8 +26,8 @@
         bool NavIsBright(Label lbl) 
         { 
             return
-                    OK(EditedClip.CurSrc)
-                && !OK(EditedClip.CurSet)
+                    OK(CurSrc)
+                && !OK(CurSet)
                 && !g_labelsPressed.Contains(lbl); 
         }
         
@@ -35,30 +35,30 @@
         bool NavIsDim(Label lbl) 
         { 
             return
-                    OK(EditedClip.SelChan)
-                && !OK(EditedClip.CurSet);
+                    OK(SelChan)
+                && !OK(CurSet);
         }
 
 
         bool BackIsBright(Label lbl) 
         { 
             return
-                    OK(EditedClip.CurSrc)
+                    OK(CurSrc)
                 && !g_labelsPressed.Contains(lbl); 
         }
         
 
         bool BackIsDim(Label lbl) 
         { 
-            return OK(EditedClip.SelChan); 
+            return OK(SelChan); 
         }
 
 
         bool EnterIsBright(Label lbl) 
         { 
             return
-                    OK(EditedClip.CurSrc)
-                && !OK(EditedClip.CurSet)
+                    OK(CurSrc)
+                && !OK(CurSet)
                 && !g_labelsPressed.Contains(lbl); 
         }
         
@@ -66,37 +66,37 @@
         bool EnterIsDim(Label lbl) 
         { 
             return 
-                    OK(EditedClip.SelChan) 
-                && !OK(EditedClip.CurSet); 
+                    OK(SelChan) 
+                && !OK(CurSet); 
         }
 
 
         void UpdateOut  (Label lbl) { lbl.SetText("◄◄"); }
         void UpdateBack (Label lbl) { lbl.SetText("◄┐"); }
-        void UpdateEnter(Label lbl) { lbl.SetText(!OK(EditedClip.CurSet) ? "└►" : strEmpty); }
+        void UpdateEnter(Label lbl) { lbl.SetText(!OK(CurSet) ? "└►" : strEmpty); }
 
 
-        void UpdateNew (Label lbl) { lbl.SetText(EditedClip.CurSet < 0 ? "New"  : strEmpty); }
-        void UpdateDup (Label lbl) { lbl.SetText(EditedClip.CurSet < 0 ? "Dup"  : strEmpty); }
-        void UpdateDel (Label lbl) { lbl.SetText(EditedClip.CurSet < 0 ? "Del"  : strEmpty); }
-        void UpdateMove(Label lbl) { lbl.SetText(EditedClip.CurSet < 0 ? "▲\n▼" : strEmpty, 10, 20); }
-        void UpdatePrev(Label lbl) { lbl.SetText(EditedClip.CurSet < 0 ? "►"    : strEmpty); }
-        void UpdateNext(Label lbl) { lbl.SetText(EditedClip.CurSet < 0 ? "◄"    : strEmpty); }
+        void UpdateNew (Label lbl) { lbl.SetText(CurSet < 0 ? "New"  : strEmpty); }
+        void UpdateDup (Label lbl) { lbl.SetText(CurSet < 0 ? "Dup"  : strEmpty); }
+        void UpdateDel (Label lbl) { lbl.SetText(CurSet < 0 ? "Del"  : strEmpty); }
+        void UpdateMove(Label lbl) { lbl.SetText(CurSet < 0 ? "▲\n▼" : strEmpty, 10, 20); }
+        void UpdatePrev(Label lbl) { lbl.SetText(CurSet < 0 ? "►"    : strEmpty); }
+        void UpdateNext(Label lbl) { lbl.SetText(CurSet < 0 ? "◄"    : strEmpty); }
 
 
         bool MoveIsBright(Label lbl) 
         { 
             return 
-                   !OK(EditedClip.CurSet) 
-                && (EditedClip.Move ^ OK(EditedClip.CurSrc)); 
+                   !OK(CurSet) 
+                && (EditedClip.Move ^ OK(CurSrc)); 
         }
 
 
         bool MoveIsDim(Label lbl) 
         { 
             return
-                    OK(EditedClip.SelChan)
-                && !OK(EditedClip.CurSet)
+                    OK(SelChan)
+                && !OK(CurSet)
                 && !EditedClip.Move;
         }
     }

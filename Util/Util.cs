@@ -88,7 +88,7 @@ namespace IngameScript
         }
 
 
-        static void UpdateClipName(Clip clip, Clip[] clips)
+        static void GetNewClipName(Clip clip, Clip[] clips)
         {
             clip.Name = GetNewName(clip.Name, newName => 
                 Array.Exists(clips, c => 
@@ -108,13 +108,13 @@ namespace IngameScript
         }
 
         
-        static bool EditedClipIsPlaying => EditedClip.Track.Clips.IndexOf(EditedClip) == EditedClip.Track.PlayClip;
+        static bool EditedClipIsPlaying => EditedClip.Index == EditedClip.Track.PlayClip;
 
 
         static bool ShowPiano { get 
         {
-            var tune = EditedClip.SelSource    ?.Tune
-                    ?? EditedClip.SelInstrument?.Tune;
+            var tune = SelSource    ?.Tune
+                    ?? SelInstrument?.Tune;
 
             return
                    EditedClip.Piano
@@ -296,21 +296,6 @@ namespace IngameScript
         static bool IsPressed(int   lbl) { return    g_lcdPressed.Contains(lbl); }
 
 
-        //static int        CurPat          => EditedClip.CurPat;
-                                          
-        //static int        CurChan         { get { return EditedClip.CurChan; } set { EditedClip.CurChan = value; } }
-        //static int        SelChan         { get { return EditedClip.SelChan; } set { EditedClip.SelChan = value; } }
-        //static int        CurSrc          { get { return EditedClip.CurSrc;  } set { EditedClip.CurSrc  = value; } }
-        //static int        CurSet          { get { return EditedClip.CurSet;  } set { EditedClip.CurSet  = value; } }
-                                          
-        //static Pattern    CurPattern      => EditedClip.CurPattern;
-        //static Channel    CurChannel      => EditedClip.CurChannel;
-        //static Pattern    PlayPattern     => EditedClip.Patterns[EditedClip.Track.PlayPat];
-                                          
-        //static Source     SelSource       => EditedClip.SelSource;
-        //static Instrument SelInstrument   => EditedClip.SelInstrument;
-        //static Channel    SelChannel      => EditedClip.SelChannel;
-
-        static bool       SessionHasClips => Tracks.Exists(t => Array.Exists(t.Clips, c => OK(c)));
+        static bool SessionHasClips => Tracks.Exists(t => Array.Exists(t.Clips, c => OK(c)));
     }
 }

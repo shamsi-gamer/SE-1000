@@ -39,11 +39,11 @@ namespace IngameScript
 
 
             int editTrack,
-                editIndex,
+                editClip,
                 copyTrack,
                 copyIndex;
 
-            if (!LoadMachineState(stateData, out editTrack, out editIndex, out copyTrack, out copyIndex))
+            if (!LoadMachineState(stateData, out editTrack, out editClip, out copyTrack, out copyIndex))
                 CreateDefaultMachineState();
 
             if (!LoadInstruments(instData))
@@ -53,13 +53,13 @@ namespace IngameScript
                 CreateDefaultTracks();
 
 
-            if (!OK(EditedClip))
-                EditedClip = Tracks[editTrack].Clips[editIndex];
+            if (OK(editTrack) && OK(editClip))
+                EditedClip = Tracks[editTrack].Clips[editClip];
 
             if (!OK(EditedClip))
                 SetAnyEditedClip();
 
-            UpdateClipDisplay();
+            UpdateClipDisplay(EditedClip);
 
             if (   OK(copyTrack) 
                 && OK(copyIndex))
@@ -97,32 +97,54 @@ namespace IngameScript
         {
             ClearMachineState();
 
-
             editTrack = editIndex =
             copyTrack = copyIndex = -1;
 
             if (!data.Contains(";"))
                 return False;
 
+
             var state = data.Split(';');
             var s = 0;
 
             SessionName = state[s++];
 
-            LoadToggles(state[s++]);
+            LoadStateToggles(state[s++]);
 
-            return 
-                   int_TryParse(state[s++], out TicksPerStep)
-                && int_TryParse(state[s++], out LockView    )
-                && int_TryParse(state[s++], out EditClip    )
-                && int_TryParse(state[s++], out editTrack   )
-                && int_TryParse(state[s++], out editIndex   )
-                && int_TryParse(state[s++], out copyTrack   )
-                && int_TryParse(state[s++], out copyIndex   );
+            if (   !int_TryParse(state[s++], out TicksPerStep)
+                || !int_TryParse(state[s++], out LockView    )
+                || !int_TryParse(state[s++], out EditClip    )
+                || !int_TryParse(state[s++], out editTrack   )
+                || !int_TryParse(state[s++], out editIndex   )
+                || !int_TryParse(state[s++], out copyTrack   )
+                || !int_TryParse(state[s++], out copyIndex   ))
+                return False;
+
+            for (int i = 0; i < nMems; i++)
+            {
+                int clipTrack, clipIndex;
+
+                if (   !int_TryParse(state[s++], out clipTrack)
+                    || !int_TryParse(state[s++], out clipIndex))
+                    return False;
+
+                if (OK(clipTrack) && OK(clipIndex))
+                {
+                    var  path = state[s++];
+                    var  inst = state[s++];
+
+                    var _inst = Instruments.Find(_i => _i.Name == inst);
+
+                    SetClips[i] = Tracks[clipTrack].Clips[clipIndex];
+                    Sets    [i] = GetSettingFromPath(_inst, path);
+                }
+            }
+
+            return True;
         }
 
 
-        bool LoadToggles(string toggles)
+        bool LoadStateToggles(string toggles)
         {
             uint f;
             if (!uint.TryParse(toggles, out f)) return False;
@@ -206,7 +228,7 @@ namespace IngameScript
             {
                 Tracks[0].Clips[0] = Clip.Create(Tracks[0]);
                 EditedClip = Tracks[0].Clips[0];
-                UpdateClipDisplay();
+                UpdateClipDisplay(EditedClip);
             }
 
             return True;

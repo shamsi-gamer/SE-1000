@@ -212,12 +212,12 @@ namespace IngameScript
             EditedClip.EditPos =
                 OK(EditedClip.EditPos)
                 ? float.NaN
-                : (OK(EditedClip.LastEditPos) ? EditedClip.LastEditPos : EditedClip.CurPat * g_patSteps);
+                : (OK(EditedClip.LastEditPos) ? EditedClip.LastEditPos : CurPat * g_patSteps);
 
             EditedClip.StopEdit();
 
             if (EditedClip.Hold)
-                EditedClip.TrimCurrentNotes(EditedClip.CurChan);
+                EditedClip.TrimCurrentNotes(CurChan);
 
             EditedClip.Hold = False;
 
@@ -542,14 +542,14 @@ namespace IngameScript
 
         void SetTranspose(int d)
         {
-            var tune = EditedClip.SelSource    ?.Tune
-                    ?? EditedClip.SelInstrument?.Tune;
+            var tune = SelSource    ?.Tune
+                    ?? SelInstrument?.Tune;
 
             if (EditedClip.Spread)
                 EditedClip.ChordSpread = MinMax(0, EditedClip.ChordSpread + d, 16);
             
-            else if (ShowPiano) SetTranspose(EditedClip, EditedClip.CurChan, d);
-            else                SetShuffle(EditedClip.CurChan, d);
+            else if (ShowPiano) SetTranspose(EditedClip, CurChan, d);
+            else                SetShuffle(CurChan, d);
 
             if (d > 0) lblOctaveUp  .Mark();
             else       lblOctaveDown.Mark();

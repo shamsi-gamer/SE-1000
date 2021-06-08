@@ -159,8 +159,8 @@ namespace IngameScript
                 {
                     base.DrawLabels(sprites, x, y, dp);
 
-                    if (Cutoff   .HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Cutoff   .DrawLabels(sprites, x, y, dp);
-                    if (Resonance.HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Resonance.DrawLabels(sprites, x, y, dp);
+                    if (Cutoff   .HasDeepParams(CurChannel, CurSrc)) Cutoff   .DrawLabels(sprites, x, y, dp);
+                    if (Resonance.HasDeepParams(CurChannel, CurSrc)) Resonance.DrawLabels(sprites, x, y, dp);
                 }
 
                 _dp.Next(dp);

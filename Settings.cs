@@ -17,14 +17,14 @@ namespace IngameScript
 
             EditedClip = clip;
 
-            EditedClip.CurChan =
-            EditedClip.SelChan = Array.FindIndex(
-                EditedClip.CurPattern.Channels, 
+            CurChan =
+            SelChan = Array.FindIndex(
+                CurPattern.Channels, 
                 chan => chan.Instrument == inst);
 
-            EditedClip.CurSrc = iSrc;
+            CurSrc = iSrc;
 
-            UpdateInstOff(EditedClip.SelChan);
+            UpdateInstOff(SelChan);
 
             SetInstName(True);
             g_inputValid = False;
@@ -50,24 +50,24 @@ namespace IngameScript
 
         static void AddNextSetting(string tag, Instrument inst = Instrument_null, int iSrc = -2)
         {
-            if (!OK(inst))  inst = EditedClip.SelInstrument;
-            if (iSrc == -2) iSrc = EditedClip.CurSrc;
+            if (!OK(inst))  inst = SelInstrument;
+            if (iSrc == -2) iSrc = CurSrc;
 
-            if (OK(EditedClip.CurSet))
-                EditedClip.Settings[EditedClip.CurSet]._IsCurrent = False;
+            if (OK(CurSet))
+                EditedClip.Settings[CurSet]._IsCurrent = False;
 
             Setting setting;
 
-                 if (OK(EditedClip.CurSet)) setting = EditedClip.Settings[EditedClip.CurSet].GetOrAddSettingFromTag(tag);
+                 if (OK(CurSet)) setting = EditedClip.Settings[CurSet].GetOrAddSettingFromTag(tag);
             else if (OK(iSrc))              setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
             else                            setting = inst              .GetOrAddSettingFromTag(tag);
 
             EditedClip.Settings.Add(setting);
 
-            EditedClip.CurSet++;
+            CurSet++;
 
             if (IsCurParam())
-                EditedClip.Settings[EditedClip.CurSet]._IsCurrent = True;
+                EditedClip.Settings[CurSet]._IsCurrent = True;
         }
 
 

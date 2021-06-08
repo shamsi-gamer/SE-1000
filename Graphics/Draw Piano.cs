@@ -21,7 +21,7 @@ namespace IngameScript
 
             var _dummy = new List<TriggerValue>();
 
-            var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, EditedClip.CurSrc, _dummy, clip, this);
+            var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, CurSrc, _dummy, clip, this);
 
 
             var xt = 340;
@@ -32,8 +32,8 @@ namespace IngameScript
 
             // draw edit position
             if (   OK(clip.EditPos)
-                && clip.EditPos >= EditedClip.CurPat      * g_patSteps
-                && clip.EditPos < (EditedClip.CurPat + 1) * g_patSteps)
+                && clip.EditPos >= CurPat      * g_patSteps
+                && clip.EditPos < (CurPat + 1) * g_patSteps)
             { 
                 FillRect(
                     sprites, 
@@ -65,7 +65,7 @@ namespace IngameScript
             if (IsCurParam())
                 DrawKeysAndAuto(sprites, EditedClip.CurParam, x, y, w, h, xt, rh, clip, pat);
 
-            if (EditedClip.SelChan < 0)
+            if (SelChan < 0)
                 DrawFuncButtons(sprites, w, h, clip);
         }
 
@@ -95,11 +95,11 @@ namespace IngameScript
         {
             for (int ch = 0; ch < g_nChans; ch++)
             {
-                if (ch != EditedClip.CurChan)
+                if (ch != CurChan)
                     DrawChanNotes(sprites, x, y, w, h, clip, p, gs, ch, color3);
             }
 
-            DrawChanNotes(sprites, x, y, w, h, clip, p, gs, EditedClip.CurChan, color6);
+            DrawChanNotes(sprites, x, y, w, h, clip, p, gs, CurChan, color6);
         }
 
 
@@ -171,7 +171,7 @@ namespace IngameScript
                 var th = ht - bh*2;
 
                 var col =
-                    ch == EditedClip.CurChan
+                    ch == CurChan
                     ? color2
                     : color5;
 

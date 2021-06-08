@@ -9,7 +9,7 @@ namespace IngameScript
     {
         void SaveSongExt()
         {
-            Save();
+            SaveMachineState();
 
             g_ioAction = 1; // save
             g_ioState  = 0; // instruments
@@ -34,10 +34,9 @@ namespace IngameScript
                 {
                     pnlStorageInstruments.WriteText(g_ioString);
 
+                    g_ioString = "";
                     g_ioState  = 1; // tracks
                     g_ioPos    = 0; // clip
-
-                    g_ioString = "";
                 }
             }
             else if (g_ioState == 1) // tracks
@@ -45,12 +44,15 @@ namespace IngameScript
                 if (g_ioPos < Tracks.Count)
                 { 
                     if (g_ioPos > 0) g_ioString += "\n";
-                    g_ioString += Tracks[g_ioPos++].Save();
+                    g_ioString += Tracks[g_ioPos].Save();
+                    g_ioPos++;
                 }
                 else // end of tracks
                 {
                     pnlStorageTracks.WriteText(g_ioString);
-                    g_ioState = 2;
+
+                    g_ioString = "";
+                    g_ioState  = 2;
                 }
             }
             else if (g_ioState == 2) // save external
@@ -75,16 +77,38 @@ namespace IngameScript
 
         void SaveMachineState()
         {
-            pnlStorageState.WriteText(
+            var state =
                   SessionName
                 + PS(SaveStateToggles())
                 + PS(TicksPerStep)
                 + PS(LockView)
                 + PS(EditClip)
-                + PS(OK(EditedClip) ? Tracks.IndexOf(EditedClip.Track)           : -1)
-                + PS(OK(EditedClip) ? EditedClip.Track.Clips.IndexOf(EditedClip) : -1)
-                + PS(OK(ClipCopy)   ? Tracks.IndexOf(ClipCopy.Track)             : -1)
-                + PS(OK(ClipCopy)   ? ClipCopy.Track.Clips.IndexOf(ClipCopy)     : -1));
+                + PS(Tracks.IndexOf(EditedClip.Track))
+                + PS(EditedClip.Index)
+                + PS(OK(ClipCopy) ? Tracks.IndexOf(ClipCopy.Track)         : -1)
+                + PS(OK(ClipCopy) ? ClipCopy.Track.Clips.IndexOf(ClipCopy) : -1);
+
+            for (int i = 0; i < nMems; i++)
+            {
+                if (OK(Sets[i]))
+                { 
+                    var clip = SetClips[i];
+                    var set  = Sets[i];
+                    var src  = set.Source;
+                    var inst = src.Instrument;
+
+                    state += 
+                          PS(Tracks.IndexOf(clip.Track))
+                        + PS(clip.Track.Clips.IndexOf(clip))
+                        + P (OK(src) && OK(set) ? set .GetPath(src.Index) : "")
+                        + PS(OK(src)            ? src .Index              : -1)
+                        + P (OK(inst)           ? inst.Name               : "");
+                }
+                else
+                {
+                    state += "-1;-1;;-1;;";
+                }
+            }
 
             //+   (OK(ModDestConnecting) ? ModDestConnecting.GetPath(ModDestSrcIndex) : "")
             //+ PS(ModDestSrcIndex)
@@ -92,6 +116,8 @@ namespace IngameScript
             //+ PS(OK(ModDestChannel) ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)
             //+ PS(ModCurPat)
             //+ PS(ModDestClip)
+
+            pnlStorageState.WriteText(state);
         }
 
 

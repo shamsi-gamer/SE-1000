@@ -22,11 +22,13 @@ namespace IngameScript
         float                   g_instCount      = 0,
                                 g_dspCount       = 0;
                                 
+        static float            g_accComplexity  = 0,
+                                g_accPolyphony   = 0;
+                                          
                                  
         static int              LockView         = 0; // 1 = pattern, 2 = piano
                                                 
         static Key              g_editKey        = Key_null;
-
 
         static string           SessionName;
 
@@ -42,8 +44,13 @@ namespace IngameScript
                                 HideClip,
                                 ShowMixer,
                                 CueClip, 
-                                MixerShift;
+                                MixerShift,
+                                SetOrPat, // true = Set, false = Pat
+                                SetMemSet;
                                 
+        static Setting[]        Sets     = new Setting[nMems];
+        static Clip   []        SetClips = new Clip   [nMems];
+
         static int              EditClip; // 0 = set, 1 = move, 2 = dup, 3 = del
 
                  
@@ -61,12 +68,18 @@ namespace IngameScript
             CreateDefaultTracks();
 
             EditedClip = Tracks[0].Clips[0];
-            UpdateClipDisplay();
+            UpdateClipDisplay(EditedClip);
         }
 
 
         static void ClearMachineState()
         {
+            for (int i = 0; i < nMems; i++)
+            { 
+                Sets[i]     = Setting_null;
+                SetClips[i] = Clip_null;
+            }
+
             g_sm    .StopAll();
 
             g_notes .Clear();
@@ -74,16 +87,16 @@ namespace IngameScript
         }
 
 
-        static void ClearTracks()
-        {
-            foreach (var track in Tracks)
-            {
-                track.Stop();
+        //static void ClearTracks()
+        //{
+        //    foreach (var track in Tracks)
+        //    {
+        //        track.Stop();
 
-                for (int i = 0; i < g_nChans; i++)
-                    track.Clips[i] = Clip_null;
-            }
-        }
+        //        for (int i = 0; i < g_nChans; i++)
+        //            track.Clips[i] = Clip_null;
+        //    }
+        //}
 
 
         static void CreateMachineState()
@@ -94,11 +107,13 @@ namespace IngameScript
             ClipCopy     = Clip_null;
                          
             ShowClip     = 
-            CueClip      = 
-            MixerShift   = True;
+            CueClip      = True;
 
             HideClip     =                         
-            ShowMixer    = False;
+            ShowMixer    = 
+            MixerShift   =
+            SetOrPat     = 
+            SetMemSet       = False;
                          
             EditClip     = -1;
         }
@@ -160,6 +175,41 @@ namespace IngameScript
             }
 
             return Clip_null;
+        }
+
+
+        public void MemSet()
+        {
+            if (!SetOrPat) SetOrPat  = True;
+            else           SetMemSet = !SetMemSet;
+
+            EditedClip.SetMemPat = False;
+        }
+
+
+        void GetSetOrPat(int i)
+        {
+            if (SetOrPat)
+            { 
+                if (   SetMemSet
+                    && OK(EditedClip.CurSetting))
+                {
+                    Sets[i]     = EditedClip.CurSetting;
+                    SetClips[i] = EditedClip;
+
+                    SetMemSet = False;
+                }
+                else if (OK(Sets[i]))
+                { 
+                    SwitchToSetting(
+                        SetClips[i],
+                        Sets[i].Source.Instrument, 
+                        Sets[i].Source.Index, 
+                        Sets[i]);
+                }
+            }
+            else 
+                EditedClip.SetMem(i);
         }
     }
 }

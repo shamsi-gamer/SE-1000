@@ -377,8 +377,8 @@ namespace IngameScript
             public void DrawSource(List<MySprite> sprites, float x, ref float y, float w, Program prog)
             {
                 var active = 
-                       EditedClip.CurSrc == Index 
-                    && EditedClip.CurSet <  0;
+                       CurSrc == Index 
+                    && CurSet <  0;
 
 
                 var dp1 = new DrawParams(active, prog);
@@ -387,20 +387,20 @@ namespace IngameScript
 
                 var sh = dp1.OffY + 20;
 
-                if (EditedClip.CurSrc == Index)
-                    FillRect(sprites, x, y, w, sh, EditedClip.CurSet < 0 ? color6 : color3);
+                if (CurSrc == Index)
+                    FillRect(sprites, x, y, w, sh, CurSet < 0 ? color6 : color3);
 
 
-                var col_0 = On && OK(EditedClip.CurSrc) ? color6 : color4;
-                var col_1 = On && OK(EditedClip.CurSrc) ? color0 : color5;
+                var col_0 = On && OK(CurSrc) ? color6 : color4;
+                var col_1 = On && OK(CurSrc) ? color0 : color5;
 
                 if (Oscillator == OscSample)
                 {
-                    DrawString(sprites, Oscillator.ShortName, x + 10, y + sh/2 - 10, 0.7f, EditedClip.CurSrc == Index ? col_1 : col_0, TA_CENTER);
+                    DrawString(sprites, Oscillator.ShortName, x + 10, y + sh/2 - 10, 0.7f, CurSrc == Index ? col_1 : col_0, TA_CENTER);
                 }
                 else
                 { 
-                    DrawSample(sprites,                       x +  10, y + sh/2 - 10, 50, 20, active, OK(EditedClip.CurSrc));
+                    DrawSample(sprites,                       x +  10, y + sh/2 - 10, 50, 20, active, OK(CurSrc));
                     DrawString(sprites, Oscillator.ShortName, x + 100, y + sh/2 - 10, 0.6f, active ? col_1 : col_0, TA_CENTER);
                 }
 
@@ -464,7 +464,7 @@ namespace IngameScript
 
             public void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                if (OK(EditedClip.CurSet))
+                if (OK(CurSet))
                 {
                     EditedClip.CurSetting.DrawFuncButtons(sprites, w, y, chan);
                 }

@@ -40,7 +40,7 @@ namespace IngameScript
             {
                 if (TooComplex) break;
                     
-                var chan = EditedClip.CurPattern.Channels[ch];
+                var chan = CurPattern.Channels[ch];
 
                 var rx  = x + (ch-first) * bw + bb/2;
                 var col = chan.Notes.Count > 0 ? color6 : color3;

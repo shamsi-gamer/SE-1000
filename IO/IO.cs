@@ -21,7 +21,8 @@
 
         void UpdateIO()
         {
-            if (g_ioAction == 1) UpdateSave();
+            if (g_ioAction == 1) 
+                UpdateSave();
         }
     }
 }

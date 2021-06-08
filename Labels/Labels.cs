@@ -28,7 +28,7 @@ namespace IngameScript
                             lblChord, lblChord1, lblChord2, lblChord3, lblChord4, lblChordEdit, lblSpread,
                             lblMixerVolumeUp, lblMixerVolumeDown, lblMixerAll, lblMixerMuteAll,
                             lblMixerShift,
-                            lblMemSet, lblMemory;
+                            lblMemPat, lblMemSet;
 
 
         List<Label>         lblHigh,
@@ -37,11 +37,15 @@ namespace IngameScript
         static  Label[]     lblMem = new Label[nMems];
 
 
-        IMyInteriorLight    warningLight;
-        IMyReflectorLight   frontLight;
+        static IMyInteriorLight       g_warningLight;
+        static IMyReflectorLight      g_frontLight;
+
+        static List<IMyTextPanel>     g_allLabels  = new List<IMyTextPanel>();
+
+        static List<IMyInteriorLight> g_rearLights = new List<IMyInteriorLight>();
 
 
-        static  List<Label> g_fastLabels    = new List<Label>(),
+        static List<Label> g_fastLabels    = new List<Label>(),
                             g_slowLabels    = new List<Label>(),
                             g_clipLabels    = new List<Label>(),
                             g_adjustLabels  = new List<Label>(),
@@ -59,7 +63,7 @@ namespace IngameScript
                   lcdMixer = 3000;
 
 
-        Color MakeColor(Color c, float f)
+        static Color MakeColor(Color c, float f)
         {
             return new Color(Color.Multiply(c, f), 1);
         }
@@ -77,8 +81,14 @@ namespace IngameScript
             InitMixerLabels();
             InitSideLabels();
 
-            frontLight   = Get("Front Light") as IMyReflectorLight;
-            warningLight = Get("Sat Light")   as IMyInteriorLight;
+            Get(g_allLabels, l => l.CustomName != "Label Edit"
+                               && l.CustomName != "Label Rec");
+
+            var rearLights = GridTerminalSystem.GetBlockGroupWithName("Rear Lights");
+            if (OK(rearLights)) rearLights.GetBlocksOfType(g_rearLights);
+
+            g_frontLight   = Get("Front Light") as IMyReflectorLight;
+            g_warningLight = Get("Sat Light")   as IMyInteriorLight;
         }
 
 
@@ -105,7 +115,7 @@ namespace IngameScript
         }
 
 
-        void SetLabelColor(int iCol)
+        static void SetLabelColor(int iCol)
         {
             EditedClip.ColorIndex = MinMax(0, iCol, 6);
 
@@ -121,7 +131,7 @@ namespace IngameScript
         }
 
 
-        void SetLabelColor(Color c, float f = 1)
+        static void SetLabelColor(Color c, float f = 1)
         {
             color6 = MakeColor(c, 0.878f * f);
             color5 = MakeColor(c, 0.622f * f);
@@ -132,11 +142,7 @@ namespace IngameScript
             color0 = MakeColor(c, 0.004f * f);
 
 
-            var labels = new List<IMyTextPanel>();
-            Get(labels, l => l.CustomName != "Label Edit"
-                          && l.CustomName != "Label Rec");
-
-            foreach (var l in labels)
+            foreach (var l in g_allLabels)
             {
                 l.FontColor       = color6;
                 l.BackgroundColor = color0;
@@ -150,21 +156,15 @@ namespace IngameScript
                 color6.G / max * 0xFF,
                 color6.B / max * 0xFF);
 
-
                  if (EditedClip.ColorIndex == 1) lightColor = new Color(0xFF, 0x50, 0);
             else if (EditedClip.ColorIndex == 5) lightColor = new Color(0xAA, 0, 0xFF);
 
 
-            var lights = new List<IMyInteriorLight>();
-
-            var group = GridTerminalSystem.GetBlockGroupWithName("Rear Lights");
-            if (OK(group)) group.GetBlocksOfType(lights);
-
-            foreach (var l in lights)
+            foreach (var l in g_rearLights)
                 l.Color = lightColor;
 
 
-            frontLight.Color = new Color(
+            g_frontLight.Color = new Color(
                 lightColor.R + (int)((0xFF - lightColor.R) * 0.23f),
                 lightColor.G + (int)((0xFF - lightColor.G) * 0.23f),
                 lightColor.B + (int)((0xFF - lightColor.B) * 0.23f));
@@ -172,13 +172,13 @@ namespace IngameScript
 
             var ci = EditedClip.ColorIndex;
 
-            if (ci == 0) warningLight.Color = new Color(0,    0,    0xFF);
-            if (ci == 1) warningLight.Color = new Color(0,    0,    0xFF);
-            if (ci == 2) warningLight.Color = new Color(0xFF, 0,    0x80);
-            if (ci == 3) warningLight.Color = new Color(0xFF, 0,    0xFF);
-            if (ci == 4) warningLight.Color = new Color(0xFF, 0x40, 0   );
-            if (ci == 5) warningLight.Color = new Color(0xFF, 0x30, 0   );
-            if (ci == 6) warningLight.Color = new Color(0xFF, 0,    0   );
+            if (ci == 0) g_warningLight.Color = new Color(0,    0,    0xFF);
+            if (ci == 1) g_warningLight.Color = new Color(0,    0,    0xFF);
+            if (ci == 2) g_warningLight.Color = new Color(0xFF, 0,    0x80);
+            if (ci == 3) g_warningLight.Color = new Color(0xFF, 0,    0xFF);
+            if (ci == 4) g_warningLight.Color = new Color(0xFF, 0x40, 0   );
+            if (ci == 5) g_warningLight.Color = new Color(0xFF, 0x30, 0   );
+            if (ci == 6) g_warningLight.Color = new Color(0xFF, 0,    0   );
         }
 
 

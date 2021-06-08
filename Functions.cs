@@ -21,15 +21,15 @@ namespace IngameScript
 
         void SetFunc(int func)
         {
-            if (OK(EditedClip.SelChan))
+            if (OK(SelChan))
             {
-                if (OK(EditedClip.CurSet))
+                if (OK(CurSet))
                     EditedClip.CurSetting.Func(func);
 
                 else
                 {
-                    if (!OK(EditedClip.CurSrc)) SetInstFunc(EditedClip.SelInstrument, func);
-                    else                        SetSrcFunc (EditedClip.SelSource,     func);
+                    if (!OK(CurSrc)) SetInstFunc(SelInstrument, func);
+                    else                        SetSrcFunc (SelSource,     func);
                 }
             }
 

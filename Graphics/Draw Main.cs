@@ -22,28 +22,28 @@ namespace IngameScript
 
             if (ShowClip)
             { 
-                if (   OK(EditedClip.SelChan)
+                if (   OK(SelChan)
                     && IsCurParam()
                     && (   EditedClip.ParamKeys
                         || EditedClip.ParamAuto))
                 {
-                    if (EditedClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, EditedClip.CurPat, True);
-                    else                  DrawPatternDisplay(sprites, x, y, w, h, EditedClip, EditedClip.CurPat, True);
+                    if (EditedClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True);
+                    else                  DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, True);
                 }
-                else if (OK(EditedClip.SelChan))
+                else if (OK(SelChan))
                 {
                     if (IsCurSetting(typeof(Harmonics)))
                     {
                         var hrm = EditedClip.CurOrParentHarmonics;
-                        hrm.DrawSetting(sprites, x, y, w, h, EditedClip.CurChannel, this);
+                        hrm.DrawSetting(sprites, x, y, w, h, CurChannel, this);
                     }
                     else 
                         DrawInstrument(sprites, x, y, w, h);
                 }
                 else if ( EditedClip.Piano 
                        && LockView != 1
-                    || LockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, EditedClip.CurPat, True);
-                else                  DrawPatternDisplay(sprites, x, y, w, h, EditedClip, EditedClip.CurPat, True);
+                    || LockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True);
+                else                  DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, True);
             }
             else
                 FillRect(sprites, x, y, w, h, color0);
@@ -59,10 +59,10 @@ namespace IngameScript
             var bw =  w/6;
             var x0 = bw/2;
 
-            if (OK(EditedClip.SelChan))
+            if (OK(SelChan))
             {
-                if (EditedClip.CurSrc < 0) EditedClip.SelInstrument.DrawFuncButtons(sprites, w, y, EditedClip.SelChannel);
-                else                       EditedClip.SelSource    .DrawFuncButtons(sprites, w, y, EditedClip.SelChannel);
+                if (CurSrc < 0) SelInstrument.DrawFuncButtons(sprites, w, y, SelChannel);
+                else                       SelSource    .DrawFuncButtons(sprites, w, y, SelChannel);
             }
         }
 

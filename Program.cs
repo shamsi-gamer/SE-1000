@@ -34,8 +34,7 @@ namespace IngameScript
                                       pnlStorageState,
                                       pnlStorageInstruments,
                                       pnlStorageTracks;
-                                          
-                                          
+        
         static IMyRemoteControl       g_remote;
                                       
         List<IMyLandingGear>          g_locks  = new List<IMyLandingGear>();
@@ -50,7 +49,7 @@ namespace IngameScript
                                       g_lightHinge2, 
                                       g_hingeL, 
                                       g_hingeR;
-                                      
+
 
         static List<Note>             lastNotes = new List<Note>();
 
@@ -106,7 +105,7 @@ namespace IngameScript
             Get(g_mass);
 
 
-            g_lightPiston = Get(strLight + " Piston") as IMyPistonBase;
+            g_lightPiston = Get("Piston " + strLight) as IMyPistonBase;
             g_lightHinge1 = GetHinge(strLight + " 1");
             g_lightHinge2 = GetHinge(strLight + " 2");
             g_hingeL      = GetHinge("L");

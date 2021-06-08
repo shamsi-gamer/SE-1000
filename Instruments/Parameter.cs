@@ -532,8 +532,8 @@ namespace IngameScript
 
                 DrawFuncButton(sprites, strLfo, 2, w, h, True, OK(Lfo));
                 DrawFuncButton(sprites, strMod, 3, w, h, True, OK(Modulate));
-                DrawFuncButton(sprites, "Key",  4, w, h, True, chan.HasNoteKeys(GetPath(EditedClip.CurSrc)));
-                DrawFuncButton(sprites, "Auto", 5, w, h, True, chan.HasAutoKeys(GetPath(EditedClip.CurSrc)));
+                DrawFuncButton(sprites, "Key",  4, w, h, True, chan.HasNoteKeys(GetPath(CurSrc)));
+                DrawFuncButton(sprites, "Auto", 5, w, h, True, chan.HasAutoKeys(GetPath(CurSrc)));
             }
 
 

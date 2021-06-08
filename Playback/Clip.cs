@@ -59,7 +59,7 @@ namespace IngameScript
                                  ParamKeys,
                                  ParamAuto,
                                  
-                                 MemSet = False;
+                                 SetMemPat = False;
                                  
                                  
             public int           ChordSpread;
@@ -101,6 +101,8 @@ namespace IngameScript
 
             public List<Setting> Settings;
 
+
+            public int           Index          => Track.Clips.IndexOf(this);
 
             public Pattern       CurPattern     => Patterns[CurPat];
             public Channel       CurChannel     => CurPattern.Channels[CurChan];
@@ -149,7 +151,9 @@ namespace IngameScript
                 Piano           = 
                                 
                 Shift           = 
-                MixerShift      = 
+                MixerShift      =
+                SetOrPat     =
+                SetMemSet          =
                                 
                 Move            =
 
@@ -165,7 +169,7 @@ namespace IngameScript
                 ParamKeys       = 
                 ParamAuto       =
                                 
-                MemSet          = False;
+                SetMemPat          = False;
                                 
                 CurPat          =  
                 CurChan         = 0;
@@ -264,7 +268,7 @@ namespace IngameScript
                 ParamKeys       = clip.ParamKeys;
                 ParamAuto       = clip.ParamAuto;
                                 
-                MemSet          = clip.MemSet;
+                SetMemPat          = clip.SetMemPat;
                                 
                 CurPat          = clip.CurPat;
                 CurChan         = clip.CurChan;
@@ -344,7 +348,7 @@ namespace IngameScript
             {
                 var clip = new Clip(track);
                 clip.Patterns.Add(new Pattern(Instruments[0], clip));
-                UpdateClipName(clip, track.Clips);
+                GetNewClipName(clip, track.Clips);
                 return clip;
             }
 

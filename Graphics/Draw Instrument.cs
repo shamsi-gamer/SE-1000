@@ -12,7 +12,7 @@ namespace IngameScript
             var rh         = h - 50;
             var instHeight = h - 80;
 
-            var inst = EditedClip.SelInstrument;
+            var inst = SelInstrument;
 
             var lw = 196;
 
@@ -27,7 +27,7 @@ namespace IngameScript
             FillRect(sprites, x + lw, y, w-lw, instHeight, color2);
 
 
-            DrawInstrumentList(sprites, x, y, lw, instHeight, EditedClip.SelChannel);
+            DrawInstrumentList(sprites, x, y, lw, instHeight, SelChannel);
 
 
             FillRect(sprites, x + lw,      0,    w2, rh/4, color3);
@@ -52,7 +52,7 @@ namespace IngameScript
             ClipDraw(sprites, x + lw + w2, 0, w - x - lw - w2, rh/4);
 
             var dpInst = new DrawParams(this);
-            EditedClip.SelInstrument.DrawLabels(sprites, x + lw + w2 + 21, y + 5, dpInst);
+            SelInstrument.DrawLabels(sprites, x + lw + w2 + 21, y + 5, dpInst);
 
             ClearClip(sprites);
 
@@ -90,8 +90,8 @@ namespace IngameScript
             var iInst = Instruments.IndexOf(chan.Instrument);
             var step  = 28.5f;
 
-            if (   OK(EditedClip.SelChan) 
-                && EditedClip.CurSrc < 0)
+            if (   OK(SelChan) 
+                && CurSrc < 0)
                 FillRect(sprites, x + sw, y + (iInst - EditedClip.InstOff) * step, w - sw, step, color6);
 
             for (int i = EditedClip.InstOff; i < Math.Min(EditedClip.InstOff + maxDspInst, Instruments.Count); i++)
@@ -107,13 +107,13 @@ namespace IngameScript
                     y + (i - EditedClip.InstOff) * step,
                     0.7f,
                     inst == chan.Instrument 
-                    ? (OK(EditedClip.CurSrc) ? color6 : color0) 
-                    : (OK(EditedClip.CurSrc) ? color3 : color6));
+                    ? (OK(CurSrc) ? color6 : color0) 
+                    : (OK(CurSrc) ? color3 : color6));
             }
 
             FillRect(sprites, x + w - 4, y, 4, h, color6);
 
-            if (   OK(EditedClip.SelChan) 
+            if (   OK(SelChan) 
                 && Instruments.Count > maxDspInst)
             {
                 var bh = h / (float)Instruments.Count;
@@ -137,10 +137,10 @@ namespace IngameScript
                 inst.Sources[i].DrawSource(sprites, x + sw, ref iy, w - sw, this);
             }
 
-            if (OK(EditedClip.CurSrc) && nSrc > 8)
+            if (OK(CurSrc) && nSrc > 8)
             {
                 var bh = h / (float)nSrc;
-                FillRect(sprites, x, y + bh * EditedClip.CurSrc, sw, bh, color6);
+                FillRect(sprites, x, y + bh * CurSrc, sw, bh, color6);
             }
 
             ClearClip(sprites);

@@ -41,13 +41,13 @@ namespace IngameScript
                 var pw = wt * g_patSteps;
                 var ph = ht * g_nChans;
 
-                var pxCur = x - (nDsp*4 + EditedClip.SongOff) * pw + EditedClip.CurPat * pw;
+                var pxCur = x - (nDsp*4 + EditedClip.SongOff) * pw + CurPat * pw;
                 var py = y + h/2 - ph/2;
 
                 var first = nDsp * 4 + EditedClip.SongOff;
                 var next = Math.Min((nDsp + 1) * 4 + EditedClip.SongOff, EditedClip.Patterns.Count);
 
-                var curBlock = EditedClip.GetBlock(EditedClip.CurPat);
+                var curBlock = EditedClip.GetBlock(CurPat);
 
                 var _f = first - EditedClip.SongOff;
 
@@ -84,7 +84,7 @@ namespace IngameScript
                     {
                         var px = x - (nDsp * 4 + EditedClip.SongOff) * pw + p * pw;
                         var ch = ph / g_nChans;
-                        var cy = py + ph - (EditedClip.CurChan + 1) * ch;
+                        var cy = py + ph - (CurChan + 1) * ch;
 
                         FillRect(sprites, px, cy, pw, ch, color3);
                     }
@@ -95,7 +95,7 @@ namespace IngameScript
                 if (   EditedClip.EditPos >= first * g_patSteps
                     && EditedClip.EditPos <  next  * g_patSteps)
                 {
-                    var pl    = x - pw * (nDsp * 4 * pw + EditedClip.CurPat + EditedClip.SongOff);
+                    var pl    = x - pw * (nDsp * 4 * pw + CurPat + EditedClip.SongOff);
                     var xTick = wt * EditedClip.EditPos;
 
                     FillRect(
@@ -120,7 +120,7 @@ namespace IngameScript
                     if (EditedClip.ParamKeys)
                     {
                         FillRect     (sprites, px, py+ph+ph/5, pw, 1,    color3);
-                        DrawParamKeys(sprites, px, py + ph,    pw, ph/5, EditedClip, p, EditedClip.CurChan);
+                        DrawParamKeys(sprites, px, py + ph,    pw, ph/5, EditedClip, p, CurChan);
                     }
                     else if (EditedClip.ParamAuto)
                     {
@@ -133,7 +133,7 @@ namespace IngameScript
                     var fx   = x - _f * pw;
                     var wMax = Math.Min(EditedClip.Patterns.Count * pw, w * 2);
 
-                    DrawParamAuto(sprites, fx, py + ph, pw, ph/5, wMax, EditedClip, 0, EditedClip.CurChan);
+                    DrawParamAuto(sprites, fx, py + ph, pw, ph/5, wMax, EditedClip, 0, CurChan);
                 }
 
 
@@ -188,7 +188,7 @@ namespace IngameScript
                         DrawRightBracket(sprites, bx + sw, by, 16, sh, 1);
                     }
 
-                    FillRect(sprites, px + bw * EditedClip.CurPat, by, bw, sh, color4);
+                    FillRect(sprites, px + bw * CurPat, by, bw, sh, color4);
 
                     if (OK(track.PlayStep))
                         FillRect(sprites, px + bw / g_patSteps * track.PlayStep, by, 4, sh, color6);

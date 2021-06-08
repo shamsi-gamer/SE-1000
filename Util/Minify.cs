@@ -12,6 +12,9 @@ namespace IngameScript
         const float float_NaN = float.NaN;
 
 
+        const TextAlignment TA_CENTER = TextAlignment.CENTER;
+
+
         const Track           Track_null = null;
         const Clip             Clip_null = null;
         const Pattern       Pattern_null = null;
@@ -35,7 +38,6 @@ namespace IngameScript
         const Label.CondFunc     CF_null = null;
         const Action<Label>      AL_null = null;
 
-        const TextAlignment TA_CENTER = TextAlignment.CENTER;
 
         static string W(string str, bool semi = True) { return str + (semi ? ";" : ""); }
         static string P(string str)                { return ";" + str; }
@@ -52,6 +54,21 @@ namespace IngameScript
         static string WB   (bool b  ) { return W(B(b));   }
 
         static string  N(string s, bool newLine = True) { return s + (newLine ? "\n" : ""); }
-        static string PN(string s)                   { return "\n" + s; }
+        static string PN(string s)                      { return "\n" + s; }
+
+
+        static int        CurPat        => EditedClip.CurPat;
+
+        static int        CurChan       { get { return EditedClip.CurChan; } set { EditedClip.CurChan = value; } }
+        static int        SelChan       { get { return EditedClip.SelChan; } set { EditedClip.SelChan = value; } }
+        static int        CurSrc        { get { return EditedClip.CurSrc;  } set { EditedClip.CurSrc  = value; } }
+        static int        CurSet        { get { return EditedClip.CurSet;  } set { EditedClip.CurSet  = value; } }
+
+        static Pattern    CurPattern    => EditedClip.CurPattern;
+        static Channel    CurChannel    => EditedClip.CurChannel;
+
+        static Source     SelSource     => EditedClip.SelSource;
+        static Instrument SelInstrument => EditedClip.SelInstrument;
+        static Channel    SelChannel    => EditedClip.SelChannel;
     }
 }

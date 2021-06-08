@@ -14,10 +14,20 @@ namespace IngameScript
             if (  !Playing // play
                 && play) 
             {
-                foreach (var track in Tracks)
+                if (ShowClip && ShowMixer)
                 {
-                    if (OK(track.NextClip))
-                        track.NextPat = 0;
+                    var saved = CueClip;
+                    CueClip = False;
+                    EditedClip.Track.CueNextClip(EditedClip.Index);
+                    CueClip = saved;
+                }
+                else
+                { 
+                    foreach (var track in Tracks)
+                    {
+                        if (OK(track.NextClip))
+                            track.NextPat = 0;
+                    }
                 }
             }
 

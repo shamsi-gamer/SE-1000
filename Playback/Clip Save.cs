@@ -21,43 +21,45 @@
                 uint f = 0;
                 var  i = 0;
 
-                WriteBit(ref f, Loop,       i++);
-                WriteBit(ref f, Block,      i++);
-                WriteBit(ref f, AllPats,    i++);
-                WriteBit(ref f, Follow,     i++);
-                WriteBit(ref f, AutoCue,    i++);
-
-                WriteBit(ref f, MovePat,    i++);
-
-                WriteBit(ref f, In,         i++);
-                WriteBit(ref f, Out,        i++);
-
-                WriteBit(ref f, AllChan,    i++);
-                WriteBit(ref f, RndInst,    i++);
-
-                WriteBit(ref f, Piano,      i++);
-
-                WriteBit(ref f, Transpose,  i++);
-                WriteBit(ref f, Spread,     i++);
-
-                WriteBit(ref f, Shift,      i++);
-                WriteBit(ref f, MixerShift, i++);
-
-                WriteBit(ref f, Hold,       i++);
-                WriteBit(ref f, Pick,       i++);
-
-                WriteBit(ref f, ChordMode,  i++);
-                WriteBit(ref f, ChordEdit,  i++);
-                WriteBit(ref f, ChordAll,   i++);
-
-                WriteBit(ref f, HalfSharp,  i++);
-
-                WriteBit(ref f, ParamKeys,  i++);
-                WriteBit(ref f, ParamAuto,  i++);
-
-                WriteBit(ref f, MemSet,     i++);
-
-                WriteBit(ref f, Move,       i++);
+                WriteBit(ref f, Loop,        i++);
+                WriteBit(ref f, Block,       i++);
+                WriteBit(ref f, AllPats,     i++);
+                WriteBit(ref f, Follow,      i++);
+                WriteBit(ref f, AutoCue,     i++);
+                                             
+                WriteBit(ref f, MovePat,     i++);
+                                             
+                WriteBit(ref f, In,          i++);
+                WriteBit(ref f, Out,         i++);
+                                             
+                WriteBit(ref f, AllChan,     i++);
+                WriteBit(ref f, RndInst,     i++);
+                                             
+                WriteBit(ref f, Piano,       i++);
+                                             
+                WriteBit(ref f, Transpose,   i++);
+                WriteBit(ref f, Spread,      i++);
+                                             
+                WriteBit(ref f, Shift,       i++);
+                WriteBit(ref f, MixerShift,  i++);
+                                             
+                WriteBit(ref f, Hold,        i++);
+                WriteBit(ref f, Pick,        i++);
+                                             
+                WriteBit(ref f, ChordMode,   i++);
+                WriteBit(ref f, ChordEdit,   i++);
+                WriteBit(ref f, ChordAll,    i++);
+                                             
+                WriteBit(ref f, HalfSharp,   i++);
+                                             
+                WriteBit(ref f, ParamKeys,   i++);
+                WriteBit(ref f, ParamAuto,   i++);
+                                             
+                WriteBit(ref f, SetMemPat,      i++);
+                                             
+                WriteBit(ref f, Move,        i++);
+                WriteBit(ref f, SetOrPat, i++);
+                WriteBit(ref f, SetMemSet,      i++);
 
                 return f;
             }

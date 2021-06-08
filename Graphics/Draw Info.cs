@@ -102,8 +102,10 @@ namespace IngameScript
         {
             var cx = x + 136;
 
-            DrawString(sprites, "CMP",  x + 20, y - 4, 1.2f,    color6);
-            DrawProgressBar(sprites,    cx,     y, 355, 27, g_dspCount / Runtime.MaxInstructionCount);
+            DrawString(sprites, "CMP", x + 20, y - 4, 1.2f, color6);
+            DrawProgressBar(sprites, cx, y, 355, 27, g_accComplexity);
+
+            g_accComplexity = 0;
         }
 
 
@@ -134,8 +136,10 @@ namespace IngameScript
         {
             var cx = x + 136;
 
-            DrawString(sprites, "POLY",  x + 20, y - 4, 1.2f,    color6);
-            DrawProgressBar(sprites,     cx,     y, 355, 27, Math.Min(g_sm.UsedRatio, 1));
+            DrawString(sprites, "POLY", x + 20, y - 4, 1.2f, color6);
+            DrawProgressBar(sprites, cx, y, 355, 27, g_accPolyphony);
+
+            g_accPolyphony = 0;
         }
         
         
@@ -183,7 +187,7 @@ namespace IngameScript
             var sprites = new List<MySprite>();
 
             FillRect(sprites, x, y, w, h, color0);
-            DrawString(sprites, "Copy\nPaste\nSong\nHere", cx, cy - 220, 3.5f, color6, TA_CENTER);
+            DrawString(sprites, "Copy\nPaste\nSession\nHere", cx, cy - 220, 3.5f, color6, TA_CENTER);
 
             dsp.Draw(sprites);
         }

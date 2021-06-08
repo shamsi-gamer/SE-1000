@@ -28,7 +28,7 @@ namespace IngameScript
         {
             UpdateDspOffset(
                 ref EditedClip.SongOff,
-                EditedClip.CurPat,
+                CurPat,
                 EditedClip.Patterns.Count, 
                 maxDspPats, 
                 1,
@@ -38,7 +38,7 @@ namespace IngameScript
 
         static void UpdateInstOff(int ch)
         {
-            var curInst = Instruments.IndexOf(EditedClip.CurPattern.Channels[ch].Instrument);
+            var curInst = Instruments.IndexOf(CurPattern.Channels[ch].Instrument);
             UpdateDspOffset(ref EditedClip.InstOff, curInst, Instruments.Count, maxDspInst, 0, 1);
         }
 
@@ -47,7 +47,7 @@ namespace IngameScript
         {
             UpdateDspOffset(
                 ref EditedClip.SrcOff,
-                EditedClip.CurSrc, 
+                CurSrc, 
                 EditedClip.CurInstrument.Sources.Count, 
                 maxDspSrc, 
                 0,
@@ -61,7 +61,7 @@ namespace IngameScript
             EditedClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
-                EditedClip.Patterns[p].Channels[EditedClip.CurChan].Instrument = inst;
+                EditedClip.Patterns[p].Channels[CurChan].Instrument = inst;
         }
 
 
@@ -69,7 +69,7 @@ namespace IngameScript
                    IsCurParam()
                 || IsCurSetting(typeof(Harmonics))
                 ||    EditedClip.Transpose
-                   && EditedClip.SelChan < 0;
+                   && SelChan < 0;
 
 
         static bool AdjustArrowsAreVertical =>

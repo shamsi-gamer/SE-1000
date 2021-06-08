@@ -10,15 +10,15 @@ namespace IngameScript
         {
             public void SetMem(int m)
             {
-                if (MemSet)
+                if (SetMemPat)
                 {
                     Mems[m] = Mems[m] < 0 || Mems[m] != CurPat ? CurPat : -1;
-                    MemSet = False;
+                    SetMemPat = False;
                 }
                 else if (OK(Mems[m]))
                 {
                     if (Playing) Track.NextPat = Mems[m];
-                    else           SetCurrentPattern(Mems[m]);
+                    else         SetCurrentPattern(Mems[m]);
                 }
             }
 
@@ -29,9 +29,12 @@ namespace IngameScript
             }
 
 
-            public void Mem()
+            public void MemPat()
             {
-                MemSet = !MemSet;
+                if (SetOrPat) SetOrPat  = False;
+                else          SetMemPat = !SetMemPat;
+
+                SetMemSet = False;
             }
 
 

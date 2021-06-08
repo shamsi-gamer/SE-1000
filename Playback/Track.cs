@@ -96,24 +96,28 @@ namespace IngameScript
                     else if (EditClip == 3) // delete clip
                         DeleteClip(clip, index); 
                                                  
-                    else if (index != PlayClip)
-                        CueNextClip(index);
-                    
                     else if (OK(PlayClip)
                          &&  OK(NextClip)
                          &&  NextClip != PlayClip)
                     { 
                         NextClip = PlayClip; // cancel clip cue
                         CueNextClip(index);
-                        UpdateClipName();
+                        UpdateClipDisplay(Clips[index]);
                     }
+
                     else if (OK(PlayClip)
                          && !OK(NextClip)
                          &&  CueClip)
                     { 
                         NextClip = PlayClip; // cancel clip off
                         CueNextClip(index);
-                        UpdateClipName();
+                        UpdateClipDisplay(Clips[index]);
+                    }
+
+                    else if (index != PlayClip)
+                    { 
+                        CueNextClip(index);
+                        //UpdateClipDisplay(Clips[index]);
                     }
 
                     else
@@ -132,12 +136,15 @@ namespace IngameScript
 
 
                 if (   OK(NextClip)
-                    && OK(Clips[NextClip])) 
+                    && OK(Clips[NextClip]))
+                {
+                    //UpdateClipName();
                     SetEditedClip(Clips[NextClip]);
+                }
             }
 
 
-            void CueNextClip(int index)
+            public void CueNextClip(int index)
             {
                 if (OK(NextClip))
                 {
@@ -187,8 +194,9 @@ namespace IngameScript
                 if (clip != EditedClip) 
                 {
                     EditedClip = clip;
-                    UpdateClipDisplay();
+                    UpdateClipDisplay(EditedClip);
                     SetInstName();
+                    SetLabelColor(EditedClip.ColorIndex);
                 }
             }
 
@@ -200,7 +208,7 @@ namespace IngameScript
                     MoveClip(index);
 
                 EditedClip = Clips[index];
-                UpdateClipDisplay();
+                UpdateClipDisplay(EditedClip);
 
                 ClipCopy = Clip_null;
                 EditClip = -1;
@@ -224,7 +232,7 @@ namespace IngameScript
                     else
                     { 
                         Clips[index] = new Clip(srcTrack.Clips[srcIndex], this);
-                        UpdateClipName(Clips[index], Clips);
+                        GetNewClipName(Clips[index], Clips);
                     }
                 }
 
@@ -292,7 +300,7 @@ namespace IngameScript
                     EditedClip = Clips[index];
                 }
 
-                UpdateClipDisplay();
+                UpdateClipDisplay(EditedClip);
 
                 if (PlayClip == index)
                     Stop();

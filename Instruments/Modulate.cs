@@ -33,8 +33,8 @@ namespace IngameScript
                                     CurValue;
 
             public List<Setting>    SrcSettings; // this is the reference count for all three
-            public List<Source>     SrcSources;
-            public List<Instrument> SrcInstruments;
+            //public List<Source>     SrcSources;
+            //public List<Instrument> SrcInstruments;
 
 
             public Modulate(Setting parent, Instrument inst, Source src) 
@@ -53,8 +53,8 @@ namespace IngameScript
                 CurValue       = 0;
 
                 SrcSettings    = new List<Setting>();            
-                SrcSources     = new List<Source>();
-                SrcInstruments = new List<Instrument>();
+                //SrcSources     = new List<Source>();
+                //SrcInstruments = new List<Instrument>();
             }
 
 
@@ -77,13 +77,13 @@ namespace IngameScript
                 foreach (var set in mod.SrcSettings)
                     SrcSettings.Add(set);
 
-                SrcSources = new List<Source>();
-                foreach (var _src in mod.SrcSources)
-                    SrcSources.Add(_src);
+                //SrcSources = new List<Source>();
+                //foreach (var _src in mod.SrcSources)
+                //    SrcSources.Add(_src);
 
-                SrcInstruments = new List<Instrument>();
-                foreach (var _inst in mod.SrcInstruments)
-                    SrcInstruments.Add(_inst);
+                //SrcInstruments = new List<Instrument>();
+                //foreach (var _inst in mod.SrcInstruments)
+                //    SrcInstruments.Add(_inst);
             }
 
 
@@ -114,8 +114,8 @@ namespace IngameScript
                 for (int i = 0; i < SrcSettings.Count; i++)
                 {
                     var set  = SrcSettings   [i];
-                    var src  = SrcSources    [i];
-                    var inst = SrcInstruments[i];
+                    var src  = set.Source;//SrcSources    [i];
+                    var inst = src.Instrument;//SrcInstruments[i];
 
                     if (OK(set))
                     {
@@ -223,14 +223,13 @@ namespace IngameScript
 
                 for (int i = 0; i < SrcSettings.Count; i++)
                 { 
-                    var set  = SrcSettings   [i];
-                    var src  = SrcSources    [i];
-                    var inst = SrcInstruments[i];
+                    var set  = SrcSettings[i];
+                    var src  = set.Source;//SrcSources    [i];
+                    var inst = src.Instrument;//SrcInstruments[i];
 
                     save += 
-                          P (OK(src) && OK(set)  ? set .GetPath(src.Index) : "")
-                        + PS(OK(src)             ? src .Index              : -1)
-                        + P (OK(inst)            ? inst.Name               : "");
+                          P (OK(src) && OK(set) ? set .GetPath(src.Index) : "")
+                        + P (inst.Name);//(OK(inst)           ? inst.Name               : "");
                 }
 
                 save +=
@@ -265,13 +264,13 @@ namespace IngameScript
                 for (int i = 0; i < nSources; i++)
                 {
                     var setPath     = data[d++];
-                    int modSrcIndex = int_Parse(data[d++]);
+                    //int modSrcIndex = int_Parse(data[d++]);
                     var modInst     = data[d++];
 
                     var _inst = Instruments.Find(_i => _i.Name == modInst);
 
-                    mod.SrcInstruments.Add(_inst);
-                    mod.SrcSources    .Add(OK(modSrcIndex) ? _inst.Sources[modSrcIndex] : Source_null);
+                    //mod.SrcInstruments.Add(_inst);
+                    //mod.SrcSources    .Add(OK(modSrcIndex) ? _inst.Sources[modSrcIndex] : Source_null);
                     mod.SrcSettings   .Add(GetSettingFromPath(_inst, setPath));
                 }
 
@@ -307,9 +306,9 @@ namespace IngameScript
                 {
                     base.DrawLabels(sprites, x, y, dp);
 
-                    if (Amount .HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Amount .DrawLabels(sprites, x, y, dp);
-                    if (Attack .HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
-                    if (Release.HasDeepParams(EditedClip.CurChannel, EditedClip.CurSrc)) Release.DrawLabels(sprites, x, y, dp);
+                    if (Amount .HasDeepParams(CurChannel, CurSrc)) Amount .DrawLabels(sprites, x, y, dp);
+                    if (Attack .HasDeepParams(CurChannel, CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
+                    if (Release.HasDeepParams(CurChannel, CurSrc)) Release.DrawLabels(sprites, x, y, dp);
                 }
 
                 _dp.Next(dp);
@@ -359,8 +358,8 @@ namespace IngameScript
                     for (int i = 0; i < SrcSettings.Count; i++)
                     {
                         var set  = SrcSettings   [i];
-                        var src  = SrcSources    [i];
-                        var inst = SrcInstruments[i];
+                        var src  = set.Source;//SrcSources    [i];
+                        var inst = src.Instrument;//SrcInstruments[i];
                         
                         strFrom += "\n" + inst.Name;
 

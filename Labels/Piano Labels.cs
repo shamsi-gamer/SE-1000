@@ -126,7 +126,8 @@ namespace IngameScript
         {
             return
                 ShowPiano
-                ?    -lbl.Data == 15 && EditedClip.HalfSharp
+                ?       -lbl.Data == 15 
+                     && EditedClip.HalfSharp
                   || NoteIsBright(LowToNote(-lbl.Data))
                 : StepIsBright(lbl);
         }
@@ -136,6 +137,7 @@ namespace IngameScript
         {
             return 
                    ShowPiano 
+                && -lbl.Data < 15
                 && NoteIsDim(LowToNote(-lbl.Data));
         }
 
@@ -166,9 +168,9 @@ namespace IngameScript
             if (IsCurParam(strTune))
             {
                 var tune =
-                    OK(EditedClip.CurSrc)
-                    ? EditedClip.SelSource    .Tune
-                    : EditedClip.SelInstrument.Tune;
+                    OK(CurSrc)
+                    ? SelSource    .Tune
+                    : SelInstrument.Tune;
 
                 return tune.Chord.Contains(noteNum);
             }
@@ -177,13 +179,13 @@ namespace IngameScript
                   && EditedClip.ChordEdit)
                 return EditedClip.Chords[EditedClip.Chord].Contains(noteNum);
 
-            else if (OK(EditedClip.CurChannel.Notes.FindIndex(n => NoteIsEdited(noteNum, n))))
+            else if (OK(CurChannel.Notes.FindIndex(n => NoteIsEdited(noteNum, n))))
                 return True; // note is being edited
 
             else if (OK(g_notes.FindIndex(n => 
                            NoteIsTriggered(noteNum, n)
                         && n.Clip  == EditedClip
-                        && n.iChan == EditedClip.CurChan)))
+                        && n.iChan == CurChan)))
                 return True; // note is being played
 
             return False;
@@ -195,9 +197,9 @@ namespace IngameScript
             if (IsCurParam(strTune))
             {
                 var tune =
-                    OK(EditedClip.CurSrc)
-                    ? EditedClip.SelSource    .Tune
-                    : EditedClip.SelInstrument.Tune;
+                    OK(CurSrc)
+                    ? SelSource    .Tune
+                    : SelInstrument.Tune;
 
                 return tune.FinalChord.Contains(noteNum);
             }
@@ -296,9 +298,9 @@ namespace IngameScript
         bool StepIsBright(Label lbl)
         {
             var patStep  = -lbl.Data;
-            var clipStep =  EditedClip.CurPat * g_patSteps + patStep;
+            var clipStep =  CurPat * g_patSteps + patStep;
 
-            var on = OK(EditedClip.CurChannel.Notes.Find(n => 
+            var on = OK(CurChannel.Notes.Find(n => 
                    n.Step >= patStep
                 && n.Step <  patStep+1));
 
@@ -307,7 +309,7 @@ namespace IngameScript
             if (   Playing
                 && EditedClipIsPlaying
                 && (int)track.PlayStep  == clipStep
-                && EditedClip.CurPat == track.PlayPat)
+                && CurPat == track.PlayPat)
                 return !on;
             else if (on)
                 return True;
@@ -321,8 +323,8 @@ namespace IngameScript
             int val;
 
                  if (EditedClip.Spread) val = EditedClip.ChordSpread;
-            else if (ShowPiano)         val = EditedClip.CurChannel.Transpose;
-            else                        val = EditedClip.CurChannel.Shuffle;
+            else if (ShowPiano)         val = CurChannel.Transpose;
+            else                        val = CurChannel.Shuffle;
 
             lbl.SetText((val > 0 ? "+" : "") + S(val));
         }

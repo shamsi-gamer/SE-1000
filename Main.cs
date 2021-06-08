@@ -108,11 +108,14 @@ namespace IngameScript
             ResetRuntimeInfo();
 
 
-            g_dspCount  = g_instCount;
-            g_instCount = 0;
+            g_dspCount      = g_instCount;
+            g_instCount     = 0;
+
+            g_accComplexity = Math.Max(g_accComplexity, g_dspCount/Runtime.MaxInstructionCount);
+            g_accPolyphony  = Math.Max(g_accPolyphony,  Math.Min(g_sm.UsedRatio, 1));
 
 
-            warningLight.Enabled = 
+            g_warningLight.Enabled = 
                    TooComplex 
                 || g_sm.UsedRatio > 0.9f;
         }

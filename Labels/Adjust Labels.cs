@@ -19,10 +19,10 @@
         {
             return
                    OK(ModDestConnecting)
-                ||     OK(EditedClip.CurSrc)
-                   && !OK(EditedClip.CurSet)
-                   && EditedClip.SelSource.On
-                ||    !OK(EditedClip.SelChan)
+                ||     OK(CurSrc)
+                   && !OK(CurSet)
+                   && SelSource.On
+                ||    !OK(SelChan)
                    && LockView > 0
                 || OK(g_editKey);
         }
@@ -35,9 +35,9 @@
                 lbl.SetText("Conn");
                 return;
             }
-            else if (OK(EditedClip.CurSet))
+            else if (OK(CurSet))
             {
-                var path = EditedClip.Settings.Last().GetPath(EditedClip.CurSrc);
+                var path = EditedClip.Settings.Last().GetPath(CurSrc);
 
                 if (EditedClip.ParamKeys)
                     lbl.SetText("Inter");
@@ -47,7 +47,7 @@
                     if (OK(EditedClip.EditPos))
                     {
                         lbl.SetText(
-                            OK(EditedClip.SelChannel.AutoKeys.Find(k =>
+                            OK(SelChannel.AutoKeys.Find(k =>
                                    k.Path == path
                                 && k.Step >= (EditedClip.EditPos % g_patSteps)
                                 && k.Step <  (EditedClip.EditPos % g_patSteps) + 1))
@@ -60,15 +60,15 @@
             }
             else
             {
-                if (OK(EditedClip.CurSrc)) lbl.SetText("On");
-                else                       lbl.SetText(EditedClip.SelChan < 0 ? "Lock" : strEmpty);
+                if (OK(CurSrc)) lbl.SetText("On");
+                else                       lbl.SetText(SelChan < 0 ? "Lock" : strEmpty);
             }
         }
 
 
         void UpdateCmd2(Label lbl)
         {
-            lbl.SetText(OK(EditedClip.CurSrc) ? "Osc ↕" : strEmpty);
+            lbl.SetText(OK(CurSrc) ? "Osc ↕" : strEmpty);
         }
 
 
@@ -103,9 +103,9 @@
         bool Cmd3IsBright(Label lbl)
         {
             return
-                   EditedClip.CurSet  < 0
-                && EditedClip.CurSrc  < 0
-                && EditedClip.SelChan < 0
+                   CurSet  < 0
+                && CurSrc  < 0
+                && SelChan < 0
                 && EditedClip.Transpose;
         }
 
@@ -113,22 +113,22 @@
         bool Cmd3IsDim(Label lbl)
         {
             return
-                   EditedClip.CurSet < 0
-                && EditedClip.CurSrc < 0
+                   CurSet < 0
+                && CurSrc < 0
                 && EditedClip.EditNotes.Count > 0;
         }
 
 
         void UpdateCmd3(Label lbl)
         {
-            if (OK(EditedClip.CurSet))
+            if (OK(CurSet))
             {
-                var path = EditedClip.Settings.Last().GetPath(EditedClip.CurSrc);
+                var path = EditedClip.Settings.Last().GetPath(CurSrc);
 
                 if (EditedClip.ParamKeys)
                 {
                     lblCmd3.SetText(
-                        OK(EditedClip.SelChannel.Notes.Find(n =>
+                        OK(SelChannel.Notes.Find(n =>
                                n.ClipStep >= EditedClip.EditPos
                             && n.ClipStep <  EditedClip.EditPos+1
                             && OK(n.Keys.Find(k => k.Path == path))))
@@ -140,7 +140,7 @@
                     if (OK(EditedClip.EditPos))
                     { 
                         lblCmd3.SetText(
-                            OK(EditedClip.SelChannel.AutoKeys.Find(k =>
+                            OK(SelChannel.AutoKeys.Find(k =>
                                 k.Path == path
                                 && k.Step >= (EditedClip.EditPos % g_patSteps)
                                 && k.Step <  (EditedClip.EditPos % g_patSteps) + 1))
@@ -154,12 +154,12 @@
             }
             else
             {
-                if (OK(EditedClip.CurSrc))
+                if (OK(CurSrc))
                     lblCmd3.SetText(strEmpty);
 
                 else
                     lblCmd3.SetText(
-                        EditedClip.SelChan < 0 
+                        SelChan < 0 
                         //? " ▄█   █ █ ██ █ █ █   █▄ \n" +
                         // " ▀██   █▄█▄██▄█▄█▄█   ██▀ \n" +  
                         //   " ▀   ▀▀▀▀▀▀▀▀▀▀▀▀   ▀ " 

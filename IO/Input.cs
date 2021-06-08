@@ -11,8 +11,8 @@ namespace IngameScript
         static void UpdateInstName()
         {
             if (   g_inputValid
-                &&  OK(EditedClip.SelChan)
-                && !OK(EditedClip.CurSrc))
+                &&  OK(SelChan)
+                && !OK(CurSrc))
                 EditedClip.CurInstrument.Name = dspMain.Panel.GetText().Trim().Trim(';');
 
             g_inputValid = True;
@@ -21,12 +21,12 @@ namespace IngameScript
 
         static void SetInstName(bool add = True)
         {
-            if (    OK(EditedClip.SelChan)
-                &&  OK(EditedClip.CurPat)
-                && !OK(EditedClip.CurSrc)
-                && !OK(EditedClip.CurSet)
-                &&  OK(EditedClip.SelChan))
-                dspMain.Panel.WriteText(add ? EditedClip.SelChannel.Instrument.Name : "", False);
+            if (    OK(SelChan)
+                &&  OK(CurPat)
+                && !OK(CurSrc)
+                && !OK(CurSet)
+                &&  OK(SelChan))
+                dspMain.Panel.WriteText(add ? SelChannel.Instrument.Name : "", False);
         }
 
 
@@ -36,9 +36,9 @@ namespace IngameScript
         }
 
 
-        static void UpdateClipDisplay()
+        static void UpdateClipDisplay(Clip clip)
         {
-            dspInfo.Panel.WriteText(EditedClip.Name.Replace("\u0085", "\n"));
+            dspInfo.Panel.WriteText(clip.Name.Replace("\u0085", "\n"));
         }
     }
 }

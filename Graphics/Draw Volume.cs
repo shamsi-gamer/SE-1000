@@ -10,15 +10,23 @@ namespace IngameScript
     {
         void DrawVolume()
         {
-            float maxVol = 0;
+            float vol = 0;
 
-            foreach (var track in Tracks)
-                foreach (var vol in track.DspVol)
-                    maxVol = Math.Max(vol, maxVol);
+            if (ShowClip)
+            { 
+                foreach (var v in EditedClip.Track.DspVol)
+                    vol = Math.Max(vol, v);
+            }
+            else
+            { 
+                foreach (var track in Tracks)
+                    foreach (var v in track.DspVol)
+                        vol = Math.Max(vol, v);
+            }
 
-            if (!TooComplex) DrawVolume(maxVol, dspVol1, 2);
-            if (!TooComplex) DrawVolume(maxVol, dspVol2, 1);
-            if (!TooComplex) DrawVolume(maxVol, dspVol3, 0);
+            if (!TooComplex) DrawVolume(vol, dspVol1, 2);
+            if (!TooComplex) DrawVolume(vol, dspVol2, 1);
+            if (!TooComplex) DrawVolume(vol, dspVol3, 0);
         }
 
 
@@ -52,13 +60,28 @@ namespace IngameScript
                 EditedClip.Volume, 
                 vol,
                 Channel_null,
-                6.5f);
+                6.5f,
+                ShowClip);
+
+            
+            if (   ShowClip
+                && i == 2)
+            {
+                DrawClipName(
+                    sprites, 
+                    EditedClip.Name, 
+                    x + w/2, 
+                    v.Y + v.Height - 130, 
+                    2f, 
+                    color5);
+            }
+
 
             dsp.Draw(sprites);
         }
 
 
-        static void DrawSoundLevel(List<MySprite> sprites, float x, float y, float w, float h, float level, float v, Channel chan = Channel_null, float scale = 1)
+        static void DrawSoundLevel(List<MySprite> sprites, float x, float y, float w, float h, float level, float v, Channel chan = Channel_null, float scale = 1, bool drawSetValue = True)
         {
             var wb = w/10;
             var wg = w/20;
@@ -119,8 +142,8 @@ namespace IngameScript
 
 
             var brightCol = 
-                      OK(EditedClip.SelChan) 
-                   && EditedClip.LastSetting == EditedClip.SelInstrument.Volume 
+                      OK(SelChan) 
+                   && EditedClip.LastSetting == SelInstrument.Volume 
                 || scale != 1 
                 ? color6 
                 : color4;
@@ -131,13 +154,16 @@ namespace IngameScript
                 : (chan.Notes.Count > 0 ? brightCol : color3);
 
             // set value bar
-            FillRect(
-                sprites, 
-                x + w - wb, 
-                y + h + hk, 
-                wb,
-                -h * Math.Min((float)Math.Pow(level / extra, pow), 1), 
-                col);
+            if (drawSetValue)
+            {
+                FillRect(
+                    sprites, 
+                    x + w - wb, 
+                    y + h + hk, 
+                    wb,
+                    -h * Math.Min((float)Math.Pow(level / extra, pow), 1), 
+                    col);
+            }
         }
     }
 }

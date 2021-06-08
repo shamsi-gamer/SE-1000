@@ -150,17 +150,13 @@ namespace IngameScript
 
 
                     // clip name
-                    var name       = clip.Name.Split('\n')[0];
-                    var nNameLines = clip.Name.Split(' ').Length;
-
-                    DrawString(
-                        sprites,
-                        name.Replace(' ', '\n'),
-                        cx + w/12,
-                        cy + h/8 - 15 - (nNameLines-1)*20,
-                        1,
-                        isPlayClip ? color6 : color5,
-                        TA_CENTER);
+                    DrawClipName(
+                        sprites, 
+                        clip.Name, 
+                        cx + w/12, 
+                        cy + h/8 -15, 
+                        1, 
+                        isPlayClip ? color6 : color5);
 
 
                     // clip is moved/duplicated
@@ -172,16 +168,33 @@ namespace IngameScript
                     if (isPlayClip)
                     {
                         var pw       = lw / clip.Patterns.Count;
-                        var px       = lx + (track.PlayStep / g_patSteps) * pw;
+                        var px       = lx + (track.PlayStep / g_patSteps) * pw - 2;
                         //var patStart = track.PlayStep - track.PlayPat * g_patSteps <= 1;
+                        
+                        var oy = clip.Track.PlayTime % (g_patSteps * TicksPerStep) < 10 ? gap : 0;
 
-                        DrawLine(sprites, px, ly, px, ly + lh, color6, 9); 
+                        DrawLine(sprites, px, ly-oy, px, ly+lh+oy, color6, 9); 
                     }
                 }
             }
 
 
             dsp.Draw(sprites);
+        }
+
+
+        static void DrawClipName(List<MySprite> sprites, string name, float x, float y, float size, Color color)
+        {
+            var nNameLines = name.Split(' ').Length;
+
+            DrawString(
+                sprites,
+                name.Replace(' ', '\n'),
+                x,
+                y - (nNameLines-1)*20*size,
+                size,
+                color,
+                TA_CENTER);
         }
     }
 }

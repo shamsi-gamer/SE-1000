@@ -89,7 +89,7 @@
                 case "edit step":   ChangeEditStep();                break;
                 case "edit len":    ChangeEditLength();              break;
 
-                case "step":        Step(EditedClip, EditedClip.CurChan);       break;
+                case "step":        Step(EditedClip, CurChan);       break;
                 case "hold":        Hold(EditedClip);                break;
 
                 case "left":        Left (EditedClip);               break;
@@ -120,8 +120,8 @@
 
                 case "cue":         EditedClip.Cue();                break;
 
-                case "mem":         EditedClip.Mem();                break;
-
+                case "mem set":     MemSet();                        break;
+                case "mem pat":     EditedClip.MemPat();             break;
 
                 case "up all":      SetVolumeAll( 1);                break;
                 case "down all":    SetVolumeAll(-1);                break;
@@ -142,7 +142,7 @@
                     else if (OK(val = GetInt(arg, "solo "))) Solo(val);
                     else if (OK(val = GetInt(arg, "mute "))) Mute(val);
 
-                    else if (OK(val = GetInt(arg, "mem " ))) EditedClip.SetMem(val);
+                    else if (OK(val = GetInt(arg, "mem " ))) GetSetOrPat(val);
 
                     break;
             }
