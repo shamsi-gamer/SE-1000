@@ -43,7 +43,10 @@ namespace IngameScript
             public float              EchoVolume;
             public bool               IsEcho;
 
-            public Sample             NoteSample => Source.Oscillator.Samples[Note.Number-24*NoteScale];
+            public Sample             NoteSample =>
+                                          Note.Number >= 24*NoteScale
+                                          ? Source.Oscillator.Samples[Note.Number-24*NoteScale]
+                                          : null;
 
 
             public Sound(string sample, Channel chan, int ch, long frameTime, int frameLen, int releaseLen, float vol, Instrument inst, int iSrc, Note note, List<TriggerValue> triggerValues, bool isEcho, Sound echoSrc, float echoVol, Parameter harmonic = Parameter_null, Sound hrmSound = Sound_null, float hrmPos = float_NaN)
@@ -276,7 +279,8 @@ namespace IngameScript
                     spk.Block.Volume = Math.Min(v--, 1);
 
                     // if sample is ending, restart it 
-                    if (   ElapsedTime >= (NoteSample.Length - 0.1f) * FPS
+                    if (   (  !OK(NoteSample) 
+                            || ElapsedTime >= (NoteSample.Length - 0.1f) * FPS)
                         && Source.Oscillator != OscSlowSweepDown
                         && Source.Oscillator != OscSlowSweepUp
                         && Source.Oscillator != OscFastSweepDown
