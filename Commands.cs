@@ -737,7 +737,8 @@ namespace IngameScript
                     dstChan.Instrument = srcChan.Instrument;
 
                 foreach (var note in srcChan.Notes)
-                    dstChan.Notes.Add(new Note(note, dstChan));
+                    if (!OK(dstChan.Notes.Find(n => n.Step == note.Step)))
+                        dstChan.Notes.Add(new Note(note, dstChan));
             }
         }
     }
