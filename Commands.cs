@@ -728,18 +728,30 @@ namespace IngameScript
             first += CurPat;
             last  += CurPat;
 
-            for (int p = 0; p < Math.Min(last - first + 1, g_copyChans.Count); p++)
+            if (EditedClip.AllPats)
             {
-                var srcChan = g_copyChans[p];
-                var dstChan = EditedClip.Patterns[first + p].Channels[CurChan];
-
-                if (EditedClip.RndInst)
-                    dstChan.Instrument = srcChan.Instrument;
-
-                foreach (var note in srcChan.Notes)
-                    if (!OK(dstChan.Notes.Find(n => n.Step == note.Step)))
-                        dstChan.Notes.Add(new Note(note, dstChan));
+                for (int p = 0; p < last - first + 1; p++)
+                    PasteChanNotes(p % g_copyChans.Count, first + p);
             }
+            else
+            {
+                for (int p = 0; p < Math.Min(last - first + 1, g_copyChans.Count); p++)
+                    PasteChanNotes(p, first + p);
+            }
+        }
+
+
+        static void PasteChanNotes(int srcPat, int dstPat)
+        { 
+            var srcChan = g_copyChans[srcPat % g_copyChans.Count];
+            var dstChan = EditedClip.Patterns[dstPat].Channels[CurChan];
+
+            if (EditedClip.RndInst)
+                dstChan.Instrument = srcChan.Instrument;
+
+            foreach (var note in srcChan.Notes)
+                if (!OK(dstChan.Notes.Find(n => n.Step == note.Step)))
+                    dstChan.Notes.Add(new Note(note, dstChan));
         }
     }
 }
