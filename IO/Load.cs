@@ -128,11 +128,11 @@ namespace IngameScript
                     || !int_TryParse(state[s++], out clipIndex))
                     return False;
 
+                var path = state[s++];
+                var inst = state[s++];
+
                 if (OK(clipTrack) && OK(clipIndex))
                 {
-                    var  path = state[s++];
-                    var  inst = state[s++];
-
                     var _inst = Instruments.Find(_i => _i.Name == inst);
 
                     SetClips[i] = Tracks[clipTrack].Clips[clipIndex];

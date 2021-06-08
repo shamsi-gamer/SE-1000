@@ -79,14 +79,16 @@ namespace IngameScript
         {
             var state =
                   SessionName
+
                 + PS(SaveStateToggles())
+                
                 + PS(TicksPerStep)
                 + PS(LockView)
                 + PS(EditClip)
                 + PS(Tracks.IndexOf(EditedClip.Track))
                 + PS(EditedClip.Index)
-                + PS(OK(ClipCopy) ? Tracks.IndexOf(ClipCopy.Track)         : -1)
-                + PS(OK(ClipCopy) ? ClipCopy.Track.Clips.IndexOf(ClipCopy) : -1);
+                + PS(OK(ClipCopy) ? Tracks.IndexOf(ClipCopy.Track) : -1)
+                + PS(OK(ClipCopy) ? ClipCopy.Index                 : -1);
 
             for (int i = 0; i < nMems; i++)
             {
@@ -99,14 +101,13 @@ namespace IngameScript
 
                     state += 
                           PS(Tracks.IndexOf(clip.Track))
-                        + PS(clip.Track.Clips.IndexOf(clip))
+                        + PS(clip.Index)
                         + P (OK(src) && OK(set) ? set .GetPath(src.Index) : "")
-                        + PS(OK(src)            ? src .Index              : -1)
                         + P (OK(inst)           ? inst.Name               : "");
                 }
                 else
                 {
-                    state += "-1;-1;;-1;;";
+                    state += ";-1;-1;;";
                 }
             }
 
