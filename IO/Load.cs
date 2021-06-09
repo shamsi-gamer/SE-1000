@@ -61,13 +61,12 @@ namespace IngameScript
             if (!OK(EditedClip))
                 SetAnyEditedClip();
 
-
-            UpdateClipDisplay(EditedClip);
-
-
+            
             if (curPath != "")
                 SwitchToSetting(EditedClip, EditedClip.SelChannel.Instrument, curPath);
 
+
+            UpdateClipDisplay(EditedClip);
 
             SetLabelColor(EditedClip.ColorIndex);
 

@@ -32,7 +32,10 @@ namespace IngameScript
 
         static void UpdateClipName()
         {
-            EditedClip.Name = dspInfo.Panel.GetText().Trim();
+            var name = dspInfo.Panel.GetText().Trim();
+
+            if (ShowClip) EditedClip.Name = name;
+            else          SessionName     = name;
         }
 
 

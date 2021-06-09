@@ -63,7 +63,8 @@ namespace IngameScript
                 DrawString(sprites, "BPM",        x + 142, y + h - 43, 1f, color6);
 
 
-                var nameLines = EditedClip.Name.Split('\n');
+                var name = ShowClip ? EditedClip.Name : SessionName;
+                var nameLines = name.Split('\n');
 
                 if (nameLines.Length > 0) 
                     DrawString(sprites, nameLines[0], x + w/2, y + 185, 1.6f, color6, TA_CENTER);
