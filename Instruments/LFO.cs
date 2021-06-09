@@ -119,7 +119,7 @@ namespace IngameScript
                 }
 
                 CurValue *= amp;
-                m_valid = True;
+                m_valid   = True;
 
                 return CurValue;
             }
@@ -367,7 +367,7 @@ namespace IngameScript
                 DrawString(
                     sprites, 
                     S_000(off) + (isOff ? " s" : ""),
-                    x0,
+                    x0 + w0/8,
                     y0 + h0 + 3,
                     fs,
                     isOff ? color6 : color3,

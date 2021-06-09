@@ -41,7 +41,6 @@ namespace IngameScript
                 inst.Sources.Add(new Source(inst));
 
                 inst.Name = GetNewName(inst.Name, str => Instruments.Exists(_s => _s.Name == str));
-                Log("inst.Name = " + inst.Name);
                 
                 Instruments.Insert(Instruments.IndexOf(EditedClip.CurInstrument) + 1, inst);
                 SetCurInst(inst);

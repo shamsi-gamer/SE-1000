@@ -297,5 +297,20 @@ namespace IngameScript
 
 
         static bool SessionHasClips => Tracks.Exists(t => Array.Exists(t.Clips, c => OK(c)));
+
+
+        void ResetLfos()
+        {
+            if (TooComplex) return;
+
+            foreach (var lfo in g_lfo)
+            {
+                if (Math.Abs(lfo.Offset.Value) > 0.001)
+                {
+                    Log("ResetLfos()");
+                    lfo.Phase = 0;
+                }
+            }
+        }
     }
 }

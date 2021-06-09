@@ -18,7 +18,7 @@ namespace IngameScript
                 {
                     var saved = CueClip;
                     CueClip = False;
-                    EditedClip.Track.CueNextClip(EditedClip.Index);
+                    EditedClip.Track.CueNextClip(EditedClip.Index, this);
                     CueClip = saved;
                 }
                 else
@@ -98,8 +98,8 @@ namespace IngameScript
                     { 
                         track.PlayClip = track.NextClip;
 
-                        if (OK(track.PlayClip)) 
-                            track.NextPat  = 0;
+                        if (OK(track.PlayClip))
+                            track.NextPat = 0;
                     }
                 }
             }
@@ -117,7 +117,7 @@ namespace IngameScript
                 var clip = track.Clips[track.PlayClip];
                 if (!OK(clip)) continue;
 
-                track.CueNextPattern(clip);
+                track.CueNextPattern(clip, this);
 
                 if (   clip == EditedClip
                     && clip.Follow) 
