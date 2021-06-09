@@ -418,92 +418,107 @@ namespace IngameScript
 
         void MoveEdit(Clip clip, int move, bool create = False)
         {
-            var chan = clip.SelChannel;
-
             if (IsCurSetting(typeof(Harmonics)))
-            {
                 clip.CurHarmonics.MoveEdit(move);
-            }
+
             else if (clip.EditNotes.Count > 0)
             {
-                if (EditedClip.Hold)
-                {
-                    foreach (var n in clip.EditNotes)
-                    {
-                        var is05 = n.StepLength == 0.5f && EditedClip.EditStep >= 1;
-                        n.StepLength = MinMax(0.5f, n.StepLength + move * EditedClip.EditStepLength, 10f * FPS / TicksPerStep);
-                        if (is05) n.StepLength -= 0.5f;
-                    }
-                }
-                else
-                {
-                    var oldCur = clip.CurPat;
-
-                    clip.EditPos += move * EditedClip.EditStep;
-                    clip.LimitRecPosition();
-
-                    foreach (var n in clip.EditNotes)
-                    {
-                        n.Step += move * EditedClip.EditStep;
-
-                        if (   n.Step < 0
-                            || n.Step >= g_patSteps)
-                        {
-                            n.Channel.Notes.Remove(n);
-                            n.Step -= move * g_patSteps;
-
-                            chan.Notes.Add(n);
-                            n.Channel = chan;
-                        }
-                    }
-                }
+                if (EditedClip.Hold) ResizeNotes(clip, move);
+                else                 MoveNotes(clip, move);
             }
+
             else if (OK(g_editKey))
-            {
-                g_editKey.Step += move * EditedClip.EditStep;
-                clip.EditPos   += move * EditedClip.EditStep;
+                MoveKey(clip, move);
 
-                clip.LimitRecPosition();
-
-                if (   g_editKey.Step < 0
-                    || g_editKey.Step >= g_patSteps)
-                { 
-                    g_editKey.Channel.AutoKeys.Remove(g_editKey);
-                    g_editKey.Step -= move * g_patSteps;
-
-                    chan.AutoKeys.Add(g_editKey);
-                    g_editKey.Channel = chan;
-                }
-
-                clip.UpdateAutoKeys();
-            }
             else if (OK(clip.EditPos))
+                MoveEditPos(clip, move, create);
+        }
+
+
+        static void MoveEditPos(Clip clip, int move, bool create)
+        {
+            clip.EditPos += move * EditedClip.EditStep;
+
+            if (clip.Follow)
             {
-                clip.EditPos += move * EditedClip.EditStep;
-
-                if (clip.Follow)
+                if (clip.EditPos >= (clip.CurPat + 1) * g_patSteps) // TODO blocks
                 {
-                    if (clip.EditPos >= (clip.CurPat + 1) * g_patSteps) // TODO blocks
+                    if (clip.EditPos >= clip.Patterns.Count * g_patSteps)
                     {
-                        if (clip.EditPos >= clip.Patterns.Count * g_patSteps)
+                        if (create)
                         {
-                            if (create)
-                            {
-                                var pat = new Pattern(clip.CurPattern);
-                                pat.Channels[clip.CurChan].Notes.Clear();
+                            var pat = new Pattern(clip.CurPattern);
+                            pat.Channels[clip.CurChan].Notes.Clear();
 
-                                clip.Patterns.Insert(clip.CurPat + 1, pat);
-                            }
-                            else
-                                clip.EditPos -= clip.Patterns.Count * g_patSteps;
+                            clip.Patterns.Insert(clip.CurPat + 1, pat);
                         }
+                        else
+                            clip.EditPos -= clip.Patterns.Count * g_patSteps;
                     }
-                    else if (!OK(clip.EditPos))
-                        clip.EditPos += clip.Patterns.Count * g_patSteps;
                 }
-
-                clip.LimitRecPosition();
+                else if (!OK(clip.EditPos))
+                    clip.EditPos += clip.Patterns.Count * g_patSteps;
             }
+
+            clip.LimitRecPosition();
+        }
+
+
+        static void MoveNotes(Clip clip, int move)
+        {
+            clip.EditPos += move * EditedClip.EditStep;
+            clip.LimitRecPosition();
+
+            var chan = clip.CurChannel;
+
+            foreach (var n in clip.EditNotes)
+            {
+                n.Step += move * EditedClip.EditStep;
+
+                if (   n.Step < 0
+                    || n.Step >= g_patSteps)
+                {
+                    n.Channel.Notes.Remove(n);
+                    n.Step -= move * g_patSteps;
+
+                    chan.Notes.Add(n);
+                    n.Channel = chan;
+                }
+            }
+        }
+
+
+        static void ResizeNotes(Clip clip, int move)
+        {
+            foreach (var n in clip.EditNotes)
+            {
+                var is05 = n.StepLength == 0.5f && EditedClip.EditStep >= 1;
+                n.StepLength = MinMax(0.5f, n.StepLength + move * EditedClip.EditStepLength, 10f * FPS / TicksPerStep);
+                if (is05) n.StepLength -= 0.5f;
+            }
+        }
+
+
+        static void MoveKey(Clip clip, int move)
+        {
+            g_editKey.Step += move * EditedClip.EditStep;
+            clip.EditPos   += move * EditedClip.EditStep;
+
+            clip.LimitRecPosition();
+
+            var chan = clip.CurChannel;
+
+            if (   g_editKey.Step < 0
+                || g_editKey.Step >= g_patSteps)
+            { 
+                g_editKey.Channel.AutoKeys.Remove(g_editKey);
+                g_editKey.Step -= move * g_patSteps;
+
+                chan.AutoKeys.Add(g_editKey);
+                g_editKey.Channel = chan;
+            }
+
+            clip.UpdateAutoKeys();
         }
 
 
