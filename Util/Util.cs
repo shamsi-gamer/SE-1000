@@ -306,10 +306,7 @@ namespace IngameScript
             foreach (var lfo in g_lfo)
             {
                 if (Math.Abs(lfo.Offset.Value) > 0.001)
-                {
-                    Log("ResetLfos()");
                     lfo.Phase = 0;
-                }
             }
         }
     }

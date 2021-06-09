@@ -20,9 +20,10 @@
                 IsCurParam(strTune)
                 ? (Tune)GetCurrentParam(SelInstrument) 
                 : Tune_null;
-
-            if (   !(EditedClip.ParamKeys || EditedClip.ParamAuto)
-                && OK(tune))
+            Log("tune = " + tune);
+            if (   OK(tune)
+                && !(   EditedClip.ParamKeys 
+                     || EditedClip.ParamAuto))
                 return tune.UseChord;
             else
                 return EditedClip.ChordMode;
