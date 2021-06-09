@@ -78,15 +78,19 @@ namespace IngameScript
         void SaveMachineState()
         {
             var state =
-                  SessionName
+                  SessionName.Replace("\n", "\u0085")
 
                 + PS(SaveStateToggles())
                 
                 + PS(TicksPerStep)
                 + PS(LockView)
                 + PS(EditClip)
+
                 + PS(Tracks.IndexOf(EditedClip.Track))
                 + PS(EditedClip.Index)
+
+                + P (OK(EditedClip.CurSetting) ? EditedClip.CurSetting.GetPath() : "")
+
                 + PS(OK(ClipCopy) ? Tracks.IndexOf(ClipCopy.Track) : -1)
                 + PS(OK(ClipCopy) ? ClipCopy.Index                 : -1);
 

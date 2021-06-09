@@ -41,15 +41,17 @@ namespace IngameScript
                 inst.Sources.Add(new Source(inst));
 
                 inst.Name = GetNewName(inst.Name, str => Instruments.Exists(_s => _s.Name == str));
-
+                Log("inst.Name = " + inst.Name);
+                
                 Instruments.Insert(Instruments.IndexOf(EditedClip.CurInstrument) + 1, inst);
                 SetCurInst(inst);
 
                 //UpdateDspOffset(ref instOff, g_song.CurSrc, g_session.Instruments.Count, maxDspSrc, 0, 1);
                 UpdateInstOff(CurChan);
 
-                UpdateInstName();
-                g_inputValid = False;
+                SetInstName();
+                //UpdateInstName();
+                //g_inputValid = False;
             }
 
 
@@ -168,6 +170,18 @@ namespace IngameScript
             }
 
             lblDel.Mark();
+        }
+
+
+
+        void ToggleShowClip()
+        {
+            ShowClip = !ShowClip;
+            
+            if (!ShowClip) 
+                HideClip = true;
+
+            dspInfo.Panel.WriteText(ShowClip ? EditedClip.Name : SessionName);
         }
 
 

@@ -7,11 +7,11 @@ namespace IngameScript
     {
         void SwitchToSetting(Clip clip, Instrument inst, int iSrc, Setting set)
         {
-            SwitchToSetting(clip, inst, iSrc, set.GetPath(iSrc));
+            SwitchToSetting(clip, inst, set.GetPath(iSrc));
         }
 
 
-        void SwitchToSetting(Clip clip, Instrument inst, int iSrc, string path)
+        void SwitchToSetting(Clip clip, Instrument inst, string path)
         {
             BackOut();
 
@@ -22,7 +22,7 @@ namespace IngameScript
                 CurPattern.Channels, 
                 chan => chan.Instrument == inst);
 
-            CurSrc = iSrc;
+            //CurSrc = iSrc;
 
             UpdateInstOff(SelChan);
 
@@ -30,6 +30,7 @@ namespace IngameScript
             g_inputValid = False;
 
 
+            int iSrc = -1;
             var tags = path.Split('/');
 
             for (int i = 0; i < tags.Length; i++)

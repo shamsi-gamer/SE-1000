@@ -13,7 +13,7 @@ namespace IngameScript
             if (   g_inputValid
                 &&  OK(SelChan)
                 && !OK(CurSrc))
-                EditedClip.CurInstrument.Name = dspMain.Panel.GetText().Trim().Trim(';');
+                EditedClip.CurInstrument.Name = dspMain.Panel.GetText().Trim();
 
             g_inputValid = True;
         }
@@ -26,7 +26,7 @@ namespace IngameScript
                 && !OK(CurSrc)
                 && !OK(CurSet)
                 &&  OK(SelChan))
-                dspMain.Panel.WriteText(add ? SelChannel.Instrument.Name : "", False);
+                dspMain.Panel.WriteText(add ? SelChannel.Instrument.Name : "");
         }
 
 
@@ -38,7 +38,7 @@ namespace IngameScript
 
         static void UpdateClipDisplay(Clip clip)
         {
-            dspInfo.Panel.WriteText(clip.Name.Replace("\u0085", "\n"));
+            dspInfo.Panel.WriteText((ShowClip ? clip.Name : SessionName).Replace("\u0085", "\n"));
         }
     }
 }

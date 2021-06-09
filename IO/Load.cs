@@ -32,8 +32,7 @@ namespace IngameScript
             Stop();
 
 
-            //string curPath;
-            //       modConnPath;
+            //string modConnPath;
             //int    modPat,
             //       modChan;
 
@@ -43,7 +42,10 @@ namespace IngameScript
                 copyTrack,
                 copyIndex;
 
-            if (!LoadMachineState(stateData, out editTrack, out editClip, out copyTrack, out copyIndex))
+            string curPath;
+
+
+            if (!LoadMachineState(stateData, out editTrack, out editClip, out curPath, out copyTrack, out copyIndex))
                 CreateDefaultMachineState();
 
             if (!LoadInstruments(instData))
@@ -59,17 +61,20 @@ namespace IngameScript
             if (!OK(EditedClip))
                 SetAnyEditedClip();
 
+
             UpdateClipDisplay(EditedClip);
 
-            if (   OK(copyTrack) 
-                && OK(copyIndex))
-                ClipCopy = Tracks[copyTrack].Clips[copyIndex];
+
+            if (curPath != "")
+                SwitchToSetting(EditedClip, EditedClip.SelChannel.Instrument, curPath);
+
 
             SetLabelColor(EditedClip.ColorIndex);
 
 
-            //if (curPath != "")
-            //    SwitchToSetting(EditClip.CurrentInstrument, CurSrc, curPath);
+            if (   OK(copyTrack) 
+                && OK(copyIndex))
+                ClipCopy = Tracks[copyTrack].Clips[copyIndex];
 
             //if (modConnPath != "")
             //{
@@ -93,12 +98,16 @@ namespace IngameScript
 
         bool LoadMachineState(string data,
                               out int editTrack, out int editIndex, 
+                              out string curPath,
                               out int copyTrack, out int copyIndex)
         {
             ClearMachineState();
 
             editTrack = editIndex =
             copyTrack = copyIndex = -1;
+
+            curPath = "";
+
 
             if (!data.Contains(";"))
                 return False;
@@ -112,12 +121,17 @@ namespace IngameScript
             LoadStateToggles(state[s++]);
 
             if (   !int_TryParse(state[s++], out TicksPerStep)
-                || !int_TryParse(state[s++], out LockView    )
-                || !int_TryParse(state[s++], out EditClip    )
-                || !int_TryParse(state[s++], out editTrack   )
-                || !int_TryParse(state[s++], out editIndex   )
-                || !int_TryParse(state[s++], out copyTrack   )
-                || !int_TryParse(state[s++], out copyIndex   ))
+                || !int_TryParse(state[s++], out LockView)
+                || !int_TryParse(state[s++], out EditClip)
+
+                || !int_TryParse(state[s++], out editTrack)
+                || !int_TryParse(state[s++], out editIndex))
+                return False;
+
+            curPath = state[s++];
+
+            if (   !int_TryParse(state[s++], out copyTrack)
+                || !int_TryParse(state[s++], out copyIndex))
                 return False;
 
             for (int i = 0; i < nMems; i++)

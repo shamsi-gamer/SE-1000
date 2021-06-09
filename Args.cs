@@ -22,8 +22,7 @@
 
                 case "play":        Play();                          break;
 
-                case "show clip":   ShowClip = !ShowClip;  
-                                    if (!ShowClip) HideClip = true;  break;
+                case "show clip":   ToggleShowClip();                break;
 
                 case "mix":         ShowMixer = !ShowMixer;          break;
                 case "cue clip":    CueClip   = !CueClip;            break;
