@@ -87,8 +87,8 @@ namespace IngameScript
                     + strEmpty
                     + chan.Instrument.Name,
                     6,
-                    yLine + 6,
-                    1,
+                    yLine + 10,
+                    0.7f,
                     c == CurChan ? color0 : (chan.Notes.Count > 0 ? (chan.On ? color6 : color3) : color2));
             }
         }

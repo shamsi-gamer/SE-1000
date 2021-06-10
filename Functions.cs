@@ -29,7 +29,7 @@ namespace IngameScript
                 else
                 {
                     if (!OK(CurSrc)) SetInstFunc(SelInstrument, func);
-                    else                        SetSrcFunc (SelSource,     func);
+                    else             SetSrcFunc (SelSource,     func);
                 }
             }
 

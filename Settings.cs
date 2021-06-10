@@ -55,20 +55,20 @@ namespace IngameScript
             if (iSrc == -2) iSrc = CurSrc;
 
             if (OK(CurSet))
-                EditedClip.Settings[CurSet]._IsCurrent = False;
+                CurSetting._IsCurrent = False;
 
             Setting setting;
 
-                 if (OK(CurSet)) setting = EditedClip.Settings[CurSet].GetOrAddSettingFromTag(tag);
-            else if (OK(iSrc))              setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
-            else                            setting = inst              .GetOrAddSettingFromTag(tag);
+                 if (OK(CurSet)) setting = CurSetting        .GetOrAddSettingFromTag(tag);
+            else if (OK(iSrc))   setting = inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
+            else                 setting = inst              .GetOrAddSettingFromTag(tag);
 
             EditedClip.Settings.Add(setting);
 
             CurSet++;
 
             if (IsCurParam())
-                EditedClip.Settings[CurSet]._IsCurrent = True;
+                CurSetting._IsCurrent = True;
         }
 
 

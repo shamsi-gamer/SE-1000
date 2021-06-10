@@ -46,8 +46,9 @@ namespace IngameScript
                                 CueClip, 
                                 MixerShift,
                                 SetOrPat, // true = Set, false = Pat
-                                SetMemSet;
-                                
+                                SetMemSet,
+                                Recording;
+
         static Setting[]        Sets     = new Setting[nMems];
         static Clip   []        SetClips = new Clip   [nMems];
 
@@ -113,7 +114,8 @@ namespace IngameScript
             ShowMixer    = 
             MixerShift   =
             SetOrPat     = 
-            SetMemSet       = False;
+            SetMemSet    =
+            Recording    = False;
                          
             EditClip     = -1;
         }

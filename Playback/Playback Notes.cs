@@ -14,18 +14,22 @@ namespace IngameScript
             clip.TrimCurrentNotes(ch);
             lastNotes.Clear();
 
-            var chan  = clip.CurPattern.Channels[ch];
+            //var chan = 
+            //    Playing
+            //    ? clip.Patterns[clip.Track.PlayPat].Channels[ch]
+            //    : CurChannel;
+
             var notes = GetChordNotes(num);
 
 
             if (   OK(clip.EditPos)
-                || clip.Recording)
+                || Recording)
             {
                 if (   clip.ChordMode
                     && clip.Chord < 0) PlayChord(clip, notes, ch);
                 else                   PlayNote (clip, notes, ch);
 
-                if (!clip.Recording)
+                if (!Recording)
                 { 
                     if (    (  !clip.ChordMode
                              || OK(clip.Chord))
@@ -55,7 +59,10 @@ namespace IngameScript
 
         void PlayChord(Clip clip, List<int> notes, int ch)
         {
-            var chan = clip.CurPattern.Channels[ch];
+            var chan = 
+                Playing
+                ? clip.Patterns[clip.Track.PlayPat].Channels[ch]
+                : CurChannel;
 
             var _found = False;
 
@@ -104,7 +111,12 @@ namespace IngameScript
 
         void PlayNote(Clip clip, List<int> notes, int ch)
         {
-            var chan = clip.CurPattern.Channels[ch];
+            var chan     = clip.CurPattern.Channels[ch];
+
+            var playChan = 
+                Playing
+                ? clip.Patterns[clip.Track.PlayPat].Channels[ch]
+                : CurChannel;
 
             for (int i = 0; i < notes.Count; i++)
             {
@@ -131,11 +143,16 @@ namespace IngameScript
 
                 var note = notes[i];
 
+                var step = 
+                    Recording 
+                    ? clip.Track.PlayStep
+                    : clip.EditPos % g_patSteps;
+
                 if (!(   clip.ChordEdit
                       && OK(clip.Chord)))
                 {
-                    var noteStep = clip.EditPos % g_patSteps + ChordSpread(i);
-                    var lastNote = new Note(chan, ch, 1, note, noteStep, EditedClip.EditStepLength);
+                    var noteStep = step + ChordSpread(i);
+                    var lastNote = new Note(Recording ? playChan : chan, ch, 1, note, noteStep, EditedClip.EditStepLength);
                     
                     lastNotes.Add(lastNote);
                     chan.AddNote(lastNote);

@@ -69,10 +69,12 @@ namespace IngameScript
         }
 
 
+
         void Save()
         {
             SaveMachineState();
         }
+
 
 
         void SaveMachineState()
@@ -89,7 +91,7 @@ namespace IngameScript
                 + PS(Tracks.IndexOf(EditedClip.Track))
                 + PS(EditedClip.Index)
 
-                + P (OK(EditedClip.CurSetting) ? EditedClip.CurSetting.GetPath() : "")
+                + P (OK(EditedClip.CurSetting) ? EditedClip.CurSetting.GetPath(EditedClip.CurSrc) : "")
 
                 + PS(OK(ClipCopy) ? Tracks.IndexOf(ClipCopy.Track) : -1)
                 + PS(OK(ClipCopy) ? ClipCopy.Index                 : -1);
@@ -126,6 +128,7 @@ namespace IngameScript
         }
 
 
+
         uint SaveStateToggles()
         {
             uint f = 0;
@@ -134,9 +137,11 @@ namespace IngameScript
             WriteBit(ref f, ShowClip,  i++);
             WriteBit(ref f, ShowMixer, i++);
             WriteBit(ref f, CueClip,   i++);
+            WriteBit(ref f, Recording, i++);
 
             return f;
         }
+
 
 
         //void SaveInstruments()

@@ -70,5 +70,7 @@ namespace IngameScript
         static Source     SelSource     => EditedClip.SelSource;
         static Instrument SelInstrument => EditedClip.SelInstrument;
         static Channel    SelChannel    => EditedClip.SelChannel;
+
+        static Setting    CurSetting    => EditedClip.Settings[CurSet];
     }
 }

@@ -29,8 +29,6 @@ namespace IngameScript
             public bool[]        ChanOn = new bool[g_nChans];
 
 
-            public bool          Recording;
-
             public bool          Loop,
                                  Block,
                                  AllPats,
@@ -110,7 +108,6 @@ namespace IngameScript
             public Channel       SelChannel     => OK(SelChan) ? CurPattern.Channels[SelChan] : Channel_null;
             public Instrument    SelInstrument  => SelChannel?.Instrument ?? Instrument_null;
             public Source        SelSource      => OK(CurSrc) ? SelInstrument.Sources[CurSrc] : Source_null;
-
 
             public float         EditStep       => g_steps[EditStepIndex  ];
             public float         EditStepLength => g_steps[EditLengthIndex];
@@ -268,7 +265,7 @@ namespace IngameScript
                 ParamKeys       = clip.ParamKeys;
                 ParamAuto       = clip.ParamAuto;
                                 
-                SetMemPat          = clip.SetMemPat;
+                SetMemPat       = clip.SetMemPat;
                                 
                 CurPat          = clip.CurPat;
                 CurChan         = clip.CurChan;

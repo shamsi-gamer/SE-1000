@@ -108,8 +108,40 @@ namespace IngameScript
                     return CurValue;
 
 
-                var value = GetKeyValue(tp.Note, tp.SourceIndex);
                 var path  = GetPath(tp.SourceIndex);
+                var value = 1f;
+
+
+                if (OK(tp.Note))
+                { 
+                    var val = GetAutoValue(
+                        tp.Clip,
+                        tp.Note.Step, // not ClipStep because played notes are in clip time already
+                        tp.Note.iChan, 
+                        path);
+
+                    value = OK(val) ? val : GetKeyValue(tp.Note, tp.SourceIndex);
+
+                    //float auto;
+
+                    //if (   Tag == strTune
+                    //    || Tag == strOff) auto = 0;
+                    //else                  auto = 1;
+
+                    //if (OK(val))
+                    //{
+                    //    if (   Tag == strTune
+                    //        || Tag == strOff) auto += val;
+                    //    else                  auto *= val;
+                    //}
+
+                    //if (   Tag == strTune
+                    //    || Tag == strOff) value += auto;
+                    //else                  value *= auto;
+                }
+                else
+                    value = GetKeyValue(tp.Note, tp.SourceIndex);
+
 
                 if (   !OK(tp.TriggerValues.Find(v => v.Path == path))
                     && OK(Lfo))
@@ -131,36 +163,10 @@ namespace IngameScript
                     else                          value *= mod;
                 }
 
+
                 if (OK(Envelope))
                     value *= Envelope.UpdateValue(tp);
 
-
-                float auto;
-
-                if (   Tag == strTune
-                    || Tag == strOff) auto = 0;
-                else                  auto = 1;
-
-
-                if (OK(tp.Note))
-                { 
-                    var val = GetAutoValue(
-                        tp.Clip,
-                        tp.Note.Step, // not ClipStep because played notes are in clip time already
-                        tp.Note.iChan, 
-                        path);
-                    
-                    if (OK(val))
-                    {
-                        if (   Tag == strTune
-                            || Tag == strOff) auto += val;
-                        else                  auto *= val;
-                    }
-
-                    if (   Tag == strTune
-                        || Tag == strOff) value += auto;
-                    else                  value *= auto;
-                }
 
                 CurValue = MinMax(Min, value, Max);
                 m_valid  = True;
@@ -227,11 +233,13 @@ namespace IngameScript
             }
 
 
+
             public override void AdjustFromController(Clip clip)
             {
                 if (g_remote.RotationIndicator.X != 0)
                     Program.AdjustFromController(clip, this, -g_remote.RotationIndicator.X/ControlSensitivity);
             }
+
 
 
             public override Setting GetOrAddSettingFromTag(string tag)
@@ -247,6 +255,7 @@ namespace IngameScript
             }
 
 
+
             public override bool HasDeepParams(Channel chan, int src)
             {
                 return
@@ -258,12 +267,35 @@ namespace IngameScript
             }
 
 
+
             public override void DeleteSetting(Setting setting)
             {
                      if (setting == Envelope)                           Envelope =  Envelope_null;
                 else if (setting == Lfo     ) { g_lfo.Remove(Lfo);      Lfo      =       LFO_null; }
                 else if (setting == Modulate) { g_mod.Remove(Modulate); Modulate =  Modulate_null; }
+
+                RemoveAutoKeys(setting.Instrument, setting.GetPath(EditedClip.CurSrc));
             }
+
+
+
+            void RemoveAutoKeys(Instrument inst, string path)
+            {
+                foreach (var track in Tracks)
+                { 
+                    foreach (var clip in track.Clips)
+                    { 
+                        foreach (var pat in clip.Patterns)
+                            foreach (var chan in pat.Channels)
+                                chan.AutoKeys.RemoveAll(k => 
+                                       k.Parameter.Instrument == inst
+                                    && k.Path                 == path);
+                        
+                        clip.UpdateAutoKeys();
+                    }
+                }
+            }
+
 
 
             public override void Clear()

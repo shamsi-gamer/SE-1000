@@ -26,6 +26,7 @@ namespace IngameScript
             protected bool    m_valid;
 
 
+
             public Setting(string tag, Setting parent, Setting proto, Instrument inst, Source src)
             {
                 Tag        = tag;
@@ -38,11 +39,14 @@ namespace IngameScript
             }
 
 
+
             public Setting(Setting setting, Setting parent, Instrument inst, Source src) 
                 : this(setting.Tag, parent, setting, inst, src) { }
 
 
-            public string GetPath(int src = -1)
+
+
+            public string GetPath(int src)
             {
                 var path = new StringBuilder();
 
@@ -61,18 +65,25 @@ namespace IngameScript
             }
 
 
+
             public virtual Setting GetOrAddSettingFromTag(string tag) => Setting_null;
             
+
+
             public Parameter GetOrAddParamFromTag(Parameter param, string tag)
             {
                 return param ?? (Parameter)NewSettingFromTag(tag, this, Instrument, Source);
             }
 
+
+
             public virtual bool HasDeepParams(Channel chan, int src) { return False; }
             public virtual void DeleteSetting(Setting setting) {}
-                                
+            
+            
 
             public virtual void Clear() {}
+
 
 
             public virtual void Reset()
@@ -81,8 +92,10 @@ namespace IngameScript
             }
 
 
+
             public virtual void Randomize(Program prog) {}
             public virtual void AdjustFromController(Clip clip) {}
+
 
 
             public virtual string GetLabel(out float width) 
@@ -92,8 +105,10 @@ namespace IngameScript
             }
 
 
+
             public virtual string GetUpLabel()   { return ""; }
             public virtual string GetDownLabel() { return ""; }
+
 
 
             public virtual void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
@@ -150,8 +165,10 @@ namespace IngameScript
             }
 
 
+
             public bool           ParentIsEnvelope    => HasTag(Parent, strEnv);
             public bool           AnyParentIsEnvelope => HasTagOrAnyParent(Parent, strEnv);
+
 
 
             public virtual void   DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp) {}
@@ -175,15 +192,21 @@ namespace IngameScript
         {
             var tags = path.Split('/');
 
-            Setting setting = Setting_null;
+            var hasSrc = IsDigit(tags[0][0]);
 
-            foreach (var tag in tags)
+            var src     = hasSrc ? inst.Sources[int_Parse(tags[0])] : Source_null;
+            var setting = Setting_null;
+
+
+            for (int i = hasSrc ? 1 : 0; i < tags.Length; i++)
             {
-                setting = 
-                    !OK(setting)
-                    ? inst   .GetOrAddSettingFromTag(tag)
-                    : setting.GetOrAddSettingFromTag(tag);
+                var tag = tags[i];
+
+                     if (OK(setting)) setting = setting.GetOrAddSettingFromTag(tag);
+                else if (OK(src))     setting = src    .GetOrAddSettingFromTag(tag);
+                else                  setting = inst   .GetOrAddSettingFromTag(tag);
             }
+
 
             return setting;
         }

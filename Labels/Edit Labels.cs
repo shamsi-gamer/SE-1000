@@ -45,7 +45,7 @@
                 });
 
             lblRec = new Label(1, GetLabel(strRec),
-                lbl => EditedClip.Recording,
+                lbl => Recording,
                 CF_null,
                 lbl => lbl.SetText(strRec),
                 lbl => 

@@ -118,6 +118,7 @@ namespace IngameScript
             }
 
 
+
             public void ResetValues()
             {
                 DisplayVolume = float.NaN;
@@ -130,6 +131,7 @@ namespace IngameScript
                 foreach (var src in Sources)
                     src.ResetValues();
             }
+
 
 
             public Setting GetOrAddSettingFromTag(string tag)
@@ -146,6 +148,7 @@ namespace IngameScript
             }
 
 
+
             public void Delete(Clip clip)
             {
                 // this method removes note and channel automation associated with this instrument
@@ -158,6 +161,7 @@ namespace IngameScript
                 foreach (var src in Sources)
                     src.Delete(clip);
             }
+
 
 
             public string Save()
@@ -177,6 +181,7 @@ namespace IngameScript
 
                 return inst;
             }
+
 
 
             public static Instrument Load(string[] lines, ref int line)
@@ -210,6 +215,7 @@ namespace IngameScript
                 return inst;
             }
 
+            
 
             public void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
             {
@@ -223,13 +229,11 @@ namespace IngameScript
             }                                           
 
 
+
             public void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
                 if (OK(CurSet))
-                { 
-                    var setting = EditedClip.Settings[CurSet];
-                    setting.DrawFuncButtons(sprites, w, h, chan);
-                }
+                    CurSetting.DrawFuncButtons(sprites, w, h, chan);
                 else
                 {
                     DrawFuncButton(sprites, strVol,  1, w, h, True, Volume.HasDeepParams(chan, -1));

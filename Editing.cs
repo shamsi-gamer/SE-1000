@@ -72,10 +72,10 @@ namespace IngameScript
                             if (pat < 0) return;
 
                             lastNote.StepLength = Math.Min(
-                                clip.EditPos - (pat * g_patSteps + lastNote.Step) + EditedClip.EditStepIndex + ChordSpread(i),
+                                clip.EditPos - (pat * g_patSteps + lastNote.Step) + EditedClip.EditStep + ChordSpread(i),
                                 10f * FPS / TicksPerStep);
 
-                            TriggerNote(clip, lastNote.Number, lastNote.iChan, EditedClip.EditStepIndex, ChordSpread(i));
+                            TriggerNote(clip, lastNote.Number, lastNote.iChan, EditedClip.EditStep, ChordSpread(i));
                         }
 
                         MoveEdit(clip, 1);
@@ -223,12 +223,16 @@ namespace IngameScript
 
             if (!OK(EditedClip.EditPos))
                 EditedClip.Inter = Note_null;
+
+            if (OK(EditedClip.EditPos)) 
+                Recording = False;
         }
 
 
         void Record()
         {
-            EditedClip.Recording = !EditedClip.Recording;
+            Recording = !Recording;
+            if (Recording) EditedClip.EditPos = float_NaN;
         }
 
 

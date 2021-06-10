@@ -73,11 +73,11 @@ namespace IngameScript
                 ParamKeys   = ReadBit(f, i++);
                 ParamAuto   = ReadBit(f, i++);
                             
-                SetMemPat      = ReadBit(f, i++);
+                SetMemPat   = ReadBit(f, i++);
                             
                 Move        = ReadBit(f, i++);
-                SetOrPat = ReadBit(f, i++);
-                SetMemSet      = ReadBit(f, i++);
+                SetOrPat    = ReadBit(f, i++);
+                SetMemSet   = ReadBit(f, i++);
 
                 return True;
             }

@@ -11,15 +11,13 @@ namespace IngameScript
     {
         void DrawCurrentSetting(List<MySprite> sprites, float x, float y, float w, float h)
         {
-            if (CurSet < 0) return;
+            if (!OK(CurSet)) return;
 
-            var setting = EditedClip.Settings[CurSet];
-
-            DrawString(sprites, FullNameFromTag(setting.Tag), x + w/2, y, 1f, color5, TA_CENTER);
+            DrawString(sprites, FullNameFromTag(CurSetting.Tag), x + w/2, y, 1f, color5, TA_CENTER);
 
             var nameHeight = 40;
 
-            setting.DrawSetting(
+            CurSetting.DrawSetting(
                 sprites, 
                 x,
                 y + nameHeight, 
@@ -253,7 +251,7 @@ namespace IngameScript
             var pat  = clip.Patterns[p];
             var chan = pat.Channels[ch];
 
-            var path = EditedClip.Settings.Last().GetPath(CurSrc);
+            var path = CurSetting.GetPath(CurSrc);//EditedClip.Settings.Last().GetPath(CurSrc);
 
             foreach (var note in chan.Notes)
             {
@@ -425,6 +423,7 @@ namespace IngameScript
         {
             var chan    = SelChannel;
             var inst    = chan.Instrument;
+
             var setting = GetSettingFromPath(inst, key.Path);
             var wt      = w/g_patSteps;
 

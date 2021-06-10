@@ -473,6 +473,7 @@ namespace IngameScript
         }
 
 
+
         void Command2()
         {
             if (OK(CurSrc))
@@ -489,12 +490,14 @@ namespace IngameScript
         }
 
 
+
         void Command3()
         {
             if (IsCurParam())
             {
                 var param = EditedClip.CurParam;
-                var path  = EditedClip.Settings.Last().GetPath(CurSrc);
+                var path  = param.GetPath(EditedClip.CurSrc);
+                //var path  = EditedClip.Settings.Last().GetPath(CurSrc);
 
                 
                 if (   EditedClip.ParamKeys
@@ -511,32 +514,7 @@ namespace IngameScript
                 else if (EditedClip.ParamAuto
                       && OK(EditedClip.EditPos))
                 {
-                    var chan = SelChannel;
-
-                    var key = chan.AutoKeys.Find(k =>
-                           k.Path == path
-                        && k.Step >= (EditedClip.EditPos % g_patSteps)
-                        && k.Step <  (EditedClip.EditPos % g_patSteps) + 1);
-
-                    if (!OK(key)) // create
-                    {
-                        var val = Parameter.GetAutoValue(EditedClip, EditedClip.EditPos, CurPat, path);
-
-                        var newKey = new Key(
-                            CurSrc,
-                            param,
-                            OK(val) ? val : param.Value,
-                            EditedClip.EditPos % g_patSteps,
-                            SelChannel);
-
-                        chan.AutoKeys.Add(newKey);
-                        EditedClip.UpdateAutoKeys();
-                    }
-                    else // delete
-                    {
-                        chan.AutoKeys.Remove(key);
-                        EditedClip.UpdateAutoKeys();
-                    }
+                    AddDeleteAutoKey(param, path);
                 }
                 else if (OK(CurSet))
                 {
@@ -561,10 +539,76 @@ namespace IngameScript
         }
 
 
+
+        public void AddDeleteAutoKey(Parameter param, string path)
+        {
+            var key = SelChannel.AutoKeys.Find(k =>
+                   k.Path == path
+                && k.Step >= (EditedClip.EditPos % g_patSteps)
+                && k.Step <  (EditedClip.EditPos % g_patSteps) + 1);
+
+            if (OK(key)) // delete
+            {
+                SelChannel.AutoKeys.Remove(key);
+                EditedClip.UpdateAutoKeys();
+            }
+
+            if (  !OK(key)
+                && OK(EditedClip.EditPos)) // create
+            {
+                var val = Parameter.GetAutoValue(EditedClip, EditedClip.EditPos, CurPat, path);
+
+                var newKey = new Key(
+                    CurSrc,
+                    param,
+                    OK(val) ? val : param.Value,
+                    EditedClip.EditPos % g_patSteps,
+                    SelChannel);
+
+                SelChannel.AutoKeys.Add(newKey);
+                EditedClip.UpdateAutoKeys();
+            }
+        }
+
+
+
+        static void RecordAutoKey(Parameter param, string path)
+        {
+            var playStep = (float)Math.Round(EditedClip.Track.PlayStep);
+            var playChan = EditedClip.Patterns[EditedClip.Track.PlayPat].Channels[CurChan];
+
+            var val      = Parameter.GetAutoValue(EditedClip, playStep, EditedClip.Track.PlayPat, path);
+
+
+            if (param.Value != val)
+            { 
+                var key = playChan.AutoKeys.Find(k =>
+                       k.Path == path
+                    && k.Step >= (playStep % g_patSteps)
+                    && k.Step <  (playStep % g_patSteps) + 1);
+                            
+                if (OK(key)) // delete
+                    playChan.AutoKeys.Remove(key);
+                            
+                var newKey = new Key(
+                    CurSrc,
+                    param,
+                    param.Value,
+                    playStep % g_patSteps,
+                    playChan);
+
+                playChan.AutoKeys.Add(newKey);
+                EditedClip.UpdateAutoKeys();
+            }
+        }
+
+
+
         public void ToggleShift()
         {
             EditedClip.Shift = !EditedClip.Shift;
         }
+
 
 
         public void Adjust(Clip clip, Setting setting, float delta)
@@ -578,7 +622,7 @@ namespace IngameScript
                             || clip.ParamAuto))
             {
                 var chan = clip.SelChannel;
-                var path = clip.Settings.Last().GetPath(clip.CurSrc);
+                var path = clip.CurSetting.GetPath(clip.CurSrc);//clip.Settings.Last().GetPath(clip.CurSrc);
 
                 if (clip.ParamKeys)
                 { 
@@ -603,7 +647,7 @@ namespace IngameScript
                     if (OK(clip.EditPos))
                     { 
                         var key = chan.AutoKeys.Find(
-                                k => k.Path == path
+                               k => k.Path == path
                             && k.Step >= (clip.EditPos % g_patSteps) 
                             && k.Step <  (clip.EditPos % g_patSteps) + 1);
 
@@ -637,11 +681,19 @@ namespace IngameScript
         }
 
 
+
         static void AdjustFromController(Clip clip, Setting setting, float delta)
         {
-            if (IsParam(setting))
-                AdjustParam(clip, (Parameter)setting, delta);
+            if (!IsParam(setting)) return;
+            var param = (Parameter)setting;
+
+            AdjustParam(clip, param, delta);
+
+            if (   Recording
+                && clip.Track.PlayTime % TicksPerStep == 0) // only once per tick, at the start of the tick
+                RecordAutoKey(param, param.GetPath(CurSrc));
         }
+
 
 
         static void AdjustParam(Clip clip, Parameter param, float delta)
@@ -654,6 +706,7 @@ namespace IngameScript
                 Note_null,
                 CurSrc);
         }
+
 
 
         void AdjustKey(Key key, float delta)

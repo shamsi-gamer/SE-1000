@@ -15,8 +15,9 @@ namespace IngameScript
             var  rh = h - 90;
             var irh = h - 50;
 
+            var xt = 310;
 
-            DrawChannelList(sprites, x, y, 340, rh);
+            DrawChannelList(sprites, x, y, xt, rh);
 
 
             var _dummy = new List<TriggerValue>();
@@ -24,9 +25,9 @@ namespace IngameScript
             var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, CurSrc, _dummy, clip, this);
 
 
-            var xt = 340;
             var wt = (float)(w - xt) / g_patSteps;
 
+            DrawPianoKeys(sprites, x - 30, y, 30, h, color5);
             DrawPianoGrid(sprites, x + xt, y, w - xt, rh);
 
 
@@ -73,21 +74,28 @@ namespace IngameScript
         void DrawPianoGrid(List<MySprite> sprites, float x, float y, float w, float h)
         {
             var wt = w/g_patSteps;
-            var ht = h/25;
 
             for (int t = 0; t < g_patSteps; t += 4)
                 FillRect(sprites, x + t * wt, y, wt, h, color1);
 
+            DrawPianoKeys(sprites, x, y, wt * g_patSteps, h, color2);
+
+            for (int t = 0; t < g_patSteps; t++)
+                FillRect(sprites, x + t * wt, y, 1, h, color3);
+        }
+
+
+        void DrawPianoKeys(List<MySprite> sprites, float x, float y, float w, float h, Color white)
+        {
             int[] black = { 1, 3, 6, 8, 10, 13, 15, 18, 20, 22 };
+
+            var ht = h/25;
 
             for (int n = 0; n < 25; n++)
             {
                 if (!black.Contains(n))
-                    FillRect(sprites, x, y + h - (n + 1) * ht + 1, wt * g_patSteps, ht - 2, color2);
+                    FillRect(sprites, x, y + h - (n+1)*ht + 1, w, ht-2, white);
             }
-
-            for (int t = 0; t < g_patSteps; t++)
-                FillRect(sprites, x + t * wt, y, 1, h, color3);
         }
 
 

@@ -49,12 +49,15 @@ namespace IngameScript
                 color6);
 
 
-            ClipDraw(sprites, x + lw + w2, 0, w - x - lw - w2, rh/4);
+            if (!TooComplex)
+            { 
+                ClipDraw(sprites, x + lw + w2, 0, w - x - lw - w2, rh/4);
 
-            var dpInst = new DrawParams(this);
-            SelInstrument.DrawLabels(sprites, x + lw + w2 + 21, y + 5, dpInst);
+                var dpInst = new DrawParams(this);
+                SelInstrument.DrawLabels(sprites, x + lw + w2 + 21, y + 5, dpInst);
 
-            ClearClip(sprites);
+                ClearClip(sprites);
+            }
 
 
             if (!TooComplex)

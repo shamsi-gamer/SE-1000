@@ -37,7 +37,7 @@
             }
             else if (OK(CurSet))
             {
-                var path = EditedClip.Settings.Last().GetPath(CurSrc);
+                var path = CurSetting.GetPath(CurSrc);//EditedClip.Settings.Last().GetPath(CurSrc);
 
                 if (EditedClip.ParamKeys)
                     lbl.SetText("Inter");
@@ -123,7 +123,7 @@
         {
             if (OK(CurSet))
             {
-                var path = EditedClip.Settings.Last().GetPath(CurSrc);
+                var path = CurSetting.GetPath(CurSrc);//EditedClip.Settings.Last().GetPath(CurSrc);
 
                 if (EditedClip.ParamKeys)
                 {
