@@ -149,17 +149,17 @@ namespace IngameScript
 
 
 
-            public void Delete(Clip clip)
+            public void Delete()
             {
                 // this method removes note and channel automation associated with this instrument
 
-                Volume .Delete(clip, -1);
-                Tune  ?.Delete(clip, -1);
-                Filter?.Delete(clip, -1);
-                Delay ?.Delete(clip, -1);
+                Volume .Delete(-1);
+                Tune  ?.Delete(-1);
+                Filter?.Delete(-1);
+                Delay ?.Delete(-1);
 
                 foreach (var src in Sources)
-                    src.Delete(clip);
+                    src.Delete();
             }
 
 

@@ -186,13 +186,13 @@ namespace IngameScript
             }
 
 
-            public void Delete(Clip clip, int iSrc)
+            public void Delete(int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
-                Amplitude.Delete(clip, iSrc);
-                Frequency.Delete(clip, iSrc);
-                Offset   .Delete(clip, iSrc);
+                Amplitude.Delete(iSrc);
+                Frequency.Delete(iSrc);
+                Offset   .Delete(iSrc);
             }
 
 

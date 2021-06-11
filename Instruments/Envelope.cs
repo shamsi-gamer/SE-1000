@@ -180,14 +180,14 @@ namespace IngameScript
             }
 
 
-            public void Delete(Clip clip, int iSrc)
+            public void Delete(int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
-                Attack .Delete(clip, iSrc);
-                Decay  .Delete(clip, iSrc);
-                Sustain.Delete(clip, iSrc);
-                Release.Delete(clip, iSrc);
+                Attack .Delete(iSrc);
+                Decay  .Delete(iSrc);
+                Sustain.Delete(iSrc);
+                Release.Delete(iSrc);
             }
 
 

@@ -299,18 +299,21 @@ namespace IngameScript
                 if (EditedClip.ParamKeys)
                 {
                     foreach (var note in chan.Notes)
-                    { 
-                        var index = 0;
-                        while (OK(index = note.Keys.FindIndex(k => k.Path == CurrentParam.GetPath(CurSrc))))
-                            note.Keys.RemoveAt(index);
-                    }
+                        note.Keys.RemoveAll(k => k.Path == CurrentParam.GetPath(CurSrc));
+                    //{
+                    //    use this simpler remove all, note.Keys.RemoveAll(k => k.Path == GetPath(iSrc));
+                    //    var index = 0;
+                    //    while (OK(index = note.Keys.FindIndex(k => k.Path == CurrentParam.GetPath(CurSrc))))
+                    //        note.Keys.RemoveAt(index);
+                    //}
                 }
                 else if (EditedClip.ParamAuto)
                 {
-                    var index = 0;
-                        
-                    while (OK(index = chan.AutoKeys.FindIndex(k => k.Path == CurrentParam.GetPath(CurSrc))))
-                        chan.AutoKeys.RemoveAt(index);
+                    chan.AutoKeys.RemoveAll(k => k.Path == CurrentParam.GetPath(CurSrc));
+
+                    //var index = 0;
+                    //while (OK(index = chan.AutoKeys.FindIndex(k => k.Path == CurrentParam.GetPath(CurSrc))))
+                    //    chan.AutoKeys.RemoveAt(index);
                 }
                 else
                 { 

@@ -111,12 +111,15 @@ namespace IngameScript
 
         void PlayNote(Clip clip, List<int> notes, int ch)
         {
-            var chan     = clip.CurPattern.Channels[ch];
+            var pat = 
+                Playing 
+                ? clip.Track.PlayPat 
+                : clip.CurPat;
 
-            var playChan = 
+            var chan = 
                 Playing
                 ? clip.Patterns[clip.Track.PlayPat].Channels[ch]
-                : CurChannel;
+                : clip.CurPattern.Channels[ch];
 
             for (int i = 0; i < notes.Count; i++)
             {
@@ -128,7 +131,7 @@ namespace IngameScript
                 do
                 { 
                     found = chan.Notes.FindIndex(n => 
-                        clip.EditPos == clip.CurPat*g_patSteps + n.Step + ChordSpread(i));
+                        clip.EditPos == pat*g_patSteps + n.Step + ChordSpread(i));
 
                     if (OK(found)) 
                         chan.Notes.RemoveAt(found);
@@ -146,13 +149,13 @@ namespace IngameScript
                 var step = 
                     Recording 
                     ? clip.Track.PlayStep
-                    : clip.EditPos % g_patSteps;
+                    : clip.EditPos;
 
                 if (!(   clip.ChordEdit
                       && OK(clip.Chord)))
                 {
-                    var noteStep = step + ChordSpread(i);
-                    var lastNote = new Note(Recording ? playChan : chan, ch, 1, note, noteStep, EditedClip.EditStepLength);
+                    var noteStep = step % g_patSteps + ChordSpread(i);
+                    var lastNote = new Note(chan, ch, 1, note, noteStep, EditedClip.EditStepLength);
                     
                     lastNotes.Add(lastNote);
                     chan.AddNote(lastNote);

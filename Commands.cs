@@ -119,7 +119,7 @@ namespace IngameScript
                 EditedClip.Settings.Clear();
 
 
-                EditedClip.CurInstrument.Sources[CurSrc].Delete(EditedClip);
+                EditedClip.CurInstrument.Sources[CurSrc].Delete();
                 EditedClip.CurInstrument.Sources.RemoveAt(CurSrc);
 
                 //for (int i = g_song.CurSrc; i < inst.Sources.Count; i++)
@@ -145,7 +145,7 @@ namespace IngameScript
 
                 var i = Instruments.IndexOf(EditedClip.CurInstrument);
 
-                EditedClip.CurInstrument.Delete(EditedClip);
+                EditedClip.CurInstrument.Delete();
                 Instruments.Remove(EditedClip.CurInstrument);
 
                 if (Instruments.Count == 0)

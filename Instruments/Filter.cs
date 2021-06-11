@@ -98,13 +98,13 @@ namespace IngameScript
             }
 
 
-            public void Delete(Clip clip, int iSrc)
+            public void Delete(int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
-                Cutoff   ?.Delete(clip, iSrc);
-                Resonance?.Delete(clip, iSrc);
-                Sharpness?.Delete(clip, iSrc);
+                Cutoff   .Delete(iSrc);
+                Resonance.Delete(iSrc);
+                Sharpness.Delete(iSrc);
             }
 
 

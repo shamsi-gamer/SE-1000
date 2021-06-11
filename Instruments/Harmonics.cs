@@ -253,12 +253,12 @@ namespace IngameScript
             }
 
 
-            public void Delete(Clip clip, int iSrc)
+            public void Delete(int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
                 foreach (var tone in Tones)
-                    tone.Delete(clip, iSrc);
+                    tone.Delete(iSrc);
             }
 
 

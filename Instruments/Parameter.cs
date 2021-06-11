@@ -109,8 +109,8 @@ namespace IngameScript
 
 
                 var path  = GetPath(tp.SourceIndex);
-                var value = GetKeyValue(tp.Note, tp.SourceIndex);
 
+                float value;
 
                 if (OK(tp.Note))
                 { 
@@ -120,30 +120,14 @@ namespace IngameScript
                         tp.Note.iChan, 
                         path);
 
-                    if (OK(val))
-                        value = val;
-
-                    //float auto;
-
-                    //if (   Tag == strTune
-                    //    || Tag == strOff) auto = 0;
-                    //else                  auto = 1;
-
-                    //if (OK(val))
-                    //{
-                    //    if (   Tag == strTune
-                    //        || Tag == strOff) auto += val;
-                    //    else                  auto *= val;
-                    //}
-
-                    //if (   Tag == strTune
-                    //    || Tag == strOff) value += auto;
-                    //else                  value *= auto;
+                    value = OK(val) ? val : GetKeyValue(tp.Note, tp.SourceIndex);
                 }
+                else
+                    value = GetKeyValue(tp.Note, tp.SourceIndex);
 
 
-                if (   !OK(tp.TriggerValues.Find(v => v.Path == path))
-                    && OK(Lfo))
+                if (    OK(Lfo)
+                    && !OK(tp.TriggerValues.Find(v => v.Path == path)))
                 {
                     var lfo = Lfo.UpdateValue(tp);
 
@@ -154,6 +138,11 @@ namespace IngameScript
                         tp.TriggerValues.Add(new TriggerValue(path, MinMax(Min, value, Max)));
                 }
 
+
+                if (OK(Envelope))
+                    value *= Envelope.UpdateValue(tp);
+
+
                 if (OK(Modulate))
                 {
                     var mod = Modulate.UpdateValue(tp);
@@ -161,10 +150,6 @@ namespace IngameScript
                     if (Modulate.Op == ModOp.Add) value += mod * Math.Abs(Max - Min) / 2;
                     else                          value *= mod;
                 }
-
-
-                if (OK(Envelope))
-                    value *= Envelope.UpdateValue(tp);
 
 
                 CurValue = MinMax(Min, value, Max);
@@ -272,26 +257,7 @@ namespace IngameScript
                      if (setting == Envelope)                           Envelope =  Envelope_null;
                 else if (setting == Lfo     ) { g_lfo.Remove(Lfo);      Lfo      =       LFO_null; }
                 else if (setting == Modulate) { g_mod.Remove(Modulate); Modulate =  Modulate_null; }
-
-                //RemoveAutoKeys(setting.Instrument, setting.GetPath(EditedClip.CurSrc));
             }
-
-
-
-            //void RemoveAutoKeys(Instrument inst, string path)
-            //{
-            //    foreach (var track in Tracks)
-            //    { 
-            //        foreach (var clip in track.Clips)
-            //        { 
-            //            foreach (var pat in clip.Patterns)
-            //                foreach (var chan in pat.Channels)
-            //                    chan.AutoKeys.RemoveAll(k => k.Path == path);
-                        
-            //            clip.UpdateAutoKeys();
-            //        }
-            //    }
-            //}
 
 
 
@@ -355,27 +321,35 @@ namespace IngameScript
             }
 
 
-            public void Delete(Clip clip, int iSrc)
+            public void Delete(int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
-                foreach (var pat in clip.Patterns)
-                {
-                    foreach (var chan in pat.Channels)
-                    {
-                        chan.AutoKeys.RemoveAll(k => k.Path == GetPath(iSrc));
+                foreach (var track in Tracks)
+                { 
+                    foreach (var clip in track.Clips)
+                    { 
+                        if (!OK(clip)) continue;
 
-                        foreach (var note in chan.Notes)
-                            note.Keys.RemoveAll(k => k.Path == GetPath(iSrc));
+                        foreach (var pat in clip.Patterns)
+                        { 
+                            foreach (var chan in pat.Channels)
+                            {
+                                chan.AutoKeys.RemoveAll(k => k.Path == GetPath(Source.Index));
+
+                                foreach (var note in chan.Notes)
+                                    note.Keys.RemoveAll(k => k.Path == GetPath(Source.Index));
+                            }
+                        }
+                     
+                        clip.UpdateAutoKeys();
                     }
                 }
 
-                clip.UpdateAutoKeys();
 
-
-                Envelope?.Delete(clip, iSrc);
-                Lfo     ?.Delete(clip, iSrc);
-                Modulate?.Delete(clip, iSrc);
+                Envelope?.Delete(iSrc);
+                Lfo     ?.Delete(iSrc);
+                Modulate?.Delete(iSrc);
             }
 
 
