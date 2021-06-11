@@ -107,8 +107,7 @@ namespace IngameScript
             EditedClip   = 
             ClipCopy     = Clip_null;
                          
-            CueClip      = 2;
-            ShowClip     = 
+            ShowClip     = True;
 
             HideClip     =                         
             ShowMixer    = 
@@ -117,6 +116,7 @@ namespace IngameScript
             SetMemSet    =
             Recording    = False;
                          
+            CueClip      =  2;
             EditClip     = -1;
         }
 
@@ -145,7 +145,7 @@ namespace IngameScript
             var track = Tracks[0];
             track.Stop();
 
-            var clip  = Clip.Create(track);
+            var clip = Clip.Create(track);
 
             EditedClip     = clip;
             track.Clips[0] = clip;

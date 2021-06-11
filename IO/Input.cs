@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿using System.Linq;
 
 
 namespace IngameScript
@@ -12,12 +12,18 @@ namespace IngameScript
         {
             if (   !g_inputValid
                 || !OK(SelChan)
-                || OK(CurSrc))
+                ||  OK(CurSrc))
+            { 
+                g_inputValid = True;
                 return;
+            }
+
+            var inst      = Instruments[SelChan];
+            var inputName = dspMain.Panel.GetText().Trim();
 
             EditedClip.CurInstrument.Name = GetNewName(
-                dspMain.Panel.GetText().Trim(), 
-                str => Instruments.Exists(i => i.Name == str));
+                inputName, 
+                name => Instruments.Count(i => i.Name == name) > 1);
 
             g_inputValid = True;
         }

@@ -2,7 +2,6 @@
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using System.Collections.Generic;
-using System.Linq;
 
 
 namespace IngameScript
@@ -64,6 +63,10 @@ namespace IngameScript
 
         static string GetNewName(string name, Func<string, bool> exists)
         {
+            if (!exists(name))
+                return name;
+
+
             var numLength = GetNumLength(name);
 
             if (numLength > 0)
@@ -77,14 +80,12 @@ namespace IngameScript
 
                 return newName;
             }
-            else
-            {
-                if (exists(name)
-                    && numLength == 0)
-                    name += " 2";
 
+            else if (numLength == 0)
+                return name + " 2";
+
+            else
                 return name;
-            }
         }
 
 

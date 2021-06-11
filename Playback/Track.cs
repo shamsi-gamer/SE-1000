@@ -127,19 +127,19 @@ namespace IngameScript
                         if (CueClip == 0)
                             Stop();
                     }
+
+
+                    if (   OK(NextClip)
+                        && OK(Clips[NextClip]))
+                    {
+                        //UpdateClipName();
+                        SetEditedClip(Clips[NextClip]);
+                    }
                 }
                 else if (EditClip == 0)
                 { 
-                    Clips[index] = Clip.Create(this);
-                    CueNextClip(index, prog);
-                }
-
-
-                if (   OK(NextClip)
-                    && OK(Clips[NextClip]))
-                {
-                    //UpdateClipName();
-                    SetEditedClip(Clips[NextClip]);
+                    Clips[index] = Clip.Create(this); // set clip
+                    //CueNextClip(index, prog);
                 }
             }
 
