@@ -580,7 +580,10 @@ namespace IngameScript
             var val      = Parameter.GetAutoValue(EditedClip, playStep, EditedClip.Track.PlayPat, path);
 
 
-            if (param.Value != val)
+            if (   OK(playChan.Notes.Find(n => 
+                          n.Step >= (playStep % g_patSteps)
+                       && n.Step <  (playStep % g_patSteps) + 1))
+                && param.Value != val)
             { 
                 var key = playChan.AutoKeys.Find(k =>
                        k.Path == path
@@ -636,7 +639,7 @@ namespace IngameScript
                             AdjustKey(note.Keys[iKey], delta);
                         else
                         {
-                            var param = (Parameter)GetSettingFromPath(chan.Instrument, path);
+                            var param = (Parameter)GetSettingFromPath(path);
                             note.Keys.Add(new Key(clip.CurSrc, param, param.Value, note.ClipStep));
                             AdjustKey(note.Keys.Last(), delta);
                         }
@@ -691,7 +694,7 @@ namespace IngameScript
 
             if (   Recording
                 && clip.Track.PlayTime % TicksPerStep == 0) // only once per tick, at the start of the tick
-                RecordAutoKey(param, param.GetPath(CurSrc));
+                RecordAutoKey(param, param.GetPath(clip.CurSrc));
         }
 
 

@@ -300,19 +300,16 @@ namespace IngameScript
                 {
                     foreach (var note in chan.Notes)
                     { 
-                        var param = GetCurrentParam(note.Instrument);
-
                         var index = 0;
-                        while (OK(index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSrc))))
+                        while (OK(index = note.Keys.FindIndex(k => k.Path == CurrentParam.GetPath(CurSrc))))
                             note.Keys.RemoveAt(index);
                     }
                 }
                 else if (EditedClip.ParamAuto)
                 {
-                    var param = GetCurrentParam(chan.Instrument);
                     var index = 0;
                         
-                    while (OK(index = chan.AutoKeys.FindIndex(k => k.Path == param.GetPath(CurSrc))))
+                    while (OK(index = chan.AutoKeys.FindIndex(k => k.Path == CurrentParam.GetPath(CurSrc))))
                         chan.AutoKeys.RemoveAt(index);
                 }
                 else

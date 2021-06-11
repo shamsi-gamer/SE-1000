@@ -188,8 +188,11 @@ namespace IngameScript
 
 
             // draw values
-                 if (EditedClip.ParamKeys) DrawParamKeys(sprites, x + xt, y + rh, w-xt, h-rh,       clip, pat, CurChan);
-            else if (EditedClip.ParamAuto) DrawParamAuto(sprites, x + xt, y + rh, w-xt, h-rh, w-xt, clip, pat, CurChan);
+            if (!TooComplex)
+            {
+                     if (EditedClip.ParamKeys) DrawParamKeys(sprites, x + xt, y + rh, w-xt, h-rh,       clip, pat, CurChan);
+                else if (EditedClip.ParamAuto) DrawParamAuto(sprites, x + xt, y + rh, w-xt, h-rh, w-xt, clip, pat, CurChan);
+            }
 
 
             if (   EditedClip.ParamKeys
@@ -219,7 +222,7 @@ namespace IngameScript
                 {
                     var src = OK(CurSrc) ? SelSource : Source_null;
 
-                    var _param = (Parameter)GetSettingFromPath(SelChannel.Instrument, path);
+                    var _param = (Parameter)GetSettingFromPath(path);
                     var val    = _param.Value;
 
                     strVal = GetParamValueString(val, path.Split('/').Last());
@@ -254,7 +257,10 @@ namespace IngameScript
 
             foreach (var note in chan.Notes)
             {
-                var param = (Parameter)GetSettingFromPath(note.Instrument, path);
+                if (TooComplex) return;
+
+
+                var param = (Parameter)GetSettingFromPath(path);
                 var key   = note.Keys.Find(k => k.Path == path);
 
                 var pt = new Vector2(
@@ -336,6 +342,8 @@ namespace IngameScript
                 // draw middle sections
                 for (int i = 0; i < clipKeys.Count-1; i++)
                 {
+                    if (TooComplex) return;
+
                     var p0 = KeyPos(x, y, w, h, p, AltChanKey(clipKeys[i  ]), clip);
                     var p1 = KeyPos(x, y, w, h, p, AltChanKey(clipKeys[i+1]), clip);
                     DrawLine(sprites, p0, p1, color6);
@@ -345,6 +353,8 @@ namespace IngameScript
                 // draw key points
                 for (int i = 0; i < clipKeys.Count; i++)
                 {
+                    if (TooComplex) return;
+
                     var pc = KeyPos(x, y, w, h, p, AltChanKey(clipKeys[i]), clip);
 
                     // draw move circle
@@ -399,7 +409,7 @@ namespace IngameScript
 
         Vector2 ValuePos(float x, float y, float w, float h, int p, Note note, string path, Clip clip)
         {
-            var param = (Parameter)GetSettingFromPath(note.Instrument, path);
+            var param = (Parameter)GetSettingFromPath(path);
             var val   = param.GetKeyValue(note, CurSrc);
 
             var wt    = w/g_patSteps;
@@ -423,7 +433,7 @@ namespace IngameScript
             var chan    = SelChannel;
             var inst    = chan.Instrument;
 
-            var setting = GetSettingFromPath(inst, key.Path);
+            var setting = GetSettingFromPath(key.Path);
             var wt      = w/g_patSteps;
 
 

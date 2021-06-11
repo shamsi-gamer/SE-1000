@@ -245,9 +245,9 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case strEnv:  return Envelope ?? (Envelope = new Envelope(this, Instrument, Source));
-                    case strLfo:  return Lfo      ?? (Lfo      = new LFO     (this, Instrument, Source));
-                    case strMod:  return Modulate ?? (Modulate = new Modulate(this, Instrument, Source));
+                    case strEnv: return Envelope ?? (Envelope = new Envelope(this, Instrument, Source));
+                    case strLfo: return Lfo      ?? (Lfo      = new LFO     (this, Instrument, Source));
+                    case strMod: return Modulate ?? (Modulate = new Modulate(this, Instrument, Source));
                 }
 
                 return Setting_null;
@@ -261,7 +261,7 @@ namespace IngameScript
                        OK(Envelope)
                     || OK(Lfo     )
                     || OK(Modulate)
-                    || (chan?.HasKeys(chan.Instrument, GetPath(src)) ?? False)
+                    || (chan?.HasKeys(GetPath(src)) ?? False)
                     || _IsCurrent;
             }
 
@@ -286,9 +286,7 @@ namespace IngameScript
             //        { 
             //            foreach (var pat in clip.Patterns)
             //                foreach (var chan in pat.Channels)
-            //                    chan.AutoKeys.RemoveAll(k => 
-            //                           k.Parameter.Instrument == inst
-            //                        && k.Path                 == path);
+            //                    chan.AutoKeys.RemoveAll(k => k.Path == path);
                         
             //            clip.UpdateAutoKeys();
             //        }
@@ -365,16 +363,10 @@ namespace IngameScript
                 {
                     foreach (var chan in pat.Channels)
                     {
-                        chan.AutoKeys.RemoveAll(k => 
-                               k.Parameter.Instrument == Instrument
-                            && k.Path == GetPath(iSrc));
+                        chan.AutoKeys.RemoveAll(k => k.Path == GetPath(iSrc));
 
                         foreach (var note in chan.Notes)
-                        { 
-                            note.Keys.RemoveAll(k => 
-                                   k.Parameter.Instrument == Instrument 
-                                && k.Path == GetPath(iSrc));
-                        }
+                            note.Keys.RemoveAll(k => k.Path == GetPath(iSrc));
                     }
                 }
 
@@ -572,8 +564,8 @@ namespace IngameScript
 
                 DrawFuncButton(sprites, strLfo, 2, w, h, True, OK(Lfo));
                 DrawFuncButton(sprites, strMod, 3, w, h, True, OK(Modulate));
-                DrawFuncButton(sprites, "Key",  4, w, h, True, chan.HasNoteKeys(chan.Instrument, GetPath(CurSrc)));
-                DrawFuncButton(sprites, "Auto", 5, w, h, True, chan.HasAutoKeys(chan.Instrument, GetPath(CurSrc)));
+                DrawFuncButton(sprites, "Key",  4, w, h, True, chan.HasNoteKeys(GetPath(CurSrc)));
+                DrawFuncButton(sprites, "Auto", 5, w, h, True, chan.HasAutoKeys(GetPath(CurSrc)));
             }
 
 

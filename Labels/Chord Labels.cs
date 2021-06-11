@@ -18,7 +18,7 @@
         {
             var tune =
                 IsCurParam(strTune)
-                ? (Tune)GetCurrentParam(SelInstrument) 
+                ? (Tune)CurrentParam
                 : Tune_null;
 
             if (   OK(tune)
@@ -76,7 +76,7 @@
             {
                 var tune =
                     IsCurParam(strTune)
-                    ? (Tune)GetCurrentParam(SelInstrument) 
+                    ? (Tune)CurrentParam
                     : Tune_null;
 
                 lbl.SetText(
@@ -93,7 +93,7 @@
         {
             var tune =
                 IsCurParam(strTune)
-                ? (Tune)GetCurrentParam(SelInstrument)
+                ? (Tune)CurrentParam
                 : Tune_null;
 
             if (   IsCurParam(strTune)

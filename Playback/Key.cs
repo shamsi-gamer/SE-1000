@@ -57,7 +57,7 @@ namespace IngameScript
 
                 return new Key(
                     srcIndex,
-                    (Parameter)GetSettingFromPath(inst, path),
+                    (Parameter)GetSettingFromPath(path),
                     value,
                     stepTime);
             }

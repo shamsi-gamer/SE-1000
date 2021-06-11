@@ -123,7 +123,7 @@ namespace IngameScript
                     var sn = note      .ClipStep;
 
                     var path  = clip.Settings.Last().GetPath(clip.CurSrc);
-                    var param = (Parameter)GetSettingFromPath(note.Instrument, path);
+                    var param = (Parameter)GetSettingFromPath(path);
 
                     var start = param.GetKeyValue(clip.Inter, clip.CurSrc);
                     var end   = param.GetKeyValue(note,       clip.CurSrc);
@@ -142,7 +142,7 @@ namespace IngameScript
 
                             var val = start + (end - start) * Math.Abs(n.ClipStep - si) / Math.Max(1, Math.Abs(sn - si));
 
-                            var nParam = (Parameter)GetSettingFromPath(n.Instrument, path);
+                            var nParam = (Parameter)GetSettingFromPath(path);
                             var key = n.Keys.Find(k => k.Path == path);
 
                             if (OK(key))

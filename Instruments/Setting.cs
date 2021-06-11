@@ -51,7 +51,6 @@ namespace IngameScript
                 var path = new StringBuilder();
 
                 Setting setting = this;
-
                 while (OK(setting))
                 {
                     path.Insert(0, setting.Tag + (path.Length > 0 ? "/" : ""));
@@ -60,6 +59,8 @@ namespace IngameScript
 
                 if (OK(src))
                     path.Insert(0, src + "/");
+
+                path.Insert(0, Instrument.Name + "/");
 
                 return S(path);
             }
@@ -182,23 +183,24 @@ namespace IngameScript
         }
 
 
-        static Parameter GetCurrentParam(Instrument inst)
+        static Parameter CurrentParam => (Parameter)GetSettingFromPath(EditedClip.CurSetting.GetPath(CurSrc));
+
+
+        static Setting GetSettingFromPath(string path)
         {
-            return (Parameter)GetSettingFromPath(inst, EditedClip.CurSetting.GetPath(CurSrc));
-        }
+            var tags    = path.Split('/');
 
 
-        static Setting GetSettingFromPath(Instrument inst, string path)
-        {
-            var tags = path.Split('/');
+            var inst    = Instruments.Find(i => i.Name == tags[0]);
+            
+            
+            var hasSrc  = IsDigit(tags[1][0]);
+            var src     = hasSrc ? inst.Sources[int_Parse(tags[1])] : Source_null;
 
-            var hasSrc = IsDigit(tags[0][0]);
 
-            var src     = hasSrc ? inst.Sources[int_Parse(tags[0])] : Source_null;
             var setting = Setting_null;
 
-
-            for (int i = hasSrc ? 1 : 0; i < tags.Length; i++)
+            for (int i = hasSrc ? 2 : 1; i < tags.Length; i++)
             {
                 var tag = tags[i];
 

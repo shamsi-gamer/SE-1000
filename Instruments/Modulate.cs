@@ -271,7 +271,7 @@ namespace IngameScript
 
                     //mod.SrcInstruments.Add(_inst);
                     //mod.SrcSources    .Add(OK(modSrcIndex) ? _inst.Sources[modSrcIndex] : Source_null);
-                    mod.SrcSettings   .Add(GetSettingFromPath(_inst, setPath));
+                    mod.SrcSettings   .Add(GetSettingFromPath(setPath));
                 }
 
                 

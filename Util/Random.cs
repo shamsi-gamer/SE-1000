@@ -210,39 +210,37 @@ namespace IngameScript
 
             foreach (var note in chan.Notes)
             {
-                var param = GetCurrentParam(note.Instrument);
-                var index = note.Keys.FindIndex(k => k.Path == param.GetPath(CurSrc));
+                var index = note.Keys.FindIndex(k => k.Path == CurrentParam.GetPath(CurSrc));
 
-                var rndValue = (float)(param.NormalMin + RND * (param.NormalMax - param.NormalMin));
+                var rndValue = (float)(CurrentParam.NormalMin + RND * (CurrentParam.NormalMax - CurrentParam.NormalMin));
 
                 if (OK(index))
                     note.Keys[index].Value = rndValue;
                 else
-                    note.Keys.Add(new Key(CurSrc, param, rndValue, note.Step, chan));
+                    note.Keys.Add(new Key(CurSrc, CurrentParam, rndValue, note.Step, chan));
             }
         }
 
 
         void RandomParamAuto(int pat, int ch)
         {
-            var chan  = EditedClip.Patterns[pat].Channels[ch];
-            var param = GetCurrentParam(chan.Instrument);
+            var chan = EditedClip.Patterns[pat].Channels[ch];
 
             for (int step = 0; step < g_patSteps; step++)
             { 
                 if (RND < 0.5)
                     continue;
 
-                var rndValue = (float)(param.NormalMin + RND * (param.NormalMax - param.NormalMin));
+                var rndValue = (float)(CurrentParam.NormalMin + RND * (CurrentParam.NormalMax - CurrentParam.NormalMin));
 
                 var index = chan.AutoKeys.FindIndex(k => 
-                       k.Path == param.GetPath(CurSrc) 
+                       k.Path == CurrentParam.GetPath(CurSrc) 
                     && k.Step == step);
 
                 if (OK(index))
                     chan.AutoKeys[index].Value = rndValue;
                 else
-                    chan.AutoKeys.Add(new Key(CurSrc, param, rndValue, step, chan));
+                    chan.AutoKeys.Add(new Key(CurSrc, CurrentParam, rndValue, step, chan));
             }
 
             EditedClip.UpdateAutoKeys();

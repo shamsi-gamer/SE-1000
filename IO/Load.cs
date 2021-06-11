@@ -149,7 +149,7 @@ namespace IngameScript
                     var _inst = Instruments.Find(_i => _i.Name == inst);
 
                     SetClips[i] = Tracks[clipTrack].Clips[clipIndex];
-                    Sets    [i] = GetSettingFromPath(_inst, path);
+                    Sets    [i] = GetSettingFromPath(path);
                 }
             }
 
