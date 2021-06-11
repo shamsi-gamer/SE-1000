@@ -335,7 +335,7 @@ namespace IngameScript
                 var dp = new DrawParams(False, prog);
 
                 if (OK(CurSrc)) SelSource    .DrawLabels(sprites, x+5, y+10, dp);
-                else                       SelInstrument.DrawLabels(sprites, x+5, y+10, dp);
+                else            SelInstrument.DrawLabels(sprites, x+5, y+10, dp);
 
                 DrawSample(sprites, x + 100, y + 150, 100, 60);
 
@@ -449,7 +449,7 @@ namespace IngameScript
                 DrawFuncButton(sprites, "Set",   3, w, h, False, False, IsPressed(lcdMain+3));
                 
                 if (OK(CurTone))
-                    DrawFuncButton(sprites, "Tone", 4, w, h, True, Tones[CurTone].HasDeepParams(chan, -1));
+                    DrawFuncButton(sprites, "Tone", 4, w, h, True, Tones[CurTone].HasDeepParams(chan, CurSrc));
             }
 
 

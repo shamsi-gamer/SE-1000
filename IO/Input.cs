@@ -10,10 +10,14 @@ namespace IngameScript
 
         static void UpdateInstName()
         {
-            if (   g_inputValid
-                &&  OK(SelChan)
-                && !OK(CurSrc))
-                EditedClip.CurInstrument.Name = dspMain.Panel.GetText().Trim();
+            if (   !g_inputValid
+                || !OK(SelChan)
+                || OK(CurSrc))
+                return;
+
+            EditedClip.CurInstrument.Name = GetNewName(
+                dspMain.Panel.GetText().Trim(), 
+                str => Instruments.Exists(i => i.Name == str));
 
             g_inputValid = True;
         }

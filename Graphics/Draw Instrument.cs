@@ -81,7 +81,8 @@ namespace IngameScript
             // bottom func separator
             FillRect(sprites, x, y + instHeight, w, 1, color6);
 
-            DrawFuncButtons(sprites, w, h, EditedClip);
+            if (!TooComplex)
+                DrawFuncButtons(sprites, w, h, EditedClip);
         }
 
 

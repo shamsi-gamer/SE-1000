@@ -72,7 +72,7 @@ namespace IngameScript
 
         void Save()
         {
-            SaveMachineState();
+
         }
 
 

@@ -16,8 +16,9 @@ namespace IngameScript
             var irh = h - 50;
 
             var xt = 310;
+            var pw = 25;
 
-            DrawChannelList(sprites, x, y, xt, rh);
+            DrawChannelList(sprites, x, y, xt-pw, rh);
 
 
             var _dummy = new List<TriggerValue>();
@@ -27,8 +28,8 @@ namespace IngameScript
 
             var wt = (float)(w - xt) / g_patSteps;
 
-            DrawPianoKeys(sprites, x - 30, y, 30, h, color5);
-            DrawPianoGrid(sprites, x + xt, y, w - xt, rh);
+            DrawPianoKeys(sprites, x + xt-pw, y, pw,     rh, color4);
+            DrawPianoGrid(sprites, x + xt,    y, w - xt, rh);
 
 
             // draw edit position

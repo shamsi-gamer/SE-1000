@@ -40,10 +40,10 @@ namespace IngameScript
                     else 
                         DrawInstrument(sprites, x, y, w, h);
                 }
-                else if ( EditedClip.Piano 
-                       && LockView != 1
-                    || LockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True);
-                else                  DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, True);
+                else if (EditedClip.Piano 
+                      && LockView != 1
+                   || LockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True);
+                else                 DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, True);
             }
             else
                 FillRect(sprites, x, y, w, h, color0);
@@ -62,7 +62,7 @@ namespace IngameScript
             if (OK(SelChan))
             {
                 if (CurSrc < 0) SelInstrument.DrawFuncButtons(sprites, w, y, SelChannel);
-                else                       SelSource    .DrawFuncButtons(sprites, w, y, SelChannel);
+                else            SelSource    .DrawFuncButtons(sprites, w, y, SelChannel);
             }
         }
 

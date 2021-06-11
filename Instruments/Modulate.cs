@@ -444,9 +444,9 @@ namespace IngameScript
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
                 DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, False, False);
-                DrawFuncButton(sprites, strAmt, 1, w, y, True, Amount .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "A",    2, w, y, True, Attack .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, "R",    3, w, y, True, Release.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strAmt, 1, w, y, True, Amount .HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, "A",    2, w, y, True, Attack .HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, "R",    3, w, y, True, Release.HasDeepParams(chan, CurSrc));
             }
 
 

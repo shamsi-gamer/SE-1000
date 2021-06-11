@@ -216,12 +216,12 @@ namespace IngameScript
                             vol * Harmonic.CurValue, 
                             Harmonic.Max);
 
-                        srcVol = Math.Max(srcVol, Harmonic.CurValue);
+                        srcVol = Math.Max(srcVol, vol);//Harmonic.CurValue);
 
                         inst.DisplayVolume = 
                             OK(inst.DisplayVolume)
-                            ? sndAdd(inst.DisplayVolume, Harmonic.CurValue)
-                            : Harmonic.CurValue;
+                            ? sndAdd(inst.DisplayVolume, vol)//Harmonic.CurValue)
+                            : vol;//Harmonic.CurValue;
                     }
 
                     Source.CurVolume = Math.Max(srcVol, vol);

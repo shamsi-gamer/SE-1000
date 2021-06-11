@@ -7,9 +7,9 @@ namespace IngameScript
     {
         public class Key
         {
+            public Parameter Parameter;
             public int       SourceIndex;
 
-            public Parameter Parameter;
             public string    Path => Parameter.GetPath(SourceIndex);
 
             public float     Value,

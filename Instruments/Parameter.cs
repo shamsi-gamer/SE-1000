@@ -109,7 +109,7 @@ namespace IngameScript
 
 
                 var path  = GetPath(tp.SourceIndex);
-                var value = 1f;
+                var value = GetKeyValue(tp.Note, tp.SourceIndex);
 
 
                 if (OK(tp.Note))
@@ -120,7 +120,8 @@ namespace IngameScript
                         tp.Note.iChan, 
                         path);
 
-                    value = OK(val) ? val : GetKeyValue(tp.Note, tp.SourceIndex);
+                    if (OK(val))
+                        value = val;
 
                     //float auto;
 
@@ -139,8 +140,6 @@ namespace IngameScript
                     //    || Tag == strOff) value += auto;
                     //else                  value *= auto;
                 }
-                else
-                    value = GetKeyValue(tp.Note, tp.SourceIndex);
 
 
                 if (   !OK(tp.TriggerValues.Find(v => v.Path == path))
@@ -262,7 +261,7 @@ namespace IngameScript
                        OK(Envelope)
                     || OK(Lfo     )
                     || OK(Modulate)
-                    || (chan?.HasKeys(GetPath(src)) ?? False)
+                    || (chan?.HasKeys(chan.Instrument, GetPath(src)) ?? False)
                     || _IsCurrent;
             }
 
@@ -274,27 +273,27 @@ namespace IngameScript
                 else if (setting == Lfo     ) { g_lfo.Remove(Lfo);      Lfo      =       LFO_null; }
                 else if (setting == Modulate) { g_mod.Remove(Modulate); Modulate =  Modulate_null; }
 
-                RemoveAutoKeys(setting.Instrument, setting.GetPath(EditedClip.CurSrc));
+                //RemoveAutoKeys(setting.Instrument, setting.GetPath(EditedClip.CurSrc));
             }
 
 
 
-            void RemoveAutoKeys(Instrument inst, string path)
-            {
-                foreach (var track in Tracks)
-                { 
-                    foreach (var clip in track.Clips)
-                    { 
-                        foreach (var pat in clip.Patterns)
-                            foreach (var chan in pat.Channels)
-                                chan.AutoKeys.RemoveAll(k => 
-                                       k.Parameter.Instrument == inst
-                                    && k.Path                 == path);
+            //void RemoveAutoKeys(Instrument inst, string path)
+            //{
+            //    foreach (var track in Tracks)
+            //    { 
+            //        foreach (var clip in track.Clips)
+            //        { 
+            //            foreach (var pat in clip.Patterns)
+            //                foreach (var chan in pat.Channels)
+            //                    chan.AutoKeys.RemoveAll(k => 
+            //                           k.Parameter.Instrument == inst
+            //                        && k.Path                 == path);
                         
-                        clip.UpdateAutoKeys();
-                    }
-                }
-            }
+            //            clip.UpdateAutoKeys();
+            //        }
+            //    }
+            //}
 
 
 
@@ -366,12 +365,21 @@ namespace IngameScript
                 {
                     foreach (var chan in pat.Channels)
                     {
-                        chan.AutoKeys = chan.AutoKeys.FindAll(k => k.Path != GetPath(iSrc));
+                        chan.AutoKeys.RemoveAll(k => 
+                               k.Parameter.Instrument == Instrument
+                            && k.Path == GetPath(iSrc));
 
                         foreach (var note in chan.Notes)
-                            note.Keys = note.Keys.FindAll(k => k.Path != GetPath(iSrc));
+                        { 
+                            note.Keys.RemoveAll(k => 
+                                   k.Parameter.Instrument == Instrument 
+                                && k.Path == GetPath(iSrc));
+                        }
                     }
                 }
+
+                clip.UpdateAutoKeys();
+
 
                 Envelope?.Delete(clip, iSrc);
                 Lfo     ?.Delete(clip, iSrc);
@@ -564,8 +572,8 @@ namespace IngameScript
 
                 DrawFuncButton(sprites, strLfo, 2, w, h, True, OK(Lfo));
                 DrawFuncButton(sprites, strMod, 3, w, h, True, OK(Modulate));
-                DrawFuncButton(sprites, "Key",  4, w, h, True, chan.HasNoteKeys(GetPath(CurSrc)));
-                DrawFuncButton(sprites, "Auto", 5, w, h, True, chan.HasAutoKeys(GetPath(CurSrc)));
+                DrawFuncButton(sprites, "Key",  4, w, h, True, chan.HasNoteKeys(chan.Instrument, GetPath(CurSrc)));
+                DrawFuncButton(sprites, "Auto", 5, w, h, True, chan.HasAutoKeys(chan.Instrument, GetPath(CurSrc)));
             }
 
 

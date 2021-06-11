@@ -217,9 +217,9 @@ namespace IngameScript
                 var _strRes  = Pass > FilterPass.High ? strWid  : strRes;
 
                 DrawFuncButton(sprites, GetPassName(Pass) + " ↕", 1, w, h, False, False);
-                DrawFuncButton(sprites, _strCut,  2, w, h, True, Cutoff   .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, _strRes,  3, w, h, True, Resonance.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strShrp,  4, w, h, True, Sharpness.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, _strCut,  2, w, h, True, Cutoff   .HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, _strRes,  3, w, h, True, Resonance.HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, strShrp,  4, w, h, True, Sharpness.HasDeepParams(chan, CurSrc));
             }
 
 
@@ -310,7 +310,7 @@ namespace IngameScript
 
         static void DrawFilter(List<MySprite> sprites, float x, float y, float w, float h, Color color, float width, FilterPass pass, float cut, float res, float shrp)
         {
-            var step = 1/64f;
+            var step = 1/48f;
             var prev = float_NaN;
 
             for (var f = 0f; f <= 1; f += step)

@@ -177,7 +177,6 @@ namespace IngameScript
                         var key = new Key(CurSrc, param, f, float_NaN);
                         var y0  = KeyPos(x, y + rh, w, h - rh, 0, key, clip).Y;
                         var str = PrintValue(val, -2, param.Max - param.Min > 1, 0);
-
                             
                         DrawLine(sprites, x + xt, y0, x+w, y0, color2);
                         DrawString(sprites, str, x + xt + 3, y0 + lf*2, lf, color2);

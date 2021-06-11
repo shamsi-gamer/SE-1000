@@ -15,10 +15,10 @@ namespace IngameScript
             var rh = h - 90;
 
 
-            DrawChannelList(sprites, x, y, 340, rh);
+            DrawChannelList(sprites, x, y, 310, rh);
 
 
-            var xt = 340;
+            var xt = 310;
             var wt = (w - xt) / g_patSteps;
 
             DrawGrid(sprites, x + xt, y, w - xt, rh, CurPat);
@@ -83,11 +83,11 @@ namespace IngameScript
                 var chan  = CurPattern.Channels[c];
 
                 DrawString(sprites, 
-                     S(c + 1).PadLeft(2)
+                     S(c+1).PadLeft(2)
                     + strEmpty
                     + chan.Instrument.Name,
                     6,
-                    yLine + 10,
+                    yLine + 12,
                     0.7f,
                     c == CurChan ? color0 : (chan.Notes.Count > 0 ? (chan.On ? color6 : color3) : color2));
             }

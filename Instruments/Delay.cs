@@ -322,11 +322,11 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                DrawFuncButton(sprites, strDry,  0, w, h, True, Dry  .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strCnt,  1, w, h, True, Count.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strTime, 2, w, h, True, Time .HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strLvl,  3, w, h, True, Level.HasDeepParams(chan, -1));
-                DrawFuncButton(sprites, strPow,  4, w, h, True, Power.HasDeepParams(chan, -1));
+                DrawFuncButton(sprites, strDry,  0, w, h, True, Dry  .HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, strCnt,  1, w, h, True, Count.HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, strTime, 2, w, h, True, Time .HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, strLvl,  3, w, h, True, Level.HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, strPow,  4, w, h, True, Power.HasDeepParams(chan, CurSrc));
             }
 
 
