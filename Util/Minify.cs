@@ -71,6 +71,6 @@ namespace IngameScript
         static Instrument SelInstrument => EditedClip.SelInstrument;
         static Channel    SelChannel    => EditedClip.SelChannel;
 
-        static Setting    CurSetting    => EditedClip.Settings[CurSet];
+        static Setting    CurSetting    => OK(CurSet) ? EditedClip.Settings[CurSet] : Setting_null;
     }
 }

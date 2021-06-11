@@ -22,10 +22,9 @@
 
                 case "play":        Play();                          break;
 
-                case "show clip":   ToggleShowClip();                break;
-
                 case "mix":         ShowMixer = !ShowMixer;          break;
-                case "cue clip":    CueClip   = !CueClip;            break;
+                case "show clip":   ToggleShowClip();                break;
+                case "cue clip":    ToggleCueClip();                 break;
 
                 case "bpm up":      SetStepLength(-1);               break;
                 case "bpm down":    SetStepLength( 1);               break;

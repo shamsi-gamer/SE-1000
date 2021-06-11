@@ -107,7 +107,7 @@ namespace IngameScript
 
                     else if (OK(PlayClip)
                          && !OK(NextClip)
-                         &&  CueClip)
+                         &&  CueClip > 0)
                     { 
                         NextClip = PlayClip; // cancel clip off
                         CueNextClip(index, prog);
@@ -124,7 +124,7 @@ namespace IngameScript
                     { 
                         NextClip = -1; // cue clip off
                         
-                        if (!CueClip)
+                        if (CueClip == 0)
                             Stop();
                     }
                 }
@@ -169,7 +169,7 @@ namespace IngameScript
                 }
 
 
-                if (!CueClip)
+                if (CueClip == 0)
                 {
                     var playTime = GetAnyCurrentPlayTime();
 
@@ -310,7 +310,7 @@ namespace IngameScript
             }
 
 
-            public bool GetCueNextPattern()
+            public bool GetCueNextPattern(int maxPlayingPats)
             {
                 if (   !OK(PlayClip)
                     && !OK(NextClip))
@@ -320,21 +320,14 @@ namespace IngameScript
                     && !OK(NextPat))
                     return False;
 
-                if (PlayStep < (PlayPat + 1) * g_patSteps)
+                var clipPats = 
+                    OK(PlayClip)
+                    ? Clips[PlayClip].Patterns.Count
+                    : maxPlayingPats;
+
+                if (   CueClip == 1 && PlayStep < (PlayPat  + 1) * g_patSteps
+                    || CueClip == 2 && PlayStep < (clipPats + 1) * g_patSteps)
                     return False;
-
-                //if (NextClip != PlayClip)
-                //{ 
-                //    NextPat  = 0;
-                //    PlayClip = NextClip;
-                //}
-
-                //if (!OK(PlayClip))
-                //{
-                //    PlayPat = -1;
-                //    NextPat = -1;
-                //    return False;
-                //}
 
                 return True;
             }

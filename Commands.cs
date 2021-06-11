@@ -162,7 +162,6 @@ namespace IngameScript
 
                 EditedClip.SrcOff = 0;
 
-                //UpdateDspOffset(ref instOff, g_song.CurSrc, g_session.Instruments.Count, maxDspSrc, 0, 1);
                 UpdateInstOff(CurChan);
 
                 SetInstName();
@@ -181,6 +180,15 @@ namespace IngameScript
                 HideClip = true;
 
             dspInfo.Panel.WriteText(ShowClip ? EditedClip.Name : SessionName);
+        }
+
+
+        void ToggleCueClip()
+        {
+            CueClip++;
+            
+            if (CueClip > 2)
+                CueClip = 0;
         }
 
 
@@ -794,18 +802,15 @@ namespace IngameScript
             int first, last;
             EditedClip.GetCurPatterns(out first, out last);
 
-            first += CurPat;
-            last  += CurPat;
-
             if (EditedClip.AllPats)
             {
-                for (int p = 0; p < last - first + 1; p++)
-                    PasteChanNotes(p % g_copyChans.Count, first + p);
+                for (int p = 0; p < Math.Min(last-first+1, EditedClip.Patterns.Count); p++)
+                    PasteChanNotes(first + p, first + p);
             }
             else
             {
-                for (int p = 0; p < Math.Min(last - first + 1, g_copyChans.Count); p++)
-                    PasteChanNotes(p, first + p);
+                for (int p = 0; p < Math.Min(last-first+1, g_copyChans.Count); p++)
+                    PasteChanNotes(p, CurPat + first + p);
             }
         }
 

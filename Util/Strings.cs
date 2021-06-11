@@ -38,7 +38,6 @@
                      strLvl      = "Lvl",
                      strPow      = "Pow",
                                  
-                     strArp      = "Arp",
                      strLen      = "Len",
                      strScl      = "Scl",
                                  

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 
 
 namespace IngameScript
@@ -17,7 +17,7 @@ namespace IngameScript
                 if (ShowClip && ShowMixer)
                 {
                     var saved = CueClip;
-                    CueClip = False;
+                    CueClip = 0;
                     EditedClip.Track.CueNextClip(EditedClip.Index, this);
                     CueClip = saved;
                 }
@@ -39,7 +39,7 @@ namespace IngameScript
                         continue;
 
                     if (   OK(track.NextClip)
-                        && CueClip)
+                        && CueClip > 0)
                         track.NextClip = -1;
                     else
                     {
@@ -57,7 +57,7 @@ namespace IngameScript
 
                         track.Stop();
 
-                        if (!CueClip) // stop is not cancellable, a double click is like a panic button
+                        if (CueClip == 0) // stop is not cancellable, a double click is like a panic button
                             track.NextClip = -1;
                     }
                 }
@@ -86,8 +86,15 @@ namespace IngameScript
         {
             var cueNext = False;
 
+
+            var maxPlayingPats = 0;
+
             foreach (var track in Tracks)
-                cueNext |= track.GetCueNextPattern();
+                if (OK(track.PlayClip)) maxPlayingPats = Math.Max(maxPlayingPats, track.Clips[track.PlayClip].Patterns.Count);
+
+
+            foreach (var track in Tracks)
+                cueNext |= track.GetCueNextPattern(maxPlayingPats);
 
 
             if (cueNext)

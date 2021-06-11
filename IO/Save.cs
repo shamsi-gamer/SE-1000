@@ -86,6 +86,7 @@ namespace IngameScript
                 
                 + PS(TicksPerStep)
                 + PS(LockView)
+                + PS(CueClip)
                 + PS(EditClip)
 
                 + PS(Tracks.IndexOf(EditedClip.Track))
@@ -136,7 +137,6 @@ namespace IngameScript
 
             WriteBit(ref f, ShowClip,  i++);
             WriteBit(ref f, ShowMixer, i++);
-            WriteBit(ref f, CueClip,   i++);
             WriteBit(ref f, Recording, i++);
 
             return f;

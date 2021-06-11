@@ -43,7 +43,6 @@ namespace IngameScript
         static bool             ShowClip,
                                 HideClip,
                                 ShowMixer,
-                                CueClip, 
                                 MixerShift,
                                 SetOrPat, // true = Set, false = Pat
                                 SetMemSet,
@@ -52,9 +51,10 @@ namespace IngameScript
         static Setting[]        Sets     = new Setting[nMems];
         static Clip   []        SetClips = new Clip   [nMems];
 
-        static int              EditClip; // 0 = set, 1 = move, 2 = dup, 3 = del
+        static int              CueClip,  // 0 = no cue, 1 = pattern cue, 2 = clip cue
+                                EditClip; // 0 = set, 1 = move, 2 = dup, 3 = del
 
-                 
+
         static bool Playing => OK(Tracks.Find(track => track?.Playing ?? False));
 
 
@@ -107,8 +107,8 @@ namespace IngameScript
             EditedClip   = 
             ClipCopy     = Clip_null;
                          
+            CueClip      = 2;
             ShowClip     = 
-            CueClip      = True;
 
             HideClip     =                         
             ShowMixer    = 

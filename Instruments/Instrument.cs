@@ -198,8 +198,7 @@ namespace IngameScript
                 while (i < data.Length
                     && (   data[i] == strTune 
                         || data[i] == strFlt 
-                        || data[i] == strDel 
-                        || data[i] == strArp))
+                        || data[i] == strDel))
                 {
                     switch (data[i])
                     { 

@@ -279,7 +279,7 @@ namespace IngameScript
             case strAmt:  return new Parameter(tag,   -1,           1,  -0.5f,  0.5f, 0.01f,  0.1f,  0,    parent, inst, src);
 
             case strDry:  return new Parameter(tag,    0,           1,   0,     1,    0.01f, 0.1f,   1,    parent, inst, src);
-            case strCnt:  return new Parameter(tag,    1,         100,   2,    16,    1,     10,     4,    parent, inst, src);
+            case strCnt:  return new Parameter(tag,    1,         500,   2,    16,    1,     10,     4,    parent, inst, src);
             case strTime: return new Parameter(tag,    0.000001f,  10,   0.01f, 0.3f, 0.01f,  0.1f,  0.2f, parent, inst, src);
             case strLvl:  return new Parameter(tag,    0,           1,   0.3f,  1,    0.01f,  0.1f,  0.5f, parent, inst, src);
             case strPow:  return new Parameter(tag,    0.01f,      10,   0.2f,  1.2f, 0.01f,  0.1f,  1,    parent, inst, src);

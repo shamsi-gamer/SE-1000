@@ -29,7 +29,7 @@ namespace IngameScript
 
             lblShowClip   = new Label(0, GetLabel("Show Clip"), lbl => ShowClip);
             lblMix        = new Label(0, GetLabel("Mix"),       lbl => ShowMixer);
-            lblCueClip    = new Label(0, GetLabel("Cue Clip"),  lbl => CueClip);
+            lblCueClip    = new Label(0, GetLabel("Cue Clip"),  lbl => CueClip == 2, lbl => CueClip == 1);
         }
 
 
