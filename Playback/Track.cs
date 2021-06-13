@@ -93,7 +93,10 @@ namespace IngameScript
 
                 else if (OK(clip))
                 { 
-                    if (   EditClip == 1  // move clip
+                    if (EditClip == 0)
+                        SetEditedClip(clip);
+
+                    else if (   EditClip == 1  // move clip
                         || EditClip == 2) // duplicate clip
                         ClipCopy = clip; 
                     
@@ -118,12 +121,9 @@ namespace IngameScript
                     }
                 }
 
-                else if (!OK(clip))
+                else if (!OK(clip)
+                      && !OK(CueClip))
                     NextClip = -1;
-
-                else if (OK(NextClip)
-                      && index == NextClip) // double click = edit clip
-                    SetEditedClip(clip);
 
                 else if (EditClip == 0) // set clip
                 { 
