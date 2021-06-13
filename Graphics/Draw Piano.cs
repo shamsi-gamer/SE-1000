@@ -34,8 +34,8 @@ namespace IngameScript
 
             // draw edit position
             if (   OK(clip.EditPos)
-                && clip.EditPos >= CurPat      * g_patSteps
-                && clip.EditPos < (CurPat + 1) * g_patSteps)
+                && clip.EditPos >= EditPat      * g_patSteps
+                && clip.EditPos < (EditPat + 1) * g_patSteps)
             { 
                 FillRect(
                     sprites, 

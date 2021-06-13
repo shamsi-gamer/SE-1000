@@ -28,7 +28,7 @@ namespace IngameScript
         {
             UpdateDspOffset(
                 ref EditedClip.SongOff,
-                CurPat,
+                EditPat,
                 EditedClip.Patterns.Count, 
                 maxDspPats, 
                 1,

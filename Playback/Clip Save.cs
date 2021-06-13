@@ -71,7 +71,7 @@
                       Name.Replace("\n", "\u0085")
                     + PS(SaveToggles())
 
-                    + PS(CurPat)         
+                    + PS(EditPat)         
                     + PS(CurChan)        
 
                     + PS(SelChan)        

@@ -126,10 +126,11 @@ namespace IngameScript
             Array.Sort(g_runtimeMs);
             var med = (g_runtimeMs[2] + g_runtimeMs[3])/2;
             
-            var strMed = PrintValue(med,            -3, True, 0);
-            var strMax = PrintValue(g_maxRuntimeMs, -3, True, 0);
+            var strMed = PrintValue(med,            2, True, 0);
+            var strAvg = PrintValue(avg,            2, True, 0);
+            var strMax = PrintValue(g_maxRuntimeMs, 2, True, 0);
 
-            DrawString(sprites, "med " + strMed + ", max " + strMax + " ms", cx + 55, y + 6, 0.5f, color6);
+            DrawString(sprites, "med " + strMed + ", avg " + strAvg + ", max " + strMax + " ms", cx + 62, y + 6, 0.45f, color6);
         }
         
         
@@ -188,7 +189,7 @@ namespace IngameScript
             var sprites = new List<MySprite>();
 
             FillRect(sprites, x, y, w, h, color0);
-            DrawString(sprites, "Copy\nPaste\nSession\nHere", cx, cy - 220, 3.5f, color6, TA_CENTER);
+            DrawString(sprites, "Copy\nPaste\nHere", cx, cy - 220, 3.5f, color6, TA_CENTER);
 
             dsp.Draw(sprites);
         }

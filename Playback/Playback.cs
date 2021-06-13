@@ -1,7 +1,4 @@
-﻿using System;
-
-
-namespace IngameScript
+﻿namespace IngameScript
 {
     partial class Program
     {
@@ -46,14 +43,14 @@ namespace IngameScript
                     {
                         var playingClip = track.PlayingClip;
 
-                        var b = playingClip.GetBlock(playingClip.CurPat);
+                        var b = playingClip.GetBlock(playingClip.EditPat);
 
                         var _block =
                                playingClip.Block
                             && OK(b)
-                            && playingClip.CurPat > b.First;
+                            && playingClip.EditPat > b.First;
 
-                        playingClip.SetCurrentPattern(_block ? b.First : 0);
+                        playingClip.SetEditPattern(_block ? b.First : 0);
                         playingClip.TrimCurrentNotes();
 
                         track.Stop();
@@ -90,6 +87,7 @@ namespace IngameScript
         {
             var refClip = GetLongestPlayingClip();
 
+
             foreach (var track in Tracks)
             {
                 if (   track.NextClip != track.PlayClip // set cue
@@ -108,17 +106,19 @@ namespace IngameScript
                     track.NextPat = -1;
                     continue;
                 }
+            }
 
 
+            foreach (var track in Tracks)
+            {
                 var clip = track.PlayingClip;
-                //if (!OK(clip)) continue; // commenting this out because it shouldn't be necessary
+                if (!OK(clip)) continue;
 
                 track.CueNextPattern(clip, this);
 
                 if (   clip == EditedClip
                     && clip.Follow)
-                    clip.SetCurrentPattern(track.PlayPat);
-
+                    clip.SetEditPattern(track.PlayPat);
 
                 AddPlaybackNotes(clip);
             }

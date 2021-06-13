@@ -38,8 +38,8 @@ namespace IngameScript
 
                     int found;
                     while (OK(found = chan.Notes.FindIndex(n => 
-                               clip.CurPat * g_patSteps + n.Step >= clip.EditPos 
-                            && clip.CurPat * g_patSteps + n.Step <  clip.EditPos + 1)))
+                               clip.EditPat * g_patSteps + n.Step >= clip.EditPos 
+                            && clip.EditPat * g_patSteps + n.Step <  clip.EditPos + 1)))
                         chan.Notes.RemoveAt(found);
 
                     lastNotes.Clear();
@@ -212,7 +212,7 @@ namespace IngameScript
             EditedClip.EditPos =
                 OK(EditedClip.EditPos)
                 ? float.NaN
-                : (OK(EditedClip.LastEditPos) ? EditedClip.LastEditPos : CurPat * g_patSteps);
+                : (OK(EditedClip.LastEditPos) ? EditedClip.LastEditPos : EditPat * g_patSteps);
 
             EditedClip.StopEdit();
 
@@ -266,10 +266,10 @@ namespace IngameScript
             if (!OK(clip.SelChan))
                 return;
 
-            for (int p = 0; p <= clip.CurPat; p++)
+            for (int p = 0; p <= clip.EditPat; p++)
             {
-                var patStart =  clip.CurPat    *g_patSteps;
-                var patEnd   = (clip.CurPat +1)*g_patSteps;
+                var patStart =  clip.EditPat    *g_patSteps;
+                var patEnd   = (clip.EditPat +1)*g_patSteps;
 
                 var pat  = clip.Patterns[p];
                 var chan = pat.Channels[clip.CurChan];
@@ -319,10 +319,10 @@ namespace IngameScript
             {
                 var notes = new List<Note>();
 
-                for (int p = 0; p <= clip.CurPat; p++)
+                for (int p = 0; p <= clip.EditPat; p++)
                 {
-                    var patStart =  clip.CurPat   *g_patSteps;
-                    var patEnd   = (clip.CurPat+1)*g_patSteps;
+                    var patStart =  clip.EditPat   *g_patSteps;
+                    var patEnd   = (clip.EditPat+1)*g_patSteps;
 
                     var pat  = clip.Patterns[p];
                     var chan = pat.Channels[clip.CurChan];
@@ -350,7 +350,7 @@ namespace IngameScript
             var notes = new List<Note>();
 
             int first, last;
-            clip.GetPatterns(clip.CurPat, out first, out last);
+            clip.GetPatterns(clip.EditPat, out first, out last);
 
             for (int pat = first; pat <= last; pat++)
                 notes.AddRange(clip.Patterns[pat].Channels[clip.CurChan].Notes);
@@ -445,23 +445,23 @@ namespace IngameScript
 
             if (clip.Follow)
             {
-                if (clip.EditPos >= (clip.CurPat + 1) * g_patSteps) // TODO blocks
+                if (clip.EditPos >= (clip.EditPat + 1) * g_patSteps) // TODO blocks
                 {
-                    if (clip.EditPos >= clip.Patterns.Count * g_patSteps)
+                    if (clip.EditPos >= clip.StepLength)
                     {
                         if (create)
                         {
                             var pat = new Pattern(clip.CurPattern);
                             pat.Channels[clip.CurChan].Notes.Clear();
 
-                            clip.Patterns.Insert(clip.CurPat + 1, pat);
+                            clip.Patterns.Insert(clip.EditPat + 1, pat);
                         }
                         else
-                            clip.EditPos -= clip.Patterns.Count * g_patSteps;
+                            clip.EditPos -= clip.StepLength;
                     }
                 }
                 else if (!OK(clip.EditPos))
-                    clip.EditPos += clip.Patterns.Count * g_patSteps;
+                    clip.EditPos += clip.StepLength;
             }
 
             clip.LimitRecPosition();
@@ -536,7 +536,7 @@ namespace IngameScript
             else
             {
                 int first, last;
-                clip.GetPatterns(clip.CurPat, out first, out last);
+                clip.GetPatterns(clip.EditPat, out first, out last);
 
                 for (int pat = first; pat <= last; pat++)
                     Transpose(clip, pat, ch, tr);

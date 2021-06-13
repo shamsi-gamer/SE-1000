@@ -27,8 +27,8 @@ namespace IngameScript
                     && (   EditedClip.ParamKeys
                         || EditedClip.ParamAuto))
                 {
-                    if (EditedClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True);
-                    else                  DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, True);
+                    if (EditedClip.Piano) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, EditPat, True);
+                    else                  DrawPatternDisplay(sprites, x, y, w, h, EditedClip, EditPat, True);
                 }
                 else if (OK(SelChan))
                 {
@@ -42,8 +42,8 @@ namespace IngameScript
                 }
                 else if (EditedClip.Piano 
                       && LockView != 1
-                   || LockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, CurPat, True);
-                else                 DrawPatternDisplay(sprites, x, y, w, h, EditedClip, CurPat, True);
+                   || LockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, EditPat, True);
+                else                 DrawPatternDisplay(sprites, x, y, w, h, EditedClip, EditPat, True);
             }
             else
                 FillRect(sprites, x, y, w, h, color0);

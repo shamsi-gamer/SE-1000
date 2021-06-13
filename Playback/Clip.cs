@@ -17,8 +17,6 @@ namespace IngameScript
             public List<Key>[]   ChannelAutoKeys = new List<Key>[g_nChans];
 
 
-            public int           Length;
-
             public float         EditPos,
                                  LastEditPos;
             
@@ -70,7 +68,7 @@ namespace IngameScript
             public float         Volume;
                            
 
-            public int           CurPat,
+            public int           EditPat,
                                  CurChan,
                                  SelChan = -1,
                                  CurSrc  = -1,
@@ -102,7 +100,7 @@ namespace IngameScript
 
             public int           Index          => Track.Clips.IndexOf(this);
 
-            public Pattern       CurPattern     => Patterns[CurPat];
+            public Pattern       CurPattern     => Patterns[EditPat];
             public Channel       CurChannel     => CurPattern.Channels[CurChan];
             public Instrument    CurInstrument  => CurChannel.Instrument;
             public Channel       SelChannel     => OK(SelChan) ? CurPattern.Channels[SelChan] : Channel_null;
@@ -114,13 +112,14 @@ namespace IngameScript
             public int           EditLength     => (int)(EditStepLength * TicksPerStep);
 
 
+            public int           StepLength     => Patterns.Count * g_patSteps;
+
+
             public Clip(Track track, string name = strClip)
             {
                 Track       = track;
                 Name        = name;
                             
-                Length      = -1;
-                
                 Settings    = new List<Setting>();
                 Patterns    = new List<Pattern>();
                 Blocks      = new List<Block>();
@@ -168,7 +167,7 @@ namespace IngameScript
                                 
                 SetMemPat          = False;
                                 
-                CurPat          =  
+                EditPat          =  
                 CurChan         = 0;
                                 
                 SelChan         = 
@@ -212,8 +211,6 @@ namespace IngameScript
             {
                 Name     = clip.Name;
                 Track    = track;
-
-                Length   = clip.Length;
 
                 Settings = new List<Setting>();
 
@@ -267,7 +264,7 @@ namespace IngameScript
                                 
                 SetMemPat       = clip.SetMemPat;
                                 
-                CurPat          = clip.CurPat;
+                EditPat          = clip.EditPat;
                 CurChan         = clip.CurChan;
                 SelChan         = clip.SelChan;
                 CurSrc          = clip.CurSrc;
@@ -388,7 +385,7 @@ namespace IngameScript
 
             public void SetCue()
             {
-                Track.NextPat = Track.NextPat == CurPat ? -1 : CurPat;
+                Track.NextPat = Track.NextPat == EditPat ? -1 : EditPat;
             }
 
 
@@ -458,11 +455,11 @@ namespace IngameScript
 
             public void StartBlock()
             {
-                var b = GetBlock(CurPat);
+                var b = GetBlock(EditPat);
 
                 if (!OK(b))
                 {
-                    Blocks.Add(new Block(CurPat));
+                    Blocks.Add(new Block(EditPat));
 
                     In     = True;
                     Follow = False;
@@ -484,11 +481,11 @@ namespace IngameScript
 
             public void EndBlock()
             {
-                var b = GetBlock(CurPat);
+                var b = GetBlock(EditPat);
 
                 if (!OK(b))
                 {
-                    Blocks.Add(new Block(CurPat));
+                    Blocks.Add(new Block(EditPat));
 
                     Out    = True;
                     Follow = False;
@@ -515,7 +512,7 @@ namespace IngameScript
 
             public void ClearBlock()
             {
-                Blocks.Remove(GetBlock(CurPat));
+                Blocks.Remove(GetBlock(EditPat));
                 DisableBlock();
                 MovePatternOff(); 
                 g_lcdPressed.Add(lcdClip+11);
@@ -587,7 +584,7 @@ namespace IngameScript
 
             public void GetCurPatterns(out int first, out int last)
             {
-                GetPatterns(CurPat, out first, out last);
+                GetPatterns(EditPat, out first, out last);
             }
 
 
@@ -627,13 +624,13 @@ namespace IngameScript
             public void LimitRecPosition()
             {
                 int st, nx;
-                GetPosLimits(CurPat, out st, out nx);
+                GetPosLimits(EditPat, out st, out nx);
 
                      if (EditPos >= nx) EditPos -= nx - st;
                 else if (EditPos <  st) EditPos += nx - st;
 
                 var cp = (int)(EditPos / g_patSteps);
-                if (cp != CurPat) SetCurrentPattern(cp);
+                if (cp != EditPat) SetEditPattern(cp);
             }
 
 

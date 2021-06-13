@@ -99,23 +99,15 @@ namespace IngameScript
                     
                     else if (EditClip == 3) // delete clip
                         DeleteClip(clip, index); 
-                                                 
-                    else if ( OK(PlayClip)
-                         &&  !OK(NextClip))
-                         //&&   NextClip != PlayClip) 
-                    { 
-                        NextClip = PlayClip; // cancel clip cue
-                        CueNextClip(index, prog);
-                        UpdateClipDisplay(Clips[index]);
-                    }
 
                     else if (OK(PlayClip)
-                          && PlayClip == NextClip
-                          && CueClip > 0)
+                         && !OK(NextClip)
+                         &&  PlayClip == index
+                         && CueClip > 0)
                     { 
                         NextClip = PlayClip; // cancel clip off
-                        CueNextClip(index, prog);
-                        UpdateClipDisplay(Clips[index]);
+                        //CueNextClip(index, prog);
+                        //UpdateClipDisplay(Clips[index]);
                     }
 
                     else if (index != PlayClip) // cue next clip
@@ -124,27 +116,15 @@ namespace IngameScript
                         EditClip = -1;
                         //UpdateClipDisplay(Clips[index]);
                     }
-
-                    else // clue clip off
-                    { 
-                        NextClip = -1;
-                        
-                        if (CueClip == 0)
-                            Stop();
-                    }
-
-
-                    //if (   OK(NextClip)
-                    //    && OK(Clips[NextClip]))
-                    //{
-                    //    //UpdateClipName();
-                    //    SetEditedClip(Clips[NextClip]);
-                    //}
                 }
-                else if (OK(PlayClip))
-                {
+
+                else if (!OK(clip))
                     NextClip = -1;
-                }
+
+                else if (OK(NextClip)
+                      && index == NextClip) // double click = edit clip
+                    SetEditedClip(clip);
+
                 else if (EditClip == 0) // set clip
                 { 
                     Clips[index] = Clip.Create(this); // set clip
@@ -157,14 +137,14 @@ namespace IngameScript
 
             public void CueNextClip(int index, Program prog)
             {
-                if (OK(NextClip))
-                {
-                    NextClip =
-                        index == NextClip
-                        ? PlayClip
-                        : index;
-                }
-                else
+                //if (OK(NextClip))
+                //{
+                //    NextClip =
+                //        index == NextClip
+                //        ? PlayClip
+                //        : index;
+                //}
+                //else
                     NextClip = index;
 
 
@@ -189,7 +169,7 @@ namespace IngameScript
                     PlayPat  =  0;
                     NextPat  = -1;
 
-                    if (OK(playTime)) PlayTime = playTime % (Clips[NextClip].Patterns.Count * g_patSteps * TicksPerStep);
+                    if (OK(playTime)) PlayTime = playTime % (Clips[NextClip].StepLength * TicksPerStep);
                     else              PlayTime = 0;
 
                     StartTime = g_time - PlayTime;
@@ -211,11 +191,14 @@ namespace IngameScript
                 //    && !OK(NextPat))
                 //    return False;
 
-                if (!OK(refClip)) 
-                    return OK(NextPat);
+                if (!OK(refClip)) return True;
 
-                var step = CueClip == 2 ? refClip.Track.PlayStep   : PlayStep;
-                var pat  = CueClip == 2 ? refClip.Patterns.Count-1 : PlayPat;
+                var step = refClip.Track.PlayStep;
+
+                var pat = 
+                    CueClip == 2 
+                    ? refClip.Patterns.Count-1 
+                    : refClip.Track.PlayPat;
 
                 return step >= (pat+1) * g_patSteps;
             }
@@ -348,8 +331,6 @@ namespace IngameScript
 
             public void CueNextPattern(Clip clip, Program prog)
             {
-                clip.Length = clip.Patterns.Count * g_patSteps;
-
                 UpdateBlockPat(clip);
                 UpdatePlayTime(clip, prog);
 
@@ -374,7 +355,7 @@ namespace IngameScript
             {
                 int start, end;
                 clip.GetPosLimits(PlayPat, out start, out end);
-                end = start + Math.Min(end - start, clip.Length);
+                end = start + Math.Min(end - start, clip.StepLength);
 
                 if (OK(NextPat))
                 {

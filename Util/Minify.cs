@@ -57,7 +57,7 @@ namespace IngameScript
         static string PN(string s)                      { return "\n" + s; }
 
 
-        static int        CurPat        => EditedClip.CurPat;
+        static int        EditPat        => EditedClip.EditPat;
 
         static int        CurChan       { get { return EditedClip.CurChan; } set { EditedClip.CurChan = value; } }
         static int        SelChan       { get { return EditedClip.SelChan; } set { EditedClip.SelChan = value; } }

@@ -32,7 +32,7 @@ namespace IngameScript
         static void SetInstName(bool add = True)
         {
             if (    OK(SelChan)
-                &&  OK(CurPat)
+                &&  OK(EditPat)
                 && !OK(CurSrc)
                 && !OK(CurSet)
                 &&  OK(SelChan))

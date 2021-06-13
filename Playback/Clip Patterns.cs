@@ -12,13 +12,13 @@ namespace IngameScript
             {
                 if (SetMemPat)
                 {
-                    Mems[m] = Mems[m] < 0 || Mems[m] != CurPat ? CurPat : -1;
+                    Mems[m] = Mems[m] < 0 || Mems[m] != EditPat ? EditPat : -1;
                     SetMemPat = False;
                 }
                 else if (OK(Mems[m]))
                 {
                     if (Playing) Track.NextPat = Mems[m];
-                    else         SetCurrentPattern(Mems[m]);
+                    else         SetEditPattern(Mems[m]);
                 }
             }
 
@@ -51,8 +51,8 @@ namespace IngameScript
 
             public void PrevPattern()
             {
-                if (MovePat) MovePatterns(CurPat - 1);
-                else SetCurrentPattern(CurPat - 1);
+                if (MovePat) MovePatterns(EditPat - 1);
+                else SetEditPattern(EditPat - 1);
 
                 g_lcdPressed.Add(lcdClip+5);
             }
@@ -61,8 +61,8 @@ namespace IngameScript
 
             public void NextPattern()
             {
-                if (MovePat) MovePatterns(CurPat + 1);
-                else         SetCurrentPattern(CurPat + 1);
+                if (MovePat) MovePatterns(EditPat + 1);
+                else         SetEditPattern(EditPat + 1);
 
                 g_lcdPressed.Add(lcdClip+6);
             }
@@ -71,7 +71,7 @@ namespace IngameScript
 
             public void MovePatterns(int destPat)
             {
-                var block = GetBlock(CurPat);
+                var block = GetBlock(EditPat);
                 if (OK(block))
                 {
                     var pats = new List<Pattern>();
@@ -83,7 +83,7 @@ namespace IngameScript
                     Blocks.Remove(block);
 
                     var newFirst = block.First;
-                    if (destPat > CurPat)
+                    if (destPat > EditPat)
                     {
                         var b = GetBlock(block.Last + 1);
                         if (OK(b))
@@ -92,12 +92,12 @@ namespace IngameScript
                             b.Last  -= block.Len;
 
                             newFirst = block.First + b.Len;
-                            CurPat += b.Len;
+                            EditPat += b.Len;
                         }
                         else
                         {
                             newFirst++;
-                            CurPat++;
+                            EditPat++;
                         }
                     }
                     else
@@ -112,12 +112,12 @@ namespace IngameScript
                             b.First += block.Len;
                             b.Last  += block.Len;
 
-                            CurPat -= b.Len;
+                            EditPat -= b.Len;
                         }
                         else
                         {
                             newFirst--;
-                            CurPat--;
+                            EditPat--;
                         }
                     }
 
@@ -127,39 +127,39 @@ namespace IngameScript
 
                     Blocks.Add(new Block(newFirst, newFirst + block.Len - 1));
 
-                    CurPat = MinMax(destPat - block.First, CurPat, Patterns.Count - 1 - (block.Last - destPat));
+                    EditPat = MinMax(destPat - block.First, EditPat, Patterns.Count - 1 - (block.Last - destPat));
                 }
                 else
                 {
                     var pat = CurPattern;
-                    Patterns.RemoveAt(CurPat);
+                    Patterns.RemoveAt(EditPat);
 
                     var b = GetBlock(destPat);
                     if (OK(b))
                     {
-                        var frw = destPat > CurPat ? 1 : -1;
+                        var frw = destPat > EditPat ? 1 : -1;
 
-                        destPat = MinMax(0, CurPat + b.Len * frw, Patterns.Count);
+                        destPat = MinMax(0, EditPat + b.Len * frw, Patterns.Count);
 
                         b.First -= frw;
                         b.Last  -= frw;
 
-                        CurPat = MinMax(0, CurPat + b.Len * frw, Patterns.Count);
+                        EditPat = MinMax(0, EditPat + b.Len * frw, Patterns.Count);
                     }
                     else
                     {
                         destPat = MinMax(0, destPat, Patterns.Count);
-                        CurPat  = MinMax(0, destPat, Patterns.Count);
+                        EditPat  = MinMax(0, destPat, Patterns.Count);
                     }
 
                     Patterns.Insert(destPat, pat);
                 }
 
                 if (Playing)
-                    Track.PlayTime += GetPatTime(CurPat - destPat);
+                    Track.PlayTime += GetPatTime(EditPat - destPat);
 
                 if (OK(EditPos))
-                    EditPos = CurPat * g_patSteps + EditPos % g_patSteps;
+                    EditPos = EditPat * g_patSteps + EditPos % g_patSteps;
 
 
                 UpdateAutoKeys();
@@ -170,50 +170,50 @@ namespace IngameScript
 
 
 
-            public void SetCurrentPattern(int p)
+            public void SetEditPattern(int p)
             {
                 if (Patterns.Count == 0)
                     return;
 
 
-                //var oldPat = CurPat;
+                //var oldPat = EditPat;
 
                 //StopEdit();
 
-                var b = GetBlock(CurPat);
+                var b = GetBlock(EditPat);
 
                 if (    OK(b)
                     && (In || Out))
                 {
-                    var off = p > CurPat ? 1 : -1;
+                    var off = p > EditPat ? 1 : -1;
 
-                         if (In ) b.First = MinMax(0, b.First + off, Math.Min(CurPat, b.Last));
-                    else if (Out) b.Last  = MinMax(Math.Max(b.First, CurPat), b.Last + off, Patterns.Count-1);
+                         if (In ) b.First = MinMax(0, b.First + off, Math.Min(EditPat, b.Last));
+                    else if (Out) b.Last  = MinMax(Math.Max(b.First, EditPat), b.Last + off, Patterns.Count-1);
                 }
                 else
                 {
-                    CurPat = p;
+                    EditPat = p;
 
-                         if (CurPat < 0)               CurPat = Patterns.Count - 1;
-                    else if (CurPat >= Patterns.Count) CurPat = 0;
+                         if (EditPat < 0)               EditPat = Patterns.Count - 1;
+                    else if (EditPat >= Patterns.Count) EditPat = 0;
 
 
                     if (AutoCue)
-                        Track.NextPat = CurPat;
+                        Track.NextPat = EditPat;
                 }
 
                 if (OK(EditPos))
-                    EditPos = CurPat * g_patSteps + EditPos % g_patSteps;
+                    EditPos = EditPat * g_patSteps + EditPos % g_patSteps;
 
 
                 //if (Playing)
                 //{
-                //         if (CurPat > oldPat) StartTime -= nSteps * g_session.TicksPerStep;
-                //    else if (CurPat < oldPat) StartTime += nSteps * g_session.TicksPerStep;
+                //         if (EditPat > oldPat) StartTime -= nSteps * g_session.TicksPerStep;
+                //    else if (EditPat < oldPat) StartTime += nSteps * g_session.TicksPerStep;
                 //}
 
 
-                UpdateClipOff();//g_song.CurPat);
+                UpdateClipOff();//g_song.EditPat);
             
                 SetInstName();
             }
@@ -225,8 +225,8 @@ namespace IngameScript
                 var pat = new Pattern(CurPattern);
                 pat.Clear();
 
-                Patterns.Insert(CurPat + 1, pat);
-                SetCurrentPattern(CurPat + 1);
+                Patterns.Insert(EditPat + 1, pat);
+                SetEditPattern(EditPat + 1);
 
                 MovePatternOff();
                 DisableBlock();
@@ -247,7 +247,7 @@ namespace IngameScript
 
             public void DeletePattern()
             {
-                var block = GetBlock(CurPat);
+                var block = GetBlock(EditPat);
 
                 if (   Block
                     && OK(block))
@@ -272,14 +272,14 @@ namespace IngameScript
                         Patterns.Add(first);
                     }
 
-                    if (CurPat >= Patterns.Count)
-                        SetCurrentPattern(Patterns.Count - 1);
+                    if (EditPat >= Patterns.Count)
+                        SetEditPattern(Patterns.Count - 1);
                 }
                 else
                 {
-                    var b = GetBlock(CurPat);
+                    var b = GetBlock(EditPat);
 
-                    if (Patterns.Count > 1) Patterns.RemoveAt(CurPat);
+                    if (Patterns.Count > 1) Patterns.RemoveAt(EditPat);
                     else                    Patterns[0].Clear();
 
                     if (OK(b))
@@ -288,8 +288,8 @@ namespace IngameScript
                         else b.Last--;
                     }
 
-                    if (CurPat >= Patterns.Count)
-                        SetCurrentPattern(Patterns.Count-1);
+                    if (EditPat >= Patterns.Count)
+                        SetEditPattern(Patterns.Count-1);
                 }
 
 
@@ -319,7 +319,7 @@ namespace IngameScript
 
             public void DuplicatePattern()
             {
-                var block = GetBlock(CurPat);
+                var block = GetBlock(EditPat);
 
                 if (   Block
                     && OK(block))
@@ -331,12 +331,12 @@ namespace IngameScript
                     block.Last + 1,
                     block.Last + block.Len));
 
-                    SetCurrentPattern(CurPat + block.Len);
+                    SetEditPattern(EditPat + block.Len);
                 }
                 else
                 {
-                    Patterns.Insert(CurPat + 1, new Pattern(CurPattern));
-                    SetCurrentPattern(CurPat + 1);
+                    Patterns.Insert(EditPat + 1, new Pattern(CurPattern));
+                    SetEditPattern(EditPat + 1);
                 }
 
                 MovePatternOff();

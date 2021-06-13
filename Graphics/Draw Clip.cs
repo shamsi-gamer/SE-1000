@@ -41,13 +41,13 @@ namespace IngameScript
                 var pw = wt * g_patSteps;
                 var ph = ht * g_nChans;
 
-                var pxCur = x - (nDsp*4 + EditedClip.SongOff) * pw + CurPat * pw;
+                var pxCur = x - (nDsp*4 + EditedClip.SongOff) * pw + EditPat * pw;
                 var py    = y + h/2 - ph/2;
 
                 var first = nDsp * 4 + EditedClip.SongOff;
                 var next  = Math.Min((nDsp + 1) * 4 + EditedClip.SongOff, EditedClip.Patterns.Count);
 
-                var curBlock = EditedClip.GetBlock(CurPat);
+                var curBlock = EditedClip.GetBlock(EditPat);
 
                 var _f = first - EditedClip.SongOff;
 
@@ -95,7 +95,7 @@ namespace IngameScript
                 if (   EditedClip.EditPos >= first * g_patSteps
                     && EditedClip.EditPos <  next  * g_patSteps)
                 {
-                    var pl    = x - pw * (nDsp * 4 * pw + CurPat + EditedClip.SongOff);
+                    var pl    = x - pw * (nDsp * 4 * pw + EditPat + EditedClip.SongOff);
                     var xTick = wt * EditedClip.EditPos;
 
                     FillRect(
@@ -188,7 +188,7 @@ namespace IngameScript
                         DrawRightBracket(sprites, bx + sw, by, 16, sh, 1);
                     }
 
-                    FillRect(sprites, px + bw * CurPat, by, bw, sh, color4);
+                    FillRect(sprites, px + bw * EditPat, by, bw, sh, color4);
 
                     if (OK(track.PlayStep))
                         FillRect(sprites, px + bw / g_patSteps * track.PlayStep, by, 4, sh, color6);

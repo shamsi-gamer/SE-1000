@@ -89,7 +89,7 @@
                 var mod = (MixerShift ? 10 : 1) * dv;
 
                 int first, last;
-                EditedClip.GetPatterns(CurPat, out first, out last);
+                EditedClip.GetPatterns(EditPat, out first, out last);
 
                 for (int p = first; p <= last; p++)
                 {

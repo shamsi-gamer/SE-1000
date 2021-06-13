@@ -21,7 +21,7 @@ namespace IngameScript
             var xt = 310;
             var wt = (w - xt) / g_patSteps;
 
-            DrawGrid(sprites, x + xt, y, w - xt, rh, CurPat);
+            DrawGrid(sprites, x + xt, y, w - xt, rh, EditPat);
 
 
             var ch = rh / g_nChans;
@@ -34,8 +34,8 @@ namespace IngameScript
 
 
             // edit position
-            if (   clip.EditPos >= CurPat      * g_patSteps
-                && clip.EditPos < (CurPat + 1) * g_patSteps)
+            if (   clip.EditPos >= EditPat      * g_patSteps
+                && clip.EditPos < (EditPat + 1) * g_patSteps)
             {
                 FillRect(
                     sprites, 

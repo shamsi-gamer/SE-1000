@@ -452,7 +452,7 @@ namespace IngameScript
                     ModDestConnecting = EditedClip.CurModulate;
                     ModCurChan        = CurChan;
                     ModSelChan        = SelChan;
-                    ModCurPat         = CurPat;
+                    ModCurPat         = EditPat;
                     ModDestSrcIndex   = CurSrc;
                     ModDestChannel    = SelChannel;
                     ModDestClip       = EditedClip;
@@ -564,7 +564,7 @@ namespace IngameScript
             if (  !OK(key)
                 && OK(EditedClip.EditPos)) // create
             {
-                var val = Parameter.GetAutoValue(EditedClip, EditedClip.EditPos, CurPat, path);
+                var val = Parameter.GetAutoValue(EditedClip, EditedClip.EditPos, EditPat, path);
 
                 var newKey = new Key(
                     CurSrc,
@@ -810,7 +810,7 @@ namespace IngameScript
             else
             {
                 for (int p = 0; p < Math.Min(last-first+1, g_copyChans.Count); p++)
-                    PasteChanNotes(p, CurPat + first + p);
+                    PasteChanNotes(p, EditPat + first + p);
             }
         }
 

@@ -298,7 +298,7 @@ namespace IngameScript
         bool StepIsBright(Label lbl)
         {
             var patStep  = -lbl.Data;
-            var clipStep =  CurPat * g_patSteps + patStep;
+            var clipStep =  EditPat * g_patSteps + patStep;
 
             var on = OK(CurChannel.Notes.Find(n => 
                    n.Step >= patStep
@@ -309,7 +309,7 @@ namespace IngameScript
             if (   Playing
                 && EditedClipIsPlaying
                 && (int)track.PlayStep  == clipStep
-                && CurPat == track.PlayPat)
+                && EditPat == track.PlayPat)
                 return !on;
             else if (on)
                 return True;

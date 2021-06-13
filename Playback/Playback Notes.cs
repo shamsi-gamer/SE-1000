@@ -75,7 +75,7 @@ namespace IngameScript
                 { 
                     found = chan.Notes.FindIndex(n => 
                             note == n.Number
-                        && clip.EditPos == clip.CurPat*g_patSteps + n.Step + ChordSpread(i));
+                        && clip.EditPos == clip.EditPat*g_patSteps + n.Step + ChordSpread(i));
 
                     if (OK(found)) 
                     {
@@ -114,7 +114,7 @@ namespace IngameScript
             var pat = 
                 Playing 
                 ? clip.Track.PlayPat 
-                : clip.CurPat;
+                : clip.EditPat;
 
             var chan = 
                 Playing

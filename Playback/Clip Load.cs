@@ -94,7 +94,7 @@ namespace IngameScript
                 LoadToggles(cfg[c++]);
 
                 return
-                       int_TryParse  (cfg[c++], out CurPat         )
+                       int_TryParse  (cfg[c++], out EditPat         )
                     && int_TryParse  (cfg[c++], out CurChan        )
                                                                     
                     && int_TryParse  (cfg[c++], out SelChan        )
