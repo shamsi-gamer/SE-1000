@@ -21,9 +21,14 @@ namespace IngameScript
             var inst      = Instruments[SelChan];
             var inputName = dspMain.Panel.GetText().Trim();
 
-            EditedClip.CurInstrument.Name = GetNewName(
+            var name = GetNewName(
                 inputName, 
-                name => Instruments.Count(i => i.Name == name) > 1);
+                n => Instruments.Count(i => i.Name == n) > 1);
+
+            if (inputName != name)
+                dspMain.Panel.WriteText(name);
+
+            EditedClip.CurInstrument.Name = name;
 
             g_inputValid = True;
         }
