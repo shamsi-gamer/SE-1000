@@ -186,12 +186,11 @@ namespace IngameScript
                 if (   !OK(PlayClip)
                     && !OK(NextClip))
                     return False;
-                
-                //if (   !OK(PlayPat)
-                //    && !OK(NextPat))
-                //    return False;
 
-                if (!OK(refClip)) return True;
+                
+                if (!OK(refClip)) 
+                    return OK(NextPat);
+
 
                 var step = refClip.Track.PlayStep;
 
@@ -199,6 +198,7 @@ namespace IngameScript
                     CueClip == 2 
                     ? refClip.Patterns.Count-1 
                     : refClip.Track.PlayPat;
+
 
                 return step >= (pat+1) * g_patSteps;
             }
