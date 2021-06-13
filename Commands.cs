@@ -189,6 +189,19 @@ namespace IngameScript
             
             if (CueClip > 2)
                 CueClip = 0;
+
+
+            // just in case some stuff was cued,
+            // start playing it if turning off cue
+            if (CueClip == 0)
+            {
+                foreach (var track in Tracks)
+                {
+                    if (    OK(track.NextClip)
+                        && !OK(track.PlayClip))
+                        track.NextClip = -1;
+                }
+            }
         }
 
 

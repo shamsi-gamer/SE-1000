@@ -122,8 +122,14 @@ namespace IngameScript
                 }
 
                 else if (!OK(clip)
-                      && !OK(CueClip))
+                      && CueClip <= 0)
+                {
                     NextClip = -1;
+
+                    if (CueClip == 0)
+                        PlayClip = -1;
+
+                }
 
                 else if (EditClip == 0) // set clip
                 { 
