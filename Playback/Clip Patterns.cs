@@ -23,10 +23,12 @@ namespace IngameScript
             }
 
 
+
             public void Cue()
             {
                 SetCue();
             }
+
 
 
             public void MemPat()
@@ -38,11 +40,13 @@ namespace IngameScript
             }
 
 
+
             void ValMem()
             {
                 for (int m = 0; m < nMems; m++)
                     if (Mems[m] >= Patterns.Count) Mems[m] = -1;
             }
+
 
 
             public void PrevPattern()
@@ -54,6 +58,7 @@ namespace IngameScript
             }
 
 
+
             public void NextPattern()
             {
                 if (MovePat) MovePatterns(CurPat + 1);
@@ -61,6 +66,7 @@ namespace IngameScript
 
                 g_lcdPressed.Add(lcdClip+6);
             }
+
 
 
             public void MovePatterns(int destPat)
@@ -163,6 +169,7 @@ namespace IngameScript
             }
 
 
+
             public void SetCurrentPattern(int p)
             {
                 if (Patterns.Count == 0)
@@ -212,6 +219,7 @@ namespace IngameScript
             }
 
 
+
             public void NewPattern()
             { 
                 var pat = new Pattern(CurPattern);
@@ -234,6 +242,7 @@ namespace IngameScript
 
                 g_lcdPressed.Add(lcdClip+2);
             }
+
 
 
             public void DeletePattern()
@@ -305,6 +314,7 @@ namespace IngameScript
 
                 g_lcdPressed.Add(lcdClip+0);
             }
+
 
 
             public void DuplicatePattern()

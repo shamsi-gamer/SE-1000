@@ -42,10 +42,10 @@ namespace IngameScript
                 var ph = ht * g_nChans;
 
                 var pxCur = x - (nDsp*4 + EditedClip.SongOff) * pw + CurPat * pw;
-                var py = y + h/2 - ph/2;
+                var py    = y + h/2 - ph/2;
 
                 var first = nDsp * 4 + EditedClip.SongOff;
-                var next = Math.Min((nDsp + 1) * 4 + EditedClip.SongOff, EditedClip.Patterns.Count);
+                var next  = Math.Min((nDsp + 1) * 4 + EditedClip.SongOff, EditedClip.Patterns.Count);
 
                 var curBlock = EditedClip.GetBlock(CurPat);
 

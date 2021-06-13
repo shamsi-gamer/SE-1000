@@ -18,6 +18,7 @@ namespace IngameScript
                 {
                     var saved = CueClip;
                     CueClip = 0;
+                    EditedClip.Track.NextClip = EditedClip.Index;
                     EditedClip.Track.CueNextClip(EditedClip.Index, this);
                     CueClip = saved;
                 }
@@ -43,17 +44,17 @@ namespace IngameScript
                         track.NextClip = -1;
                     else
                     {
-                        var playClip = track.Clips[track.PlayClip];
+                        var playingClip = track.PlayingClip;
 
-                        var b = playClip.GetBlock(playClip.CurPat);
+                        var b = playingClip.GetBlock(playingClip.CurPat);
 
                         var _block =
-                               playClip.Block
+                               playingClip.Block
                             && OK(b)
-                            && playClip.CurPat > b.First;
+                            && playingClip.CurPat > b.First;
 
-                        playClip.SetCurrentPattern(_block ? b.First : 0);
-                        playClip.TrimCurrentNotes();
+                        playingClip.SetCurrentPattern(_block ? b.First : 0);
+                        playingClip.TrimCurrentNotes();
 
                         track.Stop();
 
@@ -67,7 +68,9 @@ namespace IngameScript
         }
 
 
+
         void Stop() { Play(False); }
+
 
 
         void CheckIfMustStop()
@@ -82,53 +85,40 @@ namespace IngameScript
         }
 
 
+
         void UpdatePlayback()
         {
-            var cueNext = False;
-
-
-            var maxPlayingPats = 0;
+            var refClip = GetLongestPlayingClip();
 
             foreach (var track in Tracks)
-                if (OK(track.PlayClip)) maxPlayingPats = Math.Max(maxPlayingPats, track.Clips[track.PlayClip].Patterns.Count);
-
-
-            foreach (var track in Tracks)
-                cueNext |= track.GetCueNextPattern(maxPlayingPats);
-
-
-            if (cueNext)
             {
-                foreach (var track in Tracks)
-                {
-                    if (track.NextClip != track.PlayClip)
-                    { 
-                        track.PlayClip = track.NextClip;
+                if (   track.NextClip != track.PlayClip // set cue
+                    && track.GetCueNextClip(refClip))
+                { 
+                    track.PlayClip = track.NextClip;
 
-                        if (OK(track.PlayClip))
-                            track.NextPat = 0;
-                    }
+                    if (OK(track.PlayClip))
+                        track.NextPat = 0; // prime next pat
                 }
-            }
 
 
-            foreach (var track in Tracks)
-            {                
-                if (!OK(track.PlayClip))
+                if (!OK(track.PlayClip)) // stop clip
                 {
                     track.PlayPat = -1;
                     track.NextPat = -1;
                     continue;
                 }
 
-                var clip = track.Clips[track.PlayClip];
-                if (!OK(clip)) continue;
+
+                var clip = track.PlayingClip;
+                //if (!OK(clip)) continue; // commenting this out because it shouldn't be necessary
 
                 track.CueNextPattern(clip, this);
 
                 if (   clip == EditedClip
-                    && clip.Follow) 
+                    && clip.Follow)
                     clip.SetCurrentPattern(track.PlayPat);
+
 
                 AddPlaybackNotes(clip);
             }
@@ -144,6 +134,37 @@ namespace IngameScript
 
             foreach (var inst in Instruments)
                 inst.ResetValues();
+        }
+
+
+        static Clip GetLongestPlayingClip()
+        {
+            // figure out which clip will serve as the reference
+            // for cueing up the next clip
+
+            var longestPlaying = Clip_null;
+
+            foreach (var track in Tracks)
+            { 
+                if (   OK(track.PlayClip)
+                    && (  !OK(longestPlaying)
+                        || track.PlayingClip.Patterns.Count > longestPlaying.Patterns.Count))
+                    longestPlaying = track.PlayingClip;
+            }
+
+            return longestPlaying;
+
+            //return 
+            //       !OK(longestPlaying)
+            //    || !OK(PlayClip)
+            //    ||  longestPlaying.Patterns.Count > PlayingClip.Patterns.Count
+            //    ? longestPlaying
+            //    : PlayingClip;
+
+            //return 
+            //return Math.Min(
+            //    Clips[NextClip].Patterns.Count, 
+            //    (maxOtherPat % Clips[NextClip].Patterns.Count)) - 1;
         }
     }
 }

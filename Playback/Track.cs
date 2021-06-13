@@ -22,14 +22,15 @@ namespace IngameScript
                            NextPat;
 
 
-            public bool    Playing => OK(PlayClip);
+            public bool    Playing     => OK(PlayClip);
+            public Clip    PlayingClip => OK(PlayClip) ? Clips[PlayClip] : Clip_null;
 
+            public float   PlayStep    => Playing ? PlayTime /(float)TicksPerStep : float_NaN; 
+            public float   StartStep   => Playing ? StartTime/(float)TicksPerStep : float_NaN; 
+                        
 
-            public float   PlayStep  => Playing ? PlayTime /(float)TicksPerStep : float_NaN; 
-            public float   StartStep => Playing ? StartTime/(float)TicksPerStep : float_NaN; 
-
-            
             public float[] DspVol;
+
 
 
             public Track()
@@ -43,6 +44,7 @@ namespace IngameScript
                           
                 DspVol = new float[g_nChans];
             }
+
 
 
             public Track(Track track)
@@ -67,6 +69,7 @@ namespace IngameScript
             }
 
 
+
             public void Stop()
             { 
                 PlayClip  = -1;
@@ -78,6 +81,7 @@ namespace IngameScript
                 PlayTime  = long_NaN;
                 StartTime = long_NaN;
             }
+
 
 
             public void SetClip(int index, Program prog)
@@ -96,9 +100,9 @@ namespace IngameScript
                     else if (EditClip == 3) // delete clip
                         DeleteClip(clip, index); 
                                                  
-                    else if (OK(PlayClip)
-                         &&  OK(NextClip)
-                         &&  NextClip != PlayClip)
+                    else if ( OK(PlayClip)
+                         &&  !OK(NextClip))
+                         //&&   NextClip != PlayClip) 
                     { 
                         NextClip = PlayClip; // cancel clip cue
                         CueNextClip(index, prog);
@@ -106,42 +110,49 @@ namespace IngameScript
                     }
 
                     else if (OK(PlayClip)
-                         && !OK(NextClip)
-                         &&  CueClip > 0)
+                          && PlayClip == NextClip
+                          && CueClip > 0)
                     { 
                         NextClip = PlayClip; // cancel clip off
                         CueNextClip(index, prog);
                         UpdateClipDisplay(Clips[index]);
                     }
 
-                    else if (index != PlayClip)
+                    else if (index != PlayClip) // cue next clip
                     { 
                         CueNextClip(index, prog);
+                        EditClip = -1;
                         //UpdateClipDisplay(Clips[index]);
                     }
 
-                    else
+                    else // clue clip off
                     { 
-                        NextClip = -1; // cue clip off
+                        NextClip = -1;
                         
                         if (CueClip == 0)
                             Stop();
                     }
 
 
-                    if (   OK(NextClip)
-                        && OK(Clips[NextClip]))
-                    {
-                        //UpdateClipName();
-                        SetEditedClip(Clips[NextClip]);
-                    }
+                    //if (   OK(NextClip)
+                    //    && OK(Clips[NextClip]))
+                    //{
+                    //    //UpdateClipName();
+                    //    SetEditedClip(Clips[NextClip]);
+                    //}
                 }
-                else if (EditClip == 0)
+                else if (OK(PlayClip))
+                {
+                    NextClip = -1;
+                }
+                else if (EditClip == 0) // set clip
                 { 
                     Clips[index] = Clip.Create(this); // set clip
+                    SetEditedClip(Clips[index]);
                     //CueNextClip(index, prog);
                 }
             }
+
 
 
             public void CueNextClip(int index, Program prog)
@@ -157,16 +168,16 @@ namespace IngameScript
                     NextClip = index;
 
 
-                if (EditClip == 0)
-                { 
-                    foreach (var track in Tracks)
-                    {
-                        if (track == this) continue;
-                        track.NextClip = -1;
-                    }
+                //if (EditClip == 0)
+                //{ 
+                //    foreach (var track in Tracks)
+                //    {
+                //        if (track == this) continue;
+                //        track.NextClip = -1;
+                //    }
 
-                    EditClip = -1;
-                }
+                //    EditClip = -1;
+                //}
 
 
                 if (CueClip == 0)
@@ -181,13 +192,34 @@ namespace IngameScript
                     if (OK(playTime)) PlayTime = playTime % (Clips[NextClip].Patterns.Count * g_patSteps * TicksPerStep);
                     else              PlayTime = 0;
 
+                    StartTime = g_time - PlayTime;
+
                     SetInstName();
                     prog.ResetLfos();
                 }
-
-
-                StartTime = g_time - PlayTime;
             }
+
+
+
+            public bool GetCueNextClip(Clip refClip)
+            {
+                if (   !OK(PlayClip)
+                    && !OK(NextClip))
+                    return False;
+                
+                //if (   !OK(PlayPat)
+                //    && !OK(NextPat))
+                //    return False;
+
+                if (!OK(refClip)) 
+                    return OK(NextPat);
+
+                var step = CueClip == 2 ? refClip.Track.PlayStep   : PlayStep;
+                var pat  = CueClip == 2 ? refClip.Patterns.Count-1 : PlayPat;
+
+                return step >= (pat+1) * g_patSteps;
+            }
+
 
 
             void SetEditedClip(Clip clip)
@@ -202,6 +234,7 @@ namespace IngameScript
             }
 
 
+
             void PlaceClip(int index)
             {
                 if (   EditClip == 1
@@ -214,6 +247,7 @@ namespace IngameScript
                 ClipCopy = Clip_null;
                 EditClip = -1;
             }
+
 
 
             void MoveClip(int index)
@@ -288,6 +322,7 @@ namespace IngameScript
             }
 
 
+
             void DeleteClip(Clip clip, int index)
             {
                 if (clip == EditedClip)
@@ -310,28 +345,6 @@ namespace IngameScript
             }
 
 
-            public bool GetCueNextPattern(int maxPlayingPats)
-            {
-                if (   !OK(PlayClip)
-                    && !OK(NextClip))
-                    return False;
-
-                if (   !OK(PlayPat)
-                    && !OK(NextPat))
-                    return False;
-
-                var clipPats = 
-                    OK(PlayClip)
-                    ? Clips[PlayClip].Patterns.Count
-                    : maxPlayingPats;
-
-                if (   CueClip == 1 && PlayStep < (PlayPat  + 1) * g_patSteps
-                    || CueClip == 2 && PlayStep < (clipPats + 1) * g_patSteps)
-                    return False;
-
-                return True;
-            }
-
 
             public void CueNextPattern(Clip clip, Program prog)
             {
@@ -344,6 +357,7 @@ namespace IngameScript
             }
 
 
+
             void UpdateBlockPat(Clip clip)
             {
                 if (   OK(NextPat)
@@ -353,6 +367,7 @@ namespace IngameScript
                     if (OK(b)) PlayPat = b.Last;
                 }
             }
+
 
 
             void UpdatePlayTime(Clip clip, Program prog)
@@ -384,6 +399,7 @@ namespace IngameScript
             }
 
 
+
             public string Save()
             {
                 var cfg = 
@@ -411,6 +427,7 @@ namespace IngameScript
 
                 return save;
             }
+
 
 
             public static Track Load(string[] lines, ref int line)//, out string curPath)
@@ -458,6 +475,7 @@ namespace IngameScript
             }
 
 
+
             public void UpdateVolumes(Program prog)
             {
                 for (int i = 0; i < g_sounds.Count; i++)
@@ -477,11 +495,10 @@ namespace IngameScript
                         if (!OK(instVol)) instVol = 0;
 
                         var playVol =
-                               OK(PlayClip)
-                            && OK(Clips[PlayClip])
+                            OK(PlayingClip)
                             ?   instVol
                               * snd.Channel.Volume
-                              * Clips[PlayClip].Volume
+                              * PlayingClip.Volume
                             : 0;
 
                         DspVol[snd.iChan] = Math.Max(
@@ -492,11 +509,13 @@ namespace IngameScript
             }
 
 
+
             public void DampenDisplayVolumes()
             {
                 for (int i = 0; i < DspVol.Length; i++)
                     DspVol[i] *= 0.2f;
             }
+
 
 
             public void ResetDisplayVolumes()
