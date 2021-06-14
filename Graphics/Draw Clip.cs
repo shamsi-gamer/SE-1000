@@ -153,7 +153,9 @@ namespace IngameScript
 
                     FillRect(sprites, xTick, py, wt, ph, color6);
 
-                    if (EditedClip.Piano) DrawPianoNeg  (sprites, pl, py, pw, ph, EditedClip, track.PlayPat, (int)track.PlayStep, False);
+                    if (      EditedClip.Piano 
+                           && LockView != 1
+                        || LockView == 2) DrawPianoNeg  (sprites, pl, py, pw, ph, EditedClip, track.PlayPat, (int)track.PlayStep, False);
                     else                  DrawPatternNeg(sprites, pl, py, pw, ph, EditedClip, track.PlayPat, (int)track.PlayStep, False);
                 }
 
