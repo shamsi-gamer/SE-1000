@@ -113,13 +113,13 @@ namespace IngameScript
         {
             var pat = 
                 Playing 
-                ? clip.Track.PlayPat 
+                ? OK(clip.EditPos) ? clip.EditPat : clip.Track.PlayPat 
                 : clip.EditPat;
 
-            var chan = 
-                Playing
-                ? clip.Patterns[clip.Track.PlayPat].Channels[ch]
-                : clip.CurPattern.Channels[ch];
+            var chan = clip.Patterns[pat].Channels[ch]; 
+                //Playing
+                //? clip.Patterns[clip.Track.PlayPat].Channels[ch]
+                //: clip.CurPattern.Channels[ch];
 
             for (int i = 0; i < notes.Count; i++)
             {
