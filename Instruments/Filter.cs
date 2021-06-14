@@ -30,7 +30,8 @@ namespace IngameScript
             }
 
 
-            public Filter(Filter flt) : base(flt.Tag, Setting_null, flt, flt.Instrument, flt.Source)
+            public Filter(Filter flt) 
+                : base(flt.Tag, Setting_null, flt, flt.Instrument, flt.Source)
             {
                 Pass      = flt.Pass;
 

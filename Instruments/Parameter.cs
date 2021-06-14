@@ -325,6 +325,8 @@ namespace IngameScript
             {
                 // this method removes note and channel automation associated with this setting
 
+                var srcIndex = Source?.Index ?? -1;
+
                 foreach (var track in Tracks)
                 { 
                     foreach (var clip in track.Clips)
@@ -335,10 +337,10 @@ namespace IngameScript
                         { 
                             foreach (var chan in pat.Channels)
                             {
-                                chan.AutoKeys.RemoveAll(k => k.Path == GetPath(Source.Index));
+                                chan.AutoKeys.RemoveAll(k => k.Path == GetPath(srcIndex));
 
                                 foreach (var note in chan.Notes)
-                                    note.Keys.RemoveAll(k => k.Path == GetPath(Source.Index));
+                                    note.Keys.RemoveAll(k => k.Path == GetPath(srcIndex));
                             }
                         }
                      

@@ -189,7 +189,7 @@ namespace IngameScript
             var sprites = new List<MySprite>();
 
             FillRect(sprites, x, y, w, h, color0);
-            DrawString(sprites, "Copy\nPaste\nHere", cx, cy - 220, 3.5f, color6, TA_CENTER);
+            DrawString(sprites, "Copy\nPaste\nMusic\nHere", cx, cy - 220, 3.5f, color6, TA_CENTER);
 
             dsp.Draw(sprites);
         }

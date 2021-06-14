@@ -33,8 +33,6 @@ namespace IngameScript
                                     CurValue;
 
             public List<Setting>    SrcSettings; // this is the reference count for all three
-            //public List<Source>     SrcSources;
-            //public List<Instrument> SrcInstruments;
 
 
             public Modulate(Setting parent, Instrument inst, Source src) 
@@ -53,8 +51,6 @@ namespace IngameScript
                 CurValue       = 0;
 
                 SrcSettings    = new List<Setting>();            
-                //SrcSources     = new List<Source>();
-                //SrcInstruments = new List<Instrument>();
             }
 
 
@@ -76,14 +72,6 @@ namespace IngameScript
                 SrcSettings = new List<Setting>();
                 foreach (var set in mod.SrcSettings)
                     SrcSettings.Add(set);
-
-                //SrcSources = new List<Source>();
-                //foreach (var _src in mod.SrcSources)
-                //    SrcSources.Add(_src);
-
-                //SrcInstruments = new List<Instrument>();
-                //foreach (var _inst in mod.SrcInstruments)
-                //    SrcInstruments.Add(_inst);
             }
 
 
@@ -113,9 +101,9 @@ namespace IngameScript
 
                 for (int i = 0; i < SrcSettings.Count; i++)
                 {
-                    var set  = SrcSettings   [i];
-                    var src  = set.Source;//SrcSources    [i];
-                    var inst = src.Instrument;//SrcInstruments[i];
+                    var set  = SrcSettings[i];
+                    var src  = set.Source;
+                    var inst = src.Instrument;
 
                     if (OK(set))
                     {
@@ -357,9 +345,9 @@ namespace IngameScript
                 {
                     for (int i = 0; i < SrcSettings.Count; i++)
                     {
-                        var set  = SrcSettings   [i];
-                        var src  = set.Source;//SrcSources    [i];
-                        var inst = src.Instrument;//SrcInstruments[i];
+                        var set  = SrcSettings[i];
+                        var src  = set.Source;
+                        var inst = set.Instrument;
                         
                         strFrom += "\n" + inst.Name;
 
