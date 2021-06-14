@@ -172,7 +172,7 @@ namespace IngameScript
             var track = clip.Track;
 
             var patStep = 
-                  (Playing
+                  (OK(track.PlayStep)
                    ?    track.StartStep
                      +  track.PlayPat * g_patSteps 
                      + (track.PlayStep % g_patSteps) 
