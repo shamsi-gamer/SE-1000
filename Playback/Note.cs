@@ -68,7 +68,7 @@ namespace IngameScript
 
                 Keys = new List<Key>();
                 foreach (var key in note.Keys)
-                    Keys.Add(key);
+                    Keys.Add(new Key(key));
             }
 
 
@@ -78,7 +78,7 @@ namespace IngameScript
                 iChan       = ch;
                 Number      = num;
                 Volume      = vol;
-                Step     = time;
+                Step        = time;
                 StepLength  = len;
 
                 ArpPlayTime = float_NaN;

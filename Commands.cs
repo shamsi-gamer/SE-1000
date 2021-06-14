@@ -818,17 +818,17 @@ namespace IngameScript
             if (EditedClip.AllPats)
             {
                 for (int p = 0; p < Math.Min(last-first+1, EditedClip.Patterns.Count); p++)
-                    PasteChanNotes(first + p, first + p);
+                    PasteChan(first + p, first + p);
             }
             else
             {
                 for (int p = 0; p < Math.Min(last-first+1, g_copyChans.Count); p++)
-                    PasteChanNotes(p, EditPat + first + p);
+                    PasteChan(p, EditPat + first + p);
             }
         }
 
 
-        static void PasteChanNotes(int srcPat, int dstPat)
+        static void PasteChan(int srcPat, int dstPat)
         { 
             var srcChan = g_copyChans[srcPat % g_copyChans.Count];
             var dstChan = EditedClip.Patterns[dstPat].Channels[CurChan];
@@ -839,6 +839,9 @@ namespace IngameScript
             foreach (var note in srcChan.Notes)
                 if (!OK(dstChan.Notes.Find(n => n.Step == note.Step)))
                     dstChan.Notes.Add(new Note(note, dstChan));
+
+            foreach (var key in srcChan.AutoKeys)
+                dstChan.AutoKeys.Add(new Key(key));
         }
     }
 }
