@@ -88,16 +88,7 @@ namespace IngameScript
             { 
                 var clip = Clips[index];
 
-                if (EditClip == 0) // set clip
-                {
-                    Log("Set Clip");
-                    if (!OK(Clips[index]))
-                        Clips[index] = Clip.Create(this); // set clip
-
-                    SetEditedClip(Clips[index]);
-                }
-
-                else if (OK(ClipCopy))          
+                if (OK(ClipCopy))          
                     PlaceClip(index);
 
                 else if (OK(clip))
@@ -122,14 +113,22 @@ namespace IngameScript
                     }
                 }
 
-                else if (!OK(clip)
-                      && CueClip <= 0)
+                else if (!OK(clip))
+                      //&& CueClip <= 0)
                 {
                     NextClip = -1;
 
                     if (CueClip == 0)
                         PlayClip = -1;
 
+                }
+
+                if (EditClip == 0) // set clip
+                {
+                    if (!OK(Clips[index]))
+                        Clips[index] = Clip.Create(this); // set clip
+
+                    SetEditedClip(Clips[index]);
                 }
             }
 
