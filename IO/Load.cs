@@ -121,6 +121,7 @@ namespace IngameScript
 
             if (   !int_TryParse(state[s++], out TicksPerStep)
                 || !int_TryParse(state[s++], out LockView)
+                || !int_TryParse(state[s++], out ShowMixer)
                 || !int_TryParse(state[s++], out CueClip)
                 || !int_TryParse(state[s++], out EditClip)
 
@@ -166,7 +167,6 @@ namespace IngameScript
             var i = 0;
 
             ShowClip  = ReadBit(f, i++);
-            ShowMixer = ReadBit(f, i++);
             Recording = ReadBit(f, i++);
 
             return True;

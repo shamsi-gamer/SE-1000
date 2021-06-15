@@ -172,6 +172,16 @@ namespace IngameScript
 
 
 
+        void ToggleShowMixer()
+        {
+            ShowMixer++;
+            
+            if (ShowMixer > 2)
+                ShowMixer = 0;
+        }
+
+
+
         void ToggleShowClip()
         {
             ShowClip = !ShowClip;
@@ -181,6 +191,7 @@ namespace IngameScript
 
             dspInfo.Panel.WriteText(ShowClip ? EditedClip.Name : SessionName);
         }
+
 
 
         void ToggleCueClip()

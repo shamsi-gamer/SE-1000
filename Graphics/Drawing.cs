@@ -19,8 +19,8 @@ namespace IngameScript
 
             if (!TooComplex)
             { 
-                if (ShowMixer) DrawMixer();
-                else           DrawSessionClips();
+                if (ShowMixer == 2) DrawMixer();
+                else                DrawSessionClips();
             }
         }
 

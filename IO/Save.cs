@@ -86,6 +86,7 @@ namespace IngameScript
                 
                 + PS(TicksPerStep)
                 + PS(LockView)
+                + PS(ShowMixer)
                 + PS(CueClip)
                 + PS(EditClip)
 
@@ -136,7 +137,6 @@ namespace IngameScript
             var  i = 0;
 
             WriteBit(ref f, ShowClip,  i++);
-            WriteBit(ref f, ShowMixer, i++);
             WriteBit(ref f, Recording, i++);
 
             return f;

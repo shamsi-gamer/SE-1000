@@ -10,8 +10,7 @@
 
         void SetVolumeAll(float dv)
         {
-            if (   ShowMixer
-                || ShowClip)
+            if (ShowMixer > 0)
             { 
                 var mod = (MixerShift ? 10 : 1) * dv;
                 EditedClip.Volume = MinMax(0, EditedClip.Volume + dVol * mod, 2);
@@ -39,8 +38,7 @@
 
         void EnableChannels(bool on)
         {
-            if (   ShowMixer
-                || (on && ShowClip))
+            if (ShowMixer == 2)
             { 
                 for (int ch = 0; ch < g_nChans; ch++)
                     EnableChannel(ch, on);
@@ -83,7 +81,7 @@
 
         public void SetVolume(int ch, float dv)
         {
-            if (ShowMixer)
+            if (ShowMixer == 2)
             { 
                 var vol = CurPattern.Channels[ch].Volume;
                 var mod = (MixerShift ? 10 : 1) * dv;
@@ -111,7 +109,7 @@
 
         void Solo(int ch)
         {
-            if (ShowMixer)
+            if (ShowMixer == 2)
             { 
                 if (EditedClip.Solo >= 0)
                 {
@@ -151,7 +149,7 @@
 
         void Mute(int ch)
         {
-            if (ShowMixer)
+            if (ShowMixer == 2)
             { 
                 var on = !CurPattern.Channels[ch].On;
 

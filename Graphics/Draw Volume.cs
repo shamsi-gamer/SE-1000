@@ -12,7 +12,7 @@ namespace IngameScript
         {
             float vol = 0;
 
-            if (ShowClip)
+            if (ShowMixer > 0)
             { 
                 foreach (var v in EditedClip.Track.DspVol)
                     vol = Math.Max(vol, v);
@@ -28,6 +28,7 @@ namespace IngameScript
             if (!TooComplex) DrawVolume(vol, dspVol2, 1);
             if (!TooComplex) DrawVolume(vol, dspVol3, 0);
         }
+
 
 
         void DrawVolume(float vol, Display dsp, int i)
@@ -61,10 +62,10 @@ namespace IngameScript
                 vol,
                 Channel_null,
                 6.5f,
-                ShowClip);
+                ShowMixer > 0);
 
             
-            if (   ShowClip
+            if (   ShowMixer > 0
                 && i == 2)
             {
                 DrawClipName(
@@ -79,6 +80,7 @@ namespace IngameScript
 
             dsp.Draw(sprites);
         }
+
 
 
         static void DrawSoundLevel(List<MySprite> sprites, float x, float y, float w, float h, float level, float v, Channel chan = Channel_null, float scale = 1, bool drawSetValue = True)

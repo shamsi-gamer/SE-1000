@@ -11,7 +11,8 @@
             if (  !Playing // play
                 && play) 
             {
-                if (ShowClip && ShowMixer)
+                if (   ShowClip 
+                    && ShowMixer == 2)
                 {
                     var saved = CueClip;
                     CueClip = 0;
