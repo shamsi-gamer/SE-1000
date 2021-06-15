@@ -38,7 +38,7 @@
 
         void EnableChannels(bool on)
         {
-            if (ShowMixer == 2)
+            if (ShowMixer > 0)
             { 
                 for (int ch = 0; ch < g_nChans; ch++)
                     EnableChannel(ch, on);

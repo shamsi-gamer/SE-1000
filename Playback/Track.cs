@@ -128,7 +128,10 @@ namespace IngameScript
                 if (EditClip == 0) // set clip
                 {
                     if (!OK(Clips[index]))
+                    { 
                         Clips[index] = Clip.Create(this); // set clip
+                        EditClip = -1;
+                    }
 
                     SetEditedClip(Clips[index]);
                 }
