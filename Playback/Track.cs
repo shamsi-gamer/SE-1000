@@ -86,6 +86,9 @@ namespace IngameScript
 
             public void SetClip(int index, Program prog)
             { 
+                if (MixerShift)
+                    return;
+
                 var clip = Clips[index];
 
                 if (OK(ClipCopy))          
@@ -114,7 +117,6 @@ namespace IngameScript
                 }
 
                 else if (!OK(clip))
-                      //&& CueClip <= 0)
                 {
                     NextClip = -1;
 
