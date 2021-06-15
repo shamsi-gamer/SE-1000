@@ -106,7 +106,7 @@ namespace IngameScript
 
                 DrawString(
                     sprites, 
-                    S(i).PadLeft(2) + " " + inst.Name.Substring(0, Math.Min(inst.Name.Length, maxNameLength)),
+                    S(i+1).PadLeft(2) + " " + inst.Name.Substring(0, Math.Min(inst.Name.Length, maxNameLength)),
                     x + sw + 5,
                     y + 2 + (i - EditedClip.InstOff) * step,
                     0.6f,
