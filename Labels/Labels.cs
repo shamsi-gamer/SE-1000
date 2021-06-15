@@ -25,7 +25,7 @@ namespace IngameScript
                             lblGyro, lblMass,
                             lblCmd1, lblCmd2, lblCmd3,
                             lblUp, lblDown, lblShift,
-                            lblChord, lblChord1, lblChord2, lblChord3, lblChord4, lblChordEdit, lblSpread,
+                            lblChord, lblChord1, lblChord2, lblChord3, lblChord4, lblChordEdit, lblStrum,
                             lblMixerVolumeUp, lblMixerVolumeDown, lblMixerAll, lblMixerMuteAll,
                             lblMixerShift,
                             lblMemPat, lblMemSet;

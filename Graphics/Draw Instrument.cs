@@ -14,7 +14,7 @@ namespace IngameScript
 
             var inst = SelInstrument;
 
-            var lw = 196;
+            var lw = 250;
 
             var w4 = (w-lw)/4;
             var w3 = (w-lw)/3;
@@ -106,10 +106,10 @@ namespace IngameScript
 
                 DrawString(
                     sprites, 
-                    inst.Name.Substring(0, Math.Min(inst.Name.Length, maxNameLength)),
+                    S(i).PadLeft(2) + " " + inst.Name.Substring(0, Math.Min(inst.Name.Length, maxNameLength)),
                     x + sw + 5,
-                    y + (i - EditedClip.InstOff) * step,
-                    0.7f,
+                    y + 2 + (i - EditedClip.InstOff) * step,
+                    0.6f,
                     inst == chan.Instrument 
                     ? (OK(CurSrc) ? color6 : color0) 
                     : (OK(CurSrc) ? color3 : color6));

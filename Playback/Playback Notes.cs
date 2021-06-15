@@ -25,9 +25,10 @@ namespace IngameScript
             if (   OK(clip.EditPos)
                 || Recording)
             {
-                if (   clip.ChordMode
-                    && clip.Chord < 0) PlayChord(clip, notes, ch);
-                else                   PlayNote (clip, notes, ch);
+                //if (   clip.ChordMode
+                //    && clip.Chord < 0) PlayChord(clip, notes, ch);
+                //else                   
+                    PlayNotes(clip, notes, ch);
 
                 if (!Recording)
                 { 
@@ -49,7 +50,7 @@ namespace IngameScript
                     clip.TrimCurrentNotes(ch);
 
                 for (int i = 0; i < notes.Count; i++)
-                    TriggerNote(clip, notes[i], ch, EditedClip.EditStepLength, ChordSpread(i));
+                    TriggerNote(clip, notes[i], ch, EditedClip.EditStepLength, ChordStrum(i));
             }
 
 
@@ -57,59 +58,59 @@ namespace IngameScript
         }
 
 
-        void PlayChord(Clip clip, List<int> notes, int ch)
-        {
-            var chan = 
-                Playing
-                ? clip.Patterns[clip.Track.PlayPat].Channels[ch]
-                : CurChannel;
+        //void PlayChord(Clip clip, List<int> notes, int ch)
+        //{
+        //    var chan = 
+        //        Playing
+        //        ? clip.Patterns[clip.Track.PlayPat].Channels[ch]
+        //        : CurChannel;
 
-            var _found = False;
+        //    var _found = False;
 
-            for (int i = 0; i < notes.Count; i++)
-            {
-                var note = notes[i];
+        //    for (int i = 0; i < notes.Count; i++)
+        //    {
+        //        var note = notes[i];
 
-                int found;
-                do
-                { 
-                    found = chan.Notes.FindIndex(n => 
-                            note == n.Number
-                        && clip.EditPos == clip.EditPat*g_patSteps + n.Step + ChordSpread(i));
+        //        int found;
+        //        do
+        //        { 
+        //            found = chan.Notes.FindIndex(n => 
+        //                    note == n.Number
+        //                && clip.EditPos == clip.EditPat*g_patSteps + n.Step + ChordStrum(i));
 
-                    if (OK(found)) 
-                    {
-                        chan.Notes.RemoveAt(found);
-                        _found = True;
-                    }
-                } 
-                while (OK(found));
-            }
+        //            if (OK(found)) 
+        //            {
+        //                chan.Notes.RemoveAt(found);
+        //                _found = True;
+        //            }
+        //        } 
+        //        while (OK(found));
+        //    }
 
 
-            if (!_found)
-            {
-                for (int i = 0; i < notes.Count; i++)
-                {
-                    var note = notes[i];
+        //    if (!_found)
+        //    {
+        //        for (int i = 0; i < notes.Count; i++)
+        //        {
+        //            var note = notes[i];
 
-                    if (!(   clip.ChordEdit
-                          && OK(clip.Chord)))
-                    {
-                        var noteStep = clip.EditPos % g_patSteps + ChordSpread(i);
-                        var lastNote = new Note(chan, ch, 1, note, noteStep, EditedClip.EditStepLength);
+        //            if (!(   clip.ChordEdit
+        //                  && OK(clip.Chord)))
+        //            {
+        //                var noteStep = clip.EditPos % g_patSteps + ChordStrum(i);
+        //                var lastNote = new Note(chan, ch, 1, note, noteStep, EditedClip.EditStepLength);
                     
-                        lastNotes.Add(lastNote);
-                        chan.AddNote(lastNote);
-                    }
+        //                lastNotes.Add(lastNote);
+        //                chan.AddNote(lastNote);
+        //            }
 
-                    TriggerNote(clip, note, ch, EditedClip.EditStepLength, ChordSpread(i));
-                }
-            }
-        }
+        //            TriggerNote(clip, note, ch, EditedClip.EditStepLength, ChordStrum(i));
+        //        }
+        //    }
+        //}
 
 
-        void PlayNote(Clip clip, List<int> notes, int ch)
+        void PlayNotes(Clip clip, List<int> notes, int ch)
         {
             var pat = 
                 Playing 
@@ -131,7 +132,7 @@ namespace IngameScript
                 do
                 { 
                     found = chan.Notes.FindIndex(n => 
-                        clip.EditPos == pat*g_patSteps + n.Step + ChordSpread(i));
+                        clip.EditPos == pat*g_patSteps + n.Step + ChordStrum(i));
 
                     if (OK(found)) 
                         chan.Notes.RemoveAt(found);
@@ -154,19 +155,19 @@ namespace IngameScript
                 if (!(   clip.ChordEdit
                       && OK(clip.Chord)))
                 {
-                    var noteStep = step % g_patSteps + ChordSpread(i);
+                    var noteStep = (int)((step % g_patSteps + ChordStrum(i)) / clip.EditStep) * clip.EditStep;
                     var lastNote = new Note(chan, ch, 1, note, noteStep, EditedClip.EditStepLength);
                     
                     lastNotes.Add(lastNote);
                     chan.AddNote(lastNote);
                 }
 
-                TriggerNote(clip, note, ch, EditedClip.EditStepLength, ChordSpread(i));
+                TriggerNote(clip, note, ch, EditedClip.EditStepLength, ChordStrum(i));
             }
         }
 
 
-        void TriggerNote(Clip clip, int num, int ch, float len, float chordSpreadOffset)
+        void TriggerNote(Clip clip, int num, int ch, float len, float chordStrumOffset)
         {
             var chan  = clip.CurPattern.Channels[ch];
             var track = clip.Track;
@@ -177,7 +178,7 @@ namespace IngameScript
                      +  track.PlayPat * g_patSteps 
                      + (track.PlayStep % g_patSteps) 
                    : TimeStep) 
-                + chordSpreadOffset;
+                + chordStrumOffset;
 
             AddNoteAndSounds(new Note(chan, ch, 1, num, patStep, len));
         }

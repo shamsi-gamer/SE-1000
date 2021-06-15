@@ -134,7 +134,7 @@ namespace IngameScript
                     var notes = GetChordNotes(EditedClip.CurNote);
 
                     for (int n = 0; n < notes.Count; n++)
-                        chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordSpread(n), EditedClip.EditStepLength));
+                        chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordStrum(n), EditedClip.EditStepLength));
                 }
             }
             else if (EditedClip.Pick)

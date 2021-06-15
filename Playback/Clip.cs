@@ -39,7 +39,7 @@ namespace IngameScript
                                  Piano,
                                  
                                  Transpose = False,
-                                 Spread    = False,
+                                 Strum    = False,
                                         
                                  Shift     = False,
                                  Move      = False,
@@ -58,7 +58,7 @@ namespace IngameScript
                                  SetMemPat = False;
                                  
                                  
-            public int           ChordSpread;
+            public int           ChordStrum;
                                  
             public bool          In, 
                                  Out,
@@ -180,7 +180,7 @@ namespace IngameScript
                 CurNote         = 69 * NoteScale;
                                 
                 Chord           = -1;
-                ChordSpread     =  
+                ChordStrum     =  
                                 
                 SongOff         =  
                 InstOff         =  
@@ -276,7 +276,7 @@ namespace IngameScript
                 CurNote         = clip.CurNote;
                                 
                 Chord           = clip.Chord;
-                ChordSpread     = clip.ChordSpread;
+                ChordStrum     = clip.ChordStrum;
                                 
                 SongOff         = clip.SongOff;
                 InstOff         = clip.InstOff;

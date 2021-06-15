@@ -56,7 +56,7 @@ namespace IngameScript
                 Piano       = ReadBit(f, i++);
                             
                 Transpose   = ReadBit(f, i++);
-                Spread      = ReadBit(f, i++);
+                Strum      = ReadBit(f, i++);
                             
                 Shift       = ReadBit(f, i++);
                 MixerShift  = ReadBit(f, i++);
@@ -108,7 +108,7 @@ namespace IngameScript
                     && int_TryParse  (cfg[c++], out CurNote        )
                                                                     
                     && int_TryParse  (cfg[c++], out Chord          )
-                    && int_TryParse  (cfg[c++], out ChordSpread    )
+                    && int_TryParse  (cfg[c++], out ChordStrum    )
                                                                     
                     && int_TryParse  (cfg[c++], out SongOff        )
                     && int_TryParse  (cfg[c++], out InstOff        )

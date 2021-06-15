@@ -70,7 +70,7 @@
                 case "tr up":       SetTranspose( 1);                break;
                 case "tr down":     SetTranspose(-1);                break;
 
-                case "spread":      Spread();                        break;
+                case "spread":      Strum();                        break;
 
                 case "note":        ToggleNote(EditedClip);          break;
                 case "cut":         CutNotes(EditedClip);            break;

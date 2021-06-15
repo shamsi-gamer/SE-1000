@@ -38,7 +38,7 @@
                 WriteBit(ref f, Piano,       i++);
                                              
                 WriteBit(ref f, Transpose,   i++);
-                WriteBit(ref f, Spread,      i++);
+                WriteBit(ref f, Strum,      i++);
                                              
                 WriteBit(ref f, Shift,       i++);
                 WriteBit(ref f, MixerShift,  i++);
@@ -85,7 +85,7 @@
                     + PS(CurNote)      
 
                     + PS(Chord)        
-                    + PS(ChordSpread)
+                    + PS(ChordStrum)
                 
                     + PS(SongOff)        
                     + PS(InstOff)        

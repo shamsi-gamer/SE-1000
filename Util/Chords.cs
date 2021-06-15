@@ -152,9 +152,9 @@ namespace IngameScript
 
 
         // return steps
-        float ChordSpread(int n)
+        float ChordStrum(int n)
         {
-            return (float)(EditedClip.ChordSpread*Math.Pow(n, 1.33) / TicksPerStep);        
+            return (float)(EditedClip.ChordStrum*Math.Pow(n, 1.33) / TicksPerStep);        
         }
 
 

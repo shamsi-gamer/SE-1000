@@ -4,13 +4,13 @@
     {
         void InitChordLabels()
         {
-            lblChord     = new Label(1, GetLabel("Chord"),      ChordIsBright,            CF_null,       UpdateChord);
-            lblChord1    = new Label(1, GetLabel("Chord 1"),    ChordNumIsBright,         ChordNumIsDim, UpdateChordNum, AL_null, 1);
-            lblChord2    = new Label(1, GetLabel("Chord 2"),    ChordNumIsBright,         ChordNumIsDim, UpdateChordNum, AL_null, 2);
-            lblChord3    = new Label(1, GetLabel("Chord 3"),    ChordNumIsBright,         ChordNumIsDim, UpdateChordNum, AL_null, 3);
-            lblChord4    = new Label(1, GetLabel("Chord 4"),    ChordNumIsBright,         ChordNumIsDim, UpdateChordNum, AL_null, 4);
-            lblChordEdit = new Label(1, GetLabel("Chord Edit"), ChordEditIsBright,        CF_null,       UpdateChordEdit);
-            lblSpread    = new Label(1, GetLabel("Spread"),     lbl => EditedClip.Spread, CF_null,       lbl => lbl.SetText("Spread", 8, 18));;
+            lblChord     = new Label(1, GetLabel("Chord"),      ChordIsBright,           CF_null,       UpdateChord);
+            lblChord1    = new Label(1, GetLabel("Chord 1"),    ChordNumIsBright,        ChordNumIsDim, UpdateChordNum, AL_null, 1);
+            lblChord2    = new Label(1, GetLabel("Chord 2"),    ChordNumIsBright,        ChordNumIsDim, UpdateChordNum, AL_null, 2);
+            lblChord3    = new Label(1, GetLabel("Chord 3"),    ChordNumIsBright,        ChordNumIsDim, UpdateChordNum, AL_null, 3);
+            lblChord4    = new Label(1, GetLabel("Chord 4"),    ChordNumIsBright,        ChordNumIsDim, UpdateChordNum, AL_null, 4);
+            lblChordEdit = new Label(1, GetLabel("Chord Edit"), ChordEditIsBright,       CF_null,       UpdateChordEdit);
+            lblStrum     = new Label(1, GetLabel("Strum"),      lbl => EditedClip.Strum, CF_null,       lbl => lbl.SetText("Strum", 9, 14));
         }
 
 

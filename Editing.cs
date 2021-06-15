@@ -27,6 +27,7 @@ namespace IngameScript
         //}
 
 
+
         void Step(Clip clip, int ch)
         {
             if (OK(clip.EditPos))
@@ -52,6 +53,7 @@ namespace IngameScript
         }
 
 
+
         void Hold(Clip clip)
         {
             if (OK(clip.EditPos))
@@ -72,10 +74,10 @@ namespace IngameScript
                             if (pat < 0) return;
 
                             lastNote.StepLength = Math.Min(
-                                clip.EditPos - (pat * g_patSteps + lastNote.Step) + EditedClip.EditStep + ChordSpread(i),
+                                clip.EditPos - (pat * g_patSteps + lastNote.Step) + EditedClip.EditStep + ChordStrum(i),
                                 10f * FPS / TicksPerStep);
 
-                            TriggerNote(clip, lastNote.Number, lastNote.iChan, EditedClip.EditStep, ChordSpread(i));
+                            TriggerNote(clip, lastNote.Number, lastNote.iChan, EditedClip.EditStep, ChordStrum(i));
                         }
 
                         MoveEdit(clip, 1);
@@ -90,6 +92,7 @@ namespace IngameScript
                 //    StopCurrentNotes(clip.CurChan);
             }
         }
+
 
 
         static void Interpolate(Clip clip)
@@ -161,6 +164,7 @@ namespace IngameScript
         }
 
 
+
         static void EnableKeyMove(Clip clip)
         {
             if (OK(g_editKey))
@@ -179,6 +183,7 @@ namespace IngameScript
                 g_editKey = key;
             }
         }
+
 
 
         static void SetKeyValue(Key key, float val)
@@ -202,6 +207,7 @@ namespace IngameScript
                 case strOff:  key.Value = MinMax(-100,      val,  100); break;
             }
         }
+
 
 
         void Edit()
@@ -229,11 +235,15 @@ namespace IngameScript
         }
 
 
+
         void Record()
         {
             Recording = !Recording;
-            if (Recording) EditedClip.EditPos = float_NaN;
+
+            if (Recording) 
+                EditedClip.EditPos = float_NaN;
         }
+
 
 
         void ToggleNote(Clip clip)
@@ -259,6 +269,7 @@ namespace IngameScript
                 }
             }
         }
+
 
 
         void CutNotes(Clip clip)
@@ -289,6 +300,7 @@ namespace IngameScript
         }
 
 
+
         static List<Note> GetEditNotes(Clip clip, bool onlyEdit = False)
         {
             var chan = clip.CurChannel;
@@ -311,6 +323,7 @@ namespace IngameScript
             else
                 return new List<Note>();
         }
+
 
 
         List<Note> GetLongNotes(Clip clip)
@@ -345,6 +358,7 @@ namespace IngameScript
         }
 
 
+
         List<Note> GetChannelNotes(Clip clip)
         {
             var notes = new List<Note>();
@@ -357,14 +371,26 @@ namespace IngameScript
 
             return notes;
         }
+         
 
 
         void SetStepLength(int d)
         {
-            var len = MinMax(4, TicksPerStep + d, 15);
-            var newTime = g_time / len;
+            var newTicksPerStep = MinMax(4, TicksPerStep + d, 15);
 
-            TicksPerStep = len;
+
+            foreach (var track in Tracks)
+            {
+                if (OK(track.PlayTime))
+                { 
+                    track.PlayTime = (long)(track.PlayTime * newTicksPerStep / (float)TicksPerStep);
+                    track.StartTime = g_time - track.PlayTime;
+                }
+            }   
+            
+
+            TicksPerStep = newTicksPerStep;
+
 
             foreach (var pat in EditedClip.Patterns)
             {
@@ -372,8 +398,10 @@ namespace IngameScript
                     chan.Shuffle = (int)Math.Min(chan.Shuffle, TicksPerStep - 1);
             }
 
+
             g_lcdPressed.Add(lcdInfo + (d > 0 ? 2 : 3));
         }
+
 
 
         void ChangeEditStep()
@@ -387,6 +415,7 @@ namespace IngameScript
         }
 
 
+
         void ChangeEditLength()
         {
             EditedClip.EditLengthIndex++;
@@ -396,6 +425,7 @@ namespace IngameScript
 
             lblEditLength.Mark();
         }
+
 
 
         void Left(Clip clip)
@@ -409,6 +439,7 @@ namespace IngameScript
         }
 
 
+
         void Right(Clip clip)
         {
             if (   OK(clip.EditPos)
@@ -418,6 +449,7 @@ namespace IngameScript
 
             lblRight.Mark();
         }
+
 
 
         void MoveEdit(Clip clip, int move, bool create = False)
@@ -437,6 +469,7 @@ namespace IngameScript
             else if (OK(clip.EditPos))
                 MoveEditPos(clip, move, create);
         }
+
 
 
         static void MoveEditPos(Clip clip, int move, bool create)
@@ -468,6 +501,7 @@ namespace IngameScript
         }
 
 
+
         static void MoveNotes(Clip clip, int move)
         {
             clip.EditPos += move * EditedClip.EditStep;
@@ -492,6 +526,7 @@ namespace IngameScript
         }
 
 
+
         static void ResizeNotes(Clip clip, int move)
         {
             foreach (var n in clip.EditNotes)
@@ -501,6 +536,7 @@ namespace IngameScript
                 if (is05) n.StepLength -= 0.5f;
             }
         }
+
 
 
         static void MoveKey(Clip clip, int move)
@@ -526,6 +562,7 @@ namespace IngameScript
         }
 
 
+
         static void Transpose(Clip clip, int ch, float tr)
         {
             if (clip.EditNotes.Count > 0)
@@ -544,6 +581,7 @@ namespace IngameScript
         }
 
 
+
         static void Transpose(Clip clip, int pat, int ch, float tr)
         {
             var chan = clip.Patterns[pat].Channels[ch];
@@ -553,10 +591,12 @@ namespace IngameScript
         }
 
 
+
         static void Transpose(Clip clip, Note note, float tr)
         {
             note.Number = (int)Math.Round(note.Number + tr * (clip.Shift ? 12 : 1) * (clip.HalfSharp ? 1 : 2));
         }
+
 
 
         void SetTranspose(int d)
@@ -564,8 +604,8 @@ namespace IngameScript
             var tune = SelSource    ?.Tune
                     ?? SelInstrument?.Tune;
 
-            if (EditedClip.Spread)
-                EditedClip.ChordSpread = MinMax(0, EditedClip.ChordSpread + d, 16);
+            if (EditedClip.Strum)
+                EditedClip.ChordStrum = MinMax(0, EditedClip.ChordStrum + d, 16);
             
             else if (ShowPiano) SetTranspose(EditedClip, CurChan, d);
             else                SetShuffle(CurChan, d);
@@ -573,6 +613,7 @@ namespace IngameScript
             if (d > 0) lblOctaveUp  .Mark();
             else       lblOctaveDown.Mark();
         }
+
 
 
         void SetTranspose(Clip clip, int ch, int tr)
@@ -592,9 +633,10 @@ namespace IngameScript
         }
 
 
-        void Spread()
+
+        void Strum()
         {
-            EditedClip.Spread = !EditedClip.Spread;
+            EditedClip.Strum = !EditedClip.Strum;
         }
     }
 }

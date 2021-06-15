@@ -322,7 +322,7 @@ namespace IngameScript
         {
             int val;
 
-                 if (EditedClip.Spread) val = EditedClip.ChordSpread;
+                 if (EditedClip.Strum) val = EditedClip.ChordStrum;
             else if (ShowPiano)         val = CurChannel.Transpose;
             else                        val = CurChannel.Shuffle;
 
@@ -332,8 +332,8 @@ namespace IngameScript
 
         void UpdateShuffleLabel(Label lbl)
         {
-            if (EditedClip.Spread)
-                lbl.SetText("Sprd");
+            if (EditedClip.Strum)
+                lbl.SetText("Strum", 9, 14);
 
             else if (ShowPiano)
                 lbl.SetText(
