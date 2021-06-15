@@ -28,7 +28,6 @@ namespace IngameScript
 
             var wt = (float)(w - xt) / g_patSteps;
 
-            DrawPianoKeys(sprites, x + xt-pw + 3, y, pw - 6, rh, color4);
             DrawPianoGrid(sprites, x + xt,        y, w - xt, rh);
 
 
