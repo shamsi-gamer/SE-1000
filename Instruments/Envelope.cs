@@ -269,7 +269,7 @@ namespace IngameScript
                 var w0 = 240f;
                 var h0 = 120f;
 
-                var x0 = x + w/2 - w0/2;
+                var x0 = x + w/2 - w0/2; 
                 var y0 = y + h/2 - h0/2;
 
                 Vector2 p0, p1, p2, p3, p4;
@@ -277,7 +277,7 @@ namespace IngameScript
                 GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), False, out p0, out p1, out p2, out p3, out p4);
                 DrawEnvelopeSupportsAndInfo(sprites, p0, p1, p2, p3, p4, y0, h0, isAtt, isDec, isSus, isRel);
 
-                FillRect(sprites, p0.X, y0 + h0/2, w0, -CurValue*h/2, color3);
+                FillRect(sprites, p0.X, y0 + h0, w0, -CurValue*h/2, color3);
 
                 GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), True, out p0, out p1, out p2, out p3, out p4);
                 DrawEnvelope(sprites, p0, p1, p2, p3, p4, color3, False, False, False, False, Decay.CurValue);
