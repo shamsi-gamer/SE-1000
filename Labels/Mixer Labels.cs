@@ -36,7 +36,7 @@ namespace IngameScript
         void UpdateVolumeUpAll(Label lbl)
         {
             if (ShowMixer > 0) lbl.SetText("Vol ►", 8, 18);
-            else               lbl.SetText("Set");
+            else               lbl.SetText("Edit");
         }
 
 

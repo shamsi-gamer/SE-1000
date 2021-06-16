@@ -123,6 +123,7 @@ namespace IngameScript
                         if (!OK(Clips[index]))
                         { 
                             Clips[index] = Clip.Create(this); // set clip
+                            SetEditedClip(Clips[index]);
                             EditClip = -1;
                         }
                     }
