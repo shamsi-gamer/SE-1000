@@ -141,27 +141,7 @@ namespace IngameScript
 
             public void CueNextClip(int index, Program prog)
             {
-                //if (OK(NextClip))
-                //{
-                //    NextClip =
-                //        index == NextClip
-                //        ? PlayClip
-                //        : index;
-                //}
-                //else
-                    NextClip = index;
-
-
-                //if (EditClip == 0)
-                //{ 
-                //    foreach (var track in Tracks)
-                //    {
-                //        if (track == this) continue;
-                //        track.NextClip = -1;
-                //    }
-
-                //    EditClip = -1;
-                //}
+                NextClip = index;
 
 
                 if (CueClip == 0)
@@ -391,6 +371,7 @@ namespace IngameScript
                      (OK(PlayTime) ? S(PlayTime) : "?")
                     + PS(PlayPat)
                     + PS(NextPat)
+                    + PS(PlayClip)
                     + PS(NextClip);
 
                 var _indices = new List<int>();
@@ -430,12 +411,14 @@ namespace IngameScript
                 var cfg = strCfg.Split(';');
                 var c = 0;
 
-                if (   cfg.Length < 4
+                if (   cfg.Length < 5
                     || !long_TryParse(cfg[c++], out track.PlayTime)
                     || ! int_TryParse(cfg[c++], out track.PlayPat )
                     || ! int_TryParse(cfg[c++], out track.NextPat )
+                    || ! int_TryParse(cfg[c++], out track.PlayClip) 
                     || ! int_TryParse(cfg[c++], out track.NextClip)) 
                     return Track_null;
+
 
                 var _indices = lines[line++].Split(';');
 
