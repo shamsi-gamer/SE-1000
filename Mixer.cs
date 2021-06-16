@@ -47,7 +47,7 @@
                  ? lblMixerAll
                  : lblMixerMuteAll).Mark();
             }
-            else if (!ShowClip)
+            else
             { 
                 if (on) 
                 {

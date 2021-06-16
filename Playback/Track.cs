@@ -112,29 +112,29 @@ namespace IngameScript
                     else if (index != PlayClip) // cue next clip
                     { 
                         CueNextClip(index, prog);
-                        EditClip = -1;
+                        SetEditedClip(clip);
                     }
                 }
 
                 else if (!OK(clip))
                 {
-                    NextClip = -1;
-
-                    if (CueClip == 0)
-                        PlayClip = -1;
-
-                }
-
-                if (EditClip == 0) // set clip
-                {
-                    if (!OK(Clips[index]))
-                    { 
-                        Clips[index] = Clip.Create(this); // set clip
-                        EditClip = -1;
+                    if (EditClip == 0) // set clip
+                    {
+                        if (!OK(Clips[index]))
+                        { 
+                            Clips[index] = Clip.Create(this); // set clip
+                            EditClip = -1;
+                        }
                     }
+                    else
+                    { 
+                        NextClip = -1;
 
-                    SetEditedClip(Clips[index]);
+                        if (CueClip == 0)
+                            PlayClip = -1;
+                    }
                 }
+
             }
 
 
