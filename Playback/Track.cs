@@ -110,10 +110,10 @@ namespace IngameScript
                         NextClip = PlayClip; // cancel clip off
 
                     else if (index != PlayClip) // cue next clip
-                    { 
                         CueNextClip(index, prog);
+
+                    else if (EditClip == 0)
                         SetEditedClip(clip);
-                    }
                 }
 
                 else if (!OK(clip))

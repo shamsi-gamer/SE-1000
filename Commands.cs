@@ -256,7 +256,31 @@ namespace IngameScript
                     EditedClip.GetCurPatterns(out first, out last);
 
                     for (int p = first; p <= last; p++)
-                        EditedClip.Patterns[p].Channels[CurChan].Instrument = Instruments[n];
+                    { 
+                        var newInst = Instruments[n];
+                        var chan    = EditedClip.Patterns[p].Channels[CurChan];
+
+                        var oldInst = chan.Instrument;
+                        chan.Instrument = newInst;
+
+                        
+                        // update keys
+
+                        foreach (var note in chan.Notes)
+                        {
+                            foreach (var key in note.Keys)
+                            {
+                                if (key.Parameter.Instrument == oldInst)
+                                    key.Parameter.Instrument = newInst;
+                            }
+                        }
+
+                        foreach (var key in chan.AutoKeys)
+                        {
+                            if (key.Parameter.Instrument == oldInst)
+                                key.Parameter.Instrument = newInst;
+                        }
+                    }
                 }
 
 

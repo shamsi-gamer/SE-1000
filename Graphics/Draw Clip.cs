@@ -117,14 +117,17 @@ namespace IngameScript
                     if (EditedClip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, EditedClip, p, 1);
                     else                  DrawPattern  (sprites, px, py, pw, ph, EditedClip, p, 1, False);
 
-                    if (EditedClip.ParamKeys)
-                    {
-                        FillRect     (sprites, px, py+ph+ph/5, pw, 1,    color3);
-                        DrawParamKeys(sprites, px, py + ph,    pw, ph/5, EditedClip, p, CurChan);
-                    }
-                    else if (EditedClip.ParamAuto)
-                    {
-                        FillRect(sprites, px, py + ph + ph/5, pw, 1, color3);
+                    if (OK(CurSet))
+                    { 
+                        if (EditedClip.ParamKeys)
+                        {
+                            FillRect     (sprites, px, py+ph+ph/5, pw, 1,    color3);
+                            DrawParamKeys(sprites, px, py + ph,    pw, ph/5, EditedClip, p, CurChan);
+                        }
+                        else if (EditedClip.ParamAuto)
+                        {
+                            FillRect(sprites, px, py + ph + ph/5, pw, 1, color3);
+                        }
                     }
                 }
 
