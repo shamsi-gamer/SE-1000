@@ -218,7 +218,9 @@ namespace IngameScript
             EditedClip.EditPos =
                 OK(EditedClip.EditPos)
                 ? float.NaN
-                : (OK(EditedClip.LastEditPos) ? EditedClip.LastEditPos : EditPat * g_patSteps);
+                : (OK(EditedClip.LastEditPos) 
+                   ? EditedClip.LastEditPos + (EditPat - (int)(EditedClip.LastEditPos/g_patSteps)) * g_patSteps
+                   : EditPat * g_patSteps);
 
             EditedClip.StopEdit();
 
@@ -230,7 +232,7 @@ namespace IngameScript
             if (!OK(EditedClip.EditPos))
                 EditedClip.Inter = Note_null;
 
-            if (OK(EditedClip.EditPos)) 
+            if (OK(EditedClip.EditPos))
                 Recording = False;
         }
 
