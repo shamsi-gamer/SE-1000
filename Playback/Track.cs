@@ -284,9 +284,15 @@ namespace IngameScript
                             PlayClip  = srcTrack.PlayClip;
                             NextClip  = srcTrack.NextClip;
 
-                            if (srcTrack != this)
+                            //if (srcTrack != this)
                                 Stop();
                         }
+                    }
+
+                    else
+                    { 
+                        PlayClip = index;
+                        NextClip = index;
                     }
                 }
             }
