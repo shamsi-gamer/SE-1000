@@ -185,7 +185,15 @@ namespace IngameScript
 
         static void DrawClipName(List<MySprite> sprites, string name, float x, float y, float size, Color color)
         {
-            var nNameLines = name.Split(' ').Length;
+            name = name
+                .Replace(' ', '\n')
+                .Trim('\n')
+                .Trim();
+
+            var nNameLines = name.Split(
+                    new char[] {'\n'}, 
+                    StringSplitOptions.RemoveEmptyEntries)
+                .Length;
 
             DrawString(
                 sprites,
