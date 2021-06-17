@@ -385,7 +385,7 @@ namespace IngameScript
             {
                 if (OK(track.PlayTime))
                 { 
-                    track.PlayTime = (long)(track.PlayTime * newTicksPerStep / (float)TicksPerStep);
+                    track.PlayTime  = (long)(track.PlayTime * newTicksPerStep / (float)TicksPerStep);
                     track.StartTime = g_time - track.PlayTime;
                 }
             }   

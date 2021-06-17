@@ -182,11 +182,13 @@ namespace IngameScript
 
                 var step = refClip.Track.PlayStep;
 
+                if (!OK(step))
+                    return True;
+
                 var pat = 
                     CueClip == 2 
                     ? refClip.Patterns.Count-1 
                     : refClip.Track.PlayPat;
-
 
                 return step >= (pat+1) * g_patSteps;
             }

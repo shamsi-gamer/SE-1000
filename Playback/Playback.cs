@@ -154,18 +154,6 @@
             }
 
             return longestPlaying;
-
-            //return 
-            //       !OK(longestPlaying)
-            //    || !OK(PlayClip)
-            //    ||  longestPlaying.Patterns.Count > PlayingClip.Patterns.Count
-            //    ? longestPlaying
-            //    : PlayingClip;
-
-            //return 
-            //return Math.Min(
-            //    Clips[NextClip].Patterns.Count, 
-            //    (maxOtherPat % Clips[NextClip].Patterns.Count)) - 1;
         }
     }
 }
