@@ -27,6 +27,7 @@ namespace IngameScript
         }
 
 
+
         static void DrawValueVertical(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag, int dec)
         {
             var wb = w/10;
@@ -70,6 +71,7 @@ namespace IngameScript
                 1f, 
                 color6);
         }
+
 
 
         static void DrawValueHorizontal(List<MySprite> sprites, float x, float y, float w, float h, float min, float max, float value, float v, string tag)
@@ -126,6 +128,7 @@ namespace IngameScript
                 1f, 
                 color6);
         }
+
 
 
         void DrawKeysAndAuto(List<MySprite> sprites, Parameter param, float x, float y, float w, float h, float xt, float rh, Clip clip, int pat)
@@ -233,6 +236,7 @@ namespace IngameScript
         }
 
 
+
         string GetParamValueString(float val, string paramTag)
         {
             switch (paramTag)
@@ -242,6 +246,7 @@ namespace IngameScript
             default:     return PrintValue(val, 2, True, 0);
             }
         }
+
 
 
         void DrawParamKeys(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int p, int ch)
@@ -316,6 +321,7 @@ namespace IngameScript
                 DrawLine(sprites, pi, pc, color5);
             }
         }
+
 
 
         void DrawParamAuto(List<MySprite> sprites, float x, float y, float w, float h, float wTotal, Clip clip, int p, int ch)
@@ -394,6 +400,7 @@ namespace IngameScript
         }
 
 
+
         Key AltChanKey(Key from)
         {
             var val = from.Value;
@@ -405,6 +412,7 @@ namespace IngameScript
 
             return new Key(from.SourceIndex, from.Parameter, val, from.Step);
         }
+
 
 
         Vector2 ValuePos(float x, float y, float w, float h, int p, Note note, string path, Clip clip)
@@ -426,6 +434,7 @@ namespace IngameScript
                 x + wt * (note.Step + (note.PatIndex - p)*g_patSteps + note.ShOffset) + wt/2, 
                 y + h - h/2 * val - cd/2);
         }
+
 
 
         Vector2 KeyPos(float x, float y, float w, float h, int p, Key key, Clip clip)

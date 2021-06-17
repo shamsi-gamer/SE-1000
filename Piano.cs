@@ -108,7 +108,7 @@ namespace IngameScript
         }
 
 
-        void Tick(int ch, int step)
+        void Tick(int ch, float step)
         {
             int first, last;
             EditedClip.GetCurPatterns(out first, out last);
@@ -118,14 +118,16 @@ namespace IngameScript
         }
 
 
-        void Tick(int pat, int ch, int step)
+        void Tick(int pat, int ch, float step)
         {
             var _chan = EditedClip.Patterns[pat].Channels[ch];
             var  chan = EditedClip.Patterns[pat].Channels[ch];
 
+            var dStep = Math.Min(Math.Max(0.5f, EditedClip.EditStep), 1);
+
             var found = chan.Notes.Where(n => 
                    n.Step >= step
-                && n.Step <  step+1).ToArray();
+                && n.Step <  step + dStep).ToArray();
 
             if (found.Length == 0)
             {
@@ -190,7 +192,7 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.Step += Math.Min(EditedClip.EditStepIndex, 1);
+                        note.Step += EditedClip.EditStep;
 
                         if (note.Step >= g_patSteps)
                             spill.Add(note);
@@ -260,9 +262,11 @@ namespace IngameScript
             int first, last;
             EditedClip.GetCurPatterns(out first, out last);
 
+            var dStep = Math.Min(Math.Max(0.5f, g_patSteps / frac), 1);
+
             for (int p = first; p <= last; p++)
             { 
-                for (int step = 0; step < g_patSteps; step += g_patSteps / frac)
+                for (float step = 0; step < g_patSteps; step += dStep)
                     Tick(p, ch, step);
             }
         }
