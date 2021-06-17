@@ -113,7 +113,10 @@ namespace IngameScript
                         CueNextClip(index, prog);
 
                     else if (EditClip == 0)
+                    { 
                         SetEditedClip(clip);
+                        EditClip = -1;
+                    }
                 }
 
                 else if (!OK(clip))
@@ -205,12 +208,9 @@ namespace IngameScript
 
             void PlaceClip(int index)
             {
-                if (   EditClip == 1
-                    || EditClip == 2) 
+                if (   EditClip == 1  // move
+                    || EditClip == 2) // dup
                     MoveClip(index);
-
-                EditedClip = Clips[index];
-                UpdateClipDisplay(EditedClip);
 
                 ClipCopy = Clip_null;
                 EditClip = -1;
