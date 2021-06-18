@@ -132,8 +132,6 @@ namespace IngameScript
                     pnlStorageState.GetText(),
                     pnlStorageInstruments.GetText(),
                     pnlStorageTracks.GetText());
-
-                SetLabelColor(EditedClip.ColorIndex);
             }
         }
 

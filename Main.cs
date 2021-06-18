@@ -30,7 +30,7 @@ namespace IngameScript
                 if ((update & UpdateType.Update10) != 0) 
                     Update10();
 
-                //if (!OK(g_ioAction))
+                if (!OK(g_ioAction))
                     UpdateTime();
 
                 UpdateRuntimeInfo();
@@ -39,6 +39,7 @@ namespace IngameScript
 
             //pnlInfoLog.CustomData = "";
         }
+
 
 
         void Update1()
@@ -57,9 +58,11 @@ namespace IngameScript
         }
 
 
+
         void Update10()
         {
-            if (g_started)
+            if (    g_started
+                && !OK(g_ioAction))
             {
                 UpdateInstName();
                 UpdateClipName();
@@ -73,12 +76,15 @@ namespace IngameScript
                 DrawDisplays();
                 
 
-                if (!TooComplex)
+                if (   !TooComplex
+                    && !OK(g_ioAction))
                     foreach (var lbl in g_slowLabels) lbl.Update();
+
 
                 if (!TooComplex)
                 { 
-                    if (ShowClip)
+                    if (    ShowClip
+                        && !OK(g_ioAction))
                     { 
                         foreach (var lbl in g_clipLabels)   lbl.Update();
                         foreach (var lbl in g_adjustLabels) lbl.Update();
@@ -101,7 +107,7 @@ namespace IngameScript
                         track.DampenDisplayVolumes();
 
                     UnmarkAllLabels();
-                }
+                } 
             }
 
 
@@ -121,6 +127,7 @@ namespace IngameScript
         }
 
 
+
         void UpdateTime()
         {
             g_time++;
@@ -137,6 +144,7 @@ namespace IngameScript
         }
 
 
+
         void UpdateRuntimeInfo()
         {
             g_instCount = Math.Max(g_instCount, Runtime.CurrentInstructionCount);
@@ -149,6 +157,7 @@ namespace IngameScript
             g_runtimeMs[g_curRuntimeTick++] = runMs;
             g_maxRuntimeMs = Math.Max(g_maxRuntimeMs, runMs);
         }
+
 
 
         void ResetRuntimeInfo()

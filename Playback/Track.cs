@@ -505,6 +505,9 @@ namespace IngameScript
 
         void SetAllTrackClips(int index, int refTrack)
         {
+            if (MixerShift)
+                return;
+
             var tracks = new List<Track>();
 
             foreach (var track in Tracks)

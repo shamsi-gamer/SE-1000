@@ -319,7 +319,7 @@ namespace IngameScript
         }
 
 
-        void BackOut()
+        static void BackOut()
         {
             EditedClip.Move      = False;
 

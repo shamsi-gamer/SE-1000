@@ -10,14 +10,19 @@ namespace IngameScript
     {
         void DrawDisplays()
         {
-            DrawVolume();
+            if (!TooComplex)          
+                DrawInfo();
 
-            if (!TooComplex) DrawMain();
-            if (!TooComplex) DrawInfo();
-            if (!TooComplex) DrawClip();
-            if (!TooComplex) DrawIO();
+            if (   !TooComplex 
+                && !OK(g_ioAction)) 
+            { 
+                DrawVolume();
+                DrawMain();
+                DrawClip();
+                DrawIO(); 
+            }
 
-            if (!TooComplex)
+            if (!TooComplex && !OK(g_ioAction))
             { 
                 if (ShowMixer == 2) DrawMixer();
                 else                DrawSessionClips();

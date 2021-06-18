@@ -99,6 +99,7 @@ namespace IngameScript
         }
 
 
+
         void DrawComplexityInfo(List<MySprite> sprites, float x, float y)
         {
             var cx = x + 136;
@@ -108,6 +109,7 @@ namespace IngameScript
 
             g_accComplexity = 0;
         }
+
 
 
         void DrawRuntimeInfo(List<MySprite> sprites, float x, float y)
@@ -134,6 +136,7 @@ namespace IngameScript
         }
         
         
+
         void DrawPolyphonyInfo(List<MySprite> sprites, float x, float y)
         {
             var cx = x + 136;
@@ -145,13 +148,22 @@ namespace IngameScript
         }
         
         
+
         void DrawIoInfo(List<MySprite> sprites, float x, float y)
         {
             var cx = x + 20;
 
             var val = 1f;
 
-            if (g_ioAction == 1) // save
+            if (g_ioAction == 0) // load
+            {
+                var total = Instruments.Count + Tracks.Count;
+                var done  = (g_ioState == 1 ? Instruments.Count : 0) + g_ioPos;
+
+                if (total > 1)
+                    val = (float)(done+1) / (total-1);
+            }
+            else if (g_ioAction == 1) // save
             {
                 var total = Instruments.Count + Tracks.Count;
                 var done  = (g_ioState == 1 ? Instruments.Count : 0) + g_ioPos;
@@ -164,11 +176,13 @@ namespace IngameScript
         }
 
 
+
         void DrawProgressBar(List<MySprite> sprites, float x, float y, float w, float h, float val)
         {
             DrawRect(sprites, x,   y,    w,          h,   color6, 2);
             FillRect(sprites, x+1, y+1, (w-2) * val, h-2, color6);
         }
+
 
 
         void DrawIO()
@@ -193,6 +207,7 @@ namespace IngameScript
 
             dsp.Draw(sprites);
         }
+
 
 
         void DrawMissingMod()

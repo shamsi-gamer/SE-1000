@@ -11,7 +11,7 @@ namespace IngameScript
         }
 
 
-        void SwitchToSetting(Clip clip, Instrument inst, string path)
+        static void SwitchToSetting(Clip clip, Instrument inst, string path)
         {
             BackOut();
 
