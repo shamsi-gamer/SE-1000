@@ -262,7 +262,10 @@ namespace IngameScript
             int first, last;
             EditedClip.GetCurPatterns(out first, out last);
 
-            var dStep = Math.Min(Math.Max(0.5f, g_patSteps / frac), 1);
+            float dStep = g_patSteps / frac;
+
+            if (frac == 16)
+                dStep = Math.Min(Math.Max(0.5f, dStep), 1);
 
             for (int p = first; p <= last; p++)
             { 
