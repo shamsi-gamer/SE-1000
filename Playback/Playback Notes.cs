@@ -7,6 +7,45 @@ namespace IngameScript
 {
     partial class Program
     {
+        void ToggleNotes(Clip clip, List<int> notes, int ch)
+        {
+            var pat = 
+                Playing 
+                ? OK(clip.EditPos) ? clip.EditPat : clip.Track.PlayPat 
+                : clip.EditPat;
+
+            var chan = clip.Patterns[pat].Channels[ch]; 
+
+
+            var _found = False;
+
+            for (int i = 0; i < notes.Count; i++)
+            {
+                var note = notes[i];
+
+                int found;
+                do
+                { 
+                    found = chan.Notes.FindIndex(n => 
+                            note == n.Number
+                        && clip.EditPos == clip.EditPat*g_patSteps + n.Step + ChordStrum(i));
+
+                    if (OK(found)) 
+                    {
+                        chan.Notes.RemoveAt(found);
+                        _found = True;
+                    }
+                } 
+                while (OK(found));
+            }
+
+
+            if (!_found)
+                TriggerNotes(clip, notes, ch, clip.EditPos);
+        }
+
+
+
         void PlayNote(Clip clip, int num, List<int> chord, int ch)
         {
             if (TooComplex) return;
@@ -57,45 +96,6 @@ namespace IngameScript
         }
 
 
-        void ToggleNotes(Clip clip, List<int> notes, int ch)
-        {
-            var pat = 
-                Playing 
-                ? OK(clip.EditPos) ? clip.EditPat : clip.Track.PlayPat 
-                : clip.EditPat;
-
-            var chan = clip.Patterns[pat].Channels[ch]; 
-
-
-            var _found = False;
-
-            for (int i = 0; i < notes.Count; i++)
-            {
-                var note = notes[i];
-
-                int found;
-                do
-                { 
-                    found = chan.Notes.FindIndex(n => 
-                            note == n.Number
-                        && clip.EditPos == clip.EditPat*g_patSteps + n.Step + ChordStrum(i));
-
-                    if (OK(found)) 
-                    {
-                        chan.Notes.RemoveAt(found);
-                        _found = True;
-                    }
-                } 
-                while (OK(found));
-            }
-
-
-            if (!_found)
-                TriggerNotes(clip, notes, ch, clip.EditPos);
-        }
-
-
-
         void PlayNotes(Clip clip, List<int> notes, int ch)
         {
             var pat = 
@@ -139,7 +139,7 @@ namespace IngameScript
         {
             var pat =
                 Playing
-                ? OK(clip.EditPos) ? clip.EditPat : clip.Track.PlayPat
+                ? (OK(clip.EditPos) ? clip.EditPat : clip.Track.PlayPat)
                 : clip.EditPat;
 
             var chan = clip.Patterns[pat].Channels[ch];
@@ -172,16 +172,17 @@ namespace IngameScript
             var chan  = clip.CurPattern.Channels[ch];
             var track = clip.Track;
 
-            var patStep = 
-                  (OK(track.PlayStep)
-                   ?    track.StartStep
-                     +  track.PlayPat * g_patSteps 
-                     + (track.PlayStep % g_patSteps) 
-                   : TimeStep) 
+            var patStep = TimeStep
+                  //(OK(track.PlayStep)
+                  // ?    track.StartStep
+                  //   +  track.PlayPat * g_patSteps 
+                  //   + (track.PlayStep % g_patSteps) 
+                  // : TimeStep) 
                 + chordStrumOffset;
 
             AddNoteAndSounds(new Note(chan, ch, 1, num, patStep, len));
         }
+
 
 
         void AddPlaybackNotes(Clip clip)
@@ -207,6 +208,7 @@ namespace IngameScript
                 }
             }
         }
+
 
 
         void AddNoteAndSounds(Note note)
@@ -245,6 +247,7 @@ namespace IngameScript
         }
 
 
+
         void StopNotes()
         {
             var delete = new List<int>();
@@ -260,6 +263,7 @@ namespace IngameScript
             for (int i = delete.Count - 1; i >= 0; i--)
                 g_notes.RemoveAt(delete[i]);
         }
+
 
 
         static int AdjustNoteNumber(Note note, Source src, int sndLen, Program prog)
