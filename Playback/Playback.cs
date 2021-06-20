@@ -11,8 +11,9 @@
             if (  !Playing // play
                 && play) 
             {
-                if (   ShowClip 
-                    && ShowMixer == 2)
+                if (      ShowClip 
+                       && ShowMixer == 2
+                    || !OK(Tracks.Find(t => OK(t.NextClip) || OK(t.PlayClip)))) // everything stopped, nothing cued
                 {
                     var saved = CueClip;
                     CueClip = 0;
