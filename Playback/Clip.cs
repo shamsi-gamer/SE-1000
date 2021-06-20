@@ -401,18 +401,17 @@ namespace IngameScript
 
             public void GetPlayPatterns(int p, out int f, out int l)
             {
-                if (Loop)
+                var b = GetBlock(p);
+
+                if (Loop && Block && OK(b))
+                {
+                    f = b.First;
+                    l = b.Last;
+                }
+                else if (Loop && !Block)
                 {
                     f = p;
                     l = p;
-
-                    var b = GetBlock(p);
-
-                    if (Block && OK(b))
-                    {
-                        f = b.First;
-                        l = b.Last;
-                    }
                 }
                 else
                 {

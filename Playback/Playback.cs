@@ -8,17 +8,29 @@
                 return;
 
 
+            var anyCued = !OK(Tracks.Find(t => 
+                   OK(t.NextClip) 
+                || OK(t.PlayClip)));
+
+
             if (  !Playing // play
                 && play) 
             {
                 if (      ShowClip 
                        && ShowMixer == 2
-                    || !OK(Tracks.Find(t => OK(t.NextClip) || OK(t.PlayClip)))) // everything stopped, nothing cued
+                    || anyCued) // everything stopped, nothing cued
                 {
+                    var track = EditedClip.Track;
+
                     var saved = CueClip;
                     CueClip = 0;
-                    EditedClip.Track.NextClip = EditedClip.Index;
-                    EditedClip.Track.CueNextClip(EditedClip.Index, this);
+
+                    track.NextClip = EditedClip.Index;
+                    track.CueNextClip(EditedClip.Index, this);
+
+                    if (anyCued)
+                        track.NextPat = 0;
+
                     CueClip = saved;
                 }
                 else
