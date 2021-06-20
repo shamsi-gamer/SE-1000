@@ -163,41 +163,7 @@ namespace IngameScript
                 }
 
 
-                if (EditedClip.Patterns.Count > maxDspPats)
-                {
-                    var bw = (w * 2) / (float)EditedClip.Patterns.Count;
-                    var sh = 29;
-
-                    var px = x - nDsp * 4 * pw;
-                    var by = y + h - sh;
-
-                    for (int p = 0; p < EditedClip.Patterns.Count; p++)
-                    {
-                        FillRect(sprites, px + bw * p + 1, by, 1, sh, color4);
-
-                        var m = Array.FindIndex(EditedClip.Mems, _m => _m == p);
-                        if (OK(m)) DrawString(sprites, S((char)(65 + m)), px + 5, by - 30, 0.7f, color4);
-                    }
-
-                    foreach (var b in EditedClip.Blocks)
-                    {
-                        var bx = px + bw * b.First + 1;
-                        var sw = bw * b.Len - 2;
-
-                        FillRect(sprites, bx, by, sw, sh, b == curBlock ? color3 : color2);
-
-                        for (int i = 1; i < b.Len; i++)
-                            FillRect(sprites, bx + bw * i, by, 1, sh, color5);
-
-                        DrawLeftBracket (sprites, bx, by, 16, sh, 1);
-                        DrawRightBracket(sprites, bx + sw, by, 16, sh, 1);
-                    }
-
-                    FillRect(sprites, px + bw * EditPat, by, bw, sh, color4);
-
-                    if (OK(track.PlayStep))
-                        FillRect(sprites, px + bw / g_patSteps * track.PlayStep, by, 4, sh, color6);
-                }
+                DrawClipScrollBar(sprites, x, y, w, h, nDsp, pw, curBlock, track);
 
 
                 for (int p = first; p < next; p++)
@@ -243,6 +209,48 @@ namespace IngameScript
             if (!TooComplex)
                 dsp.Draw(sprites);
         }
+
+
+
+        void DrawClipScrollBar(List<MySprite> sprites, float x, float y, float w, float h, int nDsp, float pw, Block curBlock, Track track)
+        {
+            if (EditedClip.Patterns.Count > maxDspPats)
+            {
+                var bw = (w * 2) / EditedClip.Patterns.Count;
+                var sh = 29;
+
+                var px = x - nDsp * 4 * pw;
+
+
+                for (int p = 0; p < EditedClip.Patterns.Count; p++)
+                {
+                    FillRect(sprites, px + bw * p + 1, y, 1, sh, color4);
+
+                    var m = Array.FindIndex(EditedClip.Mems, _m => _m == p);
+                    if (OK(m)) DrawString(sprites, S((char)(65 + m)), px + 5, y - 30, 0.7f, color4);
+                }
+
+                foreach (var b in EditedClip.Blocks)
+                {
+                    var bx = px + bw * b.First + 1;
+                    var sw = bw * b.Len - 2;
+
+                    FillRect(sprites, bx, y, sw, sh, b == curBlock ? color3 : color2);
+
+                    for (int i = 1; i < b.Len; i++)
+                        FillRect(sprites, bx + bw * i, y, 1, sh, color5);
+
+                    DrawLeftBracket (sprites, bx,      y, 16, sh, 1);
+                    DrawRightBracket(sprites, bx + sw, y, 16, sh, 1);
+                }
+
+                FillRect(sprites, px + bw * EditPat, y, bw, sh, color4);
+
+                if (OK(track.PlayStep))
+                    FillRect(sprites, px + bw / g_patSteps * track.PlayStep, y, 4, sh, color6);
+            }
+        }
+
 
 
         void DrawClipFuncButtons(List<MySprite> sprites, float w, float h, int nDsp)
