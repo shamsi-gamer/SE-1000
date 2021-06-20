@@ -179,7 +179,8 @@ namespace IngameScript
                   && EditedClip.ChordEdit)
                 return EditedClip.Chords[EditedClip.Chord].Contains(noteNum);
 
-            else if (OK(CurChannel.Notes.FindIndex(n => NoteIsEdited(noteNum, n))))
+            else if (OK(EditedClip.EditPos)
+                  && OK(CurChannel.Notes.FindIndex(n => NoteIsEdited(n, noteNum))))
                 return True; // note is being edited
 
             else if (OK(g_notes.FindIndex(n => 
@@ -223,28 +224,14 @@ namespace IngameScript
         }
 
 
-        bool NoteIsEdited(int noteNum, Note note)
+        bool NoteIsEdited(Note note, int noteNum)
         {
-            if (  !EditedClipIsPlaying
-                || noteNum != note.Number)
-                return False;
-
-            //var track = EditedClip.Track;
-
-            //// note is at the playback position
-            //if (   track.PlayStep >= note.SongStep + note.ShOffset
-            //    && track.PlayStep <  note.SongStep + note.ShOffset + note.StepLength)
-            //    return True;
-
-            // note is at edit position
-            if (   note.ClipStep >= EditedClip.EditPos 
-                && note.ClipStep <  EditedClip.EditPos + EditedClip.EditStepLength)
-                return True;
-
-            return False;
+            return note.Number == noteNum
+                && note.ClipStep >= EditedClip.EditPos
+                && note.ClipStep <  EditedClip.EditPos + EditedClip.EditStepLength;
         }
-        
-        
+
+
         bool NoteIsTriggered(int noteNum, Note note)
         {
             var timeStep = TimeStep;
