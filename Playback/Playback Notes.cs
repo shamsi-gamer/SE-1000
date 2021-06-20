@@ -41,7 +41,7 @@ namespace IngameScript
 
 
             if (!_found)
-                TriggerNotes(clip, notes, ch, clip.EditPos);
+                AddChannelNotes(clip, notes, ch, clip.EditPos);
         }
 
 
@@ -53,10 +53,6 @@ namespace IngameScript
             clip.TrimCurrentNotes(ch);
             lastNotes.Clear();
 
-            //var chan = 
-            //    Playing
-            //    ? clip.Patterns[clip.Track.PlayPat].Channels[ch]
-            //    : CurChannel;
 
             var notes = GetChordNotes(num);
 
@@ -130,12 +126,12 @@ namespace IngameScript
                 ? clip.Track.PlayStep
                 : clip.EditPos;
 
-            TriggerNotes(clip, notes, ch, step);
+            AddChannelNotes(clip, notes, ch, step);
         }
 
 
 
-        void TriggerNotes(Clip clip, List<int> notes, int ch, float step)
+        void AddChannelNotes(Clip clip, List<int> notes, int ch, float step)
         {
             var pat =
                 Playing
@@ -154,7 +150,9 @@ namespace IngameScript
                 if (!(   clip.ChordEdit
                       && OK(clip.Chord)))
                 {
-                    var noteStep = (int)((step % g_patSteps + ChordStrum(i)) / clip.EditStep) * clip.EditStep;
+                    var editStep = Math.Min(clip.EditStep, 1);
+
+                    var noteStep = (int)((step % g_patSteps + ChordStrum(i)) / editStep) * editStep;
                     var lastNote = new Note(chan, ch, 1, note, noteStep, EditedClip.EditStepLength);
                     
                     lastNotes.Add(lastNote);
