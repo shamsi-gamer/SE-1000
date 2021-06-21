@@ -301,7 +301,7 @@ namespace IngameScript
 
                 // draw key
                 DrawLine(sprites, pt.X, pt.Y, pt.X, p0.Y, col, w/250);
-                FillCircle(sprites, p0.X, p0.Y, cd/2, col);
+                FillCircle(sprites, pt.X, p0.Y, cd/2, col);
             }
 
 
