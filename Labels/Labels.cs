@@ -45,7 +45,7 @@ namespace IngameScript
         static List<IMyInteriorLight> g_rearLights = new List<IMyInteriorLight>();
 
 
-        static List<Label> g_fastLabels    = new List<Label>(),
+        static List<Label>  g_fastLabels    = new List<Label>(),
                             g_slowLabels    = new List<Label>(),
                             g_clipLabels    = new List<Label>(),
                             g_adjustLabels  = new List<Label>(),

@@ -157,11 +157,10 @@ namespace IngameScript
 
             if (g_ioAction == 0) // load
             {
-                var total = Instruments.Count + Tracks.Count;
-                var done  = (g_ioState == 1 ? Instruments.Count : 0) + g_ioPos;
-
-                if (total > 1)
-                    val = (float)(done+1) / (total-1);
+                // it's not worth figuring out how much loading is to be done,
+                // so I just set it to half as the progress bar won't linger
+                // for that long anyway
+                val = 0.5f;
             }
             else if (g_ioAction == 1) // save
             {

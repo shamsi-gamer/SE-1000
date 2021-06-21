@@ -89,6 +89,7 @@ namespace IngameScript
         }
 
 
+
         static void GetNewClipName(Clip clip, Clip[] clips)
         {
             clip.Name = GetNewName(clip.Name, newName => 
@@ -96,6 +97,7 @@ namespace IngameScript
                        OK(c) 
                     && c.Name == newName));
         }
+
 
 
         static long GetAnyCurrentPlayTime()
@@ -109,7 +111,9 @@ namespace IngameScript
         }
 
         
+
         static bool EditedClipIsPlaying => EditedClip.Index == EditedClip.Track.PlayClip;
+
 
 
         static bool ShowPiano { get 
@@ -128,10 +132,12 @@ namespace IngameScript
         }}
 
 
+
         float GetBPM()
         {
             return 120f / (TicksPerStep * g_patSteps) * 120f;
         }
+
 
 
         void Lock()
@@ -141,10 +147,12 @@ namespace IngameScript
         }
 
 
+
         void NoiseEmitters()
         {
             NoiseEmitters(!g_timers[0].Enabled);
         }
+
 
 
         void NoiseEmitters(bool on)
@@ -160,6 +168,7 @@ namespace IngameScript
         }
 
 
+
         void Gyro()
         {
             var on = g_gyros[0].Enabled;
@@ -169,6 +178,7 @@ namespace IngameScript
         }
 
 
+
         void AutoLock()
         {
             var auto = False;
@@ -176,6 +186,7 @@ namespace IngameScript
             foreach (var l in g_locks) auto |= l.AutoLock;
             foreach (var l in g_locks) l.AutoLock = !auto;
         }
+
 
 
         void ToggleLabel()
@@ -199,6 +210,7 @@ namespace IngameScript
         }
 
 
+
         void ToggleFold()
         {
             var hinge = Get("Hinge R") as IMyMotorStator;
@@ -217,10 +229,12 @@ namespace IngameScript
         }
 
 
+
         static long GetPatTime(int pat) 
         {
             return pat * g_patSteps * TicksPerStep; 
         } 
+
 
 
         static float note2freq(int note)
@@ -229,10 +243,12 @@ namespace IngameScript
         }
 
 
+
         static int freq2note(double freq)
         {
             return (int)Math.Round((12 * Math.Log(freq / 440, 2) + 69) * NoteScale);
         }
+
 
 
         //static float dbAdd(float a, float b)
@@ -241,10 +257,12 @@ namespace IngameScript
         //}
 
 
+
         static float sndAdd(float a, float b)
         {
             return 1 + (float)Math.Log10(a + b);
         }
+
 
 
         static void Swap<T>(ref T clip1, ref T clip2) 
@@ -255,13 +273,16 @@ namespace IngameScript
         }
 
 
+
         bool TooComplex =>
                Runtime.CurrentCallChainDepth   / (float)Runtime.MaxCallChainDepth   > 0.8f
             || Runtime.CurrentInstructionCount / (float)Runtime.MaxInstructionCount > 0.8f;
 
 
+
         void             Get<T>(List<T> blocks)                          where T : class { GridTerminalSystem.GetBlocksOfType(blocks);            }
         void             Get<T>(List<T> blocks, Func<T, bool> condition) where T : class { GridTerminalSystem.GetBlocksOfType(blocks, condition); }
+
 
         IMyTerminalBlock Get       (string s)             { return GridTerminalSystem.GetBlockWithName(s); }
         IMyMotorBase     GetMotor  (string s)             { return Get(s) as IMyMotorBase; }
@@ -293,11 +314,14 @@ namespace IngameScript
         }
 
 
+
         static bool IsPressed(Label lbl) { return g_labelsPressed.Contains(lbl); }
         static bool IsPressed(int   lbl) { return    g_lcdPressed.Contains(lbl); }
 
 
+
         static bool SessionHasClips => Tracks.Exists(t => Array.Exists(t.Clips, c => OK(c)));
+
 
 
         void ResetLfos()
