@@ -96,8 +96,14 @@ namespace IngameScript
 
                 else if (OK(clip))
                 { 
-                    if (   EditClip == 1  // move clip
-                        || EditClip == 2) // duplicate clip
+                    if (EditClip == 0)
+                    { 
+                        SetEditedClip(clip);
+                        EditClip = -1;
+                    }
+
+                    else if (EditClip == 1  // move clip
+                          || EditClip == 2) // duplicate clip
                         ClipCopy = clip; 
                     
                     else if (EditClip == 3) // delete clip
@@ -111,12 +117,6 @@ namespace IngameScript
 
                     else if (index != PlayClip) // cue next clip
                         CueNextClip(index, prog);
-
-                    else if (EditClip == 0)
-                    { 
-                        SetEditedClip(clip);
-                        EditClip = -1;
-                    }
                 }
 
                 else if (!OK(clip))
