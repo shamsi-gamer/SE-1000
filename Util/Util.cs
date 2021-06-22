@@ -100,9 +100,16 @@ namespace IngameScript
 
 
 
+        static Track GetAnyCurrentPlayTrack()
+        {
+            return Tracks.Find(t => OK(t.PlayTime));
+        }
+
+        
+
         static long GetAnyCurrentPlayTime()
         {
-            var track = Tracks.Find(t => OK(t.PlayTime));
+            var track = GetAnyCurrentPlayTrack();
 
             return 
                 OK(track) 
@@ -165,16 +172,6 @@ namespace IngameScript
 
             foreach (var timer in g_timers)
                 timer.Enabled = on;
-        }
-
-
-
-        void Gyro()
-        {
-            var on = g_gyros[0].Enabled;
-
-            foreach (var gyro in g_gyros)
-                gyro.Enabled = !on;
         }
 
 

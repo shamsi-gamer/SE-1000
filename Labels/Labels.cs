@@ -110,7 +110,6 @@ namespace IngameScript
             lblFold     = new Label(0, GetLabel("Fold"),      CF_null,                                  CF_null, AL_null, AL_null, 0, True);
             lblTimers   = new Label(0, GetLabel("Timers"),    lbl => OK(g_timers.Find(t => t.Enabled)), CF_null, AL_null, AL_null, 0, True);
 
-            lblGyro     = new Label(0, GetLabel("Gyro"),      lbl => OK(g_gyros .Find(g => g.Enabled)), CF_null, AL_null, AL_null, 0, True);
             lblMass     = new Label(0, GetLabel("Mass"),      lbl => OK(g_mass  .Find(g => g.Enabled)), CF_null, AL_null, AL_null, 0, True);
         }
 

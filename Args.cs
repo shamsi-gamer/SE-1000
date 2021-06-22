@@ -111,8 +111,6 @@
                 case "fold":        ToggleFold();                    break;
                 case "timers":      NoiseEmitters();                 break;
 
-                case "gyro":        Gyro();                          break;
-
                 case "cue":         EditedClip.Cue();                break;
 
                 case "mem set":     MemSet();                        break;

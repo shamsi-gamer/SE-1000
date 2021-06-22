@@ -110,7 +110,21 @@
                     track.PlayClip = track.NextClip;
 
                     if (OK(track.PlayClip))
-                        track.NextPat = 0; // prime next pat
+                    {
+                        var playClip = track.Clips[track.PlayClip];
+
+                        if (CueClip == 1)
+                        {
+                            var playPat = refClip.Track.PlayPat + 1;
+
+                            if (playPat > refClip.Patterns.Count) 
+                                playPat = 0;
+
+                            track.NextPat = playPat % playClip.Patterns.Count;
+                        }
+                        else 
+                            track.NextPat = 0;
+                    }
                 }
 
 

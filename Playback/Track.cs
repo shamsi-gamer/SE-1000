@@ -110,6 +110,21 @@ namespace IngameScript
                         DeleteClip(clip, index); 
 
                     else if (OK(PlayClip)
+                          && PlayClip == NextClip
+                          && PlayClip == index)
+                        CueClipOff(); // cue clip off
+
+                    else if (!OK(PlayClip)
+                           && OK(NextClip))
+                        NextClip = -1; // cancel cue
+
+                    else if (OK(PlayClip)
+                          && OK(NextClip)
+                          && PlayClip != NextClip
+                          && PlayClip == index)
+                        NextClip = PlayClip; // cancel cue
+
+                    else if (OK(PlayClip)
                          && !OK(NextClip)
                          &&  PlayClip == index
                          && CueClip > 0)
@@ -131,14 +146,19 @@ namespace IngameScript
                         }
                     }
                     else
-                    { 
-                        NextClip = -1;
-
-                        if (CueClip == 0)
-                            PlayClip = -1;
-                    }
+                        CueClipOff();
                 }
 
+            }
+
+
+
+            void CueClipOff()
+            {
+                NextClip = -1;
+
+                if (CueClip == 0)
+                    PlayClip = -1;
             }
 
 
@@ -165,6 +185,16 @@ namespace IngameScript
                     SetInstName();
                     prog.ResetLfos();
                 }
+                //else if (CueClip == 1
+                //      && OK(NextClip))
+                //{
+                //    var playTrack = GetAnyCurrentPlayTrack();
+
+                //    if (OK(playTrack)) PlayPat = playTrack.PlayPat % Clips[NextClip].Patterns.Count;
+                //    else               PlayPat = 0;
+
+                //    NextPat = -1;
+                //}
             }
 
 

@@ -246,7 +246,8 @@ namespace IngameScript
 
                 FillRect(sprites, px + bw * EditPat, y, bw, sh, color4);
 
-                if (OK(track.PlayStep))
+                if (OK(track.PlayStep)
+                    && track.PlayClip == EditedClip.Index)
                     FillRect(sprites, px + bw / g_patSteps * track.PlayStep, y, 4, sh, color6);
             }
         }
