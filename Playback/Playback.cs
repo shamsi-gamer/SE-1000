@@ -113,7 +113,8 @@
                     {
                         var playClip = track.Clips[track.PlayClip];
 
-                        if (CueClip == 1)
+                        if (   CueClip == 1
+                            && OK(refClip))
                         {
                             var playPat = refClip.Track.PlayPat + 1;
 
@@ -146,7 +147,10 @@
 
                 if (   clip == EditedClip
                     && clip.Follow)
+                { 
                     clip.SetEditPattern(track.PlayPat);
+                    clip.FindAndSetActiveOctave();
+                }
 
                 AddPlaybackNotes(clip);
             }

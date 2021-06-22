@@ -220,7 +220,35 @@ namespace IngameScript
 
 
 
-            public void NewPattern()
+            public void FindAndSetActiveOctave()
+            {
+                int first, last;
+                GetPatterns(Track.PlayPat, out first, out last);
+
+                var chan = Patterns[Track.PlayPat].Channels[CurChan];
+
+                var minNote = int.MaxValue;
+                var maxNote = int.MinValue;
+
+                foreach (var note in chan.Notes)
+                {
+                    minNote = Math.Min(minNote, note.Number);
+                    maxNote = Math.Max(maxNote, note.Number);
+                }
+
+                for (var p = first; p <= last; p++)
+                { 
+                    var transpose = 
+                          (int)Math.Round((minNote+maxNote)/2f / NoteScale / 12f) - 6
+                        - Patterns[p].Channels[CurChan].Transpose;
+
+                    SetTranspose(this, CurChan, transpose);
+                }
+            }
+
+
+
+            public void NewPattern(Program prog)
             { 
                 var pat = new Pattern(CurPattern);
                 pat.Clear();
@@ -234,8 +262,8 @@ namespace IngameScript
                 if (OK(EditPos))
                     EditPos = 0;
 
-                //if (Playing)
-                //    StartTime -= nSteps * g_session.TicksPerStep;
+
+                Track.SyncPlayTime(prog);
 
                 UpdateAutoKeys();
 
@@ -245,7 +273,7 @@ namespace IngameScript
 
 
 
-            public void DeletePattern()
+            public void DeletePattern(Program prog)
             {
                 var block = GetBlock(EditPat);
 
@@ -297,8 +325,7 @@ namespace IngameScript
                     EditPos = Math.Min(EditPos, Patterns.Count * g_patSteps);
 
 
-                //if (OK(g_song.PlayTime))
-                //    g_song.StartTime += nSteps * g_session.TicksPerStep;
+                Track.SyncPlayTime(prog);
 
                 if (Track.PlayPat >= Patterns.Count)
                     Track.PlayPat  = Patterns.Count - 1;
@@ -317,7 +344,7 @@ namespace IngameScript
 
 
 
-            public void DuplicatePattern()
+            public void DuplicatePattern(Program prog)
             {
                 var block = GetBlock(EditPat);
 
@@ -328,8 +355,8 @@ namespace IngameScript
                         Patterns.Insert(block.Last + 1 + p - block.First, new Pattern(Patterns[p]));
 
                     Blocks.Add(new Block(
-                    block.Last + 1,
-                    block.Last + block.Len));
+                        block.Last + 1,
+                        block.Last + block.Len));
 
                     SetEditPattern(EditPat + block.Len);
                 }
@@ -342,11 +369,8 @@ namespace IngameScript
                 MovePatternOff();
                 DisableBlock();
 
-                //if (NOK(recordPosition))
-                // recordPosition = 0;
 
-                //if (Playing)
-                //    StartTime -= nSteps * g_session.TicksPerStep;
+                Track.SyncPlayTime(prog);
 
                 UpdateAutoKeys();
 

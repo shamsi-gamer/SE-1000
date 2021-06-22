@@ -811,7 +811,7 @@ namespace IngameScript
         }
 
 
-        public void SetShuffle(int ch, int sh)
+        static void SetShuffle(int ch, int sh)
         {
             sh += CurPattern.Channels[ch].Shuffle;
 

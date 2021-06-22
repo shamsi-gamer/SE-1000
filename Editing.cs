@@ -601,7 +601,7 @@ namespace IngameScript
 
 
 
-        void SetTranspose(int d)
+        static void SetTranspose(int d)
         {
             var tune = SelSource    ?.Tune
                     ?? SelInstrument?.Tune;
@@ -618,7 +618,7 @@ namespace IngameScript
 
 
 
-        void SetTranspose(Clip clip, int ch, int tr)
+        static void SetTranspose(Clip clip, int ch, int tr)
         {
             tr += clip.CurPattern.Channels[ch].Transpose;
 

@@ -169,32 +169,27 @@ namespace IngameScript
 
 
                 if (CueClip == 0)
-                {
-                    var playTime = GetAnyCurrentPlayTime();
+                    SyncPlayTime(prog);
+            }
 
-                    PlayClip = NextClip;
 
-                    PlayPat  =  0;
-                    NextPat  = -1;
 
-                    if (OK(playTime)) PlayTime = playTime % (Clips[NextClip].StepLength * TicksPerStep);
-                    else              PlayTime = 0;
+            public void SyncPlayTime(Program prog)
+            {
+                var playTime = GetAnyCurrentPlayTime();
 
-                    StartTime = g_time - PlayTime;
+                PlayClip = NextClip;
 
-                    SetInstName();
-                    prog.ResetLfos();
-                }
-                //else if (CueClip == 1
-                //      && OK(NextClip))
-                //{
-                //    var playTrack = GetAnyCurrentPlayTrack();
+                PlayPat  =  0;
+                NextPat  = -1;
 
-                //    if (OK(playTrack)) PlayPat = playTrack.PlayPat % Clips[NextClip].Patterns.Count;
-                //    else               PlayPat = 0;
+                if (OK(playTime)) PlayTime = playTime % (Clips[NextClip].StepLength * TicksPerStep);
+                else              PlayTime = 0;
 
-                //    NextPat = -1;
-                //}
+                StartTime = g_time - PlayTime;
+
+                SetInstName();
+                prog.ResetLfos();
             }
 
 

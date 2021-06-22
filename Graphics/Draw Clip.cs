@@ -230,12 +230,13 @@ namespace IngameScript
                     if (OK(m)) DrawString(sprites, S((char)(65 + m)), px + 5, y - 30, 0.7f, color4);
                 }
 
+
                 foreach (var b in EditedClip.Blocks)
                 {
                     var bx = px + bw * b.First + 1;
                     var sw = bw * b.Len - 2;
 
-                    FillRect(sprites, bx, y, sw, sh, b == curBlock ? color3 : color2);
+                    FillRect(sprites, bx, y, sw, sh, b == curBlock ? color2 : color1);
 
                     for (int i = 1; i < b.Len; i++)
                         FillRect(sprites, bx + bw * i, y, 1, sh, color5);
@@ -244,7 +245,9 @@ namespace IngameScript
                     DrawRightBracket(sprites, bx + sw, y, 16, sh, 1);
                 }
 
-                FillRect(sprites, px + bw * EditPat, y, bw, sh, color4);
+
+                FillRect(sprites, px + bw * EditPat, y, bw, sh, color3);
+
 
                 if (OK(track.PlayStep)
                     && track.PlayClip == EditedClip.Index)

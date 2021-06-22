@@ -42,6 +42,10 @@ namespace IngameScript
                     var clip       = track.Clips[ix];
                     var isPlayClip = ix == track.PlayClip;
 
+                    var isPlayOrEditedClip = 
+                           isPlayClip
+                        ||    ix == track.NextClip
+                           && ix != track.PlayClip;
 
                     var cw = w/6;
                     var ch = h/4;
@@ -89,7 +93,8 @@ namespace IngameScript
                         && ix == track.NextClip
                         && track.NextClip != track.PlayClip)
                         DrawRect(sprites, lx+7, ly+7, lw-14, lh-14, color3, 14);
-                    else if (isPlayClip && !OK(track.NextClip))
+                    else if (isPlayClip 
+                         && !OK(track.NextClip))
                         DrawRect(sprites, lx+7, ly+7, lw-14, lh-14, color0, 14);
 
 
@@ -100,7 +105,7 @@ namespace IngameScript
 
                              if (ix == track.NextClip
                               && ix == track.PlayClip) editCol = vol > 14/lh ? color5 : color4;
-                        else if (isPlayClip)           editCol = color5;
+                        else if (isPlayOrEditedClip)   editCol = color5;
 
                         var ew = cancel ?  0 : 14;
                         var de = cancel ?  0 :  5;
@@ -135,16 +140,16 @@ namespace IngameScript
                         lx+lw-6, 
                         ly+lh, 
                         6, 
-                        -lh*clip.Volume*2/3f, 
-                        isPlayClip ? color6 : color3);
+                        -lh*clip.Volume*2/3f,
+                        isPlayOrEditedClip ? color6 : color3);
 
                     FillRect(
                         sprites, 
                         lx+lw-6, 
                         ly+lh/3, 
                         6, 
-                        4, 
-                        isPlayClip 
+                        4,
+                        isPlayOrEditedClip
                         ? (clip.Volume > 1 ? color4 : color6) 
                         : (clip.Volume > 1 ? color2 : color3));
 
