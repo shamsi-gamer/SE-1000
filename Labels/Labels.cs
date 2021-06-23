@@ -113,6 +113,20 @@ namespace IngameScript
         }
 
 
+
+        void MarkChordLabel(int chord)
+        {
+            switch (chord)
+            {
+            case 0: lblChord1.Mark(); break;
+            case 1: lblChord2.Mark(); break;
+            case 2: lblChord3.Mark(); break;
+            case 3: lblChord4.Mark(); break;
+            }
+        }
+
+
+
         static void SetLabelColor(int iCol)
         {
             EditedClip.ColorIndex = MinMax(0, iCol, 6);
@@ -127,6 +141,7 @@ namespace IngameScript
             if (ci == 5) SetLabelColor(new Color(128,   0, 255), 0.4f); 
             if (ci == 6) SetLabelColor(new Color(255, 255, 255), 0.35f);
         }
+
 
 
         static void SetLabelColor(Color c, float f = 1)

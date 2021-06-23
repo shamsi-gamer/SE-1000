@@ -164,40 +164,25 @@ namespace IngameScript
                     ?? SelInstrument?.Tune;
 
 
-            if (IsCurParam(strTune)
+            if (   IsCurParam(strTune)
                 && tune.UseChord)
             {
                 var _chord = EditedClip.Chords[chord-1];
 
-                var tc = tune.Chord;
-
-                bool add = False;
-                foreach (var _note in _chord)
+                if (_chord.Count > 0)
                 {
-                    if (tc.FindIndex(n => n == _note) < 0)
-                    {
-                        add = True;
-                        break;
-                    }
-                }
+                    tune.Chord.Clear();
 
-                if (add)
-                {
                     foreach (var n in _chord)
-                        if (!tc.Contains(n)) tc.Add(n);
+                        tune.Chord.Add(n);
+
+                    var inst = SelInstrument;
+                    var src  = OK(CurSrc) ? inst.Sources[CurSrc] : Source_null;
+
+                    tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
                 }
-                else
-                {
-                    foreach (var n in _chord)
-                        if (tc.Contains(n)) tc.Remove(n);
-                }
 
-                var inst = SelInstrument;
-                var src  = OK(CurSrc) ? inst.Sources[CurSrc] : Source_null;
-
-                tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
-
-                //MarkChordLabel(chord);
+                MarkChordLabel(chord-1);
             }
             else if (EditedClip.ChordEdit)
             {
@@ -230,7 +215,7 @@ namespace IngameScript
                     PlayNote(EditedClip, _chord[0], _chord, CurChan);
                 }
 
-                //MarkChordLabel(chord);            
+                MarkChordLabel(chord-1);            
 
                 EditedClip.Chord = -1;
             }
