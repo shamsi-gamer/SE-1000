@@ -30,8 +30,8 @@
                 case "dup pat":     EditedClip?.DuplicatePattern(this); break;
                 case "new pat":     EditedClip?.NewPattern(this);       break;
                 case "move pat":    EditedClip?.ToggleMovePattern();    break;
-                case "prev pat":    EditedClip?.PrevPattern();          break;
-                case "next pat":    EditedClip?.NextPattern();          break;
+                case "prev pat":    EditedClip?.PrevPattern(this);      break;
+                case "next pat":    EditedClip?.NextPattern(this);      break;
                                                                        
                 case "loop":        EditedClip?.ToogleLoop();           break;
                 case "block":       EditedClip?.ToggleBlock();          break;

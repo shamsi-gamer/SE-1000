@@ -13,9 +13,9 @@ namespace IngameScript
         {
                  if (EditedClip.ParamKeys
                   || EditedClip.ParamAuto)                         RandomValues(CurChan);
-            else if (EditedClip.RndInst && OK(CurSet )) EditedClip.CurSetting   .Randomize(this);
-            else if (EditedClip.RndInst && OK(CurSrc )) SelSource    .Randomize(new List<Oscillator>(), this);
-            else if (EditedClip.RndInst && OK(SelChan)) SelInstrument.Randomize(this);
+            else if (EditedClip.RndInst && OK(CurSet )) EditedClip.CurSetting.Randomize();
+            else if (EditedClip.RndInst && OK(CurSrc )) SelSource            .Randomize(new List<Oscillator>());
+            else if (EditedClip.RndInst && OK(SelChan)) SelInstrument        .Randomize();
             else if (    SelChan < 0
                      || !EditedClip.RndInst)                       RandomNotes();
         }

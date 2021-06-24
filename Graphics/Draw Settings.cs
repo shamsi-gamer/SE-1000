@@ -11,8 +11,6 @@ namespace IngameScript
     {
         void DrawCurrentSetting(List<MySprite> sprites, float x, float y, float w, float h)
         {
-            if (!OK(CurSet)) return;
-
             DrawString(sprites, FullNameFromTag(CurSetting.Tag), x + w/2, y, 1f, color5, TA_CENTER);
 
             var nameHeight = 40;

@@ -162,11 +162,11 @@ namespace IngameScript
             }
 
 
-            public override void Randomize(Program prog)
+            public override void Randomize()
             {
-                Amount .Randomize(prog);
-                Attack .Randomize(prog);
-                Release.Randomize(prog);
+                Amount .Randomize();
+                Attack .Randomize();
+                Release.Randomize();
             }
 
 

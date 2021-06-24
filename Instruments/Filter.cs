@@ -65,15 +65,15 @@ namespace IngameScript
             }
 
 
-            public override void Randomize(Program prog)
+            public override void Randomize()
             {
-                if (prog.TooComplex) return;
+                if (TooComplex) return;
 
                 Pass = (FilterPass)g_rnd.Next((int)FilterPass.Band + 1);
 
-                if (RND > 0.8f) Cutoff   .Randomize(prog); else Cutoff   .Clear();
-                if (RND > 0.8f) Resonance.Randomize(prog); else Resonance.Clear();
-                if (RND > 0.8f) Sharpness.Randomize(prog); else Sharpness.Clear();
+                if (RND > 0.8f) Cutoff   .Randomize(); else Cutoff   .Clear();
+                if (RND > 0.8f) Resonance.Randomize(); else Resonance.Clear();
+                if (RND > 0.8f) Sharpness.Randomize(); else Sharpness.Clear();
             }
 
 

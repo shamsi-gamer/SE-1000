@@ -154,11 +154,11 @@ namespace IngameScript
             }
 
 
-            public override void Randomize(Program prog)
+            public override void Randomize()
             {
-                Amplitude.Randomize(prog);
-                Frequency.Randomize(prog);
-                Offset   .Randomize(prog);
+                Amplitude.Randomize();
+                Frequency.Randomize();
+                Offset   .Randomize();
 
                 Type = (LfoType)g_rnd.Next(0, 6);
             }

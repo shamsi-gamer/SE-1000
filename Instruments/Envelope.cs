@@ -144,12 +144,12 @@ namespace IngameScript
             }
 
 
-            public override void Randomize(Program prog)
+            public override void Randomize()
             {
-                Attack .Randomize(prog);
-                Decay  .Randomize(prog);
-                Release.Randomize(prog);
-                Sustain.Randomize(prog);
+                Attack .Randomize();
+                Decay  .Randomize();
+                Release.Randomize();
+                Sustain.Randomize();
             }
 
 

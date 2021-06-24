@@ -8,14 +8,14 @@ namespace IngameScript
     {
         public partial class Clip
         {
-            public static Clip Load(string[] lines, ref int line, Track track)//, out string curPath)
+            public static Clip Load(string[] lines, ref int line, Track track, Program prog)//, out string curPath)
             { 
                 //curPath     = "";
 
                 if (lines.Length < 3)
                     return Clip_null;
 
-                var clip = new Clip(track);
+                var clip = new Clip(track, prog);
 
                 var cfg = lines[line++].Split(';');
 

@@ -60,7 +60,8 @@ namespace IngameScript
             }
 
 
-            if (!TooComplex)
+            if (  !TooComplex
+                && OK(CurSet))
                 DrawCurrentSetting(
                     sprites, 
                     x + lw, 
@@ -132,8 +133,7 @@ namespace IngameScript
 
             var nSrc = inst.Sources.Count;
             var sw   = 20;
-
-            var iy = y - EditedClip.SrcOff;
+            var iy   = y - EditedClip.SrcOff;
 
             for (int i = EditedClip.SrcOff; i < Math.Min(EditedClip.SrcOff + maxDspSrc, nSrc); i++)
             {

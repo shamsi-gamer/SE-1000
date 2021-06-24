@@ -29,7 +29,7 @@ namespace IngameScript
                     CueClip = 0;
 
                     track.NextClip = EditedClip.Index;
-                    track.CueNextClip(EditedClip.Index, this);
+                    track.CueNextClip(EditedClip.Index);
 
                     if (anyCued)
                         track.NextPat = 0;
@@ -163,7 +163,7 @@ namespace IngameScript
                 var clip = track.PlayingClip;
                 if (!OK(clip)) continue;
 
-                track.CueNextPattern(clip, this);
+                track.CueNextPattern(clip);
 
                 if (   clip == EditedClip
                     && clip.Follow)
@@ -182,7 +182,7 @@ namespace IngameScript
 
 
             foreach (var track in Tracks)
-                track.UpdateVolumes(this);
+                track.UpdateVolumes();
 
             foreach (var inst in Instruments)
                 inst.ResetValues();

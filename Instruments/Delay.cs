@@ -103,15 +103,15 @@ namespace IngameScript
             }
 
 
-            public override void Randomize(Program prog)
+            public override void Randomize()
             {
-                if (prog.TooComplex) return;
+                if (TooComplex) return;
 
-                Dry  .Randomize(prog);
-                Count.Randomize(prog);
-                Time .Randomize(prog);
-                Level.Randomize(prog);
-                Power.Randomize(prog);
+                Dry  .Randomize();
+                Count.Randomize();
+                Time .Randomize();
+                Level.Randomize();
+                Power.Randomize();
             }
 
 

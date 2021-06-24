@@ -100,7 +100,7 @@
             else
             { 
                 if (MixerShift) SetAllTrackClips(ch, dv>0 ? 0 : 1);
-                else            Tracks[dv>0 ? 0 : 1].SetClip(ch, this);
+                else            Tracks[dv>0 ? 0 : 1].SetClip(ch);
 
                 CheckIfMustStop();
             }
@@ -140,7 +140,7 @@
             else
             {
                 if (MixerShift) SetAllTrackClips(ch, 2);
-                else            Tracks[2].SetClip(ch, this);
+                else            Tracks[2].SetClip(ch);
 
                 CheckIfMustStop();
             }
@@ -165,7 +165,7 @@
             else
             {
                 if (MixerShift) SetAllTrackClips(ch, 3);
-                else            Tracks[3].SetClip(ch, this);
+                else            Tracks[3].SetClip(ch);
 
                 CheckIfMustStop();
             }

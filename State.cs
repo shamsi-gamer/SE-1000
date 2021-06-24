@@ -58,15 +58,15 @@ namespace IngameScript
         static bool Playing => OK(Tracks.Find(track => track?.Playing ?? False));
 
 
-        static void CreateDefaultMachineState()
+        static void CreateDefaultMachineState(Program prog)
         {
             ClearMachineState();
 
             SessionName = "New Session";
 
             CreateMachineState();
-            CreateDefaultInstruments();
-            CreateDefaultTracks();
+            CreateDefaultInstruments(prog);
+            CreateDefaultTracks(prog);
 
             EditedClip = Tracks[0].Clips[0];
             UpdateClipDisplay(EditedClip);
@@ -121,31 +121,31 @@ namespace IngameScript
         }
 
 
-        static void CreateDefaultInstruments()
+        static void CreateDefaultInstruments(Program prog)
         {
             Instruments = new List<Instrument>();
 
-            Instruments.Add(new Instrument());
+            Instruments.Add(new Instrument(prog));
             Instruments[0].Sources.Add(new Source(Instruments[0]));
         }
 
 
-        static void CreateTracks()
+        static void CreateTracks(Program prog)
         {
             Tracks = new List<Track>(new Track[4]);
             for (int t = 0; t < Tracks.Count; t++)
-                Tracks[t] = new Track();
+                Tracks[t] = new Track(prog);
         }
 
 
-        static void CreateDefaultTracks()
+        static void CreateDefaultTracks(Program prog)
         {
-            CreateTracks();
+            CreateTracks(prog);
 
             var track = Tracks[0];
             track.Stop();
 
-            var clip = Clip.Create(track);
+            var clip = Clip.Create(track, prog);
 
             EditedClip     = clip;
             track.Clips[0] = clip;

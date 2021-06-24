@@ -289,8 +289,11 @@ namespace IngameScript
             }
 
 
-            public override void Randomize(Program prog)
+            public override void Randomize()
             {
+                var prog = Instrument.Program;
+
+
                 m_value = NormalMin + RND * (NormalMax - NormalMin);
                 
                 if (   !prog.TooComplex
@@ -299,17 +302,17 @@ namespace IngameScript
                         || IsDigit(Tag[0]) && RND > 0.9f))
                 {
                     Envelope = new Envelope(this, Instrument, Source);
-                    Envelope.Randomize(prog);
+                    Envelope.Randomize();
                 }
                 else 
                     Envelope = Envelope_null;
 
 
-                if (   !prog.TooComplex
+                if (  !prog.TooComplex
                     && RND > 0.8f)
                 {
                     Lfo = new LFO(this, Instrument, Source);
-                    Lfo.Randomize(prog);
+                    Lfo.Randomize();
                 }
                 else
                 { 
@@ -331,10 +334,17 @@ namespace IngameScript
                 { 
                     foreach (var clip in track.Clips)
                     { 
-                        if (!OK(clip)) continue;
+                        if (Instrument.Program.TooComplex) 
+                            return;
+
+                        if (!OK(clip)) 
+                            continue;
 
                         foreach (var pat in clip.Patterns)
-                        { 
+                        {
+                            if (Instrument.Program.TooComplex)
+                                return;
+
                             foreach (var chan in pat.Channels)
                             {
                                 chan.AutoKeys.RemoveAll(k => k.Path == GetPath(srcIndex));
@@ -480,7 +490,7 @@ namespace IngameScript
                         color6);
                 }
                 else if (!OK(Parent) // source offset has no parent
-                      && Tag    == strOff)
+                       && Tag    == strOff)
                 { 
                     DrawValueHorizontal(
                         sprites, 

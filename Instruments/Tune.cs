@@ -46,7 +46,7 @@ namespace IngameScript
             }
 
 
-            public override void Randomize(Program prog)
+            public override void Randomize()
             {
                 m_value = NormalMin + RND * (NormalMax - NormalMin);
 
@@ -54,23 +54,23 @@ namespace IngameScript
                 else            m_value = (int)(m_value/12)*12;                
 
 
-                if (   !prog.TooComplex
+                if (   !TooComplex
                     && !AnyParentIsEnvelope
                     && (  !IsDigit(Tag[0]) && RND > 0.5f
                         || IsDigit(Tag[0]) && RND > 0.9f))
                 {
                     Envelope = new Envelope(this, Instrument, Source);
-                    Envelope.Randomize(prog);
+                    Envelope.Randomize();
                 }
                 else 
                     Envelope = Envelope_null;
 
 
-                if (   !prog.TooComplex
+                if (   !TooComplex
                     && RND > 0.8f)
                 {
                     Lfo = new LFO(this, Instrument, Source);
-                    Lfo.Randomize(prog);
+                    Lfo.Randomize();
                 }
                 else
                 { 

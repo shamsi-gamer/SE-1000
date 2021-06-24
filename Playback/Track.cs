@@ -32,17 +32,20 @@ namespace IngameScript
             public float[] DspVol;
 
 
+            public Program Program;
 
-            public Track()
+
+            public Track(Program prog)
             {
                 Clips = new Clip[g_nChans];
                 for (int i = 0; i < g_nChans; i++)
                     Clips[i] = Clip_null;
                           
-
                 Stop();
                           
                 DspVol = new float[g_nChans];
+
+                Program = prog;
             }
 
 
@@ -66,6 +69,8 @@ namespace IngameScript
                 NextPat   = track.NextPat;
                           
                 DspVol    = new float[g_nChans];
+
+                Program   = track.Program;
             }
 
 
@@ -84,7 +89,7 @@ namespace IngameScript
 
 
 
-            public void SetClip(int index, Program prog)
+            public void SetClip(int index)
             { 
                 if (MixerShift)
                     return;
@@ -131,7 +136,7 @@ namespace IngameScript
                         NextClip = PlayClip; // cancel clip off
 
                     else if (index != PlayClip) // cue next clip
-                        CueNextClip(index, prog);
+                        CueNextClip(index);
                 }
 
                 else if (!OK(clip))
@@ -140,7 +145,7 @@ namespace IngameScript
                     {
                         if (!OK(Clips[index]))
                         { 
-                            Clips[index] = Clip.Create(this); // set clip
+                            Clips[index] = Clip.Create(this, Program); // set clip
                             SetEditedClip(Clips[index]);
                             EditClip = -1;
                         }
@@ -163,18 +168,17 @@ namespace IngameScript
 
 
 
-            public void CueNextClip(int index, Program prog)
+            public void CueNextClip(int index)
             {
                 NextClip = index;
 
-
                 if (CueClip == 0)
-                    SyncPlayTime(prog);
+                    SyncPlayTime();
             }
 
 
 
-            public void SyncPlayTime(Program prog)
+            public void SyncPlayTime()
             {
                 var playTime = GetAnyCurrentPlayTime();
 
@@ -189,7 +193,7 @@ namespace IngameScript
                 StartTime = g_time - PlayTime;
 
                 SetInstName();
-                prog.ResetLfos();
+                Program.ResetLfos();
             }
 
 
@@ -261,7 +265,7 @@ namespace IngameScript
                         ClipCopy = Clip_null;
                     else
                     { 
-                        Clips[index] = new Clip(srcTrack.Clips[srcIndex], this);
+                        Clips[index] = new Clip(srcTrack.Clips[srcIndex], this, Program);
                         GetNewClipName(Clips[index], Clips);
                     }
                 }
@@ -333,7 +337,7 @@ namespace IngameScript
 
                 if (!SessionHasClips)
                 { 
-                    Clips[index] = Clip.Create(this);
+                    Clips[index] = Clip.Create(this, Program);
                     EditedClip = Clips[index];
                 }
 
@@ -347,10 +351,10 @@ namespace IngameScript
 
 
 
-            public void CueNextPattern(Clip clip, Program prog)
+            public void CueNextPattern(Clip clip)
             {
                 UpdateBlockPat(clip);
-                UpdatePlayTime(clip, prog);
+                UpdatePlayTime(clip);
 
                 PlayPat = (int)(PlayStep / g_patSteps);
             }
@@ -369,7 +373,7 @@ namespace IngameScript
 
 
 
-            void UpdatePlayTime(Clip clip, Program prog)
+            void UpdatePlayTime(Clip clip)
             {
                 int start, end;
                 clip.GetPosLimits(PlayPat, out start, out end);
@@ -393,7 +397,7 @@ namespace IngameScript
                     PlayTime  -= (end - start) * TicksPerStep;
                     StartTime += (end - start) * TicksPerStep;
 
-                    prog.ResetLfos();
+                    Program.ResetLfos();
                 }
             }
 
@@ -430,12 +434,12 @@ namespace IngameScript
 
 
 
-            public static Track Load(string[] lines, ref int line)//, out string curPath)
+            public static Track Load(string[] lines, ref int line, Program prog)//, out string curPath)
             {
                 if (line >= lines.Length) 
                     return Track_null;
 
-                var track = new Track();
+                var track = new Track(prog);
 
                 var strCfg = lines[line++];
 
@@ -467,7 +471,7 @@ namespace IngameScript
 
                 for (int i = 0; i < nClips; i++)
                 {
-                    var clip = Clip.Load(lines, ref line, track);
+                    var clip = Clip.Load(lines, ref line, track, prog);
 
                     if (OK(clip)) track.Clips[indices[i]] = clip;//, out curPath));
                     else          return Track_null;
@@ -478,11 +482,11 @@ namespace IngameScript
 
 
 
-            public void UpdateVolumes(Program prog)
+            public void UpdateVolumes()
             {
                 for (int i = 0; i < g_sounds.Count; i++)
                 {
-                    if (prog.TooComplex) return;
+                    if (Program.TooComplex) return;
 
                     var snd = g_sounds[i];
 
@@ -548,7 +552,7 @@ namespace IngameScript
 
             foreach (var track in tracks)
             {
-                if (OK(track.Clips[index])) track.SetClip(index, this);
+                if (OK(track.Clips[index])) track.SetClip(index);
                 else                        track.NextClip = -1;
             }
         }

@@ -115,7 +115,10 @@ namespace IngameScript
             public int           StepLength     => Patterns.Count * g_patSteps;
 
 
-            public Clip(Track track, string name = strClip)
+            public Program       Program;
+
+
+            public Clip(Track track, Program prog, string name = strClip)
             {
                 Track       = track;
                 Name        = name;
@@ -203,11 +206,13 @@ namespace IngameScript
                     Chords[i] = new List<int>();
 
 
+                Program = prog;
+
                 ResetState();
             }
 
 
-            public Clip(Clip clip, Track track)
+            public Clip(Clip clip, Track track, Program prog)
             {
                 Name     = clip.Name;
                 Track    = track;
@@ -299,6 +304,8 @@ namespace IngameScript
                     Chords[i] = new List<int>();
 
 
+                Program = prog;
+
                 ResetState();
             }
 
@@ -314,12 +321,16 @@ namespace IngameScript
             {
                 for (int ch = 0; ch < g_nChans; ch++)
                 { 
+                    if (Program.TooComplex) return;
+
                     var chanKeys = ChannelAutoKeys[ch];
 
                     chanKeys.Clear();
 
                     for (int p = 0; p < Patterns.Count; p++)
                     {
+                        if (Program.TooComplex) return;
+
                         var keys = Patterns[p].Channels[ch].AutoKeys;
 
                         for (int k = 0; k < keys.Count; k++)
@@ -338,9 +349,9 @@ namespace IngameScript
             }
 
 
-            public static Clip Create(Track track)
+            public static Clip Create(Track track, Program prog)
             {
-                var clip = new Clip(track);
+                var clip = new Clip(track, prog);
                 clip.Patterns.Add(new Pattern(Instruments[0], clip));
                 GetNewClipName(clip, track.Clips);
                 return clip;

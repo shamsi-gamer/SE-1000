@@ -37,7 +37,7 @@ namespace IngameScript
                 EditedClip.Settings.Clear();
 
 
-                var inst = new Instrument();
+                var inst = new Instrument(this);
                 inst.Sources.Add(new Source(inst));
 
                 inst.Name = GetNewName(inst.Name, str => Instruments.Exists(i => i.Name == str));
@@ -150,7 +150,7 @@ namespace IngameScript
 
                 if (Instruments.Count == 0)
                 {
-                    Instruments.Add(new Instrument());
+                    Instruments.Add(new Instrument(this));
                     Instruments[0].Sources.Add(new Source(Instruments[0]));
                 }
 

@@ -36,11 +36,11 @@ namespace IngameScript
             dspVol3.Panel.CustomData = trackData;
 
             if (!LoadMachineState(stateData, out g_editTrack, out g_editClip, out g_curPath, out g_copyTrack, out g_copyIndex))
-                CreateDefaultMachineState();
+                CreateDefaultMachineState(this);
 
 
             Instruments = new List<Instrument>();
-            CreateTracks();
+            CreateTracks(this);
 
 
             g_ioAction   = 0; // load
@@ -62,12 +62,12 @@ namespace IngameScript
                     SkipWhiteSpace(g_instLines, ref g_ioPos);
 
                     if (g_ioPos < g_instLines.Length)
-                        Instruments.Add(Instrument.Load(g_instLines, ref g_ioPos));
+                        Instruments.Add(Instrument.Load(g_instLines, ref g_ioPos, this));
 
                     if (Instruments.Count == 0)
                     { 
-                        CreateDefaultInstruments();
-                        CreateDefaultTracks();
+                        CreateDefaultInstruments(this);
+                        CreateDefaultTracks(this);
                         g_ioState = -1;
                         FinalizeLoad();
                         return;
@@ -92,10 +92,10 @@ namespace IngameScript
                 {
                     SkipWhiteSpace(g_trackLines, ref g_ioPos);
 
-                    var track = Track.Load(g_trackLines, ref g_ioPos);
+                    var track = Track.Load(g_trackLines, ref g_ioPos, this);
                     if (!OK(track))
                     {
-                        CreateDefaultTracks();
+                        CreateDefaultTracks(this);
                         ResetIO();
                         return; 
                     }
@@ -106,7 +106,7 @@ namespace IngameScript
                 {
                     if (!SessionHasClips)
                     {
-                        Tracks[0].Clips[0] = Clip.Create(Tracks[0]);
+                        Tracks[0].Clips[0] = Clip.Create(Tracks[0], this);
                         EditedClip = Tracks[0].Clips[0];
                         UpdateClipDisplay(EditedClip);
                     }

@@ -26,6 +26,8 @@ namespace IngameScript
             protected bool    m_valid;
 
 
+            protected bool   TooComplex => Instrument.Program.TooComplex;
+
 
             public Setting(string tag, Setting parent, Setting proto, Instrument inst, Source src)
             {
@@ -94,7 +96,7 @@ namespace IngameScript
 
 
 
-            public virtual void Randomize(Program prog) {}
+            public virtual void Randomize() {}
             public virtual void AdjustFromController(Clip clip) {}
 
 

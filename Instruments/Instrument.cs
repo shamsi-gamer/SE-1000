@@ -20,6 +20,8 @@ namespace IngameScript
 
             public float        DisplayVolume;
 
+            public Program      Program;
+
 
             public float CurVolume { get 
             { 
@@ -32,7 +34,7 @@ namespace IngameScript
             } }
 
 
-            public Instrument()
+            public Instrument(Program prog)
             {
                 Name          = "New Sound";
                               
@@ -46,10 +48,12 @@ namespace IngameScript
                 Sources       = new List<Source>();
 
                 DisplayVolume = float.NaN;
+
+                Program       = prog;
             }
 
 
-            public Instrument(string name) : this()
+            public Instrument(string name, Program prog) : this(prog)
             {
                 Name = name;
             }
@@ -57,26 +61,29 @@ namespace IngameScript
 
             public Instrument(Instrument inst)
             {
-                Name     = inst.Name;
-
-                Volume   = new Parameter(inst.Volume, Setting_null);
-
-                Tune     = inst.Tune    ?.Copy();
-                Filter   = inst.Filter  ?.Copy();
-
-                Delay    = inst.Delay   ?.Copy();
+                Name          = inst.Name;
+                             
+                Volume        = new Parameter(inst.Volume, Setting_null);
+                             
+                Tune          = inst.Tune    ?.Copy();
+                Filter        = inst.Filter  ?.Copy();
+                             
+                Delay         = inst.Delay   ?.Copy();
 
                 Sources = new List<Source>();
                 foreach (var src in inst.Sources)
                     Sources.Add(new Source(src, this));
 
                 DisplayVolume = inst.DisplayVolume;
+
+                Program       = inst.Program;
             }
 
 
-            public void Randomize(Program prog)
+            public void Randomize()
             {
                 Sources.Clear();
+
                 var nSrc = Math.Max(1, (int)Math.Round(Math.Pow(RND, 1.5) * MaxSources/2));
 
                 var used = new List<Oscillator>();
@@ -86,7 +93,7 @@ namespace IngameScript
                     var src = new Source(this);
                  
                     Sources.Add(src);
-                    src.Randomize(used, prog);
+                    src.Randomize(used);
                 }
 
                 Volume.SetValue(1, Note_null, -1);//.Randomize(Program prog);
@@ -94,7 +101,7 @@ namespace IngameScript
                 if (RND > 0.7f)
                 {
                     Tune = new Tune(this, Source_null);
-                    Tune.Randomize(prog);
+                    Tune.Randomize();
                 }
                 else
                     Tune = Tune_null;
@@ -103,7 +110,7 @@ namespace IngameScript
                     && OK(Sources.Find(s => OK(s.Harmonics))))
                 {
                     Filter = new Filter(this, Source_null);
-                    Filter.Randomize(prog);
+                    Filter.Randomize();
                 }
                 else
                     Filter = Filter_null;
@@ -111,7 +118,7 @@ namespace IngameScript
                 if (RND > 0.7f)
                 {
                     Delay = new Delay(this, Source_null);
-                    Delay.Randomize(prog);
+                    Delay.Randomize();
                 }
                 else
                     Delay = Delay_null;
@@ -184,12 +191,12 @@ namespace IngameScript
 
 
 
-            public static Instrument Load(string[] lines, ref int line)
+            public static Instrument Load(string[] lines, ref int line, Program prog)
             {
                 var data = lines[line++].Split(';');
                 var i    = 0;
 
-                var inst = new Instrument { Name = data[i++] };
+                var inst = new Instrument(data[i++], prog);
 
                 var nSources = int_Parse(data[i++]);
 

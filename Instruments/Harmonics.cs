@@ -199,7 +199,7 @@ namespace IngameScript
             }
 
 
-            public override void Randomize(Program prog)
+            public override void Randomize()
             {
                 SetPreset((Preset)g_rnd.Next(0, 17));
 
@@ -210,7 +210,7 @@ namespace IngameScript
                 {
                     var tone = Tones[i];
 
-                    if (RND > 0.9f) tone.Randomize(prog);
+                    if (RND > 0.9f) tone.Randomize();
                     else            tone.Clear();
                 }
             }

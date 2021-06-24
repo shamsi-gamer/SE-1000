@@ -49,9 +49,9 @@ namespace IngameScript
 
 
 
-            public void PrevPattern()
+            public void PrevPattern(Program prog)
             {
-                if (MovePat) MovePatterns(EditPat - 1);
+                if (MovePat) MovePatterns(EditPat - 1, prog);
                 else SetEditPattern(EditPat - 1);
 
                 g_lcdPressed.Add(lcdClip+5);
@@ -59,9 +59,9 @@ namespace IngameScript
 
 
 
-            public void NextPattern()
+            public void NextPattern(Program prog)
             {
-                if (MovePat) MovePatterns(EditPat + 1);
+                if (MovePat) MovePatterns  (EditPat + 1, prog);
                 else         SetEditPattern(EditPat + 1);
 
                 g_lcdPressed.Add(lcdClip+6);
@@ -69,7 +69,7 @@ namespace IngameScript
 
 
 
-            public void MovePatterns(int destPat)
+            public void MovePatterns(int destPat, Program prog)
             {
                 var block = GetBlock(EditPat);
                 if (OK(block))
@@ -263,7 +263,7 @@ namespace IngameScript
                     EditPos = 0;
 
 
-                Track.SyncPlayTime(prog);
+                Track.SyncPlayTime();
 
                 UpdateAutoKeys();
 
@@ -325,7 +325,7 @@ namespace IngameScript
                     EditPos = Math.Min(EditPos, Patterns.Count * g_patSteps);
 
 
-                Track.SyncPlayTime(prog);
+                Track.SyncPlayTime();
 
                 if (Track.PlayPat >= Patterns.Count)
                     Track.PlayPat  = Patterns.Count - 1;
@@ -370,7 +370,7 @@ namespace IngameScript
                 DisableBlock();
 
 
-                Track.SyncPlayTime(prog);
+                Track.SyncPlayTime();
 
                 UpdateAutoKeys();
 
