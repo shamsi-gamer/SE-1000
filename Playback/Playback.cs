@@ -123,21 +123,21 @@ namespace IngameScript
 
                             if (playClip.Patterns.Count < refClip.Patterns.Count)
                             { 
-                                if (nextPat > playClip.Patterns.Count) 
+                                if (nextPat >= playClip.Patterns.Count) 
                                     nextPat = 0;
 
                                 track.NextPat = nextPat % playClip.Patterns.Count;
                             }
                             else if (playClip.Patterns.Count > refClip.Patterns.Count)
                             {
-                                if (nextPat > refClip.Patterns.Count)
+                                if (nextPat >= refClip.Patterns.Count)
                                     nextPat = 0;
 
                                 track.NextPat = nextPat % refClip.Patterns.Count;
                             }
                             else
                             {
-                                if (nextPat > refClip.Patterns.Count)
+                                if (nextPat >= playClip.Patterns.Count)
                                     nextPat = 0;
 
                                 track.NextPat = nextPat;
