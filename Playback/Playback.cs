@@ -1,4 +1,7 @@
-﻿namespace IngameScript
+﻿using System;
+
+
+namespace IngameScript
 {
     partial class Program
     {
@@ -116,12 +119,29 @@
                         if (   CueClip == 1
                             && OK(refClip))
                         {
-                            var playPat = refClip.Track.PlayPat + 1;
+                            var nextPat = refClip.Track.PlayPat + 1;
 
-                            if (playPat > refClip.Patterns.Count) 
-                                playPat = 0;
+                            if (playClip.Patterns.Count < refClip.Patterns.Count)
+                            { 
+                                if (nextPat > playClip.Patterns.Count) 
+                                    nextPat = 0;
 
-                            track.NextPat = playPat % playClip.Patterns.Count;
+                                track.NextPat = nextPat % playClip.Patterns.Count;
+                            }
+                            else if (playClip.Patterns.Count > refClip.Patterns.Count)
+                            {
+                                if (nextPat > refClip.Patterns.Count)
+                                    nextPat = 0;
+
+                                track.NextPat = nextPat % refClip.Patterns.Count;
+                            }
+                            else
+                            {
+                                if (nextPat > refClip.Patterns.Count)
+                                    nextPat = 0;
+
+                                track.NextPat = nextPat;
+                            }
                         }
                         else 
                             track.NextPat = 0;
