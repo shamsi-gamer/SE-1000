@@ -153,6 +153,10 @@ namespace IngameScript
                 {
                     track.PlayPat = -1;
                     track.NextPat = -1;
+
+                    track.PlayTime  = long_NaN;
+                    track.StartTime = long_NaN;
+                    
                     continue;
                 }
             }
