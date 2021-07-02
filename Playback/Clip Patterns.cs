@@ -252,8 +252,8 @@ namespace IngameScript
                 MovePatternOff();
                 DisableBlock();
 
-                if (OK(EditPos))
-                    EditPos = 0;
+                //if (OK(EditPos))
+                //    EditPos = 0;
 
 
                 Track.SyncPlayTime();
@@ -263,6 +263,42 @@ namespace IngameScript
 
                 g_lcdPressed.Add(lcdClip + 2);
             }
+
+
+
+            public void DuplicatePattern(Program prog)
+            {
+                var block = GetBlock(EditPat);
+
+                if (   Block
+                    && OK(block))
+                {
+                    for (int p = block.First; p <= block.Last; p++)
+                        Patterns.Insert(block.Last + 1 + p - block.First, new Pattern(Patterns[p]));
+
+                    Blocks.Add(new Block(
+                        block.Last + 1,
+                        block.Last + block.Len));
+
+                    SetEditPattern(EditPat + block.Len);
+                }
+                else
+                {
+                    Patterns.Insert(EditPat + 1, new Pattern(CurPattern));
+                    SetEditPattern(EditPat + 1);
+                }
+
+                MovePatternOff();
+                DisableBlock();
+
+
+                Track.SyncPlayTime();
+
+                UpdateAutoKeys();
+
+
+                g_lcdPressed.Add(lcdClip + 1);
+            }        
 
 
 
@@ -334,42 +370,6 @@ namespace IngameScript
 
                 g_lcdPressed.Add(lcdClip + 0);
             }
-
-
-
-            public void DuplicatePattern(Program prog)
-            {
-                var block = GetBlock(EditPat);
-
-                if (   Block
-                    && OK(block))
-                {
-                    for (int p = block.First; p <= block.Last; p++)
-                        Patterns.Insert(block.Last + 1 + p - block.First, new Pattern(Patterns[p]));
-
-                    Blocks.Add(new Block(
-                        block.Last + 1,
-                        block.Last + block.Len));
-
-                    SetEditPattern(EditPat + block.Len);
-                }
-                else
-                {
-                    Patterns.Insert(EditPat + 1, new Pattern(CurPattern));
-                    SetEditPattern(EditPat + 1);
-                }
-
-                MovePatternOff();
-                DisableBlock();
-
-
-                Track.SyncPlayTime();
-
-                UpdateAutoKeys();
-
-
-                g_lcdPressed.Add(lcdClip + 1);
-            }        
         }
     }
 }
