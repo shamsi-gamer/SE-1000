@@ -264,18 +264,18 @@ namespace IngameScript
 
             if (nDsp == 0)
             {
-                DrawButton(sprites, strDel, 0, 6, w, h, IsPressed(lcdClip+ 0));
-                DrawButton(sprites, "Dup",  1, 6, w, h, IsPressed(lcdClip+ 1));
-                DrawButton(sprites, "New",  2, 6, w, h, IsPressed(lcdClip+ 2));
+                DrawButton(sprites, strDel, 0, 6, w, h, IsPressed(lcdClip + 0));
+                DrawButton(sprites, "Dup",  1, 6, w, h, IsPressed(lcdClip + 1));
+                DrawButton(sprites, "New",  2, 6, w, h, IsPressed(lcdClip + 2));
 
-                DrawButton(sprites, "Cue",  4, 6, w, h, OK(EditedClip.Track.NextPat));         
-                DrawButton(sprites, "◄",    5, 6, w, h, IsPressed(lcdClip+ 5) ^ EditedClip.MovePat); }
-         else { DrawButton(sprites, "►",    0, 6, w, h, IsPressed(lcdClip+ 6) ^ EditedClip.MovePat);
+                DrawButton(sprites, "Cue",  4, 6, w, h, OK(EditedClip.Track.NextPat) || IsPressed(lcdClip + 4));         
+                DrawButton(sprites, "◄",    5, 6, w, h, IsPressed(lcdClip + 5) ^ EditedClip.MovePat); }
+         else { DrawButton(sprites, "►",    0, 6, w, h, IsPressed(lcdClip + 6) ^ EditedClip.MovePat);
                 DrawButton(sprites, "◄►",   1, 6, w, h, EditedClip.MovePat);
 
                 DrawButton(sprites, "[",    3, 6, w, h, EditedClip.In);
                 DrawButton(sprites, "]",    4, 6, w, h, EditedClip.Out);
-                DrawButton(sprites, "X",    5, 6, w, h, IsPressed(lcdClip+11));
+                DrawButton(sprites, "X",    5, 6, w, h, IsPressed(lcdClip + 11));
             }
         }
 

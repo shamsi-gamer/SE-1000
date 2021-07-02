@@ -32,7 +32,9 @@
                 case "move pat":    EditedClip?.ToggleMovePattern();    break;
                 case "prev pat":    EditedClip?.PrevPattern(this);      break;
                 case "next pat":    EditedClip?.NextPattern(this);      break;
-                                                                       
+
+                case "cue":         EditedClip.Cue();                   break;
+
                 case "loop":        EditedClip?.ToogleLoop();           break;
                 case "block":       EditedClip?.ToggleBlock();          break;
                 case "all pat":     EditedClip?.ToggleAllPatterns();    break;
@@ -110,8 +112,6 @@
                                                                         
                 case "fold":        ToggleFold();                       break;
                 case "timers":      NoiseEmitters();                    break;
-                                                                        
-                case "cue":         EditedClip.Cue();                   break;
                                                                         
                 case "mem set":     MemSet();                           break;
                 case "mem pat":     EditedClip.MemPat();                break;

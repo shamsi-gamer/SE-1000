@@ -24,13 +24,6 @@ namespace IngameScript
 
 
 
-            public void Cue()
-            {
-                SetCue();
-            }
-
-
-
             public void MemPat()
             {
                 if (SetOrPat) SetOrPat  = False;
@@ -51,10 +44,10 @@ namespace IngameScript
 
             public void PrevPattern(Program prog)
             {
-                if (MovePat) MovePatterns(EditPat - 1, prog);
-                else SetEditPattern(EditPat - 1);
+                if (MovePat) MovePatterns  (EditPat - 1, prog);
+                else         SetEditPattern(EditPat - 1);
 
-                g_lcdPressed.Add(lcdClip+5);
+                g_lcdPressed.Add(lcdClip + 5);
             }
 
 
@@ -64,7 +57,7 @@ namespace IngameScript
                 if (MovePat) MovePatterns  (EditPat + 1, prog);
                 else         SetEditPattern(EditPat + 1);
 
-                g_lcdPressed.Add(lcdClip+6);
+                g_lcdPressed.Add(lcdClip + 6);
             }
 
 
@@ -165,7 +158,7 @@ namespace IngameScript
                 UpdateAutoKeys();
 
 
-                g_lcdPressed.Add(lcdClip+7);
+                g_lcdPressed.Add(lcdClip + 7);
             }
 
 
@@ -268,7 +261,7 @@ namespace IngameScript
                 UpdateAutoKeys();
 
 
-                g_lcdPressed.Add(lcdClip+2);
+                g_lcdPressed.Add(lcdClip + 2);
             }
 
 
@@ -339,7 +332,7 @@ namespace IngameScript
 
                 ValMem();
 
-                g_lcdPressed.Add(lcdClip+0);
+                g_lcdPressed.Add(lcdClip + 0);
             }
 
 
@@ -375,7 +368,7 @@ namespace IngameScript
                 UpdateAutoKeys();
 
 
-                g_lcdPressed.Add(lcdClip+1);
+                g_lcdPressed.Add(lcdClip + 1);
             }        
         }
     }

@@ -525,7 +525,7 @@ namespace IngameScript
                 Blocks.Remove(GetBlock(EditPat));
                 DisableBlock();
                 MovePatternOff(); 
-                g_lcdPressed.Add(lcdClip+11);
+                g_lcdPressed.Add(lcdClip + 11);
             }
 
 
@@ -586,9 +586,17 @@ namespace IngameScript
 
                 if (AutoCue)
                 {
-                    Cue();
+                    SetCue();
                     Follow = False;
                 }
+            }
+
+
+            public void Cue()
+            {
+                SetCue();
+
+                g_lcdPressed.Add(lcdClip + 4);
             }
 
 

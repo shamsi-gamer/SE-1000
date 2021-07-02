@@ -71,27 +71,34 @@ namespace IngameScript
         }
 
 
+
         void DrawChannelList(List<MySprite> sprites, float x, float y, float w, float h)
         {
-            var ch = h / g_nChans;
+            var chh = h / g_nChans;
 
-            FillRect(sprites, x, y + h - CurChan * ch - 35, w, ch, CurChannel.On ? color6 : color3);
+            FillRect(sprites, x, y + h - CurChan * chh - 35, w, chh, CurChannel.On ? color6 : color3);
 
-            for (int c = 0; c < g_nChans; c++)
+            for (int ch = 0; ch < g_nChans; ch++)
             {
-                var yLine = y + h - c * ch - 40;
-                var chan  = CurPattern.Channels[c];
+                var yLine = y + h - ch * chh - 40;
+                var chan  = CurPattern.Channels[ch];
+
+                var on =
+                        chan.On
+                    && (  !IsCurParam() 
+                        || ch == CurChan);
 
                 DrawString(sprites, 
-                     S(c+1).PadLeft(2)
+                      S(ch+1).PadLeft(2)
                     + strEmpty
                     + chan.Instrument.Name,
                     6,
                     yLine + 12,
                     0.7f,
-                    c == CurChan ? color0 : (chan.Notes.Count > 0 ? (chan.On ? color6 : color3) : color2));
+                    ch == CurChan ? color0 : (chan.Notes.Count > 0 ? (on ? color6 : color3) : color2));
             }
         }
+
 
 
         void DrawGrid(List<MySprite> sprites, float x, float y, float w, float h, int pattern, int patSteps = g_patSteps)
@@ -108,6 +115,7 @@ namespace IngameScript
             for (int t = 0; t < patSteps; t++)
                 FillRect(sprites, x + t * wt, y, 1, h, color3);
         }
+
 
 
         void DrawPattern(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int pat, int gs, bool isolated, int songSteps = g_patSteps)
@@ -150,7 +158,12 @@ namespace IngameScript
 
                         var tw = (float)Math.Floor(wt * (noteEnd-noteStart)) - gs*2;
 
-                        var colTick = chan.On ? color6 : color3;
+                        var on =
+                               chan.On
+                            && (  !IsCurParam() 
+                                || ch == CurChan);
+
+                        var colTick = on ? color6 : color3;
 
 
                         FillRect(
@@ -164,6 +177,7 @@ namespace IngameScript
                 }
             }
         }
+
 
 
         void DrawPatternNeg(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int pat, float step, bool isolated)
