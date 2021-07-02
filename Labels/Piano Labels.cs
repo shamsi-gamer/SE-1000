@@ -126,9 +126,10 @@ namespace IngameScript
         {
             return
                 ShowPiano
-                ?       -lbl.Data == 15 
+                ?      -lbl.Data == 15 
                      && EditedClip.HalfSharp
-                  || NoteIsBright(LowToNote(-lbl.Data))
+                  ||   -lbl.Data < 15
+                     && NoteIsBright(LowToNote(-lbl.Data))
                 : StepIsBright(lbl);
         }
 
@@ -144,7 +145,7 @@ namespace IngameScript
 
         void UpdatePianoLow(Label lbl)
         {
-            if (   ShowPiano
+            if (    ShowPiano
                 && -lbl.Data == 15) lbl.SetText("‡", 8, 17); 
             else                    lbl.SetText(strEmpty);
         }
