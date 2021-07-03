@@ -574,9 +574,7 @@ namespace IngameScript
                 Follow = !Follow;
 
                 if (Follow)
-                {
                     AutoCue = False;
-                }
             }
 
 

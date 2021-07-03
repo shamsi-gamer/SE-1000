@@ -108,7 +108,7 @@ namespace IngameScript
             foreach (var track in Tracks)
             {
                 if (   track.NextClip != track.PlayClip // set cue
-                    && track.GetCueNextClip(refClip))
+                    && track.NeedToCueClip(refClip))
                 { 
                     track.PlayClip = track.NextClip;
 
@@ -143,6 +143,7 @@ namespace IngameScript
                                 track.NextPat = nextPat;
                             }
                         }
+
                         else 
                             track.NextPat = 0;
                     }
@@ -162,12 +163,13 @@ namespace IngameScript
             }
 
 
+
             foreach (var track in Tracks)
             {
                 var clip = track.PlayingClip;
                 if (!OK(clip)) continue;
 
-                track.CueNextPattern(clip);
+                track.UpdatePlayTime(clip);
 
                 if (   clip == EditedClip
                     && clip.Follow)

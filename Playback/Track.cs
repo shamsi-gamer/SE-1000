@@ -18,7 +18,7 @@ namespace IngameScript
             public int     PlayClip,
                            NextClip,
                            
-                           PlayPat, // this can't be a property because it must sometimes be separate from PlayTime, for queueing
+                           PlayPat,
                            NextPat;
 
 
@@ -53,11 +53,13 @@ namespace IngameScript
             public Track(Track track)
             {
                 Clips = new Clip[g_nChans]; 
+
                 for (int i = 0; i < g_nChans; i++)
                 {
                     Clips[i]       = track.Clips[i];
                     Clips[i].Track = this;
                 }
+
 
                 StartTime = track.StartTime;
                 PlayTime  = track.PlayTime;
@@ -198,14 +200,14 @@ namespace IngameScript
 
 
 
-            public bool GetCueNextClip(Clip refClip)
+            public bool NeedToCueClip(Clip refClip)
             {
                 if (   !OK(PlayClip)
                     && !OK(NextClip))
                     return False;
 
                 
-                if (!OK(refClip)) 
+                if (!OK(refClip)) // nothing is currently playing
                     return OK(NextPat);
 
 
@@ -351,17 +353,7 @@ namespace IngameScript
 
 
 
-            public void CueNextPattern(Clip clip)
-            {
-                UpdateBlockPat(clip);
-                UpdatePlayTime(clip);
-
-                PlayPat = (int)(PlayStep / g_patSteps);
-            }
-
-
-
-            void UpdateBlockPat(Clip clip)
+            public void UpdatePlayTime(Clip clip)
             {
                 if (   OK(NextPat)
                     && clip.Block)
@@ -369,12 +361,8 @@ namespace IngameScript
                     var b = clip.GetBlock(PlayPat);
                     if (OK(b)) PlayPat = b.Last;
                 }
-            }
 
 
-
-            void UpdatePlayTime(Clip clip)
-            {
                 int start, end;
                 clip.GetPosLimits(PlayPat, out start, out end);
                 end = start + Math.Min(end - start, clip.StepLength);
@@ -399,6 +387,9 @@ namespace IngameScript
 
                     Program.ResetLfos();
                 }
+
+
+                PlayPat = (int)(PlayStep / g_patSteps);
             }
 
 
