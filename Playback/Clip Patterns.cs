@@ -124,7 +124,7 @@ namespace IngameScript
                 }
                 else
                 {
-                    var pat = CurPattern;
+                    var pat = EditPattern;
                     Patterns.RemoveAt(EditPat);
 
                     var b = GetBlock(destPat);
@@ -243,7 +243,7 @@ namespace IngameScript
 
             public void NewPattern(Program prog)
             { 
-                var pat = new Pattern(CurPattern);
+                var pat = new Pattern(EditPattern);
                 pat.Clear();
 
                 Patterns.Insert(EditPat + 1, pat);
@@ -284,7 +284,7 @@ namespace IngameScript
                 }
                 else
                 {
-                    Patterns.Insert(EditPat + 1, new Pattern(CurPattern));
+                    Patterns.Insert(EditPat + 1, new Pattern(EditPattern));
                     SetEditPattern(EditPat + 1);
                 }
 

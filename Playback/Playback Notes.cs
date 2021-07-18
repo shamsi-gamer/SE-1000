@@ -27,7 +27,7 @@ namespace IngameScript
                 do
                 { 
                     found = chan.Notes.FindIndex(n => 
-                            note == n.Number
+                           note == n.Number
                         && clip.EditPos == clip.EditPat*g_patSteps + n.Step + ChordStrum(i));
 
                     if (OK(found)) 
@@ -150,7 +150,7 @@ namespace IngameScript
                 if (!(   clip.ChordEdit
                       && OK(clip.Chord)))
                 {
-                    var editStep = Math.Min(clip.EditStep, 1);
+                    var editStep = 1/2f;
 
                     var noteStep = (int)((step % g_patSteps + ChordStrum(i)) / editStep) * editStep;
                     var lastNote = new Note(chan, ch, 1, note, noteStep, EditedClip.EditStepLength);
@@ -167,7 +167,7 @@ namespace IngameScript
 
         void TriggerNote(Clip clip, int num, int ch, float len, float chordStrumOffset)
         {
-            var chan  = clip.CurPattern.Channels[ch];
+            var chan  = clip.EditPattern.Channels[ch];
             var track = clip.Track;
 
             var patStep = TimeStep

@@ -11,6 +11,7 @@ namespace IngameScript
         }
 
 
+
         static void SwitchToSetting(Clip clip, Instrument inst, string path)
         {
             BackOut();
@@ -19,10 +20,9 @@ namespace IngameScript
 
             CurChan =
             SelChan = Array.FindIndex(
-                CurPattern.Channels, 
+                EditPattern.Channels, 
                 chan => chan.Instrument == inst);
 
-            //CurSrc = iSrc;
 
             UpdateInstOff(SelChan);
 
@@ -33,11 +33,11 @@ namespace IngameScript
             int iSrc = -1;
             var tags = path.Split('/');
 
-            for (int i = 0; i < tags.Length; i++)
+            for (int i = 1; i < tags.Length; i++)
             { 
                 var tag = tags[i];
 
-                if (   i == 0
+                if (   i == 1
                     && IsDigit(tag[0]))
                 { 
                     iSrc = int_Parse(tag);
@@ -49,10 +49,13 @@ namespace IngameScript
         }
 
 
+
         static void AddNextSetting(string tag, Instrument inst = Instrument_null, int iSrc = -2)
         {
-            if (!OK(inst))  inst = SelInstrument;
-            if (iSrc == -2) iSrc = CurSrc;
+            if (!OK(inst)) inst = SelInstrument;
+            
+                 if (OK(iSrc))   CurSrc = iSrc;
+            else if (iSrc == -2) iSrc   = CurSrc;
 
             if (OK(CurSetting))
                 CurSetting._IsCurrent = False;
@@ -70,6 +73,7 @@ namespace IngameScript
             if (IsCurParam())
                 CurSetting._IsCurrent = True;
         }
+
 
 
         public void DeleteCurSetting(Clip clip)

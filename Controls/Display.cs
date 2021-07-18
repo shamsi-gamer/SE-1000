@@ -20,11 +20,13 @@ namespace IngameScript
                                   ContentHeight;
 
 
+
             public Display(IMyTextPanel panel)
             {
                 Panel = panel;
                 Init();
             }
+
 
 
             void Init()
@@ -42,6 +44,7 @@ namespace IngameScript
             }
 
 
+
             public float ContentScale
             {
                 get
@@ -52,6 +55,7 @@ namespace IngameScript
                         / Math.Min(Panel.TextureSize.Y, Panel.TextureSize.Y);
                 }
             }
+
 
 
             public float UserScale
@@ -70,6 +74,7 @@ namespace IngameScript
             }
 
 
+
             public void Draw(List<MySprite> sprites)
             {
                 var frame = Panel.DrawFrame();
@@ -78,11 +83,13 @@ namespace IngameScript
             }
 
 
+
             public void Draw(ref MySpriteDrawFrame frame, List<MySprite> sprites = null)
             {
                 foreach (var sprite in sprites)
                     Draw(ref frame, sprite);
             }
+
 
 
             public void Draw(ref MySpriteDrawFrame frame, MySprite sprite)

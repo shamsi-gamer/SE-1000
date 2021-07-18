@@ -129,9 +129,9 @@ namespace IngameScript
                 _loadStep++;
 
                 Load(
-                    pnlStorageState.GetText(),
+                    pnlStorageState      .GetText(),
                     pnlStorageInstruments.GetText(),
-                    pnlStorageTracks.GetText());
+                    pnlStorageTracks     .GetText());
             }
         }
 

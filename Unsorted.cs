@@ -38,7 +38,7 @@ namespace IngameScript
 
         static void UpdateInstOff(int ch)
         {
-            var curInst = Instruments.IndexOf(CurPattern.Channels[ch].Instrument);
+            var curInst = Instruments.IndexOf(EditPattern.Channels[ch].Instrument);
             UpdateDspOffset(ref EditedClip.InstOff, curInst, Instruments.Count, maxDspInst, 0, 1);
         }
 

@@ -35,8 +35,8 @@ namespace IngameScript
             dspVol2.Panel.CustomData = instData;
             dspVol3.Panel.CustomData = trackData;
 
-            if (!LoadMachineState(stateData, out g_editTrack, out g_editClip, out g_curPath, out g_copyTrack, out g_copyIndex))
-                CreateDefaultMachineState(this);
+            if (!LoadState(stateData, out g_editTrack, out g_editClip, out g_curPath, out g_copyTrack, out g_copyIndex))
+                CreateDefaultState(this);
 
 
             Instruments = new List<Instrument>();
@@ -119,63 +119,6 @@ namespace IngameScript
 
 
 
-        //void Load(string stateData, string instData, string trackData)
-        //{
-        //    Stop();
-
-
-        //    //string modConnPath;
-        //    //int    modPat,
-        //    //       modChan;
-
-
-        //    int editTrack,
-        //        editClip,
-        //        copyTrack,
-        //        copyIndex;
-
-        //    string curPath;
-
-
-        //    if (!LoadMachineState(stateData, out editTrack, out editClip, out curPath, out copyTrack, out copyIndex))
-        //        CreateDefaultMachineState();
-
-        //    if (!LoadInstruments(instData))
-        //        CreateDefaultInstruments();
-
-        //    if (!LoadTracks(trackData))
-        //        CreateDefaultTracks();
-
-
-        //    if (OK(editTrack) && OK(editClip))
-        //        EditedClip = Tracks[editTrack].Clips[editClip];
-
-        //    if (!OK(EditedClip))
-        //        SetAnyEditedClip();
-
-            
-        //    if (curPath != "")
-        //        SwitchToSetting(EditedClip, EditedClip.SelChannel.Instrument, curPath);
-
-
-        //    UpdateClipDisplay(EditedClip);
-
-        //    SetLabelColor(EditedClip.ColorIndex);
-
-
-        //    if (   OK(copyTrack) 
-        //        && OK(copyIndex))
-        //        ClipCopy = Tracks[copyTrack].Clips[copyIndex];
-
-        //    //if (modConnPath != "")
-        //    //{
-        //    //    ModDestChannel    = EditClip.Patterns[modPat].Channels[modChan];
-        //    //    ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
-        //    //}
-        //}
-
-
-
         void FinalizeLoad()
         {
             if (OK(g_editTrack) && OK(g_editClip))
@@ -220,12 +163,12 @@ namespace IngameScript
 
 
 
-        bool LoadMachineState(string data,
-                              out int editTrack, out int editIndex, 
-                              out string curPath,
-                              out int copyTrack, out int copyIndex)
+        bool LoadState(string data,
+                       out int editTrack, out int editIndex, 
+                       out string curPath,
+                       out int copyTrack, out int copyIndex)
         {
-            ClearMachineState();
+            ClearState();
 
             editTrack = editIndex =
             copyTrack = copyIndex = -1;
@@ -301,84 +244,5 @@ namespace IngameScript
 
             return True;
         }
-
-
-
-        //bool LoadInstruments(string data)
-        //{
-            //Instruments = new List<Instrument>();
-
-
-            //var lines = data.Split('\n');
-            //var line  = 0;
-
-
-            //while (line < lines.Length)
-            //{
-            //    SkipWhiteSpace(lines, ref line);
-
-            //    if (line < lines.Length)
-            //        Instruments.Add(Instrument.Load(lines, ref line));
-            //}
-
-            
-            //return Instruments.Count > 0;
-        //}
-
-
-
-         //public void ImportInstruments()
-        //{
-        //    LoadInstruments(pnlStorageInstruments.GetText());
-
-        //    // set all instruments to first
-
-        //    foreach (var track in Tracks)
-        //    {
-        //        foreach (var clip in track.Clips)
-        //        { 
-        //            if (!OK(clip))
-        //                continue;
-
-        //            int first, last;
-        //            clip.GetCurPatterns(out first, out last);
-
-        //            for (int p = first; p <= last; p++)
-        //            {
-        //                for (int ch = 0; ch < g_nChans; ch++)
-        //                    clip.Patterns[p].Channels[ch].Instrument = Instruments[0];
-        //            }
-        //        }
-        //    }
-        //}
-
-
-
-        //bool LoadTracks(string data)
-        //{
-        //    CreateTracks();
-
-        //    var lines = data.Split('\n');
-        //    var line  = 0;
-
-        //    for (int t = 0; t < Tracks.Count; t++)
-        //    {
-        //        SkipWhiteSpace(lines, ref line);
-
-        //        var track = Track.Load(lines, ref line);
-        //        if (!OK(track)) return False;
-
-        //        Tracks[t] = track;
-        //    }
-
-        //    if (!SessionHasClips)
-        //    {
-        //        Tracks[0].Clips[0] = Clip.Create(Tracks[0]);
-        //        EditedClip = Tracks[0].Clips[0];
-        //        UpdateClipDisplay(EditedClip);
-        //    }
-
-        //    return True;
-        //}
     }
 }

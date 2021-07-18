@@ -13,10 +13,11 @@ namespace IngameScript
             public enum Preset { Sine, Square4, Square8, Square16, Square24, Saw4, Saw8, Saw16, Saw24, Pulse4, Pulse8, Pulse16, Pulse24, Random4, Random8, Random16, Random24 };
 
             public   Parameter[] Tones    = new Parameter[24];
-             float[]     m_values = new float    [24];
+                     float[]     m_values = new float    [24];
 
             public Preset      CurPreset;
             public int         CurTone;
+
 
 
             public Harmonics(Instrument inst, Source src) 
@@ -30,6 +31,7 @@ namespace IngameScript
             }
 
 
+
             public Harmonics(Harmonics hrm) 
                 : base(hrm.Tag, Setting_null, hrm, hrm.Instrument, hrm.Source)
             {
@@ -41,10 +43,12 @@ namespace IngameScript
             }
 
 
+
             public Harmonics Copy()
             {
                 return new Harmonics(this);
             }
+
 
 
             public void SetPreset(Preset preset)
@@ -76,11 +80,13 @@ namespace IngameScript
             }
 
 
+
             public void FillSine()
             {
                 for (int i = 0; i < Tones.Length; i++)
                     Tones[i].SetValue(i == 0 ? 1 : 0, Note_null, -1);
             }
+
 
 
             public void FillSquare(int nTones)
@@ -90,11 +96,13 @@ namespace IngameScript
             }
 
 
+
             public void FillSaw(int nTones)
             {
                 for (int i = 0; i < Tones.Length; i++)
                     Tones[i].SetValue(i >= nTones ? 0 : 1f/(i+1), Note_null, -1);
             }
+
 
 
             public void FillPulse(int nTones)
@@ -104,6 +112,7 @@ namespace IngameScript
                 for (int i = 0; i < Tones.Length; i++)
                     Tones[i].SetValue(i >= nTones ? 0 : 1f/div, Note_null, -1);
             }
+
 
 
             public void FillRandom(int nTones, Random rnd)
@@ -124,6 +133,7 @@ namespace IngameScript
                 for (int i = 0; i < Tones.Length; i++)
                     Tones[i].SetValue(m_values[i]/total, Note_null, -1);
             }
+
 
 
             public void CreateSounds(List<Sound> sounds, Source src, Note note, int noteNum, long sndTime, int sndLen, int relLen, List<TriggerValue> triggerValues, Program prog)
@@ -183,11 +193,13 @@ namespace IngameScript
             }
 
 
+
             public override void Clear()
             {
                 foreach (var tone in Tones)
                     tone.Clear();
             }
+
 
 
             public override void Reset()
@@ -197,6 +209,7 @@ namespace IngameScript
                 foreach (var tone in Tones)
                     tone.Reset();
             }
+
 
 
             public override void Randomize()
@@ -216,6 +229,7 @@ namespace IngameScript
             }
 
 
+
             public void Adjust(float delta)
             { 
                 if (OK(CurTone))
@@ -229,6 +243,7 @@ namespace IngameScript
                         tone.SetValue(tone.AdjustValue(tone.Value, delta, EditedClip.Shift, True), Note_null, -1);
                 }
             }
+
 
 
             public void Smooth()
@@ -247,10 +262,12 @@ namespace IngameScript
             }
 
 
+
             public override Setting GetOrAddSettingFromTag(string tag)
             {
                 return Tones[int_Parse(tag)];
             }
+
 
 
             public void Delete(int iSrc)
@@ -260,6 +277,7 @@ namespace IngameScript
                 foreach (var tone in Tones)
                     tone.Delete(iSrc);
             }
+
 
 
             public override string Save()
@@ -274,6 +292,7 @@ namespace IngameScript
                 
                 return hrm;
             }
+
 
 
             public static Harmonics Load(string[] data, ref int i, Instrument inst, int iSrc)
@@ -292,6 +311,7 @@ namespace IngameScript
 
                 return hrm;
             }
+
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
@@ -314,6 +334,7 @@ namespace IngameScript
 
                 _dp.Next(dp);
             }
+
 
 
             public void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, Channel chan, Program prog)
@@ -375,6 +396,7 @@ namespace IngameScript
             }
 
 
+
             void DrawSample(List<MySprite> sprites, float x, float y, float w, float h)
             {
                 var pPrev = new Vector2(float_NaN, float_NaN);
@@ -403,6 +425,7 @@ namespace IngameScript
                     pPrev = p;
                 }
             } 
+
 
 
             void DrawPreset(List<MySprite> sprites, Preset preset, float x, float y, float w, float h)
@@ -442,6 +465,7 @@ namespace IngameScript
             }
 
 
+
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
                 DrawFuncButton(sprites, "Smth",  1, w, h, False, False, IsPressed(lcdMain+1));
@@ -451,6 +475,7 @@ namespace IngameScript
                 if (OK(CurTone))
                     DrawFuncButton(sprites, "Tone", 4, w, h, True, Tones[CurTone].HasDeepParams(chan, CurSrc));
             }
+
 
 
             public override void Func(int func)
@@ -479,6 +504,7 @@ namespace IngameScript
             }
 
 
+
             public void MoveEdit(int move)
             {
                 CurTone += move;
@@ -486,6 +512,7 @@ namespace IngameScript
                 if (CurTone >= Tones.Length) CurTone = -1;
                 if (CurTone <  -1          ) CurTone = Tones.Length-1;
             }
+
 
 
             public override bool CanDelete()

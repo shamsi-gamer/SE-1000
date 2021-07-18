@@ -81,7 +81,7 @@ namespace IngameScript
             for (int ch = 0; ch < g_nChans; ch++)
             {
                 var yLine = y + h - ch * chh - 40;
-                var chan  = CurPattern.Channels[ch];
+                var chan  = EditPattern.Channels[ch];
 
                 var on =
                         chan.On

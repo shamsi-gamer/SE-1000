@@ -83,6 +83,7 @@ namespace IngameScript
             }
 
 
+
             bool LoadConfig(string[] cfg)//, out string curPath)
             {
                 //curPath = "";
@@ -94,14 +95,14 @@ namespace IngameScript
                 LoadToggles(cfg[c++]);
 
                 return
-                       int_TryParse  (cfg[c++], out EditPat         )
+                       int_TryParse  (cfg[c++], out EditPat        )
                     && int_TryParse  (cfg[c++], out CurChan        )
                                                                     
                     && int_TryParse  (cfg[c++], out SelChan        )
                     && int_TryParse  (cfg[c++], out CurSrc         )
-                                                                    
+
                     //Path = cfg[c++];                             
-                                                                    
+
                     && int_TryParse  (cfg[c++], out EditStepIndex  )
                     && int_TryParse  (cfg[c++], out EditLengthIndex)
                                                                     

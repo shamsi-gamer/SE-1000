@@ -326,8 +326,6 @@ namespace IngameScript
             EditedClip.ParamKeys = False;
             EditedClip.ParamAuto = False;
 
-            var _curSet = False;
-
 
             if (OK(CurSet))
             {
@@ -336,13 +334,10 @@ namespace IngameScript
 
                 CurSet = -1;
                 EditedClip.Settings.Clear();
-                    
-                _curSet = True;
             }
 
 
-            if (   OK(CurSrc)
-                && !_curSet)
+            if (OK(CurSrc))
             {
                 CurSrc = -1;
                 EditedClip.SrcOff =  0;
@@ -354,8 +349,7 @@ namespace IngameScript
             }
             
 
-            if (   OK(SelChan)
-                && !_curSet)
+            if (OK(SelChan))
             {
                 SelChan = -1;
 
@@ -393,6 +387,7 @@ namespace IngameScript
                         EditedClip.CurSetting._IsCurrent = False;
 
                     CurSet--;
+
                     EditedClip.Settings.RemoveAt(EditedClip.Settings.Count-1);
                 }
             }
@@ -813,7 +808,7 @@ namespace IngameScript
 
         static void SetShuffle(int ch, int sh)
         {
-            sh += CurPattern.Channels[ch].Shuffle;
+            sh += EditPattern.Channels[ch].Shuffle;
 
             int first, last;
             EditedClip.GetCurPatterns(out first, out last);
@@ -843,7 +838,7 @@ namespace IngameScript
                 g_copyChans.Add(new Channel(chan));
             }
         }
-
+        
 
         static void Paste()
         {
@@ -858,7 +853,7 @@ namespace IngameScript
             else
             {
                 for (int p = 0; p < Math.Min(last-first+1, g_copyChans.Count); p++)
-                    PasteChan(p, EditPat + first + p);
+                    PasteChan(p, first + p);
             }
         }
 

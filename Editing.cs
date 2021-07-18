@@ -35,7 +35,7 @@ namespace IngameScript
                 if (  !clip.ChordMode 
                     || OK(clip.Chord))
                 {
-                    var chan = clip.CurPattern.Channels[ch];
+                    var chan = clip.EditPattern.Channels[ch];
 
                     int found;
                     while (OK(found = chan.Notes.FindIndex(n => 
@@ -486,7 +486,7 @@ namespace IngameScript
                     {
                         if (create)
                         {
-                            var pat = new Pattern(clip.CurPattern);
+                            var pat = new Pattern(clip.EditPattern);
                             pat.Channels[clip.CurChan].Notes.Clear();
 
                             clip.Patterns.Insert(clip.EditPat + 1, pat);
@@ -620,7 +620,7 @@ namespace IngameScript
 
         static void SetTranspose(Clip clip, int ch, int tr)
         {
-            tr += clip.CurPattern.Channels[ch].Transpose;
+            tr += clip.EditPattern.Channels[ch].Transpose;
 
             int first, last;
             clip.GetCurPatterns(out first, out last);

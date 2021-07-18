@@ -99,6 +99,7 @@ namespace IngameScript
                 + PS(OK(ClipCopy) ? Tracks.IndexOf(ClipCopy.Track) : -1)
                 + PS(OK(ClipCopy) ? ClipCopy.Index                 : -1);
 
+
             for (int i = 0; i < nMems; i++)
             {
                 if (OK(Sets[i]))

@@ -100,10 +100,10 @@ namespace IngameScript
 
             public int           Index          => Track.Clips.IndexOf(this);
 
-            public Pattern       CurPattern     => Patterns[EditPat];
-            public Channel       CurChannel     => CurPattern.Channels[CurChan];
+            public Pattern       EditPattern    => Patterns[EditPat];
+            public Channel       CurChannel     => EditPattern.Channels[CurChan];
             public Instrument    CurInstrument  => CurChannel.Instrument;
-            public Channel       SelChannel     => OK(SelChan) ? CurPattern.Channels[SelChan] : Channel_null;
+            public Channel       SelChannel     => OK(SelChan) ? EditPattern.Channels[SelChan] : Channel_null;
             public Instrument    SelInstrument  => SelChannel?.Instrument ?? Instrument_null;
             public Source        SelSource      => OK(CurSrc) ? SelInstrument.Sources[CurSrc] : Source_null;
 

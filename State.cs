@@ -58,9 +58,9 @@ namespace IngameScript
         static bool Playing => OK(Tracks.Find(track => track?.Playing ?? False));
 
 
-        static void CreateDefaultMachineState(Program prog)
+        static void CreateDefaultState(Program prog)
         {
-            ClearMachineState();
+            ClearState();
 
             SessionName = "New Session";
 
@@ -73,7 +73,7 @@ namespace IngameScript
         }
 
 
-        static void ClearMachineState()
+        static void ClearState()
         {
             for (int i = 0; i < nMems; i++)
             { 

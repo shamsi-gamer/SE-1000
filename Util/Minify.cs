@@ -64,7 +64,7 @@ namespace IngameScript
         static int        CurSrc        { get { return EditedClip.CurSrc;  } set { EditedClip.CurSrc  = value; } }
         static int        CurSet        { get { return EditedClip.CurSet;  } set { EditedClip.CurSet  = value; } }
 
-        static Pattern    CurPattern    => EditedClip.CurPattern;
+        static Pattern    EditPattern   => EditedClip.EditPattern;
         static Channel    CurChannel    => EditedClip.CurChannel;
 
         static Source     SelSource     => EditedClip.SelSource;
