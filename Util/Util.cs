@@ -331,5 +331,22 @@ namespace IngameScript
                     lfo.Phase = 0;
             }
         }
+
+
+
+        static bool ControllerIsActive()
+        { 
+            var mi = g_remote.MoveIndicator;
+            var ri = g_remote.RotationIndicator;
+
+            var min = 0.0001f;
+
+            return 
+                   Math.Abs(mi.X) > min
+                || Math.Abs(mi.Z) > min
+
+                || Math.Abs(ri.X) > min
+                || Math.Abs(ri.Y) > min;
+        }
     }
 }

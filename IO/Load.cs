@@ -13,6 +13,7 @@ namespace IngameScript
             if (data.Trim() == "")
             { 
                 Load("", pnlStorageInstruments.GetText(), "");
+                SetLabelColor(EditedClip.ColorIndex);
                 return;
             }
 

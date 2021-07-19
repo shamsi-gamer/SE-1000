@@ -166,10 +166,10 @@ namespace IngameScript
 
             public override void AdjustFromController(Clip clip)
             {
-                if (g_remote.MoveIndicator    .X != 0) Program.AdjustFromController(clip, Offset,    g_remote.MoveIndicator    .X/ControlSensitivity);
+                Program.AdjustFromController(clip, Offset,    g_remote.MoveIndicator    .X*ControlSensitivity);
 
-                if (g_remote.RotationIndicator.X != 0) Program.AdjustFromController(clip, Amplitude, g_remote.RotationIndicator.X/ControlSensitivity);
-                if (g_remote.RotationIndicator.Y != 0) Program.AdjustFromController(clip, Frequency, g_remote.RotationIndicator.Y/ControlSensitivity);
+                Program.AdjustFromController(clip, Amplitude, g_remote.RotationIndicator.X*ControlSensitivity);
+                Program.AdjustFromController(clip, Frequency, g_remote.RotationIndicator.Y*ControlSensitivity);
             }
 
 

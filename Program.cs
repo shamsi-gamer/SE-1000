@@ -10,7 +10,7 @@ namespace IngameScript
         const int                     OscCount           = 13,
                                       
                                       NoteScale          = 2;
-        const float                   ControlSensitivity = 12;
+        const float                   ControlSensitivity = 0.01f;
                                          
                                          
         static  List<string>          g_samples = new List<string>();

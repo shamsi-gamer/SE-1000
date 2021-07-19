@@ -44,7 +44,8 @@ namespace IngameScript
 
         void Update1()
         {
-            EditedClip.CurSetting?.AdjustFromController(EditedClip);
+            if (g_remote.IsUnderControl)
+                EditedClip.CurSetting?.AdjustFromController(EditedClip);
 
             if (!TooComplex)
                 UpdatePlayback();

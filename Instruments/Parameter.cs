@@ -220,8 +220,7 @@ namespace IngameScript
 
             public override void AdjustFromController(Clip clip)
             {
-                if (g_remote.RotationIndicator.X != 0)
-                    Program.AdjustFromController(clip, this, -g_remote.RotationIndicator.X/ControlSensitivity);
+                Program.AdjustFromController(clip, this, -g_remote.RotationIndicator.X*ControlSensitivity);
             }
 
 

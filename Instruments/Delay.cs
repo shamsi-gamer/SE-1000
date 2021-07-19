@@ -117,11 +117,11 @@ namespace IngameScript
 
             public override void AdjustFromController(Clip clip)
             {
-                if (g_remote.MoveIndicator    .Z != 0) Program.AdjustFromController(clip, Count, -g_remote.MoveIndicator    .Z/ControlSensitivity);
-                if (g_remote.MoveIndicator    .X != 0) Program.AdjustFromController(clip, Time,   g_remote.MoveIndicator    .X/ControlSensitivity);
+                Program.AdjustFromController(clip, Count, -g_remote.MoveIndicator    .Z*ControlSensitivity);
+                Program.AdjustFromController(clip, Time,   g_remote.MoveIndicator    .X*ControlSensitivity);
 
-                if (g_remote.RotationIndicator.X != 0) Program.AdjustFromController(clip, Level, -g_remote.RotationIndicator.X/ControlSensitivity);
-                if (g_remote.RotationIndicator.Y != 0) Program.AdjustFromController(clip, Power,  g_remote.RotationIndicator.Y/ControlSensitivity);
+                Program.AdjustFromController(clip, Level, -g_remote.RotationIndicator.X*ControlSensitivity);
+                Program.AdjustFromController(clip, Power,  g_remote.RotationIndicator.Y*ControlSensitivity);
             }
 
 

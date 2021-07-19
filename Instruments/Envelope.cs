@@ -158,11 +158,11 @@ namespace IngameScript
                 var mi = g_remote.MoveIndicator;
                 var ri = g_remote.RotationIndicator;
 
-                if (mi.Z != 0) Program.AdjustFromController(clip, Attack,  -mi.Z/ControlSensitivity);
-                if (mi.X != 0) Program.AdjustFromController(clip, Decay,    mi.X/ControlSensitivity);
+                Program.AdjustFromController(clip, Attack,  -mi.Z*ControlSensitivity);
+                Program.AdjustFromController(clip, Decay,    mi.X*ControlSensitivity);
 
-                if (ri.X != 0) Program.AdjustFromController(clip, Sustain, -ri.X/ControlSensitivity);
-                if (ri.Y != 0) Program.AdjustFromController(clip, Release,  ri.Y/ControlSensitivity);
+                Program.AdjustFromController(clip, Sustain, -ri.X*ControlSensitivity);
+                Program.AdjustFromController(clip, Release,  ri.Y*ControlSensitivity);
             }
 
 

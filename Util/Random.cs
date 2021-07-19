@@ -9,6 +9,7 @@ namespace IngameScript
         static float RND => (float)g_rnd.NextDouble();
 
 
+
         void Random()
         {
                  if (EditedClip.ParamKeys
@@ -19,6 +20,7 @@ namespace IngameScript
             else if (    SelChan < 0
                      || !EditedClip.RndInst)                       RandomNotes();
         }
+
 
 
         void RandomValues(int ch)
@@ -37,6 +39,7 @@ namespace IngameScript
         }
 
 
+
         void RandomPatternNotes()
         {
             var nChannels = g_rnd.Next(1, g_nChans/2);
@@ -53,11 +56,13 @@ namespace IngameScript
         }
 
 
+
         void RandomNotes()
         {
             if (EditedClip.AllChan) RandomPatternNotes();
             else                    RandomNotes(CurChan, null);
         }
+
 
 
         void RandomNotes(int ch, List<Instrument> rndInst)
@@ -82,12 +87,6 @@ namespace IngameScript
                 if (   OK(rndInst)
                     || EditedClip.RndInst)
                     EditedClip.Patterns[p].Channels[ch].Instrument = inst;
-
-                if (RND > 0.6  ) Flip(p, ch,  1);
-                if (RND > 0.8  ) Flip(p, ch,  2);
-                if (RND > 0.9  ) Flip(p, ch,  4);
-                if (RND > 0.925) Flip(p, ch,  8);
-                if (RND > 0.95 ) Flip(p, ch, 16);
 
                 RandomNotes(p, ch);
             }

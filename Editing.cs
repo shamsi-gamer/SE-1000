@@ -260,16 +260,6 @@ namespace IngameScript
                 if (clip.EditNotes.Count > 0) clip.EditNotes.Clear();
                 else                          clip.EditNotes.AddRange(GetEditNotes(clip));
             }
-            else
-            {
-                if (clip.EditNotes.Count > 0)
-                    clip.EditNotes.Clear();
-                else 
-                { 
-                    clip.EditNotes.Clear();
-                    clip.EditNotes.AddRange(GetChannelNotes(clip));
-                }
-            }
         }
 
 

@@ -15,6 +15,7 @@ namespace IngameScript
         }
 
 
+
         void DrawClip(Display dsp, int nDsp)
         {
             if (!OK(dsp)) return;
@@ -114,8 +115,10 @@ namespace IngameScript
                     var _p = p - EditedClip.SongOff;
                     var px = x - _f * pw + _p * pw;
 
-                    if (EditedClip.Piano) DrawPianoRoll(sprites, px, py, pw, ph, EditedClip, p, 1);
-                    else                  DrawPattern  (sprites, px, py, pw, ph, EditedClip, p, 1, False);
+                    if (EditedClip.Piano 
+                          && LockView != 1
+                       || LockView == 2) DrawPianoRoll(sprites, px, py, pw, ph, EditedClip, p, 1);
+                    else                 DrawPattern  (sprites, px, py, pw, ph, EditedClip, p, 1, False);
 
                     if (OK(CurSet))
                     { 
@@ -280,11 +283,13 @@ namespace IngameScript
         }
 
 
+
         void DrawBrackets(List<MySprite> sprites, int p, float x, float y, float w, float h, float bw, float bh)
         {
             if (OK(EditedClip.Blocks.Find(b => p == b.First))) DrawLeftBracket (sprites, x,     y, bw, h, bh);
             if (OK(EditedClip.Blocks.Find(b => p == b.Last ))) DrawRightBracket(sprites, x + w, y, bw, h, bh);
         }
+
 
 
         void DrawLeftBracket(List<MySprite> sprites, float x, float y, float w, float h, float bh)
@@ -294,6 +299,7 @@ namespace IngameScript
             FillRect(sprites, x, y,          w, bh, color4);
             FillRect(sprites, x, y + h - bh, w, bh, color4);
         }
+
 
 
         void DrawRightBracket(List<MySprite> sprites, float x, float y, float w, float h, float bh)
