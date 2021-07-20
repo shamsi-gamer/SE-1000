@@ -202,13 +202,7 @@ namespace IngameScript
                     SetMemSet = False;
                 }
                 else if (OK(Sets[i]))
-                { 
-                    SwitchToSetting(
-                        SetClips[i],
-                        Sets[i].Source.Instrument, 
-                        Sets[i].Source.Index, 
-                        Sets[i]);
-                }
+                    SwitchToSetting(SetClips[i], Sets[i]);
             }
             else 
                 EditedClip.SetMem(i);

@@ -79,6 +79,26 @@ namespace IngameScript
                 }
 
 
+                var isEditing =
+                       EditedClip.EditPos >= first * g_patSteps
+                    && EditedClip.EditPos <  next  * g_patSteps;
+
+                // draw edit position
+                if (isEditing)
+                {
+                    var pl    = x - pw * (nDsp * 4 * pw + EditPat + EditedClip.SongOff);
+                    var xTick = wt * EditedClip.EditPos;
+
+                    FillRect(
+                        sprites,
+                        xTick + 2, 
+                        py, 
+                        wt * EditedClip.EditStep - 2,
+                        ph + (EditedClip.ParamKeys || EditedClip.ParamAuto ? ph/5 : 0),
+                        color2);
+                }
+
+
                 if (!EditedClip.Piano)
                 {
                     for (int p = first; p < next; p++)
@@ -93,8 +113,7 @@ namespace IngameScript
 
 
                 // draw edit position
-                if (   EditedClip.EditPos >= first * g_patSteps
-                    && EditedClip.EditPos <  next  * g_patSteps)
+                if (isEditing)
                 {
                     var pl    = x - pw * (nDsp * 4 * pw + EditPat + EditedClip.SongOff);
                     var xTick = wt * EditedClip.EditPos;
@@ -102,8 +121,8 @@ namespace IngameScript
                     FillRect(
                         sprites,
                         xTick + 2, 
-                        py, 
-                        wt - 4,
+                        py,
+                        wt / (EditedClip.EditStep == 0.5f ? 2 : 1) - 2,
                         ph + (EditedClip.ParamKeys || EditedClip.ParamAuto ? ph/5 : 0),
                         color3);
                 }

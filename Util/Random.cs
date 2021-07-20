@@ -209,7 +209,7 @@ namespace IngameScript
 
             foreach (var note in chan.Notes)
             {
-                var index = note.Keys.FindIndex(k => k.Path == CurrentParam.GetPath(CurSrc));
+                var index = note.Keys.FindIndex(k => k.Path == CurrentParam.Path);
 
                 var rndValue = (float)(CurrentParam.NormalMin + RND * (CurrentParam.NormalMax - CurrentParam.NormalMin));
 
@@ -233,7 +233,7 @@ namespace IngameScript
                 var rndValue = (float)(CurrentParam.NormalMin + RND * (CurrentParam.NormalMax - CurrentParam.NormalMin));
 
                 var index = chan.AutoKeys.FindIndex(k => 
-                       k.Path == CurrentParam.GetPath(CurSrc) 
+                       k.Path == CurrentParam.Path
                     && k.Step == step);
 
                 if (OK(index))

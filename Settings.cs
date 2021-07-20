@@ -5,18 +5,24 @@ namespace IngameScript
 {
     partial class Program
     {
-        void SwitchToSetting(Clip clip, Instrument inst, int iSrc, Setting set)
+        void SwitchToSetting(Clip clip, Setting set)
         {
-            SwitchToSetting(clip, inst, set.GetPath(iSrc));
+            SwitchToSetting(clip, set.Path);
         }
 
 
 
-        static void SwitchToSetting(Clip clip, Instrument inst, string path)
+        static void SwitchToSetting(Clip clip, string path)
         {
             BackOut();
-
+            
             EditedClip = clip;
+            
+
+            var tags = path.Split('/');
+
+            var inst = Instruments.Find(i => i.Name == tags[0]);
+
 
             CurChan =
             SelChan = Array.FindIndex(
@@ -31,7 +37,6 @@ namespace IngameScript
 
 
             int iSrc = -1;
-            var tags = path.Split('/');
 
             for (int i = 1; i < tags.Length; i++)
             { 

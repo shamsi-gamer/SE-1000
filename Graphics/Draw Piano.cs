@@ -28,19 +28,35 @@ namespace IngameScript
 
             var wt = (float)(w - xt) / g_patSteps;
 
-            DrawPianoGrid(sprites, x + xt,        y, w - xt, rh);
-
+            var isEditing = 
+                   OK(clip.EditPos)
+                && clip.EditPos >= EditPat      * g_patSteps
+                && clip.EditPos < (EditPat + 1) * g_patSteps;
 
             // draw edit position
-            if (   OK(clip.EditPos)
-                && clip.EditPos >= EditPat      * g_patSteps
-                && clip.EditPos < (EditPat + 1) * g_patSteps)
+            if (isEditing)
             { 
                 FillRect(
                     sprites, 
                     x + xt + wt * (clip.EditPos % g_patSteps), 
                     y, 
-                    wt / (EditedClip.EditStepLength == 0.25f || EditedClip.EditStepLength == 0.5f ? 2 : 1), 
+                    wt * EditedClip.EditStep - 9,
+                    EditedClip.ParamKeys || EditedClip.ParamAuto ? h : rh, 
+                    color1);
+            }
+
+
+            DrawPianoGrid(sprites, x + xt,        y, w - xt, rh);
+
+
+            // draw edit position
+            if (isEditing)
+            { 
+                FillRect(
+                    sprites, 
+                    x + xt + wt * (clip.EditPos % g_patSteps), 
+                    y, 
+                    wt / (EditedClip.EditStep == 0.5f ? 2 : 1),
                     EditedClip.ParamKeys || EditedClip.ParamAuto ? h : rh, 
                     color3);
             }

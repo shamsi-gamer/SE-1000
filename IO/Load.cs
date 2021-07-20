@@ -130,7 +130,7 @@ namespace IngameScript
 
             
             if (g_curPath != "")
-                SwitchToSetting(EditedClip, EditedClip.SelChannel.Instrument, g_curPath);
+                SwitchToSetting(EditedClip, g_curPath);
 
 
             UpdateClipDisplay(EditedClip);

@@ -158,8 +158,8 @@ namespace IngameScript
 
                 string relPath = "";
                 
-                     if (OK(     Volume.Envelope)) relPath =      Volume.Envelope.Release.GetPath(Index);
-                else if (OK(inst.Volume.Envelope)) relPath = inst.Volume.Envelope.Release.GetPath(-1);
+                     if (OK(     Volume.Envelope)) relPath =      Volume.Envelope.Release.Path;
+                else if (OK(inst.Volume.Envelope)) relPath = inst.Volume.Envelope.Release.Path;
 
 
                 var _relLen = triggerValues.Find(v => v.Path == relPath);

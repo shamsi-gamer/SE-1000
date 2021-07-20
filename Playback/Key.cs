@@ -10,7 +10,7 @@ namespace IngameScript
             public Parameter Parameter;
             public int       SourceIndex;
 
-            public string    Path => Parameter.GetPath(SourceIndex);
+            public string    Path => Parameter.Path;
 
             public float     Value,
                              Step;

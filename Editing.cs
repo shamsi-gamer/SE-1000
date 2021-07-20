@@ -125,7 +125,7 @@ namespace IngameScript
                     var si = clip.Inter.ClipStep;
                     var sn = note      .ClipStep;
 
-                    var path  = clip.Settings.Last().GetPath(clip.CurSrc);
+                    var path  = clip.Settings.Last().Path;
                     var param = (Parameter)GetSettingFromPath(path);
 
                     var start = param.GetKeyValue(clip.Inter, clip.CurSrc);

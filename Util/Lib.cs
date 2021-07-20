@@ -73,6 +73,8 @@ namespace IngameScript
         static int   MinMax(int   min, int   val, int   max) { return Math.Min(Math.Max(min, val), max); }
         static float MinMax(float min, float val, float max) { return Math.Min(Math.Max(min, val), max); }
 
+        static float sqr(float f) { return f*f; }
+
 
         static int GetInt(string str, string pre, string suf = "")
         {

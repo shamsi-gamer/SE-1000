@@ -48,7 +48,7 @@ namespace IngameScript
 
 
 
-            public string GetPath(int src)
+            public string Path { get
             {
                 var path = new StringBuilder();
 
@@ -59,13 +59,13 @@ namespace IngameScript
                     setting = setting.Parent;
                 }
 
-                if (OK(src))
-                    path.Insert(0, src + "/");
+                if (OK(Source))
+                    path.Insert(0, Source.Index + "/");
 
                 path.Insert(0, Instrument.Name + "/");
 
                 return S(path);
-            }
+            } }
 
 
 
@@ -185,7 +185,7 @@ namespace IngameScript
         }
 
 
-        static Parameter CurrentParam => (Parameter)GetSettingFromPath(EditedClip.CurSetting.GetPath(CurSrc));
+        static Parameter CurrentParam => (Parameter)GetSettingFromPath(EditedClip.CurSetting.Path);
 
 
         static Setting GetSettingFromPath(string path)

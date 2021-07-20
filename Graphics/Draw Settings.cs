@@ -131,7 +131,7 @@ namespace IngameScript
 
         void DrawKeysAndAuto(List<MySprite> sprites, Parameter param, float x, float y, float w, float h, float xt, float rh, Clip clip, int pat)
         {
-            var path  = param.GetPath(CurSrc);
+            var path  = param.Path;
 
             var lf    = w/3000;
             var vf    = w/800;
@@ -256,7 +256,7 @@ namespace IngameScript
             var pat  = clip.Patterns[p];
             var chan = pat.Channels[ch];
 
-            var path = CurSetting.GetPath(CurSrc);//EditedClip.Settings.Last().GetPath(CurSrc);
+            var path = CurSetting.Path;
 
             foreach (var note in chan.Notes)
             {
@@ -334,7 +334,7 @@ namespace IngameScript
             var chan  = pat.Channels[ch];
             
             var param = EditedClip.CurParam;
-            var path  = param.GetPath(CurSrc);
+            var path  = param.Path;
 
             var clipKeys = clip.ChannelAutoKeys[ch].Where(k => k.Path == path).ToList();
 

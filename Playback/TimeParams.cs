@@ -73,7 +73,7 @@ namespace IngameScript
 
             public float GetTriggerValue(Parameter param)
             {
-                var path    = param.GetPath(SourceIndex);
+                var path    = param.Path;
                 var trigVal = TriggerValues.Find(v => v.Path == path);
 
                 if (!OK(trigVal))

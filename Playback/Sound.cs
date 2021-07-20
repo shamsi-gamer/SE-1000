@@ -49,6 +49,7 @@ namespace IngameScript
                                           : null;
 
 
+
             public Sound(string sample, Channel chan, int ch, long frameTime, int frameLen, int releaseLen, float vol, Instrument inst, int iSrc, Note note, List<TriggerValue> triggerValues, bool isEcho, Sound echoSrc, float echoVol, Parameter harmonic = Parameter_null, Sound hrmSound = Sound_null, float hrmPos = float_NaN)
             {
                 Speakers      = new List<Speaker>();
@@ -88,6 +89,7 @@ namespace IngameScript
 
                 Cache         = IsEcho ? null : new float[Length + ReleaseLength];
             }
+
 
 
             public Sound(Sound snd, bool isEcho, Sound echoSrc, float echoVol)
@@ -131,6 +133,7 @@ namespace IngameScript
             }
 
 
+
             public float GetVolume(long gTime, Program prog)
             {
                 if (prog.TooComplex) return 0;
@@ -148,6 +151,7 @@ namespace IngameScript
             }
 
 
+
             public void Stop()
             {
                 foreach (var spk in Speakers)
@@ -155,6 +159,7 @@ namespace IngameScript
 
                 Speakers.Clear();
             }
+
 
 
             public void Update(Program prog)
@@ -226,12 +231,6 @@ namespace IngameScript
 
                     Source.CurVolume = Math.Max(srcVol, vol);
 
-                    inst.DisplayVolume = 
-                        OK(inst.DisplayVolume)
-                        ? sndAdd(inst.DisplayVolume, vol)
-                        : vol;
-
-
                     if (lTime < Cache.Length)
                         Cache[lTime] = vol;
                 }
@@ -248,6 +247,7 @@ namespace IngameScript
 
                 ElapsedTime = g_time - Time;
             }
+
 
 
             void UpdateSpeakers(float vol)

@@ -457,23 +457,18 @@ namespace IngameScript
         {
             if (OK(ModDestConnecting))
             {
-                if (ModDestConnecting == EditedClip.CurSetting)
-                    ResetModConnecting();
-
-                else
+                if (ModDestConnecting != EditedClip.CurSetting)
                 { 
-                    ModDestConnecting.SrcSettings   .Add(OK(CurSet) ? EditedClip.CurSetting : Setting_null);
-                    //ModDestConnecting.SrcSources    .Add(SelSource);
-                    //ModDestConnecting.SrcInstruments.Add(SelInstrument);
+                    ModDestConnecting.ModSettings   .Add(OK(CurSet) ? EditedClip.CurSetting : Setting_null);
+                    ModDestConnecting.ModSources    .Add(SelSource);
+                    ModDestConnecting.ModInstruments.Add(SelInstrument);
 
                     SwitchToSetting(
                         ModDestClip,
-                        ModDestChannel.Instrument,
-                        ModDestSrcIndex, 
                         ModDestConnecting);
-
-                    ResetModConnecting();
                 }
+             
+                ResetModConnecting();
             }
             else if (IsCurParam())
             {
@@ -547,8 +542,8 @@ namespace IngameScript
             if (IsCurParam())
             {
                 var param = EditedClip.CurParam;
-                var path  = param.GetPath(EditedClip.CurSrc);
-                //var path  = EditedClip.Settings.Last().GetPath(CurSrc);
+                var path  = param.Path;
+                //var path  = EditedClip.Settings.Last().Path(CurSrc);
 
                 
                 if (   EditedClip.ParamKeys
@@ -577,7 +572,14 @@ namespace IngameScript
             }
             else if (OK(CurSet))
             { 
-                if (EditedClip.CurSetting.CanDelete())
+                if (   IsCurSetting(typeof(Modulate))
+                    && ((Modulate)CurSetting).ModSettings.Count > 0)
+                {
+                    ((Modulate)CurSetting).ModSettings   .RemoveLast();
+                    ((Modulate)CurSetting).ModSources    .RemoveLast();
+                    ((Modulate)CurSetting).ModInstruments.RemoveLast();
+                }
+                else if (EditedClip.CurSetting.CanDelete())
                 { 
                     DeleteCurSetting(EditedClip);
                     lblCmd3.Mark();
@@ -676,7 +678,7 @@ namespace IngameScript
                             || clip.ParamAuto))
             {
                 var chan = clip.SelChannel;
-                var path = clip.CurSetting.GetPath(clip.CurSrc);//clip.Settings.Last().GetPath(clip.CurSrc);
+                var path = clip.CurSetting.Path;//clip.Settings.Last().Path(clip.CurSrc);
 
                 if (clip.ParamKeys)
                 { 
@@ -745,7 +747,7 @@ namespace IngameScript
 
             if (   Recording
                 && clip.Track.PlayTime % TicksPerStep == 0) // only once per tick, at the start of the tick
-                RecordAutoKey(param, param.GetPath(clip.CurSrc));
+                RecordAutoKey(param, param.Path);
         }
 
 

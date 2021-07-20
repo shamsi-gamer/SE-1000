@@ -32,7 +32,10 @@ namespace IngameScript
                                     Delta,
                                     CurValue;
 
-            public List<Setting>    SrcSettings; // this is the reference count for all three
+            public List<Setting>    ModSettings;    // this is the reference count for all three
+            public List<Source>     ModSources;     
+            public List<Instrument> ModInstruments; 
+
 
 
             public Modulate(Setting parent, Instrument inst, Source src) 
@@ -50,8 +53,11 @@ namespace IngameScript
                 Delta          = 1f/FPS;
                 CurValue       = 0;
 
-                SrcSettings    = new List<Setting>();            
+                ModSettings    = new List<Setting>();            
+                ModSources     = new List<Source>();            
+                ModInstruments = new List<Instrument>();            
             }
+
 
 
             public Modulate(Modulate mod, Setting parent, Instrument inst, Source src) 
@@ -69,10 +75,19 @@ namespace IngameScript
                 Delta    = mod.Delta;
                 CurValue = mod.CurValue;
 
-                SrcSettings = new List<Setting>();
-                foreach (var set in mod.SrcSettings)
-                    SrcSettings.Add(set);
+                ModSettings = new List<Setting>();
+                foreach (var set in mod.ModSettings)
+                    ModSettings.Add(set);
+
+                ModSources = new List<Source>();
+                foreach (var _src in mod.ModSources)
+                    ModSources.Add(_src);
+
+                ModInstruments = new List<Instrument>();
+                foreach (var _inst in mod.ModInstruments)
+                    ModInstruments.Add(_inst);
             }
+
 
 
             public Modulate Copy(Setting parent) 
@@ -81,29 +96,31 @@ namespace IngameScript
             }
 
 
+
             public void AdvanceTime()
             {
                 Phase += Delta;
             }
 
 
+
             public float UpdateValue(TimeParams tp)
             {
-                if ( /*m_valid
-                    ||*/tp.Program.TooComplex) 
+                if (tp.Program.TooComplex) 
                     return CurValue;
 
-                var amt = Amount .UpdateValue(tp);
-                var att = Attack .UpdateValue(tp);
-                var rel = Release.UpdateValue(tp);
+                //var param = (Parameter)Parent;
+
+
+                // get connected value
 
                 var val = 0f;
 
-                for (int i = 0; i < SrcSettings.Count; i++)
+                for (int i = 0; i < ModSettings.Count; i++)
                 {
-                    var set  = SrcSettings[i];
-                    var src  = set.Source;
-                    var inst = src.Instrument;
+                    var set  = ModSettings   [i];
+                    var src  = ModSources    [i];
+                    var inst = ModInstruments[i];
 
                     if (OK(set))
                     {
@@ -114,24 +131,42 @@ namespace IngameScript
                         // TODO add more that have CurValue
                     }
 
-                    else if (OK(src)) 
-                        val = Math.Max(val, src.CurVolume);
-                    
-                    else
-                        val = Math.Max(val, inst.CurVolume);
+                    else if (OK(src)) val = Math.Max(val, src .CurVolume);
+                    else              val = Math.Max(val, inst.CurVolume);
+                Log("inst.CurVolume = " + inst.CurVolume);
                 }
+
+
+                // modify value with connected
+                
+                var amt = Amount .UpdateValue(tp);
+                var att = Attack .UpdateValue(tp);
+                var rel = Release.UpdateValue(tp);
+                
+                if (att == 0) att = 0.000001f;
+                if (rel == 0) rel = 0.000001f;
 
                 var  cv  = Math.Abs(CurValue);
                 var _amt = Math.Abs(amt);
 
-                var a = Math.Min(   cv + val*_amt/FPS/(att>0?att:0.000001f), _amt);
-                var d = Math.Max(0, cv -     _amt/FPS/(rel>0?rel:0.000001f));
+                var a = Math.Min(   cv + val*_amt/FPS/att, _amt);
+                var r = Math.Max(0, cv -     _amt/FPS/rel);
 
-                CurValue = Math.Sign(amt) * (d + (a - d) * val);
-                m_valid = True;
+                CurValue = Math.Sign(amt) * (r + (a - r) * val);
+                m_valid  = True;
+
+                Log("CurValue = " + CurValue);
+                Log("val      = " + val);
+                Log("a        = " + a);
+                Log("r        = " + r);
+
+
+                //CurValue *= val;
+
 
                 return CurValue;
             }
+
 
 
             public override bool HasDeepParams(Channel chan, int src)
@@ -144,12 +179,14 @@ namespace IngameScript
             }
 
 
+
             public override void Clear()
             {
                 Amount .Clear();
                 Attack .Clear();
                 Release.Clear();
             }
+
 
 
             public override void Reset()
@@ -162,12 +199,14 @@ namespace IngameScript
             }
 
 
+
             public override void Randomize()
             {
                 Amount .Randomize();
                 Attack .Randomize();
                 Release.Randomize();
             }
+
 
 
             public override void AdjustFromController(Clip clip)
@@ -177,6 +216,7 @@ namespace IngameScript
                 Program.AdjustFromController(clip, Attack, -g_remote.RotationIndicator.X*ControlSensitivity);
                 Program.AdjustFromController(clip, Release, g_remote.RotationIndicator.Y*ControlSensitivity);
             }
+
 
 
             public override Setting GetOrAddSettingFromTag(string tag)
@@ -192,6 +232,7 @@ namespace IngameScript
             }
 
 
+
             public void Delete(int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
@@ -202,22 +243,24 @@ namespace IngameScript
             }
 
 
+
             public override string Save()
             {
                 var save = 
                       Tag
                     + PS((int)Op)
-                    + PS(SrcSettings.Count);
+                    + PS(ModSettings.Count);
 
-                for (int i = 0; i < SrcSettings.Count; i++)
+                for (int i = 0; i < ModSettings.Count; i++)
                 { 
-                    var set  = SrcSettings[i];
-                    var src  = set.Source;//SrcSources    [i];
-                    var inst = src.Instrument;//SrcInstruments[i];
+                    var set  = ModSettings   [i];
+                    var src  = ModSources    [i];
+                    var inst = ModInstruments[i];
 
                     save += 
-                          P (OK(src) && OK(set) ? set .GetPath(src.Index) : "")
-                        + P (inst.Name);//(OK(inst)           ? inst.Name               : "");
+                          P (OK(set) ? set.Path : "")
+                        + P (inst.Name)
+                        + PS(OK(src) ? src.Index : -1);
                 }
 
                 save +=
@@ -227,6 +270,7 @@ namespace IngameScript
 
                 return save;
             }
+
 
 
             public static Modulate Load(string[] data, ref int d, Instrument inst, int iSrc, Setting parent)
@@ -251,24 +295,29 @@ namespace IngameScript
 
                 for (int i = 0; i < nSources; i++)
                 {
-                    var setPath     = data[d++];
-                    //int modSrcIndex = int_Parse(data[d++]);
-                    var modInst     = data[d++];
+                    var setPath  = data[d++];
+                    var instName = data[d++];
 
-                    var _inst = Instruments.Find(_i => _i.Name == modInst);
+                    var _inst = Instruments.Find(inst_ => inst_.Name == instName);
+                    
+                    int srcIndex;
+                    if (!int_TryParse(data[d++], out srcIndex)) return Modulate_null;
 
                     //mod.SrcInstruments.Add(_inst);
                     //mod.SrcSources    .Add(OK(modSrcIndex) ? _inst.Sources[modSrcIndex] : Source_null);
-                    mod.SrcSettings   .Add(GetSettingFromPath(setPath));
+                    mod.ModSettings   .Add(setPath != "" ? GetSettingFromPath(setPath) : Setting_null);
+                    mod.ModSources    .Add(OK(srcIndex) ? _inst.Sources[srcIndex] : Source_null);
+                    mod.ModInstruments.Add(_inst);
                 }
 
-                
+
                 mod.Amount  = Parameter.Load(data, ref d, inst, iSrc, mod, mod.Amount );
                 mod.Attack  = Parameter.Load(data, ref d, inst, iSrc, mod, mod.Attack );
                 mod.Release = Parameter.Load(data, ref d, inst, iSrc, mod, mod.Release);
 
                 return mod;
             }
+
 
 
             public override string GetLabel(out float width)
@@ -281,6 +330,7 @@ namespace IngameScript
                     + PrintValue(Attack .Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Release.Value, 2, True, 0).PadLeft(4);
             }
+
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
@@ -301,6 +351,7 @@ namespace IngameScript
 
                 _dp.Next(dp);
             }
+
 
 
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
@@ -325,9 +376,11 @@ namespace IngameScript
                 Vector2 p0, p1, p2;
 
                 GetEnvelopeCoords(x0, y0, w0, h0, False, out p0, out p1, out p2);
-                DrawEnvelopeSupportsAndInfo(sprites, p0, p1, p2, w0, y0, h0, isAmt, isAtt, isRel);
+                DrawEnvelopeSupports(sprites, p0, p1, p2, w0, y0, h0, isAmt, isAtt, isRel);
 
-                FillRect(sprites, p0.X, y0 + h0/2, w0, -CurValue*h/2, color3);
+
+                FillRect(sprites, p0.X, y0 + h0/2, w0, -CurValue*h/4, color3);
+
 
                 GetEnvelopeCoords(x0, y0, w0, h0, True, out p0, out p1, out p2);
                 DrawEnvelope(sprites, p0, p1, p2, color3, False, False, False);
@@ -338,21 +391,22 @@ namespace IngameScript
 
                 var strFrom = "from\n";
 
-                if (SrcSettings.Count == 0)
+                if (ModSettings.Count == 0)
                     strFrom += "...";
 
                 else
                 {
-                    for (int i = 0; i < SrcSettings.Count; i++)
+                    for (int i = 0; i < ModSettings.Count; i++)
                     {
-                        var set  = SrcSettings[i];
-                        var src  = set.Source;
-                        var inst = set.Instrument;
+                        var set  = ModSettings   [i];
+                        var src  = ModSources    [i];
+                        var inst = ModInstruments[i];
                         
-                        strFrom += "\n" + inst.Name;
+                        strFrom += "\n";
 
-                             if (OK(set)) strFrom += "/" + set.GetPath(OK(src) ? src.Index : -1);
-                        else if (OK(src)) strFrom += "/" + src.Index;
+                             if (OK(set))  strFrom += set.Path;
+                        else if (OK(src))  strFrom += inst.Name + "/" + src.Index;
+                        else if (OK(inst)) strFrom += inst.Name;
                     }
                 }
 
@@ -360,26 +414,15 @@ namespace IngameScript
             }
 
 
-            void DrawEnvelopeSupportsAndInfo(List<MySprite> sprites, Vector2 p0, Vector2 p1, Vector2 p2, float w, float y, float h, bool isAmt, bool isAtt, bool isRel)
+
+            void DrawEnvelopeSupports(List<MySprite> sprites, Vector2 p0, Vector2 p1, Vector2 p2, float w, float y, float h, bool isAmt, bool isAtt, bool isRel)
             {
                 var sw = 1;
 
                 DrawLine(sprites, p0.X, y,       p0.X,     y + h,   color3, sw);
                 DrawLine(sprites, p0.X, y + h/2, p0.X + w, y + h/2, color3, sw);
-                                                              
-
-                // labels
-
-                var amt = Amount .Value;
-                var a   = Attack .Value;
-                var r   = Release.Value;
-
-                var fs = 0.5f;
-
-                DrawString(sprites, S_00(amt) + (isAmt ? " s" : ""),                      p1.X + 18,           p1.Y + (amt>=0?-20:4), fs, isAmt ? color6 : color3, TA_CENTER);
-                DrawString(sprites, S_00(a)   + (isAtt ? " s" : ""),                     (p0.X + p1.X)/2 + 6,  p0.Y +  3,             fs, isAtt ? color6 : color3, TA_CENTER);
-                DrawString(sprites, S_00(r)   + (isRel ? " s" : ""), Math.Max(p0.X + 90, (p1.X + p2.X)/2 - 5), p0.Y +  3,             fs, isRel ? color6 : color3, TA_CENTER);
             }
+
 
 
             void DrawEnvelope(List<MySprite> sprites, Vector2 p0, Vector2 p1, Vector2 p2, Color col, bool isAmt, bool isAtt, bool isRel)
@@ -406,7 +449,22 @@ namespace IngameScript
 
                     pPrev = p;    
                 }
+
+                                                              
+
+                // labels
+
+                var amt = Amount .Value;
+                var a   = Attack .Value;
+                var r   = Release.Value;
+
+                var fs = 0.5f;
+
+                DrawString(sprites, S_00(amt) + (isAmt ? " s" : ""),                      p1.X + 18,           p1.Y + (amt>=0?-20:4), fs, isAmt ? color6 : color3, TA_CENTER);
+                DrawString(sprites, S_00(a)   + (isAtt ? " s" : ""),                     (p0.X + p1.X)/2 + 6,  p0.Y +  3,             fs, isAtt ? color6 : color3, TA_CENTER);
+                DrawString(sprites, S_00(r)   + (isRel ? " s" : ""), Math.Max(p0.X + 90, (p1.X + p2.X)/2 - 5), p0.Y +  3,             fs, isRel ? color6 : color3, TA_CENTER);
             }
+
 
 
             void GetEnvelopeCoords(float x, float y, float w, float h, bool current, out Vector2 p0, out Vector2 p1, out Vector2 p2)
@@ -429,6 +487,7 @@ namespace IngameScript
             }
 
 
+
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
                 DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, False, False);
@@ -436,6 +495,7 @@ namespace IngameScript
                 DrawFuncButton(sprites, "A",    2, w, y, True, Attack .HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, "R",    3, w, y, True, Release.HasDeepParams(chan, CurSrc));
             }
+
 
 
             public override void Func(int func)
@@ -455,6 +515,7 @@ namespace IngameScript
                     case 3: AddNextSetting(strRel); break;
                 }
             }
+
 
 
             public override bool CanDelete()

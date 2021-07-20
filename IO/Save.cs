@@ -94,7 +94,7 @@ namespace IngameScript
                 + PS(Tracks.IndexOf(EditedClip.Track))
                 + PS(EditedClip.Index)
 
-                + P (OK(EditedClip.CurSetting) ? EditedClip.CurSetting.GetPath(EditedClip.CurSrc) : "")
+                + P (OK(EditedClip.CurSetting) ? EditedClip.CurSetting.Path : "")
 
                 + PS(OK(ClipCopy) ? Tracks.IndexOf(ClipCopy.Track) : -1)
                 + PS(OK(ClipCopy) ? ClipCopy.Index                 : -1);
@@ -112,8 +112,8 @@ namespace IngameScript
                     state += 
                           PS(Tracks.IndexOf(clip.Track))
                         + PS(clip.Index)
-                        + P (OK(src) && OK(set) ? set .GetPath(src.Index) : "")
-                        + P (OK(inst)           ? inst.Name               : "");
+                        + P (OK(src) && OK(set) ? set.Path  : "")
+                        + P (OK(inst)           ? inst.Name : "");
                 }
                 else
                 {
@@ -121,7 +121,7 @@ namespace IngameScript
                 }
             }
 
-            //+   (OK(ModDestConnecting) ? ModDestConnecting.GetPath(ModDestSrcIndex) : "")
+            //+   (OK(ModDestConnecting) ? ModDestConnecting.Path(ModDestSrcIndex) : "")
             //+ PS(ModDestSrcIndex)
             //+ PS(OK(ModDestChannel) ? Patterns.IndexOf(ModDestChannel.Pattern) : -1)
             //+ PS(OK(ModDestChannel) ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)

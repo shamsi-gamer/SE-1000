@@ -83,7 +83,7 @@ namespace IngameScript
             {
                 if (OK(note))
                 {
-                    var key = note.Keys.Find(k => k.Path == GetPath(src));
+                    var key = note.Keys.Find(k => k.Path == Path);
 
                     if (OK(key)) key.Value = MinMax(Min, val, Max);
                     else         m_value   = MinMax(Min, val, Max);
@@ -108,8 +108,6 @@ namespace IngameScript
                     return CurValue;
 
 
-                var path  = GetPath(tp.SourceIndex);
-
                 float value;
 
                 if (OK(tp.Note))
@@ -118,7 +116,7 @@ namespace IngameScript
                         tp.Clip,
                         tp.Note.Step, // not ClipStep because played notes are in clip time already
                         tp.Note.iChan, 
-                        path);
+                        Path);
 
                     value = OK(val) ? val : GetKeyValue(tp.Note, tp.SourceIndex);
                 }
@@ -127,7 +125,7 @@ namespace IngameScript
 
 
                 if (    OK(Lfo)
-                    && !OK(tp.TriggerValues.Find(v => v.Path == path)))
+                    && !OK(tp.TriggerValues.Find(v => v.Path == Path)))
                 {
                     var lfo = Lfo.UpdateValue(tp);
 
@@ -135,7 +133,7 @@ namespace IngameScript
                     else                     value *= lfo;
 
                     if (ParentIsEnvelope)
-                        tp.TriggerValues.Add(new TriggerValue(path, MinMax(Min, value, Max)));
+                        tp.TriggerValues.Add(new TriggerValue(Path, MinMax(Min, value, Max)));
                 }
 
 
@@ -147,7 +145,7 @@ namespace IngameScript
                 {
                     var mod = Modulate.UpdateValue(tp);
 
-                    if (Modulate.Op == ModOp.Add) value += mod * Math.Abs(Max - Min) / 2;
+                    if (Modulate.Op == ModOp.Add) value += mod * Math.Abs(Max-Min)/2;
                     else                          value *= mod;
                 }
 
@@ -163,7 +161,7 @@ namespace IngameScript
             {
                 if (OK(note))
                 {
-                    var key = note.Keys.Find(k => k.Path == GetPath(src));
+                    var key = note.Keys.Find(k => k.Path == Path);
                     return key?.Value ?? m_value; 
                 }
                 else return m_value;
@@ -245,7 +243,7 @@ namespace IngameScript
                        OK(Envelope)
                     || OK(Lfo     )
                     || OK(Modulate)
-                    || (chan?.HasKeys(GetPath(src)) ?? False)
+                    || (chan?.HasKeys(Path) ?? False)
                     || _IsCurrent;
             }
 
@@ -278,6 +276,7 @@ namespace IngameScript
             }
 
 
+
             public override void Reset()
             {
                 base.Reset();
@@ -286,6 +285,7 @@ namespace IngameScript
                 Lfo     ?.Reset();
                 Modulate?.Reset();
             }
+
 
 
             public override void Randomize()
@@ -323,6 +323,7 @@ namespace IngameScript
             }
 
 
+
             public void Delete(int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
@@ -346,10 +347,10 @@ namespace IngameScript
 
                             foreach (var chan in pat.Channels)
                             {
-                                chan.AutoKeys.RemoveAll(k => k.Path == GetPath(srcIndex));
+                                chan.AutoKeys.RemoveAll(k => k.Path == Path);
 
                                 foreach (var note in chan.Notes)
-                                    note.Keys.RemoveAll(k => k.Path == GetPath(srcIndex));
+                                    note.Keys.RemoveAll(k => k.Path == Path);
                             }
                         }
                      
@@ -362,6 +363,7 @@ namespace IngameScript
                 Lfo     ?.Delete(iSrc);
                 Modulate?.Delete(iSrc);
             }
+
 
 
             public override string Save()
@@ -382,6 +384,7 @@ namespace IngameScript
                     + SaveSetting(Lfo)
                     + SaveSetting(Modulate);
             }
+
 
 
             public static Parameter Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent, Parameter proto = Parameter_null)
@@ -413,6 +416,7 @@ namespace IngameScript
             }
 
 
+
             public override string GetLabel(out float width)
             {
                 width = 70f; 
@@ -422,6 +426,7 @@ namespace IngameScript
                     ? PrintValue(100 * Math.Log10(Value), 0, True, 0).PadLeft(4)
                     : PrintValue(CurValue, 2, True, 1).PadLeft(4);
             }
+
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
@@ -519,6 +524,7 @@ namespace IngameScript
             }
 
 
+
             public void DrawSettingValues(List<MySprite> sprites, float x, float y)
             {
                 var bx = 40;
@@ -542,6 +548,7 @@ namespace IngameScript
             }
 
 
+
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
                 if (!AnyParentIsEnvelope)
@@ -549,9 +556,10 @@ namespace IngameScript
 
                 DrawFuncButton(sprites, strLfo, 2, w, h, True, OK(Lfo));
                 DrawFuncButton(sprites, strMod, 3, w, h, True, OK(Modulate));
-                DrawFuncButton(sprites, "Key",  4, w, h, True, chan.HasNoteKeys(GetPath(CurSrc)));
-                DrawFuncButton(sprites, "Auto", 5, w, h, True, chan.HasAutoKeys(GetPath(CurSrc)));
+                DrawFuncButton(sprites, "Key",  4, w, h, True, chan.HasNoteKeys(Path));
+                DrawFuncButton(sprites, "Auto", 5, w, h, True, chan.HasAutoKeys(Path));
             }
+
 
 
             public override void Func(int func)
@@ -572,11 +580,13 @@ namespace IngameScript
             }
 
 
+
             public override bool CanDelete()
             {
                 return Tag == strOff;
             }
         }
+
 
 
         static Parameter NewHarmonicParam(int i, Setting parent, Instrument inst, Source src)

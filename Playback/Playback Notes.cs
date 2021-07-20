@@ -150,9 +150,10 @@ namespace IngameScript
                 if (!(   clip.ChordEdit
                       && OK(clip.Chord)))
                 {
-                    var editStep = 1/2f;
+                    //var editStep = 1/2f;
 
-                    var noteStep = (int)((step % g_patSteps + ChordStrum(i)) / editStep) * editStep;
+                    //var noteStep = (int)((step % g_patSteps + ChordStrum(i)) / editStep) * editStep;
+                    var noteStep = step % g_patSteps + ChordStrum(i);
                     var lastNote = new Note(chan, ch, 1, note, noteStep, EditedClip.EditStepLength);
                     
                     lastNotes.Add(lastNote);
