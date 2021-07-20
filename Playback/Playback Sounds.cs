@@ -42,7 +42,7 @@ namespace IngameScript
                 var lTime = g_time - snd.Time;
 
                 if (   lTime >= 0
-                    && lTime < snd.Length + snd.ReleaseLength)
+                    && lTime <  snd.Length + snd.ReleaseLength)
                     snd.Update(this);
             }
         }
@@ -58,6 +58,7 @@ namespace IngameScript
 
                 if (g_time > snd.Time + snd.Length + snd.ReleaseLength)
                 {
+                    snd.Source.CurVolume = 0;
                     snd.Stop();
                     delete.Add(i);
                 }

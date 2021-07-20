@@ -127,26 +127,44 @@ namespace IngameScript
 
             if (!OK(EditedClip))
                 SetAnyEditedClip();
-
             
             if (g_curPath != "")
                 SwitchToSetting(EditedClip, g_curPath);
-
-
-            UpdateClipDisplay(EditedClip);
-
-            SetLabelColor(EditedClip.ColorIndex);
-
 
             if (   OK(g_copyTrack) 
                 && OK(g_copyIndex))
                 ClipCopy = Tracks[g_copyTrack].Clips[g_copyIndex];
 
-            //if (modConnPath != "")
-            //{
-            //    ModDestChannel    = EditClip.Patterns[modPat].Channels[modChan];
-            //    ModDestConnecting = (Modulate)GetSettingFromPath(ModDestChannel.Instrument, modConnPath);
-            //}
+            FinalizeLoadModulate();
+
+            UpdateClipDisplay(EditedClip);
+            SetLabelColor(EditedClip.ColorIndex);
+        }
+
+
+
+        void FinalizeLoadModulate()
+        {
+            foreach (var mod in g_mod)
+            {
+                var inst = Instruments.Find(i => i.Name == mod.LoadInstName);
+
+                mod.ModSettings.Add(
+                    mod.LoadSetPath != "" 
+                    ? GetSettingFromPath(mod.LoadSetPath) 
+                    : Setting_null);
+
+                mod.ModSources.Add(
+                    OK(mod.LoadSrcIndex) 
+                    ? inst.Sources[mod.LoadSrcIndex] 
+                    : Source_null);
+
+                mod.ModInstruments.Add(inst);
+
+                mod.LoadSetPath  = "";
+                mod.LoadInstName = "";
+                mod.LoadSrcIndex = -1;
+            }
         }
 
 

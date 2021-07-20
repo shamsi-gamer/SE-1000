@@ -37,6 +37,10 @@ namespace IngameScript
             public List<Instrument> ModInstruments; 
 
 
+            public string           LoadSetPath,
+                                    LoadInstName;
+            public int              LoadSrcIndex;
+
 
             public Modulate(Setting parent, Instrument inst, Source src) 
                 : base(strMod, parent, Setting_null, inst, src)
@@ -131,9 +135,9 @@ namespace IngameScript
                         // TODO add more that have CurValue
                     }
 
-                    else if (OK(src)) val = Math.Max(val, src .CurVolume);
-                    else              val = Math.Max(val, inst.CurVolume);
-                Log("inst.CurVolume = " + inst.CurVolume);
+                    else if (OK(src))  val = Math.Max(val, src .CurVolume);
+                    else if (OK(inst)) val = Math.Max(val, inst.CurVolume);
+                    else               val = 0;
                 }
 
 
@@ -154,15 +158,6 @@ namespace IngameScript
 
                 CurValue = Math.Sign(amt) * (r + (a - r) * val);
                 m_valid  = True;
-
-                Log("CurValue = " + CurValue);
-                Log("val      = " + val);
-                Log("a        = " + a);
-                Log("r        = " + r);
-
-
-                //CurValue *= val;
-
 
                 return CurValue;
             }
@@ -295,19 +290,10 @@ namespace IngameScript
 
                 for (int i = 0; i < nSources; i++)
                 {
-                    var setPath  = data[d++];
-                    var instName = data[d++];
+                    mod.LoadSetPath  = data[d++];
+                    mod.LoadInstName = data[d++];
 
-                    var _inst = Instruments.Find(inst_ => inst_.Name == instName);
-                    
-                    int srcIndex;
-                    if (!int_TryParse(data[d++], out srcIndex)) return Modulate_null;
-
-                    //mod.SrcInstruments.Add(_inst);
-                    //mod.SrcSources    .Add(OK(modSrcIndex) ? _inst.Sources[modSrcIndex] : Source_null);
-                    mod.ModSettings   .Add(setPath != "" ? GetSettingFromPath(setPath) : Setting_null);
-                    mod.ModSources    .Add(OK(srcIndex) ? _inst.Sources[srcIndex] : Source_null);
-                    mod.ModInstruments.Add(_inst);
+                    if (!int_TryParse(data[d++], out mod.LoadSrcIndex)) return Modulate_null;
                 }
 
 
