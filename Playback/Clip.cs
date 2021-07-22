@@ -606,24 +606,23 @@ namespace IngameScript
 
             public void GetPatterns(int pat, out int first, out int last)
             {
-                first = pat;
-                last  = pat;
+                var b = GetBlock(pat);
 
-                if (AllPats)
+                if (   Block
+                    && OK(b))
                 {
-                    var b = GetBlock(pat);
-
-                    if (   Block
-                        && OK(b))
-                    {
-                        first = b.First;
-                        last  = b.Last;
-                    }
-                    else
-                    {
-                        first = 0;
-                        last  = Patterns.Count-1;
-                    }
+                    first = b.First;
+                    last  = b.Last;
+                }
+                else if (AllPats)
+                {
+                    first = 0;
+                    last  = Patterns.Count-1;
+                }
+                else
+                {
+                    first = pat;
+                    last  = pat;
                 }
             }
 
