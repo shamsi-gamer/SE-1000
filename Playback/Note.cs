@@ -55,10 +55,10 @@ namespace IngameScript
             }
 
 
-            public Note(Note note, Channel chan = Channel_null)
+            public Note(Note note, Channel chan = Channel_null, int chanIndex = -1)
             {
                 Channel    = chan ?? note.Channel;
-                iChan      = note.iChan;
+                iChan      = OK(chanIndex) ? chanIndex : note.iChan;
                 Number     = note.Number;
                 Volume     = note.Volume;
                 Step       = note.Step;

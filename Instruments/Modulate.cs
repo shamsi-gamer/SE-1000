@@ -37,9 +37,9 @@ namespace IngameScript
             public List<Instrument> ModInstruments; 
 
 
-            public string           LoadSetPath,
+            public List<string>     LoadSetPath,
                                     LoadInstName;
-            public int              LoadSrcIndex;
+            public List<int>        LoadSrcIndex;
 
 
             public Modulate(Setting parent, Instrument inst, Source src) 
@@ -57,9 +57,7 @@ namespace IngameScript
                 Delta          = 1f/FPS;
                 CurValue       = 0;
 
-                ModSettings    = new List<Setting>();            
-                ModSources     = new List<Source>();            
-                ModInstruments = new List<Instrument>();            
+                InitLists();                               
             }
 
 
@@ -79,17 +77,29 @@ namespace IngameScript
                 Delta    = mod.Delta;
                 CurValue = mod.CurValue;
 
-                ModSettings = new List<Setting>();
+                InitLists();
+
                 foreach (var set in mod.ModSettings)
                     ModSettings.Add(set);
 
-                ModSources = new List<Source>();
                 foreach (var _src in mod.ModSources)
                     ModSources.Add(_src);
 
-                ModInstruments = new List<Instrument>();
                 foreach (var _inst in mod.ModInstruments)
                     ModInstruments.Add(_inst);
+            }
+
+
+
+            void InitLists()
+            {
+                ModSettings    = new List<Setting>();            
+                ModSources     = new List<Source>();            
+                ModInstruments = new List<Instrument>();            
+
+                LoadSetPath    = new List<string>();            
+                LoadSrcIndex   = new List<int>();            
+                LoadInstName   = new List<string>();            
             }
 
 
@@ -287,13 +297,14 @@ namespace IngameScript
                 int nSources;
                 if (!int_TryParse(data[d++], out nSources)) return Modulate_null;
 
-
                 for (int i = 0; i < nSources; i++)
                 {
-                    mod.LoadSetPath  = data[d++];
-                    mod.LoadInstName = data[d++];
-
-                    if (!int_TryParse(data[d++], out mod.LoadSrcIndex)) return Modulate_null;
+                    mod.LoadSetPath .Add(data[d++]);
+                    mod.LoadInstName.Add(data[d++]);
+                    
+                    int srcIndex;
+                    if (!int_TryParse(data[d++], out srcIndex)) return Modulate_null;
+                    mod.LoadSrcIndex.Add(srcIndex);
                 }
 
 

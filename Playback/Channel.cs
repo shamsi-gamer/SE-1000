@@ -8,6 +8,7 @@ namespace IngameScript
         public class Channel
         {
             public Pattern    Pattern;
+            public int        Index => Pattern.Channels.IndexOf(this);
 
             public bool       On;
 
@@ -20,6 +21,7 @@ namespace IngameScript
 
             public List<Note> Notes;
             public List<Key>  AutoKeys;
+
 
 
             public Channel(Pattern pat, Instrument inst)
@@ -91,12 +93,10 @@ namespace IngameScript
 
             public void UpdateNotes()
             {
-                var iChan = Pattern.Channels.IndexOf(this);
-
                 foreach (var note in Notes)
                 { 
                     note.Channel = this;
-                    note.iChan   = iChan;
+                    note.iChan   = Index;
                 }
             }
 
@@ -121,7 +121,7 @@ namespace IngameScript
             {
                 var save = "";
 
-                save += WS(Pattern.Channels.IndexOf(this));
+                save += WS(Index);
                 save += W (Instrument.Name);
 
                 save += WB(On);

@@ -147,23 +147,30 @@ namespace IngameScript
         {
             foreach (var mod in g_mod)
             {
-                var inst = Instruments.Find(i => i.Name == mod.LoadInstName);
+                for (int i = 0; i < mod.LoadSetPath.Count; i++)
+                {
+                    var path     = mod.LoadSetPath [i];
+                    var instName = mod.LoadInstName[i];
+                    var srcIndex = mod.LoadSrcIndex[i];
 
-                mod.ModSettings.Add(
-                    mod.LoadSetPath != "" 
-                    ? GetSettingFromPath(mod.LoadSetPath) 
-                    : Setting_null);
+                    var inst = Instruments.Find(inst_ => inst_.Name == instName);
 
-                mod.ModSources.Add(
-                    OK(mod.LoadSrcIndex) 
-                    ? inst.Sources[mod.LoadSrcIndex] 
-                    : Source_null);
+                    mod.ModSettings.Add(
+                        path != "" 
+                        ? GetSettingFromPath(path) 
+                        : Setting_null);
 
-                mod.ModInstruments.Add(inst);
+                    mod.ModSources.Add(
+                        OK(mod.LoadSrcIndex) 
+                        ? inst.Sources[srcIndex] 
+                        : Source_null);
 
-                mod.LoadSetPath  = "";
-                mod.LoadInstName = "";
-                mod.LoadSrcIndex = -1;
+                    mod.ModInstruments.Add(inst);
+                }
+
+                mod.LoadSetPath .Clear();
+                mod.LoadInstName.Clear();
+                mod.LoadSrcIndex.Clear();
             }
         }
 

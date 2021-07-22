@@ -869,8 +869,12 @@ namespace IngameScript
                 dstChan.Instrument = srcChan.Instrument;
 
             foreach (var note in srcChan.Notes)
-                if (!OK(dstChan.Notes.Find(n => n.Step == note.Step)))
-                    dstChan.Notes.Add(new Note(note, dstChan));
+            { 
+                if (!OK(dstChan.Notes.Find(n => 
+                       n.Step   == note.Step 
+                    && n.Number == note.Number)))
+                    dstChan.Notes.Add(new Note(note, dstChan, dstChan.Index));
+            }
 
             foreach (var key in srcChan.AutoKeys)
                 dstChan.AutoKeys.Add(new Key(key));

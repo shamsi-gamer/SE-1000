@@ -124,7 +124,7 @@ namespace IngameScript
             //+   (OK(ModDestConnecting) ? ModDestConnecting.Path(ModDestSrcIndex) : "")
             //+ PS(ModDestSrcIndex)
             //+ PS(OK(ModDestChannel) ? Patterns.IndexOf(ModDestChannel.Pattern) : -1)
-            //+ PS(OK(ModDestChannel) ? ModDestChannel.Pattern.Channels.IndexOf(ModDestChannel) : -1)
+            //+ PS(OK(ModDestChannel) ? ModDestChannel.Index : -1)
             //+ PS(ModCurPat)
             //+ PS(ModDestClip)
 
