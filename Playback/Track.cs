@@ -365,7 +365,9 @@ namespace IngameScript
 
                 int start, end;
                 clip.GetPosLimits(PlayPat, out start, out end);
+
                 end = start + Math.Min(end - start, clip.StepLength);
+
 
                 if (OK(NextPat))
                 {

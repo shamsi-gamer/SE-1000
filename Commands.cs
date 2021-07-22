@@ -678,7 +678,7 @@ namespace IngameScript
                             || clip.ParamAuto))
             {
                 var chan = clip.SelChannel;
-                var path = clip.CurSetting.Path;//clip.Settings.Last().Path(clip.CurSrc);
+                var path = clip.CurSetting.Path;
 
                 if (clip.ParamKeys)
                 { 
@@ -729,7 +729,7 @@ namespace IngameScript
             else
             {
                 if (clip.Transpose) 
-                    Transpose(clip, clip.CurChan, delta);
+                    Transpose(clip, delta);
             }
 
 

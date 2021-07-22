@@ -118,6 +118,7 @@ namespace IngameScript
             public Program       Program;
 
 
+
             public Clip(Track track, Program prog, string name = strClip)
             {
                 Track       = track;
@@ -151,8 +152,8 @@ namespace IngameScript
                                 
                 Shift           = 
                 MixerShift      =
-                SetOrPat     =
-                SetMemSet          =
+                SetOrPat        =
+                SetMemSet       =
                                 
                 Move            =
 
@@ -168,9 +169,9 @@ namespace IngameScript
                 ParamKeys       = 
                 ParamAuto       =
                                 
-                SetMemPat          = False;
+                SetMemPat       = False;
                                 
-                EditPat          =  
+                EditPat         =  
                 CurChan         = 0;
                                 
                 SelChan         = 
@@ -183,7 +184,7 @@ namespace IngameScript
                 CurNote         = 69 * NoteScale;
                                 
                 Chord           = -1;
-                ChordStrum     =  
+                ChordStrum      =  
                                 
                 SongOff         =  
                 InstOff         =  
@@ -210,6 +211,7 @@ namespace IngameScript
 
                 ResetState();
             }
+
 
 
             public Clip(Clip clip, Track track, Program prog)
@@ -281,7 +283,7 @@ namespace IngameScript
                 CurNote         = clip.CurNote;
                                 
                 Chord           = clip.Chord;
-                ChordStrum     = clip.ChordStrum;
+                ChordStrum      = clip.ChordStrum;
                                 
                 SongOff         = clip.SongOff;
                 InstOff         = clip.InstOff;
@@ -310,11 +312,13 @@ namespace IngameScript
             }
 
 
+
             public void ClearAutoKeys()
             {
                 foreach (var keys in ChannelAutoKeys)
                     keys.Clear();
             }
+
 
 
             public void UpdateAutoKeys()
@@ -349,6 +353,7 @@ namespace IngameScript
             }
 
 
+
             public static Clip Create(Track track, Program prog)
             {
                 var clip = new Clip(track, prog);
@@ -356,6 +361,7 @@ namespace IngameScript
                 GetNewClipName(clip, track.Clips);
                 return clip;
             }
+
 
 
             public void Clear()
@@ -372,6 +378,7 @@ namespace IngameScript
             }
 
 
+
             void ResetState()
             {
                 EditPos     = float_NaN;
@@ -382,8 +389,10 @@ namespace IngameScript
             }
 
 
+
             public int   GetKeyPat(Key key) { return Patterns.FindIndex(p => OK(Array.Find(p.Channels, c => c.AutoKeys.Contains(key)))); }
             public float GetStep  (Key key) { return GetKeyPat(key) * g_patSteps + key.Step; }
+
 
 
             public Block GetBlock(int pat)
@@ -394,10 +403,12 @@ namespace IngameScript
             }
 
 
+
             public void SetCue()
             {
                 Track.NextPat = Track.NextPat == EditPat ? -1 : EditPat;
             }
+
 
 
             public void GetPosLimits(int pat, out int start, out int end)
@@ -410,6 +421,7 @@ namespace IngameScript
             }
 
 
+
             public void GetPlayPatterns(int p, out int f, out int l)
             {
                 var b = GetBlock(p);
@@ -419,7 +431,7 @@ namespace IngameScript
                     f = b.First;
                     l = b.Last;
                 }
-                else if (Loop && !Block)
+                else if (Loop)
                 {
                     f = p;
                     l = p;
@@ -430,6 +442,7 @@ namespace IngameScript
                     l = Patterns.Count-1;
                 }
             }
+
 
 
             public void TrimCurrentNotes(int ch = -1)
@@ -448,6 +461,7 @@ namespace IngameScript
             }
 
 
+
             public void WrapCurrentNotes(int nWrapSteps)
             {
                 var timeStep = Playing ? Track.PlayStep : TimeStep;
@@ -461,6 +475,7 @@ namespace IngameScript
                         note.UpdateStepTime(-nWrapSteps);
                 }
             }
+
 
 
             public void StartBlock()
@@ -489,6 +504,7 @@ namespace IngameScript
             }
 
 
+
             public void EndBlock()
             {
                 var b = GetBlock(EditPat);
@@ -509,16 +525,10 @@ namespace IngameScript
                         In     = False;
                         Follow = False;
                     }
-
-                    //g_blocks[b].Next = currentPattern + 1;
-
-                    //if (g_blocks[b].Next == g_blocks[b].Start)
-                    // g_blocks[b].Next = g_blocks[b].Start + 1;
-                    //else if (g_blocks[b].Next < g_blocks[b].Start)
-                    // Swap(ref g_blocks[b].Next, ref g_blocks[b].Start);
                 }
             }
         
+
 
             public void ClearBlock()
             {
@@ -529,11 +539,13 @@ namespace IngameScript
             }
 
 
+
             public void DisableBlock()
             {
                 In  = False;
                 Out = False;
             }
+
 
 
             public void MovePatternOff()
@@ -542,10 +554,12 @@ namespace IngameScript
             }
 
 
+
             public void ToogleLoop()
             {
                 Loop = !Loop;
             }
+
 
 
             public void ToggleMovePattern()
@@ -557,16 +571,19 @@ namespace IngameScript
             }
 
 
+
             public void ToggleBlock()
             {
                 Block = !Block;
             }
 
 
+
             public void ToggleAllPatterns()
             {
                 AllPats = !AllPats;
             }
+
 
 
             public void ToggleFollow()
@@ -576,6 +593,7 @@ namespace IngameScript
                 if (Follow)
                     AutoCue = False;
             }
+
 
 
             public void ToggleAutoCue()
@@ -590,6 +608,7 @@ namespace IngameScript
             }
 
 
+
             public void Cue()
             {
                 SetCue();
@@ -598,10 +617,12 @@ namespace IngameScript
             }
 
 
+
             public void GetCurPatterns(out int first, out int last)
             {
                 GetPatterns(EditPat, out first, out last);
             }
+
 
 
             public void GetPatterns(int pat, out int first, out int last)
@@ -627,6 +648,7 @@ namespace IngameScript
             }
 
 
+
             public void StopEdit()
             {
                 if (EditNotes.Count > 0)
@@ -634,6 +656,7 @@ namespace IngameScript
 
                 EditNotes.Clear();
             }
+
 
 
             public void LimitRecPosition()
@@ -647,6 +670,7 @@ namespace IngameScript
                 var cp = (int)(EditPos / g_patSteps);
                 if (cp != EditPat) SetEditPattern(cp);
             }
+
 
 
             public Setting   LastSetting  => Settings.Count > 0 ? Settings.Last()  : Setting_null;

@@ -555,7 +555,7 @@ namespace IngameScript
 
 
 
-        static void Transpose(Clip clip, int ch, float tr)
+        static void Transpose(Clip clip, float tr)
         {
             if (clip.EditNotes.Count > 0)
             {
@@ -567,17 +567,37 @@ namespace IngameScript
                 int first, last;
                 clip.GetPatterns(clip.EditPat, out first, out last);
 
-                for (int pat = first; pat <= last; pat++)
-                    Transpose(clip, pat, ch, tr);
+                for (int p = first; p <= last; p++)
+                {
+                    var chans = new List<Channel>();
+
+                    var pat = clip.Patterns[p];
+
+                    if (clip.AllChan)
+                    {
+                        foreach (var ch in pat.Channels)
+                            chans.Add(ch);
+                    }
+                    else if (clip.RndInst)
+                    {
+                        foreach (var ch in pat.Channels)
+                            if (ch.Instrument == clip.CurInstrument)
+                                chans.Add(ch);
+                    }
+                    else
+                        chans.Add(pat.Channels[clip.CurChan]);
+
+
+                    foreach (var chan in chans)
+                        Transpose(clip, chan, tr);
+                }
             }
         }
 
 
 
-        static void Transpose(Clip clip, int pat, int ch, float tr)
+        static void Transpose(Clip clip, Channel chan, float tr)
         {
-            var chan = clip.Patterns[pat].Channels[ch];
-
             foreach (var note in chan.Notes)
                 Transpose(clip, note, tr);
         }
