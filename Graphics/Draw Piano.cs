@@ -87,6 +87,7 @@ namespace IngameScript
         }
 
 
+
         void DrawPianoGrid(List<MySprite> sprites, float x, float y, float w, float h)
         {
             var wt = w/g_patSteps;
@@ -99,6 +100,7 @@ namespace IngameScript
             for (int t = 0; t < g_patSteps; t++)
                 FillRect(sprites, x + t * wt, y, 1, h, color3);
         }
+
 
 
         void DrawPianoKeys(List<MySprite> sprites, float x, float y, float w, float h, Color white)
@@ -115,16 +117,20 @@ namespace IngameScript
         }
 
 
+
         void DrawPianoRoll(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int p, int gs)
         {
             for (int ch = 0; ch < g_nChans; ch++)
             {
-                if (ch != CurChan)
+                if (   ch != CurChan
+                    && (  !clip.RndInst
+                        || clip.Patterns[p].Channels[ch].Instrument == clip.Patterns[p].Channels[CurChan].Instrument))
                     DrawChanNotes(sprites, x, y, w, h, clip, p, gs, ch, color3);
             }
 
             DrawChanNotes(sprites, x, y, w, h, clip, p, gs, CurChan, color6);
         }
+
 
 
         void DrawChanNotes(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int p, int gs, int ch, Color col)
@@ -180,6 +186,7 @@ namespace IngameScript
                 }
             }
         }
+
 
 
         void DrawPianoNeg(List<MySprite> sprites, float x, float y, float w, float h, Clip clip, int pat, float step, bool isolated)

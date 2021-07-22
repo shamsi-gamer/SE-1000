@@ -163,7 +163,6 @@ namespace IngameScript
             }
 
 
-
             foreach (var track in Tracks)
             {
                 var clip = track.PlayingClip;
