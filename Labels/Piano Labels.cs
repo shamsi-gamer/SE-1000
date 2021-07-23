@@ -19,6 +19,7 @@ namespace IngameScript
         }
 
 
+
         void InitPianoLabelsHigh()
         {
             lblHigh = new List<Label>();
@@ -45,6 +46,7 @@ namespace IngameScript
         }
 
 
+
         bool PianoHighIsBright(Label lbl)
         {
             return
@@ -52,6 +54,7 @@ namespace IngameScript
                 ? NoteIsBright(HighToNote(lbl.Data))
                 : ToggleIsBright(lbl);
         }
+
 
 
         bool PianoHighIsDim(Label lbl)
@@ -63,6 +66,7 @@ namespace IngameScript
                    && g_copyChans.Count > 0
                    && (lbl == lblHigh[0] || lbl == lblHigh[1]);
         }
+
 
 
         void UpdatePianoHigh(Label lbl)
@@ -101,6 +105,7 @@ namespace IngameScript
         }
 
 
+
         void InitPianoLabelsLow()
         {
             lblLow = new List<Label>();
@@ -122,6 +127,7 @@ namespace IngameScript
         }
 
 
+
         bool PianoLowIsBright(Label lbl)
         {
             return
@@ -134,6 +140,7 @@ namespace IngameScript
         }
 
 
+
         bool PianoLowIsDim(Label lbl)
         {
             return 
@@ -143,12 +150,14 @@ namespace IngameScript
         }
 
 
+
         void UpdatePianoLow(Label lbl)
         {
             if (    ShowPiano
                 && -lbl.Data == 15) lbl.SetText("‡", 8, 17); 
             else                    lbl.SetText(strEmpty);
         }
+
 
 
         void UpdatePianoLowColor(Label lbl)
@@ -162,6 +171,7 @@ namespace IngameScript
                     ? color2 
                     : color0;
         }
+
 
 
         bool NoteIsBright(int noteNum)
@@ -192,6 +202,7 @@ namespace IngameScript
 
             return False;
         }
+
 
 
         bool NoteIsDim(int noteNum)
@@ -225,12 +236,14 @@ namespace IngameScript
         }
 
 
+
         bool NoteIsEdited(Note note, int noteNum)
         {
             return note.Number == noteNum
                 && note.ClipStep >= EditedClip.EditPos
                 && note.ClipStep <  EditedClip.EditPos + EditedClip.EditStepLength;
         }
+
 
 
         bool NoteIsTriggered(int noteNum, Note note)
@@ -247,6 +260,7 @@ namespace IngameScript
         }
 
 
+
         bool ToggleIsBright(Label lbl)
         {
             return
@@ -254,6 +268,7 @@ namespace IngameScript
                 || lbl.Data == 3 && EditedClip.AllChan
                 || lbl.Data == 4 && EditedClip.RndInst;
         }
+
 
 
         void UpdatePianoToggle(Label lbl)
@@ -283,6 +298,7 @@ namespace IngameScript
         }
 
 
+
         bool StepIsBright(Label lbl)
         {
             var patStep  = -lbl.Data;
@@ -306,16 +322,20 @@ namespace IngameScript
         }
 
 
+
         void UpdateOctaveLabel(Label lbl)
         {
             int val;
 
                  if (EditedClip.Strum) val = EditedClip.ChordStrum;
-            else if (ShowPiano)         val = CurChannel.Transpose;
-            else                        val = CurChannel.Shuffle;
+            else if (   EditedClip.Piano
+                     && LockView != 1
+                  || LockView == 2)    val = CurChannel.Transpose;
+            else                       val = CurChannel.Shuffle;
 
             lbl.SetText((val > 0 ? "+" : "") + S(val));
         }
+
 
 
         void UpdateShuffleLabel(Label lbl)
@@ -323,7 +343,9 @@ namespace IngameScript
             if (EditedClip.Strum)
                 lbl.SetText("Strum", 9, 14);
 
-            else if (ShowPiano)
+            else if (   EditedClip.Piano
+                     && LockView != 1
+                  || LockView == 2)
                 lbl.SetText(
                     //█ █ ██ █ █ █
                     //█▄█▄██▄█▄█▄█

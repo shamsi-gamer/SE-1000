@@ -618,9 +618,11 @@ namespace IngameScript
 
             if (EditedClip.Strum)
                 EditedClip.ChordStrum = MinMax(0, EditedClip.ChordStrum + d, 16);
-            
-            else if (ShowPiano) SetTranspose(EditedClip, CurChan, d);
-            else                SetShuffle(CurChan, d);
+
+            else if (   EditedClip.Piano
+                     && LockView != 1
+                  || LockView == 2) SetTranspose(EditedClip, CurChan, d);
+            else                    SetShuffle(CurChan, d);
 
             if (d > 0) lblOctaveUp  .Mark();
             else       lblOctaveDown.Mark();
