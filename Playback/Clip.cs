@@ -629,16 +629,16 @@ namespace IngameScript
             {
                 var b = GetBlock(pat);
 
-                if (   Block
-                    && OK(b))
-                {
-                    first = b.First;
-                    last  = b.Last;
-                }
-                else if (AllPats)
+                if (AllPats)
                 {
                     first = 0;
                     last  = Patterns.Count-1;
+                }
+                else if (Block
+                      && OK(b))
+                {
+                    first = b.First;
+                    last  = b.Last;
                 }
                 else
                 {

@@ -92,10 +92,6 @@
                 case "left":        Left (EditedClip);                  break;
                 case "right":       Right(EditedClip);                  break;
                                                                         
-                                                                        
-                case "lock":        Lock();                             break;
-                case "auto lock":   AutoLock();                         break;
-                                                                        
                 case "sb":          EditedClip.StartBlock();            break;
                 case "eb":          EditedClip.EndBlock();              break;
                 case "cb":          EditedClip.ClearBlock();            break;

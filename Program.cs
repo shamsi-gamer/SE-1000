@@ -37,8 +37,6 @@ namespace IngameScript
         
         static IMyRemoteControl       g_remote;
                                       
-        List<IMyLandingGear>          g_locks  = new List<IMyLandingGear>();
-                                                    
         List<IMyTimerBlock>           g_timers = new List<IMyTimerBlock>();
         List<IMyGyro>                 g_gyros  = new List<IMyGyro>();
         List<IMyArtificialMassBlock>  g_mass   = new List<IMyArtificialMassBlock>();
@@ -97,8 +95,6 @@ namespace IngameScript
             InitLabels();
             InitFuncButtons(); 
 
-
-            Get(g_locks, b => !b.CustomName.Contains("Fold"));
 
             Get(g_timers);
             Get(g_gyros);

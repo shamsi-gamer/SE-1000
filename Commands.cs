@@ -847,7 +847,8 @@ namespace IngameScript
             int first, last;
             EditedClip.GetCurPatterns(out first, out last);
 
-            if (EditedClip.AllPats)
+            if (   EditedClip.AllPats
+                || EditedClip.Block)
             {
                 for (int p = 0; p < Math.Min(last-first+1, EditedClip.Patterns.Count); p++)
                     PasteChan(first + p, first + p);

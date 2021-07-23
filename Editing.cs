@@ -260,6 +260,16 @@ namespace IngameScript
                 if (clip.EditNotes.Count > 0) clip.EditNotes.Clear();
                 else                          clip.EditNotes.AddRange(GetEditNotes(clip));
             }
+            else
+            {
+                if (clip.EditNotes.Count > 0)
+                    clip.EditNotes.Clear();
+                else 
+                { 
+                    clip.EditNotes.Clear();
+                    clip.EditNotes.AddRange(GetChannelNotes(clip));
+                }
+            }
         }
 
 
@@ -423,6 +433,7 @@ namespace IngameScript
         void Left(Clip clip)
         {
             if (   OK(clip.EditPos)
+                || clip.EditNotes.Count > 0
                 || IsCurSetting(typeof(Harmonics))) 
                  MoveEdit(clip, -1);
             else Shift(False);
@@ -435,6 +446,7 @@ namespace IngameScript
         void Right(Clip clip)
         {
             if (   OK(clip.EditPos)
+                || clip.EditNotes.Count > 0
                 || IsCurSetting(typeof(Harmonics))) 
                  MoveEdit(clip, 1);
             else Shift(True);

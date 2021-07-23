@@ -147,14 +147,6 @@ namespace IngameScript
 
 
 
-        void Lock()
-        {
-            foreach (var l in g_locks)
-                l.ToggleLock();
-        }
-
-
-
         void NoiseEmitters()
         {
             NoiseEmitters(!g_timers[0].Enabled);
@@ -176,13 +168,7 @@ namespace IngameScript
 
 
 
-        void AutoLock()
-        {
-            var auto = False;
 
-            foreach (var l in g_locks) auto |= l.AutoLock;
-            foreach (var l in g_locks) l.AutoLock = !auto;
-        }
 
 
 
