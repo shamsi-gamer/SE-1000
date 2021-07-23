@@ -1,4 +1,7 @@
-﻿namespace IngameScript
+﻿using System;
+
+
+namespace IngameScript
 {
     partial class Program
     {
@@ -61,14 +64,21 @@
             else
             {
                 if (OK(CurSrc)) lbl.SetText("On");
-                else                       lbl.SetText(SelChan < 0 ? "Lock" : strEmpty);
+                else            lbl.SetText(SelChan < 0 ? "Lock" : strEmpty);
             }
         }
 
 
         void UpdateCmd2(Label lbl)
         {
-            lbl.SetText(OK(CurSrc) ? "Osc ↕" : strEmpty);
+            if (OK(CurSrc))
+                lbl.SetText("Osc ↕");
+            else if (!OK(SelChan)
+                   && EditedClip.RndInst
+                   && OK(Array.Find(EditPattern.Channels, c => c.Instrument == CurChannel.Instrument)))
+                lbl.SetText("Clps");
+            else
+                lbl.SetText(strEmpty);
         }
 
 

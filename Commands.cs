@@ -530,6 +530,10 @@ namespace IngameScript
                 if (newOsc > (int)OscType.Crunch) newOsc = 0;
                 src.Oscillator = OscillatorFromType((OscType)newOsc);
             }
+            else if (!OK(SelChan)
+                   && EditedClip.RndInst
+                   && OK(Array.Find(EditPattern.Channels, c => c.Instrument == CurChannel.Instrument)))
+                CollapseChannels();
 
 
             lblCmd2.Mark();
@@ -774,6 +778,7 @@ namespace IngameScript
         }
 
 
+
         void SetChan(int ch)
         {
             int first, last;
@@ -808,6 +813,7 @@ namespace IngameScript
         }
 
 
+
         static void SetShuffle(int ch, int sh)
         {
             sh += EditPattern.Channels[ch].Shuffle;
@@ -823,6 +829,7 @@ namespace IngameScript
                 chan.Shuffle = MinMax(0, sh, TicksPerStep - 1);
             }
         }
+
 
 
         static void Copy()
@@ -841,6 +848,7 @@ namespace IngameScript
             }
         }
         
+
 
         static void Paste()
         {
@@ -861,11 +869,18 @@ namespace IngameScript
         }
 
 
+
         static void PasteChan(int srcPat, int dstPat)
         { 
-            var srcChan = g_copyChans[srcPat % g_copyChans.Count];
-            var dstChan = EditedClip.Patterns[dstPat].Channels[CurChan];
+            PasteChan(
+                g_copyChans[srcPat % g_copyChans.Count],
+                EditedClip.Patterns[dstPat].Channels[CurChan]);
+        }
 
+
+
+        static void PasteChan(Channel srcChan, Channel dstChan)
+        { 
             if (EditedClip.RndInst)
                 dstChan.Instrument = srcChan.Instrument;
 

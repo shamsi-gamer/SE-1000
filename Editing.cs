@@ -376,6 +376,43 @@ namespace IngameScript
          
 
 
+        void CollapseChannels()
+        {
+            int first, last;
+            EditedClip.GetCurPatterns(out first, out last);
+
+            for (int p = first; p <= last; p++)
+            {
+                var pat = EditedClip.Patterns[p];
+
+                var curInst = pat.Channels[CurChan].Instrument;
+
+                var chans = new List<Channel>();
+
+                chans.Add(pat.Channels[CurChan]);
+
+                for (int ch = 0; ch < g_nChans; ch++)
+                {
+                    var chan = pat.Channels[ch];
+
+                    if (   ch != CurChan
+                        && chan.Instrument == curInst) 
+                        chans.Add(chan);
+                }
+
+                if (chans.Count > 1)
+                {
+                    for (int ch = 1; ch < chans.Count; ch++)
+                    { 
+                        PasteChan(chans[ch], chans[0]);
+                        chans[ch].Notes.Clear();
+                    }
+                }
+            }
+        }
+
+
+
         void SetStepLength(int d)
         {
             var newTicksPerStep = MinMax(4, TicksPerStep + d, 15);
