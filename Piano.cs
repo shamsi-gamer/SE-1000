@@ -50,13 +50,38 @@ namespace IngameScript
             else if (h == 5) ClearNotes();
             else if (h == 6) Random();
                                    
-            else if (h == 7) Flip(CurChan, 4); 
-            else if (h == 8) Flip(CurChan, 8); 
-            else if (h == 9) Flip(CurChan, 16);
+            else if (h == 7) Common1();
+            else if (h == 8) Common2();
+            else if (h == 9) Common3();
 
             if (h < 2 || h > 4)
                 lblHigh[h].Mark();
         }
+
+
+
+        void Common1()
+        {
+            if (!ShowPianoView)
+                Flip(CurChan, 4);
+        }
+
+
+
+        void Common2()
+        {
+            if (ShowPianoView) ReverseNotes();
+            else               Flip(CurChan, 8);
+        }
+
+
+
+        void Common3()
+        {
+            if (ShowPianoView) FlipNotes();
+            else               Flip(CurChan, 16);
+        }
+
 
 
         void TogglePiano(Tune tune)
@@ -217,7 +242,7 @@ namespace IngameScript
                     {
                         var note = chan.Notes[n];
 
-                        note.Step -= Math.Min(EditedClip.EditStepIndex, 1);
+                        note.Step -= EditedClip.EditStep;
 
                         if (note.Step < 0)
                             spill.Add(note);

@@ -40,10 +40,8 @@ namespace IngameScript
                     else 
                         DrawInstrument(sprites, x, y, w, h);
                 }
-                else if (EditedClip.Piano 
-                      && LockView != 1
-                   || LockView == 2) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, EditPat, True);
-                else                 DrawPatternDisplay(sprites, x, y, w, h, EditedClip, EditPat, True);
+                else if (ShowPianoView) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, EditPat, True);
+                else                    DrawPatternDisplay(sprites, x, y, w, h, EditedClip, EditPat, True);
             }
             else
                 FillRect(sprites, x, y, w, h, color0);

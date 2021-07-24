@@ -140,6 +140,13 @@ namespace IngameScript
 
 
 
+        static bool ShowPianoView =>
+                  EditedClip.Piano
+               && LockView != 1
+            || LockView == 2;
+
+
+
         float GetBPM()
         {
             return 120f / (TicksPerStep * g_patSteps) * 120f;

@@ -649,6 +649,30 @@ namespace IngameScript
 
 
 
+            public List<Channel> GetCurChannels(int p)
+            {
+                var pat   = Patterns[p];
+                var chans = new List<Channel>();
+
+                if (AllChan)
+                {
+                    foreach (var ch in pat.Channels)
+                        chans.Add(ch);
+                }
+                else if (RndInst)
+                {
+                    foreach (var ch in pat.Channels)
+                        if (ch.Instrument == CurInstrument)
+                            chans.Add(ch);
+                }
+                else
+                    chans.Add(pat.Channels[CurChan]);
+
+                return chans;
+            }
+
+
+
             public void StopEdit()
             {
                 if (EditNotes.Count > 0)

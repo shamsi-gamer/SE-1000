@@ -383,22 +383,7 @@ namespace IngameScript
 
             for (int p = first; p <= last; p++)
             {
-                var pat = EditedClip.Patterns[p];
-
-                var curInst = pat.Channels[CurChan].Instrument;
-
-                var chans = new List<Channel>();
-
-                chans.Add(pat.Channels[CurChan]);
-
-                for (int ch = 0; ch < g_nChans; ch++)
-                {
-                    var chan = pat.Channels[ch];
-
-                    if (   ch != CurChan
-                        && chan.Instrument == curInst) 
-                        chans.Add(chan);
-                }
+                var chans = EditedClip.GetCurChannels(p);
 
                 if (chans.Count > 1)
                 {
@@ -618,24 +603,7 @@ namespace IngameScript
 
                 for (int p = first; p <= last; p++)
                 {
-                    var chans = new List<Channel>();
-
-                    var pat = clip.Patterns[p];
-
-                    if (clip.AllChan)
-                    {
-                        foreach (var ch in pat.Channels)
-                            chans.Add(ch);
-                    }
-                    else if (clip.RndInst)
-                    {
-                        foreach (var ch in pat.Channels)
-                            if (ch.Instrument == clip.CurInstrument)
-                                chans.Add(ch);
-                    }
-                    else
-                        chans.Add(pat.Channels[clip.CurChan]);
-
+                    var chans = clip.GetCurChannels(p);
 
                     foreach (var chan in chans)
                         Transpose(clip, chan, tr);
@@ -668,9 +636,7 @@ namespace IngameScript
             if (EditedClip.Strum)
                 EditedClip.ChordStrum = MinMax(0, EditedClip.ChordStrum + d, 16);
 
-            else if (   EditedClip.Piano
-                     && LockView != 1
-                  || LockView == 2) SetTranspose(EditedClip, CurChan, d);
+            else if (ShowPianoView) SetTranspose(EditedClip, CurChan, d);
             else                    SetShuffle(CurChan, d);
 
             if (d > 0) lblOctaveUp  .Mark();
@@ -692,6 +658,100 @@ namespace IngameScript
                 var chan = pat.Channels[ch];
 
                 chan.Transpose = MinMax(-3, tr, 4);
+            }
+        }
+
+
+
+        void ReverseNotes()
+        {
+            int first, last;
+            EditedClip.GetCurPatterns(out first, out last);
+
+
+            int lowest  = int.MaxValue,
+                highest = int.MinValue;
+
+
+            var notes = new List<Note>();
+
+
+            for (int p = first; p <= last; p++)
+            {
+                var chans = EditedClip.GetCurChannels(p);
+
+                foreach (var chan in chans)
+                { 
+                    for (int i = chan.Notes.Count-1; i >= 0; i--)
+                    {
+                        var note = chan.Notes[i];
+
+                        notes.Add(note);
+                        chan.Notes.RemoveAt(i);
+
+                        note.Step = (note.Step % g_patSteps) + p * g_patSteps;
+                    }
+                }
+            }
+
+
+            float firstStep = float.MaxValue, 
+                  lastStep  = float.MinValue;
+
+            foreach (var note in notes)
+            {
+                firstStep = Math.Min(firstStep, note.Step);
+                lastStep  = Math.Max(lastStep,  note.Step);
+            }
+
+
+            foreach (var note in notes)
+            {
+                var step = firstStep + (lastStep - note.Step);
+
+                var chan = EditedClip.Patterns[(int)(step / g_patSteps)].Channels[note.iChan];
+
+                chan.Notes.Add(note);
+
+                note.Step    = step % g_patSteps;
+                note.Channel = chan;
+            }
+        }
+
+
+
+        void FlipNotes()
+        {
+            int first, last;
+            EditedClip.GetCurPatterns(out first, out last);
+
+
+            int lowest  = int.MaxValue,
+                highest = int.MinValue;
+
+
+            for (int p = first; p <= last; p++)
+            {
+                var chans = EditedClip.GetCurChannels(p);
+
+                foreach (var chan in chans)
+                { 
+                    foreach (var note in chan.Notes)
+                    { 
+                        lowest  = Math.Min(lowest,  note.Number);
+                        highest = Math.Max(highest, note.Number);
+                    }
+                }
+            }
+
+
+            for (int p = first; p <= last; p++)
+            {
+                var chans = EditedClip.GetCurChannels(p);
+
+                foreach (var chan in chans)
+                    foreach (var note in chan.Notes)
+                        note.Number = highest - (note.Number - lowest);
             }
         }
 

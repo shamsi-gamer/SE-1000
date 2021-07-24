@@ -134,10 +134,8 @@ namespace IngameScript
                     var _p = p - EditedClip.SongOff;
                     var px = x - _f * pw + _p * pw;
 
-                    if (EditedClip.Piano 
-                          && LockView != 1
-                       || LockView == 2) DrawPianoRoll(sprites, px, py, pw, ph, EditedClip, p, 1);
-                    else                 DrawPattern  (sprites, px, py, pw, ph, EditedClip, p, 1, False);
+                    if (ShowPianoView) DrawPianoRoll(sprites, px, py, pw, ph, EditedClip, p, 1);
+                    else               DrawPattern  (sprites, px, py, pw, ph, EditedClip, p, 1, False);
 
                     if (OK(CurSet))
                     { 
@@ -178,10 +176,8 @@ namespace IngameScript
 
                     FillRect(sprites, xTick, py, wt, ph, color6);
 
-                    if (      EditedClip.Piano 
-                           && LockView != 1
-                        || LockView == 2) DrawPianoNeg  (sprites, pl, py, pw, ph, EditedClip, track.PlayPat, (int)track.PlayStep, False);
-                    else                  DrawPatternNeg(sprites, pl, py, pw, ph, EditedClip, track.PlayPat, (int)track.PlayStep, False);
+                    if (ShowPianoView) DrawPianoNeg  (sprites, pl, py, pw, ph, EditedClip, track.PlayPat, (int)track.PlayStep, False);
+                    else               DrawPatternNeg(sprites, pl, py, pw, ph, EditedClip, track.PlayPat, (int)track.PlayStep, False);
                 }
 
 

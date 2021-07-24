@@ -88,8 +88,8 @@ namespace IngameScript
                 case 5: lbl.SetText("Clr");          break;
                 case 6: lbl.SetText("Rnd");          break;
                                                                 
-                case 7: lbl.SetText("1/4");          break;
-                case 8: lbl.SetText("1/8");          break;
+                case 7: lbl.SetText(ShowPianoView ? " "   : "/1"); break;
+                case 8: lbl.SetText(ShowPianoView ? "Rev" : "/2"); break;
                 case 9: lbl.SetText("Flip");         break;
                 }
             }
@@ -328,9 +328,7 @@ namespace IngameScript
             int val;
 
                  if (EditedClip.Strum) val = EditedClip.ChordStrum;
-            else if (   EditedClip.Piano
-                     && LockView != 1
-                  || LockView == 2)    val = CurChannel.Transpose;
+            else if (ShowPianoView)    val = CurChannel.Transpose;
             else                       val = CurChannel.Shuffle;
 
             lbl.SetText((val > 0 ? "+" : "") + S(val));
@@ -343,9 +341,7 @@ namespace IngameScript
             if (EditedClip.Strum)
                 lbl.SetText("Strum", 9, 14);
 
-            else if (   EditedClip.Piano
-                     && LockView != 1
-                  || LockView == 2)
+            else if (ShowPianoView)
                 lbl.SetText(
                     //█ █ ██ █ █ █
                     //█▄█▄██▄█▄█▄█
