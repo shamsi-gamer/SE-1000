@@ -131,7 +131,7 @@ namespace IngameScript
                 var ri = g_remote.RotationIndicator;
 
                 Program.AdjustFromController(clip, LowNote, -mi.Z*ControlSensitivity);
-                Program.AdjustFromController(clip, Amount,    mi.X*ControlSensitivity);
+                Program.AdjustFromController(clip, Amount,   mi.X*ControlSensitivity);
 
                 Program.AdjustFromController(clip, Power,   -ri.X*ControlSensitivity);
                 Program.AdjustFromController(clip, HighNote, ri.Y*ControlSensitivity);
@@ -223,10 +223,10 @@ namespace IngameScript
                 {
                     base.DrawLabels(sprites, x, y, dp);
 
-                    if (LowNote .HasDeepParams(CurChannel, CurSrc)) LowNote .DrawLabels(sprites, x, y, dp);
-                    if (HighNote.HasDeepParams(CurChannel, CurSrc)) HighNote.DrawLabels(sprites, x, y, dp);
                     if (Amount  .HasDeepParams(CurChannel, CurSrc)) Amount  .DrawLabels(sprites, x, y, dp);
                     if (Power   .HasDeepParams(CurChannel, CurSrc)) Power   .DrawLabels(sprites, x, y, dp);
+                    if (LowNote .HasDeepParams(CurChannel, CurSrc)) LowNote .DrawLabels(sprites, x, y, dp);
+                    if (HighNote.HasDeepParams(CurChannel, CurSrc)) HighNote.DrawLabels(sprites, x, y, dp);
                 }
 
                 _dp.Next(dp);
@@ -240,13 +240,6 @@ namespace IngameScript
 
                 var  rh = h - 90;
                 var irh = h - 50;
-
-                //var xt  = 300f;
-                //var wt  = 600f;
-                //var yt  = 50f;
-                //var ht  = 300f;
-
-                //var gap = 4f;
 
 
                 var dp = new DrawParams(False, prog);
@@ -271,13 +264,14 @@ namespace IngameScript
                 var pw = w - 200; // piano width
                 var ow = pw/7;    // octave width
 
+                var ym = 330;
 
                 for (int i = 0; i < 7; i++)
                 {
                     DrawOctave(
                         sprites,
                         (w-pw)/2 + i*ow,
-                        300,
+                        ym + 10,
                         ow,
                         60,
                         i,
@@ -299,28 +293,25 @@ namespace IngameScript
                 var high   = Math.Min(Math.Max(0, 1 + amt), 1);
                 
 
-                DrawMarker(sprites, px+1 + (lowNote -minNote)*kw, 290, lowNote,  low *100, isLow,  isAmt);
-                DrawMarker(sprites, px+1 + (highNote-minNote)*kw, 290, highNote, high*100, isHigh, isAmt);
+                DrawMarker(sprites, px+1 + (lowNote -minNote)*kw, ym, lowNote,  low *100, isLow,  isAmt);
+                DrawMarker(sprites, px+1 + (highNote-minNote)*kw, ym, highNote, high*100, isHigh, isAmt);
 
 
-                var strName = "";
+                var strName = strBias;
 
                      if (isLow ) strName = strLow;
                 else if (isHigh) strName = strHigh;
                 else if (isAmt ) strName = strAmt;
                 else if (isPow ) strName = strPow;
 
-                if (strName != "")
-                { 
-                    DrawString(
-                        sprites,
-                        FullNameFromTag(strName), 
-                        px + pw/2, 
-                        290 + 80, 
-                        1.5f, 
-                        color6,
-                        TA_CENTER);
-                }
+                DrawString(
+                    sprites,
+                    FullNameFromTag(strName), 
+                    px + pw/2, 
+                    ym - 200, 
+                    1.5f, 
+                    color6,
+                    TA_CENTER);
 
 
                 var powColor = isPow ? color6 : color4;
@@ -333,21 +324,21 @@ namespace IngameScript
                     sprites, 
                     GetValue,
                     px+1 + (lowNote-minNote)*kw, 
-                    290 - 100,
+                    ym - 100,
                     spread*kw,
                     100,
                     powColor,
                     powWidth);
 
-                FillRect(sprites, px+1,                         290 - low *100, (lowNote-minNote )*kw, amtWidth, amtColor);
-                FillRect(sprites, px+1 + (highNote-minNote)*kw, 290 - high*100, (maxNote-highNote)*kw, amtWidth, amtColor);
+                FillRect(sprites, px+1,                         ym - low *100, (lowNote-minNote )*kw, amtWidth, amtColor);
+                FillRect(sprites, px+1 + (highNote-minNote)*kw, ym - high*100, (maxNote-highNote)*kw, amtWidth, amtColor);
 
 
                 DrawString(
                     sprites, 
                     S00(amt), 
                     px + (lowNote-minNote)*kw + (1+amt)*spread*kw/2, 
-                    290 - 100 - 80, 
+                    ym - 100 - 47, 
                     0.8f, 
                     isAmt ? color6 : color4,
                     TA_CENTER);
@@ -356,7 +347,7 @@ namespace IngameScript
                     sprites, 
                     S00(pow), 
                     px + (lowNote-minNote)*kw + (1+amt)*spread*kw/2, 
-                    290 - 100 - 47, 
+                    ym - 100 + 40, 
                     0.8f, 
                     isPow ? color6 : color4,
                     TA_CENTER);
@@ -440,10 +431,10 @@ namespace IngameScript
 
                 else
                 { 
-                    DrawFuncButton(sprites, strLow,  1, w, y, True, LowNote .HasDeepParams(chan, CurSrc));
-                    DrawFuncButton(sprites, strHigh, 2, w, y, True, HighNote.HasDeepParams(chan, CurSrc));
-                    DrawFuncButton(sprites, strAmt,  3, w, y, True, Amount  .HasDeepParams(chan, CurSrc));
-                    DrawFuncButton(sprites, strPow,  4, w, y, True, Power   .HasDeepParams(chan, CurSrc));
+                    DrawFuncButton(sprites, strAmt,  1, w, y, True, Amount  .HasDeepParams(chan, CurSrc));
+                    DrawFuncButton(sprites, strPow,  2, w, y, True, Power   .HasDeepParams(chan, CurSrc));
+                    DrawFuncButton(sprites, strLow,  3, w, y, True, LowNote .HasDeepParams(chan, CurSrc));
+                    DrawFuncButton(sprites, strHigh, 4, w, y, True, HighNote.HasDeepParams(chan, CurSrc));
                 }
             }
 
@@ -453,10 +444,10 @@ namespace IngameScript
             {
                 switch (func)
                 {
-                    case 1: AddNextSetting(strLow);  break;
-                    case 2: AddNextSetting(strHigh); break;
-                    case 3: AddNextSetting(strAmt);  break;
-                    case 4: AddNextSetting(strPow);  break;
+                    case 1: AddNextSetting(strAmt);  break;
+                    case 2: AddNextSetting(strPow);  break;
+                    case 3: AddNextSetting(strLow);  break;
+                    case 4: AddNextSetting(strHigh); break;
                 }
             }
 

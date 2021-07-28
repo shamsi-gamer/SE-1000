@@ -295,8 +295,8 @@ namespace IngameScript
 
                 for (int i = 0; i < tuneChord.Count; i++)
                 {
-                    while (tuneChord[i] >= firstNote + 24)
-                        tuneChord[i] -= 24;
+                    while (tuneChord[i] >= firstNote + 12*NoteScale)
+                        tuneChord[i] -= 12*NoteScale;
                 }
 
                 tuneChord = tuneChord.Distinct().ToList();
@@ -309,11 +309,11 @@ namespace IngameScript
                     finalTuneChord.Add(note);
 
                     int n = note;
-                    while ((n -= 24) >= 24)
+                    while ((n -= 12*NoteScale) >= 12*NoteScale)
                         finalTuneChord.Add(n);
 
                     n = note;
-                    while ((n += 24) < 300)
+                    while ((n += 12*NoteScale) < 150*NoteScale)
                         finalTuneChord.Add(n);
                 }
             }

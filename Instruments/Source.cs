@@ -65,10 +65,12 @@ namespace IngameScript
             }
 
 
+
             public string GetSample(int note)
             {
                 return g_samples[Oscillator.Samples[note - 12*NoteScale].Index];
             }
+
 
 
             public float OscMult { get  
@@ -87,8 +89,9 @@ namespace IngameScript
                       || Oscillator == OscCrunch       
                       || Oscillator == OscSample)    return 1;
 
-                return float_NaN;
+                return 0;
             } }
+
 
 
             public float GetWaveform(float f)
@@ -117,6 +120,7 @@ namespace IngameScript
             }
 
 
+
             public void CreateSounds(List<Sound> sounds, Note note, Program prog)
             {
                 var  inst   = Instrument;
@@ -141,10 +145,10 @@ namespace IngameScript
 
                 if (   Oscillator == OscSample
                     && (   noteNum % NoteScale > 0
-                        || noteNum >= (12 + OscSample.Samples.Count) * NoteScale))
+                        || noteNum >= 12*NoteScale + OscSample.Samples.Count))
                     return;
 
-                if (noteNum < 24*NoteScale)
+                if (noteNum < 12*NoteScale)
                     return;
 
 
@@ -211,6 +215,7 @@ namespace IngameScript
                         sounds.Add(snd);
                 }
             }
+
 
 
             public void Randomize(List<Oscillator> used)
@@ -283,6 +288,7 @@ namespace IngameScript
             }
 
 
+
             public Setting GetOrAddSettingFromTag(string tag)
             {
                 switch (tag)
@@ -299,6 +305,7 @@ namespace IngameScript
             }
 
 
+
             public void Delete()
             {
                 // this method removes note and channel automation associated with this source
@@ -310,6 +317,7 @@ namespace IngameScript
                 Filter   ?.Delete(Index);
                 Delay    ?.Delete(Index);
             }
+
 
 
             public string Save()
@@ -328,6 +336,7 @@ namespace IngameScript
 
                     + SaveSetting(Delay);
             }
+
 
 
             public static void Load(string[] lines, ref int line, Instrument inst, int iSrc)
@@ -362,6 +371,7 @@ namespace IngameScript
             }
 
 
+
             public void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams dp)
             {
                 if (dp.Program.TooComplex)
@@ -374,6 +384,7 @@ namespace IngameScript
                 Filter   ?.DrawLabels(sprites, x, y, dp); 
                 Delay    ?.DrawLabels(sprites, x, y, dp); 
             }
+
 
 
             public void DrawSource(List<MySprite> sprites, float x, ref float y, float w, Program prog)
@@ -414,6 +425,7 @@ namespace IngameScript
 
                 y += sh;
             }
+
 
 
             void DrawSample(List<MySprite> sprites, float x, float y, float w, float h, bool active, bool bright)
@@ -464,6 +476,7 @@ namespace IngameScript
             }
 
 
+
             public void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
                 if (OK(CurSet))
@@ -479,6 +492,7 @@ namespace IngameScript
                     DrawFuncButton(sprites, strDel,  5, w, y, True, OK(Delay    ));
                 }
             }
+
 
 
             public void ResetValues()

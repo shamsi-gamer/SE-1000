@@ -44,8 +44,8 @@ namespace IngameScript
             public bool               IsEcho;
 
             public Sample             NoteSample =>
-                                          Note.Number >= 24*NoteScale
-                                          ? Source.Oscillator.Samples[Note.Number-24*NoteScale]
+                                          Note.Number >= 12*NoteScale
+                                          ? Source.Oscillator.Samples[Note.Number-12*NoteScale]
                                           : null;
 
 
@@ -199,6 +199,7 @@ namespace IngameScript
                             || Source.Oscillator == OscFastSweepDown
                             || Source.Oscillator == OscSlowSweepUp
                             || Source.Oscillator == OscFastSweepUp)
+                        && !OK(NoteSample)
                         && lTime > NoteSample.Length * FPS)
                         vol = 0;
                     else if (Source.Oscillator == OscCrunch)
@@ -248,7 +249,12 @@ namespace IngameScript
 
 
                 if (!prog.TooComplex)
+                {
+                    if (!OK(vol))
+                        vol = 0;
+
                     UpdateSpeakers(vol);
+                }
 
 
                 ElapsedTime = g_time - Time;

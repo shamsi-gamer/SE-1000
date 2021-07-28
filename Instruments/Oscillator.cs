@@ -148,7 +148,7 @@ namespace IngameScript
                 else if (oscName == strSlowDown
                       || oscName == strSlowUp
                       || oscName == strFastDown
-                      || oscName == strFastUp)  smp.Length = 0.1f * 440/note2freq(smp.Note-24*NoteScale);
+                      || oscName == strFastUp)  smp.Length = 0.1f * 440/note2freq(smp.Note-12*NoteScale);
                 else if (oscName == strCrn)     smp.Length = 1;
                 
                 return num;
