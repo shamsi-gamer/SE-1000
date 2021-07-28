@@ -187,7 +187,9 @@ namespace IngameScript
         }
 
 
+
         static Parameter CurrentParam => (Parameter)GetSettingFromPath(EditedClip.CurSetting.Path);
+
 
 
         static Setting GetSettingFromPath(string path)
@@ -270,8 +272,8 @@ namespace IngameScript
             case strVol:  return new Parameter(tag,    0,           2,   0.5f,  1,    0.01f,  0.1f,  1,    parent, inst, src);
                                                        
             case strBias: return new Bias     (parent, inst, src);                                  
-            case strLow:  return new Parameter(tag,    36,        119,   0,     1,    1,     12,      36,  parent, inst, src);
-            case strHigh: return new Parameter(tag,    36,        119,   0,     1,    1,     12,     119,  parent, inst, src);
+            case strLow:  return new Parameter(tag,    36,        119,   0,     1,    1,      12,      36, parent, inst, src);
+            case strHigh: return new Parameter(tag,    36,        119,   0,     1,    1,      12,     119, parent, inst, src);
             
             case strEnv:  return new Envelope(parent, inst, src);                                  
             case strAtt:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    parent, inst, src);

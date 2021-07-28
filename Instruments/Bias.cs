@@ -34,7 +34,7 @@ namespace IngameScript
             {
                 LowNote  = new Parameter(bias.LowNote,  this);
                 HighNote = new Parameter(bias.HighNote, this);
-                Amount   = new Parameter(bias.Amount,    this);
+                Amount   = new Parameter(bias.Amount,   this);
                 Power    = new Parameter(bias.Power,    this);
             }
 
@@ -52,24 +52,32 @@ namespace IngameScript
                 if (tp.Program.TooComplex) 
                     return 0;
 
-
                 var lowNum  = LowNote .UpdateValue(tp);
                 var highNum = HighNote.UpdateValue(tp);
                 var amt     = Amount  .UpdateValue(tp);
                 var pow     = Power   .UpdateValue(tp);
                 
+                var num  = tp.Note.Number / (float)NoteScale;
+                var f    = Math.Min(Math.Max(0, (num - lowNum) / (highNum - lowNum)), 1);
+                CurValue = GetValue(f);
 
-                var f    = Math.Min(Math.Max(0, (tp.Note.Number - lowNum) / (highNum - lowNum)), 1);
+                m_valid  = True;
+                return CurValue;
+            }
+
+
+
+            public float GetValue(float f)
+            {
+                var amt = Amount.CurValue;
+                var pow = Power .CurValue;
 
                 var low  = Math.Min(Math.Max(0, 1 - amt), 1);
                 var high = Math.Min(Math.Max(0, 1 + amt), 1);
 
-                CurValue = low + f * (high - low);
-                CurValue = (float)Math.Pow(CurValue, pow);
+                f = low + f*(high-low);
 
-
-                m_valid  = True;
-                return CurValue;
+                return (float)Math.Pow(f, pow);
             }
 
 
@@ -318,9 +326,12 @@ namespace IngameScript
                 var powColor = isPow ? color6 : color4;
                 var powWidth = isPow ? 4 : 2;
 
+                var amtColor = isAmt ? color6 : color4;
+                var amtWidth = isAmt ? 4 : 2;
+
                 DrawCurve(
                     sprites, 
-                    f => (float)Math.Pow(low + f*(high-low), pow),
+                    GetValue,
                     px+1 + (lowNote-minNote)*kw, 
                     290 - 100,
                     spread*kw,
@@ -328,13 +339,13 @@ namespace IngameScript
                     powColor,
                     powWidth);
 
-                FillRect(sprites, px+1,                         290 - low *100, (lowNote-minNote )*kw, powWidth, powColor);
-                FillRect(sprites, px+1 + (highNote-minNote)*kw, 290 - high*100, (maxNote-highNote)*kw, powWidth, powColor);
+                FillRect(sprites, px+1,                         290 - low *100, (lowNote-minNote )*kw, amtWidth, amtColor);
+                FillRect(sprites, px+1 + (highNote-minNote)*kw, 290 - high*100, (maxNote-highNote)*kw, amtWidth, amtColor);
 
 
                 DrawString(
                     sprites, 
-                    S(amt), 
+                    S00(amt), 
                     px + (lowNote-minNote)*kw + (1+amt)*spread*kw/2, 
                     290 - 100 - 80, 
                     0.8f, 
