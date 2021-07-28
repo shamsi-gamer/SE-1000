@@ -59,11 +59,12 @@ namespace IngameScript
             }
 
 
+
             public float UpdateValue(TimeParams tp)
             {
                 if ( /*m_valid
                     ||*/tp.Program.TooComplex) 
-                    return CurValue;
+                    return 0;
 
 
                 if (OK(tp.Note))
@@ -78,9 +79,9 @@ namespace IngameScript
                     tp.GetTriggerValue(Release));
 
                 m_valid = True;
-
                 return CurValue;
             }
+
 
 
             public static float UpdateValue(long lTime, int noteLen, float a, float d, float s, float r)
@@ -112,6 +113,7 @@ namespace IngameScript
 
                 return 0;
             }
+
 
 
             public override bool HasDeepParams(Channel chan, int src)
@@ -251,14 +253,15 @@ namespace IngameScript
             }
 
 
+
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
-                var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, -1, _triggerDummy, EditedClip, dp.Program);
+                //var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, -1, _triggerDummy, EditedClip, dp.Program);
 
-                Attack .UpdateValue(tp);
-                Decay  .UpdateValue(tp);
-                Sustain.UpdateValue(tp);
-                Release.UpdateValue(tp);
+                //Attack .UpdateValue(tp);
+                //Decay  .UpdateValue(tp);
+                //Sustain.UpdateValue(tp);
+                //Release.UpdateValue(tp);
 
                 var isAtt = IsCurParam(strAtt);
                 var isDec = IsCurParam(strDec);
@@ -285,6 +288,7 @@ namespace IngameScript
                 GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), False, out p0, out p1, out p2, out p3, out p4);
                 DrawEnvelope(sprites, p0, p1, p2, p3, p4, color5, isAtt, isDec, isSus, isRel, Decay.Value);
             }
+
 
 
             void DrawEnvelopeSupportsAndInfo(List<MySprite> sprites, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float y, float h, bool isAtt, bool isDec, bool isSus, bool isRel)

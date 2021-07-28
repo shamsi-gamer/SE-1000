@@ -19,6 +19,7 @@ namespace IngameScript
                               Sharpness;
 
 
+
             public Filter(Instrument inst, Source src) 
                 : base(strFlt, Setting_null, Setting_null, inst, src)
             {
@@ -28,6 +29,7 @@ namespace IngameScript
                 Resonance = (Parameter)NewSettingFromTag(strRes,  this, inst, src);
                 Sharpness = (Parameter)NewSettingFromTag(strShrp, this, inst, src);
             }
+
 
 
             public Filter(Filter flt) 
@@ -41,10 +43,12 @@ namespace IngameScript
             }
 
 
+
             public Filter Copy()
             {
                 return new Filter(this);
             }
+
 
 
             public override void Clear()
@@ -55,6 +59,7 @@ namespace IngameScript
             }
 
 
+
             public override void Reset()
             {
                 base.Reset();
@@ -63,6 +68,7 @@ namespace IngameScript
                 Resonance.Reset();
                 Sharpness.Reset();
             }
+
 
 
             public override void Randomize()
@@ -77,6 +83,7 @@ namespace IngameScript
             }
 
 
+
             public override void AdjustFromController(Clip clip)
             {
                 Program.AdjustFromController(clip, Sharpness, -g_remote.MoveIndicator    .Z*ControlSensitivity);
@@ -84,6 +91,7 @@ namespace IngameScript
                 Program.AdjustFromController(clip, Cutoff,     g_remote.RotationIndicator.Y*ControlSensitivity);
                 Program.AdjustFromController(clip, Resonance, -g_remote.RotationIndicator.X*ControlSensitivity);
             }
+
 
 
             public override Setting GetOrAddSettingFromTag(string tag)
@@ -99,6 +107,7 @@ namespace IngameScript
             }
 
 
+
             public void Delete(int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
@@ -107,6 +116,7 @@ namespace IngameScript
                 Resonance.Delete(iSrc);
                 Sharpness.Delete(iSrc);
             }
+
 
 
             public override string Save()
@@ -119,6 +129,7 @@ namespace IngameScript
                     + W (Resonance.Save())
                     +    Sharpness.Save();
             }
+
 
 
             public static Filter Load(string[] data, ref int i, Instrument inst, int iSrc)
@@ -138,6 +149,7 @@ namespace IngameScript
             }
 
 
+
             public override string GetLabel(out float width)
             {
                 width = 138;
@@ -147,6 +159,7 @@ namespace IngameScript
                     + PrintValue(Resonance.Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Sharpness.Value, 2, True, 0).PadLeft(4);
             }
+
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
@@ -166,6 +179,7 @@ namespace IngameScript
 
                 _dp.Next(dp);
             }
+
 
 
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
@@ -212,6 +226,7 @@ namespace IngameScript
             }
 
 
+
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
                 var _strCut  = Pass > FilterPass.High ? strFreq : strCut;
@@ -222,6 +237,7 @@ namespace IngameScript
                 DrawFuncButton(sprites, _strRes,  3, w, h, True, Resonance.HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, strShrp,  4, w, h, True, Sharpness.HasDeepParams(chan, CurSrc));
             }
+
 
 
             public override void Func(int func)
@@ -252,6 +268,7 @@ namespace IngameScript
                 return True;
             }
         }
+
 
 
         static float GetFilter(float f, FilterPass pass, float cut, float res, float shrp)
@@ -309,6 +326,7 @@ namespace IngameScript
         }
 
 
+
         static void DrawFilter(List<MySprite> sprites, float x, float y, float w, float h, Color color, float width, FilterPass pass, float cut, float res, float shrp)
         {
             var step = 1/48f;
@@ -333,6 +351,7 @@ namespace IngameScript
                 prev = val;
             }
         }
+
 
 
         static float ApplyFilter(float value, Source src, float pos, TimeParams tp)
@@ -362,6 +381,7 @@ namespace IngameScript
             
             return value;
         }
+
 
 
         static string GetPassName(FilterPass pass)

@@ -12,16 +12,19 @@ namespace IngameScript
         }
 
 
+
         static bool IsCurParam(string tag)
         {
             return HasTag(EditedClip.CurSetting, tag);
         }
 
 
+
         static bool IsCurSetting(Type type)
         {
             return EditedClip.CurSetting?.GetType() == type;
         }
+
 
 
         static void UpdateClipOff()
@@ -36,11 +39,13 @@ namespace IngameScript
         }
 
 
+
         static void UpdateInstOff(int ch)
         {
             var curInst = Instruments.IndexOf(EditPattern.Channels[ch].Instrument);
             UpdateDspOffset(ref EditedClip.InstOff, curInst, Instruments.Count, maxDspInst, 0, 1);
         }
+
 
 
         static void UpdateSrcOff()
@@ -55,6 +60,7 @@ namespace IngameScript
         }
 
 
+
         static void SetCurInst(Instrument inst)
         {
             int first, last;
@@ -64,12 +70,14 @@ namespace IngameScript
                 EditedClip.Patterns[p].Channels[CurChan].Instrument = inst;
         }
 
+        
 
         static bool CanAdjust =>
                    IsCurParam()
                 || IsCurSetting(typeof(Harmonics))
                 ||    EditedClip.Transpose
                    && SelChan < 0;
+
 
 
         static bool AdjustArrowsAreVertical =>

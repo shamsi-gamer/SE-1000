@@ -240,6 +240,7 @@ namespace IngameScript
             {
                 if (OK(CurSet))
                     CurSetting.DrawFuncButtons(sprites, w, h, chan);
+                
                 else
                 {
                     DrawFuncButton(sprites, strVol,  1, w, h, True, Volume.HasDeepParams(chan, -1));

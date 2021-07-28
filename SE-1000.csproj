@@ -41,6 +41,7 @@
     <Compile Include="Args.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="Controls\Label.cs" />
+    <Compile Include="Instruments\Bias.cs" />
     <Compile Include="IO\IO.cs" />
     <Compile Include="Labels\Adjust Labels.cs" />
     <Compile Include="Labels\Chord Labels.cs" />
@@ -89,7 +90,7 @@
     <Compile Include="IO\Load.cs" />
     <Compile Include="Instruments\LFO.cs" />
     <Compile Include="Util\Lib.cs" />
-    <Compile Include="Controls\Display.cs" />
+    <Compile Include="Graphics\Display.cs" />
     <Compile Include="Labels\Labels.cs" />
     <Compile Include="Util\Log.cs" />
     <Compile Include="MDK\Bootstrapper.cs" />

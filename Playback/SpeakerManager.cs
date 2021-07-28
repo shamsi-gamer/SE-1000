@@ -1,21 +1,6 @@
-﻿using Sandbox.Game.EntityComponents;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
+﻿using SpaceEngineers.Game.ModAPI.Ingame;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
-using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
+
 
 
 namespace IngameScript
@@ -32,6 +17,7 @@ namespace IngameScript
             public float         UsedRatio => (float)Used.Count / Speakers.Count;
 
 
+
             public SpeakerManager()
             {
                 Speakers = new List<Speaker>();
@@ -39,6 +25,7 @@ namespace IngameScript
                 Available = new List<Speaker>();
                 Used      = new List<Speaker>();
             }
+
 
 
             public Speaker GetSpeaker()
@@ -56,6 +43,7 @@ namespace IngameScript
             }
 
 
+
             public void FreeSpeaker(Speaker spk)
             {
                 spk.Block.Stop();
@@ -63,6 +51,7 @@ namespace IngameScript
                 Used.Remove(spk);
                 Available.Add(spk);
             }
+
 
 
             public void StopAll()
@@ -75,6 +64,7 @@ namespace IngameScript
 
 
         static  SpeakerManager g_sm = new SpeakerManager();
+
 
 
         void InitSpeakers()

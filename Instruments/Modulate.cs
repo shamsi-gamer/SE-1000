@@ -79,14 +79,9 @@ namespace IngameScript
 
                 InitLists();
 
-                foreach (var set in mod.ModSettings)
-                    ModSettings.Add(set);
-
-                foreach (var _src in mod.ModSources)
-                    ModSources.Add(_src);
-
-                foreach (var _inst in mod.ModInstruments)
-                    ModInstruments.Add(_inst);
+                foreach (var  set  in mod.ModSettings   ) ModSettings   .Add( set);
+                foreach (var _src  in mod.ModSources    ) ModSources    .Add(_src);
+                foreach (var _inst in mod.ModInstruments) ModInstruments.Add(_inst);
             }
 
 
@@ -121,7 +116,7 @@ namespace IngameScript
             public float UpdateValue(TimeParams tp)
             {
                 if (tp.Program.TooComplex) 
-                    return CurValue;
+                    return 0;
 
                 //var param = (Parameter)Parent;
 
@@ -167,8 +162,8 @@ namespace IngameScript
                 var r = Math.Max(0, cv -     _amt/FPS/rel);
 
                 CurValue = Math.Sign(amt) * (r + (a - r) * val);
-                m_valid  = True;
 
+                m_valid  = True;
                 return CurValue;
             }
 
@@ -353,12 +348,6 @@ namespace IngameScript
 
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
-                var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, -1, _triggerDummy, EditedClip, dp.Program);
-
-                Amount .UpdateValue(tp); 
-                Attack .UpdateValue(tp); 
-                Release.UpdateValue(tp); 
-
                 var isAmt = IsCurParam(strAmt);
                 var isAtt = IsCurParam(strAtt);
                 var isRel = IsCurParam(strRel);

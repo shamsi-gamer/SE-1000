@@ -172,6 +172,8 @@ namespace IngameScript
             public bool           ParentIsEnvelope    => HasTag(Parent, strEnv);
             public bool           AnyParentIsEnvelope => HasTagOrAnyParent(Parent, strEnv);
 
+            public bool           ParentIsBias        => HasTag(Parent, strBias);
+            public bool           AnyParentIsBias     => HasTagOrAnyParent(Parent, strBias);
 
 
             public virtual void   DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp) {}
@@ -225,7 +227,10 @@ namespace IngameScript
             case strVol:  return "Volume";
 
             case strTune: return strTune;
+            case strBias: return strBias;
 
+            case strLow:  return "Low Note";
+            case strHigh: return "High Note";
             case strEnv:  return "Envelope";
             case strAtt:  return "Attack";
             case strDec:  return "Decay";
@@ -263,7 +268,11 @@ namespace IngameScript
             switch (tag)
             { 
             case strVol:  return new Parameter(tag,    0,           2,   0.5f,  1,    0.01f,  0.1f,  1,    parent, inst, src);
-                                                                                       
+                                                       
+            case strBias: return new Bias     (parent, inst, src);                                  
+            case strLow:  return new Parameter(tag,    36,        119,   0,     1,    1,     12,      36,  parent, inst, src);
+            case strHigh: return new Parameter(tag,    36,        119,   0,     1,    1,     12,     119,  parent, inst, src);
+            
             case strEnv:  return new Envelope(parent, inst, src);                                  
             case strAtt:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    parent, inst, src);
             case strDec:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, parent, inst, src);
@@ -326,7 +335,8 @@ namespace IngameScript
         static bool HasTagOrParent(Setting setting, string tag)
         {
             return HasTag(setting, tag)
-                ||    OK(setting.Parent)
+                ||    OK(setting)
+                   && OK(setting.Parent)
                    && HasTag(setting.Parent, tag);
         }
 

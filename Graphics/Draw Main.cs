@@ -32,12 +32,17 @@ namespace IngameScript
                 }
                 else if (OK(SelChan))
                 {
-                    if (IsCurSetting(typeof(Harmonics)))
+                    if (HasTagOrParent(CurSetting, strBias))
+                    {
+                        var bias = EditedClip.CurOrParentBias;
+                        bias.DrawSetting(sprites, x, y, w, h, CurChannel, this);
+                    }
+                    else if (IsCurSetting(typeof(Harmonics)))
                     {
                         var hrm = EditedClip.CurOrParentHarmonics;
                         hrm.DrawSetting(sprites, x, y, w, h, CurChannel, this);
                     }
-                    else 
+                    else
                         DrawInstrument(sprites, x, y, w, h);
                 }
                 else if (ShowPianoView) DrawPianoDisplay  (sprites, x, y, w, h, EditedClip, EditPat, True);
@@ -52,6 +57,7 @@ namespace IngameScript
         }
 
 
+
         void DrawFuncButtons(List<MySprite> sprites, float w, float y, Clip clip)
         {
             var bw =  w/6;
@@ -63,6 +69,7 @@ namespace IngameScript
                 else            SelSource    .DrawFuncButtons(sprites, w, y, SelChannel);
             }
         }
+
 
 
         static void DrawFuncButton(List<MySprite> sprites, string str, int i, float w, float h, bool isSetting, bool hasSetting, bool down = False)

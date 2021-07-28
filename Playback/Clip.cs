@@ -697,12 +697,18 @@ namespace IngameScript
 
 
 
-            public Setting   LastSetting  => Settings.Count > 0 ? Settings.Last()  : Setting_null;
-            public Setting   CurSetting   => OK(CurSet)         ? Settings[CurSet] : Setting_null;
+            public Setting   LastSetting => Settings.Count > 0 ? Settings.Last()  : Setting_null;
+            public Setting   CurSetting  => OK(CurSet)         ? Settings[CurSet] : Setting_null;
 
-            public Parameter CurParam     => (Parameter)CurSetting;
-            public Modulate  CurModulate  => (Modulate) CurSetting;
-                             
+            public Parameter CurParam    => (Parameter)CurSetting;
+            public Modulate  CurModulate => (Modulate) CurSetting;
+
+            public Bias CurBias => (Bias)CurSetting;
+            public Bias CurOrParentBias =>
+                IsCurSetting(typeof(Bias))
+                ? CurBias
+                : (Bias)CurSetting.Parent;
+
             public Harmonics CurHarmonics => (Harmonics)CurSetting;
             public Harmonics CurOrParentHarmonics =>
                 IsCurSetting(typeof(Harmonics))

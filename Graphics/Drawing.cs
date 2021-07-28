@@ -30,16 +30,19 @@ namespace IngameScript
         }
 
 
+
         static void ClipDraw(List<MySprite> sprites, float x, float y, float w, float h)
         {
             sprites.Add(MySprite.CreateClipRect(new Rectangle((int)x, (int)y, (int)w, (int)h)));
         }
 
 
+
         static void ClearClip(List<MySprite> sprites)
         {
             sprites.Add(MySprite.CreateClearClipRect());
         }
+
 
 
         static void DrawString(List<MySprite> sprites, string str, float x, float y, float scale, Color c, TextAlignment align = TextAlignment.LEFT)
@@ -56,6 +59,7 @@ namespace IngameScript
             });
         }
         
+
         
         static void DrawTexture(List<MySprite> sprites, string texture, Vector2 pos, Vector2 size, Color c, float rotation = 0)
         {
@@ -72,16 +76,19 @@ namespace IngameScript
         }
 
 
+
         static void DrawTexture(List<MySprite> sprites, string texture, float x, float y, float w, float h, Color c, float rotation = 0)
         {
             DrawTexture(sprites, texture, new Vector2(x, y), new Vector2(w, h), c, rotation);
         }
         
         
+
         static void FillRect(List<MySprite> sprites, float x, float y, float w, float h, Color c)
         {
             DrawTexture(sprites, "SquareSimple", x, y, w, h, c);
         }
+
 
 
         static void DrawRect(List<MySprite> sprites, float x, float y, float w, float h, Color c, float wd = 1)
@@ -95,10 +102,12 @@ namespace IngameScript
         }
 
 
+
         static void FillCircle(List<MySprite> sprites, Vector2 p, float r, Color color)
         {
             DrawTexture(sprites, "Circle", p.X - r, p.Y - r, r*2, r*2, color);
         }
+
 
 
         static void FillCircle(List<MySprite> sprites, float x, float y, float r, Color color)
@@ -107,16 +116,19 @@ namespace IngameScript
         }
 
 
+
         //void DrawCircle(List<MySprite> sprites, Vector2 p, float r, Color color)
         //{
         //    DrawTexture(sprites, "CircleHollow", p.X-r, p.Y-r, r*2, r*2, color);
         //}
 
 
+
         //void DrawCircle(List<MySprite> sprites, float x, float y, float r, Color color)
         //{
         //    DrawTexture(sprites, "CircleHollow", x-r, y-r, r*2, r*2, color);
         //}
+
 
 
         static void DrawLine(List<MySprite> sprites, Vector2 p1, Vector2 p2, Color col, float width = 1)
@@ -137,6 +149,7 @@ namespace IngameScript
         }
         
         
+
         static void DrawLine(List<MySprite> sprites, float x1, float y1, float x2, float y2, Color col, float width = 1)
         {
             DrawLine(
@@ -146,6 +159,7 @@ namespace IngameScript
                 col, 
                 width);
         }
+
 
 
         static void DrawButton(List<MySprite> sprites, string str, int i, int maxButtons, float w, float h, bool down = False)
@@ -166,6 +180,31 @@ namespace IngameScript
                 1.2f, 
                 down ? color0 : color6,
                 TA_CENTER);
+        }
+
+
+
+        public delegate float Function(float x);
+
+        static void DrawCurve(List<MySprite> sprites, Function func, float x, float y, float w, float h, Color color, float width = 1, float step = 0.01f)
+        {
+            var prev = func(0);
+
+            for (var t = step; t <= 1; t += step)
+            {
+                var f = func(t);
+
+                DrawLine(
+                    sprites, 
+                    x + (t-step)*w, 
+                    y+h - prev*h, 
+                    x + t*w, 
+                    y+h - f*h, 
+                    color, 
+                    width);
+
+                prev = f;
+            }
         }
     }
 }

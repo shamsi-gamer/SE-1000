@@ -2,74 +2,78 @@
 {
     partial class Program
     {                         
-        const string strSE       = "SE-909_",
+        const string strSE        = "SE-909_",
 
-                     strEmpty    = " ",
+                     strEmpty     = " ",
 
-                     strVol      = "Vol",
-                                 
-                     strTune     = "Tune",
+                     strVol       = "Vol",
+                                  
+                     strTune      = "Tune",
+                           
+                     strBias      = "Bias",
+                     strEnv       = "Env",
+                     strAtt       = "Att",
+                     strDec       = "Dec",
+                     strSus       = "Sus",
+                     strRel       = "Rel",
+                                  
+                     strLfo       = "LFO",
+                     strAmp       = "Amp",
+                     strFreq      = "Freq",
+                     strOff       = "Off",
+                                  
+                     strHrm       = "Hrm",                    
+                     strFlt       = "Flt",
+                     strCut       = "Cut",
+                     strRes       = "Res",
+                     strWid       = "Wid",
+                     strShrp      = "Shrp",
+                                  
+                     strMod       = "Mod",
+                     strAmt       = "Amt",
+                                  
+                     strLow       = "Low",
+                     strHigh      = "High",
 
-                     strEnv      = "Env",
-                     strAtt      = "Att",
-                     strDec      = "Dec",
-                     strSus      = "Sus",
-                     strRel      = "Rel",
+                     strDry       = "Dry",
+                     strDel       = "Del",
+                     strCnt       = "Cnt",
+                     strTime      = "Time",
+                     strLvl       = "Lvl",
+                     strPow       = "Pow",
+                                  
+                     strLen       = "Len",
+                     strScl       = "Scl",
+                                  
+                     strUp        = "▲",
+                     strDown      = "▼",
+                     strLeft      = "◄",
+                     strRight     = "►",
+                                  
+                     strShift     = "Shift",
+                     strAll       = "All",
+                                  
+                     strSine      = "Sine",
+                     strTri       = "Triangle",
+                     strSaw       = "Saw",  
+                     strSqr       = "Square",
                                  
-                     strLfo      = "LFO",
-                     strAmp      = "Amp",
-                     strFreq     = "Freq",
-                     strOff      = "Off",
-                                 
-                     strHrm      = "Hrm",                    
-                     strFlt      = "Flt",
-                     strCut      = "Cut",
-                     strRes      = "Res",
-                     strWid      = "Wid",
-                     strShrp     = "Shrp",
-                                 
-                     strMod      = "Mod",
-                     strAmt      = "Amt",
-                                 
-                     strDry      = "Dry",
-                     strDel      = "Del",
-                     strCnt      = "Cnt",
-                     strTime     = "Time",
-                     strLvl      = "Lvl",
-                     strPow      = "Pow",
-                                 
-                     strLen      = "Len",
-                     strScl      = "Scl",
-                                 
-                     strUp       = "▲",
-                     strDown     = "▼",
-                     strLeft     = "◄",
-                     strRight    = "►",
-                                 
-                     strShift    = "Shift",
-                     strAll      = "All",
-                                 
-                     strSine     = "Sine",
-                     strTri      = "Triangle",
-                     strSaw      = "Saw",  
-                     strSqr      = "Square",
-                                 
-                     strLow      = "LowNoise",
-                     strHigh     = "HighNoise",
-                     strBand     = "BandNoise",
+                     strLowNoise  = "LowNoise",
+                     strHighNoise = "HighNoise",
+                     strBandNoise = "BandNoise",
                     
-                     strSlowDown = "SlowSweepDown",
-                     strFastDown = "FastSweepDown",
-                     strSlowUp   = "SlowSweepUp", 
-                     strFastUp   = "FastSweepUp", 
+                     strSlowDown  = "SlowSweepDown",
+                     strFastDown  = "FastSweepDown",
+                     strSlowUp    = "SlowSweepUp", 
+                     strFastUp    = "FastSweepUp", 
+                                  
+                     strCrn       = "Crunch",
                     
-                     strCrn      = "Crunch",
-                    
-                     strClip     = "Clip",
-                     strMixer    = "Mixer",
-                     strNote     = "Note",
-                     strEdit     = "Edit",
-                     strRec      = "Rec",
+                     strClip      = "Clip",
+                     strMixer     = "Mixer",
+                     strNote      = "Note",
+                     strEdit      = "Edit",
+                     strRec       = "Rec",
                     
                      strLight    = "Light",
                      strStorage  = "Storage";

@@ -669,10 +669,6 @@ namespace IngameScript
             EditedClip.GetCurPatterns(out first, out last);
 
 
-            int lowest  = int.MaxValue,
-                highest = int.MinValue;
-
-
             var notes = new List<Note>();
 
 

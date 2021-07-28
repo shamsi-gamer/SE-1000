@@ -21,6 +21,7 @@ namespace IngameScript
         const Channel       Channel_null = null;
         const Note             Note_null = null;
         const Parameter   Parameter_null = null;
+        const Bias             Bias_null = null;
         const Envelope     Envelope_null = null;
         const LFO               LFO_null = null;
         const Instrument Instrument_null = null;

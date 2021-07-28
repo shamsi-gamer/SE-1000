@@ -25,9 +25,11 @@ namespace IngameScript
                              Delta,
                              BigDelta;
 
+            public Bias      Bias;
             public Envelope  Envelope;
             public LFO       Lfo;
             public Modulate  Modulate;
+
 
 
             public Parameter(string tag, float min, float max, float normalMin, float normalMax, float delta, float bigDelta, float defVal, Setting parent, Instrument inst, Source src) 
@@ -47,10 +49,12 @@ namespace IngameScript
                 Delta     = delta;
                 BigDelta  = bigDelta;
 
+                Bias      =      Bias_null;
                 Envelope  =  Envelope_null;
                 Lfo       =       LFO_null;
                 Modulate  =  Modulate_null;
             }
+
 
 
             public Parameter(Parameter param, Setting parent, string tag = "", bool copy = True) 
@@ -67,16 +71,19 @@ namespace IngameScript
                 Delta     = param.Delta;
                 BigDelta  = param.BigDelta;
 
+                Bias      = copy ? param.Bias    ?.Copy(this) :      Bias_null;
                 Envelope  = copy ? param.Envelope?.Copy(this) :  Envelope_null;
                 Lfo       = copy ? param.Lfo     ?.Copy(this) :       LFO_null;
                 Modulate  = copy ? param.Modulate?.Copy(this) :  Modulate_null;
             }
 
 
+
             public Parameter Copy(Setting parent) => new Parameter(this, parent);
 
 
             public float Value => m_value;
+
 
 
             public void SetValue(float val, Note note, int src)
@@ -96,16 +103,18 @@ namespace IngameScript
             }
 
 
+
             public void LimitValue(ref float val)
             {
                 val = MinMax(Min, val, Max);
             }
 
 
+
             public float UpdateValue(TimeParams tp)
             {
                 if (tp.Program.TooComplex) 
-                    return CurValue;
+                    return 0;
 
 
                 float value;
@@ -150,11 +159,16 @@ namespace IngameScript
                 }
 
 
-                CurValue = MinMax(Min, value, Max);
-                m_valid  = True;
+                if (OK(Bias))
+                    value *= Bias.UpdateValue(tp);
 
+
+                CurValue = MinMax(Min, value, Max);
+                
+                m_valid  = True;
                 return CurValue;
             }
+
 
 
             public float GetKeyValue(Note note, int src)
@@ -168,6 +182,7 @@ namespace IngameScript
             }
 
 
+
             public static float GetAutoValue(Clip clip, float clipStep, int ch, string path)
             {
                 var prevKey = PrevClipAutoKey(clip, clipStep, ch, path);
@@ -179,6 +194,7 @@ namespace IngameScript
                 else
                     return prevKey.Value + (nextKey.Value - prevKey.Value) * (clipStep - clip.Track.StartStep - prevKey.Step) / (nextKey.Step - prevKey.Step);
             }
+
 
 
             public float AdjustValue(float value, float delta, bool shift, bool scale = False)
@@ -227,9 +243,10 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case strEnv: return Envelope ?? (Envelope = new Envelope(this, Instrument, Source));
-                    case strLfo: return Lfo      ?? (Lfo      = new LFO     (this, Instrument, Source));
-                    case strMod: return Modulate ?? (Modulate = new Modulate(this, Instrument, Source));
+                    case strBias: return Bias     ?? (Bias     = new Bias    (this, Instrument, Source));
+                    case strEnv:  return Envelope ?? (Envelope = new Envelope(this, Instrument, Source));
+                    case strLfo:  return Lfo      ?? (Lfo      = new LFO     (this, Instrument, Source));
+                    case strMod:  return Modulate ?? (Modulate = new Modulate(this, Instrument, Source));
                 }
 
                 return Setting_null;
@@ -240,7 +257,8 @@ namespace IngameScript
             public override bool HasDeepParams(Channel chan, int src)
             {
                 return
-                       OK(Envelope)
+                       OK(Bias)
+                    || OK(Envelope)
                     || OK(Lfo     )
                     || OK(Modulate)
                     || (chan?.HasKeys(Path) ?? False)
@@ -251,7 +269,8 @@ namespace IngameScript
 
             public override void DeleteSetting(Setting setting)
             {
-                     if (setting == Envelope)                           Envelope =  Envelope_null;
+                     if (setting == Bias    )                           Bias     =      Bias_null;
+                else if (setting == Envelope)                           Envelope =  Envelope_null;
                 else if (setting == Lfo     ) { g_lfo.Remove(Lfo);      Lfo      =       LFO_null; }
                 else if (setting == Modulate) { g_mod.Remove(Modulate); Modulate =  Modulate_null; }
             }
@@ -262,10 +281,12 @@ namespace IngameScript
             {
                 m_value = Default;
 
+                Bias    ?.Clear();
                 Envelope?.Clear();
                 Lfo     ?.Clear();
                 Modulate?.Clear();
 
+                Bias     =     Bias_null;
                 Envelope = Envelope_null;
 
                 if (OK(Lfo)) g_lfo.Remove(Lfo);
@@ -281,6 +302,7 @@ namespace IngameScript
             {
                 base.Reset();
 
+                Bias    ?.Reset();
                 Envelope?.Reset();
                 Lfo     ?.Reset();
                 Modulate?.Reset();
@@ -295,6 +317,18 @@ namespace IngameScript
 
                 m_value = NormalMin + RND * (NormalMax - NormalMin);
                 
+
+                if (   !prog.TooComplex
+                    && !AnyParentIsBias
+                    &&  RND > 0.8f)
+                {
+                    Bias = new Bias(this, Instrument, Source);
+                    Bias.Randomize();
+                }
+                else 
+                    Bias = Bias_null;
+
+
                 if (   !prog.TooComplex
                     && !AnyParentIsEnvelope
                     && (  !IsDigit(Tag[0]) && RND > 0.5f
@@ -359,6 +393,7 @@ namespace IngameScript
                 }
 
 
+                Bias    ?.Delete(iSrc);
                 Envelope?.Delete(iSrc);
                 Lfo     ?.Delete(iSrc);
                 Modulate?.Delete(iSrc);
@@ -370,6 +405,7 @@ namespace IngameScript
             {
                 var nSettings = 0;
                 
+                if (OK(Bias    )) nSettings++;
                 if (OK(Envelope)) nSettings++;
                 if (OK(Lfo     )) nSettings++;
                 if (OK(Modulate)) nSettings++;
@@ -380,8 +416,9 @@ namespace IngameScript
                     + WS(m_value.ToString("0.######")) 
                     +  S(nSettings)
 
+                    + SaveSetting(Bias    )
                     + SaveSetting(Envelope)
-                    + SaveSetting(Lfo)
+                    + SaveSetting(Lfo     )
                     + SaveSetting(Modulate);
             }
 
@@ -406,9 +443,10 @@ namespace IngameScript
                 {
                     switch (data[i])
                     { 
-                        case strEnv:  param.Envelope = Envelope .Load(data, ref i, inst, iSrc, param); break;
-                        case strLfo:  param.Lfo      = LFO      .Load(data, ref i, inst, iSrc, param); break;
-                        case strMod:  param.Modulate = Modulate .Load(data, ref i, inst, iSrc, param); break;
+                        case strBias: param.Bias     = Bias    .Load(data, ref i, inst, iSrc, param); break;
+                        case strEnv:  param.Envelope = Envelope.Load(data, ref i, inst, iSrc, param); break;
+                        case strLfo:  param.Lfo      = LFO     .Load(data, ref i, inst, iSrc, param); break;
+                        case strMod:  param.Modulate = Modulate.Load(data, ref i, inst, iSrc, param); break;
                     }
                 }
 
@@ -419,12 +457,16 @@ namespace IngameScript
 
             public override string GetLabel(out float width)
             {
-                width = 70f; 
-                
-                return
-                    Tag == strVol
-                    ? PrintValue(100 * Math.Log10(Value), 0, True, 0).PadLeft(4)
-                    : PrintValue(CurValue, 2, True, 1).PadLeft(4);
+                if (Tag == strVol)
+                { 
+                    width = 70; 
+                    return PrintValue(100 * Math.Log10(Value), 0, True, 0).PadLeft(4);
+                }
+                else
+                {
+                    width = 90;
+                    return PrintValue(CurValue, 2, True, 1).PadLeft(5);
+                }
             }
 
 
@@ -440,6 +482,7 @@ namespace IngameScript
                 {
                     base.DrawLabels(sprites, x, y, dp);
 
+                    Bias    ?.DrawLabels(sprites, x, y, dp); 
                     Envelope?.DrawLabels(sprites, x, y, dp); 
                     Lfo     ?.DrawLabels(sprites, x, y, dp); 
                     Modulate?.DrawLabels(sprites, x, y, dp); 
@@ -449,12 +492,15 @@ namespace IngameScript
             }
 
 
+
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {   
                 var valWidth  =  60;
                 var valHeight = 180;
 
-                if (   Tag == strAtt
+                if (   Tag == strLow
+                    || Tag == strHigh
+                    || Tag == strAtt
                     || Tag == strDec
                     || Tag == strSus
                     || Tag == strRel
@@ -494,7 +540,7 @@ namespace IngameScript
                         color6);
                 }
                 else if (!OK(Parent) // source offset has no parent
-                       && Tag    == strOff)
+                       && Tag == strOff)
                 { 
                     DrawValueHorizontal(
                         sprites, 
@@ -551,7 +597,10 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
-                if (!AnyParentIsEnvelope)
+                DrawFuncButton(sprites, strBias, 0, w, h, True, OK(Bias));
+
+                if (   !AnyParentIsBias
+                    && !AnyParentIsEnvelope)
                     DrawFuncButton(sprites, strEnv, 1, w, h, True, OK(Envelope));
 
                 DrawFuncButton(sprites, strLfo, 2, w, h, True, OK(Lfo));
@@ -566,6 +615,8 @@ namespace IngameScript
             {
                 switch (func)
                 {
+                case 0: AddNextSetting(strBias); break;
+
                 case 1:
                     if (AnyParentIsEnvelope) break;
                     AddNextSetting(strEnv);

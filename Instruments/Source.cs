@@ -467,9 +467,8 @@ namespace IngameScript
             public void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
                 if (OK(CurSet))
-                {
                     EditedClip.CurSetting.DrawFuncButtons(sprites, w, y, chan);
-                }
+
                 else
                 {
                     DrawFuncButton(sprites, strOff,  0, w, y, True, OK(Offset   ));

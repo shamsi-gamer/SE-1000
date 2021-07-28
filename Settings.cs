@@ -103,12 +103,12 @@ namespace IngameScript
 
                 switch (setting.Tag)
                 {
-                    case strOff:  if ( OK(src)) { src.Offset   .Delete(src.Index); src.Offset    = Parameter_null; } else {                                                    } break;
-                    case strVol:  if ( OK(src)) { src.Volume   .Delete(src.Index);                                 } else { inst.Volume.Delete(-1);                            } break;
-                    case strDel:  if ( OK(src)) { src.Delay    .Delete(src.Index); src.Delay     =     Delay_null; } else { inst.Delay .Delete(-1); inst.Delay  =  Delay_null; } break;
-                    case strTune: if ( OK(src)) { src.Tune     .Delete(src.Index); src.Tune      =      Tune_null; } else { inst.Tune  .Delete(-1); inst.Tune   =   Tune_null; } break;
-                    case strHrm:  if ( OK(src)) { src.Harmonics.Delete(src.Index); src.Harmonics = Harmonics_null; }      {                                                    } break;
-                    case strFlt:  if ( OK(src)) { src.Filter   .Delete(src.Index); src.Filter    =    Filter_null; } else { inst.Filter.Delete(-1); inst.Filter = Filter_null; } break;
+                    case strOff:  if (OK(src)) { src.Offset   .Delete(src.Index); src.Offset    = Parameter_null; } else {                                                    } break;
+                    case strVol:  if (OK(src)) { src.Volume   .Delete(src.Index);                                 } else { inst.Volume.Delete(-1);                            } break;
+                    case strDel:  if (OK(src)) { src.Delay    .Delete(src.Index); src.Delay     =     Delay_null; } else { inst.Delay .Delete(-1); inst.Delay  =  Delay_null; } break;
+                    case strTune: if (OK(src)) { src.Tune     .Delete(src.Index); src.Tune      =      Tune_null; } else { inst.Tune  .Delete(-1); inst.Tune   =   Tune_null; } break;
+                    case strHrm:  if (OK(src)) { src.Harmonics.Delete(src.Index); src.Harmonics = Harmonics_null; }      {                                                    } break;
+                    case strFlt:  if (OK(src)) { src.Filter   .Delete(src.Index); src.Filter    =    Filter_null; } else { inst.Filter.Delete(-1); inst.Filter = Filter_null; } break;
                 }
             }
 

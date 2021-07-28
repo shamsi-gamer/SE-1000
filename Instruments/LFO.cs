@@ -83,6 +83,7 @@ namespace IngameScript
             }
 
 
+
             public void AdvanceTime()
             {
                 Phase += Delta;
@@ -97,6 +98,7 @@ namespace IngameScript
                     m_count = 0;
                 }
             }
+
 
 
             public float UpdateValue(TimeParams tp)
@@ -119,10 +121,11 @@ namespace IngameScript
                 }
 
                 CurValue *= amp;
-                m_valid   = True;
 
+                m_valid   = True;
                 return CurValue;
             }
+
 
 
             public override bool HasDeepParams(Channel chan, int src)
@@ -136,12 +139,14 @@ namespace IngameScript
             }
 
 
+
             public override void Clear()
             {
                 Amplitude.Clear();
                 Frequency.Clear();
                 Offset   .Clear();
             }
+
 
 
             public override void Reset()
@@ -154,6 +159,7 @@ namespace IngameScript
             }
 
 
+
             public override void Randomize()
             {
                 Amplitude.Randomize();
@@ -164,6 +170,7 @@ namespace IngameScript
             }
 
 
+
             public override void AdjustFromController(Clip clip)
             {
                 Program.AdjustFromController(clip, Offset,    g_remote.MoveIndicator    .X*ControlSensitivity);
@@ -171,6 +178,7 @@ namespace IngameScript
                 Program.AdjustFromController(clip, Amplitude, g_remote.RotationIndicator.X*ControlSensitivity);
                 Program.AdjustFromController(clip, Frequency, g_remote.RotationIndicator.Y*ControlSensitivity);
             }
+
 
 
             public override Setting GetOrAddSettingFromTag(string tag)
@@ -186,6 +194,7 @@ namespace IngameScript
             }
 
 
+
             public void Delete(int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
@@ -194,6 +203,7 @@ namespace IngameScript
                 Frequency.Delete(iSrc);
                 Offset   .Delete(iSrc);
             }
+
 
 
             public override string Save()
@@ -208,6 +218,7 @@ namespace IngameScript
                     + W (Frequency.Save())
                     +    Offset   .Save();
             }
+
 
 
             public static LFO Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent)
@@ -228,6 +239,7 @@ namespace IngameScript
 
                 return lfo;
             }
+
 
 
             public override string GetLabel(out float width)
@@ -255,6 +267,7 @@ namespace IngameScript
             }
 
 
+
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
             {
                 x += _dp.OffX;
@@ -273,6 +286,7 @@ namespace IngameScript
 
                 _dp.Next(dp);
             }
+
 
 
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
@@ -375,6 +389,7 @@ namespace IngameScript
             }
 
 
+
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
                 DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, False, False);
@@ -383,6 +398,7 @@ namespace IngameScript
                 DrawFuncButton(sprites, strOff,  3, w, y, True, Offset   .HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, "Osc ↕", 4, w, y, False, False);
             }
+
 
 
             public override void Func(int func)
@@ -410,6 +426,7 @@ namespace IngameScript
                     }
                 }
             }
+
 
 
             public override bool CanDelete()

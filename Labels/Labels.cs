@@ -90,6 +90,7 @@ namespace IngameScript
         }
 
 
+
         void InitToggleLabels()
         {
             lblLoop        = new Label(1, GetLabel("Loop"),         lbl => EditedClip.Loop,    CF_null, lbl => lbl.SetText("Loop",     9,    14));
@@ -98,6 +99,7 @@ namespace IngameScript
             lblFollow      = new Label(1, GetLabel("Follow"),       lbl => EditedClip.Follow,  CF_null, lbl => lbl.SetText("Follow",   8,    18));
             lblAutoCue     = new Label(1, GetLabel("Auto Cue"),     lbl => EditedClip.AutoCue, CF_null, lbl => lbl.SetText("Auto Cue", 6.3f, 26));
         }
+
 
 
         void InitSideLabels()
@@ -191,6 +193,7 @@ namespace IngameScript
         }
 
 
+
         void UnmarkAllLabels()
         {
             foreach (var lbl in _labelsPressed)
@@ -207,6 +210,7 @@ namespace IngameScript
             g_labelsPressed.Clear();
                g_lcdPressed.Clear();
         }
+
 
 
         void ClearLabels(List<Label> labels)
