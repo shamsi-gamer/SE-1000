@@ -10,12 +10,14 @@ namespace IngameScript
     {
         public class Envelope : Setting
         {
-            public Parameter Attack, // these params can't have envelopes
+            public Parameter Trigger, // these params can't have envelopes
+                             Attack, 
                              Decay,
                              Sustain,
                              Release;
 
-            public float     TrigAttack,
+            public float     TrigTrigger,
+                             TrigAttack,
                              TrigDecay,
                              TrigSustain,
                              TrigRelease;
@@ -23,14 +25,17 @@ namespace IngameScript
             public float     CurValue;
 
 
+
             public Envelope(Setting parent, Instrument inst, Source src) 
                 : base(strEnv, parent, Setting_null, inst, src)
             {
-                Attack      = (Parameter)NewSettingFromTag(strAtt, this, inst, src);
-                Decay       = (Parameter)NewSettingFromTag(strDec, this, inst, src);
-                Sustain     = (Parameter)NewSettingFromTag(strSus, this, inst, src);
-                Release     = (Parameter)NewSettingFromTag(strRel, this, inst, src);
+                Trigger     = (Parameter)NewSettingFromTag(strTrig, this, inst, src);
+                Attack      = (Parameter)NewSettingFromTag(strAtt,  this, inst, src);
+                Decay       = (Parameter)NewSettingFromTag(strDec,  this, inst, src);
+                Sustain     = (Parameter)NewSettingFromTag(strSus,  this, inst, src);
+                Release     = (Parameter)NewSettingFromTag(strRel,  this, inst, src);
 
+                TrigTrigger =
                 TrigAttack  = 
                 TrigDecay   = 
                 TrigSustain =
@@ -38,19 +43,23 @@ namespace IngameScript
             }
 
 
+
             public Envelope(Envelope env, Setting parent) 
                 : base(env.Tag, parent, env, env.Instrument, env.Source)
             {
+                Trigger     = new Parameter(env.Trigger, this);
                 Attack      = new Parameter(env.Attack,  this);
                 Decay       = new Parameter(env.Decay,   this);
                 Sustain     = new Parameter(env.Sustain, this);
                 Release     = new Parameter(env.Release, this);
 
+                TrigTrigger = env.TrigTrigger;
                 TrigAttack  = env.TrigAttack;
                 TrigDecay   = env.TrigDecay;
                 TrigSustain = env.TrigSustain;
                 TrigRelease = env.TrigRelease;
             }
+
 
 
             public Envelope Copy(Setting parent)
@@ -73,6 +82,7 @@ namespace IngameScript
                 CurValue = UpdateValue(
                     tp.LocalTime, 
                     tp.NoteLength, 
+                    tp.GetTriggerValue(Trigger),
                     tp.GetTriggerValue(Attack ),
                     tp.GetTriggerValue(Decay  ),
                     tp.GetTriggerValue(Sustain),
@@ -84,7 +94,7 @@ namespace IngameScript
 
 
 
-            public static float UpdateValue(long lTime, int noteLen, float a, float d, float s, float r)
+            public static float UpdateValue(long lTime, int noteLen, float t, float a, float d, float s, float r)
             {
                 var lt = lTime  /(float)FPS;
                 var nl = noteLen/(float)FPS;
@@ -100,16 +110,17 @@ namespace IngameScript
                          if (a   >= nl) s  = nl/a;
                     else if (a+d >= nl) s += (1 - (nl-a)/d) * (1-s);
 
-                    return s * (1 - MinMax(0, (float)Math.Pow((lt-nl)/r, 2), 1));
+                    return t * s * (1 - MinMax(0, (float)Math.Pow((lt-nl)/r, 2), 1));
                 }
                 else if (lt >= a + d) // sustain
-                    return s;
+                    return t * s;
                 
                 else if (lt >= a) // decay
-                    return s + (1 - (float)Math.Pow((lt-a)/d, 2)) * (1-s);
+                    return t * (s + (1 - (float)Math.Pow((lt-a)/d, 2)) * (1-s));
                 
-                else if (lt >= 0) // attack 
-                    return lt/a;
+                else if (   lt >= 0
+                         && a  >  0) // attack 
+                    return t * lt/a;
 
                 return 0;
             }
@@ -119,15 +130,18 @@ namespace IngameScript
             public override bool HasDeepParams(Channel chan, int src)
             {
                 return
-                       Attack .HasDeepParams(chan, src)
+                       Trigger.HasDeepParams(chan, src)
+                    || Attack .HasDeepParams(chan, src)
                     || Decay  .HasDeepParams(chan, src)
                     || Sustain.HasDeepParams(chan, src)
                     || Release.HasDeepParams(chan, src);
             }
 
 
+
             public override void Clear()
             {
+                Trigger.Clear();
                 Attack .Clear();
                 Decay  .Clear();
                 Sustain.Clear();
@@ -135,10 +149,12 @@ namespace IngameScript
             }
 
 
+
             public override void Reset()
             {
                 base.Reset();
 
+                Trigger.Reset();
                 Attack .Reset();
                 Decay  .Reset();
                 Sustain.Reset();
@@ -146,13 +162,16 @@ namespace IngameScript
             }
 
 
+
             public override void Randomize()
             {
+                Trigger.Randomize();
                 Attack .Randomize();
                 Decay  .Randomize();
                 Release.Randomize();
                 Sustain.Randomize();
             }
+
 
 
             public override void AdjustFromController(Clip clip)
@@ -168,24 +187,28 @@ namespace IngameScript
             }
 
 
+
             public override Setting GetOrAddSettingFromTag(string tag)
             {
                 switch (tag)
                 {
-                    case strAtt: return GetOrAddParamFromTag(Attack,  tag);
-                    case strDec: return GetOrAddParamFromTag(Decay,   tag);
-                    case strSus: return GetOrAddParamFromTag(Sustain, tag);
-                    case strRel: return GetOrAddParamFromTag(Release, tag);
+                    case strTrig: return GetOrAddParamFromTag(Trigger, tag);
+                    case strAtt:  return GetOrAddParamFromTag(Attack,  tag);
+                    case strDec:  return GetOrAddParamFromTag(Decay,   tag);
+                    case strSus:  return GetOrAddParamFromTag(Sustain, tag);
+                    case strRel:  return GetOrAddParamFromTag(Release, tag);
                 }
 
                 return Setting_null;
             }
 
 
+
             public void Delete(int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 
+                Trigger.Delete(iSrc);
                 Attack .Delete(iSrc);
                 Decay  .Delete(iSrc);
                 Sustain.Delete(iSrc);
@@ -193,16 +216,19 @@ namespace IngameScript
             }
 
 
+
             public override string Save()
             {
                 return
                       W (Tag)
 
+                    + W (Trigger.Save())
                     + W (Attack .Save())
                     + W (Decay  .Save())
                     + W (Sustain.Save())
                     +    Release.Save();
             }
+
 
 
             public static Envelope Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent)
@@ -211,6 +237,7 @@ namespace IngameScript
 
                 var env = new Envelope(parent, inst, OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
+                env.Trigger = Parameter.Load(data, ref i, inst, iSrc, env, env.Trigger);
                 env.Attack  = Parameter.Load(data, ref i, inst, iSrc, env, env.Attack );
                 env.Decay   = Parameter.Load(data, ref i, inst, iSrc, env, env.Decay  );
                 env.Sustain = Parameter.Load(data, ref i, inst, iSrc, env, env.Sustain);
@@ -220,16 +247,19 @@ namespace IngameScript
             }
 
 
+
             public override string GetLabel(out float width)
             {
-                width = 174;
+                width = 212;
 
                 return
-                      PrintValue(Attack .Value, 2, True, 0).PadLeft(4) + strEmpty
+                      PrintValue(Trigger.Value, 2, True, 0).PadLeft(4) + strEmpty
+                    + PrintValue(Attack .Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Decay  .Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Sustain.Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Release.Value, 2, True, 0).PadLeft(4);
             }
+
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
@@ -243,6 +273,7 @@ namespace IngameScript
                 {
                     base.DrawLabels(sprites, x, y, dp);
 
+                    if (Trigger.HasDeepParams(CurChannel, CurSrc)) Trigger.DrawLabels(sprites, x, y, dp);
                     if (Attack .HasDeepParams(CurChannel, CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
                     if (Decay  .HasDeepParams(CurChannel, CurSrc)) Decay  .DrawLabels(sprites, x, y, dp);
                     if (Sustain.HasDeepParams(CurChannel, CurSrc)) Sustain.DrawLabels(sprites, x, y, dp);
@@ -263,10 +294,12 @@ namespace IngameScript
                 //Sustain.UpdateValue(tp);
                 //Release.UpdateValue(tp);
 
-                var isAtt = IsCurParam(strAtt);
-                var isDec = IsCurParam(strDec);
-                var isSus = IsCurParam(strSus);
-                var isRel = IsCurParam(strRel);
+
+                var isTrig = IsCurParam(strTrig);
+                var isAtt  = IsCurParam(strAtt);
+                var isDec  = IsCurParam(strDec);
+                var isSus  = IsCurParam(strSus);
+                var isRel  = IsCurParam(strRel);
 
 
                 var w0 = 240f;
@@ -278,20 +311,20 @@ namespace IngameScript
                 Vector2 p0, p1, p2, p3, p4;
 
                 GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), False, out p0, out p1, out p2, out p3, out p4);
-                DrawEnvelopeSupportsAndInfo(sprites, p0, p1, p2, p3, p4, y0, h0, isAtt, isDec, isSus, isRel);
+                DrawEnvelopeSupportsAndInfo(sprites, p0, p1, p2, p3, p4, y0, h0, isTrig, isAtt, isDec, isSus, isRel);
 
                 FillRect(sprites, p0.X, y0 + h0, w0, -CurValue*h/2, color3);
 
                 GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), True, out p0, out p1, out p2, out p3, out p4);
-                DrawEnvelope(sprites, p0, p1, p2, p3, p4, color3, False, False, False, False, Decay.CurValue);
+                DrawEnvelope(sprites, p0, p1, p2, p3, p4, color4, False, False, False, False, False, Decay.CurValue);
 
                 GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), False, out p0, out p1, out p2, out p3, out p4);
-                DrawEnvelope(sprites, p0, p1, p2, p3, p4, color5, isAtt, isDec, isSus, isRel, Decay.Value);
+                DrawEnvelope(sprites, p0, p1, p2, p3, p4, color5, isTrig, isAtt, isDec, isSus, isRel, Decay.Value);
             }
 
 
 
-            void DrawEnvelopeSupportsAndInfo(List<MySprite> sprites, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float y, float h, bool isAtt, bool isDec, bool isSus, bool isRel)
+            void DrawEnvelopeSupportsAndInfo(List<MySprite> sprites, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float y, float h, bool isTrig, bool isAtt, bool isDec, bool isSus, bool isRel)
             {
                 var sw = 1;
 
@@ -306,6 +339,7 @@ namespace IngameScript
 
                 // labels
 
+                var t = Trigger.Value;
                 var a = Attack .Value;
                 var d = Decay  .Value;
                 var s = Sustain.Value;
@@ -313,19 +347,22 @@ namespace IngameScript
 
                 var fs = 0.5f;
 
-                DrawString(sprites, S_00(a) + (isAtt ? " s" : ""),  p0.X           +  6,  p0.Y +  3,         fs, isAtt ? color6 : color3, TA_CENTER);
-                DrawString(sprites, S_00(d) + (isDec ? " s" : ""), (p1.X + p2.X)/2 + 16, (p1.Y+p2.Y)/2 - 20, fs, isDec ? color6 : color3, TA_CENTER);
-                DrawString(sprites, S_00(s),                       (p2.X + p3.X)/2 -  5,  p2.Y - 20,         fs, isSus ? color6 : color3, TA_CENTER);
-                DrawString(sprites, S_00(r) + (isRel ? " s" : ""), (p3.X + p4.X)/2 -  5,  p0.Y +  3,         fs, isRel ? color6 : color3, TA_CENTER);
+                DrawString(sprites, S_00(t) + (isTrig ? " s" : ""),  p1.X,                 p1.Y - 20,         fs, isTrig ? color6 : color3, TA_CENTER);
+                DrawString(sprites, S_00(a) + (isAtt  ? " s" : ""),  p0.X           +  6,  p0.Y +  3,         fs, isAtt  ? color6 : color3, TA_CENTER);
+                DrawString(sprites, S_00(d) + (isDec  ? " s" : ""), (p1.X + p2.X)/2 + 16, (p1.Y+p2.Y)/2 - 20, fs, isDec  ? color6 : color3, TA_CENTER);
+                DrawString(sprites, S_00(s),                        (p2.X + p3.X)/2 -  5,  p2.Y - 20,         fs, isSus  ? color6 : color3, TA_CENTER);
+                DrawString(sprites, S_00(r) + (isRel  ? " s" : ""), (p3.X + p4.X)/2 -  5,  p0.Y +  3,         fs, isRel  ? color6 : color3, TA_CENTER);
             }
 
 
-            void DrawEnvelope(List<MySprite> sprites, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Color col, bool isAtt, bool isDec, bool isSus, bool isRel, float d)
+
+            void DrawEnvelope(List<MySprite> sprites, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, Color col, bool isTrig, bool isAtt, bool isDec, bool isSus, bool isRel, float d)
             {
-                var wa = isAtt ? 6 : 1;
-                var wd = isDec ? 6 : 1;
-                var ws = isSus ? 6 : 1;
-                var wr = isRel ? 6 : 1;
+                var wt = isTrig          ? 6 : 1;
+                var wa = isAtt || isTrig ? 6 : 1;
+                var wd = isDec || isTrig ? 6 : 1;
+                var ws = isSus           ? 6 : 1;
+                var wr = isRel           ? 6 : 1;
 
 
                 // attack
@@ -367,8 +404,10 @@ namespace IngameScript
             }
 
 
+
             void GetEnvelopeCoords(float x, float y, float w, float h, float vol, bool current, out Vector2 p0, out Vector2 p1, out Vector2 p2, out Vector2 p3, out Vector2 p4)
             {
+                var t = current ? Trigger.CurValue : Trigger.Value;
                 var a = current ? Attack .CurValue : Attack .Value;
                 var d = current ? Decay  .CurValue : Decay  .Value;
                 var s = current ? Sustain.CurValue : Sustain.Value;
@@ -380,36 +419,42 @@ namespace IngameScript
                 p0   = new Vector2(x, y + h);
                 p0.X = Math.Min(p0.X, x + w - r*fps);
 
-                p1   = new Vector2(p0.X + a*fps, p0.Y - h*vol);
+                p1   = new Vector2(p0.X + a*fps, p0.Y - t*h*vol);
                 p1.X = Math.Min(p1.X, x + w - r*fps);
 
-                p2   = new Vector2(p1.X + d*fps, p0.Y - h*vol * s);
+                p2   = new Vector2(p1.X + d*fps, p0.Y - s*h*vol);
                 p2.X = Math.Min(p2.X, x + w);
 
                 p3   = new Vector2(x + w - r*fps, p2.Y);
+
                 p4   = new Vector2(x + w, p0.Y);
             }
 
 
+
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                DrawFuncButton(sprites, "A", 1, w, y, True, Attack .HasDeepParams(chan, CurSrc));
-                DrawFuncButton(sprites, "D", 2, w, y, True, Decay  .HasDeepParams(chan, CurSrc));
-                DrawFuncButton(sprites, "S", 3, w, y, True, Sustain.HasDeepParams(chan, CurSrc));
-                DrawFuncButton(sprites, "R", 4, w, y, True, Release.HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, "Trig", 0, w, y, True, Trigger.HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, "A",    1, w, y, True, Attack .HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, "D",    2, w, y, True, Decay  .HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, "S",    3, w, y, True, Sustain.HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, "R",    4, w, y, True, Release.HasDeepParams(chan, CurSrc));
             }
+
 
 
             public override void Func(int func)
             {
                 switch (func)
                 {
-                    case 1: AddNextSetting(strAtt); break;
-                    case 2: AddNextSetting(strDec); break;
-                    case 3: AddNextSetting(strSus); break;
-                    case 4: AddNextSetting(strRel); break;
+                    case 0: AddNextSetting(strTrig); break;
+                    case 1: AddNextSetting(strAtt);  break;
+                    case 2: AddNextSetting(strDec);  break;
+                    case 3: AddNextSetting(strSus);  break;
+                    case 4: AddNextSetting(strRel);  break;
                 }
             }
+
 
 
             public override bool CanDelete()

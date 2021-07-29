@@ -120,9 +120,13 @@ namespace IngameScript
                 if (!OK(sprites)) return;
 
 
+                var thisSrc = 
+                       OK(Source) 
+                    && Source.Index == CurSrc;
+
                 var textCol = this == EditedClip.CurSetting ? color0 : color6;
-                var lineCol = this == EditedClip.CurSetting ? color6 : color4;
-                var boxCol  = this == EditedClip.CurSetting ? color6 : color3;
+                var lineCol = this == EditedClip.CurSetting ? color6 : (thisSrc ? color5 : color4);
+                var  boxCol = this == EditedClip.CurSetting ? color6 : (thisSrc ? color4 : color3);
 
 
                 var dx = 8f;
@@ -234,6 +238,7 @@ namespace IngameScript
             case strLow:  return "Low Note";
             case strHigh: return "High Note";
             case strEnv:  return "Envelope";
+            case strTrig: return "Trigger";
             case strAtt:  return "Attack";
             case strDec:  return "Decay";
             case strSus:  return "Sustain";
@@ -276,6 +281,7 @@ namespace IngameScript
             case strHigh: return new Parameter(tag,    36,        119,   0,     1,    1,      12,     119, parent, inst, src);
             
             case strEnv:  return new Envelope(parent, inst, src);                                  
+            case strTrig: return new Parameter(tag,    0,           1,   0,     1,    0.01f,  0.1f,  1,    parent, inst, src);
             case strAtt:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    parent, inst, src);
             case strDec:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, parent, inst, src);
             case strSus:  return new Parameter(tag,    0,           1,   0.01f, 1,    0.01f,  0.1f,  0.1f, parent, inst, src);

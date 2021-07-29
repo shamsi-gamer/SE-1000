@@ -238,12 +238,7 @@ namespace IngameScript
                     tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
                 }
             }
-            else if (EditedClip.ChordMode)
-            {
-                EditedClip.ChordAll = !EditedClip.ChordAll;
-                //if (g_chordAll) EditClip.Chord = -1;
-            }
-            else
+            else if (!EditedClip.ChordMode)
             { 
                 EditedClip.ChordEdit = !EditedClip.ChordEdit;
                 if (!EditedClip.ChordEdit) EditedClip.Chord = -1;

@@ -14,6 +14,7 @@
         }
 
 
+
         bool ChordIsBright(Label lbl)
         {
             var tune =
@@ -30,6 +31,7 @@
         }
 
 
+
         void UpdateChord(Label lbl)
         {
             if (   !IsCurParam(strTune)
@@ -37,6 +39,7 @@
                 || EditedClip.ParamAuto)
                 lbl.SetText(EditedClip.ChordEdit ? strEmpty : "Chord", 9, 12);
         }
+
 
 
         bool ChordNumIsBright(Label lbl)
@@ -51,6 +54,7 @@
         }
 
 
+
         bool ChordNumIsDim(Label lbl)
         {
             var chord = lbl.Data;
@@ -62,11 +66,13 @@
         }
 
 
+
         void UpdateChordNum(Label lbl)
         {
             var chord = lbl.Data;
             lbl.SetText(S(chord));//GetChordName(EditedClip.Chords[chord-1], S(chord)));
         }
+
 
 
         void UpdateChordEdit(Label lbl)
@@ -85,8 +91,9 @@
                     ? strAll : strEmpty);
             }
             else
-                lbl.SetText(EditedClip.ChordMode ? strAll : strEdit);
+                lbl.SetText(EditedClip.ChordMode ? strEmpty : strEdit);
         }
+
 
 
         bool ChordEditIsBright(Label lbl)

@@ -228,7 +228,7 @@ namespace IngameScript
                 if (dp.Program.TooComplex)
                     return;
 
-                Volume.DrawLabels(sprites, x, y, dp);
+                Volume .DrawLabels(sprites, x, y, dp);
                 Tune  ?.DrawLabels(sprites, x, y, dp);
                 Filter?.DrawLabels(sprites, x, y, dp);
                 Delay ?.DrawLabels(sprites, x, y, dp);

@@ -88,8 +88,8 @@ namespace IngameScript
                 case 5: lbl.SetText("Clr");          break;
                 case 6: lbl.SetText("Rnd");          break;
                                                                 
-                case 7: lbl.SetText(ShowPianoView ? " "   : "/1"); break;
-                case 8: lbl.SetText(ShowPianoView ? "Rev" : "/2"); break;
+                case 7: lbl.SetText(ShowPianoView ? " "   : "1/4"); break;
+                case 8: lbl.SetText(ShowPianoView ? "Rev" : "1/8"); break;
                 case 9: lbl.SetText("Flip");         break;
                 }
             }
