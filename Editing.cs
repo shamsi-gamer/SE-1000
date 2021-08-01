@@ -44,6 +44,8 @@ namespace IngameScript
                         chan.Notes.RemoveAt(found);
 
                     lastNotes.Clear();
+
+                    clip.EditNotes.Clear();
                 }
 
                 MoveEdit(clip, 1, True);

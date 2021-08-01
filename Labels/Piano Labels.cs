@@ -219,19 +219,6 @@ namespace IngameScript
             else if (OK(g_notes.FindIndex(n => NoteIsTriggered(noteNum, n))))
                 return True; // note is being played
 
-            //else if (OK(EditedClip.Track.PlayPat))
-            //{ 
-            //    for (int ch = 0; ch < g_nChans; ch++)
-            //    {
-            //        if (ch == CurChan)
-            //            continue;
-
-            //        if (   Playing
-            //            && OK(PlayPattern.Channels[ch].Notes.Find(n => NoteIsEdited(noteNum, n))))
-            //            return True;
-            //    }
-            //}
-
             return False;
         }
 
@@ -248,15 +235,10 @@ namespace IngameScript
 
         bool NoteIsTriggered(int noteNum, Note note)
         {
-            var timeStep = TimeStep;
-                //Playing 
-                //? EditedClip.Track.StartStep + EditedClip.Track.PlayStep
-                //: TimeStep;
-
             return
-                   noteNum == note.Number
-                && timeStep >= note.Step
-                && timeStep <  note.Step + note.StepLength;
+                   noteNum/NoteScale == note.Number/NoteScale
+                && TimeStep >= note.Step
+                && TimeStep <  note.Step + note.StepLength;
         }
 
 
