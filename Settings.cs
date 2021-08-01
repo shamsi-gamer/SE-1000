@@ -29,8 +29,10 @@ namespace IngameScript
                 EditPattern.Channels, 
                 chan => chan.Instrument == inst);
 
+            if (!OK(CurChan))
+                CurChan = 0;
 
-            UpdateInstOff(SelChan);
+            UpdateInstOff(CurChan);
 
             SetInstName(True);
             g_inputValid = False;
