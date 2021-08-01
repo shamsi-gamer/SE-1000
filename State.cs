@@ -58,6 +58,7 @@ namespace IngameScript
         static bool Playing => OK(Tracks.Find(track => track?.Playing ?? False));
 
 
+
         static void CreateDefaultState(Program prog)
         {
             ClearState();
@@ -71,6 +72,7 @@ namespace IngameScript
             EditedClip = Tracks[0].Clips[0];
             UpdateClipDisplay(EditedClip);
         }
+
 
 
         static void ClearState()
@@ -88,6 +90,7 @@ namespace IngameScript
         }
 
 
+
         //static void ClearTracks()
         //{
         //    foreach (var track in Tracks)
@@ -98,6 +101,7 @@ namespace IngameScript
         //            track.Clips[i] = Clip_null;
         //    }
         //}
+
 
 
         static void CreateMachineState()
@@ -121,6 +125,7 @@ namespace IngameScript
         }
 
 
+
         static void CreateDefaultInstruments(Program prog)
         {
             Instruments = new List<Instrument>();
@@ -130,12 +135,14 @@ namespace IngameScript
         }
 
 
+
         static void CreateTracks(Program prog)
         {
             Tracks = new List<Track>(new Track[4]);
             for (int t = 0; t < Tracks.Count; t++)
                 Tracks[t] = new Track(prog);
         }
+
 
 
         static void CreateDefaultTracks(Program prog)
@@ -150,6 +157,7 @@ namespace IngameScript
             EditedClip     = clip;
             track.Clips[0] = clip;
         }
+
 
 
         static Clip GetClipAfterDelete(Clip clip)
@@ -180,6 +188,7 @@ namespace IngameScript
         }
 
 
+
         public void MemSet()
         {
             if (!SetOrPat) SetOrPat  = True;
@@ -187,6 +196,7 @@ namespace IngameScript
 
             EditedClip.SetMemPat = False;
         }
+
 
 
         void GetSetOrPat(int i)

@@ -75,9 +75,7 @@ namespace IngameScript
                 var low  = Math.Min(Math.Max(0, 1 - amt), 1);
                 var high = Math.Min(Math.Max(0, 1 + amt), 1);
 
-                f = low + f*(high-low);
-
-                return (float)Math.Pow(f, pow);
+                return low + (float)Math.Pow(f, pow)*(high-low);
             }
 
 
