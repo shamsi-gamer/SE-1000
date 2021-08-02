@@ -252,8 +252,9 @@ namespace IngameScript
                 MovePatternOff();
                 DisableBlock();
 
-                //if (OK(EditPos))
-                //    EditPos = 0;
+                
+                if (OK(EditPos))
+                    EditPos = EditPat * g_patSteps;
 
 
                 Track.SyncPlayTime();

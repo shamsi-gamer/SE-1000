@@ -115,8 +115,8 @@ namespace IngameScript
                 // draw edit position
                 if (isEditing)
                 {
-                    var pl    = x - pw * (nDsp * 4 * pw + EditPat + EditedClip.SongOff);
-                    var xTick = wt * EditedClip.EditPos;
+                    var pl    = x - pw * (nDsp * 4 + EditedClip.SongOff);
+                    var xTick = pl + wt * EditedClip.EditPos;
 
                     FillRect(
                         sprites,
