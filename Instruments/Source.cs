@@ -128,6 +128,7 @@ namespace IngameScript
 
                 var  track  = note.Channel.Pattern.Clip.Track;
 
+
                 var triggerValues = new List<TriggerValue>();
 
 
@@ -154,6 +155,8 @@ namespace IngameScript
 
                 var vol = note.Volume;
                 
+                if (note.Channel.Accents[(int)note.Step % g_patSteps])
+                    vol *= 1.5f;
 
                 // populate triggerValues
                 tp.SourceIndex = -1;    inst.Volume .UpdateValue(tp);

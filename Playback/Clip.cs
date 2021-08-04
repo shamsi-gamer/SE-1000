@@ -36,6 +36,7 @@ namespace IngameScript
             public bool          AllChan,
                                  RndInst,
                                  
+                                 Accent,
                                  Piano,
                                  
                                  Transpose = False,
@@ -148,6 +149,7 @@ namespace IngameScript
                 AllChan         = 
                 RndInst         = 
                                 
+                Accent          =
                 Piano           = 
                                 
                 Shift           = 
@@ -251,6 +253,7 @@ namespace IngameScript
                 AllChan         = clip.AllChan;
                 RndInst         = clip.RndInst;
                                 
+                Accent          = clip.Accent;
                 Piano           = clip.Piano;
                                 
                 Shift           = clip.Shift;

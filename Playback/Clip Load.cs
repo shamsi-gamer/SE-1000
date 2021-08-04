@@ -8,10 +8,8 @@ namespace IngameScript
     {
         public partial class Clip
         {
-            public static Clip Load(string[] lines, ref int line, Track track, Program prog)//, out string curPath)
+            public static Clip Load(string[] lines, ref int line, Track track, Program prog)
             { 
-                //curPath     = "";
-
                 if (lines.Length < 3)
                     return Clip_null;
 
@@ -19,7 +17,7 @@ namespace IngameScript
 
                 var cfg = lines[line++].Split(';');
 
-                if (   !clip.LoadConfig  (cfg) //, out curPath)) return Clip_null;
+                if (   !clip.LoadConfig  (cfg)
                     || !clip.LoadChords  (lines[line++])
                     || !clip.LoadMems    (lines[line++])
                     || !clip.LoadPatterns(lines, ref line)
@@ -30,6 +28,7 @@ namespace IngameScript
 
                 return clip;
             }
+
 
 
             bool LoadToggles(string toggles)
@@ -53,10 +52,11 @@ namespace IngameScript
                 AllChan     = ReadBit(f, i++);
                 RndInst     = ReadBit(f, i++);
                             
+                Accent      = ReadBit(f, i++);
                 Piano       = ReadBit(f, i++);
                             
                 Transpose   = ReadBit(f, i++);
-                Strum      = ReadBit(f, i++);
+                Strum       = ReadBit(f, i++);
                             
                 Shift       = ReadBit(f, i++);
                 MixerShift  = ReadBit(f, i++);
@@ -123,6 +123,7 @@ namespace IngameScript
             }
 
 
+
             bool LoadPatterns(string[] lines, ref int line)
             {
                 int nPats = int_Parse(lines[line++]);
@@ -140,6 +141,7 @@ namespace IngameScript
 
                 return True;
             }
+
 
 
             bool LoadBlocks(string line)
@@ -161,6 +163,7 @@ namespace IngameScript
 
                 return True;
             }
+
 
 
             //bool LoadEdit(string[] lines, ref int line)
@@ -189,6 +192,7 @@ namespace IngameScript
             //}
 
 
+
             bool LoadMems(string line)
             {
                 var mems = line.Split(';');
@@ -198,6 +202,7 @@ namespace IngameScript
 
                 return True;
             }
+
 
 
             bool LoadChords(string strChords)

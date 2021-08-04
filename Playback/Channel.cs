@@ -20,6 +20,7 @@ namespace IngameScript
                               Transpose;
 
             public List<Note> Notes;
+            public bool[]     Accents;
             public List<Key>  AutoKeys;
 
 
@@ -34,9 +35,14 @@ namespace IngameScript
                 Shuffle    = 0;
                 Transpose  = 0;
 
+                Accents = new bool[g_patSteps];
+                for (int i = 0; i < g_patSteps; i++)
+                    Accents[i] = False;
+
                 Notes      = new List<Note>();
                 AutoKeys   = new List<Key>();
             }
+
 
 
             public Channel(Channel chan, Pattern pat = Pattern_null)
@@ -58,10 +64,16 @@ namespace IngameScript
                 }
 
 
+                Accents = new bool[g_patSteps];
+                for (int i = 0; i < g_patSteps; i++)
+                    Accents[i] = chan.Accents[i];
+
+
                 AutoKeys = new List<Key>();
                 foreach (var k in chan.AutoKeys)
                     AutoKeys.Add(k);
             }
+
 
 
             public void AddNote(Note note)
@@ -91,6 +103,7 @@ namespace IngameScript
             }
 
 
+
             public void UpdateNotes()
             {
                 foreach (var note in Notes)
@@ -101,9 +114,11 @@ namespace IngameScript
             }
 
 
+
             public bool HasNoteKeys(string path) { return OK(Notes   .Find(n => OK(n.Keys.Find(k => k.Path == path)))); }
             public bool HasAutoKeys(string path) { return OK(AutoKeys.Find(k => k.Path == path)); }
             public bool HasKeys    (string path) { return HasNoteKeys(path) || HasAutoKeys(path); }
+
 
 
             public bool IsDefault { get
@@ -115,6 +130,7 @@ namespace IngameScript
                     && Volume  == 1
                     && Shuffle == 0;
             } }
+
 
 
             public string Save()
@@ -129,11 +145,14 @@ namespace IngameScript
                 save += WS(Shuffle);
                 save += WS(Transpose);
 
+                save += WS(SaveAccents());
+
                 save += SaveNotes();
                 save += SaveAutoKeys();
 
                 return save;
             }
+
 
 
             string SaveNotes()
@@ -147,6 +166,19 @@ namespace IngameScript
             }
 
 
+
+            int SaveAccents()
+            {
+                var accents = 0;
+
+                for (int i = 0; i < g_patSteps; i++)
+                    if (Accents[i]) accents |= 1 << i;
+
+                return accents;
+            }
+
+
+
             string SaveAutoKeys()
             {
                 var save = PS(AutoKeys.Count);
@@ -156,6 +188,7 @@ namespace IngameScript
 
                 return save;
             }
+
 
 
             public static Channel Load(string[] data, ref int i, out int index, Pattern pat)
@@ -172,11 +205,22 @@ namespace IngameScript
                 chan.Shuffle    = int  .Parse(data[i++]);
                 chan.Transpose  = int  .Parse(data[i++]);
 
+                chan.LoadAccents(int.Parse(data[i++]));
+
                 chan.LoadNotes   (data, ref i, index);
                 chan.LoadAutoKeys(data, ref i);
 
                 return chan;
             }
+
+
+
+            void LoadAccents(int accents)
+            {
+                for (int i = 0; i < g_patSteps; i++)
+                    Accents[i] = ((accents >> i) & 1) != 0;
+            }
+
 
 
             void LoadNotes(string[] data, ref int i, int iChan)
@@ -193,6 +237,7 @@ namespace IngameScript
                     Notes.Add(note);
                 }
             }
+
 
 
             void LoadAutoKeys(string[] data, ref int i)

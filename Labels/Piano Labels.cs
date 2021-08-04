@@ -28,7 +28,7 @@ namespace IngameScript
             Get(high, l => l.CustomName.Length >= 11 && l.CustomName.Substring(0, 11) == "Label High ");
             high = high.OrderBy(l => int_Parse(l.CustomName.Substring(11))).ToList();
 
-            for (int h = 0; h < 10; h++)
+            for (int h = 0; h < 11; h++)
             { 
                 lblHigh.Add(new Label(3, high[h], 
                     PianoHighIsBright, 
@@ -39,7 +39,7 @@ namespace IngameScript
                     True));
             }
 
-            lblHigh.Add(new Label(3, high[10],
+            lblHigh.Add(new Label(3, high[11],
                 lbl => IsPressed(lbl),
                 CF_null,
                 UpdatePianoToggle));
@@ -78,28 +78,32 @@ namespace IngameScript
             { 
                 switch (lbl.Data)
                 { 
-                case 0: lbl.SetText("Copy",  9, 14); break;
-                case 1: lbl.SetText("Paste", 9, 14); break;
-                                                        
-                case 2: lbl.SetText("Pick");         break;
-                case 3: lbl.SetText("All Ch", 7.6f, 19.5f); break;
-                case 4: lbl.SetText("Inst");         break;
-                                                        
-                case 5: lbl.SetText("Clr");          break;
-                case 6: lbl.SetText("Rnd");          break;
-                                                                
-                case 7: lbl.SetText(ShowPianoView ? " "   : "1/4"); break;
-                case 8: lbl.SetText(ShowPianoView ? "Rev" : "1/8"); break;
-                case 9: lbl.SetText("Flip");         break;
+                case  0: lbl.SetText("Copy",  9, 14);                break;
+                case  1: lbl.SetText("Paste", 9, 14);                break;
+                                                                        
+                case  2: lbl.SetText("Pick");                        break;
+                case  3: lbl.SetText("All Ch", 7.6f, 19.5f);         break;
+                case  4: lbl.SetText("Inst");                        break;
+                                                                        
+                case  5: lbl.SetText("Clr");                         break;
+                case  6: lbl.SetText("Rnd");                         break;
+                                                                 
+                case  7: lbl.SetText(ShowPianoView ? " "   : "1/4"); break;
+                case  8: lbl.SetText(ShowPianoView ? "Rev" : "1/8"); break;
+                case  9: lbl.SetText("Flip");                        break;
+                                                                     
+                case 10: lbl.SetText("Acc");                         break;
                 }
             }
         }
 
 
+
         void UpdatePianoHighColor(Label lbl)
         {
             lbl.BackColor = 
-                ShowPiano 
+                   ShowPiano 
+                && lbl.Data < 10
                 ? color1 
                 : color0;
         }
@@ -246,9 +250,10 @@ namespace IngameScript
         bool ToggleIsBright(Label lbl)
         {
             return
-                   lbl.Data == 2 && EditedClip.Pick
-                || lbl.Data == 3 && EditedClip.AllChan
-                || lbl.Data == 4 && EditedClip.RndInst;
+                   lbl.Data ==  2 && EditedClip.Pick && !EditedClip.Accent
+                || lbl.Data ==  3 && EditedClip.AllChan
+                || lbl.Data ==  4 && EditedClip.RndInst
+                || lbl.Data == 10 && EditedClip.Accent;
         }
 
 
@@ -263,7 +268,7 @@ namespace IngameScript
                     //═════╬═══════╬═══════╬═════
                     //     ║       ║       ║     
                     // ███ ║  ███  ║  ███  ║  ███
-                    lblHigh[10].Panel.CustomData,
+                    lblHigh[11].Panel.CustomData,
                     1.7f,
                     17);
             }
@@ -286,9 +291,13 @@ namespace IngameScript
             var patStep  = -lbl.Data;
             var clipStep =  EditPat * g_patSteps + patStep;
 
-            var on = OK(CurChannel.Notes.Find(n => 
-                   n.Step >= patStep
-                && n.Step <  patStep+1));
+            var on = 
+                EditedClip.Accent
+                ? CurChannel.Accents[patStep]
+                : OK(CurChannel.Notes.Find(n => 
+                         n.Step >= patStep
+                      && n.Step <  patStep+1));
+
 
             var track = EditedClip.Track;
 

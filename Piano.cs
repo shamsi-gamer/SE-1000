@@ -12,7 +12,7 @@ namespace IngameScript
             var tune = SelSource    ?.Tune
                     ?? SelInstrument?.Tune;
 
-            if (h == 10) // here and not in BeatHigh() because TogglePiano() needs to know about tune
+            if (h == 11) // here and not in BeatHigh() because TogglePiano() needs to know about tune
                 TogglePiano(tune);
 
             else if (IsCurParam(strTune)
@@ -38,6 +38,7 @@ namespace IngameScript
         }
 
 
+
         void BeatHigh(int h)
         {
                  if (h == 0) Copy();
@@ -54,7 +55,10 @@ namespace IngameScript
             else if (h == 8) Common2();
             else if (h == 9) Common3();
 
-            if (h < 2 || h > 4)
+            else if (h == 10) EditedClip.Accent = !EditedClip.Accent;
+
+            if (  (h < 2 || h > 4) 
+                && h != 10)
                 lblHigh[h].Mark();
         }
 
@@ -101,6 +105,7 @@ namespace IngameScript
         }
 
 
+
         void Low(int l)
         {
             var tune = SelSource    ?.Tune
@@ -133,6 +138,7 @@ namespace IngameScript
         }
 
 
+
         void Tick(int ch, float step)
         {
             int first, last;
@@ -143,47 +149,56 @@ namespace IngameScript
         }
 
 
+
         void Tick(int pat, int ch, float step)
         {
             var _chan = EditedClip.Patterns[pat].Channels[ch];
             var  chan = EditedClip.Patterns[pat].Channels[ch];
 
-            var dStep = Math.Min(Math.Max(0.5f, EditedClip.EditStep), 1);
-
-            var found = chan.Notes.Where(n => 
-                   n.Step >= step
-                && n.Step <  step + dStep).ToArray();
-
-            if (found.Length == 0)
+            if (EditedClip.Accent)
             {
-                if (!EditedClip.Pick)
-                {
-                    var notes = GetChordNotes(EditedClip.CurNote);
-
-                    for (int n = 0; n < notes.Count; n++)
-                        chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordStrum(n), EditedClip.EditStepLength));
-                }
-            }
-            else if (EditedClip.Pick)
-            {
-                EditedClip.CurNote = found[0].Number;
-                EditedClip.Pick    = False;
-
-                TriggerNote(
-                    EditedClip,
-                    found[0].Number, 
-                    ch, 
-                    found[0].StepLength,
-                    0);
+                chan.Accents[(int)step] = !chan.Accents[(int)step];
             }
             else
             {
-                EditedClip.Pick = False;
+                var dStep = Math.Min(Math.Max(0.5f, EditedClip.EditStep), 1);
+
+                var found = chan.Notes.Where(n => 
+                       n.Step >= step
+                    && n.Step <  step + dStep).ToArray();
+
+                if (found.Length == 0)
+                {
+                    if (!EditedClip.Pick)
+                    {
+                        var notes = GetChordNotes(EditedClip.CurNote);
+
+                        for (int n = 0; n < notes.Count; n++)
+                            chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordStrum(n), EditedClip.EditStepLength));
+                    }
+                }
+                else if (EditedClip.Pick)
+                {
+                    EditedClip.CurNote = found[0].Number;
+                    EditedClip.Pick    = False;
+
+                    TriggerNote(
+                        EditedClip,
+                        found[0].Number, 
+                        ch, 
+                        found[0].StepLength,
+                        0);
+                }
+                else
+                {
+                    EditedClip.Pick = False;
                 
-                foreach (var n in found)
-                    chan.Notes.Remove(n);
+                    foreach (var n in found)
+                        chan.Notes.Remove(n);
+                }
             }
         }
+
 
 
         void Shift(bool fwd)
@@ -309,7 +324,8 @@ namespace IngameScript
 
         void ClearNotes()
         {
-            if (EditedClip.RndInst)
+            if (   EditedClip.RndInst
+                && OK(SelChan))
                 return;
 
             if (EditedClip.AllChan)
@@ -336,8 +352,16 @@ namespace IngameScript
                     foreach (var note in chan.Notes)
                         note.Keys.RemoveAll(k => k.Path == CurrentParam.Path);
                 }
+
                 else if (EditedClip.ParamAuto)
                     chan.AutoKeys.RemoveAll(k => k.Path == CurrentParam.Path);
+
+                else if (EditedClip.Accent)
+                {
+                    for (int i = 0; i < g_patSteps; i++)
+                        chan.Accents[i] = False;
+                }
+
                 else
                     chan.Notes.Clear();
             }

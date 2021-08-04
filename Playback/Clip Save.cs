@@ -7,7 +7,7 @@
             public string Save()
             {
                 return
-                         SaveConfig()
+                      SaveConfig()
 
                     + PN(SaveChords())
                     + PN(SaveMems())
@@ -34,11 +34,12 @@
                                              
                 WriteBit(ref f, AllChan,     i++);
                 WriteBit(ref f, RndInst,     i++);
-                                             
+
+                WriteBit(ref f, Accent,      i++);
                 WriteBit(ref f, Piano,       i++);
                                              
                 WriteBit(ref f, Transpose,   i++);
-                WriteBit(ref f, Strum,      i++);
+                WriteBit(ref f, Strum,       i++);
                                              
                 WriteBit(ref f, Shift,       i++);
                 WriteBit(ref f, MixerShift,  i++);
@@ -55,11 +56,11 @@
                 WriteBit(ref f, ParamKeys,   i++);
                 WriteBit(ref f, ParamAuto,   i++);
                                              
-                WriteBit(ref f, SetMemPat,      i++);
+                WriteBit(ref f, SetMemPat,   i++);
                                              
                 WriteBit(ref f, Move,        i++);
-                WriteBit(ref f, SetOrPat, i++);
-                WriteBit(ref f, SetMemSet,      i++);
+                WriteBit(ref f, SetOrPat,    i++);
+                WriteBit(ref f, SetMemSet,   i++);
 
                 return f;
             }
