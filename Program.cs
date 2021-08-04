@@ -77,13 +77,6 @@ namespace IngameScript
             g_sm.Speakers[0].Block.GetSounds(g_samples);
 
 
-            if (!IsModPresent())
-            {
-                DrawMissingMod();
-                return;
-            }
-
-
             for (int i = 0; i < g_random.Length; i++)
                 g_random[i] = RND;
 

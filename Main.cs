@@ -14,6 +14,12 @@ namespace IngameScript
             if (!g_init) return;
             FinishStartup();
 
+            if (!ModIsPresent())
+            {
+                DrawMissingMod();
+                return;
+            }
+
 
             if (ProcessArg(arg))
                 return;
@@ -72,7 +78,7 @@ namespace IngameScript
                 g_started = True;
 
 
-            if (_loadStep > 10)
+            if (_loadStep > OscCount)
             {
                 DrawDisplays();
                 

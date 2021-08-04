@@ -26,9 +26,7 @@ namespace IngameScript
 
 
     partial class Program
-    {                                                                              
-                             
-
+    {
         static void UpdateDspOffset(ref int off, int pos, int count, int max, int dOff1, int dOff2)
         {
             if (   pos >= max/2         + off
@@ -43,9 +41,10 @@ namespace IngameScript
         }
 
 
-        bool IsModPresent()
+
+        bool ModIsPresent()
         {
-            return _loadStep < 10
+            return _loadStep < OscCount
                 ||    (OscSine         ?.Samples.Count ?? 0) > 0
                    && (OscTriangle     ?.Samples.Count ?? 0) > 0
                    && (OscSaw          ?.Samples.Count ?? 0) > 0
@@ -59,6 +58,7 @@ namespace IngameScript
                    && (OscFastSweepUp  ?.Samples.Count ?? 0) > 0
                    && (OscCrunch       ?.Samples.Count ?? 0) > 0;
         }
+
 
 
         static string GetNewName(string name, Func<string, bool> exists)
