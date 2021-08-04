@@ -320,7 +320,7 @@ namespace IngameScript
 
                 if (   !prog.TooComplex
                     && !AnyParentIsBias
-                    &&  RND > 0.8f)
+                    &&  RND > 0.9f)
                 {
                     Bias = new Bias(this, Instrument, Source);
                     Bias.Randomize();
@@ -331,7 +331,7 @@ namespace IngameScript
 
                 if (   !prog.TooComplex
                     && !AnyParentIsEnvelope
-                    && (  !IsDigit(Tag[0]) && RND > 0.5f
+                    && (  !IsDigit(Tag[0]) && RND > 0.9f
                         || IsDigit(Tag[0]) && RND > 0.9f))
                 {
                     Envelope = new Envelope(this, Instrument, Source);
@@ -342,7 +342,7 @@ namespace IngameScript
 
 
                 if (  !prog.TooComplex
-                    && RND > 0.8f)
+                    && RND > 0.9f)
                 {
                     Lfo = new LFO(this, Instrument, Source);
                     Lfo.Randomize();

@@ -23,6 +23,7 @@ namespace IngameScript
             public Program      Program;
 
 
+
             public float CurVolume { get 
             { 
                 var vol = 0f;
@@ -32,6 +33,7 @@ namespace IngameScript
 
                 return vol;
             } }
+
 
 
             public Instrument(Program prog)
@@ -53,10 +55,12 @@ namespace IngameScript
             }
 
 
+
             public Instrument(string name, Program prog) : this(prog)
             {
                 Name = name;
             }
+
 
 
             public Instrument(Instrument inst)
@@ -80,6 +84,7 @@ namespace IngameScript
             }
 
 
+
             public void Randomize()
             {
                 Sources.Clear();
@@ -98,7 +103,7 @@ namespace IngameScript
 
                 Volume.SetValue(1, Note_null, -1);//.Randomize(Program prog);
 
-                if (RND > 0.7f)
+                if (RND > 0.9f)
                 {
                     Tune = new Tune(this, Source_null);
                     Tune.Randomize();
@@ -106,7 +111,7 @@ namespace IngameScript
                 else
                     Tune = Tune_null;
                 
-                if (   RND > 0.7f
+                if (   RND > 0.9f
                     && OK(Sources.Find(s => OK(s.Harmonics))))
                 {
                     Filter = new Filter(this, Source_null);
@@ -115,7 +120,7 @@ namespace IngameScript
                 else
                     Filter = Filter_null;
 
-                if (RND > 0.7f)
+                if (RND > 0.9f)
                 {
                     Delay = new Delay(this, Source_null);
                     Delay.Randomize();
