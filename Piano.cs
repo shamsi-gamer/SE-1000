@@ -309,6 +309,9 @@ namespace IngameScript
 
         void ClearNotes()
         {
+            if (EditedClip.RndInst)
+                return;
+
             if (EditedClip.AllChan)
             {
                 for (int i = 0; i < g_nChans; i++)
