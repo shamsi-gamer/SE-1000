@@ -55,6 +55,10 @@ namespace IngameScript
 
                 for (int p = first; p < next; p++)
                 {
+                    if (TooComplex)
+                        continue;
+
+
                     var _p = p - EditedClip.SongOff;
 
                     var px = x - _f * pw + _p * pw;
@@ -131,6 +135,9 @@ namespace IngameScript
                 // draw patterns
                 for (int p = first; p < next; p++)
                 {
+                    if (TooComplex)
+                        continue;
+
                     var _p = p - EditedClip.SongOff;
                     var px = x - _f * pw + _p * pw;
 
@@ -150,6 +157,7 @@ namespace IngameScript
                         }
                     }
                 }
+
 
                 if (EditedClip.ParamAuto)
                 { 
@@ -181,11 +189,15 @@ namespace IngameScript
                 }
 
 
-                DrawClipScrollBar(sprites, x, y, w, h, nDsp, pw, curBlock, track);
+                if (!TooComplex)
+                    DrawClipScrollBar(sprites, x, y, w, h, nDsp, pw, curBlock, track);
 
 
                 for (int p = first; p < next; p++)
                 {
+                    if (TooComplex)
+                        continue;
+
                     var _p = p - EditedClip.SongOff;
 
                     var px = x - _f * pw + _p * pw;
