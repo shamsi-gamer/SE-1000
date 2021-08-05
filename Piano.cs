@@ -213,6 +213,7 @@ namespace IngameScript
         }
 
 
+
         void Shift(int ch, bool fwd)
         {
             var pats = EditedClip.Patterns;
@@ -275,6 +276,7 @@ namespace IngameScript
         }
 
 
+
         void MoveSpillNotes(Note note, Channel spillChan, float dSteps)
         {
             note.Channel.Notes.Remove(note);
@@ -285,16 +287,19 @@ namespace IngameScript
         }
 
 
+
         void RandomInstrument()
         {
             EditedClip.RndInst = !EditedClip.RndInst;
         }
 
 
+
         void ToggleAllChannels()
         {
             EditedClip.AllChan = !EditedClip.AllChan;
         }
+
 
 
         void Flip(int ch, int frac)
@@ -315,11 +320,13 @@ namespace IngameScript
         }
 
 
+
         void Flip(int pat, int ch, int frac)
         {
             for (int step = 0; step < g_patSteps; step += g_patSteps / frac)
                 Tick(pat, ch, step);
         }
+
 
 
         void ClearNotes()
@@ -336,6 +343,7 @@ namespace IngameScript
             else
                 ClearNotes(CurChan);
         }
+
 
 
         void ClearNotes(int ch)
@@ -371,10 +379,12 @@ namespace IngameScript
         }
 
 
+
         void PickNote()
         {
             EditedClip.Pick = !EditedClip.Pick;
         }
+
 
 
         int HighToNote(int high)
@@ -389,6 +399,7 @@ namespace IngameScript
                   (60 + CurChannel.Transpose * 12 + h) * NoteScale 
                 + (EditedClip.HalfSharp ? 1 : 0);
         }
+
 
 
         int LowToNote(int low)

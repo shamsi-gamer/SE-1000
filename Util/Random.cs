@@ -74,6 +74,7 @@ namespace IngameScript
 
             var inst = Instruments[g_rnd.Next(0, Instruments.Count)];
 
+
             if (OK(rndInst))
             { 
                 if (rndInst.Contains(inst))
@@ -81,6 +82,7 @@ namespace IngameScript
 
                 rndInst.Add(inst);
             }
+
 
             for (int p = first; p <= last; p++)
             {
@@ -91,6 +93,7 @@ namespace IngameScript
                 RandomNotes(p, ch);
             }
         }
+
 
 
         void RandomNotes(int pat, int ch)
@@ -116,89 +119,98 @@ namespace IngameScript
             var curChord = g_rnd.Next(0, chords.Count);
 
 
-            var step  =  0f;
-            var dStep =  0f;
-
-            var note  = -1;
-
-
-            while (step < g_patSteps)
+            if (EditedClip.Accent) 
             {
-                if (TooComplex) return;
+                for (int i = 0; i < g_patSteps; i++)
+                    chan.Accents[i] = RND > (0.5f + (1 - 1/EditedClip.EditStep)/2);
+            }
 
-                if (RND >= 0.5)
+            else
+            { 
+                var step  =  0f;
+                var dStep =  0f;
+
+                var note  = -1;
+
+
+                while (step < g_patSteps)
                 {
-                    var found = chan.Notes.Find(n => n.Step == step);
+                    if (TooComplex) return;
 
-                    if (OK(found)) chan.Notes.Remove(found);
-                    else
-                    { 
-                        var editLength = g_steps[g_rnd.Next(0, EditedClip.EditLengthIndex + 1)];
+                    if (RND >= 0.5)
+                    {
+                        var found = chan.Notes.Find(n => n.Step == step);
 
-                        if (note < 0)
-                        { 
-                            note = ((minNote + (int)(Math.Pow(RND, 0.25) * (maxNote - minNote))) / NoteScale) * NoteScale;
-                            chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
-                        }
+                        if (OK(found)) chan.Notes.Remove(found);
                         else
-                        {
-                            var dNoteMax = dStep * _noteScale;// * Math.Pow(RND, 0.7);
-                            var dNote    = dNoteMax * RND;
+                        { 
+                            var editLength = g_steps[g_rnd.Next(0, EditedClip.EditLengthIndex + 1)];
 
-                            var rndNote = (int)MinMax(minNote, note - dNoteMax/2 + dNote, maxNote);
-                            if (!EditedClip.HalfSharp) rndNote = (rndNote / NoteScale) * NoteScale;
-
-                            if (EditedClip.ChordMode)
-                            {
-                                if (OK(EditedClip.Chord))
-                                {
-                                    var chord = EditedClip.Chords[EditedClip.Chord];
-
-                                    if (EditedClip.ChordAll)
-                                        chord = UpdateFinalTuneChord(chord, True);
-                                    
-                                    note = chord[g_rnd.Next(0, chord.Count)];
-                                    chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
-                                }
-                                else if (EditedClip.ChordAll)
-                                {
-                                    var chord = chords[curChord];
-                                    note = chord[g_rnd.Next(0, chord.Count)];
-                                    chan.AddNote(new Note(chan, ch, 1, note, step, editLength));                               
-                                }
-                                else
-                                {
-                                    note = rndNote;
-
-                                    var chord  = new List<int>{0};
-                                    var nNotes = 1 + Math.Pow(RND, 2) * (3 - 1);
-
-                                    var dist = 0;
-                                    for (int i = 0; i < nNotes; i++)
-                                    { 
-                                        dist += g_rnd.Next(3, 5) * NoteScale;
-                                        chord.Add(dist);
-                                    }
-
-                                    foreach (var off in chord)
-                                    { 
-                                        var _note = note + off;
-                                        if (!EditedClip.HalfSharp) _note = (_note / NoteScale) * NoteScale;
-                                        chan.AddNote(new Note(chan, ch, 1, _note, step, editLength));                               
-                                    }
-                                }
+                            if (note < 0)
+                            { 
+                                note = ((minNote + (int)(Math.Pow(RND, 0.25) * (maxNote - minNote))) / NoteScale) * NoteScale;
+                                chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
                             }
                             else
-                            { 
-                                note = rndNote;
-                                chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
+                            {
+                                var dNoteMax = dStep * _noteScale;// * Math.Pow(RND, 0.7);
+                                var dNote    = dNoteMax * RND;
+
+                                var rndNote = (int)MinMax(minNote, note - dNoteMax/2 + dNote, maxNote);
+                                if (!EditedClip.HalfSharp) rndNote = (rndNote / NoteScale) * NoteScale;
+
+                                if (EditedClip.ChordMode)
+                                {
+                                    if (OK(EditedClip.Chord))
+                                    {
+                                        var chord = EditedClip.Chords[EditedClip.Chord];
+
+                                        if (EditedClip.ChordAll)
+                                            chord = UpdateFinalTuneChord(chord, True);
+                                    
+                                        note = chord[g_rnd.Next(0, chord.Count)];
+                                        chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
+                                    }
+                                    else if (EditedClip.ChordAll)
+                                    {
+                                        var chord = chords[curChord];
+                                        note = chord[g_rnd.Next(0, chord.Count)];
+                                        chan.AddNote(new Note(chan, ch, 1, note, step, editLength));                               
+                                    }
+                                    else
+                                    {
+                                        note = rndNote;
+
+                                        var chord  = new List<int>{0};
+                                        var nNotes = 1 + Math.Pow(RND, 2) * (3 - 1);
+
+                                        var dist = 0;
+                                        for (int i = 0; i < nNotes; i++)
+                                        { 
+                                            dist += g_rnd.Next(3, 5) * NoteScale;
+                                            chord.Add(dist);
+                                        }
+
+                                        foreach (var off in chord)
+                                        { 
+                                            var _note = note + off;
+                                            if (!EditedClip.HalfSharp) _note = (_note / NoteScale) * NoteScale;
+                                            chan.AddNote(new Note(chan, ch, 1, _note, step, editLength));                               
+                                        }
+                                    }
+                                }
+                                else
+                                { 
+                                    note = rndNote;
+                                    chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
+                                }
                             }
                         }
                     }
-                }
 
-                dStep = 1 + (int)Math.Round(Math.Pow(RND, 0.8f) * Math.Max(0, (g_steps[EditedClip.EditStepIndex] - 1)));
-                step += dStep;
+                    dStep = 1 + (int)Math.Round(Math.Pow(RND, 0.8f) * Math.Max(0, (g_steps[EditedClip.EditStepIndex] - 1)));
+                    step += dStep;
+                }
             }
         }
 
