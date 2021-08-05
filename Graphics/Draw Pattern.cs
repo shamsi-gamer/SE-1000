@@ -139,40 +139,69 @@ namespace IngameScript
                     var chan = clip.Patterns[p].Channels[ch];
 
 
-                    foreach (var n in chan.Notes)
+                    if (EditedClip.Accent)
                     {
-                        var noteStart = n.ClipStep + n.ShOffset;
-                        var noteEnd   = noteStart + n.StepLength;
+                        for (int i = 0; i < g_patSteps; i++)
+                        {
+                            if (!chan.Accents[i]) continue;
 
-                        if (   noteEnd   <= patStart
-                            || noteStart >= patEnd)
-                            continue;
+                            var noteStart = p * g_patSteps + i;
+                            var noteEnd   = noteStart + 1;
 
-                        noteStart = Math.Max(noteStart, patStart);
-                        noteEnd   = Math.Min(noteEnd,   patEnd);
+                            var pt = new Vector2(
+                                x + wt * (noteStart-patStart),
+                                yLine + ht/2);
 
+                            var tw = (float)Math.Floor(wt * (noteEnd-noteStart)) - gs*2;
 
-                        var pt = new Vector2(
-                            x + wt * (noteStart-patStart),
-                            yLine + ht/2);
-
-                        var tw = (float)Math.Floor(wt * (noteEnd-noteStart)) - gs*2;
-
-                        var on =
-                               chan.On
-                            && (  !IsCurParam() 
-                                || ch == CurChan);
-
-                        var colTick = on ? color6 : color3;
+                            var on =
+                                  !IsCurParam() 
+                                || ch == CurChan;
 
 
-                        FillRect(
-                            sprites, 
-                            pt.X + gs,
-                            pt.Y - th/2,
-                            tw,
-                            th,
-                            colTick);
+                            FillRect(
+                                sprites, 
+                                pt.X + gs,
+                                pt.Y - th/2,
+                                tw,
+                                th,
+                                on ? color6 : color3);
+                        }
+                    }
+                    else
+                    { 
+                        foreach (var n in chan.Notes)
+                        {
+                            var noteStart = n.ClipStep + n.ShOffset;
+                            var noteEnd   = noteStart + n.StepLength;
+
+                            if (   noteEnd   <= patStart
+                                || noteStart >= patEnd)
+                                continue;
+
+
+                            noteStart = Math.Max(noteStart, patStart);
+                            noteEnd   = Math.Min(noteEnd,   patEnd);
+
+                            var pt = new Vector2(
+                                x + wt * (noteStart-patStart),
+                                yLine + ht/2);
+
+                            var tw = (float)Math.Floor(wt * (noteEnd-noteStart)) - gs*2;
+
+                            var on = chan.On
+                                && (  !IsCurParam() 
+                                    || ch == CurChan);
+
+
+                            FillRect(
+                                sprites, 
+                                pt.X + gs,
+                                pt.Y - th/2,
+                                tw,
+                                th,
+                                on ? color6 : color3);
+                        }
                     }
                 }
             }
@@ -201,31 +230,63 @@ namespace IngameScript
 
                     var chan = clip.Patterns[p].Channels[ch];
 
-                    foreach (var n in chan.Notes)
+                    if (EditedClip.Accent)
                     {
-                        var noteStart = n.ClipStep + n.ShOffset;
-                        var noteEnd   =  noteStart + n.StepLength;
-
-                        if (   noteEnd   <= patStart
-                            || noteStart >= patEnd)
-                            continue;
-
-                        var pt = new Vector2(
-                            x + wt * (isolated ? _step : step),
-                            yLine + ht/2);
-
-                        if (   step >= noteStart
-                            && step <  noteEnd)
+                        for (int i = 0; i < g_patSteps; i++)
                         {
-                            var tw = (float)Math.Floor(wt * (noteEnd - noteStart));
+                            if (!chan.Accents[i]) continue;
 
-                            FillRect(
-                                sprites, 
-                                pt.X + 1,
-                                pt.Y - th/2,
-                                Math.Min(tw, wt) - 2,
-                                th,
-                                color2);
+                            var noteStart = p * g_patSteps + i;
+                            var noteEnd   = noteStart + 1;
+
+                            var pt = new Vector2(
+                                x + wt * (isolated ? _step : step),
+                                yLine + ht / 2);
+
+                            if (   step >= noteStart
+                                && step < noteEnd)
+                            {
+                                var tw = (float)Math.Floor(wt * (noteEnd - noteStart));
+
+                                FillRect(
+                                    sprites,
+                                    pt.X + 1,
+                                    pt.Y - th / 2,
+                                    Math.Min(tw, wt) - 2,
+                                    th,
+                                    color2);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var n in chan.Notes)
+                        {
+                            var noteStart = n.ClipStep + n.ShOffset;
+                            var noteEnd   =  noteStart + n.StepLength;
+
+                            if (   noteEnd   <= patStart
+                                || noteStart >= patEnd)
+                                continue;
+
+
+                            var pt = new Vector2(
+                                x + wt * (isolated ? _step : step),
+                                yLine + ht/2);
+
+                            if (   step >= noteStart
+                                && step <  noteEnd)
+                            {
+                                var tw = (float)Math.Floor(wt * (noteEnd - noteStart));
+
+                                FillRect(
+                                    sprites, 
+                                    pt.X + 1,
+                                    pt.Y - th/2,
+                                    Math.Min(tw, wt) - 2,
+                                    th,
+                                    color2);
+                            }
                         }
                     }
                 }
