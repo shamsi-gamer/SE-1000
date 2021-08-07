@@ -61,13 +61,25 @@ namespace IngameScript
 
 
 
-        static void SetCurInst(Instrument inst)
+        static void SetCurInst(Instrument newInst)
         {
+            var oldInst = EditedClip.CurInstrument;
+
             int first, last;
             EditedClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
-                EditedClip.Patterns[p].Channels[CurChan].Instrument = inst;
+            { 
+                var chans = EditedClip.GetCurChannels(p, oldInst, False);
+
+                for (int ch = 0; ch < chans.Count; ch++)
+                {
+                    SetInstrument(
+                        EditedClip.Patterns[p].Channels[ch],
+                        oldInst,
+                        newInst);
+                }
+            }
         }
 
         

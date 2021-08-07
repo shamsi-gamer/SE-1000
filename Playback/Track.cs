@@ -245,6 +245,9 @@ namespace IngameScript
                     || EditClip == 2) // dup
                     MoveClip(index);
 
+                if (EditClip == 2)                        
+                    SetEditedClip(Clips[index]);
+
                 ClipCopy = Clip_null;
                 EditClip = -1;
             }
@@ -260,7 +263,7 @@ namespace IngameScript
                 if (EditClip == 1) // move
                     Swap(ref Clips[index], ref srcTrack.Clips[srcIndex]);
 
-                else  // duplicate
+                else // duplicate
                 {
                     if (   OK(Clips[index]) 
                         && Clips[index] == ClipCopy)

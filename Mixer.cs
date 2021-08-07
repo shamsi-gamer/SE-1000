@@ -8,6 +8,7 @@
         }
 
 
+
         void SetVolumeAll(float dv)
         {
             if (ShowMixer > 0)
@@ -36,6 +37,7 @@
         }
 
 
+
         void EnableChannels(bool on)
         {
             if (ShowMixer > 0)
@@ -62,6 +64,7 @@
         }
 
 
+
         void EnableChannel(int ch, bool on)
         {
             int first, last;
@@ -72,11 +75,13 @@
         }
 
 
+
         void EnableChannel(int pat, int ch, bool on)
         {
             var chan = EditedClip.Patterns[pat].Channels[ch];
             chan.On = on;
         }
+
 
 
         public void SetVolume(int ch, float dv)
@@ -105,6 +110,7 @@
                 CheckIfMustStop();
             }
         }
+
 
 
         void Solo(int ch)
@@ -147,6 +153,7 @@
         }
 
 
+
         void Mute(int ch)
         {
             if (ShowMixer == 2)
@@ -172,6 +179,7 @@
         }
 
 
+
         void SoloChannel(int pat, int ch)
         {
             for (int i = 0; i < g_nChans; i++)
@@ -183,6 +191,7 @@
 
             EnableChannel(pat, ch, True);
         }
+
 
 
         void UnsoloChannel(int pat, int ch)
