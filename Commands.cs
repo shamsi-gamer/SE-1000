@@ -216,6 +216,7 @@ namespace IngameScript
         }
 
 
+
         void ToggleMove()
         {
             if (OK(CurSet)) 
@@ -223,6 +224,7 @@ namespace IngameScript
 
             EditedClip.Move = !EditedClip.Move;
         }
+
 
 
         void MoveChan(int move)
@@ -243,6 +245,7 @@ namespace IngameScript
                 if (n >= Instruments.Count) n = 0;
                 if (n < 0)                  n = Instruments.Count - 1;
 
+
                 if (EditedClip.Move)
                 {
                     var inst = Instruments[i];
@@ -250,35 +253,24 @@ namespace IngameScript
                     Instruments.RemoveAt(i);
                     Instruments.Insert(n, inst);
                 }
-                else
+                else // change instrument
                 {
+                    var newInst = Instruments[n];
+                    var oldInst = EditedClip.CurInstrument;
+
                     int first, last;
                     EditedClip.GetCurPatterns(out first, out last);
 
                     for (int p = first; p <= last; p++)
                     { 
-                        var newInst = Instruments[n];
-                        var chan    = EditedClip.Patterns[p].Channels[CurChan];
+                        var chans = EditedClip.GetCurChannels(p, oldInst, False);
 
-                        var oldInst = chan.Instrument;
-                        chan.Instrument = newInst;
-
-                        
-                        // update keys
-
-                        foreach (var note in chan.Notes)
+                        for (int ch = 0; ch < chans.Count; ch++)
                         {
-                            foreach (var key in note.Keys)
-                            {
-                                if (key.Parameter.Instrument == oldInst)
-                                    key.Parameter.Instrument = newInst;
-                            }
-                        }
-
-                        foreach (var key in chan.AutoKeys)
-                        {
-                            if (key.Parameter.Instrument == oldInst)
-                                key.Parameter.Instrument = newInst;
+                            SetInstrument(
+                                EditedClip.Patterns[p].Channels[ch],
+                                oldInst,
+                                newInst);
                         }
                     }
                 }
@@ -317,6 +309,32 @@ namespace IngameScript
             if (move >= 0) lblNext.Mark();
             else           lblPrev.Mark();
         }
+
+
+
+        static void SetInstrument(Channel chan, Instrument oldInst, Instrument newInst)
+        {
+            chan.Instrument = newInst;
+
+                        
+            // update keys
+
+            foreach (var note in chan.Notes)
+            {
+                foreach (var key in note.Keys)
+                {
+                    if (key.Parameter.Instrument == oldInst)
+                        key.Parameter.Instrument = newInst;
+                }
+            }
+
+            foreach (var key in chan.AutoKeys)
+            {
+                if (key.Parameter.Instrument == oldInst)
+                    key.Parameter.Instrument = newInst;
+            }
+        }
+
 
 
         static void BackOut()
@@ -363,6 +381,7 @@ namespace IngameScript
 
             //SaveInstruments();
         }
+
 
 
         void Back()
@@ -422,6 +441,7 @@ namespace IngameScript
         }
 
 
+
         void Enter()
         {
             if (OK(CurSet))
@@ -451,6 +471,7 @@ namespace IngameScript
                 lblEnter.Mark();
             }
         }
+
 
 
         void Command1()

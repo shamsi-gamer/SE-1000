@@ -18,6 +18,7 @@ namespace IngameScript
         }
 
 
+
         bool Cmd1IsBright(Label lbl)
         {
             return
@@ -29,6 +30,7 @@ namespace IngameScript
                    && LockView > 0
                 || OK(g_editKey);
         }
+
 
 
         void UpdateCmd1(Label lbl)
@@ -69,6 +71,7 @@ namespace IngameScript
         }
 
 
+
         void UpdateCmd2(Label lbl)
         {
             if (OK(CurSrc))
@@ -82,12 +85,14 @@ namespace IngameScript
         }
 
 
+
         bool AdjustIsBright(Label lbl)
         {
             return
                    CanAdjust 
                 && EditedClip.Shift;
         }
+
 
 
         void UpdateAdjustUp(Label lbl)
@@ -97,6 +102,7 @@ namespace IngameScript
         }
 
 
+
         void UpdateAdjustDown(Label lbl)
         {
             var str = AdjustArrowsAreVertical ? strDown : strLeft;
@@ -104,10 +110,12 @@ namespace IngameScript
         }
 
 
+
         void UpdateAdjustShift(Label lbl)
         {
             lbl.SetText(CanAdjust ? strShift : strEmpty, 9, 14);
         }
+
 
 
         bool Cmd3IsBright(Label lbl)
@@ -120,6 +128,7 @@ namespace IngameScript
         }
 
 
+
         bool Cmd3IsDim(Label lbl)
         {
             return
@@ -127,6 +136,7 @@ namespace IngameScript
                 && CurSrc < 0
                 && EditedClip.EditNotes.Count > 0;
         }
+
 
 
         void UpdateCmd3(Label lbl)

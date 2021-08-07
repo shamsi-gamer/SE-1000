@@ -652,12 +652,13 @@ namespace IngameScript
 
 
 
-            public List<Channel> GetCurChannels(int p)
+            public List<Channel> GetCurChannels(int p, Instrument refInst, bool includeAllChan = True)
             {
                 var pat   = Patterns[p];
                 var chans = new List<Channel>();
 
-                if (AllChan)
+                if (   AllChan
+                    && includeAllChan)
                 {
                     foreach (var ch in pat.Channels)
                         chans.Add(ch);
@@ -665,7 +666,7 @@ namespace IngameScript
                 else if (RndInst)
                 {
                     foreach (var ch in pat.Channels)
-                        if (ch.Instrument == CurInstrument)
+                        if (ch.Instrument == refInst)
                             chans.Add(ch);
                 }
                 else

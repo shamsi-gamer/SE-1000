@@ -380,12 +380,15 @@ namespace IngameScript
 
         void CollapseChannels()
         {
+            var refInst = EditedClip.CurInstrument;
+
+
             int first, last;
             EditedClip.GetCurPatterns(out first, out last);
 
             for (int p = first; p <= last; p++)
             {
-                var chans = EditedClip.GetCurChannels(p);
+                var chans = EditedClip.GetCurChannels(p, refInst);
 
                 if (chans.Count > 1)
                 {
@@ -600,12 +603,14 @@ namespace IngameScript
             }
             else
             {
+                var refInst = EditedClip.CurInstrument;
+
                 int first, last;
                 clip.GetPatterns(clip.EditPat, out first, out last);
 
                 for (int p = first; p <= last; p++)
                 {
-                    var chans = clip.GetCurChannels(p);
+                    var chans = clip.GetCurChannels(p, refInst);
 
                     foreach (var chan in chans)
                         Transpose(clip, chan, tr);
@@ -667,16 +672,18 @@ namespace IngameScript
 
         void ReverseNotes()
         {
-            int first, last;
-            EditedClip.GetCurPatterns(out first, out last);
-
-
             var notes = new List<Note>();
 
 
+            var refInst = EditedClip.CurInstrument;
+
+
+            int first, last;
+            EditedClip.GetCurPatterns(out first, out last);
+
             for (int p = first; p <= last; p++)
             {
-                var chans = EditedClip.GetCurChannels(p);
+                var chans = EditedClip.GetCurChannels(p, refInst);
 
                 foreach (var chan in chans)
                 { 
@@ -720,17 +727,19 @@ namespace IngameScript
 
         void FlipNotes()
         {
-            int first, last;
-            EditedClip.GetCurPatterns(out first, out last);
-
-
             int lowest  = int.MaxValue,
                 highest = int.MinValue;
 
 
+            var refInst = EditedClip.CurInstrument;
+
+
+            int first, last;
+            EditedClip.GetCurPatterns(out first, out last);
+
             for (int p = first; p <= last; p++)
             {
-                var chans = EditedClip.GetCurChannels(p);
+                var chans = EditedClip.GetCurChannels(p, refInst);
 
                 foreach (var chan in chans)
                 { 
@@ -745,7 +754,7 @@ namespace IngameScript
 
             for (int p = first; p <= last; p++)
             {
-                var chans = EditedClip.GetCurChannels(p);
+                var chans = EditedClip.GetCurChannels(p, refInst);
 
                 foreach (var chan in chans)
                     foreach (var note in chan.Notes)
