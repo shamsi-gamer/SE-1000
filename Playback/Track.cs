@@ -245,7 +245,8 @@ namespace IngameScript
                     || EditClip == 2) // dup
                     MoveClip(index);
 
-                if (EditClip == 2)                        
+                if (   EditClip == 2
+                    && ClipCopy == EditedClip)                        
                     SetEditedClip(Clips[index]);
 
                 ClipCopy = Clip_null;
