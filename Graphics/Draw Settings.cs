@@ -291,7 +291,7 @@ namespace IngameScript
                 if (   note.ClipStep >= clip.EditPos
                     && note.ClipStep <  clip.EditPos+1)
                 {
-                    DrawLine  (sprites, pt.X, pt.Y, p0.X, p0.Y, color0, w/250+2);
+                    DrawLine  (sprites, p0.X, pt.Y, p0.X, p0.Y, color0, w/250+2);
                     FillCircle(sprites, p0.X, p0.Y, cd/2+1, color0);
 
                     if (!OK(key)) col = color4;
@@ -430,7 +430,8 @@ namespace IngameScript
 
             return new Vector2(
                 x + wt * (note.Step + (note.PatIndex - p)*g_patSteps + note.ShOffset) + wt/2, 
-                y + h - h/2 * val - cd/2);
+                y + h - h * val);
+                //y + h - h/2 * val - cd/2);
         }
 
 
