@@ -121,10 +121,9 @@ namespace IngameScript
 
             if (EditedClip.Accent) 
             {
-                for (int i = 0; i < g_patSteps; i++)
-                    chan.Accents[i] = RND > (0.5f + (1 - 1/EditedClip.EditStep)/2);
+                foreach (var note in chan.Notes)
+                    note.Accent = RND > (0.5f + (1 - 1/EditedClip.EditStep)/2);
             }
-
             else
             { 
                 var step  =  0f;
@@ -149,7 +148,7 @@ namespace IngameScript
                             if (note < 0)
                             { 
                                 note = ((minNote + (int)(Math.Pow(RND, 0.25) * (maxNote - minNote))) / NoteScale) * NoteScale;
-                                chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
+                                chan.AddNote(new Note(chan, ch, 1, RND > 0.8f, note, step, editLength));
                             }
                             else
                             {
@@ -169,13 +168,13 @@ namespace IngameScript
                                             chord = UpdateFinalTuneChord(chord, True);
                                     
                                         note = chord[g_rnd.Next(0, chord.Count)];
-                                        chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
+                                        chan.AddNote(new Note(chan, ch, 1, RND > 0.9f, note, step, editLength));
                                     }
                                     else if (EditedClip.ChordAll)
                                     {
                                         var chord = chords[curChord];
                                         note = chord[g_rnd.Next(0, chord.Count)];
-                                        chan.AddNote(new Note(chan, ch, 1, note, step, editLength));                               
+                                        chan.AddNote(new Note(chan, ch, 1, RND > 0.9f, note, step, editLength));                               
                                     }
                                     else
                                     {
@@ -195,14 +194,14 @@ namespace IngameScript
                                         { 
                                             var _note = note + off;
                                             if (!EditedClip.HalfSharp) _note = (_note / NoteScale) * NoteScale;
-                                            chan.AddNote(new Note(chan, ch, 1, _note, step, editLength));                               
+                                            chan.AddNote(new Note(chan, ch, 1, RND > 0.9f, _note, step, editLength));                               
                                         }
                                     }
                                 }
                                 else
                                 { 
                                     note = rndNote;
-                                    chan.AddNote(new Note(chan, ch, 1, note, step, editLength));
+                                    chan.AddNote(new Note(chan, ch, 1, RND > 0.8f, note, step, editLength));
                                 }
                             }
                         }
@@ -213,6 +212,7 @@ namespace IngameScript
                 }
             }
         }
+
 
 
         void RandomParamKeys(int pat, int ch)

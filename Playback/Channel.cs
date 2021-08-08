@@ -20,7 +20,6 @@ namespace IngameScript
                               Transpose;
 
             public List<Note> Notes;
-            public bool[]     Accents;
             public List<Key>  AutoKeys;
 
 
@@ -34,10 +33,6 @@ namespace IngameScript
                 Volume     = 1;
                 Shuffle    = 0;
                 Transpose  = 0;
-
-                Accents = new bool[g_patSteps];
-                for (int i = 0; i < g_patSteps; i++)
-                    Accents[i] = False;
 
                 Notes      = new List<Note>();
                 AutoKeys   = new List<Key>();
@@ -62,11 +57,6 @@ namespace IngameScript
                     var note = new Note(n) { Channel = this };
                     Notes.Add(note);
                 }
-
-
-                Accents = new bool[g_patSteps];
-                for (int i = 0; i < g_patSteps; i++)
-                    Accents[i] = chan.Accents[i];
 
 
                 AutoKeys = new List<Key>();
@@ -145,8 +135,6 @@ namespace IngameScript
                 save += WS(Shuffle);
                 save += WS(Transpose);
 
-                save += WS(SaveAccents());
-
                 save += SaveNotes();
                 save += SaveAutoKeys();
 
@@ -163,18 +151,6 @@ namespace IngameScript
                     save += P(n.Save());
 
                 return save;
-            }
-
-
-
-            int SaveAccents()
-            {
-                var accents = 0;
-
-                for (int i = 0; i < g_patSteps; i++)
-                    if (Accents[i]) accents |= 1 << i;
-
-                return accents;
             }
 
 
@@ -205,20 +181,10 @@ namespace IngameScript
                 chan.Shuffle    = int  .Parse(data[i++]);
                 chan.Transpose  = int  .Parse(data[i++]);
 
-                chan.LoadAccents(int.Parse(data[i++]));
-
                 chan.LoadNotes   (data, ref i, index);
                 chan.LoadAutoKeys(data, ref i);
 
                 return chan;
-            }
-
-
-
-            void LoadAccents(int accents)
-            {
-                for (int i = 0; i < g_patSteps; i++)
-                    Accents[i] = ((accents >> i) & 1) != 0;
             }
 
 

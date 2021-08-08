@@ -21,7 +21,6 @@ namespace IngameScript
             if (ext.Length != 3) return;
 
             Load(ext[0], ext[1], ext[2]);
-            //SetLabelColor(EditedClip.ColorIndex);
 
             g_lcdPressed.Add(lcdInfo + 0);
         }
@@ -41,6 +40,8 @@ namespace IngameScript
 
 
             Instruments = new List<Instrument>();
+
+
             CreateTracks(this);
 
 
@@ -73,15 +74,9 @@ namespace IngameScript
                         FinalizeLoad();
                         return;
                     }
-
-                    //if (g_ioPos > 0) g_ioString += "\n";
-                    //g_ioString += Instruments[g_ioPos++].Save();
                 }
                 else // end of instruments
                 {
-                    //pnlStorageInstruments.WriteText(g_ioString);
-
-                    //g_ioString = "";
                     g_ioState    = 1; // tracks
                     g_ioPos      = 0; // clip
                     g_trackIndex = 0;

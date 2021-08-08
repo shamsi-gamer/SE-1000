@@ -147,47 +147,45 @@ namespace IngameScript
             var _chan = EditedClip.Patterns[pat].Channels[ch];
             var  chan = EditedClip.Patterns[pat].Channels[ch];
 
-            if (EditedClip.Accent)
+            var dStep = Math.Min(Math.Max(0.5f, EditedClip.EditStep), 1);
+
+            var found = chan.Notes.Where(n => 
+                    n.Step >= step
+                && n.Step <  step + dStep).ToArray();
+
+            if (found.Length == 0)
             {
-                chan.Accents[(int)step] = !chan.Accents[(int)step];
+                if (!EditedClip.Pick)
+                {
+                    var notes = GetChordNotes(EditedClip.CurNote);
+
+                    for (int n = 0; n < notes.Count; n++)
+                        chan.AddNote(new Note(chan, ch, 1, False, notes[n], step + ChordStrum(n), EditedClip.EditStepLength));
+                }
+            }
+            else if (EditedClip.Pick)
+            {
+                EditedClip.CurNote = found[0].Number;
+                EditedClip.Pick    = False;
+
+                TriggerNote(
+                    EditedClip,
+                    found[0].Number, 
+                    ch, 
+                    found[0].StepLength,
+                    0);
+            }
+            else if (EditedClip.Accent)
+            {
+                var acc = False;
+
+                foreach (var n in found) acc |= n.Accent;
+                foreach (var n in found) n.Accent = !acc;
             }
             else
             {
-                var dStep = Math.Min(Math.Max(0.5f, EditedClip.EditStep), 1);
-
-                var found = chan.Notes.Where(n => 
-                       n.Step >= step
-                    && n.Step <  step + dStep).ToArray();
-
-                if (found.Length == 0)
-                {
-                    if (!EditedClip.Pick)
-                    {
-                        var notes = GetChordNotes(EditedClip.CurNote);
-
-                        for (int n = 0; n < notes.Count; n++)
-                            chan.AddNote(new Note(chan, ch, 1, notes[n], step + ChordStrum(n), EditedClip.EditStepLength));
-                    }
-                }
-                else if (EditedClip.Pick)
-                {
-                    EditedClip.CurNote = found[0].Number;
-                    EditedClip.Pick    = False;
-
-                    TriggerNote(
-                        EditedClip,
-                        found[0].Number, 
-                        ch, 
-                        found[0].StepLength,
-                        0);
-                }
-                else
-                {
-                    EditedClip.Pick = False;
-                
-                    foreach (var n in found)
-                        chan.Notes.Remove(n);
-                }
+                foreach (var n in found)
+                    chan.Notes.Remove(n);
             }
         }
 
@@ -195,70 +193,13 @@ namespace IngameScript
 
         void Shift(bool fwd)
         {
-            if (    EditedClip.AllChan
-                && !EditedClip.Accent) // shifting accents for all channels makes no sense
+            if (EditedClip.AllChan)
             {
                 for (int ch = 0; ch < g_nChans; ch++)
-                    Shift(ch, fwd);
+                    ShiftNotes(ch, fwd);
             }
             else
-                Shift(CurChan, fwd);
-        }
-
-
-
-        void Shift(int ch, bool fwd)
-        {
-            ShiftAccents(ch, fwd); // accents always get shifted, either with the notes or by themselves
-
-            if (!EditedClip.Accent) 
-                ShiftNotes(ch, fwd);
-        }
-
-
-
-        void ShiftAccents(int ch, bool fwd)
-        {
-            int first, last;
-            EditedClip.GetCurPatterns(out first, out last);
-
-            var accents = new bool[(last-first+1) * g_patSteps];
-            var wrap    = new bool[g_patSteps];
-
-            // put all accents into one array
-            for (int p = first; p <= last; p++)
-            {
-                var chan = EditedClip.Patterns[p].Channels[ch];
-
-                for (int i = 0; i < g_patSteps; i++)
-                    accents[(p-first)*g_patSteps + i] = chan.Accents[i];
-            }
-
-
-            var step = EditedClip.EditStep;
-
-            if (fwd)
-            {
-                for (int i = 0;                i <  step; i++) wrap[i]    = accents[(int)(accents.Length - step + i)];
-                for (int i = accents.Length-1; i >= step; i--) accents[i] = accents[(int)(i - step)];
-                for (int i = 0;                i <  step; i++) accents[i] = wrap[i];
-            }
-            else
-            {
-                for (int i = 0; i < step;                  i++) wrap[i]                                   = accents[i];
-                for (int i = 0; i < accents.Length - step; i++) accents[i]                                = accents[(int)(i + step)];
-                for (int i = 0; i < step;                  i++) accents[(int)(accents.Length - step + i)] = wrap[i];
-            }
-
-
-            // put shifted accents back into their channels
-            for (int p = first; p <= last; p++)
-            {
-                var chan = EditedClip.Patterns[p].Channels[ch];
-
-                for (int i = 0; i < g_patSteps; i++)
-                    chan.Accents[i] = accents[(p-first)*g_patSteps + i];
-            }
+                ShiftNotes(CurChan, fwd);
         }
 
 
@@ -297,7 +238,7 @@ namespace IngameScript
 
             foreach (var note in spill)
             {
-                var spillPat  = 
+                var spillPat = 
                     fwd 
                     ? (note.PatIndex == last  ? first : note.PatIndex+1)
                     : (note.PatIndex == first ? last  : note.PatIndex-1);
@@ -400,12 +341,13 @@ namespace IngameScript
 
                 else
                 { 
-                    if (!EditedClip.Accent)
+                    if (EditedClip.Accent)
+                    {
+                        foreach (var note in chan.Notes)
+                            note.Accent = False;
+                    }
+                    else
                         chan.Notes.Clear();
-    
-                    // accents are cleared in all cases
-                    for (int i = 0; i < g_patSteps; i++)
-                        chan.Accents[i] = False;
                 }
             }
 

@@ -56,6 +56,7 @@ namespace IngameScript
 
         static List<TriggerValue>    _triggerDummy = new List<TriggerValue>();
 
+
                                                    
         public Program()
         {
@@ -65,6 +66,7 @@ namespace IngameScript
 
 
             pnlInfoLog = Get("Info Display") as IMyTextPanel;
+            
             //pnlInfoLog.CustomData = ""; // init log storage
 
 
@@ -107,9 +109,11 @@ namespace IngameScript
         }
 
 
+
         void FinishStartup()
         {
             // load oscillators one by one to avoid complexity hang
+
             if (_loadStep < OscCount)
                 LoadOscillatorSamples(_loadStep++);
 
@@ -117,12 +121,22 @@ namespace IngameScript
             {
                 _loadStep++;
 
-                Load(
-                    pnlStorageState      .GetText(),
-                    pnlStorageInstruments.GetText(),
-                    pnlStorageTracks     .GetText());
+                if (pnlStorageState.GetText().Trim() == "")
+                { 
+                    Load("", pnlStorageInstruments.GetText(), "");
+                    SetLabelColor(EditedClip.ColorIndex);
+                    return;
+                }
+                else
+                { 
+                    Load(
+                        pnlStorageState      .GetText(),
+                        pnlStorageInstruments.GetText(),
+                        pnlStorageTracks     .GetText());
+                }
             }
         }
+
 
 
         void InitDisplays()

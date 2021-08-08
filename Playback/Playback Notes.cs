@@ -154,7 +154,7 @@ namespace IngameScript
 
                     //var noteStep = (int)((step % g_patSteps + ChordStrum(i)) / editStep) * editStep;
                     var noteStep = step % g_patSteps + ChordStrum(i);
-                    var lastNote = new Note(chan, ch, 1, note, noteStep, EditedClip.EditStepLength);
+                    var lastNote = new Note(chan, ch, 1, False, note, noteStep, EditedClip.EditStepLength);
                     
                     lastNotes.Add(lastNote);
                     chan.AddNote(lastNote);
@@ -179,7 +179,7 @@ namespace IngameScript
                   // : TimeStep) 
                 + chordStrumOffset;
 
-            AddNoteAndSounds(new Note(chan, ch, 1, num, patStep, len));
+            AddNoteAndSounds(new Note(chan, ch, 1, False, num, patStep, len));
         }
 
 

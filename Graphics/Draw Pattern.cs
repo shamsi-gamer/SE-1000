@@ -21,7 +21,8 @@ namespace IngameScript
             var xt = 310;
             var wt = (w - xt) / g_patSteps;
 
-            DrawGrid(sprites, x + xt, y, w - xt, rh, EditPat);
+            DrawBeats(sprites, x + xt, y, w - xt, rh, EditPat);
+            DrawGrid (sprites, x + xt, y, w - xt, rh, EditPat);
 
 
             var ch = rh / g_nChans;
@@ -101,13 +102,21 @@ namespace IngameScript
 
 
 
-        void DrawGrid(List<MySprite> sprites, float x, float y, float w, float h, int pattern, int patSteps = g_patSteps)
+        void DrawBeats(List<MySprite> sprites, float x, float y, float w, float h, int pattern, int patSteps = g_patSteps)
         {
             var wt = w / g_patSteps;
             var ht = h / g_nChans;
 
-            for (int t = 0; t < patSteps; t += 4)
-                FillRect(sprites, x + t * wt, y, wt, h, color1);
+            for (int t = 4; t < patSteps; t += 8)
+                FillRect(sprites, x + t * wt, y, wt*4, h, color1);
+        }
+
+
+
+        void DrawGrid(List<MySprite> sprites, float x, float y, float w, float h, int pattern, int patSteps = g_patSteps)
+        {
+            var wt = w / g_patSteps;
+            var ht = h / g_nChans;
 
             for (int ch = 0; ch < g_nChans; ch += 2)
                 FillRect(sprites, x, y + h - (ch + 1) * ht, wt*patSteps, ht, color2);
@@ -139,69 +148,46 @@ namespace IngameScript
                     var chan = clip.Patterns[p].Channels[ch];
 
 
-                    if (EditedClip.Accent)
+                    foreach (var note in chan.Notes)
                     {
-                        for (int i = 0; i < g_patSteps; i++)
-                        {
-                            if (!chan.Accents[i]) continue;
+                        var noteStart = note.ClipStep + note.ShOffset;
+                        var noteEnd   = noteStart + note.StepLength;
 
-                            var noteStart = p * g_patSteps + i;
-                            var noteEnd   = noteStart + 1;
-
-                            var pt = new Vector2(
-                                x + wt * (noteStart-patStart),
-                                yLine + ht/2);
-
-                            var tw = (float)Math.Floor(wt * (noteEnd-noteStart)) - gs*2;
-
-                            var on =
-                                  !IsCurParam() 
-                                || ch == CurChan;
+                        if (   noteEnd   <= patStart
+                            || noteStart >= patEnd)
+                            continue;
 
 
-                            FillRect(
-                                sprites, 
-                                pt.X + gs,
-                                pt.Y - th/2,
-                                tw,
-                                th,
-                                on ? color6 : color3);
-                        }
-                    }
-                    else
-                    { 
-                        foreach (var n in chan.Notes)
-                        {
-                            var noteStart = n.ClipStep + n.ShOffset;
-                            var noteEnd   = noteStart + n.StepLength;
+                        noteStart = Math.Max(noteStart, patStart);
+                        noteEnd   = Math.Min(noteEnd,   patEnd);
 
-                            if (   noteEnd   <= patStart
-                                || noteStart >= patEnd)
-                                continue;
+                        var pt = new Vector2(
+                            x + wt * (noteStart-patStart),
+                            yLine + ht/2);
 
+                        var tw = (float)Math.Floor(wt * (noteEnd-noteStart)) - gs*2;
 
-                            noteStart = Math.Max(noteStart, patStart);
-                            noteEnd   = Math.Min(noteEnd,   patEnd);
+                        var on = chan.On
+                            && (  !IsCurParam() 
+                                || ch == CurChan);
 
-                            var pt = new Vector2(
-                                x + wt * (noteStart-patStart),
-                                yLine + ht/2);
+                        // draw note
+                        FillRect(
+                            sprites, 
+                            pt.X + gs,
+                            pt.Y - th/2,
+                            tw,
+                            th,
+                            on ? color6 : color3);
 
-                            var tw = (float)Math.Floor(wt * (noteEnd-noteStart)) - gs*2;
-
-                            var on = chan.On
-                                && (  !IsCurParam() 
-                                    || ch == CurChan);
-
-
-                            FillRect(
-                                sprites, 
-                                pt.X + gs,
-                                pt.Y - th/2,
-                                tw,
-                                th,
-                                on ? color6 : color3);
-                        }
+                        // draw accent
+                        if (note.Accent)
+                            FillCircle(
+                                sprites,
+                                pt.X + wt/2 * Math.Min(note.StepLength, 1),
+                                pt.Y,
+                                th/5,
+                                color0);
                     }
                 }
             }
@@ -230,63 +216,32 @@ namespace IngameScript
 
                     var chan = clip.Patterns[p].Channels[ch];
 
-                    if (EditedClip.Accent)
+                    foreach (var n in chan.Notes)
                     {
-                        for (int i = 0; i < g_patSteps; i++)
+                        var noteStart = n.ClipStep + n.ShOffset;
+                        var noteEnd   =  noteStart + n.StepLength;
+
+                        if (   noteEnd   <= patStart
+                            || noteStart >= patEnd)
+                            continue;
+
+
+                        var pt = new Vector2(
+                            x + wt * (isolated ? _step : step),
+                            yLine + ht/2);
+
+                        if (   step >= noteStart
+                            && step <  noteEnd)
                         {
-                            if (!chan.Accents[i]) continue;
+                            var tw = (float)Math.Floor(wt * (noteEnd - noteStart));
 
-                            var noteStart = p * g_patSteps + i;
-                            var noteEnd   = noteStart + 1;
-
-                            var pt = new Vector2(
-                                x + wt * (isolated ? _step : step),
-                                yLine + ht / 2);
-
-                            if (   step >= noteStart
-                                && step < noteEnd)
-                            {
-                                var tw = (float)Math.Floor(wt * (noteEnd - noteStart));
-
-                                FillRect(
-                                    sprites,
-                                    pt.X + 1,
-                                    pt.Y - th / 2,
-                                    Math.Min(tw, wt) - 2,
-                                    th,
-                                    color2);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var n in chan.Notes)
-                        {
-                            var noteStart = n.ClipStep + n.ShOffset;
-                            var noteEnd   =  noteStart + n.StepLength;
-
-                            if (   noteEnd   <= patStart
-                                || noteStart >= patEnd)
-                                continue;
-
-
-                            var pt = new Vector2(
-                                x + wt * (isolated ? _step : step),
-                                yLine + ht/2);
-
-                            if (   step >= noteStart
-                                && step <  noteEnd)
-                            {
-                                var tw = (float)Math.Floor(wt * (noteEnd - noteStart));
-
-                                FillRect(
-                                    sprites, 
-                                    pt.X + 1,
-                                    pt.Y - th/2,
-                                    Math.Min(tw, wt) - 2,
-                                    th,
-                                    color2);
-                            }
+                            FillRect(
+                                sprites, 
+                                pt.X + 1,
+                                pt.Y - th/2,
+                                Math.Min(tw, wt) - 2,
+                                th,
+                                color2);
                         }
                     }
                 }

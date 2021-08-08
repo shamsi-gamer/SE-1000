@@ -42,9 +42,6 @@ namespace IngameScript
 
                     chan.Notes.Clear();
                     chan.AutoKeys.Clear();
-
-                    for (int i = 0; i < g_patSteps; i++)
-                        chan.Accents[i] = False;
                 }
             }
             

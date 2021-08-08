@@ -15,6 +15,8 @@ namespace IngameScript
             public int         Number;
             public float       Volume;
 
+            public bool        Accent;
+
             public float       Step,
                                StepLength;
             
@@ -55,12 +57,14 @@ namespace IngameScript
             }
 
 
+
             public Note(Note note, Channel chan = Channel_null, int chanIndex = -1)
             {
                 Channel    = chan ?? note.Channel;
                 iChan      = OK(chanIndex) ? chanIndex : note.iChan;
                 Number     = note.Number;
                 Volume     = note.Volume;
+                Accent     = note.Accent;
                 Step       = note.Step;
                 StepLength = note.StepLength;
 
@@ -72,12 +76,14 @@ namespace IngameScript
             }
 
 
-            public Note(Channel chan, int ch, float vol, int num, float time, float len)
+
+            public Note(Channel chan, int ch, float vol, bool acc, int num, float time, float len)
             {
                 Channel     = chan;
                 iChan       = ch;
                 Number      = num;
                 Volume      = vol;
+                Accent      = acc;
                 Step        = time;
                 StepLength  = len;
 
@@ -88,16 +94,19 @@ namespace IngameScript
             }
 
 
+
             public void Reset()
             {
                 Number      = 69;
                 Volume      = 0;
+                Accent      = False;
                 StepLength  = 0;
 
                 ArpPlayTime = float_NaN;
 
                 Sounds.Clear();
             }
+
 
 
             public float ShOffset
@@ -111,6 +120,7 @@ namespace IngameScript
             }
 
 
+
             public void UpdateStepTime(float dStep)
             {
                 Step += dStep;
@@ -118,6 +128,7 @@ namespace IngameScript
                 //foreach (var snd in Sounds)
                 //    snd.Time += (int)(dStep * g_session.TicksPerStep);
             }
+
 
 
             public void UpdateStepLength(float len)
@@ -129,6 +140,7 @@ namespace IngameScript
             }
 
 
+
             public string Save()
             {
                 var save = 
@@ -136,6 +148,7 @@ namespace IngameScript
                     + WS(Step)
                     + WS(StepLength)
                     + WS(Volume)
+                    + WS(SaveToggles())
                     +  S(Keys.Count);
 
                 foreach (var key in Keys)
@@ -143,6 +156,19 @@ namespace IngameScript
                 
                 return save;
             }
+
+
+
+            uint SaveToggles()
+            {
+                uint f = 0;
+                var  i = 0;
+
+                WriteBit(ref f, Accent, i++);
+
+                return f;
+            }
+
 
 
             public static Note Load(string[] data, ref int i, Instrument inst)
@@ -154,12 +180,28 @@ namespace IngameScript
                 note.StepLength = float.Parse(data[i++]);
                 note.Volume     = float.Parse(data[i++]);
 
+                note.LoadToggles(data[i++]);
+
                 var nKeys = int_Parse(data[i++]);
 
                 for (int k = 0; k < nKeys; k++)
                     note.Keys.Add(Key.Load(data, ref i));
 
                 return note;
+            }
+
+
+
+            bool LoadToggles(string toggles)
+            {
+                uint f;
+                if (!uint.TryParse(toggles, out f)) return False;
+
+                var i = 0;
+
+                Accent = ReadBit(f, i++);
+
+                return True;
             }
         }
     }

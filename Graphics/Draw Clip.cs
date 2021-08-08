@@ -63,7 +63,9 @@ namespace IngameScript
 
                     var px = x - _f * pw + _p * pw;
 
-                    FillRect(sprites, px, py, pw, ph, color1);
+                    //FillRect(sprites, px, py, pw, ph, color1);
+
+                    DrawBeats(sprites, px, py, pw, ph, p);
 
                     FillRect(sprites, px,      py, 1, ph, color4);
                     FillRect(sprites, px + pw, py, 1, ph, color4);

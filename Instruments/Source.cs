@@ -155,7 +155,7 @@ namespace IngameScript
 
                 var vol = note.Volume;
                 
-                if (note.Channel.Accents[(int)(note.Step - track.StartStep) % g_patSteps])
+                if (note.Accent) 
                     vol *= 1.5f;
 
                 // populate triggerValues

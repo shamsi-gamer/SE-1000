@@ -158,8 +158,18 @@ namespace IngameScript
         void UpdatePianoLow(Label lbl)
         {
             if (    ShowPiano
-                && -lbl.Data == 15) lbl.SetText("‡", 8, 17); 
-            else                    lbl.SetText(strEmpty);
+                && -lbl.Data == 15)
+            { 
+                lbl.SetText("‡", 8, 17); 
+            }
+            else
+            { 
+                lbl.SetText(
+                      !ShowPiano 
+                    && StepIsBright(lbl, True) 
+                    ? "●" 
+                    : strEmpty);
+            }
         }
 
 
@@ -171,7 +181,7 @@ namespace IngameScript
 
             else
                 lbl.BackColor = 
-                    -lbl.Data % 4 == 0 
+                    (-lbl.Data/4) % 2 == 1 
                     ? color2 
                     : color0;
         }
@@ -228,6 +238,33 @@ namespace IngameScript
 
 
 
+        bool StepIsBright(Label lbl, bool accent = False)
+        {
+            var patStep  = -lbl.Data;
+            var clipStep =  EditPat * g_patSteps + patStep;
+
+            var on = OK(CurChannel.Notes.Find(n => 
+                   n.Step >= patStep
+                && n.Step <  patStep+1
+                && (!accent || n.Accent)));
+
+
+            var track = EditedClip.Track;
+
+            if (   Playing
+                && EditedClipIsPlaying
+                && (int)track.PlayStep  == clipStep
+                && EditPat == track.PlayPat
+                && !accent)
+                return !on;
+            else if (on)
+                return True;
+
+            return False;
+        }
+
+
+
         bool NoteIsEdited(Note note, int noteNum)
         {
             return note.Number == noteNum
@@ -250,7 +287,7 @@ namespace IngameScript
         bool ToggleIsBright(Label lbl)
         {
             return
-                   lbl.Data ==  2 && EditedClip.Pick && !EditedClip.Accent
+                   lbl.Data ==  2 && EditedClip.Pick
                 || lbl.Data ==  3 && EditedClip.AllChan
                 || lbl.Data ==  4 && EditedClip.RndInst
                 || lbl.Data == 10 && EditedClip.Accent;
@@ -282,34 +319,6 @@ namespace IngameScript
                     3.7f,
                     10);
             }
-        }
-
-
-
-        bool StepIsBright(Label lbl)
-        {
-            var patStep  = -lbl.Data;
-            var clipStep =  EditPat * g_patSteps + patStep;
-
-            var on = 
-                EditedClip.Accent
-                ? CurChannel.Accents[patStep]
-                : OK(CurChannel.Notes.Find(n => 
-                         n.Step >= patStep
-                      && n.Step <  patStep+1));
-
-
-            var track = EditedClip.Track;
-
-            if (   Playing
-                && EditedClipIsPlaying
-                && (int)track.PlayStep  == clipStep
-                && EditPat == track.PlayPat)
-                return !on;
-            else if (on)
-                return True;
-
-            return False;
         }
 
 
