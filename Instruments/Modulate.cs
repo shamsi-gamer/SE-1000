@@ -42,6 +42,7 @@ namespace IngameScript
             public List<int>        LoadSrcIndex;
 
 
+
             public Modulate(Setting parent, Instrument inst, Source src) 
                 : base(strMod, parent, Setting_null, inst, src)
             {

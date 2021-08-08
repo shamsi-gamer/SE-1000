@@ -73,12 +73,7 @@ namespace IngameScript
                 var chans = EditedClip.GetCurChannels(p, oldInst, False);
 
                 for (int ch = 0; ch < chans.Count; ch++)
-                {
-                    SetInstrument(
-                        EditedClip.Patterns[p].Channels[ch],
-                        oldInst,
-                        newInst);
-                }
+                    SetInstrument(chans[ch], oldInst, newInst);
             }
         }
 

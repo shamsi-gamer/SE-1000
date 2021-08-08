@@ -346,8 +346,8 @@ namespace IngameScript
 
                 var xt  = 300f;
                 var wt  = 600f;
-                var yt  = 50f;
-                var ht  = 300f;
+                var yt  = 100f;
+                var ht  = 260f;
 
                 var gap = 4f;
 
@@ -358,7 +358,7 @@ namespace IngameScript
                 if (OK(CurSrc)) SelSource    .DrawLabels(sprites, x+5, y+10, dp);
                 else            SelInstrument.DrawLabels(sprites, x+5, y+10, dp);
 
-                DrawSample(sprites, x + 100, y + 150, 100, 60);
+                DrawSample(sprites, x + 100, y + 220, 100, 60);
 
 
                 for (int i = 0; i < Tones.Length; i++)
@@ -368,9 +368,9 @@ namespace IngameScript
 
                     var xh = xt + i*wc;
 
-                    FillRect(sprites, xh + gap/2,                yt + ht, wc - gap,     -ht,          color2);
-                    FillRect(sprites, xh + gap/2,                yt + ht, wc - gap - 8, -ht * curVal, color4);
-                    FillRect(sprites, xh + gap/2 + (wc-gap) - 7, yt + ht, 7,            -ht * val,    color6);
+                    FillRect(sprites, xh + gap/2,                yt + ht, wc - gap,     -ht,                       color2);
+                    FillRect(sprites, xh + gap/2,                yt + ht, wc - gap - 8, -ht * Math.Min(curVal, 1), color4);
+                    FillRect(sprites, xh + gap/2 + (wc-gap) - 7, yt + ht, 7,            -ht * val,                 color6);
 
                     DrawString(sprites, S(i+1), xt + i*wc + wc/2 - 3, yt + ht - 14, 0.4f, color3, TA_CENTER);
                 }

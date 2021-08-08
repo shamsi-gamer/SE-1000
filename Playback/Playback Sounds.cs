@@ -34,6 +34,7 @@ namespace IngameScript
         }
 
 
+
         void UpdateSounds()
         {
             for (int i = 0; i < g_sounds.Count; i++)
@@ -46,6 +47,7 @@ namespace IngameScript
                     snd.Update(this);
             }
         }
+
 
 
         List<int> StopSounds()
@@ -66,6 +68,7 @@ namespace IngameScript
 
             return delete;
         }
+
 
 
         void DeleteSounds(List<int> delete)

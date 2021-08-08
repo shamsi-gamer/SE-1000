@@ -216,10 +216,10 @@ namespace IngameScript
 
                     var chan = clip.Patterns[p].Channels[ch];
 
-                    foreach (var n in chan.Notes)
+                    foreach (var note in chan.Notes)
                     {
-                        var noteStart = n.ClipStep + n.ShOffset;
-                        var noteEnd   =  noteStart + n.StepLength;
+                        var noteStart = note.ClipStep + note.ShOffset;
+                        var noteEnd   =  noteStart + note.StepLength;
 
                         if (   noteEnd   <= patStart
                             || noteStart >= patEnd)
@@ -235,6 +235,7 @@ namespace IngameScript
                         {
                             var tw = (float)Math.Floor(wt * (noteEnd - noteStart));
 
+                            // draw note
                             FillRect(
                                 sprites, 
                                 pt.X + 1,
@@ -242,6 +243,15 @@ namespace IngameScript
                                 Math.Min(tw, wt) - 2,
                                 th,
                                 color2);
+
+                            // draw accent
+                            if (note.Accent)
+                                FillCircle(
+                                    sprites,
+                                    pt.X + wt/2 * Math.Min(note.StepLength, 1),
+                                    pt.Y,
+                                    th/5,
+                                    color6);
                         }
                     }
                 }

@@ -154,7 +154,7 @@ namespace IngameScript
                 {
                     var mod = Modulate.UpdateValue(tp);
 
-                    if (Modulate.Op == ModOp.Add) value += mod * Math.Abs(Max-Min)/2;
+                    if (Modulate.Op == ModOp.Add) value += mod * Math.Abs(Max-Min);
                     else                          value *= mod;
                 }
 

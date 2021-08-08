@@ -16,6 +16,7 @@ namespace IngameScript
                              Power; // convert to int when applying
 
 
+
             public Delay(Instrument inst, Source src) 
                 : base(strDel, Setting_null, Setting_null, inst, src)
             {
@@ -25,6 +26,7 @@ namespace IngameScript
                 Level = (Parameter)NewSettingFromTag(strLvl,  this, inst, src);
                 Power = (Parameter)NewSettingFromTag(strPow,  this, inst, src);
             }
+
 
 
             public Delay(Delay del) 
@@ -38,10 +40,12 @@ namespace IngameScript
             }
 
 
+
             public Delay Copy()
             {
                 return new Delay(this);
             }
+
 
 
             public float GetVolume(int i, TimeParams tp)
@@ -70,6 +74,7 @@ namespace IngameScript
             }
 
 
+
             public override bool HasDeepParams(Channel chan, int src)
             {
                 return
@@ -81,6 +86,7 @@ namespace IngameScript
             }
 
 
+
             public override void Clear()
             {
                 Dry  .Clear();
@@ -89,6 +95,7 @@ namespace IngameScript
                 Level.Clear();
                 Power.Clear();
             }
+
 
 
             public override void Reset()
@@ -103,6 +110,7 @@ namespace IngameScript
             }
 
 
+
             public override void Randomize()
             {
                 if (TooComplex) return;
@@ -115,6 +123,7 @@ namespace IngameScript
             }
 
 
+
             public override void AdjustFromController(Clip clip)
             {
                 Program.AdjustFromController(clip, Count, -g_remote.MoveIndicator    .Z*ControlSensitivity);
@@ -123,6 +132,7 @@ namespace IngameScript
                 Program.AdjustFromController(clip, Level, -g_remote.RotationIndicator.X*ControlSensitivity);
                 Program.AdjustFromController(clip, Power,  g_remote.RotationIndicator.Y*ControlSensitivity);
             }
+
 
 
             public override Setting GetOrAddSettingFromTag(string tag)
@@ -140,6 +150,7 @@ namespace IngameScript
             }
 
 
+
             public void Delete(int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
@@ -149,6 +160,7 @@ namespace IngameScript
                 Level.Delete(iSrc);
                 Power.Delete(iSrc);
             }
+
 
 
             public override string Save()
@@ -162,6 +174,7 @@ namespace IngameScript
                     + W(Level.Save())
                     +   Power.Save();
             }
+
 
 
             public static Delay Load(string[] data, ref int i, Instrument inst, int iSrc)
@@ -182,6 +195,7 @@ namespace IngameScript
             }
 
 
+
             public override string GetLabel(out float width)
             {
                 width = 176;
@@ -192,6 +206,7 @@ namespace IngameScript
                     + PrintValue(Level.Value, 2, True, 0).PadLeft(4) + "  "
                     + PrintValue(Power.Value, 2, True, 0).PadLeft(4);
             }
+
 
 
             public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
@@ -213,6 +228,7 @@ namespace IngameScript
 
                 _dp.Next(dp);
             }
+
 
 
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams _dp)
@@ -320,6 +336,7 @@ namespace IngameScript
             }
 
 
+
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
             {
                 DrawFuncButton(sprites, strDry,  0, w, h, True, Dry  .HasDeepParams(chan, CurSrc));
@@ -328,6 +345,7 @@ namespace IngameScript
                 DrawFuncButton(sprites, strLvl,  3, w, h, True, Level.HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, strPow,  4, w, h, True, Power.HasDeepParams(chan, CurSrc));
             }
+
 
 
             public override void Func(int func)
@@ -341,6 +359,7 @@ namespace IngameScript
                     case 4: AddNextSetting(strPow);  break;
                 }
             }
+
 
 
             public override bool CanDelete()

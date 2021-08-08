@@ -194,6 +194,10 @@ namespace IngameScript
                         * Channel.Volume
                         * Note.Clip.Volume;
 
+                    if (Note.Accent)
+                        vol *= 1.5f;
+
+
                     // this is for the fake "current volume"
                     if (   (   Source.Oscillator == OscSlowSweepDown
                             || Source.Oscillator == OscFastSweepDown

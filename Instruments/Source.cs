@@ -155,8 +155,6 @@ namespace IngameScript
 
                 var vol = note.Volume;
                 
-                if (note.Accent) 
-                    vol *= 1.5f;
 
                 // populate triggerValues
                 tp.SourceIndex = -1;    inst.Volume .UpdateValue(tp);

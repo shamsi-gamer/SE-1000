@@ -156,7 +156,8 @@ namespace IngameScript
                         : Setting_null);
 
                     mod.ModSources.Add(
-                        OK(mod.LoadSrcIndex) 
+                           OK(mod.LoadSrcIndex) 
+                        && OK(srcIndex)
                         ? inst.Sources[srcIndex] 
                         : Source_null);
 
