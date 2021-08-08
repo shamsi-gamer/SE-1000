@@ -86,7 +86,7 @@ namespace IngameScript
 
 
 
-            public void SetValue(float val, Note note, int src)
+            public void SetValue(float val, Note note)
             {
                 if (OK(note))
                 {
@@ -127,10 +127,10 @@ namespace IngameScript
                         tp.Note.iChan, 
                         Path);
 
-                    value = OK(val) ? val : GetKeyValue(tp.Note, tp.SourceIndex);
+                    value = OK(val) ? val : GetKeyValue(tp.Note);
                 }
                 else
-                    value = GetKeyValue(tp.Note, tp.SourceIndex);
+                    value = GetKeyValue(tp.Note);
 
 
                 if (    OK(Lfo)
@@ -171,7 +171,7 @@ namespace IngameScript
 
 
 
-            public float GetKeyValue(Note note, int src)
+            public float GetKeyValue(Note note)
             {
                 if (OK(note))
                 {

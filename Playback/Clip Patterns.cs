@@ -42,9 +42,9 @@ namespace IngameScript
 
 
 
-            public void PrevPattern(Program prog)
+            public void PrevPattern()
             {
-                if (MovePat) MovePatterns  (EditPat - 1, prog);
+                if (MovePat) MovePatterns  (EditPat - 1);
                 else         SetEditPattern(EditPat - 1);
 
                 g_lcdPressed.Add(lcdClip + 5);
@@ -52,9 +52,9 @@ namespace IngameScript
 
 
 
-            public void NextPattern(Program prog)
+            public void NextPattern()
             {
-                if (MovePat) MovePatterns  (EditPat + 1, prog);
+                if (MovePat) MovePatterns  (EditPat + 1);
                 else         SetEditPattern(EditPat + 1);
 
                 g_lcdPressed.Add(lcdClip + 6);
@@ -62,7 +62,7 @@ namespace IngameScript
 
 
 
-            public void MovePatterns(int destPat, Program prog)
+            public void MovePatterns(int destPat)
             {
                 var block = GetBlock(EditPat);
                 if (OK(block))
@@ -241,7 +241,7 @@ namespace IngameScript
 
 
 
-            public void NewPattern(Program prog)
+            public void NewPattern()
             { 
                 var pat = new Pattern(EditPattern);
                 pat.Clear();
@@ -267,7 +267,7 @@ namespace IngameScript
 
 
 
-            public void DuplicatePattern(Program prog)
+            public void DuplicatePattern()
             {
                 var block = GetBlock(EditPat);
 
@@ -303,7 +303,7 @@ namespace IngameScript
 
 
 
-            public void DeletePattern(Program prog)
+            public void DeletePattern()
             {
                 var block = GetBlock(EditPat);
 

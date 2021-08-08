@@ -130,8 +130,8 @@ namespace IngameScript
                     var path  = clip.Settings.Last().Path;
                     var param = (Parameter)GetSettingFromPath(path);
 
-                    var start = param.GetKeyValue(clip.Inter, clip.CurSrc);
-                    var end   = param.GetKeyValue(note,       clip.CurSrc);
+                    var start = param.GetKeyValue(clip.Inter);
+                    var end   = param.GetKeyValue(note);
 
                     int f = (int)(si / g_patSteps);
                     int l = (int)(sn / g_patSteps);

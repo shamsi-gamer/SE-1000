@@ -58,7 +58,7 @@ namespace IngameScript
 
 
 
-        void DrawFuncButtons(List<MySprite> sprites, float w, float y, Clip clip)
+        void DrawFuncButtons(List<MySprite> sprites, float w, float y)
         {
             var bw =  w/6;
             var x0 = bw/2;

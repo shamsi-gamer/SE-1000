@@ -270,7 +270,7 @@ namespace IngameScript
                     x + wt * (note.Step + note.ShOffset) + wt/2,
                     y + h);
 
-                var p0 = KeyPos(x, y, w, h, p, AltChanKey(key ?? new Key(CurSrc, param, param.GetKeyValue(note, CurSrc), note.Step)), clip);
+                var p0 = KeyPos(x, y, w, h, p, AltChanKey(key ?? new Key(CurSrc, param, param.GetKeyValue(note), note.Step)), clip);
 
 
                 // draw interpolation circle
@@ -416,7 +416,7 @@ namespace IngameScript
         Vector2 ValuePos(float x, float y, float w, float h, int p, Note note, string path, Clip clip)
         {
             var param = (Parameter)GetSettingFromPath(path);
-            var val   = param.GetKeyValue(note, CurSrc);
+            var val   = param.GetKeyValue(note);
 
             var wt    = w/g_patSteps;
             var cd    = w/65; // circle diameter

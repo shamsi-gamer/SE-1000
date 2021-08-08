@@ -362,7 +362,7 @@ namespace IngameScript
                 Vector2 p0, p1, p2;
 
                 GetEnvelopeCoords(x0, y0, w0, h0, False, out p0, out p1, out p2);
-                DrawEnvelopeSupports(sprites, p0, p1, p2, w0, y0, h0, isAmt, isAtt, isRel);
+                DrawEnvelopeSupports(sprites, p0, w0, y0, h0);
 
 
                 FillRect(sprites, p0.X, y0 + h0/2, w0, -CurValue*h/4, color3);
@@ -401,7 +401,7 @@ namespace IngameScript
 
 
 
-            void DrawEnvelopeSupports(List<MySprite> sprites, Vector2 p0, Vector2 p1, Vector2 p2, float w, float y, float h, bool isAmt, bool isAtt, bool isRel)
+            void DrawEnvelopeSupports(List<MySprite> sprites, Vector2 p0, float w, float y, float h)
             {
                 var sw = 1;
 

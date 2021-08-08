@@ -67,7 +67,7 @@ namespace IngameScript
                 DrawKeysAndAuto(sprites, EditedClip.CurParam, x, y, w, h, xt, rh, clip, pat);
 
             if (SelChan < 0)
-                DrawFuncButtons(sprites, w, h, clip);
+                DrawFuncButtons(sprites, w, h);
         }
 
 

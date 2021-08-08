@@ -83,7 +83,7 @@ namespace IngameScript
             FillRect(sprites, x, y + instHeight, w, 1, color6);
 
             if (!TooComplex)
-                DrawFuncButtons(sprites, w, h, EditedClip);
+                DrawFuncButtons(sprites, w, h);
         }
 
 

@@ -209,13 +209,8 @@ namespace IngameScript
 
                     var del = Delay ?? inst.Delay;
 
-                    if (OK(del))
-                        prog.AddSoundAndEchos(
-                            sounds, 
-                            snd, 
-                            del);
-                    else
-                        sounds.Add(snd);
+                    if (OK(del)) prog.AddSoundAndEchos(sounds, snd, del);
+                    else         sounds.Add(snd);
                 }
             }
 
@@ -239,10 +234,8 @@ namespace IngameScript
                     Offset = Parameter_null;
 
 
-                if (Index == 0)
-                    Volume.SetValue(1, Note_null, Index);
-                else
-                    Volume.Randomize();
+                if (Index == 0) Volume.SetValue(1, Note_null);
+                else            Volume.Randomize();
 
 
                 if (   Index > 0

@@ -48,7 +48,7 @@ namespace IngameScript
             }
 
 
-            public static Key Load(string[] data, ref int i, Instrument inst)
+            public static Key Load(string[] data, ref int i)
             {
                 var srcIndex = int_Parse(data[i++]);
                 var path     = data[i++];

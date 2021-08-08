@@ -28,10 +28,6 @@ namespace IngameScript
                 PlayNote(
                     EditedClip,
                     HighToNote(h), 
-                       OK(EditedClip.Chord) 
-                    && EditedClip.ChordMode 
-                    ? EditedClip.Chords[EditedClip.Chord] 
-                    : null,
                     CurChan);
             else
                 BeatHigh(h);
@@ -127,10 +123,6 @@ namespace IngameScript
                 else PlayNote( // l < 15
                     EditedClip,
                     LowToNote(l),
-                       OK(EditedClip.Chord)
-                    && EditedClip.ChordMode 
-                    ? EditedClip.Chords[EditedClip.Chord]
-                    : null,
                     CurChan);
             }
             else
@@ -203,10 +195,11 @@ namespace IngameScript
 
         void Shift(bool fwd)
         {
-            if (EditedClip.AllChan)
+            if (    EditedClip.AllChan
+                && !EditedClip.Accent) // shifting accents for all channels makes no sense
             {
-                for (int i = 0; i < g_nChans; i++)
-                    Shift(i, fwd);
+                for (int ch = 0; ch < g_nChans; ch++)
+                    Shift(ch, fwd);
             }
             else
                 Shift(CurChan, fwd);
@@ -216,62 +209,103 @@ namespace IngameScript
 
         void Shift(int ch, bool fwd)
         {
+            ShiftAccents(ch, fwd); // accents always get shifted, either with the notes or by themselves
+
+            if (!EditedClip.Accent) 
+                ShiftNotes(ch, fwd);
+        }
+
+
+
+        void ShiftAccents(int ch, bool fwd)
+        {
+            int first, last;
+            EditedClip.GetCurPatterns(out first, out last);
+
+            var accents = new bool[(last-first+1) * g_patSteps];
+            var wrap    = new bool[g_patSteps];
+
+            // put all accents into one array
+            for (int p = first; p <= last; p++)
+            {
+                var chan = EditedClip.Patterns[p].Channels[ch];
+
+                for (int i = 0; i < g_patSteps; i++)
+                    accents[(p-first)*g_patSteps + i] = chan.Accents[i];
+            }
+
+
+            var step = EditedClip.EditStep;
+
+            if (fwd)
+            {
+                for (int i = 0;                i <  step; i++) wrap[i]    = accents[(int)(accents.Length - step + i)];
+                for (int i = accents.Length-1; i >= step; i--) accents[i] = accents[(int)(i - step)];
+                for (int i = 0;                i <  step; i++) accents[i] = wrap[i];
+            }
+            else
+            {
+                for (int i = 0; i < step;                  i++) wrap[i]                                   = accents[i];
+                for (int i = 0; i < accents.Length - step; i++) accents[i]                                = accents[(int)(i + step)];
+                for (int i = 0; i < step;                  i++) accents[(int)(accents.Length - step + i)] = wrap[i];
+            }
+
+
+            // put shifted accents back into their channels
+            for (int p = first; p <= last; p++)
+            {
+                var chan = EditedClip.Patterns[p].Channels[ch];
+
+                for (int i = 0; i < g_patSteps; i++)
+                    chan.Accents[i] = accents[(p-first)*g_patSteps + i];
+            }
+        }
+
+
+
+        void ShiftNotes(int ch, bool fwd)
+        {
             var pats = EditedClip.Patterns;
 
             var spill = new List<Note>();
 
+
             int first, last;
             EditedClip.GetCurPatterns(out first, out last);
 
-            if (fwd)
+
+            var start = fwd ? first  : last;
+            var end   = fwd ? last+1 : first-1;
+            var step  = fwd ? 1      : -1;
+
+
+            for (int p = start; p != end; p += step)
             {
-                for (int p = last; p >= first; p--)
+                var chan = pats[p].Channels[ch];
+
+                for (int n = chan.Notes.Count - 1; n >= 0; n--)
                 {
-                    var chan = pats[p].Channels[ch];
+                    var note = chan.Notes[n];
 
-                    for (int n = chan.Notes.Count - 1; n >= 0; n--)
-                    {
-                        var note = chan.Notes[n];
+                    note.Step += step * EditedClip.EditStep;
 
-                        note.Step += EditedClip.EditStep;
-
-                        if (note.Step >= g_patSteps)
-                            spill.Add(note);
-                    }
-                }
-
-                foreach (var n in spill)
-                {
-                    var spillPat  = n.PatIndex == last ? first : n.PatIndex+1;
-                    var spillChan = pats[spillPat].Channels[ch];
-
-                    MoveSpillNotes(n, spillChan, -g_patSteps);
+                    if (    fwd && note.Step >= g_patSteps
+                        || !fwd && note.Step <  0)
+                        spill.Add(note);
                 }
             }
-            else
+
+            foreach (var note in spill)
             {
-                for (int p = first; p <= last; p++)
-                {
-                    var chan = pats[p].Channels[ch];
+                var spillPat  = 
+                    fwd 
+                    ? (note.PatIndex == last  ? first : note.PatIndex+1)
+                    : (note.PatIndex == first ? last  : note.PatIndex-1);
 
-                    for (int n = chan.Notes.Count - 1; n >= 0; n--)
-                    {
-                        var note = chan.Notes[n];
-
-                        note.Step -= EditedClip.EditStep;
-
-                        if (note.Step < 0)
-                            spill.Add(note);
-                    }
-                }
-
-                foreach (var n in spill)
-                {
-                    var spillPat  = n.PatIndex == first ? last : n.PatIndex-1;
-                    var spillChan = pats[spillPat].Channels[ch];
-
-                    MoveSpillNotes(n, spillChan, g_patSteps);
-                }
+                MoveSpillNotes(
+                    note,
+                    pats[spillPat].Channels[ch], 
+                    -step * g_patSteps);
             }
         }
 
@@ -282,7 +316,7 @@ namespace IngameScript
             note.Channel.Notes.Remove(note);
             spillChan.Notes.Add(note);
 
-            note.Channel  = spillChan;
+            note.Channel = spillChan;
             note.Step += dSteps;
         }
 
@@ -321,11 +355,11 @@ namespace IngameScript
 
 
 
-        void Flip(int pat, int ch, int frac)
-        {
-            for (int step = 0; step < g_patSteps; step += g_patSteps / frac)
-                Tick(pat, ch, step);
-        }
+        //void Flip(int pat, int ch, int frac)
+        //{
+        //    for (int step = 0; step < g_patSteps; step += g_patSteps / frac)
+        //        Tick(pat, ch, step);
+        //}
 
 
 
@@ -364,14 +398,15 @@ namespace IngameScript
                 else if (EditedClip.ParamAuto)
                     chan.AutoKeys.RemoveAll(k => k.Path == CurrentParam.Path);
 
-                else if (EditedClip.Accent)
-                {
+                else
+                { 
+                    if (!EditedClip.Accent)
+                        chan.Notes.Clear();
+    
+                    // accents are cleared in all cases
                     for (int i = 0; i < g_patSteps; i++)
                         chan.Accents[i] = False;
                 }
-
-                else
-                    chan.Notes.Clear();
             }
 
             if (EditedClip.ParamAuto)

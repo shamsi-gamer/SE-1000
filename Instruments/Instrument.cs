@@ -101,7 +101,7 @@ namespace IngameScript
                     src.Randomize(used);
                 }
 
-                Volume.SetValue(1, Note_null, -1);//.Randomize(Program prog);
+                Volume.SetValue(1, Note_null);//.Randomize(Program prog);
 
                 if (RND > 0.9f)
                 {

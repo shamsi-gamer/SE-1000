@@ -84,7 +84,7 @@ namespace IngameScript
             public void FillSine()
             {
                 for (int i = 0; i < Tones.Length; i++)
-                    Tones[i].SetValue(i == 0 ? 1 : 0, Note_null, -1);
+                    Tones[i].SetValue(i == 0 ? 1 : 0, Note_null);
             }
 
 
@@ -92,7 +92,7 @@ namespace IngameScript
             public void FillSquare(int nTones)
             {
                 for (int i = 0; i < Tones.Length; i++)
-                    Tones[i].SetValue(i >= nTones || i%2 != 0 ? 0 : 1f/(i+1), Note_null, -1);
+                    Tones[i].SetValue(i >= nTones || i%2 != 0 ? 0 : 1f/(i+1), Note_null);
             }
 
 
@@ -100,7 +100,7 @@ namespace IngameScript
             public void FillSaw(int nTones)
             {
                 for (int i = 0; i < Tones.Length; i++)
-                    Tones[i].SetValue(i >= nTones ? 0 : 1f/(i+1), Note_null, -1);
+                    Tones[i].SetValue(i >= nTones ? 0 : 1f/(i+1), Note_null);
             }
 
 
@@ -110,7 +110,7 @@ namespace IngameScript
                 var div = (float)Math.Log(nTones, 1.75);
 
                 for (int i = 0; i < Tones.Length; i++)
-                    Tones[i].SetValue(i >= nTones ? 0 : 1f/div, Note_null, -1);
+                    Tones[i].SetValue(i >= nTones ? 0 : 1f/div, Note_null);
             }
 
 
@@ -131,7 +131,7 @@ namespace IngameScript
                 }
 
                 for (int i = 0; i < Tones.Length; i++)
-                    Tones[i].SetValue(m_values[i]/total, Note_null, -1);
+                    Tones[i].SetValue(m_values[i]/total, Note_null);
             }
 
 
@@ -235,12 +235,12 @@ namespace IngameScript
                 if (OK(CurTone))
                 {
                     var tone = Tones[CurTone];
-                    tone.SetValue(tone.AdjustValue(tone.Value, delta, EditedClip.Shift), Note_null, -1);
+                    tone.SetValue(tone.AdjustValue(tone.Value, delta, EditedClip.Shift), Note_null);
                 }
                 else
                 {
                     foreach (var tone in Tones)
-                        tone.SetValue(tone.AdjustValue(tone.Value, delta, EditedClip.Shift, True), Note_null, -1);
+                        tone.SetValue(tone.AdjustValue(tone.Value, delta, EditedClip.Shift, True), Note_null);
                 }
             }
 
@@ -258,7 +258,7 @@ namespace IngameScript
                 }
 
                 for (var i = 0; i < values.Length; i++)
-                    Tones[i].SetValue(values[i], Note_null, -1);
+                    Tones[i].SetValue(values[i], Note_null);
             }
 
 

@@ -291,8 +291,8 @@ namespace IngameScript
                 var high   = Math.Min(Math.Max(0, 1 + amt), 1);
                 
 
-                DrawMarker(sprites, px+1 + (lowNote -minNote)*kw, ym, lowNote,  low *100, isLow,  isAmt);
-                DrawMarker(sprites, px+1 + (highNote-minNote)*kw, ym, highNote, high*100, isHigh, isAmt);
+                DrawMarker(sprites, px+1 + (lowNote -minNote)*kw, ym, low *100, isLow,  isAmt);
+                DrawMarker(sprites, px+1 + (highNote-minNote)*kw, ym, high*100, isHigh, isAmt);
 
 
                 var strName = strBias;
@@ -399,7 +399,7 @@ namespace IngameScript
 
 
 
-            void DrawMarker(List<MySprite> sprites, float x, float y, int num, float h, bool isNote, bool isAmt)
+            void DrawMarker(List<MySprite> sprites, float x, float y, float h, bool isNote, bool isAmt)
             {
                 DrawLine(
                     sprites, 

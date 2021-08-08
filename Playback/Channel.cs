@@ -245,7 +245,7 @@ namespace IngameScript
                 var nKeys = int_Parse(data[i++]);
 
                 for (int k = 0; k < nKeys; k++)
-                    AutoKeys.Add(Key.Load(data, ref i, Instrument));
+                    AutoKeys.Add(Key.Load(data, ref i));
             }
         }
     }

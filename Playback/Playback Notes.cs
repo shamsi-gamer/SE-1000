@@ -46,7 +46,7 @@ namespace IngameScript
 
 
 
-        void PlayNote(Clip clip, int num, List<int> chord, int ch)
+        void PlayNote(Clip clip, int num, int ch)
         {
             if (TooComplex) return;
 

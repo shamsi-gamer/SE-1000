@@ -26,12 +26,12 @@
                 case "bpm up":      SetStepLength(-1);                  break;
                 case "bpm down":    SetStepLength( 1);                  break;
 
-                case "del pat":     EditedClip?.DeletePattern(this);    break;
-                case "dup pat":     EditedClip?.DuplicatePattern(this); break;
-                case "new pat":     EditedClip?.NewPattern(this);       break;
+                case "del pat":     EditedClip?.DeletePattern();        break;
+                case "dup pat":     EditedClip?.DuplicatePattern();     break;
+                case "new pat":     EditedClip?.NewPattern();           break;
                 case "move pat":    EditedClip?.ToggleMovePattern();    break;
-                case "prev pat":    EditedClip?.PrevPattern(this);      break;
-                case "next pat":    EditedClip?.NextPattern(this);      break;
+                case "prev pat":    EditedClip?.PrevPattern();          break;
+                case "next pat":    EditedClip?.NextPattern();          break;
 
                 case "cue":         EditedClip.Cue();                   break;
 

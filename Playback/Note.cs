@@ -157,7 +157,7 @@ namespace IngameScript
                 var nKeys = int_Parse(data[i++]);
 
                 for (int k = 0; k < nKeys; k++)
-                    note.Keys.Add(Key.Load(data, ref i, inst));
+                    note.Keys.Add(Key.Load(data, ref i));
 
                 return note;
             }

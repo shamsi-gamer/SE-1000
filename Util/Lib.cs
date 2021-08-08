@@ -66,14 +66,14 @@ namespace IngameScript
 
 
         static bool  OK(int    i) { return i > -1; }
-        static bool  OK(long   l) { return l != long_NaN ? True : False; }
+        static bool  OK(long   l) { return l != long_NaN; }
         static bool  OK(float  f) { return !float.IsNaN(f); }
         static bool  OK(object o) { return o != null; }
 
         static int   MinMax(int   min, int   val, int   max) { return Math.Min(Math.Max(min, val), max); }
         static float MinMax(float min, float val, float max) { return Math.Min(Math.Max(min, val), max); }
 
-        static float sqr(float f) { return f*f; }
+        //static float sqr(float f) { return f*f; }
 
 
         static int GetInt(string str, string pre, string suf = "")

@@ -767,8 +767,7 @@ namespace IngameScript
                     param.Min, 
                     param.AdjustValue(param.Value, delta, clip.Shift),
                     param.Max),
-                Note_null,
-                CurSrc);
+                Note_null);
         }
 
 

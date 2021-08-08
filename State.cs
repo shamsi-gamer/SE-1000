@@ -128,9 +128,7 @@ namespace IngameScript
 
         static void CreateDefaultInstruments(Program prog)
         {
-            Instruments = new List<Instrument>();
-
-            Instruments.Add(new Instrument(prog));
+            Instruments = new List<Instrument>() { new Instrument(prog) };
             Instruments[0].Sources.Add(new Source(Instruments[0]));
         }
 

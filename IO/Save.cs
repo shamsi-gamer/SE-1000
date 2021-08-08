@@ -71,10 +71,10 @@ namespace IngameScript
 
 
 
-        void Save()
-        {
+        //void Save()
+        //{
 
-        }
+        //}
 
 
 

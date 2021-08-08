@@ -212,7 +212,7 @@ namespace IngameScript
                 if (_chord.Count > 0)
                 {
                     _chord.Sort();
-                    PlayNote(EditedClip, _chord[0], _chord, CurChan);
+                    PlayNote(EditedClip, _chord[0], CurChan);
                 }
 
                 MarkChordLabel(chord-1);            
@@ -259,7 +259,7 @@ namespace IngameScript
 
                 var oldIndex = EditedClip.EditLengthIndex;
                 EditedClip.EditLengthIndex = Math.Min(EditedClip.EditLengthIndex, g_steps.Length-2);
-                PlayNote(EditedClip, chord[0], chord, CurChan);
+                PlayNote(EditedClip, chord[0], CurChan);
                 EditedClip.EditLengthIndex = oldIndex;
             }
         }
