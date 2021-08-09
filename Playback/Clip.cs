@@ -37,6 +37,7 @@ namespace IngameScript
                                  RndInst,
                                  
                                  Accent,
+                                 Pick,
                                  Piano,
                                  
                                  Transpose = False,
@@ -46,7 +47,7 @@ namespace IngameScript
                                  Move      = False,
                                  
                                  Hold,
-                                 Pick,
+                                 Note,
                                  
                                  ChordMode,
                                  ChordEdit,
@@ -142,6 +143,7 @@ namespace IngameScript
                 AutoCue         = False;
                                 
                 MovePat         = 
+                Note            =
                                 
                 In              = 
                 Out             = 
@@ -246,6 +248,7 @@ namespace IngameScript
                 AutoCue         = clip.AutoCue;
                                 
                 MovePat         = clip.MovePat;
+                Note            = clip.Note;
                                 
                 In              = clip.In;
                 Out             = clip.Out;

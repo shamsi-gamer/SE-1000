@@ -53,6 +53,7 @@ namespace IngameScript
                 RndInst     = ReadBit(f, i++);
                             
                 Accent      = ReadBit(f, i++);
+                Pick        = ReadBit(f, i++);
                 Piano       = ReadBit(f, i++);
                             
                 Transpose   = ReadBit(f, i++);
@@ -62,7 +63,7 @@ namespace IngameScript
                 MixerShift  = ReadBit(f, i++);
                             
                 Hold        = ReadBit(f, i++);
-                Pick        = ReadBit(f, i++);
+                Note        = ReadBit(f, i++);
                             
                 ChordMode   = ReadBit(f, i++);
                 ChordEdit   = ReadBit(f, i++);

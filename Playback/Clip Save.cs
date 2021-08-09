@@ -16,6 +16,7 @@
             }
 
 
+
             uint SaveToggles()
             {
                 uint f = 0;
@@ -28,7 +29,7 @@
                 WriteBit(ref f, AutoCue,     i++);
                                              
                 WriteBit(ref f, MovePat,     i++);
-                                             
+
                 WriteBit(ref f, In,          i++);
                 WriteBit(ref f, Out,         i++);
                                              
@@ -36,6 +37,7 @@
                 WriteBit(ref f, RndInst,     i++);
 
                 WriteBit(ref f, Accent,      i++);
+                WriteBit(ref f, Pick,        i++);
                 WriteBit(ref f, Piano,       i++);
                                              
                 WriteBit(ref f, Transpose,   i++);
@@ -45,7 +47,7 @@
                 WriteBit(ref f, MixerShift,  i++);
                                              
                 WriteBit(ref f, Hold,        i++);
-                WriteBit(ref f, Pick,        i++);
+                WriteBit(ref f, Note,        i++);
                                              
                 WriteBit(ref f, ChordMode,   i++);
                 WriteBit(ref f, ChordEdit,   i++);
@@ -64,6 +66,7 @@
 
                 return f;
             }
+
 
 
             string SaveConfig()
@@ -98,6 +101,7 @@
             }
 
 
+
             //String SaveEdit()
             //{
             //    var str = "";
@@ -119,6 +123,7 @@
             //}
 
 
+
             string SaveMems()
             {
                 var mems = "";
@@ -128,6 +133,7 @@
 
                 return mems;
             }
+
 
 
             string SaveChords()
@@ -149,6 +155,7 @@
             }
 
 
+
             string SavePatterns()
             {
                 var save = "";
@@ -160,6 +167,7 @@
 
                 return save;
             }
+
 
 
             string SaveBlocks()

@@ -252,26 +252,30 @@ namespace IngameScript
 
         void ToggleNote(Clip clip)
         {
-            if (OK(clip.SelChan))
-                return;
+            //if (OK(clip.SelChan))
+            //    return;
+
+            clip.Note = !clip.Note;
 
             if (OK(clip.EditPos))
             { 
                 clip.Inter = Note_null;
 
-                if (clip.EditNotes.Count > 0) clip.EditNotes.Clear();
-                else                          clip.EditNotes.AddRange(GetEditNotes(clip));
+                clip.EditNotes.Clear();
+                
+                if (clip.Note) 
+                    clip.EditNotes.AddRange(GetEditNotes(clip));
             }
-            else
-            {
-                if (clip.EditNotes.Count > 0)
-                    clip.EditNotes.Clear();
-                else 
-                { 
-                    clip.EditNotes.Clear();
-                    clip.EditNotes.AddRange(GetChannelNotes(clip));
-                }
-            }
+            //else
+            //{
+            //    if (clip.EditNotes.Count > 0)
+            //        clip.EditNotes.Clear();
+            //    else 
+            //    { 
+            //        clip.EditNotes.Clear();
+            //        clip.EditNotes.AddRange(GetChannelNotes(clip));
+            //    }
+            //}
         }
 
 
@@ -457,28 +461,16 @@ namespace IngameScript
 
 
 
-        void Left(Clip clip)
+        void Move(Clip clip, bool right)
         {
             if (   OK(clip.EditPos)
                 || clip.EditNotes.Count > 0
                 || IsCurSetting(typeof(Harmonics))) 
-                 MoveEdit(clip, -1);
-            else Shift(False);
+                 MoveEdit(clip, right ? 1 : -1);
+            else if (clip.Note)
+                Shift(right);
 
-            lblLeft.Mark();
-        }
-
-
-
-        void Right(Clip clip)
-        {
-            if (   OK(clip.EditPos)
-                || clip.EditNotes.Count > 0
-                || IsCurSetting(typeof(Harmonics))) 
-                 MoveEdit(clip, 1);
-            else Shift(True);
-
-            lblRight.Mark();
+            (right ? lblRight : lblLeft).Mark();
         }
 
 

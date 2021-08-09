@@ -37,23 +37,25 @@ namespace IngameScript
 
         void BeatHigh(int h)
         {
-                 if (h == 0) Copy();
-            else if (h == 1) Paste(); 
-                          
-            else if (h == 2) PickNote();  
-            else if (h == 3) ToggleAllChannels();
-            else if (h == 4) RandomInstrument();
-                          
-            else if (h == 5) ClearNotes();
-            else if (h == 6) Random();
-                                   
-            else if (h == 7) Common1();
-            else if (h == 8) Common2();
-            else if (h == 9) Common3();
+                 if (h ==  0) Copy();
+            else if (h ==  1) Paste(); 
+                           
+            else if (h ==  2) EditedClip.Accent = !EditedClip.Accent; 
+            else if (h ==  3) ToggleAllChannels();
+            else if (h ==  4) RandomInstrument();
+                           
+            else if (h ==  5) ClearNotes();
+            else if (h ==  6) Random();
+                                    
+            else if (h ==  7) Common1();
+            else if (h ==  8) Common2();
+            else if (h ==  9) Common3();
 
-            else if (h == 10) EditedClip.Accent = !EditedClip.Accent;
+            else if (h == 10) PickNote();
 
-            if (  (h < 2 || h > 4) 
+            if (   h !=  2
+                && h !=  3
+                && h !=  4
                 && h != 10)
                 lblHigh[h].Mark();
         }
@@ -150,10 +152,11 @@ namespace IngameScript
             var dStep = Math.Min(Math.Max(0.5f, EditedClip.EditStep), 1);
 
             var found = chan.Notes.Where(n => 
-                    n.Step >= step
+                   n.Step >= step
                 && n.Step <  step + dStep).ToArray();
 
-            if (found.Length == 0)
+            if (    found.Length == 0
+                && !EditedClip.Accent)
             {
                 if (!EditedClip.Pick)
                 {

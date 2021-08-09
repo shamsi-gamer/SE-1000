@@ -20,7 +20,7 @@
             lblEditLength = new Label(1, GetLabel("Edit Length"), CF_null, CF_null, UpdateEditLengthLabel);
 
             lblNote = new Label(1, GetLabel(strNote),
-                lbl => EditedClip.EditNotes.Count > 0,
+                lbl => EditedClip.Note, //EditedClip.EditNotes.Count > 0,
                 CF_null,
                 lbl => lbl.SetText("Note"));
 
@@ -57,6 +57,7 @@
         }
 
 
+
         void UpdateEditStepLabel(Label lbl) 
         {
             var strStep = 
@@ -66,6 +67,7 @@
 
             lbl.SetText("·· " + strStep);
         }
+
 
 
         void UpdateEditLengthLabel(Label lbl) 

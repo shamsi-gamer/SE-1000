@@ -81,7 +81,7 @@ namespace IngameScript
                 case  0: lbl.SetText("Copy",  9, 14);                break;
                 case  1: lbl.SetText("Paste", 9, 14);                break;
                                                                         
-                case  2: lbl.SetText("Pick");                        break;
+                case  2: lbl.SetText("Acc");                         break;
                 case  3: lbl.SetText("All Ch", 7.6f, 19.5f);         break;
                 case  4: lbl.SetText("Inst");                        break;
                                                                         
@@ -92,7 +92,7 @@ namespace IngameScript
                 case  8: lbl.SetText(ShowPianoView ? "Rev" : "1/8"); break;
                 case  9: lbl.SetText("Flip");                        break;
                                                                      
-                case 10: lbl.SetText("Acc");                         break;
+                case 10: lbl.SetText("Pick");                        break;
                 }
             }
         }
@@ -287,10 +287,10 @@ namespace IngameScript
         bool ToggleIsBright(Label lbl)
         {
             return
-                   lbl.Data ==  2 && EditedClip.Pick
+                   lbl.Data ==  2 && EditedClip.Accent
                 || lbl.Data ==  3 && EditedClip.AllChan
                 || lbl.Data ==  4 && EditedClip.RndInst
-                || lbl.Data == 10 && EditedClip.Accent;
+                || lbl.Data == 10 && EditedClip.Pick;
         }
 
 

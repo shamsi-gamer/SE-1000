@@ -829,7 +829,9 @@ namespace IngameScript
                 var pat  = EditedClip.Patterns[p];
                 var chan = pat.Channels[ch];
 
-                chan.Shuffle = MinMax(0, sh, TicksPerStep - 1);
+                var tps  = TicksPerStep - 1;
+
+                chan.Shuffle = MinMax(0, sh, tps);
             }
         }
 
