@@ -202,8 +202,11 @@ namespace IngameScript
 
             var _step = step % g_patSteps;
 
-            var bt = w/76;
-            var th = ht - bt*2;
+            //var bt = w/76;
+            //var th = ht - bt*2;
+
+            var bh = h/80;
+            var th = ht - bh*2;
 
             for (int ch = 0; ch < g_nChans; ch++)
             {

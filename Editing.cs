@@ -468,7 +468,10 @@ namespace IngameScript
                 || IsCurSetting(typeof(Harmonics))) 
                  MoveEdit(clip, right ? 1 : -1);
             else if (clip.Note)
-                Shift(right);
+            { 
+                if (clip.Hold) ResizeNotes(clip, right ? 1 : -1);
+                else           Shift(right);
+            }
 
             (right ? lblRight : lblLeft).Mark();
         }
@@ -552,11 +555,30 @@ namespace IngameScript
 
         static void ResizeNotes(Clip clip, int move)
         {
-            foreach (var n in clip.EditNotes)
+            var notes = new List<Note>();
+
+            int first, last;
+            clip.GetPatterns(clip.EditPat, out first, out last);
+
+
+            for (int p = first; p <= last; p++)
+                foreach (var note in clip.Patterns[p].Channels[clip.CurChan].Notes)
+                    notes.Add(note);
+
+
+            foreach (var note in notes)
             {
-                var is05 = n.StepLength == 0.5f && EditedClip.EditStep >= 1;
-                n.StepLength = MinMax(0.5f, n.StepLength + move * EditedClip.EditStepLength, 10f * FPS / TicksPerStep);
-                if (is05) n.StepLength -= 0.5f;
+                var is05 = 
+                       note.StepLength == 0.5f 
+                    && EditedClip.EditStep >= 1;
+
+                note.StepLength = MinMax(
+                    0.5f, 
+                    note.StepLength + move * EditedClip.EditStepLength, 
+                    10f * FPS / TicksPerStep);
+
+                if (is05) 
+                    note.StepLength -= 0.5f;
             }
         }
 
