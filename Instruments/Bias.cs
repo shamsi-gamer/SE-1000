@@ -52,6 +52,12 @@ namespace IngameScript
                 if (tp.Program.TooComplex) 
                     return 0;
 
+                if (LowNote.Value > HighNote.Value)
+                {
+                         if (EditedClip.CurSetting.Tag == strLow ) LowNote .SetValue(HighNote.Value, Note_null);
+                    else if (EditedClip.CurSetting.Tag == strHigh) HighNote.SetValue(LowNote .Value, Note_null);
+                }
+
                 var lowNum  = LowNote .UpdateValue(tp);
                 var highNum = HighNote.UpdateValue(tp);
                 var amt     = Amount  .UpdateValue(tp);
