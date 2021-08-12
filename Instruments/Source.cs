@@ -75,19 +75,20 @@ namespace IngameScript
 
             public float OscMult { get  
             {
-                     if (Oscillator == OscSine     ) return 1;
-                else if (Oscillator == OscTriangle ) return 0.8f;
-                else if (Oscillator == OscSaw      ) return 0.4f;
-                else if (Oscillator == OscSquare   ) return 0.35f;
-                else if (Oscillator == OscLowNoise ) return 0.5f;
-                else if (Oscillator == OscHighNoise) return 0.5f;
-                else if (Oscillator == OscBandNoise) return 0.5f;
+                     if (Oscillator == OscSine           ) return 1;
+                else if (Oscillator == OscTriangle       ) return 0.8f;
+                else if (Oscillator == OscSaw            ) return 0.4f;
+                else if (Oscillator == OscSquare         ) return 0.35f;
+                else if (Oscillator == OscLowNoise       ) return 0.5f;
+                else if (Oscillator == OscHighNoise      ) return 0.5f;
+                else if (Oscillator == OscNarrowBandNoise) return 0.5f;
+                else if (Oscillator == OscWideBandNoise  ) return 0.5f;
                 else if (Oscillator == OscSlowSweepDown
                       || Oscillator == OscFastSweepDown
                       || Oscillator == OscSlowSweepUp  
                       || Oscillator == OscFastSweepUp  
                       || Oscillator == OscCrunch       
-                      || Oscillator == OscSample)    return 1;
+                      || Oscillator == OscSample)          return 1;
 
                 return 0;
             } }
@@ -96,8 +97,9 @@ namespace IngameScript
 
             public float GetWaveform(float f)
             {
-                     if (Oscillator == OscLowNoise ) f /= 24;
-                else if (Oscillator == OscBandNoise) f /= 12;
+                     if (Oscillator == OscLowNoise       ) f /= 24;
+                else if (Oscillator == OscNarrowBandNoise) f /= 12;
+                else if (Oscillator == OscWideBandNoise  ) f /= 12;
 
                 f *= 6;
                 f -= (float)Math.Floor(f);
@@ -106,13 +108,14 @@ namespace IngameScript
 
                 float w = 0;
 
-                     if (Oscillator == OscSine     )  w = (float)Math.Sin(f * Tau);
-                else if (Oscillator == OscTriangle )  w =  1 - 2*Math.Abs(2*(f%1)-1);
-                else if (Oscillator == OscSaw      )  w =  2*f - 1;
-                else if (Oscillator == OscSquare   )  w =  f < 0.5f ? 1 : -1;
-                else if (Oscillator == OscLowNoise )  w = -1 + g_random[(int)(f * 100)] * 2;
-                else if (Oscillator == OscHighNoise)  w = -1 + g_random[(int)(f * 100)] * 2;
-                else if (Oscillator == OscBandNoise)  w = -1 + g_random[(int)(f * 100)] * 2;
+                     if (Oscillator == OscSine           )  w = (float)Math.Sin(f * Tau);
+                else if (Oscillator == OscTriangle       )  w =  1 - 2*Math.Abs(2*(f%1)-1);
+                else if (Oscillator == OscSaw            )  w =  2*f - 1;
+                else if (Oscillator == OscSquare         )  w =  f < 0.5f ? 1 : -1;
+                else if (Oscillator == OscLowNoise       )  w = -1 + g_random[(int)(f * 100)] * 2;
+                else if (Oscillator == OscHighNoise      )  w = -1 + g_random[(int)(f * 100)] * 2;
+                else if (Oscillator == OscNarrowBandNoise)  w = -1 + g_random[(int)(f * 100)] * 2;
+                else if (Oscillator == OscWideBandNoise  )  w = -1 + g_random[(int)(f * 100)] * 2;
 
                 w *= Volume.Value;
 
@@ -222,7 +225,7 @@ namespace IngameScript
                 Oscillator = OscillatorFromType((OscType)(int)(Math.Pow(RND, 2) * (int)OscType.Sample));
 
 
-                if (   RND > 0.7f
+                if (    RND > 0.7f
                     && !used.Contains(Oscillator))
                 {
                     Offset = (Parameter)NewSettingFromTag(strOff, Setting_null, Instrument, this);
@@ -248,8 +251,9 @@ namespace IngameScript
 
 
                 if (   (   Oscillator == OscSine
-                        || Oscillator == OscBandNoise)
-                    && RND > 0.7f
+                        || Oscillator == OscNarrowBandNoise
+                        || Oscillator == OscWideBandNoise)
+                    &&  RND > 0.7f
                     && !used.Contains(Oscillator))
                 {
                     Harmonics = new Harmonics(Instrument, this);

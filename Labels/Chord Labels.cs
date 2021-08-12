@@ -107,6 +107,7 @@
                 && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
                 return
                        OK(tune) 
+                    && tune.UseChord
                     && tune.AllOctaves;
 
             else return

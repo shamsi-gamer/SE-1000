@@ -18,18 +18,19 @@ namespace IngameScript
             else if (IsCurParam(strTune)
                   && (tune?.UseChord ?? False)
                   && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
-                UpdateFinalTuneChord(tune, HighToNote(h));
+                UpdateFinalTuneChord(tune, HighToNote(h, EditedClip.HalfSharp));
 
             else if (EditedClip.ChordEdit
                   && OK(EditedClip.Chord))
-                EditChord(HighToNote(h));
+                EditChord(HighToNote(h, EditedClip.HalfSharp));
 
-            else if (EditedClip.Piano)
+            else if (   EditedClip.Piano
+                     && h < 10)
                 PlayNote(
                     EditedClip,
-                    HighToNote(h), 
+                    HighToNote(h, EditedClip.HalfSharp), 
                     CurChan);
-            else
+            else if (!EditedClip.Piano)
                 BeatHigh(h);
         }
 
@@ -111,11 +112,11 @@ namespace IngameScript
 
             if (   IsCurParam(strTune)
                 && (tune?.UseChord ?? False))
-                UpdateFinalTuneChord(tune, LowToNote(l));
+                UpdateFinalTuneChord(tune, LowToNote(l, EditedClip.HalfSharp));
 
             else if (EditedClip.ChordEdit
                   && OK(EditedClip.Chord))
-                EditChord(LowToNote(l));
+                EditChord(LowToNote(l, EditedClip.HalfSharp));
 
             else if (EditedClip.Piano)
             {
@@ -124,7 +125,7 @@ namespace IngameScript
 
                 else PlayNote( // l < 15
                     EditedClip,
-                    LowToNote(l),
+                    LowToNote(l, EditedClip.HalfSharp),
                     CurChan);
             }
             else
@@ -367,7 +368,7 @@ namespace IngameScript
 
 
 
-        int HighToNote(int high)
+        int HighToNote(int high, bool halfSharp)
         {
             var h = high * NoteScale + 1;
 
@@ -377,12 +378,12 @@ namespace IngameScript
 
             return 
                   (60 + CurChannel.Transpose * 12 + h) * NoteScale 
-                + (EditedClip.HalfSharp ? 1 : 0);
+                + (halfSharp ? 1 : 0);
         }
 
 
 
-        int LowToNote(int low)
+        int LowToNote(int low, bool halfSharp)
         {
             var l = low * NoteScale;
 
@@ -393,7 +394,7 @@ namespace IngameScript
 
             return 
                   (60 + CurChannel.Transpose * 12 + l) * NoteScale
-                + (EditedClip.HalfSharp ? 1 : 0);
+                + (halfSharp ? 1 : 0);
         }
     }
 }

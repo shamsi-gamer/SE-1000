@@ -21,7 +21,7 @@ namespace IngameScript
             var xt = 310;
             var wt = (w - xt) / g_patSteps;
 
-            DrawBeats(sprites, x + xt, y, w - xt, rh, EditPat);
+            DrawBeats(sprites, x + xt, y, w - xt, rh);
             DrawGrid (sprites, x + xt, y, w - xt, rh, EditPat);
 
 
@@ -102,7 +102,7 @@ namespace IngameScript
 
 
 
-        void DrawBeats(List<MySprite> sprites, float x, float y, float w, float h, int pattern, int patSteps = g_patSteps)
+        void DrawBeats(List<MySprite> sprites, float x, float y, float w, float h, int patSteps = g_patSteps)
         {
             var wt = w / g_patSteps;
             var ht = h / g_nChans;

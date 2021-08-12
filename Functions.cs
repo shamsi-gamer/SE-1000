@@ -6,7 +6,8 @@ namespace IngameScript
 {
     partial class Program
     {
-         List<IMyButtonPanel> funcButtons = new List<IMyButtonPanel>();
+        List<IMyButtonPanel> funcButtons = new List<IMyButtonPanel>();
+
 
 
         void InitFuncButtons()
@@ -17,6 +18,7 @@ namespace IngameScript
                 if (OK(btn)) funcButtons.Add(btn);
             }
         }
+
 
 
         void SetFunc(int func)
@@ -37,16 +39,18 @@ namespace IngameScript
         }
 
 
+
         void SetInstFunc(Instrument inst, int func)
         {
             switch (func)
             {
             case 1: AddNextSetting(strVol,  inst, -1); break;
             case 2: AddNextSetting(strTune, inst, -1); break;
-            case 3: AddNextSetting(strFlt,  inst, -1); break;
-            case 4: AddNextSetting(strDel,  inst, -1); break;
+            case 4: AddNextSetting(strFlt,  inst, -1); break;
+            case 5: AddNextSetting(strDel,  inst, -1); break;
             }
         }
+
 
 
         void SetSrcFunc(Source src, int func)

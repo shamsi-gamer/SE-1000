@@ -92,9 +92,10 @@ namespace IngameScript
         {
             var wt = w/g_patSteps;
 
-            for (int t = 0; t < g_patSteps; t += 4)
-                FillRect(sprites, x + t * wt, y, wt, h, color1);
+            //for (int t = 0; t < g_patSteps; t += 4)
+            //    FillRect(sprites, x + t * wt, y, wt, h, color1);
 
+            DrawBeats(sprites, x, y, w, h);
             DrawPianoKeys(sprites, x, y, wt * g_patSteps, h, color2);
 
             for (int t = 0; t < g_patSteps; t++)

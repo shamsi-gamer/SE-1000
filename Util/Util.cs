@@ -45,18 +45,19 @@ namespace IngameScript
         bool ModIsPresent()
         {
             return _loadStep < OscCount
-                ||    (OscSine         ?.Samples.Count ?? 0) > 0
-                   && (OscTriangle     ?.Samples.Count ?? 0) > 0
-                   && (OscSaw          ?.Samples.Count ?? 0) > 0
-                   && (OscSquare       ?.Samples.Count ?? 0) > 0
-                   && (OscLowNoise     ?.Samples.Count ?? 0) > 0
-                   && (OscHighNoise    ?.Samples.Count ?? 0) > 0
-                   && (OscBandNoise    ?.Samples.Count ?? 0) > 0
-                   && (OscSlowSweepDown?.Samples.Count ?? 0) > 0
-                   && (OscFastSweepDown?.Samples.Count ?? 0) > 0
-                   && (OscSlowSweepUp  ?.Samples.Count ?? 0) > 0
-                   && (OscFastSweepUp  ?.Samples.Count ?? 0) > 0
-                   && (OscCrunch       ?.Samples.Count ?? 0) > 0;
+                ||    (OscSine           ?.Samples.Count ?? 0) > 0
+                   && (OscTriangle       ?.Samples.Count ?? 0) > 0
+                   && (OscSaw            ?.Samples.Count ?? 0) > 0
+                   && (OscSquare         ?.Samples.Count ?? 0) > 0
+                   && (OscLowNoise       ?.Samples.Count ?? 0) > 0
+                   && (OscHighNoise      ?.Samples.Count ?? 0) > 0
+                   && (OscNarrowBandNoise?.Samples.Count ?? 0) > 0
+                   && (OscWideBandNoise  ?.Samples.Count ?? 0) > 0
+                   && (OscSlowSweepDown  ?.Samples.Count ?? 0) > 0
+                   && (OscFastSweepDown  ?.Samples.Count ?? 0) > 0
+                   && (OscSlowSweepUp    ?.Samples.Count ?? 0) > 0
+                   && (OscFastSweepUp    ?.Samples.Count ?? 0) > 0
+                   && (OscCrunch         ?.Samples.Count ?? 0) > 0;
         }
 
 
@@ -282,11 +283,13 @@ namespace IngameScript
         IMyTextPanel     GetDisplay(string s, int i = -1) { return GetLcd(s + " Display" + (OK(i) ? strEmpty + S(i) : "")); }
 
 
+
         static void SkipWhiteSpace(string[] lines, ref int line)
         {
             while (line < lines.Length
                 && lines[line].Trim() == "") line++;
         }
+
 
 
         static int   int_Parse(string str) => int.Parse(str);

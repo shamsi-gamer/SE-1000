@@ -250,8 +250,8 @@ namespace IngameScript
                 {
                     DrawFuncButton(sprites, strVol,  1, w, h, True, Volume.HasDeepParams(chan, -1));
                     DrawFuncButton(sprites, strTune, 2, w, h, True, OK(Tune  ));
-                    DrawFuncButton(sprites, strFlt,  3, w, h, True, OK(Filter));
-                    DrawFuncButton(sprites, strDel,  4, w, h, True, OK(Delay ));
+                    DrawFuncButton(sprites, strFlt,  4, w, h, True, OK(Filter));
+                    DrawFuncButton(sprites, strDel,  5, w, h, True, OK(Delay ));
                 }
             }
         }

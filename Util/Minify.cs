@@ -15,29 +15,30 @@ namespace IngameScript
         const TextAlignment TA_CENTER = TextAlignment.CENTER;
 
 
-        const Track           Track_null = null;
-        const Clip             Clip_null = null;
-        const Pattern       Pattern_null = null;
-        const Channel       Channel_null = null;
-        const Note             Note_null = null;
-        const Parameter   Parameter_null = null;
-        const Bias             Bias_null = null;
-        const Envelope     Envelope_null = null;
-        const LFO               LFO_null = null;
-        const Instrument Instrument_null = null;
-        const Source         Source_null = null;
-        const Setting       Setting_null = null;
-        const Tune             Tune_null = null;
-        const Harmonics   Harmonics_null = null;
-        const Filter         Filter_null = null;
-        const Delay           Delay_null = null;
-        const Modulate     Modulate_null = null;
-        const Key               Key_null = null;
-        const Sound           Sound_null = null;
-        const Oscillator Oscillator_null = null;
+        const Track            Track_null = null;
+        const Clip              Clip_null = null;
+        const Pattern        Pattern_null = null;
+        const Channel        Channel_null = null;
+        const Note              Note_null = null;
+        const Parameter    Parameter_null = null;
+        const Bias              Bias_null = null;
+        const Envelope      Envelope_null = null;
+        const LFO                LFO_null = null;
+        const Instrument  Instrument_null = null;
+        const Source          Source_null = null;
+        const Setting        Setting_null = null;
+        const Tune              Tune_null = null;
+        const Harmonics    Harmonics_null = null;
+        const Filter          Filter_null = null;
+        const Delay            Delay_null = null;
+        const Modulate      Modulate_null = null;
+        const Key                Key_null = null;
+        const Sound            Sound_null = null;
+        const Oscillator  Oscillator_null = null;
                            
-        const Label.CondFunc     CF_null = null;
-        const Action<Label>      AL_null = null;
+        const Label.CondFunc      CF_null = null;
+        const Action<Label, int> ALi_null = null;
+        const Action<Label>       AL_null = null;
 
 
         static string W(string str, bool semi = True) { return str + (semi ? ";" : ""); }

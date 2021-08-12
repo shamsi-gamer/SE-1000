@@ -51,7 +51,7 @@ namespace IngameScript
         {
             return
                   ShowPiano
-                ? NoteIsBright(HighToNote(lbl.Data))
+                ? (lbl.Data < 10 && NoteIsBright(HighToNote(lbl.Data, EditedClip.HalfSharp)))
                 : ToggleIsBright(lbl);
         }
 
@@ -61,7 +61,7 @@ namespace IngameScript
         {
             return
                       ShowPiano
-                   && NoteIsDim(HighToNote(lbl.Data))
+                   && (lbl.Data < 10 && NoteIsDim(HighToNote(lbl.Data, EditedClip.HalfSharp)))
                 ||   !ShowPiano
                    && g_copyChans.Count > 0
                    && (lbl == lblHigh[0] || lbl == lblHigh[1]);
@@ -71,28 +71,37 @@ namespace IngameScript
 
         void UpdatePianoHigh(Label lbl)
         {
-            if (ShowPiano)
-                lbl.SetText(strEmpty);
+            if (   ShowPiano
+                && lbl.Data < 11)
+            {     
+                var noteIsBright = NoteIsBright(HighToNote(lbl.Data, EditedClip.HalfSharp));
 
+                var halfSharp =
+                       lbl.Data < 10
+                    && (  !EditedClip.HalfSharp &&  noteIsBright
+                        || EditedClip.HalfSharp && !noteIsBright);
+
+                lbl.SetText(halfSharp ? "‡" : strEmpty, 6, 26);
+            }
             else
             { 
                 switch (lbl.Data)
                 { 
-                case  0: lbl.SetText("Copy",  9, 14);                break;
-                case  1: lbl.SetText("Paste", 9, 14);                break;
-                                                                        
-                case  2: lbl.SetText("Acc");                         break;
-                case  3: lbl.SetText("All Ch", 7.6f, 19.5f);         break;
-                case  4: lbl.SetText("Inst");                        break;
-                                                                        
-                case  5: lbl.SetText("Clr");                         break;
-                case  6: lbl.SetText("Rnd");                         break;
+                case  0: lbl.SetText("Copy",  9, 14);                   break;
+                case  1: lbl.SetText("Paste", 9, 14);                   break;
+                                                                           
+                case  2: lbl.SetText("Acc");                            break;
+                case  3: lbl.SetText("All Ch", 7.6f, 19.5f);            break;
+                case  4: lbl.SetText("Inst");                           break;
+                                                                           
+                case  5: lbl.SetText("Clr");                            break;
+                case  6: lbl.SetText("Rnd");                            break;
                                                                  
-                case  7: lbl.SetText(ShowPianoView ? " "   : "1/4"); break;
-                case  8: lbl.SetText(ShowPianoView ? "Rev" : "1/8"); break;
-                case  9: lbl.SetText("Flip");                        break;
-                                                                     
-                case 10: lbl.SetText("Pick");                        break;
+                case  7: lbl.SetText(ShowPianoView ? strEmpty : "1/4"); break;
+                case  8: lbl.SetText(ShowPianoView ? "Rev"    : "1/8"); break;
+                case  9: lbl.SetText("Flip");                           break;
+                                                                        
+                case 10: lbl.SetText("Pick");                           break;
                 }
             }
         }
@@ -139,7 +148,7 @@ namespace IngameScript
                 ?      -lbl.Data == 15 
                      && EditedClip.HalfSharp
                   ||   -lbl.Data < 15
-                     && NoteIsBright(LowToNote(-lbl.Data))
+                     && NoteIsBright(LowToNote(-lbl.Data, EditedClip.HalfSharp))
                 : StepIsBright(lbl);
         }
 
@@ -150,7 +159,7 @@ namespace IngameScript
             return 
                    ShowPiano 
                 && -lbl.Data < 15
-                && NoteIsDim(LowToNote(-lbl.Data));
+                && NoteIsDim(LowToNote(-lbl.Data, EditedClip.HalfSharp));
         }
 
 
@@ -159,9 +168,12 @@ namespace IngameScript
         {
             if (    ShowPiano
                 && -lbl.Data == 15)
-            { 
                 lbl.SetText("‡", 8, 17); 
-            }
+
+            else if (ShowPiano
+                 && -lbl.Data < 15)
+                lbl.SetText(EditedClip.HalfSharp ? "‡" : strEmpty, 6, 26);
+
             else
             { 
                 lbl.SetText(
@@ -213,6 +225,7 @@ namespace IngameScript
                         && n.Clip  == EditedClip
                         && n.iChan == CurChan)))
                 return True; // note is being played
+
 
             return False;
         }
