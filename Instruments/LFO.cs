@@ -32,7 +32,7 @@ namespace IngameScript
             public LFO(Setting parent, Instrument inst, Source src) 
                 : base(strLfo, parent, Setting_null, inst, src) 
             {
-                Op          = ModOp  .Multiply;
+                Op          = ModOp  .Add;
                 Type        = LfoType.Sine;
                             
                 Amplitude   = (Parameter)NewSettingFromTag(strAmp,  this, inst, src);

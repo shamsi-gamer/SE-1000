@@ -17,7 +17,7 @@ namespace IngameScript
         static Channel  ModDestChannel    =  Channel_null;
 
 
-        public enum ModOp { Multiply, Add };
+        public enum ModOp { Set, Add, Multiply };
 
 
         public class Modulate : Setting
@@ -147,22 +147,31 @@ namespace IngameScript
                 }
 
 
-                // modify value with connected
+                if (Op == ModOp.Set)
+                {
+                    // replace value with connected
+
+                    CurValue = val;
+                }
+                else
+                { 
+                    // modify value with connected
                 
-                var amt = Amount .UpdateValue(tp);
-                var att = Attack .UpdateValue(tp);
-                var rel = Release.UpdateValue(tp);
+                    var amt = Amount .UpdateValue(tp);
+                    var att = Attack .UpdateValue(tp);
+                    var rel = Release.UpdateValue(tp);
                 
-                if (att == 0) att = 0.000001f;
-                if (rel == 0) rel = 0.000001f;
+                    if (att == 0) att = 0.000001f;
+                    if (rel == 0) rel = 0.000001f;
 
-                var  cv  = Math.Abs(CurValue);
-                var _amt = Math.Abs(amt);
+                    var  cv  = Math.Abs(CurValue);
+                    var _amt = Math.Abs(amt);
 
-                var a = Math.Min(   cv + val*_amt/FPS/att, _amt);
-                var r = Math.Max(0, cv -     _amt/FPS/rel);
+                    var a = Math.Min(   cv + val*_amt/FPS/att, _amt);
+                    var r = Math.Max(0, cv -     _amt/FPS/rel);
 
-                CurValue = Math.Sign(amt) * (r + (a - r) * val);
+                    CurValue = Math.Sign(amt) * (r + (a - r) * val);
+                }
 
                 m_valid  = True;
                 return CurValue;
@@ -317,8 +326,13 @@ namespace IngameScript
             {
                 width = 163;
 
+                var op = "=";
+
+                     if (Op == ModOp.Add     ) op = "+";
+                else if (Op == ModOp.Multiply) op = "*";
+
                 return
-                      (Op == ModOp.Add ? "+ " : "* ")
+                      op
                     + PrintValue(Amount .Value, 2, True, 0).PadLeft(5) + strEmpty
                     + PrintValue(Attack .Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Release.Value, 2, True, 0).PadLeft(4);
@@ -477,7 +491,12 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                DrawFuncButton(sprites, (Op == ModOp.Add ? "Add " : "Mult") + "↕", 0, w, y, False, False);
+                var strOp = "Set ";
+
+                     if (Op == ModOp.Add     ) strOp = "Add ";
+                else if (Op == ModOp.Multiply) strOp = "Mult";
+
+                DrawFuncButton(sprites, strOp + "↕", 0, w, y, False, False);
                 DrawFuncButton(sprites, strAmt, 1, w, y, True, Amount .HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, "A",    2, w, y, True, Attack .HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, "R",    3, w, y, True, Release.HasDeepParams(chan, CurSrc));
@@ -492,7 +511,7 @@ namespace IngameScript
                     case 0:
                     {
                         var newOp = (int)Op + 1;
-                        if (newOp > (int)ModOp.Add) newOp = 0;
+                        if (newOp > (int)ModOp.Multiply) newOp = 0;
                         Op = (ModOp)newOp;
                         g_lcdPressed.Add(lcdMain+func);
                         break;

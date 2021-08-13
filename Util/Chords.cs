@@ -7,21 +7,22 @@ namespace IngameScript
 {
     partial class Program
     {
-        //static string GetChordName(List<int> chord, string other)
-        //{
-        //         if (IsChord(chord, 4, 8))     return "+";  // augmented
-        //    else if (IsChord(chord, 4, 7))     return "M";  // major
-        //    else if (IsChord(chord, 3, 7))     return "m";  // minor
-        //    else if (IsChord(chord, 3, 6))     return "o";  // diminished
+        static string GetChordName(int[] chord, string other)
+        {
+                 if (IsChord(chord, 4, 8))     return "+";  // augmented
+            else if (IsChord(chord, 4, 7))     return "M";  // major
+            else if (IsChord(chord, 3, 7))     return "m";  // minor
+            else if (IsChord(chord, 3, 6))     return "o";  // diminished
 
-        //    else if (IsChord(chord, 4, 7, 11)) return "M7"; // major 7th
-        //    else if (IsChord(chord, 4, 7, 10)) return "7";  // dominant 7th
-        //    else if (IsChord(chord, 3, 7, 10)) return "m7"; // minor 7th
-        //    else if (IsChord(chord, 3, 6, 10)) return "ø7"; // half-diminished 7th
-        //    else if (IsChord(chord, 3, 6,  9)) return "o7"; // fully diminished 7th
+            else if (IsChord(chord, 4, 7, 11)) return "M7"; // major 7th
+            else if (IsChord(chord, 4, 7, 10)) return "7";  // dominant 7th
+            else if (IsChord(chord, 3, 7, 10)) return "m7"; // minor 7th
+            else if (IsChord(chord, 3, 6, 10)) return "ø7"; // half-diminished 7th
+            else if (IsChord(chord, 3, 6,  9)) return "o7"; // fully diminished 7th
 
-        //    else                               return other; 
-        //}
+            else                               return other; 
+        }
+
 
 
         List<int> GetChordNotes(int note)
@@ -45,56 +46,58 @@ namespace IngameScript
         }
 
 
-        //static bool IsChord(List<int> chord, int n2, int n3)
-        //{
-        //    var c = new List<int>(chord);
+        static bool IsChord(int[] chord, int n2, int n3)
+        {
+            var c = new List<int>(chord);
 
-        //    for (int i = 0; i < c.Count; i++)
-        //        while (c[i] >= 12*NoteScale) c[i] %= 12*NoteScale;
+            for (int i = 0; i < c.Count; i++)
+                while (c[i] >= 12*NoteScale) c[i] %= 12*NoteScale;
                 
-        //    c = c.Select(n => n).Distinct().ToList();
-        //    if (c.Count != 3) return False;
-        //    c.Sort();
+            c = c.Select(n => n).Distinct().ToList();
+            if (c.Count != 3) return False;
+            c.Sort();
 
-        //    if (      c[1]-c[0] ==  n2          * NoteScale
-        //           && c[2]-c[0] ==  n3          * NoteScale
-        //        ||    c[1]-c[0] == (n3-n2)      * NoteScale
-        //           && c[2]-c[0] == (12-n2)      * NoteScale
-        //        ||    c[1]-c[0] == (12-n3)      * NoteScale
-        //           && c[2]-c[0] == (12-(n3-n2)) * NoteScale)
-        //        return True;
+            if (      c[1]-c[0] ==  n2          * NoteScale
+                   && c[2]-c[0] ==  n3          * NoteScale
+                ||    c[1]-c[0] == (n3-n2)      * NoteScale
+                   && c[2]-c[0] == (12-n2)      * NoteScale
+                ||    c[1]-c[0] == (12-n3)      * NoteScale
+                   && c[2]-c[0] == (12-(n3-n2)) * NoteScale)
+                return True;
          
-        //    return False;
-        //}
+            return False;
+        }
 
 
-        //static bool IsChord(List<int> chord, int n2, int n3, int n4)
-        //{
-        //    var c = new List<int>(chord);
 
-        //    for (int i = 0; i < c.Count; i++)
-        //        while (c[i] >= 12*NoteScale) c[i] %= 12*NoteScale;
+        static bool IsChord(int[] chord, int n2, int n3, int n4)
+        {
+            var c = new List<int>(chord);
+
+            for (int i = 0; i < c.Count; i++)
+                while (c[i] >= 12*NoteScale) c[i] %= 12*NoteScale;
                 
-        //    c = c.Select(n => n).Distinct().ToList();
-        //    if (c.Count != 4) return False;
-        //    c.Sort();
+            c = c.Select(n => n).Distinct().ToList();
+            if (c.Count != 4) return False;
+            c.Sort();
 
-        //    if (      c[1]-c[0] ==  n2        * NoteScale
-        //           && c[2]-c[0] ==  n3        * NoteScale
-        //           && c[3]-c[0] ==  n4        * NoteScale
-        //        ||    c[1]-c[0] == (n3-n2)    * NoteScale
-        //           && c[2]-c[0] == (n4-n2)    * NoteScale
-        //           && c[3]-c[0] == (12-n2)    * NoteScale
-        //        ||    c[1]-c[0] == (n4-n3)    * NoteScale
-        //           && c[2]-c[0] == (12-n3)    * NoteScale
-        //           && c[3]-c[0] == (12-n2)    * NoteScale
-        //        ||    c[1]-c[0] == (12-n4)    * NoteScale
-        //           && c[2]-c[0] == (12-n4+n2) * NoteScale
-        //           && c[3]-c[0] == (12-n4+n3) * NoteScale)
-        //        return True;
+            if (      c[1]-c[0] ==  n2        * NoteScale
+                   && c[2]-c[0] ==  n3        * NoteScale
+                   && c[3]-c[0] ==  n4        * NoteScale
+                ||    c[1]-c[0] == (n3-n2)    * NoteScale
+                   && c[2]-c[0] == (n4-n2)    * NoteScale
+                   && c[3]-c[0] == (12-n2)    * NoteScale
+                ||    c[1]-c[0] == (n4-n3)    * NoteScale
+                   && c[2]-c[0] == (12-n3)    * NoteScale
+                   && c[3]-c[0] == (12-n2)    * NoteScale
+                ||    c[1]-c[0] == (12-n4)    * NoteScale
+                   && c[2]-c[0] == (12-n4+n2) * NoteScale
+                   && c[3]-c[0] == (12-n4+n3) * NoteScale)
+                return True;
          
-        //    return False;
-        //}
+            return False;
+        }
+
 
 
         static int LimitNoteToChord(int note, List<int> chord)
@@ -129,6 +132,7 @@ namespace IngameScript
         }
 
 
+
         void ToggleChordMode()
         {
             if (EditedClip.ChordEdit)
@@ -151,11 +155,13 @@ namespace IngameScript
         }
 
 
+
         // return steps
         float ChordStrum(int n)
         {
             return (float)(EditedClip.ChordStrum*Math.Pow(n, 1.33) / TicksPerStep);        
         }
+
 
 
         void Chord(int chord)
@@ -222,6 +228,7 @@ namespace IngameScript
         }
 
 
+
         void ToggleChordEdit()
         {
             if (IsCurParam(strTune))
@@ -246,6 +253,7 @@ namespace IngameScript
         }
 
 
+
         void EditChord(int noteNum)
         {
             var chord = EditedClip.Chords[EditedClip.Chord];
@@ -265,6 +273,7 @@ namespace IngameScript
         }
 
 
+
         void UpdateFinalTuneChord(Tune tune, int noteNum)
         {
             var chord = tune.Chord;
@@ -274,6 +283,7 @@ namespace IngameScript
 
             tune.FinalChord = UpdateFinalTuneChord(chord, tune.AllOctaves);
         }
+
 
 
         List<int> UpdateFinalTuneChord(List<int> _tuneChord, bool tuneAll)

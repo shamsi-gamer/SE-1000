@@ -42,6 +42,7 @@
     <Compile Include="Commands.cs" />
     <Compile Include="Controls\Label.cs" />
     <Compile Include="Instruments\Bias.cs" />
+    <Compile Include="Instruments\TuneChord.cs" />
     <Compile Include="IO\IO.cs" />
     <Compile Include="Labels\Adjust Labels.cs" />
     <Compile Include="Labels\Chord Labels.cs" />

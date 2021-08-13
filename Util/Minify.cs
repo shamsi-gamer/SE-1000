@@ -32,6 +32,7 @@ namespace IngameScript
         const Filter          Filter_null = null;
         const Delay            Delay_null = null;
         const Modulate      Modulate_null = null;
+        const TuneChord    TuneChord_null = null;
         const Key                Key_null = null;
         const Sound            Sound_null = null;
         const Oscillator  Oscillator_null = null;
