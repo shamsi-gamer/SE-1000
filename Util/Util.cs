@@ -57,7 +57,7 @@ namespace IngameScript
                    && (OscFastSweepDown  ?.Samples.Count ?? 0) > 0
                    && (OscSlowSweepUp    ?.Samples.Count ?? 0) > 0
                    && (OscFastSweepUp    ?.Samples.Count ?? 0) > 0
-                   && (OscCrunch         ?.Samples.Count ?? 0) > 0;
+                   && (OscPulse         ?.Samples.Count ?? 0) > 0;
         }
 
 

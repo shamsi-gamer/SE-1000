@@ -206,7 +206,7 @@ namespace IngameScript
                         && !OK(NoteSample)
                         && lTime > NoteSample.Length * FPS)
                         vol = 0;
-                    else if (Source.Oscillator == OscCrunch)
+                    else if (Source.Oscillator == OscPulse)
                         vol /= 2;
 
 

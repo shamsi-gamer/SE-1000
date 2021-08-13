@@ -2,7 +2,7 @@
 {
     partial class Program
     {                         
-        const string strSE              = "SE-909_",
+        const string strSE              = "SE-1000_",
                                         
                      strEmpty           = " ",
                                         
@@ -69,7 +69,7 @@
                      strSlowUp          = "SlowSweepUp", 
                      strFastUp          = "FastSweepUp", 
                                         
-                     strCrn             = "Crunch",
+                     strPulse           = "Pulse",
                                         
                      strClip            = "Clip",
                      strMixer           = "Mixer",

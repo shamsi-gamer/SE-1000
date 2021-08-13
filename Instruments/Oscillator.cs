@@ -20,7 +20,7 @@ namespace IngameScript
             FastSweepDown,
             SlowSweepUp,
             FastSweepUp,
-            Crunch,
+            Pulse,
             Sample
         };
 
@@ -61,7 +61,7 @@ namespace IngameScript
                           OscFastSweepDown   = Oscillator_null,
                           OscSlowSweepUp     = Oscillator_null,
                           OscFastSweepUp     = Oscillator_null,
-                          OscCrunch          = Oscillator_null,
+                          OscPulse           = Oscillator_null,
                           OscSample          = Oscillator_null; 
 
         static int _loadStep = 0;
@@ -76,15 +76,15 @@ namespace IngameScript
             case   1: OscTriangle        = new Oscillator(OscType.Triangle,        "Tri",   strTri);             break;
             case   2: OscSquare          = new Oscillator(OscType.Square,          "Sqr",   strSqr);             break;
             case   3: OscSaw             = new Oscillator(OscType.Saw,             "Saw",   strSaw);             break;
-            case   4: OscLowNoise        = new Oscillator(OscType.LowNoise,        "Lo #",  strLowNoise);        break;
-            case   5: OscHighNoise       = new Oscillator(OscType.HighNoise,       "Hi #",  strHighNoise);       break;
-            case   6: OscNarrowBandNoise = new Oscillator(OscType.NarrowBandNoise, "nBd #", strNarrowBandNoise); break;
-            case   7: OscWideBandNoise   = new Oscillator(OscType.WideBandNoise,   "WBd #", strWideBandNoise);   break;
+            case   4: OscLowNoise        = new Oscillator(OscType.LowNoise,        "Lo X",  strLowNoise);        break;
+            case   5: OscHighNoise       = new Oscillator(OscType.HighNoise,       "Hi X",  strHighNoise);       break;
+            case   6: OscNarrowBandNoise = new Oscillator(OscType.NarrowBandNoise, "nBd X", strNarrowBandNoise); break;
+            case   7: OscWideBandNoise   = new Oscillator(OscType.WideBandNoise,   "WBd X", strWideBandNoise);   break;
             case   8: OscSlowSweepDown   = new Oscillator(OscType.SlowSweepDown,   "Sw ▼",  strSlowDown);        break;
             case   9: OscFastSweepDown   = new Oscillator(OscType.FastSweepDown,   "Sw▼▼",  strFastDown);        break;
             case  10: OscSlowSweepUp     = new Oscillator(OscType.SlowSweepUp,     "Sw ▲",  strSlowUp);          break;
             case  11: OscFastSweepUp     = new Oscillator(OscType.FastSweepUp,     "Sw▲▲",  strFastUp);          break;
-            case  12: OscCrunch          = new Oscillator(OscType.Crunch,          "Crn",   strCrn);             break;
+            case  12: OscPulse           = new Oscillator(OscType.Pulse,           "Pls ┼", strPulse);             break;
             case  13: OscSample          = new Oscillator(OscType.Sample,          "Smpl");                      break;
             }
         }
@@ -107,7 +107,7 @@ namespace IngameScript
                 case OscType.FastSweepDown:   return OscFastSweepDown;
                 case OscType.SlowSweepUp:     return OscSlowSweepUp;
                 case OscType.FastSweepUp:     return OscFastSweepUp;
-                case OscType.Crunch:          return OscCrunch;
+                case OscType.Pulse:          return OscPulse;
                 case OscType.Sample:          return OscSample;
             }
 
@@ -159,7 +159,7 @@ namespace IngameScript
                       || oscName == strSlowUp
                       || oscName == strFastDown
                       || oscName == strFastUp) smp.Length = 0.1f * 440/note2freq(smp.Note-12*NoteScale);
-                else if (oscName == strCrn)    smp.Length = 1;
+                else if (oscName == strPulse)    smp.Length = 1;
                 
                 return num;
             }).ToList();

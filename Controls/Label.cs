@@ -23,9 +23,11 @@ namespace IngameScript
             public Action<Label> UpdateFunc,
                                  ColorFunc;
 
-            public int           Data;
+            public int           Data,
+                                 Data2;
 
             public bool          UsedForSession;
+
 
 
             public Label(int           category, 
@@ -50,6 +52,7 @@ namespace IngameScript
                 ColorFunc       = colorFunc;
 
                 Data            = data;
+                Data2           = 0;
 
                 UsedForSession  = usedForSession;
 
@@ -59,6 +62,7 @@ namespace IngameScript
                 else if (category == 1) g_clipLabels  .Add(this);
                 else                    g_slowLabels  .Add(this);
             }
+
 
 
             public void Update()
@@ -77,16 +81,6 @@ namespace IngameScript
             }
 
 
-            public void SetText(string text, float size = 10, float pad = 10)
-            {
-                Panel.WriteText(strEmpty);
-
-                Panel.FontSize    = size;
-                Panel.TextPadding = pad;
-
-                Panel.WriteText(text);
-            }
-
 
             public void Update(bool full, bool half = False)
             {
@@ -104,11 +98,25 @@ namespace IngameScript
             }
 
 
+
+            public void SetText(string text, float size = 10, float pad = 10)
+            {
+                Panel.WriteText(strEmpty);
+
+                Panel.FontSize    = size;
+                Panel.TextPadding = pad;
+
+                Panel.WriteText(text);
+            }
+
+
+
             public void Mark(bool on = True)
             {
                 g_labelsPressed.Add(this);
                 Update(on);
             }
+
 
 
             public void Unmark(bool on = False, bool half = False)

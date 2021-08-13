@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
+
 namespace IngameScript
 {
     partial class Program
@@ -49,10 +50,16 @@ namespace IngameScript
 
         bool PianoHighIsBright(Label lbl)
         {
-            return
+            var halfSharp = False;
+
+            var bright = 
                   ShowPiano
-                ? (lbl.Data < 10 && NoteIsBright(HighToNote(lbl.Data, EditedClip.HalfSharp)))
+                ? (lbl.Data < 10 && NoteIsBright(HighToNote(lbl.Data, EditedClip.HalfSharp), out halfSharp))
                 : ToggleIsBright(lbl);
+
+            lbl.Data2 = halfSharp ? 1 : 0;
+
+            return bright;
         }
 
 
@@ -73,13 +80,10 @@ namespace IngameScript
         {
             if (   ShowPiano
                 && lbl.Data < 11)
-            {     
-                var noteIsBright = NoteIsBright(HighToNote(lbl.Data, EditedClip.HalfSharp));
-
-                var halfSharp =
-                       lbl.Data < 10
-                    && (  !EditedClip.HalfSharp &&  noteIsBright
-                        || EditedClip.HalfSharp && !noteIsBright);
+            {
+                var halfSharp = 
+                       !EditedClip.HalfSharp && lbl.Data2 != 0
+                    ||  EditedClip.HalfSharp && lbl.Data2 == 0;
 
                 lbl.SetText(halfSharp ? "‡" : strEmpty, 6, 26);
             }
@@ -143,13 +147,17 @@ namespace IngameScript
 
         bool PianoLowIsBright(Label lbl)
         {
-            return
+            var halfSharp = False;
+
+            var bright =
                 ShowPiano
-                ?      -lbl.Data == 15 
-                     && EditedClip.HalfSharp
-                  ||   -lbl.Data < 15
-                     && NoteIsBright(LowToNote(-lbl.Data, EditedClip.HalfSharp))
+                ?    -lbl.Data == 15 && EditedClip.HalfSharp
+                  || -lbl.Data <  15 && NoteIsBright(LowToNote(-lbl.Data, EditedClip.HalfSharp), out halfSharp)
                 : StepIsBright(lbl);
+
+            lbl.Data2 = halfSharp ? 1 : 0;
+
+            return bright;
         }
 
 
@@ -172,7 +180,15 @@ namespace IngameScript
 
             else if (ShowPiano
                  && -lbl.Data < 15)
-                lbl.SetText(EditedClip.HalfSharp ? "‡" : strEmpty, 6, 26);
+            {
+                var _halfSharp = lbl.Data2 != 0;
+
+                var halfSharp = 
+                       !EditedClip.HalfSharp &&  _halfSharp
+                    ||  EditedClip.HalfSharp && !_halfSharp;
+
+                lbl.SetText(halfSharp ? "‡" : strEmpty, 6, 26);
+            }
 
             else
             { 
@@ -200,8 +216,15 @@ namespace IngameScript
 
 
 
-        bool NoteIsBright(int noteNum)
+        bool NoteIsBright(int noteNum, out bool halfSharp)
         {
+            // noteNum can either be half sharp or not, it gets compared 
+            // for both either way, and an answer is sent back
+
+            halfSharp = False;
+
+            var note = Note_null;
+
             if (IsCurParam(strTune))
             {
                 var tune =
@@ -221,10 +244,13 @@ namespace IngameScript
                 return True; // note is being edited
 
             else if (OK(g_notes.FindIndex(n => 
-                           NoteIsTriggered(noteNum, n)
+                           NoteIsTriggered(noteNum, n, out note)
                         && n.Clip  == EditedClip
                         && n.iChan == CurChan)))
+            {
+                halfSharp = (note.Number % NoteScale > 0) ^ EditedClip.HalfSharp;
                 return True; // note is being played
+            }
 
 
             return False;
@@ -234,6 +260,8 @@ namespace IngameScript
 
         bool NoteIsDim(int noteNum)
         {
+            var note = Note_null;
+
             if (IsCurParam(strTune))
             {
                 var tune =
@@ -243,7 +271,7 @@ namespace IngameScript
 
                 return tune.FinalChord.Contains(noteNum);
             }
-            else if (OK(g_notes.FindIndex(n => NoteIsTriggered(noteNum, n))))
+            else if (OK(g_notes.FindIndex(n => NoteIsTriggered(noteNum, n, out note))))
                 return True; // note is being played
 
             return False;
@@ -287,8 +315,10 @@ namespace IngameScript
 
 
 
-        bool NoteIsTriggered(int noteNum, Note note)
+        bool NoteIsTriggered(int noteNum, Note note, out Note _note)
         {
+            _note = note;
+
             return
                    noteNum/NoteScale == note.Number/NoteScale
                 && TimeStep >= note.Step

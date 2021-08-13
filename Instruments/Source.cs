@@ -87,7 +87,7 @@ namespace IngameScript
                       || Oscillator == OscFastSweepDown
                       || Oscillator == OscSlowSweepUp  
                       || Oscillator == OscFastSweepUp  
-                      || Oscillator == OscCrunch       
+                      || Oscillator == OscPulse       
                       || Oscillator == OscSample)          return 1;
 
                 return 0;
@@ -447,7 +447,7 @@ namespace IngameScript
                         else if (f == df*2) wf = -1;
                         else                wf =  0;
                     }
-                    else*/ if (Oscillator == OscCrunch)
+                    else*/ if (Oscillator == OscPulse)
                     { 
                         var _f = f % (1/4f);
 

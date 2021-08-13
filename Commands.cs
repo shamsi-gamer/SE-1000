@@ -531,7 +531,7 @@ namespace IngameScript
                 var src = SelSource;
 
                 var newOsc = (int)src.Oscillator.Type + 1;
-                if (newOsc > (int)OscType.Crunch) newOsc = 0;
+                if (newOsc > (int)OscType.Pulse) newOsc = 0;
                 src.Oscillator = OscillatorFromType((OscType)newOsc);
             }
             else if (!OK(SelChan)
