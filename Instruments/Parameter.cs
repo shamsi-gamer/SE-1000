@@ -367,7 +367,7 @@ namespace IngameScript
 
 
 
-            public void Delete(int iSrc)
+            public virtual void Delete(int iSrc)
             {
                 // this method removes note and channel automation associated with this setting
 

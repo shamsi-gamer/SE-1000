@@ -26,7 +26,7 @@ namespace IngameScript
             protected bool    m_valid;
 
 
-            protected bool   TooComplex => Instrument.Program.TooComplex;
+            protected bool    TooComplex => Instrument.Program.TooComplex;
 
 
             public Setting(string tag, Setting parent, Setting proto, Instrument inst, Source src)
@@ -293,6 +293,7 @@ namespace IngameScript
             case strRel:   return new Parameter(tag,    0,          10,   0,     2,    0.01f,  0.1f,  parent.GetType() == typeof(Modulate) ? 0 : 0.2f, False, parent, inst, src);
 
             case strChord: return new TuneChord(parent, inst, src);
+            case strSel:   return new Parameter(tag,    0,           0,   0,     0,    1,      1,     0,    False, parent, inst, src);
 
             case strOff:   return new Parameter(tag, -100,         100, -10,    10,    0.01f,  0.1f,  0,    False, parent, inst, src);
             case strFreq:  return new Parameter(tag,    0.01f,      30,   0.01f, 4,    0.001f, 0.05f, 1,    True,  parent, inst, src);

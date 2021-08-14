@@ -25,6 +25,8 @@ namespace IngameScript
                 Chords     = new List<List<int>>();
                 AllOctaves = new List<bool>();
 
+                AddFirstChord();
+
                 Selected   = (Parameter)NewSettingFromTag(strSel, this, inst, src);
 
                 FinalChord = new List<int>();
@@ -52,68 +54,11 @@ namespace IngameScript
 
 
 
-            //public float UpdateValue(TimeParams tp)
-            //{
-            //    if (tp.Program.TooComplex) 
-            //        return 0;
-
-            //    //var param = (Parameter)Parent;
-
-
-            //    // get connected value
-
-            //    var val = 0f;
-
-            //    for (int i = 0; i < ModSettings.Count; i++)
-            //    {
-            //        var set  = ModSettings   [i];
-            //        var src  = ModSources    [i];
-            //        var inst = ModInstruments[i];
-
-            //        if (OK(set))
-            //        {
-            //                 if (set.GetType() == typeof(Parameter)) val = Math.Max(val, ((Parameter)set).CurValue);
-            //            else if (set.GetType() == typeof(LFO      )) val = Math.Max(val, ((LFO      )set).CurValue);
-            //            else if (set.GetType() == typeof(Envelope )) val = Math.Max(val, ((Envelope )set).CurValue);
-            //            else if (set.GetType() == typeof(Modulate )) val = Math.Max(val, ((Modulate )set).CurValue);
-            //            // TODO add more that have CurValue
-            //        }
-
-            //        else if (OK(src))  val = Math.Max(val, src .CurVolume);
-            //        else if (OK(inst)) val = Math.Max(val, inst.CurVolume);
-            //        else               val = 0;
-            //    }
-
-
-            //    if (Op == ModOp.Set)
-            //    {
-            //        // replace value with connected
-
-            //        CurValue = val;
-            //    }
-            //    else
-            //    { 
-            //        // modify value with connected
-                
-            //        var amt = Amount .UpdateValue(tp);
-            //        var att = Attack .UpdateValue(tp);
-            //        var rel = Release.UpdateValue(tp);
-                
-            //        if (att == 0) att = 0.000001f;
-            //        if (rel == 0) rel = 0.000001f;
-
-            //        var  cv  = Math.Abs(CurValue);
-            //        var _amt = Math.Abs(amt);
-
-            //        var a = Math.Min(   cv + val*_amt/FPS/att, _amt);
-            //        var r = Math.Max(0, cv -     _amt/FPS/rel);
-
-            //        CurValue = Math.Sign(amt) * (r + (a - r) * val);
-            //    }
-
-            //    m_valid  = True;
-            //    return CurValue;
-            //}
+            public void AddFirstChord()
+            {
+                Chords    .Add(new List<int>());
+                AllOctaves.Add(False);
+            }
 
 
 
@@ -274,57 +219,176 @@ namespace IngameScript
 
 
 
-            public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
+            public void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, Channel chan, Program prog)
             {
-                //var isAmt = IsCurParam(strAmt);
-                //var isAtt = IsCurParam(strAtt);
-                //var isRel = IsCurParam(strRel);
+                FillRect(sprites, x, y, w, h, color0);
 
 
-                //var w0 = 240f;
-                //var h0 = 120f;
+                var dp = new DrawParams(False, prog);
 
-                //var x0 = x + w/2 - w0/2;
-                //var y0 = y + h/2 - h0/4;
-
-                //Vector2 p0, p1, p2;
-
-                //GetEnvelopeCoords(x0, y0, w0, h0, False, out p0, out p1, out p2);
-                //DrawEnvelopeSupports(sprites, p0, w0, y0, h0);
+                if (OK(CurSrc)) SelSource    .DrawLabels(sprites, x+5, y+10, dp);
+                else            SelInstrument.DrawLabels(sprites, x+5, y+10, dp);
 
 
-                //FillRect(sprites, p0.X, y0 + h0/2, w0, -CurValue*h/4, color3);
+                var ry = y +  30;
+                var rh = h - 110;
+
+                var instHeight = h - 80;
+
+                //var irh = h - 50;
+                var ch = rh/8;
 
 
-                //GetEnvelopeCoords(x0, y0, w0, h0, True, out p0, out p1, out p2);
-                //DrawEnvelope(sprites, p0, p1, p2, color3, False, False, False);
+                var nOctaves = 2;
 
-                //GetEnvelopeCoords(x0, y0, w0, h0, False, out p0, out p1, out p2);
-                //DrawEnvelope(sprites, p0, p1, p2, color5, isAmt, isAtt, isRel);
+                var ow = 100; // octave width
+                var pw = ow * nOctaves; // piano width
 
 
-                //var strFrom = "from\n";
+                var minNote = 36;
+                var maxNote = 119;
 
-                //if (ModSettings.Count == 0)
-                //    strFrom += "...";
+                for (int c = 0; c < Chords.Count; c++)
+                {
+                    //FillRect(
+                    //    sprites, 
+                    //    x + w/2 - 100, 
+                    //    ry + c*ch,
+                    //    200,
+                    //    ch - 10,
+                    //    (int)Selected.CurValue == c ? color4 : color2);
 
-                //else
+                    for (int i = 0; i < nOctaves; i++)
+                    {
+                        DrawOctave(
+                            sprites,
+                            x + (w-pw)/2 + i*ow,
+                            ry + c*ch,
+                            ow,
+                            ch - 10,
+                            i,
+                            minNote,
+                            minNote,
+                            maxNote);
+                    }
+                }
+
+
+                //var dp = new DrawParams(False, prog);
+
+                //if (OK(CurSrc)) SelSource    .DrawLabels(sprites, x+5, y+10, dp);
+                //else            SelInstrument.DrawLabels(sprites, x+5, y+10, dp);
+
+
+                //var isLow  = IsCurParam(strLow);
+                //var isHigh = IsCurParam(strHigh);
+                //var isAmt  = IsCurParam(strAmt);
+                //var isPow  = IsCurParam(strPow);
+
+
+                //var minNote  = 36;
+                //var maxNote  = 119;
+
+                //var lowNote  = (int)LowNote .Value;
+                //var highNote = (int)HighNote.Value;
+
+
+                //var pw = w - 200; // piano width
+                //var ow = pw/7;    // octave width
+
+                //var ym = 330;
+
+                //for (int i = 0; i < 7; i++)
                 //{
-                //    for (int i = 0; i < ModSettings.Count; i++)
-                //    {
-                //        var set  = ModSettings   [i];
-                //        var src  = ModSources    [i];
-                //        var inst = ModInstruments[i];
-                        
-                //        strFrom += "\n";
-
-                //             if (OK(set))  strFrom += set.Path;
-                //        else if (OK(src))  strFrom += inst.Name + "/" + src.Index;
-                //        else if (OK(inst)) strFrom += inst.Name;
-                //    }
+                //    DrawOctave(
+                //        sprites,
+                //        (w-pw)/2 + i*ow,
+                //        ym + 10,
+                //        ow,
+                //        60,
+                //        i,
+                //        minNote,
+                //        lowNote,
+                //        highNote);
                 //}
 
-                //DrawString(sprites, strFrom, x0 + w0/2, y + h/2 - h0/2 - 80, 0.5f, color5, TA_CENTER);
+
+                //var px     = (w-pw)/2 + 4;
+
+                //var spread = highNote-lowNote;
+                //var kw     = pw/(maxNote-minNote+1);
+
+                //var amt    = Amount.Value;
+                //var pow    = Power .Value;
+
+                //var low    = Math.Min(Math.Max(0, 1 - amt), 1);
+                //var high   = Math.Min(Math.Max(0, 1 + amt), 1);
+
+
+                //DrawMarker(sprites, px+1 + (lowNote -minNote)*kw, ym, low *100, isLow,  isAmt);
+                //DrawMarker(sprites, px+1 + (highNote-minNote)*kw, ym, high*100, isHigh, isAmt);
+
+
+                //var strName = strBias;
+
+                //     if (isLow ) strName = strLow;
+                //else if (isHigh) strName = strHigh;
+                //else if (isAmt ) strName = strAmt;
+                //else if (isPow ) strName = strPow;
+
+                //DrawString(
+                //    sprites,
+                //    FullNameFromTag(strName), 
+                //    px + pw/2, 
+                //    ym - 200, 
+                //    1.5f, 
+                //    color6,
+                //    TA_CENTER);
+
+
+                //var powColor = isPow ? color6 : color4;
+                //var powWidth = isPow ? 4 : 2;
+
+                //var amtColor = isAmt ? color6 : color4;
+                //var amtWidth = isAmt ? 4 : 2;
+
+                //DrawCurve(
+                //    sprites, 
+                //    GetValue,
+                //    px+1 + (lowNote-minNote)*kw, 
+                //    ym - 100,
+                //    spread*kw,
+                //    100,
+                //    powColor,
+                //    powWidth);
+
+                //FillRect(sprites, px+1,                         ym - low *100, (lowNote-minNote )*kw, amtWidth, amtColor);
+                //FillRect(sprites, px+1 + (highNote-minNote)*kw, ym - high*100, (maxNote-highNote)*kw, amtWidth, amtColor);
+
+
+                //DrawString(
+                //    sprites, 
+                //    S00(amt), 
+                //    px + (lowNote-minNote)*kw + (1+amt)*spread*kw/2, 
+                //    ym - 100 - 47, 
+                //    0.8f, 
+                //    isAmt ? color6 : color4,
+                //    TA_CENTER);
+
+                //DrawString(
+                //    sprites, 
+                //    S00(pow), 
+                //    px + (lowNote-minNote)*kw + (1+amt)*spread*kw/2, 
+                //    ym - 100 + 40, 
+                //    0.8f, 
+                //    isPow ? color6 : color4,
+                //    TA_CENTER);
+
+
+                // bottom func separator
+                FillRect(sprites, x, y + instHeight, w, 1, color6);
+
+                DrawFuncButtons(sprites, w, h, chan);
             }
 
 
@@ -332,6 +396,7 @@ namespace IngameScript
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
                 DrawFuncButton(sprites, strSel, 1, w, y, True, Selected.HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, "┼",  5, w, y, False, False);
             }
 
 
@@ -341,7 +406,19 @@ namespace IngameScript
                 switch (func)
                 {
                     case 1: AddNextSetting(strSel); break;
+                    case 5: AddNewChord();          break;
                 }
+            }
+
+
+
+            void AddNewChord()
+            {
+                if (Chords.Count >= 8)
+                    return;
+
+                Chords    .Add(new List<int>());
+                AllOctaves.Add(False);
             }
 
 

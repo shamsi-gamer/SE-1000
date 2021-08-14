@@ -37,6 +37,11 @@ namespace IngameScript
                         var bias = EditedClip.CurOrParentBias;
                         bias.DrawSetting(sprites, x, y, w, h, CurChannel, this);
                     }
+                    else if (HasTagOrParent(CurSetting, strChord))
+                    {
+                        var chord = (TuneChord)EditedClip.CurSetting;
+                        chord.DrawSetting(sprites, x, y, w, h, CurChannel, this);
+                    }
                     else if (IsCurSetting(typeof(Harmonics)))
                     {
                         var hrm = EditedClip.CurOrParentHarmonics;

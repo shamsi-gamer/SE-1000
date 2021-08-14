@@ -112,25 +112,39 @@ namespace IngameScript
                 if (tp.Program.TooComplex) 
                     return 0;
 
-                var off  = Offset   .UpdateValue(tp);
-                var freq = Frequency.UpdateValue(tp);
-                var amp  = Amplitude.UpdateValue(tp);
-                //var trig = Trigger  .UpdateValue(tp);
+                var trig = Trigger.UpdateValue(tp);
 
-                switch (Type)
-                {
-                    case LfoType.Sine:     CurValue = (float)Math.Sin(Phase * Tau);                         break;
-                    case LfoType.Triangle: CurValue = (1 - 2*Math.Abs((Phase % 1)*2 - 1));                    break;
-                    case LfoType.Saw:      CurValue = (   Phase  % 1)*2 - 1;                                break;
-                    case LfoType.BackSaw:  CurValue = ((1-Phase) % 1)*2 + 1;                                break;
-                    case LfoType.Square:   CurValue = (float)(1 - 2*Math.Round(((Phase*2) % 2)/2));            break;
-                    case LfoType.Noise:    CurValue = g_random[(int)(Phase*2) % g_random.Length]*2 - 1; break;
-                }
-
-                CurValue *= amp;
+                if (   trig == 0
+                    || tp.Note.ClipStep % trig == 0)
+                    CurValue = GetUpdateValue(tp);
 
                 m_valid = True;
                 return CurValue;
+            }
+
+
+
+            float GetUpdateValue(TimeParams tp)
+            {
+                var value = 0f;
+
+                var off  = Offset   .UpdateValue(tp);
+                var freq = Frequency.UpdateValue(tp);
+                var amp  = Amplitude.UpdateValue(tp);
+
+                switch (Type)
+                {
+                    case LfoType.Sine:     value = (float)Math.Sin(Phase * Tau);                         break;
+                    case LfoType.Triangle: value = (1 - 2*Math.Abs((Phase % 1)*2 - 1));                    break;
+                    case LfoType.Saw:      value = (   Phase  % 1)*2 - 1;                                break;
+                    case LfoType.BackSaw:  value = ((1-Phase) % 1)*2 + 1;                                break;
+                    case LfoType.Square:   value = (float)(1 - 2*Math.Round(((Phase*2) % 2)/2));            break;
+                    case LfoType.Noise:    value = g_random[(int)(Phase*2) % g_random.Length]*2 - 1; break;
+                }
+
+                value *= amp;
+
+                return value;
             }
 
 

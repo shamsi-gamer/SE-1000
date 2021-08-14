@@ -20,6 +20,7 @@ namespace IngameScript
             public Program            Program;
 
 
+
             public TimeParams(long gTime, long lTime, Clip clip, Program prog)
             {
                 GlobalTime    = gTime;
@@ -34,6 +35,7 @@ namespace IngameScript
                 Clip          = clip;
                 Program       = prog;
             }
+
 
 
             public TimeParams(TimeParams tp)
@@ -60,6 +62,7 @@ namespace IngameScript
             }
 
 
+
             public TimeParams(long gTime, long lTime, Note note, int noteLen, int iSrc, List<TriggerValue> triggerValues, Clip clip, Program prog)
                 : this(gTime, lTime, clip, prog)
             {
@@ -69,6 +72,7 @@ namespace IngameScript
                 SourceIndex   = iSrc;
                 TriggerValues = triggerValues;
             }
+
 
 
             public float GetTriggerValue(Parameter param)

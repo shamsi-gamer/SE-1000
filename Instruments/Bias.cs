@@ -245,14 +245,17 @@ namespace IngameScript
             {
                 FillRect(sprites, x, y, w, h, color0);
 
-                var  rh = h - 90;
-                var irh = h - 50;
-
 
                 var dp = new DrawParams(False, prog);
 
                 if (OK(CurSrc)) SelSource    .DrawLabels(sprites, x+5, y+10, dp);
                 else            SelInstrument.DrawLabels(sprites, x+5, y+10, dp);
+
+
+                var  rh = h - 90;
+                var irh = h - 50;
+
+                var instHeight = h - 80;
 
 
                 var isLow  = IsCurParam(strLow);
@@ -360,51 +363,12 @@ namespace IngameScript
                     TA_CENTER);
 
 
+                // bottom func separator
+                FillRect(sprites, x, y + instHeight, w, 1, color6);
+
                 DrawFuncButtons(sprites, w, h, chan);
             }
 
-
-
-            void DrawOctave(List<MySprite> sprites, float x, float y, float w, float h, int octave, int firstNote, int lowNote, int highNote)
-            {
-                var kw = w/7;
-                var bw = w/12;
-                var bh = h*3/5f;
-
-
-                for (int i = 0, j = 0; i < 7; i++, j++)
-                {
-                    var isNote = 
-                           octave*12 + j == lowNote  - firstNote
-                        || octave*12 + j == highNote - firstNote;
-
-                    var kx    = x + i*kw;
-                    var color = isNote ? color6 : color4;
-
-                    FillRect(sprites, kx+1, y, kw-2, h, color);
-
-                    if (   i != 2
-                        && i != 6) 
-                        j++;
-                }
-
-
-                for (int i = 0; i < 12; i++)
-                {
-                    var isNote = 
-                           octave*12 + i == lowNote  - firstNote
-                        || octave*12 + i == highNote - firstNote;
-
-                    var color = isNote ? color6 : color1;
-
-                    if (   i ==  1 
-                        || i ==  3
-                        || i ==  6
-                        || i ==  8
-                        || i == 10)
-                        FillRect(sprites, x+1.3f + i*bw, y, bw, bh, color);
-                }
-            }
 
 
 

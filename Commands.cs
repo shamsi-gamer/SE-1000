@@ -583,9 +583,22 @@ namespace IngameScript
                 if (   IsCurSetting(typeof(Modulate))
                     && ((Modulate)CurSetting).ModSettings.Count > 0)
                 {
-                    ((Modulate)CurSetting).ModSettings   .RemoveLast();
-                    ((Modulate)CurSetting).ModSources    .RemoveLast();
-                    ((Modulate)CurSetting).ModInstruments.RemoveLast();
+                    var mod = (Modulate)CurSetting;
+
+                    mod.ModSettings   .RemoveLast();
+                    mod.ModSources    .RemoveLast();
+                    mod.ModInstruments.RemoveLast();
+                }
+                else if (IsCurSetting(typeof(TuneChord))
+                      && ((TuneChord)CurSetting).Chords.Count > 0)
+                {
+                    var chord = (TuneChord)CurSetting;
+
+                    chord.Chords    .RemoveLast();
+                    chord.AllOctaves.RemoveLast();
+
+                    if (chord.Chords.Count == 0)
+                        chord.AddFirstChord();
                 }
                 else if (EditedClip.CurSetting.CanDelete())
                 { 

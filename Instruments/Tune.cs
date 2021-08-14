@@ -36,6 +36,49 @@ namespace IngameScript
 
 
 
+            public override Setting GetOrAddSettingFromTag(string tag)
+            {
+                if (tag == strChord) return Chord ?? (Chord = new TuneChord(this, Instrument, Source));
+                else                 return base.GetOrAddSettingFromTag(tag);
+            }
+
+
+
+            public override bool HasDeepParams(Channel chan, int src)
+            {
+                return 
+                       base.HasDeepParams(chan, src)
+                    || OK(Chord);
+            }
+
+
+
+            public override void DeleteSetting(Setting setting)
+            {
+                if (setting == Chord) Chord = TuneChord_null;
+                else                  base.DeleteSetting(setting);
+            }
+
+
+
+            public override void Clear()
+            {
+                Chord?.Clear();
+                Chord = TuneChord_null;
+
+                base.Clear();
+            }
+
+
+
+            public override void Reset()
+            {
+                Chord?.Reset();
+                base  .Reset();
+            }
+
+
+
             public override void Randomize()
             {
                 m_value = NormalMin + RND * (NormalMax - NormalMin);
@@ -61,6 +104,14 @@ namespace IngameScript
 
                     Lfo = LFO_null;
                 }
+            }
+
+
+
+            public override void Delete(int iSrc)
+            {
+                base  .Delete(iSrc);
+                Chord?.Delete(iSrc);
             }
 
 
