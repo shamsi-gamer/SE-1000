@@ -17,16 +17,16 @@
 
         bool ChordIsBright(Label lbl)
         {
-            var tune =
-                IsCurParam(strTune)
-                ? (Tune)CurrentParam
-                : Tune_null;
+            //var tune =
+            //    IsCurParam(strTune)
+            //    ? (Tune)CurrentParam
+            //    : Tune_null;
 
-            if (   OK(tune)
-                && !(   EditedClip.ParamKeys 
-                     || EditedClip.ParamAuto))
-                return tune.UseChord;
-            else
+            //if (   OK(tune)
+            //    && !(   EditedClip.ParamKeys 
+            //         || EditedClip.ParamAuto))
+            //    return tune.UseChord;
+            //else
                 return EditedClip.ChordMode;
         }
 
@@ -77,20 +77,20 @@
 
         void UpdateChordEdit(Label lbl)
         {
-            if (    IsCurParam(strTune)
-                && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
-            {
-                var tune =
-                    IsCurParam(strTune)
-                    ? (Tune)CurrentParam
-                    : Tune_null;
+            //if (    IsCurParam(strTune)
+            //    && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
+            //{
+            //    var tune =
+            //        IsCurParam(strTune)
+            //        ? (Tune)CurrentParam
+            //        : Tune_null;
 
-                lbl.SetText(
-                       OK(tune)
-                    && tune.UseChord 
-                    ? strAll : strEmpty);
-            }
-            else
+            //    lbl.SetText(
+            //           OK(tune)
+            //        && tune.UseChord 
+            //        ? strAll : strEmpty);
+            //}
+            //else
                 lbl.SetText(EditedClip.ChordMode ? strEmpty : strEdit);
         }
 
@@ -98,22 +98,24 @@
 
         bool ChordEditIsBright(Label lbl)
         {
-            var tune =
-                IsCurParam(strTune)
-                ? (Tune)CurrentParam
-                : Tune_null;
+            //var tune =
+            //    IsCurParam(strTune)
+            //    ? (Tune)CurrentParam
+            //    : Tune_null;
 
-            if (   IsCurParam(strTune)
-                && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
-                return
-                       OK(tune) 
-                    && tune.UseChord
-                    && tune.AllOctaves;
+            //if (   IsCurParam(strTune)
+            //    && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
+            //    return
+            //           OK(tune) 
+            //        && tune.UseChord
+            //        && tune.AllOctaves;
 
-            else return
-                      EditedClip.ChordMode
-                   && EditedClip.ChordAll
-                || EditedClip.ChordEdit;
+            //else return
+            //          EditedClip.ChordMode
+            //       && EditedClip.ChordAll
+            //    || EditedClip.ChordEdit;
+
+            return EditedClip.ChordEdit;
         }
     }
 }

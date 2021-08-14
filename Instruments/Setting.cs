@@ -274,37 +274,44 @@ namespace IngameScript
         {
             switch (tag)
             { 
-            case strVol:  return new Parameter(tag,    0,           2,   0.5f,  1,    0.01f,  0.1f,  1,    parent, inst, src);
-                                                       
-            case strBias: return new Bias     (parent, inst, src);                                  
-            case strLow:  return new Parameter(tag,    36,        119,   0,     1,    1,      12,      36, parent, inst, src);
-            case strHigh: return new Parameter(tag,    36,        119,   0,     1,    1,      12,     119, parent, inst, src);
-            
-            case strEnv:  return new Envelope(parent, inst, src);                                  
-            case strTrig: return new Parameter(tag,    0,           1,   0,     1,    0.01f,  0.1f,  1,    parent, inst, src);
-            case strAtt:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    parent, inst, src);
-            case strDec:  return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, parent, inst, src);
-            case strSus:  return new Parameter(tag,    0,           1,   0.01f, 1,    0.01f,  0.1f,  0.1f, parent, inst, src);
-            case strRel:  return new Parameter(tag,    0,          10,   0,     2,    0.01f,  0.1f,  parent.GetType() == typeof(Modulate) ? 0 : 0.2f, parent, inst, src);
+            case strVol:   return new Parameter(tag,    0,           2,   0.5f,  1,    0.01f,  0.1f,  1,    True,  parent, inst, src);
+                                                        
+            case strBias:  return new Bias     (parent, inst, src);                                  
+            case strLow:   return new Parameter(tag,    36,        119,   0,     1,    1,      12,      36, False, parent, inst, src);
+            case strHigh:  return new Parameter(tag,    36,        119,   0,     1,    1,      12,     119, False, parent, inst, src);
+                           
+            case strEnv:   return new Envelope(parent, inst, src);                                  
+            case strTrig: 
+                if (IsSettingType(parent, typeof(Envelope)))
+                           return new Parameter(tag,    0,           1,   0,     1,    0.01f,  0.1f,  1,    False, parent, inst, src);
+                else // LFO
+                           return new Parameter(tag,    0,        1024,   0,   256,    1,      1,     0,    False, parent, inst, src);
+                           
+            case strAtt:   return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    False, parent, inst, src);
+            case strDec:   return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, False, parent, inst, src);
+            case strSus:   return new Parameter(tag,    0,           1,   0.01f, 1,    0.01f,  0.1f,  0.1f, False, parent, inst, src);
+            case strRel:   return new Parameter(tag,    0,          10,   0,     2,    0.01f,  0.1f,  parent.GetType() == typeof(Modulate) ? 0 : 0.2f, False, parent, inst, src);
 
-            case strAmp:  return new Parameter(tag,    0,           1,   0,     1,    0.001f, 0.05f, 1,    parent, inst, src);
-            case strFreq: return new Parameter(tag,    0.01f,      30,   0.01f, 4,    0.001f, 0.05f, 1,    parent, inst, src);
-            case strOff:  return new Parameter(tag, -100,         100, -10,    10,    0.01f,  0.1f,  0,    parent, inst, src);
+            case strChord: return new TuneChord(parent, inst, src);
 
-            case strCut:  return new Parameter(tag,    0,           1,   0.1f,  1,    0.01f,  0.1f,  0.5f, parent, inst, src);
-            case strRes:  return new Parameter(tag,    0,           1,   0,     0.7f, 0.01f,  0.1f,  0,    parent, inst, src);
-            case strShrp: return new Parameter(tag,    0,           1,   0,     0.9f, 0.01f,  0.1f,  0.9f, parent, inst, src);
+            case strOff:   return new Parameter(tag, -100,         100, -10,    10,    0.01f,  0.1f,  0,    False, parent, inst, src);
+            case strFreq:  return new Parameter(tag,    0.01f,      30,   0.01f, 4,    0.001f, 0.05f, 1,    True,  parent, inst, src);
+            case strAmp:   return new Parameter(tag,    0,           1,   0,     1,    0.001f, 0.05f, 1,    True,  parent, inst, src);
+                           
+            case strCut:   return new Parameter(tag,    0,           1,   0.1f,  1,    0.01f,  0.1f,  0.5f, True,  parent, inst, src);
+            case strRes:   return new Parameter(tag,    0,           1,   0,     0.7f, 0.01f,  0.1f,  0,    True,  parent, inst, src);
+            case strShrp:  return new Parameter(tag,    0,           1,   0,     0.9f, 0.01f,  0.1f,  0.9f, True,  parent, inst, src);
+                           
+            case strAmt:   return new Parameter(tag,   -1,           1,  -0.5f,  0.5f, 0.01f,  0.1f,  0,    True,  parent, inst, src);
+                           
+            case strDry:   return new Parameter(tag,    0,           1,   0,     1,    0.01f, 0.1f,   1,    False, parent, inst, src);
+            case strCnt:   return new Parameter(tag,    1,         500,   2,    16,    1,     10,     4,    False, parent, inst, src);
+            case strTime:  return new Parameter(tag,    0.000001f,  10,   0.01f, 0.3f, 0.01f,  0.1f,  0.2f, False, parent, inst, src);
+            case strLvl:   return new Parameter(tag,    0,           1,   0.3f,  1,    0.01f,  0.1f,  0.5f, False, parent, inst, src);
+            case strPow:   return new Parameter(tag,    0.01f,      10,   0.2f,  1.2f, 0.01f,  0.1f,  1,    False, parent, inst, src);
 
-            case strAmt:  return new Parameter(tag,   -1,           1,  -0.5f,  0.5f, 0.01f,  0.1f,  0,    parent, inst, src);
-
-            case strDry:  return new Parameter(tag,    0,           1,   0,     1,    0.01f, 0.1f,   1,    parent, inst, src);
-            case strCnt:  return new Parameter(tag,    1,         500,   2,    16,    1,     10,     4,    parent, inst, src);
-            case strTime: return new Parameter(tag,    0.000001f,  10,   0.01f, 0.3f, 0.01f,  0.1f,  0.2f, parent, inst, src);
-            case strLvl:  return new Parameter(tag,    0,           1,   0.3f,  1,    0.01f,  0.1f,  0.5f, parent, inst, src);
-            case strPow:  return new Parameter(tag,    0.01f,      10,   0.2f,  1.2f, 0.01f,  0.1f,  1,    parent, inst, src);
-
-            case strLen:  return new Parameter(tag,    1,         256,   2,     6,    0.01f,  0.1f,  8,    parent, inst, src);
-            case strScl:  return new Parameter(tag,    0.01f,      16,   0.25f, 4,    0.01f,  0.1f,  1,    parent, inst, src);
+            //case strLen:  return new Parameter(tag,    1,         256,   2,     6,    0.01f,  0.1f,  8,    False, parent, inst, src);
+            //case strScl:  return new Parameter(tag,    0.01f,      16,   0.25f, 4,    0.01f,  0.1f,  1,    False, parent, inst, src);
             }
 
             return Setting_null;

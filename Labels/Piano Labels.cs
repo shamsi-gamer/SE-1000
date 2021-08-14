@@ -225,18 +225,19 @@ namespace IngameScript
 
             var note = Note_null;
 
-            if (IsCurParam(strTune))
-            {
-                var tune =
-                    OK(CurSrc)
-                    ? SelSource    .Tune
-                    : SelInstrument.Tune;
+            //if (IsCurParam(strTune))
+            //{
+            //    var tune =
+            //        OK(CurSrc)
+            //        ? SelSource    .Tune
+            //        : SelInstrument.Tune;
 
-                return tune.Chord.Contains(noteNum);
-            }
+            //    return tune.Chord.Contains(noteNum);
+            //}
 
-            else if (OK(EditedClip.Chord)
-                  && EditedClip.ChordEdit)
+            //else 
+            if (   OK(EditedClip.Chord)
+                && EditedClip.ChordEdit)
                 return EditedClip.Chords[EditedClip.Chord].Contains(noteNum);
 
             else if (OK(EditedClip.EditPos)
@@ -262,16 +263,17 @@ namespace IngameScript
         {
             var note = Note_null;
 
-            if (IsCurParam(strTune))
-            {
-                var tune =
-                    OK(CurSrc)
-                    ? SelSource    .Tune
-                    : SelInstrument.Tune;
+            //if (IsCurParam(strTune))
+            //{
+            //    var tune =
+            //        OK(CurSrc)
+            //        ? SelSource    .Tune
+            //        : SelInstrument.Tune;
 
-                return tune.FinalChord.Contains(noteNum);
-            }
-            else if (OK(g_notes.FindIndex(n => NoteIsTriggered(noteNum, n, out note))))
+            //    return tune.FinalChord.Contains(noteNum);
+            //}
+            //else 
+            if (OK(g_notes.FindIndex(n => NoteIsTriggered(noteNum, n, out note))))
                 return True; // note is being played
 
             return False;

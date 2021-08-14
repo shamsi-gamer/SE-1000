@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
 
 
+
 namespace IngameScript
 {
     partial class Program
@@ -25,6 +26,8 @@ namespace IngameScript
                              Delta,
                              BigDelta;
 
+            public bool      CanHaveEnvelope;
+
             public Bias      Bias;
             public Envelope  Envelope;
             public LFO       Lfo;
@@ -32,27 +35,29 @@ namespace IngameScript
 
 
 
-            public Parameter(string tag, float min, float max, float normalMin, float normalMax, float delta, float bigDelta, float defVal, Setting parent, Instrument inst, Source src) 
+            public Parameter(string tag, float min, float max, float normalMin, float normalMax, float delta, float bigDelta, float defVal, bool canHaveEnvelope, Setting parent, Instrument inst, Source src) 
                 : base(tag, parent, Setting_null, inst, src)
             {
-                Tag       = tag;
+                Tag             = tag;
+                                
+                m_value         = defVal;
+                Default         = defVal;
+                                
+                Min             = min;
+                Max             = max;
+                                
+                NormalMin       = normalMin;
+                NormalMax       = normalMax;
+                                
+                Delta           = delta;
+                BigDelta        = bigDelta;
 
-                m_value   = defVal;
-                Default   = defVal;
+                CanHaveEnvelope = canHaveEnvelope;
 
-                Min       = min;
-                Max       = max;
-
-                NormalMin = normalMin;
-                NormalMax = normalMax;
-                          
-                Delta     = delta;
-                BigDelta  = bigDelta;
-
-                Bias      =      Bias_null;
-                Envelope  =  Envelope_null;
-                Lfo       =       LFO_null;
-                Modulate  =  Modulate_null;
+                Bias            =      Bias_null;
+                Envelope        =  Envelope_null;
+                Lfo             =       LFO_null;
+                Modulate        =  Modulate_null;
             }
 
 
@@ -60,21 +65,23 @@ namespace IngameScript
             public Parameter(Parameter param, Setting parent, string tag = "", bool copy = True) 
                 : base(tag != "" ? tag : param.Tag, parent, param.Prototype, param.Instrument, param.Source)
             {
-                m_value   = param.m_value;
+                m_value         = param.m_value;
+                                
+                Min             = param.Min;
+                Max             = param.Max;
+                                
+                NormalMin       = param.NormalMin;
+                NormalMax       = param.NormalMax;
+                                
+                Delta           = param.Delta;
+                BigDelta        = param.BigDelta;
 
-                Min       = param.Min;
-                Max       = param.Max;
+                CanHaveEnvelope = param.CanHaveEnvelope;
 
-                NormalMin = param.NormalMin;
-                NormalMax = param.NormalMax;
-
-                Delta     = param.Delta;
-                BigDelta  = param.BigDelta;
-
-                Bias      = copy ? param.Bias    ?.Copy(this) :      Bias_null;
-                Envelope  = copy ? param.Envelope?.Copy(this) :  Envelope_null;
-                Lfo       = copy ? param.Lfo     ?.Copy(this) :       LFO_null;
-                Modulate  = copy ? param.Modulate?.Copy(this) :  Modulate_null;
+                Bias            = copy ? param.Bias    ?.Copy(this) :      Bias_null;
+                Envelope        = copy ? param.Envelope?.Copy(this) :  Envelope_null;
+                Lfo             = copy ? param.Lfo     ?.Copy(this) :       LFO_null;
+                Modulate        = copy ? param.Modulate?.Copy(this) :  Modulate_null;
             }
 
 
@@ -330,7 +337,8 @@ namespace IngameScript
                     Bias = Bias_null;
 
 
-                if (   !prog.TooComplex
+                if (    CanHaveEnvelope
+                    && !prog.TooComplex
                     && !AnyParentIsEnvelope
                     && (  !IsDigit(Tag[0]) && RND > 0.9f
                         || IsDigit(Tag[0]) && RND > 0.9f))
@@ -600,7 +608,8 @@ namespace IngameScript
             {
                 DrawFuncButton(sprites, strBias, 0, w, h, True, OK(Bias));
 
-                if (   !AnyParentIsBias
+                if (    CanHaveEnvelope
+                    && !AnyParentIsBias
                     && !AnyParentIsEnvelope)
                     DrawFuncButton(sprites, strEnv, 1, w, h, True, OK(Envelope));
 
@@ -619,8 +628,10 @@ namespace IngameScript
                 case 0: AddNextSetting(strBias); break;
 
                 case 1:
-                    if (AnyParentIsEnvelope) break;
-                    AddNextSetting(strEnv);
+                    if (    CanHaveEnvelope
+                        && !AnyParentIsEnvelope) 
+                        AddNextSetting(strEnv);
+
                     break;
 
                 case 2: AddNextSetting(strLfo); break;
@@ -643,7 +654,7 @@ namespace IngameScript
 
         static Parameter NewHarmonicParam(int i, Setting parent, Instrument inst, Source src)
         {
-            return new Parameter(S(i), 0, 1, 0.1f, 0.9f, 0.01f, 0.1f, i == 0 ? 1 : 0, parent, inst, src);
+            return new Parameter(S(i), 0, 1, 0.1f, 0.9f, 0.01f, 0.1f, i == 0 ? 1 : 0, True, parent, inst, src);
         }
     }
 }

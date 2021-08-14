@@ -138,20 +138,20 @@ namespace IngameScript
             if (EditedClip.ChordEdit)
                 return;
 
-            if (IsCurParam(strTune))
-            {
-                var tune = SelSource    ?.Tune
-                        ?? SelInstrument?.Tune;
+            //if (IsCurParam(strTune))
+            //{
+            //    var tune = SelSource    ?.Tune
+            //            ?? SelInstrument?.Tune;
 
-                tune.UseChord = !tune.UseChord;
-            }
-            else
-            {
+            //    tune.UseChord = !tune.UseChord;
+            //}
+            //else
+            //{
                 EditedClip.ChordMode = !EditedClip.ChordMode;
 
                 if (!EditedClip.ChordMode)
                     EditedClip.Chord = -1;
-            }
+            //}
         }
 
 
@@ -170,27 +170,28 @@ namespace IngameScript
                     ?? SelInstrument?.Tune;
 
 
-            if (   IsCurParam(strTune)
-                && tune.UseChord)
-            {
-                var _chord = EditedClip.Chords[chord-1];
+            //if (   IsCurParam(strTune)
+            //    && tune.UseChord)
+            //{
+            //    var _chord = EditedClip.Chords[chord-1];
 
-                if (_chord.Count > 0)
-                {
-                    tune.Chord.Clear();
+            //    if (_chord.Count > 0)
+            //    {
+            //        tune.Chord.Clear();
 
-                    foreach (var n in _chord)
-                        tune.Chord.Add(n);
+            //        foreach (var n in _chord)
+            //            tune.Chord.Add(n);
 
-                    var inst = SelInstrument;
-                    var src  = OK(CurSrc) ? inst.Sources[CurSrc] : Source_null;
+            //        var inst = SelInstrument;
+            //        var src  = OK(CurSrc) ? inst.Sources[CurSrc] : Source_null;
 
-                    tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
-                }
+            //        tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
+            //    }
 
-                MarkChordLabel(chord-1);
-            }
-            else if (EditedClip.ChordEdit)
+            //    MarkChordLabel(chord-1);
+            //}
+            //else
+            if (EditedClip.ChordEdit)
             {
                 EditedClip.Chord = 
                     EditedClip.Chord != chord-1
@@ -231,21 +232,22 @@ namespace IngameScript
 
         void ToggleChordEdit()
         {
-            if (IsCurParam(strTune))
-            {
-                var inst = SelInstrument;
-                var src  = SelSource;
+            //if (IsCurParam(strTune))
+            //{
+            //    var inst = SelInstrument;
+            //    var src  = SelSource;
 
-                var tune = SelSource    ?.Tune
-                        ?? SelInstrument?.Tune;
+            //    var tune = SelSource    ?.Tune
+            //            ?? SelInstrument?.Tune;
 
-                if (tune.UseChord)
-                { 
-                    tune.AllOctaves = !tune.AllOctaves;
-                    tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
-                }
-            }
-            else if (!EditedClip.ChordMode)
+            //    if (tune.UseChord)
+            //    { 
+            //        tune.AllOctaves = !tune.AllOctaves;
+            //        tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
+            //    }
+            //}
+            //else
+            if (!EditedClip.ChordMode)
             { 
                 EditedClip.ChordEdit = !EditedClip.ChordEdit;
                 if (!EditedClip.ChordEdit) EditedClip.Chord = -1;
@@ -276,12 +278,12 @@ namespace IngameScript
 
         void UpdateFinalTuneChord(Tune tune, int noteNum)
         {
-            var chord = tune.Chord;
+            //var chord = tune.Chord;
 
-            if (chord.Contains(noteNum)) chord.Remove(noteNum);
-            else                         chord.Add   (noteNum);
+            //if (chord.Contains(noteNum)) chord.Remove(noteNum);
+            //else                         chord.Add   (noteNum);
 
-            tune.FinalChord = UpdateFinalTuneChord(chord, tune.AllOctaves);
+            //tune.FinalChord = UpdateFinalTuneChord(chord, tune.AllOctaves);
         }
 
 

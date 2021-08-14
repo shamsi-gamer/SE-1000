@@ -10,16 +10,24 @@ namespace IngameScript
     {
         public class TuneChord : Setting
         {
-            public List<int[]>      Chords;
-            public Parameter        Selected;
+            public List<List<int>> Chords;
+            public List<bool>      AllOctaves;
+
+            public Parameter       Selected;
+                                   
+            public List<int>       FinalChord;
 
 
 
             public TuneChord(Setting parent, Instrument inst, Source src) 
                 : base(strChord, parent, Setting_null, inst, src)
             {
-                Chords = new List<int[]>();
-                Selected = (Parameter)NewSettingFromTag(strSel, this, inst, src);
+                Chords     = new List<List<int>>();
+                AllOctaves = new List<bool>();
+
+                Selected   = (Parameter)NewSettingFromTag(strSel, this, inst, src);
+
+                FinalChord = new List<int>();
             }
 
 
@@ -27,12 +35,12 @@ namespace IngameScript
             public TuneChord(TuneChord chord, Setting parent, Instrument inst, Source src) 
                 : base(chord.Tag, parent, chord.Prototype, inst, src)
             {
-                Chords = new List<int[]>();
+                Chords     = new List<List<int>>(chord.Chords);
+                AllOctaves = new List<bool>(chord.AllOctaves);
+                
+                Selected   = new Parameter(chord.Selected, this);
 
-                foreach (var c in chord.Chords)
-                    Chords.Add((int[])c.Clone());
-
-                Selected = new Parameter(chord.Selected, this);
+                FinalChord = new List<int>(chord.FinalChord);
             }
 
 
@@ -120,8 +128,12 @@ namespace IngameScript
 
             public override void Clear()
             {
-                Chords.Clear();
-                Selected.Clear();
+                Chords    .Clear();
+                AllOctaves.Clear();
+                
+                Selected  .Clear();
+                
+                FinalChord.Clear();
             }
 
 
@@ -137,6 +149,7 @@ namespace IngameScript
             public override void Randomize()
             {
                 // TODO: create random chords
+                //AllOctaves = RND > 0.5f;
                 Selected.Randomize();
             }
 
@@ -176,12 +189,16 @@ namespace IngameScript
                       Tag
                     + PS(Chords.Count);
 
-                foreach (var c in Chords)
+                for (var c = 0; c < Chords.Count; c++)
                 { 
-                    save += PS(c.Length);
+                    var chord = Chords[c];
 
-                    foreach (var n in c)
-                        save += PS(n);
+                    save += PS(chord.Count);
+
+                    foreach (var note in chord)
+                        save += PS(note);
+
+                    save += PS(AllOctaves[c] ? "1" : "0");
                 }
 
                 save += P(Selected.Save());
@@ -204,19 +221,24 @@ namespace IngameScript
                 int nChords;
                 if (!int_TryParse(data[d++], out nChords)) return TuneChord_null;
 
-                for (int i = 0; i < nChords; i++)
+                for (int c = 0; c < nChords; c++)
                 {
                     int nNotes;
                     if (!int_TryParse(data[d++], out nNotes)) return TuneChord_null;
 
-                    var c = new List<int>();
+                    var _chord = new List<int>();
 
-                    for (int j = 0; j < nNotes; j++)
-                        c.Add(int.Parse(data[d++]));
+                    for (int n = 0; n < nNotes; n++)
+                        _chord.Add(int.Parse(data[d++]));
 
-                    chord.Chords.Add(c.ToArray());
+                    chord.Chords.Add(_chord);
+
+                    int allOctaves;
+                    if (!int_TryParse(data[d++], out allOctaves)) return TuneChord_null;
+
+                    chord.AllOctaves.Add(allOctaves != 0);
                 }
- 
+
                 chord.Selected = Parameter.Load(data, ref d, inst, iSrc, chord, chord.Selected);
 
 

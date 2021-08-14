@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using VRage.Game.GUI.TextPanel;
+
 
 
 namespace IngameScript
@@ -7,37 +9,24 @@ namespace IngameScript
     {
         public class Tune : Parameter
         {
-            public bool      UseChord,
-                             AllOctaves;
+            public TuneChord   Chord;
 
-            public List<int> Chord,
-                             FinalChord;
 
 
             public Tune(Instrument inst, Source src) 
-                : base(strTune, -240, 240, -12, 12, 0.5f, 12, 0, Setting_null, inst, src)
+                : base(strTune, -240, 240, -12, 12, 0.5f, 12, 0, False, Setting_null, inst, src)
             {
-                UseChord   = False;
-                AllOctaves = False;
-
-                Chord      = new List<int>();
-                FinalChord = new List<int>();
+                Chord = TuneChord_null;
             }
 
 
-            public Tune(Tune tune) : base(tune, Setting_null)
+
+            public Tune(Tune tune) 
+                : base(tune, Setting_null)
             {
-                UseChord   = tune.UseChord;
-                AllOctaves = tune.AllOctaves;
-
-                Chord = new List<int>();
-                foreach (var note in tune.Chord)
-                    Chord.Add(note);
-
-                FinalChord = new List<int>();
-                foreach (var note in tune.FinalChord)
-                    FinalChord.Add(note);
+                Chord = OK(tune.Chord) ? new TuneChord(tune.Chord, this, tune.Instrument, tune.Source) : TuneChord_null;
             }
+
 
 
             public Tune Copy()
@@ -46,24 +35,17 @@ namespace IngameScript
             }
 
 
+
             public override void Randomize()
             {
                 m_value = NormalMin + RND * (NormalMax - NormalMin);
+
 
                 if (RND > 1/3f) m_value = (int)(m_value/ 7)* 7;
                 else            m_value = (int)(m_value/12)*12;                
 
 
-                if (   !TooComplex
-                    && !AnyParentIsEnvelope
-                    && (  !IsDigit(Tag[0]) && RND > 0.5f
-                        || IsDigit(Tag[0]) && RND > 0.9f))
-                {
-                    Envelope = new Envelope(this, Instrument, Source);
-                    Envelope.Randomize();
-                }
-                else 
-                    Envelope = Envelope_null;
+                // TODO randomize Chord
 
 
                 if (   !TooComplex
@@ -82,6 +64,7 @@ namespace IngameScript
             }
 
 
+
             public override string GetLabel(out float width)
             {
                 width = 90f; 
@@ -89,20 +72,21 @@ namespace IngameScript
             }
 
 
+
             public override string Save()
             {
-                var tune =
-                      W(base.Save())
-                    + WB(UseChord)
-                    + WB(AllOctaves);
+                var tune = W(base.Save());
 
-                tune += S(Chord.Count);
+                var nSettings = OK(Chord) ? 1 : 0;
 
-                for (int i = 0; i < Chord.Count; i++)
-                    tune += PS(Chord[i]);
+                tune += WS(nSettings);
+
+                if (OK(Chord))
+                    tune += SaveSetting(Chord);
 
                 return tune;
             }
+
 
 
             public static Tune Load(string[] data, ref int i, Instrument inst, int iSrc)
@@ -113,16 +97,36 @@ namespace IngameScript
 
                 Parameter.Load(data, ref i, inst, iSrc, Setting_null, tune);
 
-                tune.UseChord   = data[i++] == "1";
-                tune.AllOctaves = data[i++] == "1";
+                var nSettings = int_Parse(data[i++]);
 
-                var nChords = int_Parse(data[i++]);
-
-                for (int j = 0; j < nChords; j++)
-                    tune.Chord.Add(int_Parse(data[i++]));
+                while (nSettings-- > 0)
+                {
+                    switch (data[i])
+                    { 
+                        case strChord: tune.Chord = TuneChord.Load(data, ref i, inst, iSrc, tune); break;
+                    }
+                }
 
                 return tune;
             }
+
+
+
+            public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
+            {
+                base.DrawFuncButtons(sprites, w, h, chan);
+
+                DrawFuncButton(sprites, strChord, 1, w, h, True, OK(Chord));
+            }
+
+
+
+            public override void Func(int func)
+            {
+                if (func == 1) AddNextSetting(strChord);
+                else           base.Func(func);
+            }
+
 
 
             public override bool CanDelete()

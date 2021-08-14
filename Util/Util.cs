@@ -132,11 +132,11 @@ namespace IngameScript
             return
                    EditedClip.Piano
                 ||    EditedClip.ChordEdit 
-                   && OK(EditedClip.Chord)
-                ||    IsCurParam(strTune)
-                   && (tune?.UseChord ?? False)
-                   && !(   EditedClip.ParamKeys 
-                        || EditedClip.ParamAuto);
+                   && OK(EditedClip.Chord);
+                //||    IsCurParam(strTune)
+                //   && (tune?.UseChord ?? False)
+                //   && !(   EditedClip.ParamKeys 
+                //        || EditedClip.ParamAuto);
         }}
 
 

@@ -10,17 +10,17 @@ namespace IngameScript
     {
         public class Envelope : Setting
         {
-            public Parameter Trigger, // these params can't have envelopes
-                             Attack, 
+            public Parameter Attack, // these params can't have envelopes
                              Decay,
                              Sustain,
-                             Release;
+                             Release,
+                             Trigger;
 
-            public float     TrigTrigger,
-                             TrigAttack,
+            public float     TrigAttack,
                              TrigDecay,
                              TrigSustain,
-                             TrigRelease;
+                             TrigRelease,
+                             TrigTrigger;
 
             public float     CurValue;
 
@@ -29,17 +29,17 @@ namespace IngameScript
             public Envelope(Setting parent, Instrument inst, Source src) 
                 : base(strEnv, parent, Setting_null, inst, src)
             {
-                Trigger     = (Parameter)NewSettingFromTag(strTrig, this, inst, src);
                 Attack      = (Parameter)NewSettingFromTag(strAtt,  this, inst, src);
                 Decay       = (Parameter)NewSettingFromTag(strDec,  this, inst, src);
                 Sustain     = (Parameter)NewSettingFromTag(strSus,  this, inst, src);
                 Release     = (Parameter)NewSettingFromTag(strRel,  this, inst, src);
+                Trigger     = (Parameter)NewSettingFromTag(strTrig, this, inst, src);
 
-                TrigTrigger =
                 TrigAttack  = 
                 TrigDecay   = 
                 TrigSustain =
-                TrigRelease = float_NaN;
+                TrigRelease =
+                TrigTrigger = float_NaN;
             }
 
 
@@ -47,17 +47,17 @@ namespace IngameScript
             public Envelope(Envelope env, Setting parent) 
                 : base(env.Tag, parent, env, env.Instrument, env.Source)
             {
-                Trigger     = new Parameter(env.Trigger, this);
                 Attack      = new Parameter(env.Attack,  this);
                 Decay       = new Parameter(env.Decay,   this);
                 Sustain     = new Parameter(env.Sustain, this);
                 Release     = new Parameter(env.Release, this);
+                Trigger     = new Parameter(env.Trigger, this);
 
-                TrigTrigger = env.TrigTrigger;
                 TrigAttack  = env.TrigAttack;
                 TrigDecay   = env.TrigDecay;
                 TrigSustain = env.TrigSustain;
                 TrigRelease = env.TrigRelease;
+                TrigTrigger = env.TrigTrigger;
             }
 
 
@@ -82,11 +82,11 @@ namespace IngameScript
                 CurValue = UpdateValue(
                     tp.LocalTime, 
                     tp.NoteLength, 
-                    tp.GetTriggerValue(Trigger),
                     tp.GetTriggerValue(Attack ),
                     tp.GetTriggerValue(Decay  ),
                     tp.GetTriggerValue(Sustain),
-                    tp.GetTriggerValue(Release));
+                    tp.GetTriggerValue(Release),
+                    tp.GetTriggerValue(Trigger));
 
                 m_valid = True;
                 return CurValue;
@@ -94,7 +94,7 @@ namespace IngameScript
 
 
 
-            public static float UpdateValue(long lTime, int noteLen, float t, float a, float d, float s, float r)
+            public static float UpdateValue(long lTime, int noteLen, float a, float d, float s, float r, float t)
             {
                 var lt = lTime  /(float)FPS;
                 var nl = noteLen/(float)FPS;
@@ -130,22 +130,22 @@ namespace IngameScript
             public override bool HasDeepParams(Channel chan, int src)
             {
                 return
-                       Trigger.HasDeepParams(chan, src)
-                    || Attack .HasDeepParams(chan, src)
+                       Attack .HasDeepParams(chan, src)
                     || Decay  .HasDeepParams(chan, src)
                     || Sustain.HasDeepParams(chan, src)
-                    || Release.HasDeepParams(chan, src);
+                    || Release.HasDeepParams(chan, src)
+                    || Trigger.HasDeepParams(chan, src);
             }
 
 
 
             public override void Clear()
             {
-                Trigger.Clear();
                 Attack .Clear();
                 Decay  .Clear();
                 Sustain.Clear();
                 Release.Clear();
+                Trigger.Clear();
             }
 
 
@@ -154,22 +154,22 @@ namespace IngameScript
             {
                 base.Reset();
 
-                Trigger.Reset();
                 Attack .Reset();
                 Decay  .Reset();
                 Sustain.Reset();
                 Release.Reset();
+                Trigger.Reset();
             }
 
 
 
             public override void Randomize()
             {
-                Trigger.Randomize();
                 Attack .Randomize();
                 Decay  .Randomize();
                 Release.Randomize();
                 Sustain.Randomize();
+                Trigger.Randomize();
             }
 
 
@@ -192,11 +192,11 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case strTrig: return GetOrAddParamFromTag(Trigger, tag);
                     case strAtt:  return GetOrAddParamFromTag(Attack,  tag);
                     case strDec:  return GetOrAddParamFromTag(Decay,   tag);
                     case strSus:  return GetOrAddParamFromTag(Sustain, tag);
                     case strRel:  return GetOrAddParamFromTag(Release, tag);
+                    case strTrig: return GetOrAddParamFromTag(Trigger, tag);
                 }
 
                 return Setting_null;
@@ -208,11 +208,11 @@ namespace IngameScript
             {
                 // this method removes note and channel automation associated with this setting
 
-                Trigger.Delete(iSrc);
                 Attack .Delete(iSrc);
                 Decay  .Delete(iSrc);
                 Sustain.Delete(iSrc);
                 Release.Delete(iSrc);
+                Trigger.Delete(iSrc);
             }
 
 
@@ -253,11 +253,11 @@ namespace IngameScript
                 width = 212;
 
                 return
-                      PrintValue(Trigger.Value, 2, True, 0).PadLeft(4) + strEmpty
-                    + PrintValue(Attack .Value, 2, True, 0).PadLeft(4) + strEmpty
+                      PrintValue(Attack .Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Decay  .Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Sustain.Value, 2, True, 0).PadLeft(4) + strEmpty
-                    + PrintValue(Release.Value, 2, True, 0).PadLeft(4);
+                    + PrintValue(Release.Value, 2, True, 0).PadLeft(4) + strEmpty
+                    + PrintValue(Trigger.Value, 2, True, 0).PadLeft(4);
             }
 
 
@@ -273,11 +273,11 @@ namespace IngameScript
                 {
                     base.DrawLabels(sprites, x, y, dp);
 
-                    if (Trigger.HasDeepParams(CurChannel, CurSrc)) Trigger.DrawLabels(sprites, x, y, dp);
                     if (Attack .HasDeepParams(CurChannel, CurSrc)) Attack .DrawLabels(sprites, x, y, dp);
                     if (Decay  .HasDeepParams(CurChannel, CurSrc)) Decay  .DrawLabels(sprites, x, y, dp);
                     if (Sustain.HasDeepParams(CurChannel, CurSrc)) Sustain.DrawLabels(sprites, x, y, dp);
                     if (Release.HasDeepParams(CurChannel, CurSrc)) Release.DrawLabels(sprites, x, y, dp);
+                    if (Trigger.HasDeepParams(CurChannel, CurSrc)) Trigger.DrawLabels(sprites, x, y, dp);
                 }
 
                 _dp.Next(dp);
@@ -287,19 +287,11 @@ namespace IngameScript
 
             public override void DrawSetting(List<MySprite> sprites, float x, float y, float w, float h, DrawParams dp)
             {
-                //var tp = new TimeParams(g_time, 0, Note_null, EditedClip.EditLength, -1, _triggerDummy, EditedClip, dp.Program);
-
-                //Attack .UpdateValue(tp);
-                //Decay  .UpdateValue(tp);
-                //Sustain.UpdateValue(tp);
-                //Release.UpdateValue(tp);
-
-
-                var isTrig = IsCurParam(strTrig);
                 var isAtt  = IsCurParam(strAtt);
                 var isDec  = IsCurParam(strDec);
                 var isSus  = IsCurParam(strSus);
                 var isRel  = IsCurParam(strRel);
+                var isTrig = IsCurParam(strTrig);
 
 
                 var w0 = 240f;
@@ -434,11 +426,11 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                DrawFuncButton(sprites, "Trig", 0, w, y, True, Trigger.HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, "A",    1, w, y, True, Attack .HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, "D",    2, w, y, True, Decay  .HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, "S",    3, w, y, True, Sustain.HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, "R",    4, w, y, True, Release.HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, "Trig", 5, w, y, True, Trigger.HasDeepParams(chan, CurSrc));
             }
 
 
@@ -447,11 +439,11 @@ namespace IngameScript
             {
                 switch (func)
                 {
-                    case 0: AddNextSetting(strTrig); break;
                     case 1: AddNextSetting(strAtt);  break;
                     case 2: AddNextSetting(strDec);  break;
                     case 3: AddNextSetting(strSus);  break;
                     case 4: AddNextSetting(strRel);  break;
+                    case 5: AddNextSetting(strTrig); break;
                 }
             }
 
