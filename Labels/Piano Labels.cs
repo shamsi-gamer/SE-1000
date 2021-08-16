@@ -1,6 +1,7 @@
-﻿using Sandbox.ModAPI.Ingame;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Sandbox.ModAPI.Ingame;
 
 
 
@@ -225,19 +226,16 @@ namespace IngameScript
 
             var note = Note_null;
 
-            //if (IsCurParam(strTune))
-            //{
-            //    var tune =
-            //        OK(CurSrc)
-            //        ? SelSource    .Tune
-            //        : SelInstrument.Tune;
+            if (IsCurParam(strChord))
+            {
+                var tune  = (TuneChord)CurSetting;
+                var chord = tune.Chords[(int)Math.Round(tune.CurValue)];
 
-            //    return tune.Chord.Contains(noteNum);
-            //}
+                return chord.Contains(noteNum);
+            }
 
-            //else 
-            if (   OK(EditedClip.Chord)
-                && EditedClip.ChordEdit)
+            else if (OK(EditedClip.Chord)
+                  && EditedClip.ChordEdit)
                 return EditedClip.Chords[EditedClip.Chord].Contains(noteNum);
 
             else if (OK(EditedClip.EditPos)
@@ -263,17 +261,14 @@ namespace IngameScript
         {
             var note = Note_null;
 
-            //if (IsCurParam(strTune))
-            //{
-            //    var tune =
-            //        OK(CurSrc)
-            //        ? SelSource    .Tune
-            //        : SelInstrument.Tune;
+            if (IsCurParam(strChord))
+            {
+                var tune  = (TuneChord)CurSetting;
+                var chord = tune.Chords[(int)Math.Round(tune.CurValue)];
 
-            //    return tune.FinalChord.Contains(noteNum);
-            //}
-            //else 
-            if (OK(g_notes.FindIndex(n => NoteIsTriggered(noteNum, n, out note))))
+                return tune.FinalChord.Contains(noteNum);
+            }
+            else if (OK(g_notes.FindIndex(n => NoteIsTriggered(noteNum, n, out note))))
                 return True; // note is being played
 
             return False;

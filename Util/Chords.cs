@@ -30,7 +30,7 @@ namespace IngameScript
             var chordNotes = new List<int>();
 
             if (    OK(EditedClip.Chord)
-                && !IsCurParam(strTune))
+                && !HasTagOrParent(CurSetting, strTune))
             {
                 var chord = EditedClip.Chords[EditedClip.Chord];
 
@@ -166,32 +166,31 @@ namespace IngameScript
 
         void Chord(int chord)
         {
-            var tune = SelSource    ?.Tune
-                    ?? SelInstrument?.Tune;
+            if (HasTagOrParent(CurSetting, strChord))
+            {
+                var tune  = (TuneChord)CurSetting;
+                var index = (int)Math.Round(tune.CurValue);
 
+                var _chord = EditedClip.Chords[chord-1];
 
-            //if (   IsCurParam(strTune)
-            //    && tune.UseChord)
-            //{
-            //    var _chord = EditedClip.Chords[chord-1];
+                if (_chord.Count > 0)
+                {
+                    tune.Chords[index].Clear();
 
-            //    if (_chord.Count > 0)
-            //    {
-            //        tune.Chord.Clear();
+                    foreach (var n in _chord)
+                        tune.Chords[index].Add(n);
 
-            //        foreach (var n in _chord)
-            //            tune.Chord.Add(n);
+                    var inst = SelInstrument;
+                    var src  = OK(CurSrc) ? inst.Sources[CurSrc] : Source_null;
 
-            //        var inst = SelInstrument;
-            //        var src  = OK(CurSrc) ? inst.Sources[CurSrc] : Source_null;
+                    tune.FinalChord = UpdateFinalTuneChord(
+                        tune.Chords    [index], 
+                        tune.AllOctaves[index]);
+                }
 
-            //        tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
-            //    }
-
-            //    MarkChordLabel(chord-1);
-            //}
-            //else
-            if (EditedClip.ChordEdit)
+                MarkChordLabel(chord-1);
+            }
+            else if (EditedClip.ChordEdit)
             {
                 EditedClip.Chord = 
                     EditedClip.Chord != chord-1
@@ -276,14 +275,16 @@ namespace IngameScript
 
 
 
-        void UpdateFinalTuneChord(Tune tune, int noteNum)
+        void UpdateTuneChord(TuneChord tune, int noteNum)
         {
-            //var chord = tune.Chord;
+            var index = (int)Math.Round(tune.CurValue);
 
-            //if (chord.Contains(noteNum)) chord.Remove(noteNum);
-            //else                         chord.Add   (noteNum);
+            var chord = tune.Chords[index];
 
-            //tune.FinalChord = UpdateFinalTuneChord(chord, tune.AllOctaves);
+            if (chord.Contains(noteNum)) chord.Remove(noteNum);
+            else                         chord.Add   (noteNum);
+
+            tune.FinalChord = UpdateFinalTuneChord(chord, tune.AllOctaves[index]);
         }
 
 

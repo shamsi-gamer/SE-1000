@@ -277,15 +277,15 @@ namespace IngameScript
             case strVol:   return new Parameter(tag,    0,           2,   0.5f,  1,    0.01f,  0.1f,  1,    True,  parent, inst, src);
                                                         
             case strBias:  return new Bias     (parent, inst, src);                                  
-            case strLow:   return new Parameter(tag,    36,        119,   0,     1,    1,      12,      36, False, parent, inst, src);
-            case strHigh:  return new Parameter(tag,    36,        119,   0,     1,    1,      12,     119, False, parent, inst, src);
+            case strLow:   return new Parameter(tag,    36,        119,   0,     1,    1,     12,    36,    False, parent, inst, src);
+            case strHigh:  return new Parameter(tag,    36,        119,   0,     1,    1,     12,   119,    False, parent, inst, src);
                            
             case strEnv:   return new Envelope(parent, inst, src);                                  
             case strTrig: 
                 if (IsSettingType(parent, typeof(Envelope)))
                            return new Parameter(tag,    0,           1,   0,     1,    0.01f,  0.1f,  1,    False, parent, inst, src);
                 else // LFO
-                           return new Parameter(tag,    0,        1024,   0,   256,    1,      1,     0,    False, parent, inst, src);
+                           return new Parameter(tag,    0,        1024,   0,   256,    1,     16,     0,    False, parent, inst, src);
                            
             case strAtt:   return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    False, parent, inst, src);
             case strDec:   return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, False, parent, inst, src);
@@ -293,7 +293,6 @@ namespace IngameScript
             case strRel:   return new Parameter(tag,    0,          10,   0,     2,    0.01f,  0.1f,  parent.GetType() == typeof(Modulate) ? 0 : 0.2f, False, parent, inst, src);
 
             case strChord: return new TuneChord(parent, inst, src);
-            case strSel:   return new Parameter(tag,    0,           0,   0,     0,    1,      1,     0,    False, parent, inst, src);
 
             case strOff:   return new Parameter(tag, -100,         100, -10,    10,    0.01f,  0.1f,  0,    False, parent, inst, src);
             case strFreq:  return new Parameter(tag,    0.01f,      30,   0.01f, 4,    0.001f, 0.05f, 1,    True,  parent, inst, src);
@@ -305,7 +304,7 @@ namespace IngameScript
                            
             case strAmt:   return new Parameter(tag,   -1,           1,  -0.5f,  0.5f, 0.01f,  0.1f,  0,    True,  parent, inst, src);
                            
-            case strDry:   return new Parameter(tag,    0,           1,   0,     1,    0.01f, 0.1f,   1,    False, parent, inst, src);
+            case strDry:   return new Parameter(tag,    0,           1,   0,     1,    0.01f,  0.1f,  1,    False, parent, inst, src);
             case strCnt:   return new Parameter(tag,    1,         500,   2,    16,    1,     10,     4,    False, parent, inst, src);
             case strTime:  return new Parameter(tag,    0.000001f,  10,   0.01f, 0.3f, 0.01f,  0.1f,  0.2f, False, parent, inst, src);
             case strLvl:   return new Parameter(tag,    0,           1,   0.3f,  1,    0.01f,  0.1f,  0.5f, False, parent, inst, src);

@@ -590,7 +590,7 @@ namespace IngameScript
                     mod.ModInstruments.RemoveLast();
                 }
                 else if (IsCurSetting(typeof(TuneChord))
-                      && ((TuneChord)CurSetting).Chords.Count > 0)
+                      && ((TuneChord)CurSetting).Chords.Count > 1)
                 {
                     var chord = (TuneChord)CurSetting;
 
@@ -599,6 +599,11 @@ namespace IngameScript
 
                     if (chord.Chords.Count == 0)
                         chord.AddFirstChord();
+
+                    chord.Max       = 
+                    chord.NormalMax = chord.Chords.Count-1;
+
+                    chord.SetValue(Math.Min(chord.Value, chord.Max), Note_null);
                 }
                 else if (EditedClip.CurSetting.CanDelete())
                 { 
@@ -694,9 +699,9 @@ namespace IngameScript
             {
                 clip.CurHarmonics.Adjust(delta);
             }
-            else if (   IsParam(setting)
-                        && (   clip.ParamKeys 
-                            || clip.ParamAuto))
+            else if (IsParam(setting)
+                  && (   clip.ParamKeys 
+                      || clip.ParamAuto))
             {
                 var chan = clip.SelChannel;
                 var path = clip.CurSetting.Path;
@@ -744,7 +749,8 @@ namespace IngameScript
             }
             else if (OK(clip.SelChan))
             {
-                if (IsParam(setting))
+                if (   IsParam(setting)
+                    || IsSettingType(setting, typeof(TuneChord)))
                     AdjustParam(clip, (Parameter)setting, delta);
             }  
             else

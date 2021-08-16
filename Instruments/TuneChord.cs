@@ -8,48 +8,42 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class TuneChord : Setting
+        public class TuneChord : Parameter
         {
             public List<List<int>> Chords;
             public List<bool>      AllOctaves;
 
-            public Parameter       Selected;
-                                   
             public List<int>       FinalChord;
 
 
 
             public TuneChord(Setting parent, Instrument inst, Source src) 
-                : base(strChord, parent, Setting_null, inst, src)
+                : base(strChord, 0, 0, 0, 0, -1, -1, 0, False, parent, inst, src)
             {
                 Chords     = new List<List<int>>();
                 AllOctaves = new List<bool>();
 
                 AddFirstChord();
 
-                Selected   = (Parameter)NewSettingFromTag(strSel, this, inst, src);
-
                 FinalChord = new List<int>();
             }
 
 
 
-            public TuneChord(TuneChord chord, Setting parent, Instrument inst, Source src) 
-                : base(chord.Tag, parent, chord.Prototype, inst, src)
+            public TuneChord(TuneChord chord)
+                : base(chord, Setting_null)
             {
                 Chords     = new List<List<int>>(chord.Chords);
                 AllOctaves = new List<bool>(chord.AllOctaves);
                 
-                Selected   = new Parameter(chord.Selected, this);
-
                 FinalChord = new List<int>(chord.FinalChord);
             }
 
 
 
-            public TuneChord Copy(Setting parent) 
+            public TuneChord Copy() 
             {
-                return new TuneChord(this, parent, Instrument, Source);
+                return new TuneChord(this);
             }
 
 
@@ -66,7 +60,7 @@ namespace IngameScript
             {
                 return
                        Chords.Count > 0
-                    || Selected.HasDeepParams(chan, src);
+                    || base.HasDeepParams(chan, src);
             }
 
 
@@ -76,54 +70,17 @@ namespace IngameScript
                 Chords    .Clear();
                 AllOctaves.Clear();
                 
-                Selected  .Clear();
-                
                 FinalChord.Clear();
-            }
-
-
-
-            public override void Reset()
-            {
-                base.Reset();
-                Selected.Reset();
             }
 
 
 
             public override void Randomize()
             {
+                base.Randomize();
+
                 // TODO: create random chords
                 //AllOctaves = RND > 0.5f;
-                Selected.Randomize();
-            }
-
-
-
-            public override void AdjustFromController(Clip clip)
-            {
-                Program.AdjustFromController(clip, Selected, -g_remote.RotationIndicator.X*ControlSensitivity);
-            }
-
-
-
-            public override Setting GetOrAddSettingFromTag(string tag)
-            {
-                switch (tag)
-                {
-                    case strSel: return GetOrAddParamFromTag(Selected, tag);
-                }
-
-                return Setting_null;
-            }
-
-
-
-            public void Delete(int iSrc)
-            {
-                // this method removes note and channel automation associated with this setting
-
-                Selected.Delete(iSrc);
             }
 
 
@@ -131,7 +88,7 @@ namespace IngameScript
             public override string Save()
             {
                 var save = 
-                      Tag
+                      base.Save()
                     + PS(Chords.Count);
 
                 for (var c = 0; c < Chords.Count; c++)
@@ -146,8 +103,6 @@ namespace IngameScript
                     save += PS(AllOctaves[c] ? "1" : "0");
                 }
 
-                save += P(Selected.Save());
-
                 return save;
             }
 
@@ -161,6 +116,9 @@ namespace IngameScript
                     parent, 
                     inst, 
                     OK(iSrc) ? inst.Sources[iSrc] : Source_null);
+
+
+                Parameter.Load(data, ref d, inst, iSrc, Setting_null, chord);
 
 
                 int nChords;
@@ -184,8 +142,6 @@ namespace IngameScript
                     chord.AllOctaves.Add(allOctaves != 0);
                 }
 
-                chord.Selected = Parameter.Load(data, ref d, inst, iSrc, chord, chord.Selected);
-
 
                 return chord;
             }
@@ -195,26 +151,7 @@ namespace IngameScript
             public override string GetLabel(out float width)
             {
                 width = 123;
-
-                return PrintValue(Selected.Value, 2, True, 0).PadLeft(5);
-            }
-
-
-
-            public override void DrawLabels(List<MySprite> sprites, float x, float y, DrawParams _dp)
-            {
-                x += _dp.OffX;
-                y += _dp.OffY;
-
-                var dp = new DrawParams(_dp);
-
-                if (!_dp.Program.TooComplex)
-                {
-                    base.DrawLabels(sprites, x, y, dp);
-                    if (Selected.HasDeepParams(CurChannel, CurSrc)) Selected.DrawLabels(sprites, x, y, dp);
-                }
-
-                _dp.Next(dp);
+                return PrintValue(CurValue, 2, True, 0).PadLeft(5);
             }
 
 
@@ -241,23 +178,16 @@ namespace IngameScript
 
                 var nOctaves = 2;
 
-                var ow = 100; // octave width
+                var ow = 100;           // octave width
                 var pw = ow * nOctaves; // piano width
 
 
-                var minNote = 36;
-                var maxNote = 119;
+                var minNote   = 36;
+                var selOctave = (int)CurValue;
+
 
                 for (int c = 0; c < Chords.Count; c++)
                 {
-                    //FillRect(
-                    //    sprites, 
-                    //    x + w/2 - 100, 
-                    //    ry + c*ch,
-                    //    200,
-                    //    ch - 10,
-                    //    (int)Selected.CurValue == c ? color4 : color2);
-
                     for (int i = 0; i < nOctaves; i++)
                     {
                         DrawOctave(
@@ -266,123 +196,14 @@ namespace IngameScript
                             ry + c*ch,
                             ow,
                             ch - 10,
-                            i,
+                            i + 3,
+                            Chords[c].ToArray(),
                             minNote,
-                            minNote,
-                            maxNote);
+                            selOctave == c ? color1 : color0,
+                            selOctave == c ? color4 : color2,
+                            color6);
                     }
                 }
-
-
-                //var dp = new DrawParams(False, prog);
-
-                //if (OK(CurSrc)) SelSource    .DrawLabels(sprites, x+5, y+10, dp);
-                //else            SelInstrument.DrawLabels(sprites, x+5, y+10, dp);
-
-
-                //var isLow  = IsCurParam(strLow);
-                //var isHigh = IsCurParam(strHigh);
-                //var isAmt  = IsCurParam(strAmt);
-                //var isPow  = IsCurParam(strPow);
-
-
-                //var minNote  = 36;
-                //var maxNote  = 119;
-
-                //var lowNote  = (int)LowNote .Value;
-                //var highNote = (int)HighNote.Value;
-
-
-                //var pw = w - 200; // piano width
-                //var ow = pw/7;    // octave width
-
-                //var ym = 330;
-
-                //for (int i = 0; i < 7; i++)
-                //{
-                //    DrawOctave(
-                //        sprites,
-                //        (w-pw)/2 + i*ow,
-                //        ym + 10,
-                //        ow,
-                //        60,
-                //        i,
-                //        minNote,
-                //        lowNote,
-                //        highNote);
-                //}
-
-
-                //var px     = (w-pw)/2 + 4;
-
-                //var spread = highNote-lowNote;
-                //var kw     = pw/(maxNote-minNote+1);
-
-                //var amt    = Amount.Value;
-                //var pow    = Power .Value;
-
-                //var low    = Math.Min(Math.Max(0, 1 - amt), 1);
-                //var high   = Math.Min(Math.Max(0, 1 + amt), 1);
-
-
-                //DrawMarker(sprites, px+1 + (lowNote -minNote)*kw, ym, low *100, isLow,  isAmt);
-                //DrawMarker(sprites, px+1 + (highNote-minNote)*kw, ym, high*100, isHigh, isAmt);
-
-
-                //var strName = strBias;
-
-                //     if (isLow ) strName = strLow;
-                //else if (isHigh) strName = strHigh;
-                //else if (isAmt ) strName = strAmt;
-                //else if (isPow ) strName = strPow;
-
-                //DrawString(
-                //    sprites,
-                //    FullNameFromTag(strName), 
-                //    px + pw/2, 
-                //    ym - 200, 
-                //    1.5f, 
-                //    color6,
-                //    TA_CENTER);
-
-
-                //var powColor = isPow ? color6 : color4;
-                //var powWidth = isPow ? 4 : 2;
-
-                //var amtColor = isAmt ? color6 : color4;
-                //var amtWidth = isAmt ? 4 : 2;
-
-                //DrawCurve(
-                //    sprites, 
-                //    GetValue,
-                //    px+1 + (lowNote-minNote)*kw, 
-                //    ym - 100,
-                //    spread*kw,
-                //    100,
-                //    powColor,
-                //    powWidth);
-
-                //FillRect(sprites, px+1,                         ym - low *100, (lowNote-minNote )*kw, amtWidth, amtColor);
-                //FillRect(sprites, px+1 + (highNote-minNote)*kw, ym - high*100, (maxNote-highNote)*kw, amtWidth, amtColor);
-
-
-                //DrawString(
-                //    sprites, 
-                //    S00(amt), 
-                //    px + (lowNote-minNote)*kw + (1+amt)*spread*kw/2, 
-                //    ym - 100 - 47, 
-                //    0.8f, 
-                //    isAmt ? color6 : color4,
-                //    TA_CENTER);
-
-                //DrawString(
-                //    sprites, 
-                //    S00(pow), 
-                //    px + (lowNote-minNote)*kw + (1+amt)*spread*kw/2, 
-                //    ym - 100 + 40, 
-                //    0.8f, 
-                //    isPow ? color6 : color4,
-                //    TA_CENTER);
 
 
                 // bottom func separator
@@ -395,19 +216,16 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                DrawFuncButton(sprites, strSel, 1, w, y, True, Selected.HasDeepParams(chan, CurSrc));
-                DrawFuncButton(sprites, "┼",  5, w, y, False, False);
+                base.DrawFuncButtons(sprites, w, y, chan);
+                DrawFuncButton(sprites, /*"┼"*/"+", 1, w, y, False, False);
             }
 
 
 
             public override void Func(int func)
             {
-                switch (func)
-                {
-                    case 1: AddNextSetting(strSel); break;
-                    case 5: AddNewChord();          break;
-                }
+                if (func == 1) AddNewChord();
+                else           base.Func(func);
             }
 
 
@@ -419,6 +237,11 @@ namespace IngameScript
 
                 Chords    .Add(new List<int>());
                 AllOctaves.Add(False);
+
+                Max       = 
+                NormalMax = Chords.Count-1;
+
+                SetValue(Chords.Count-1, Note_null);
             }
 
 

@@ -39,7 +39,7 @@ namespace IngameScript
                     }
                     else if (HasTagOrParent(CurSetting, strChord))
                     {
-                        var chord = (TuneChord)EditedClip.CurSetting;
+                        var chord = EditedClip.CurOrParentChord;
                         chord.DrawSetting(sprites, x, y, w, h, CurChannel, this);
                     }
                     else if (IsCurSetting(typeof(Harmonics)))

@@ -15,10 +15,11 @@ namespace IngameScript
             if (h == 11) // here and not in BeatHigh() because TogglePiano() needs to know about tune
                 TogglePiano(tune);
 
-            //else if (IsCurParam(strTune)
-            //      && (tune?.UseChord ?? False)
-            //      && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
-            //    UpdateFinalTuneChord(tune, HighToNote(h, EditedClip.HalfSharp));
+            else if (IsCurParam(strChord)
+                  && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
+                UpdateTuneChord(
+                    (TuneChord)CurSetting, 
+                    HighToNote(h, EditedClip.HalfSharp));
 
             else if (EditedClip.ChordEdit
                   && OK(EditedClip.Chord))
@@ -89,14 +90,13 @@ namespace IngameScript
 
         void TogglePiano(Tune tune)
         { 
-            //if (   IsCurParam(strTune)
-            //    && (tune?.UseChord ?? False))
-            //{
-            //    EditedClip.Settings.RemoveLast();
-            //    CurSet--;
-            //    EditedClip.Piano = False;
-            //}
-            //else
+            if (HasTagOrParent(CurSetting, strTune))
+            {
+                EditedClip.Settings.RemoveLast();
+                CurSet--;
+                EditedClip.Piano = False;
+            }
+            else
                 EditedClip.Piano = !EditedClip.Piano;
 
             if (EditedClip.Piano)
@@ -107,15 +107,12 @@ namespace IngameScript
 
         void Low(int l)
         {
-            var tune = SelSource    ?.Tune
-                    ?? SelInstrument?.Tune;
+            if (IsCurParam(strChord))
+                UpdateTuneChord(
+                    (TuneChord)CurSetting, 
+                    LowToNote(l, EditedClip.HalfSharp));
 
-            //if (   IsCurParam(strTune)
-            //    && (tune?.UseChord ?? False))
-            //    UpdateFinalTuneChord(tune, LowToNote(l, EditedClip.HalfSharp));
-
-            //else
-            if (EditedClip.ChordEdit
+            else if (EditedClip.ChordEdit
                   && OK(EditedClip.Chord))
                 EditChord(LowToNote(l, EditedClip.HalfSharp));
 

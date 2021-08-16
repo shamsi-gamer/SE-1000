@@ -469,7 +469,7 @@ namespace IngameScript
                 if (Tag == strVol)
                 { 
                     width = 70; 
-                    return PrintValue(100 * Math.Log10(Value), 0, True, 0).PadLeft(4);
+                    return PrintValue(100 * Math.Log10(CurValue), 0, True, 0).PadLeft(4);
                 }
                 else
                 {

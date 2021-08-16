@@ -34,7 +34,6 @@
                      strAmt             = "Amt",
                                         
                      strChord           = "Chrd",
-                     strSel             = "Sel",
 
                      strLow             = "Low",
                      strHigh            = "High",

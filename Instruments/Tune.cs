@@ -9,7 +9,7 @@ namespace IngameScript
     {
         public class Tune : Parameter
         {
-            public TuneChord   Chord;
+            public TuneChord Chord;
 
 
 
@@ -24,7 +24,7 @@ namespace IngameScript
             public Tune(Tune tune) 
                 : base(tune, Setting_null)
             {
-                Chord = OK(tune.Chord) ? new TuneChord(tune.Chord, this, tune.Instrument, tune.Source) : TuneChord_null;
+                Chord = OK(tune.Chord) ? new TuneChord(tune.Chord) : TuneChord_null;
             }
 
 
@@ -140,21 +140,23 @@ namespace IngameScript
 
 
 
-            public static Tune Load(string[] data, ref int i, Instrument inst, int iSrc)
+            public static Tune Load(string[] data, ref int d, Instrument inst, int iSrc)
             {
                 var tune = new Tune(
                     inst, 
                     OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
-                Parameter.Load(data, ref i, inst, iSrc, Setting_null, tune);
 
-                var nSettings = int_Parse(data[i++]);
+                Parameter.Load(data, ref d, inst, iSrc, Setting_null, tune);
+
+
+                var nSettings = int_Parse(data[d++]);
 
                 while (nSettings-- > 0)
                 {
-                    switch (data[i])
+                    switch (data[d])
                     { 
-                        case strChord: tune.Chord = TuneChord.Load(data, ref i, inst, iSrc, tune); break;
+                        case strChord: tune.Chord = TuneChord.Load(data, ref d, inst, iSrc, tune); break;
                     }
                 }
 

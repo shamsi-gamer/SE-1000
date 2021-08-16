@@ -260,19 +260,36 @@ namespace IngameScript
 
         static void DrawOctave(List<MySprite> sprites, float x, float y, float w, float h, int octave, int firstNote, int lowNote, int highNote)
         {
+            DrawOctave(
+                sprites, 
+                x, y, w, h, 
+                octave, 
+                new int[] {
+                    lowNote, 
+                    highNote },
+                firstNote,
+                color1,
+                color4,
+                color6);
+        }
+
+
+
+        static void DrawOctave(List<MySprite> sprites, float x, float y, float w, float h, int octave, int[] brightNotes, int firstNote, Color colBlack, Color colWhite, Color colBright)
+        {
             var kw = w/7;
             var bw = w/12;
             var bh = h*3/5f;
 
+            var minNote = 36;
+
 
             for (int i = 0, j = 0; i < 7; i++, j++)
             {
-                var isNote = 
-                        octave*12 + j == lowNote  - firstNote
-                    || octave*12 + j == highNote - firstNote;
+                var isNote = brightNotes.Contains(/*minNote +*/ octave*12 + j);
 
                 var kx    = x + i*kw;
-                var color = isNote ? color6 : color4;
+                var color = isNote ? colBright : colWhite;
 
                 FillRect(sprites, kx+1, y, kw-2, h, color);
 
@@ -284,11 +301,9 @@ namespace IngameScript
 
             for (int i = 0; i < 12; i++)
             {
-                var isNote = 
-                       octave*12 + i == lowNote  - firstNote
-                    || octave*12 + i == highNote - firstNote;
+                var isNote = brightNotes.Contains(/*minNote +*/ octave*12 + i);
 
-                var color = isNote ? color6 : color1;
+                var color = isNote ? colBright : colBlack;
 
                 if (   i ==  1 
                     || i ==  3

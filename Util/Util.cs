@@ -126,17 +126,16 @@ namespace IngameScript
 
         static bool ShowPiano { get 
         {
-            var tune = SelSource    ?.Tune
-                    ?? SelInstrument?.Tune;
+            //var tune = SelSource    ?.Tune
+            //        ?? SelInstrument?.Tune;
 
             return
                    EditedClip.Piano
                 ||    EditedClip.ChordEdit 
-                   && OK(EditedClip.Chord);
-                //||    IsCurParam(strTune)
-                //   && (tune?.UseChord ?? False)
-                //   && !(   EditedClip.ParamKeys 
-                //        || EditedClip.ParamAuto);
+                   && OK(EditedClip.Chord)
+                ||    HasTagOrParent(CurSetting, strChord)
+                   && !(   EditedClip.ParamKeys 
+                        || EditedClip.ParamAuto);
         }}
 
 

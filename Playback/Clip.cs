@@ -716,6 +716,12 @@ namespace IngameScript
                 ? CurBias
                 : (Bias)CurSetting.Parent;
 
+            public TuneChord CurChord => (TuneChord)CurSetting;
+            public TuneChord CurOrParentChord =>
+                IsCurSetting(typeof(TuneChord))
+                ? CurChord
+                : (TuneChord)CurSetting.Parent;
+
             public Harmonics CurHarmonics => (Harmonics)CurSetting;
             public Harmonics CurOrParentHarmonics =>
                 IsCurSetting(typeof(Harmonics))

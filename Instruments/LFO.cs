@@ -115,7 +115,7 @@ namespace IngameScript
                 var trig = Trigger.UpdateValue(tp);
 
                 if (   trig == 0
-                    || tp.Note.ClipStep % trig == 0)
+                    || ((tp.LocalTime / TicksPerStep) % trig) == 0)
                     CurValue = GetUpdateValue(tp);
 
                 m_valid = True;
