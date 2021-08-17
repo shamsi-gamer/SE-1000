@@ -197,7 +197,7 @@ namespace IngameScript
                 if (!chan.On) continue;
 
                 var sh    = (int)clip.Track.PlayStep % 2 != 0 ? chan.Shuffle : 0;
-                var notes = chan.Notes.FindAll(n => n.SongTime == clip.Track.PlayTime);
+                var notes = chan.Notes.FindAll(n => n.ClipTime == clip.Track.PlayTime);
 
                 foreach (var n in notes)
                 {
@@ -289,12 +289,14 @@ namespace IngameScript
             if (   OK(src.Tune)
                 && src.Tune.On
                 && OK(src.Tune.Chord)
+                && src.Tune.Chord.On
                 && src.Tune.Chord.FinalChord.Count > 0)
                 noteNum = LimitNoteToChord(noteNum, src.Tune.Chord.FinalChord);
 
             if (   OK(inst.Tune)
                 && inst.Tune.On
                 && OK(inst.Tune.Chord)
+                && inst.Tune.Chord.On
                 && inst.Tune.Chord.FinalChord.Count > 0)
                 noteNum = LimitNoteToChord(noteNum, inst.Tune.Chord.FinalChord);
 

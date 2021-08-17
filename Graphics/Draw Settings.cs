@@ -36,8 +36,6 @@ namespace IngameScript
             var hk = h/50;
             var sy = 10;
 
-            var zy = y + h/2;
-
 
             // value marks
             for (int i = 0; i < 5; i++)
@@ -54,8 +52,9 @@ namespace IngameScript
                     color5);
             }
 
-
             
+            var zy = y + h * (1 - (0-min)/(max-min));
+
             FillRect(sprites, x     + ws, zy, wl - ws, -h/2 * v/64,     color4); // current value bar
             FillRect(sprites, x + w - wb, zy, wb,      -h/2 * value/64, color6); // set value bar
 

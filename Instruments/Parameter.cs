@@ -615,7 +615,11 @@ namespace IngameScript
                 }
                 else
                 {
-                    var dec = Tag == strTune ? 1 : 3;
+                    int dec;
+
+                         if (Tag == strTune) dec = 1;
+                    else if (Tag == strStep) dec = 0;
+                    else                     dec = 3;
 
                     DrawValueVertical(
                         sprites, 

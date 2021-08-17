@@ -22,6 +22,7 @@
                      strAmp             = "Amp",
                      strFreq            = "Freq",
                      strOff             = "Off",
+                     strStep            = "Step",
                                         
                      strHrm             = "Hrm",                    
                      strFlt             = "Flt",

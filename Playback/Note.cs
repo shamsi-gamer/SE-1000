@@ -26,7 +26,7 @@ namespace IngameScript
             public float       ClipStep    => PatIndex * g_patSteps + Step;
 
             public long        Time        => (long)(Step * TicksPerStep);
-            public long        SongTime    => GetPatTime(PatIndex) + Time;
+            public long        ClipTime    => GetPatTime(PatIndex) + Time;
 
             public int         FrameLength => (int)(StepLength * TicksPerStep);
 

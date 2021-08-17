@@ -829,7 +829,7 @@ namespace IngameScript
                     pat.Channels[ch]                 = temp;
 
                     pat.Channels[CurChan].UpdateNotes();
-                    pat.Channels[ch]                .UpdateNotes();
+                    pat.Channels[ch]     .UpdateNotes();
                 }
             }
 

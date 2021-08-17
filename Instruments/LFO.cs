@@ -18,7 +18,7 @@ namespace IngameScript
             public Parameter    Offset,
                                 Frequency,
                                 Amplitude,
-                                Trigger; // how often the value is changed
+                                Step; // how often the value is changed
                                 
             public float        Phase,
                                 Delta,
@@ -34,25 +34,25 @@ namespace IngameScript
             public LFO(Setting parent, Instrument inst, Source src) 
                 : base(strLfo, parent, Setting_null, True, inst, src) 
             {
-                Op          = ModOp  .Add;
-                Type        = LfoType.Sine;
-                            
-                Offset      = (Parameter)NewSettingFromTag(strOff,  this, inst, src);
-                Frequency   = (Parameter)NewSettingFromTag(strFreq, this, inst, src);
-                Amplitude   = (Parameter)NewSettingFromTag(strAmp,  this, inst, src);
-                Trigger     = (Parameter)NewSettingFromTag(strAmp,  this, inst, src);
+                Op        = ModOp  .Add;
+                Type      = LfoType.Sine;
+                          
+                Offset    = (Parameter)NewSettingFromTag(strOff,  this, inst, src);
+                Frequency = (Parameter)NewSettingFromTag(strFreq, this, inst, src);
+                Amplitude = (Parameter)NewSettingFromTag(strAmp,  this, inst, src);
+                Step      = (Parameter)NewSettingFromTag(strStep, this, inst, src);
                             
                 g_lfo.Add(this);
 
-                Phase       = 0;
-                Delta       = 1f/FPS * Frequency.Value;
-                CurValue    = 0;
+                Phase     = 0;
+                Delta     = 1f/FPS * Frequency.Value;
+                CurValue  = 0;
 
                 ValueCache = new Queue<float>();
                 for (int i = 0; i <= FPS; i++)
                     ValueCache.Enqueue(0);
 
-                m_count     = 0;
+                m_count   = 0;
             }
 
 
@@ -60,25 +60,25 @@ namespace IngameScript
             public LFO(LFO lfo, Setting parent) 
                 : base(lfo.Tag, parent, lfo.Prototype, lfo.On, lfo.Instrument, lfo.Source)
             {
-                Op          = lfo.Op;
-                Type        = lfo.Type;
-                            
-                Offset      = new Parameter(lfo.Offset,    this);
-                Frequency   = new Parameter(lfo.Frequency, this);
-                Amplitude   = new Parameter(lfo.Amplitude, this);
-                Trigger     = new Parameter(lfo.Trigger,   this);
+                Op        = lfo.Op;
+                Type      = lfo.Type;
+                          
+                Offset    = new Parameter(lfo.Offset,    this);
+                Frequency = new Parameter(lfo.Frequency, this);
+                Amplitude = new Parameter(lfo.Amplitude, this);
+                Step      = new Parameter(lfo.Step,      this);
 
                 g_lfo.Add(this);
 
-                Phase       = lfo.Phase;
-                Delta       = lfo.Delta;
-                CurValue    = lfo.CurValue;
+                Phase     = lfo.Phase;
+                Delta     = lfo.Delta;
+                CurValue  = lfo.CurValue;
 
                 ValueCache = new Queue<float>();
                 foreach (var val in lfo.ValueCache)
                     ValueCache.Enqueue(val);
 
-                m_count     = lfo.m_count;
+                m_count   = lfo.m_count;
             }
 
 
@@ -115,10 +115,10 @@ namespace IngameScript
                 if (!On)
                     return 0;
 
-                var trig = Trigger.UpdateValue(tp);
+                var step = (int)Math.Round(Step.UpdateValue(tp));
 
-                if (   trig == 0
-                    || ((tp.LocalTime / TicksPerStep) % trig) == 0)
+                if (   step == 0
+                    || tp.Clip.Track.PlayStep % step == 0)
                     CurValue = GetUpdateValue(tp);
 
                 m_valid = True;
@@ -160,7 +160,7 @@ namespace IngameScript
                     || Offset   .HasDeepParams(chan, src)
                     || Frequency.HasDeepParams(chan, src)
                     || Amplitude.HasDeepParams(chan, src)
-                    || Trigger  .HasDeepParams(chan, src);
+                    || Step     .HasDeepParams(chan, src);
             }
 
 
@@ -170,7 +170,7 @@ namespace IngameScript
                 Offset   .Clear();
                 Frequency.Clear();
                 Amplitude.Clear();
-                Trigger  .Clear();
+                Step     .Clear();
             }
 
 
@@ -182,7 +182,7 @@ namespace IngameScript
                 Offset   .Reset();
                 Frequency.Reset();
                 Amplitude.Reset();
-                Trigger  .Reset();
+                Step     .Reset();
             }
 
 
@@ -192,7 +192,7 @@ namespace IngameScript
                 Offset   .Randomize();
                 Frequency.Randomize();
                 Amplitude.Randomize();
-                Trigger  .Randomize();
+                Step     .Randomize();
 
                 Type = (LfoType)g_rnd.Next(0, 6);
             }
@@ -216,7 +216,7 @@ namespace IngameScript
                     case strOff:  return GetOrAddParamFromTag(Offset,    tag);
                     case strFreq: return GetOrAddParamFromTag(Frequency, tag);
                     case strAmp:  return GetOrAddParamFromTag(Amplitude, tag);
-                    case strTrig: return GetOrAddParamFromTag(Trigger,   tag);
+                    case strStep: return GetOrAddParamFromTag(Step,      tag);
                 }
 
                 return Setting_null;
@@ -231,7 +231,7 @@ namespace IngameScript
                 Offset   .Delete(iSrc);
                 Frequency.Delete(iSrc);
                 Amplitude.Delete(iSrc);
-                Trigger  .Delete(iSrc);
+                Step     .Delete(iSrc);
             }
 
 
@@ -248,7 +248,7 @@ namespace IngameScript
                     + P (Amplitude.Save())
                     + P (Frequency.Save())
                     + P (Offset   .Save())
-                    + P (Trigger  .Save());
+                    + P (Step     .Save());
             }
 
 
@@ -282,7 +282,7 @@ namespace IngameScript
                 lfo.Amplitude = Parameter.Load(data, ref d, inst, iSrc, lfo, lfo.Amplitude);
                 lfo.Frequency = Parameter.Load(data, ref d, inst, iSrc, lfo, lfo.Frequency);
                 lfo.Offset    = Parameter.Load(data, ref d, inst, iSrc, lfo, lfo.Offset   );
-                lfo.Trigger   = Parameter.Load(data, ref d, inst, iSrc, lfo, lfo.Trigger  );
+                lfo.Step      = Parameter.Load(data, ref d, inst, iSrc, lfo, lfo.Step     );
 
                 return lfo;
             }
@@ -325,7 +325,7 @@ namespace IngameScript
                     + PrintValue(Offset   .Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Frequency.Value, 2, True, 0).PadLeft(4) + strEmpty
                     + PrintValue(Amplitude.Value, 2, True, 0).PadLeft(4) + strEmpty
-                    + PrintValue(Trigger  .Value, 0, True, 0).PadLeft(3);
+                    + PrintValue(Step     .Value, 0, True, 0).PadLeft(3);
             }
 
 
@@ -344,7 +344,7 @@ namespace IngameScript
                     if (Offset   .HasDeepParams(CurChannel, CurSrc)) Offset   .DrawLabels(sprites, x, y, dp);
                     if (Frequency.HasDeepParams(CurChannel, CurSrc)) Frequency.DrawLabels(sprites, x, y, dp);                
                     if (Amplitude.HasDeepParams(CurChannel, CurSrc)) Amplitude.DrawLabels(sprites, x, y, dp);
-                    if (Trigger  .HasDeepParams(CurChannel, CurSrc)) Trigger  .DrawLabels(sprites, x, y, dp);
+                    if (Step     .HasDeepParams(CurChannel, CurSrc)) Step     .DrawLabels(sprites, x, y, dp);
                 }
 
                 _dp.Next(dp);
@@ -465,7 +465,7 @@ namespace IngameScript
                 DrawFuncButton(sprites, strAmp,  2, w, y, True, Amplitude.HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, strOp,   3, w, y, False, False);
                 DrawFuncButton(sprites, "Osc ↕", 4, w, y, False, False);
-                DrawFuncButton(sprites, strTrig, 5, w, y, True, Trigger  .HasDeepParams(chan, CurSrc));
+                DrawFuncButton(sprites, strStep, 5, w, y, True, Step     .HasDeepParams(chan, CurSrc));
             }
 
 
@@ -493,7 +493,7 @@ namespace IngameScript
                         g_lcdPressed.Add(lcdMain+func);
                         break;
                     }
-                    case 5: AddNextSetting(strTrig); break;
+                    case 5: AddNextSetting(strStep); break;
                 }
             }
 

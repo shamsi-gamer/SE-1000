@@ -253,6 +253,7 @@ namespace IngameScript
             case strAmp:  return "Amplitude";
             case strFreq: return "Frequency";
             case strOff:  return "Offset";
+            case strStep: return "Step";
 
             case strFlt:  return "Filter";
             case strCut:  return "Cutoff";
@@ -287,11 +288,7 @@ namespace IngameScript
             case strHigh:  return new Parameter(tag,    36,        119,   0,     1,    1,     12,   119,    False, parent, inst, src);
                            
             case strEnv:   return new Envelope(parent, inst, src);                                  
-            case strTrig: 
-                if (IsSettingType(parent, typeof(Envelope)))
-                           return new Parameter(tag,    0,           1,   0,     1,    0.01f,  0.1f,  1,    False, parent, inst, src);
-                else // LFO
-                           return new Parameter(tag,    0,        1024,   0,   256,    1,     16,     0,    False, parent, inst, src);
+            case strTrig:  return new Parameter(tag,    0,           1,   0,     1,    0.01f,  0.1f,  1,    False, parent, inst, src);
                            
             case strAtt:   return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    False, parent, inst, src);
             case strDec:   return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, False, parent, inst, src);
@@ -303,6 +300,7 @@ namespace IngameScript
             case strOff:   return new Parameter(tag, -100,         100, -10,    10,    0.01f,  0.1f,  0,    False, parent, inst, src);
             case strFreq:  return new Parameter(tag,    0.01f,      30,   0.01f, 4,    0.001f, 0.05f, 1,    True,  parent, inst, src);
             case strAmp:   return new Parameter(tag,    0,           1,   0,     1,    0.001f, 0.05f, 1,    True,  parent, inst, src);
+            case strStep:  return new Parameter(tag,    0,        1024,   0,   256,    1,     16,     0,    False, parent, inst, src);
                            
             case strCut:   return new Parameter(tag,    0,           1,   0.1f,  1,    0.01f,  0.1f,  0.5f, True,  parent, inst, src);
             case strRes:   return new Parameter(tag,    0,           1,   0,     0.7f, 0.01f,  0.1f,  0,    True,  parent, inst, src);

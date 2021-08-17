@@ -103,6 +103,7 @@ namespace IngameScript
                         || IsCurParam(strAmp)
                         || IsCurParam(strLvl)
                         || IsCurParam(strPow)
+                        || IsCurParam(strStep)
                         || IsCurParam(strChord)
                         ||     IsCurParam(strCnt)
                             && (EditedClip.ParamKeys || EditedClip.ParamAuto)
