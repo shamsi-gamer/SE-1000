@@ -36,49 +36,49 @@ namespace IngameScript
                 uint f;
                 if (!uint.TryParse(toggles, out f)) return False;
 
-                var i = 0;
+                var d = 0;
 
-                Loop        = ReadBit(f, i++);
-                Block       = ReadBit(f, i++);
-                AllPats     = ReadBit(f, i++);
-                Follow      = ReadBit(f, i++);
-                AutoCue     = ReadBit(f, i++);
+                Loop        = ReadBit(f, d++);
+                Block       = ReadBit(f, d++);
+                AllPats     = ReadBit(f, d++);
+                Follow      = ReadBit(f, d++);
+                AutoCue     = ReadBit(f, d++);
                             
-                MovePat     = ReadBit(f, i++);
+                MovePat     = ReadBit(f, d++);
                             
-                In          = ReadBit(f, i++);
-                Out         = ReadBit(f, i++);
+                In          = ReadBit(f, d++);
+                Out         = ReadBit(f, d++);
                             
-                AllChan     = ReadBit(f, i++);
-                RndInst     = ReadBit(f, i++);
+                AllChan     = ReadBit(f, d++);
+                RndInst     = ReadBit(f, d++);
                             
-                Accent      = ReadBit(f, i++);
-                Pick        = ReadBit(f, i++);
-                Piano       = ReadBit(f, i++);
+                Accent      = ReadBit(f, d++);
+                Pick        = ReadBit(f, d++);
+                Piano       = ReadBit(f, d++);
                             
-                Transpose   = ReadBit(f, i++);
-                Strum       = ReadBit(f, i++);
+                Transpose   = ReadBit(f, d++);
+                Strum       = ReadBit(f, d++);
                             
-                Shift       = ReadBit(f, i++);
-                MixerShift  = ReadBit(f, i++);
+                Shift       = ReadBit(f, d++);
+                MixerShift  = ReadBit(f, d++);
                             
-                Hold        = ReadBit(f, i++);
-                Note        = ReadBit(f, i++);
+                Hold        = ReadBit(f, d++);
+                Note        = ReadBit(f, d++);
                             
-                ChordMode   = ReadBit(f, i++);
-                ChordEdit   = ReadBit(f, i++);
-                ChordAll    = ReadBit(f, i++);
+                ChordMode   = ReadBit(f, d++);
+                ChordEdit   = ReadBit(f, d++);
+                ChordAll    = ReadBit(f, d++);
                             
-                HalfSharp   = ReadBit(f, i++);
+                HalfSharp   = ReadBit(f, d++);
                             
-                ParamKeys   = ReadBit(f, i++);
-                ParamAuto   = ReadBit(f, i++);
+                ParamKeys   = ReadBit(f, d++);
+                ParamAuto   = ReadBit(f, d++);
                             
-                SetMemPat   = ReadBit(f, i++);
+                SetMemPat   = ReadBit(f, d++);
                             
-                Move        = ReadBit(f, i++);
-                SetOrPat    = ReadBit(f, i++);
-                SetMemSet   = ReadBit(f, i++);
+                Move        = ReadBit(f, d++);
+                SetOrPat    = ReadBit(f, d++);
+                SetMemSet   = ReadBit(f, d++);
 
                 return True;
             }
@@ -148,16 +148,16 @@ namespace IngameScript
             bool LoadBlocks(string line)
             {
                 var data = line.Split(';');
-                var i    = 0;
+                var d    = 0;
 
                 Blocks.Clear();
 
-                int nBlocks = int_Parse(data[i++]);
+                int nBlocks = int_Parse(data[d++]);
 
                 for (int b = 0; b < nBlocks; b++)
                 {
-                    int first = int_Parse(data[i++]);
-                    int last  = int_Parse(data[i++]);
+                    int first = int_Parse(data[d++]);
+                    int last  = int_Parse(data[d++]);
 
                     Blocks.Add(new Block(first, last));
                 }

@@ -176,7 +176,8 @@ namespace IngameScript
                 var sample = GetSample(noteNum);
 
 
-                if (OK(Harmonics))
+                if (   OK(Harmonics)
+                    && Harmonics.On)
                     Harmonics.CreateSounds(_sounds, this, note, noteNum, sndTime, note.FrameLength, relLen, triggerValues, prog);
 
                 else
@@ -210,8 +211,8 @@ namespace IngameScript
 
                     var del = Delay ?? inst.Delay;
 
-                    if (OK(del)) prog.AddSoundAndEchos(sounds, snd, del);
-                    else         sounds.Add(snd);
+                    if (OK(del) && del.On) prog.AddSoundAndEchos(sounds, snd, del);
+                    else                   sounds.Add(snd);
                 }
             }
 
@@ -340,30 +341,30 @@ namespace IngameScript
             public static void Load(string[] lines, ref int line, Instrument inst, int iSrc)
             {
                 var data = lines[line++].Split(';');
-                var i    = 0;
+                var d    = 0;
 
                 var src = new Source(inst);
                 inst.Sources.Add(src);
 
-                src.Oscillator = OscillatorFromType((OscType)int_Parse(data[i++]));
-                src.On         = data[i++] == "1";
+                src.Oscillator = OscillatorFromType((OscType)int_Parse(data[d++]));
+                src.On         = data[d++] == "1";
 
-                src.Volume = Parameter.Load(data, ref i, inst, iSrc, Setting_null);
+                src.Volume = Parameter.Load(data, ref d, inst, iSrc, Setting_null);
 
-                while (i < data.Length
-                    && (   data[i] == strOff
-                        || data[i] == strTune
-                        || data[i] == strHrm
-                        || data[i] == strFlt
-                        || data[i] == strDel))
+                while (d < data.Length
+                    && (   data[d] == strOff
+                        || data[d] == strTune
+                        || data[d] == strHrm
+                        || data[d] == strFlt
+                        || data[d] == strDel))
                 { 
-                    switch (data[i])
+                    switch (data[d])
                     { 
-                        case strOff:  src.Offset    = Parameter.Load(data, ref i, inst, iSrc, Setting_null); break;
-                        case strTune: src.Tune      = Tune     .Load(data, ref i, inst, iSrc);               break;
-                        case strHrm:  src.Harmonics = Harmonics.Load(data, ref i, inst, iSrc);               break;
-                        case strFlt:  src.Filter    = Filter   .Load(data, ref i, inst, iSrc);               break;
-                        case strDel:  src.Delay     = Delay    .Load(data, ref i, inst, iSrc);               break;
+                        case strOff:  src.Offset    = Parameter.Load(data, ref d, inst, iSrc, Setting_null); break;
+                        case strTune: src.Tune      = Tune     .Load(data, ref d, inst, iSrc);               break;
+                        case strHrm:  src.Harmonics = Harmonics.Load(data, ref d, inst, iSrc);               break;
+                        case strFlt:  src.Filter    = Filter   .Load(data, ref d, inst, iSrc);               break;
+                        case strDel:  src.Delay     = Delay    .Load(data, ref d, inst, iSrc);               break;
                     }
                 }
             }

@@ -26,6 +26,8 @@ namespace IngameScript
                 ||     OK(CurSrc)
                    && !OK(CurSet)
                    && SelSource.On
+                ||    OK(CurSet)
+                   && CurSetting.On
                 ||    !OK(SelChan)
                    && LockView > 0
                 || OK(g_editKey);
@@ -42,7 +44,7 @@ namespace IngameScript
             }
             else if (OK(CurSet))
             {
-                var path = CurSetting.Path;//EditedClip.Settings.Last().Path(CurSrc);
+                var path = CurSetting.Path;
 
                 if (EditedClip.ParamKeys)
                     lbl.SetText("Inter");
@@ -61,7 +63,7 @@ namespace IngameScript
                     }
                 }
                 else
-                    lbl.SetText(HasTag(EditedClip.CurSetting, strMod) ? "Conn" : strEmpty);
+                    lbl.SetText(HasTag(EditedClip.CurSetting, strMod) ? "Conn" : "On");
             }
             else
             {

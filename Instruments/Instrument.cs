@@ -199,24 +199,24 @@ namespace IngameScript
             public static Instrument Load(string[] lines, ref int line, Program prog)
             {
                 var data = lines[line++].Split(';');
-                var i    = 0;
+                var d    = 0;
 
-                var inst = new Instrument(data[i++], prog);
+                var inst = new Instrument(data[d++], prog);
 
-                var nSources = int_Parse(data[i++]);
+                var nSources = int_Parse(data[d++]);
 
-                inst.Volume = Parameter.Load(data, ref i, inst, -1, Setting_null);
+                inst.Volume = Parameter.Load(data, ref d, inst, -1, Setting_null);
 
-                while (i < data.Length
-                    && (   data[i] == strTune 
-                        || data[i] == strFlt 
-                        || data[i] == strDel))
+                while (d < data.Length
+                    && (   data[d] == strTune 
+                        || data[d] == strFlt 
+                        || data[d] == strDel))
                 {
-                    switch (data[i])
+                    switch (data[d])
                     { 
-                        case strTune: inst.Tune   = Tune  .Load(data, ref i, inst, -1); break;
-                        case strFlt:  inst.Filter = Filter.Load(data, ref i, inst, -1); break;
-                        case strDel:  inst.Delay  = Delay .Load(data, ref i, inst, -1); break;
+                        case strTune: inst.Tune   = Tune  .Load(data, ref d, inst, -1); break;
+                        case strFlt:  inst.Filter = Filter.Load(data, ref d, inst, -1); break;
+                        case strDel:  inst.Delay  = Delay .Load(data, ref d, inst, -1); break;
                     }
                 }
 

@@ -18,6 +18,8 @@ namespace IngameScript
             public Setting    Parent;
             public Setting    Prototype;
 
+            public bool       On;
+
             public Instrument Instrument;
             public Source     Source;
 
@@ -29,11 +31,13 @@ namespace IngameScript
             protected bool    TooComplex => Instrument.Program.TooComplex;
 
 
-            public Setting(string tag, Setting parent, Setting proto, Instrument inst, Source src)
+
+            public Setting(string tag, Setting parent, Setting proto, bool on, Instrument inst, Source src)
             {
                 Tag        = tag;
                 Parent     = parent;
                 Prototype  = proto;
+                On         = on;
                 Instrument = inst;
                 Source     = src;
                _IsCurrent  = False;
@@ -42,8 +46,8 @@ namespace IngameScript
 
 
 
-            public Setting(Setting setting, Setting parent, Instrument inst, Source src) 
-                : this(setting.Tag, parent, setting, inst, src) { }
+            public Setting(Setting setting, Setting parent, bool on, Instrument inst, Source src) 
+                : this(setting.Tag, parent, setting, on, inst, src) { }
 
 
 
@@ -224,6 +228,7 @@ namespace IngameScript
         }
 
 
+
         static string FullNameFromTag(string tag)
         {
             if (IsDigit(tag[0])) return "Harmonic " + tag;
@@ -268,6 +273,7 @@ namespace IngameScript
 
             return "";
         }
+
 
 
         static Setting NewSettingFromTag(string tag, Setting parent, Instrument inst, Source src)
@@ -318,9 +324,12 @@ namespace IngameScript
         }
 
 
+
         // I use these instead of Setting methods because this way
         // all the extra null checks are avoided and it keeps the code
         // more compact, since that's an issue here
+
+
 
         static bool IsParam(Setting setting) 
         {
@@ -331,12 +340,14 @@ namespace IngameScript
         }
 
 
+
         static bool IsSettingType(Setting setting, Type type)
         {
             return
                    OK(setting)
                 && setting.GetType() == type;
         }
+
 
 
         static bool HasTag(Setting setting, string tag)
@@ -347,6 +358,7 @@ namespace IngameScript
         }
 
 
+
         static bool HasTagOrParent(Setting setting, string tag)
         {
             return HasTag(setting, tag)
@@ -354,6 +366,7 @@ namespace IngameScript
                    && OK(setting.Parent)
                    && HasTag(setting.Parent, tag);
         }
+
 
 
         static bool HasTagOrAnyParent(Setting setting, string tag)

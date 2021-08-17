@@ -21,7 +21,7 @@ namespace IngameScript
 
 
             public Filter(Instrument inst, Source src) 
-                : base(strFlt, Setting_null, Setting_null, inst, src)
+                : base(strFlt, Setting_null, Setting_null, True, inst, src)
             {
                 Pass      = FilterPass.Low;
 
@@ -33,7 +33,7 @@ namespace IngameScript
 
 
             public Filter(Filter flt) 
-                : base(flt.Tag, Setting_null, flt, flt.Instrument, flt.Source)
+                : base(flt.Tag, Setting_null, flt, flt.On, flt.Instrument, flt.Source)
             {
                 Pass      = flt.Pass;
 
@@ -122,30 +122,63 @@ namespace IngameScript
             public override string Save()
             {
                 return
-                      W(Tag)
+                      Tag
 
-                    + WS((int)Pass)
-                    + W (Cutoff   .Save())
-                    + W (Resonance.Save())
-                    +    Sharpness.Save();
+                    + PS(SaveToggles())
+
+                    + PS((int)Pass)
+                    + P (Cutoff   .Save())
+                    + P (Resonance.Save())
+                    + P (Sharpness.Save());
             }
 
 
 
-            public static Filter Load(string[] data, ref int i, Instrument inst, int iSrc)
+            uint SaveToggles()
             {
-                var tag = data[i++];
+                uint f = 0;
+                var d = 0;
+
+                WriteBit(ref f, On, d++);
+
+                return f;
+            }
+
+
+
+            public static Filter Load(string[] data, ref int d, Instrument inst, int iSrc)
+            {
+                var tag = data[d++];
  
+
                 var flt = new Filter(
                     inst, 
                     OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
-                flt.Pass      = (FilterPass)int_Parse(data[i++]);
-                flt.Cutoff    = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Cutoff   );
-                flt.Resonance = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Resonance);
-                flt.Sharpness = Parameter.Load(data, ref i, inst, iSrc, flt, flt.Sharpness);
+                flt.LoadToggles(data[d++]);
+
+
+                flt.Pass      = (FilterPass)int_Parse(data[d++]);
+                flt.Cutoff    = Parameter.Load(data, ref d, inst, iSrc, flt, flt.Cutoff   );
+                flt.Resonance = Parameter.Load(data, ref d, inst, iSrc, flt, flt.Resonance);
+                flt.Sharpness = Parameter.Load(data, ref d, inst, iSrc, flt, flt.Sharpness);
+
 
                 return flt;
+            }
+
+
+
+            bool LoadToggles(string toggles)
+            {
+                uint f;
+                if (!uint.TryParse(toggles, out f)) return False;
+
+                var d = 0;
+
+                On = ReadBit(f, d++);
+
+                return True;
             }
 
 
@@ -356,29 +389,39 @@ namespace IngameScript
 
         static float ApplyFilter(float value, Source src, float pos, TimeParams tp)
         {
-            if (tp.Program.TooComplex) return value;
+            if (tp.Program.TooComplex)
+                return value;
 
-            if (OK(src.Filter))
+
+            if (   OK(src.Filter)
+                && src.Filter.On)
             {
+                var flt = src.Filter;
+
                 value *= GetFilter(
                     pos,
-                    src.Filter.Pass,
-                    src.Filter.Cutoff   .UpdateValue(tp), 
-                    src.Filter.Resonance.UpdateValue(tp),
-                    src.Filter.Sharpness.UpdateValue(tp));
+                    flt.Pass,
+                    flt.Cutoff   .UpdateValue(tp), 
+                    flt.Resonance.UpdateValue(tp),
+                    flt.Sharpness.UpdateValue(tp));
             }
 
+
             var inst = src.Instrument;
-            if (OK(inst.Filter))
+            if (   OK(inst.Filter)
+                && inst.Filter.On)
             {
+                var flt = inst.Filter;
+
                 value *= GetFilter(
                     pos, 
-                    inst.Filter.Pass,
-                    inst.Filter.Cutoff   .UpdateValue(tp), 
-                    inst.Filter.Resonance.UpdateValue(tp),
-                    inst.Filter.Sharpness.UpdateValue(tp));
+                    flt.Pass,
+                    flt.Cutoff   .UpdateValue(tp), 
+                    flt.Resonance.UpdateValue(tp),
+                    flt.Sharpness.UpdateValue(tp));
             }
             
+
             return value;
         }
 

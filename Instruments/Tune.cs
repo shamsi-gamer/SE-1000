@@ -36,6 +36,17 @@ namespace IngameScript
 
 
 
+            public override float UpdateValue(TimeParams tp)
+            {
+                if (OK(Chord))
+                    Chord.UpdateValue(tp);
+
+                var val = base.UpdateValue(tp);
+
+                return val;
+            }
+
+
             public override Setting GetOrAddSettingFromTag(string tag)
             {
                 if (tag == strChord) return Chord ?? (Chord = new TuneChord(this, Instrument, Source));
@@ -126,11 +137,11 @@ namespace IngameScript
 
             public override string Save()
             {
-                var tune = W(base.Save());
+                var tune = base.Save();
 
                 var nSettings = OK(Chord) ? 1 : 0;
 
-                tune += WS(nSettings);
+                tune += PS(nSettings);
 
                 if (OK(Chord))
                     tune += SaveSetting(Chord);

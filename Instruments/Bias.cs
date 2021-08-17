@@ -19,7 +19,7 @@ namespace IngameScript
 
 
             public Bias(Setting parent, Instrument inst, Source src) 
-                : base(strBias, parent, Setting_null, inst, src)
+                : base(strBias, parent, Setting_null, True, inst, src)
             {
                 LowNote  = (Parameter)NewSettingFromTag(strLow,  this, inst, src);
                 HighNote = (Parameter)NewSettingFromTag(strHigh, this, inst, src);
@@ -30,7 +30,7 @@ namespace IngameScript
 
 
             public Bias(Bias bias, Setting parent, Instrument inst, Source src) 
-                : base(bias.Tag, parent, bias.Prototype, inst, src)
+                : base(bias.Tag, parent, bias.Prototype, bias.On, inst, src)
             {
                 LowNote  = new Parameter(bias.LowNote,  this);
                 HighNote = new Parameter(bias.HighNote, this);
@@ -50,6 +50,9 @@ namespace IngameScript
             public float UpdateValue(TimeParams tp)
             {
                 if (tp.Program.TooComplex) 
+                    return 0;
+
+                if (!On)
                     return 0;
 
                 if (LowNote.Value > HighNote.Value)
@@ -177,12 +180,27 @@ namespace IngameScript
             {
                 var save =
                       Tag
-                    + P(LowNote .Save())
-                    + P(HighNote.Save())
-                    + P(Amount  .Save())
-                    + P(Power   .Save());
+
+                    + PS(SaveToggles())
+
+                    + P (LowNote .Save())
+                    + P (HighNote.Save())
+                    + P (Amount  .Save())
+                    + P (Power   .Save());
 
                 return save;
+            }
+
+
+
+            uint SaveToggles()
+            {
+                uint f = 0;
+                var  d = 0;
+
+                WriteBit(ref f, On, d++);
+
+                return f;
             }
 
 
@@ -191,17 +209,36 @@ namespace IngameScript
             {
                 var tag = data[d++];
 
+                
                 var bias = new Bias(
                     parent, 
                     inst, 
                     OK(iSrc) ? inst.Sources[iSrc] : Source_null);
+
+                bias.LoadToggles(data[d++]);
+
 
                 bias.LowNote  = Parameter.Load(data, ref d, inst, iSrc, bias, bias.LowNote );
                 bias.HighNote = Parameter.Load(data, ref d, inst, iSrc, bias, bias.HighNote);
                 bias.Amount   = Parameter.Load(data, ref d, inst, iSrc, bias, bias.Amount  );
                 bias.Power    = Parameter.Load(data, ref d, inst, iSrc, bias, bias.Power   );
 
+
                 return bias;
+            }
+
+
+
+            bool LoadToggles(string toggles)
+            {
+                uint f;
+                if (!uint.TryParse(toggles, out f)) return False;
+
+                var d = 0;
+
+                On = ReadBit(f, d++);
+
+                return True;
             }
 
 

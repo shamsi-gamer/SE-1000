@@ -15,11 +15,19 @@ namespace IngameScript
             if (h == 11) // here and not in BeatHigh() because TogglePiano() needs to know about tune
                 TogglePiano(tune);
 
-            else if (IsCurParam(strChord)
+            else if (IsCurSetting(strChord)
                   && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
-                UpdateTuneChord(
-                    (TuneChord)CurSetting, 
-                    HighToNote(h, EditedClip.HalfSharp));
+            {
+                var chord = (TuneChord)CurSetting;
+
+                if (h == 10)
+                { 
+                    chord.AllOctaves[chord.SelectedIndex] = !chord.AllOctaves[chord.SelectedIndex];
+                    chord.UpdateFinalChord();
+                }
+                else
+                    UpdateTuneChord(chord, HighToNote(h, EditedClip.HalfSharp));
+            }
 
             else if (EditedClip.ChordEdit
                   && OK(EditedClip.Chord))
@@ -107,7 +115,7 @@ namespace IngameScript
 
         void Low(int l)
         {
-            if (IsCurParam(strChord))
+            if (IsCurSetting(strChord))
                 UpdateTuneChord(
                     (TuneChord)CurSetting, 
                     LowToNote(l, EditedClip.HalfSharp));
@@ -295,14 +303,6 @@ namespace IngameScript
                     Tick(p, ch, step);
             }
         }
-
-
-
-        //void Flip(int pat, int ch, int frac)
-        //{
-        //    for (int step = 0; step < g_patSteps; step += g_patSteps / frac)
-        //        Tick(pat, ch, step);
-        //}
 
 
 

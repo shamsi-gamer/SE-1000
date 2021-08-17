@@ -18,7 +18,7 @@ namespace IngameScript
 
 
             public Delay(Instrument inst, Source src) 
-                : base(strDel, Setting_null, Setting_null, inst, src)
+                : base(strDel, Setting_null, Setting_null, True, inst, src)
             {
                 Dry   = (Parameter)NewSettingFromTag(strDry,  this, inst, src);
                 Count = (Parameter)NewSettingFromTag(strCnt,  this, inst, src);
@@ -30,7 +30,7 @@ namespace IngameScript
 
 
             public Delay(Delay del) 
-                : base(del.Tag, Setting_null, del, del.Instrument, del.Source)
+                : base(del.Tag, Setting_null, del, del.On, del.Instrument, del.Source)
             {
                 Dry   = new Parameter(del.Dry,   this);
                 Count = new Parameter(del.Count, this);
@@ -60,7 +60,7 @@ namespace IngameScript
                 }
                 else
                 { 
-                    var dc = Count.UpdateValue(tp) - 1; // -1 because 0 is the source sound
+                    var dc = Count.UpdateValue(tp)-1; // -1 because 0 is the source sound
                     var dl = Level.UpdateValue(tp);
                     var dp = Power.UpdateValue(tp);
 
@@ -166,32 +166,65 @@ namespace IngameScript
             public override string Save()
             {
                 return
-                      W(Tag)
+                      Tag
 
-                    + W(Dry  .Save())
-                    + W(Count.Save())
-                    + W(Time .Save())
-                    + W(Level.Save())
-                    +   Power.Save();
+                    + PS(SaveToggles())
+
+                    + P (Dry  .Save())
+                    + P (Count.Save())
+                    + P (Time .Save())
+                    + P (Level.Save())
+                    + P (Power.Save());
             }
 
 
 
-            public static Delay Load(string[] data, ref int i, Instrument inst, int iSrc)
+            uint SaveToggles()
             {
-                var tag = data[i++];
+                uint f = 0;
+                var  d = 0;
+
+                WriteBit(ref f, On, d++);
+
+                return f;
+            }
+
+
+
+            public static Delay Load(string[] data, ref int d, Instrument inst, int iSrc)
+            {
+                var tag = data[d++];
  
+                
                 var del = new Delay(
                     inst, 
                     OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
-                del.Dry   = Parameter.Load(data, ref i, inst, iSrc, del, del.Dry  );
-                del.Count = Parameter.Load(data, ref i, inst, iSrc, del, del.Count);
-                del.Time  = Parameter.Load(data, ref i, inst, iSrc, del, del.Time );
-                del.Level = Parameter.Load(data, ref i, inst, iSrc, del, del.Level);
-                del.Power = Parameter.Load(data, ref i, inst, iSrc, del, del.Power);
+                del.LoadToggles(data[d++]);
+
+
+                del.Dry   = Parameter.Load(data, ref d, inst, iSrc, del, del.Dry  );
+                del.Count = Parameter.Load(data, ref d, inst, iSrc, del, del.Count);
+                del.Time  = Parameter.Load(data, ref d, inst, iSrc, del, del.Time );
+                del.Level = Parameter.Load(data, ref d, inst, iSrc, del, del.Level);
+                del.Power = Parameter.Load(data, ref d, inst, iSrc, del, del.Power);
+
 
                 return del;
+            }
+
+
+
+            bool LoadToggles(string toggles)
+            {
+                uint f;
+                if (!uint.TryParse(toggles, out f)) return False;
+
+                var d = 0;
+
+                On = ReadBit(f, d++);
+
+                return True;
             }
 
 

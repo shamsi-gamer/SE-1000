@@ -36,7 +36,7 @@ namespace IngameScript
 
 
             public Parameter(string tag, float min, float max, float normalMin, float normalMax, float delta, float bigDelta, float defVal, bool canHaveEnvelope, Setting parent, Instrument inst, Source src) 
-                : base(tag, parent, Setting_null, inst, src)
+                : base(tag, parent, Setting_null, True, inst, src)
             {
                 Tag             = tag;
                                 
@@ -63,7 +63,7 @@ namespace IngameScript
 
 
             public Parameter(Parameter param, Setting parent, string tag = "", bool copy = True) 
-                : base(tag != "" ? tag : param.Tag, parent, param.Prototype, param.Instrument, param.Source)
+                : base(tag != "" ? tag : param.Tag, parent, param.Prototype, param.On, param.Instrument, param.Source)
             {
                 m_value         = param.m_value;
                                 
@@ -93,7 +93,7 @@ namespace IngameScript
 
 
 
-            public void SetValue(float val, Note note)
+            public virtual void SetValue(float val, Note note)
             {
                 if (OK(note))
                 {
@@ -118,57 +118,68 @@ namespace IngameScript
 
 
 
-            public float UpdateValue(TimeParams tp)
+            public virtual float UpdateValue(TimeParams tp)
             {
                 if (tp.Program.TooComplex) 
                     return 0;
 
-
                 float value;
 
-                if (OK(tp.Note))
-                { 
-                    var val = GetAutoValue(
-                        tp.Clip,
-                        tp.Note.Step, // not ClipStep because played notes are in clip time already
-                        tp.Note.iChan, 
-                        Path);
 
-                    value = OK(val) ? val : GetKeyValue(tp.Note);
+                if (On)
+                {
+                    if (OK(tp.Note))
+                    { 
+                        var val = GetAutoValue(
+                            tp.Clip,
+                            tp.Note.Step, // not ClipStep because played notes are in clip time already
+                            tp.Note.iChan, 
+                            Path);
+
+                        value = OK(val) ? val : GetKeyValue(tp.Note);
+                    }
+                    else
+                        value = GetKeyValue(tp.Note);
+
+
+                    if (    OK(Lfo)
+                        && Lfo.On
+                        && !OK(tp.TriggerValues.Find(v => v.Path == Path)))
+                    {
+                        var lfo = Lfo.UpdateValue(tp);
+
+                        if (Lfo.Op == ModOp.Add) value += lfo * Math.Abs(Max - Min) / 2;
+                        else                     value *= lfo;
+
+                        if (ParentIsEnvelope)
+                            tp.TriggerValues.Add(new TriggerValue(Path, MinMax(Min, value, Max)));
+                    }
+
+
+                    if (   OK(Envelope)
+                        && Envelope.On)
+                        value *= Envelope.UpdateValue(tp);
+
+
+                    if (   OK(Modulate)
+                        && Modulate.On)
+                    {
+                        var mod = Modulate.UpdateValue(tp);
+
+                        if (Modulate.Op == ModOp.Add)      value += mod * Math.Abs(Max-Min);
+                        if (Modulate.Op == ModOp.Multiply) value *= mod;
+                        else                               value  = mod;
+                    }
+
+
+                    if (   OK(Bias)
+                        && Bias.On)
+                        value *= Bias.UpdateValue(tp);
                 }
                 else
-                    value = GetKeyValue(tp.Note);
-
-
-                if (    OK(Lfo)
-                    && !OK(tp.TriggerValues.Find(v => v.Path == Path)))
-                {
-                    var lfo = Lfo.UpdateValue(tp);
-
-                    if (Lfo.Op == ModOp.Add) value += lfo * Math.Abs(Max - Min) / 2;
-                    else                     value *= lfo;
-
-                    if (ParentIsEnvelope)
-                        tp.TriggerValues.Add(new TriggerValue(Path, MinMax(Min, value, Max)));
+                { 
+                    value = Default;
                 }
-
-
-                if (OK(Envelope))
-                    value *= Envelope.UpdateValue(tp);
-
-
-                if (OK(Modulate))
-                {
-                    var mod = Modulate.UpdateValue(tp);
-
-                    if (Modulate.Op == ModOp.Add)      value += mod * Math.Abs(Max-Min);
-                    if (Modulate.Op == ModOp.Multiply) value *= mod;
-                    else                               value  = mod;
-                }
-
-
-                if (OK(Bias))
-                    value *= Bias.UpdateValue(tp);
 
 
                 CurValue = MinMax(Min, value, Max);
@@ -420,10 +431,12 @@ namespace IngameScript
                 if (OK(Modulate)) nSettings++;
 
                 return
-                      W(Tag)
+                      Tag
 
-                    + WS(m_value.ToString("0.######")) 
-                    +  S(nSettings)
+                    + PS(SaveToggles())
+
+                    + PS(m_value.ToString("0.######")) 
+                    + PS(nSettings)
 
                     + SaveSetting(Bias    )
                     + SaveSetting(Envelope)
@@ -433,9 +446,23 @@ namespace IngameScript
 
 
 
-            public static Parameter Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent, Parameter proto = Parameter_null)
+            uint SaveToggles()
             {
-                var tag = data[i++];
+                uint f = 0;
+                var  d = 0;
+
+                WriteBit(ref f, On, d++);
+
+                return f;
+            }
+
+
+
+            public static Parameter Load(string[] data, ref int d, Instrument inst, int iSrc, Setting parent, Parameter proto = Parameter_null)
+            {
+                var tag = data[d++];
+
+
 
                 Parameter param;
 
@@ -444,22 +471,40 @@ namespace IngameScript
                 else if (OK(iSrc))   param = (Parameter)inst.Sources[iSrc].GetOrAddSettingFromTag(tag);
                 else                 param = (Parameter)inst.GetOrAddSettingFromTag(tag);              
 
-                param.m_value = float.Parse(data[i++]);
+                param.LoadToggles(data[d++]);
 
-                var nSettings = int_Parse(data[i++]);
+                param.m_value = float.Parse(data[d++]);
+
+                
+                var nSettings = int_Parse(data[d++]);
 
                 while (nSettings-- > 0)
                 {
-                    switch (data[i])
+                    switch (data[d])
                     { 
-                        case strBias: param.Bias     = Bias    .Load(data, ref i, inst, iSrc, param); break;
-                        case strEnv:  param.Envelope = Envelope.Load(data, ref i, inst, iSrc, param); break;
-                        case strLfo:  param.Lfo      = LFO     .Load(data, ref i, inst, iSrc, param); break;
-                        case strMod:  param.Modulate = Modulate.Load(data, ref i, inst, iSrc, param); break;
+                        case strBias: param.Bias     = Bias    .Load(data, ref d, inst, iSrc, param); break;
+                        case strEnv:  param.Envelope = Envelope.Load(data, ref d, inst, iSrc, param); break;
+                        case strLfo:  param.Lfo      = LFO     .Load(data, ref d, inst, iSrc, param); break;
+                        case strMod:  param.Modulate = Modulate.Load(data, ref d, inst, iSrc, param); break;
                     }
                 }
 
+
                 return param;
+            }
+
+
+
+            bool LoadToggles(string toggles)
+            {
+                uint f;
+                if (!uint.TryParse(toggles, out f)) return False;
+
+                var d = 0;
+
+                On = ReadBit(f, d++);
+
+                return True;
             }
 
 

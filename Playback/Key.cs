@@ -48,12 +48,12 @@ namespace IngameScript
             }
 
 
-            public static Key Load(string[] data, ref int i)
+            public static Key Load(string[] data, ref int d)
             {
-                var srcIndex = int_Parse(data[i++]);
-                var path     = data[i++];
-                var value    = float.Parse(data[i++]);
-                var stepTime = float.Parse(data[i++]);
+                var srcIndex = int_Parse(data[d++]);
+                var path     = data[d++];
+                var value    = float.Parse(data[d++]);
+                var stepTime = float.Parse(data[d++]);
 
                 return new Key(
                     srcIndex,

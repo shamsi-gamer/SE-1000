@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
@@ -15,6 +16,10 @@ namespace IngameScript
 
             public List<int>       FinalChord;
 
+
+            public int             SelectedIndex      => (int)Math.Round(CurValue);
+            public List<int>       SelectedChord      => Chords    [SelectedIndex];
+            public bool            SelectedAllOctaves => AllOctaves[SelectedIndex];
 
 
             public TuneChord(Setting parent, Instrument inst, Source src) 
@@ -44,6 +49,30 @@ namespace IngameScript
             public TuneChord Copy() 
             {
                 return new TuneChord(this);
+            }
+
+
+
+            public override void SetValue(float val, Note note)
+            {
+                base.SetValue(val, note);
+                UpdateFinalChord();
+            }
+
+
+
+            public override float UpdateValue(TimeParams tp)
+            {
+                if (!On)
+                    return 0;
+
+                var oldVal = (int)Math.Round(CurValue);
+                var val    = base.UpdateValue(tp);
+
+                if ((int)Math.Round(val) != oldVal)
+                    UpdateFinalChord();
+
+                return val;
             }
 
 
@@ -110,12 +139,12 @@ namespace IngameScript
 
             public static TuneChord Load(string[] data, ref int d, Instrument inst, int iSrc, Setting parent)
             {
-                var tag = data[d++];
-
                 var chord = new TuneChord(
                     parent, 
                     inst, 
                     OK(iSrc) ? inst.Sources[iSrc] : Source_null);
+
+                chord.Clear();
 
 
                 Parameter.Load(data, ref d, inst, iSrc, Setting_null, chord);
@@ -182,7 +211,7 @@ namespace IngameScript
                 var pw = ow * nOctaves; // piano width
 
 
-                var minNote   = 36;
+                //var minNote   = 36;
                 var selOctave = (int)CurValue;
 
 
@@ -196,12 +225,12 @@ namespace IngameScript
                             ry + c*ch,
                             ow,
                             ch - 10,
-                            i + 3,
-                            Chords[c].ToArray(),
-                            minNote,
-                            selOctave == c ? color1 : color0,
-                            selOctave == c ? color4 : color2,
-                            color6);
+                            i + 5,
+                            Chords[c].Select(_c => _c/NoteScale).ToArray(),
+                            //minNote,
+                            color0,
+                            selOctave == c ? color3 : color2,
+                            selOctave == c ? color6 : color3);
                     }
                 }
 
@@ -242,6 +271,17 @@ namespace IngameScript
                 NormalMax = Chords.Count-1;
 
                 SetValue(Chords.Count-1, Note_null);
+            }
+
+
+
+            public void UpdateFinalChord()
+            {
+                var index = (int)Math.Round(CurValue);
+
+                FinalChord = UpdateFinalTuneChord(
+                    Chords    [index], 
+                    AllOctaves[index]);
             }
 
 

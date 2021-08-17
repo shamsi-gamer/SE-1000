@@ -162,30 +162,30 @@ namespace IngameScript
             uint SaveToggles()
             {
                 uint f = 0;
-                var  i = 0;
+                var  d = 0;
 
-                WriteBit(ref f, Accent, i++);
+                WriteBit(ref f, Accent, d++);
 
                 return f;
             }
 
 
 
-            public static Note Load(string[] data, ref int i, Instrument inst)
+            public static Note Load(string[] data, ref int d, Instrument inst)
             {
                 var note = new Note();
 
-                note.Number     = int  .Parse(data[i++]);
-                note.Step       = float.Parse(data[i++]);
-                note.StepLength = float.Parse(data[i++]);
-                note.Volume     = float.Parse(data[i++]);
+                note.Number     = int  .Parse(data[d++]);
+                note.Step       = float.Parse(data[d++]);
+                note.StepLength = float.Parse(data[d++]);
+                note.Volume     = float.Parse(data[d++]);
 
-                note.LoadToggles(data[i++]);
+                note.LoadToggles(data[d++]);
 
-                var nKeys = int_Parse(data[i++]);
+                var nKeys = int_Parse(data[d++]);
 
                 for (int k = 0; k < nKeys; k++)
-                    note.Keys.Add(Key.Load(data, ref i));
+                    note.Keys.Add(Key.Load(data, ref d));
 
                 return note;
             }
@@ -197,9 +197,9 @@ namespace IngameScript
                 uint f;
                 if (!uint.TryParse(toggles, out f)) return False;
 
-                var i = 0;
+                var d = 0;
 
-                Accent = ReadBit(f, i++);
+                Accent = ReadBit(f, d++);
 
                 return True;
             }

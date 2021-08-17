@@ -51,16 +51,27 @@ namespace IngameScript
 
         bool PianoHighIsBright(Label lbl)
         {
-            var halfSharp = False;
+            if (ShowPiano)
+            { 
+                if (lbl.Data < 10)
+                { 
+                    bool halfSharp;
+                    var bright = NoteIsBright(HighToNote(lbl.Data, EditedClip.HalfSharp), out halfSharp);
 
-            var bright = 
-                  ShowPiano
-                ? (lbl.Data < 10 && NoteIsBright(HighToNote(lbl.Data, EditedClip.HalfSharp), out halfSharp))
-                : ToggleIsBright(lbl);
+                    lbl.Data2 = halfSharp ? 1 : 0;
 
-            lbl.Data2 = halfSharp ? 1 : 0;
+                    return bright;
+                }
+             
+                else if (lbl.Data == 10
+                    && IsCurSetting(strChord))
+                    return ((TuneChord)CurSetting).SelectedAllOctaves;
 
-            return bright;
+                else return False;
+            }
+            
+            else
+                return ToggleIsBright(lbl);
         }
 
 
@@ -79,14 +90,24 @@ namespace IngameScript
 
         void UpdatePianoHigh(Label lbl)
         {
-            if (   ShowPiano
-                && lbl.Data < 11)
+            if (ShowPiano)
             {
-                var halfSharp = 
-                       !EditedClip.HalfSharp && lbl.Data2 != 0
-                    ||  EditedClip.HalfSharp && lbl.Data2 == 0;
+                if (lbl.Data < 10)
+                { 
+                    var halfSharp = 
+                           !EditedClip.HalfSharp && lbl.Data2 != 0
+                        ||  EditedClip.HalfSharp && lbl.Data2 == 0;
 
-                lbl.SetText(halfSharp ? "‡" : strEmpty, 6, 26);
+                    lbl.SetText(halfSharp ? "‡" : strEmpty, 6, 26);
+                }
+
+                else if (lbl.Data == 10
+                      && IsCurSetting(strChord)
+                      && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
+                    lbl.SetText(strAll); 
+
+                else if (lbl.Data == 10)
+                    lbl.SetText(strEmpty);
             }
             else
             { 
@@ -368,7 +389,7 @@ namespace IngameScript
             int val;
 
                  if (EditedClip.Strum) val = EditedClip.ChordStrum;
-            else if (ShowPianoView)    val = CurChannel.Transpose;
+            else if (ShowPiano)        val = CurChannel.Transpose;
             else                       val = CurChannel.Shuffle;
 
             lbl.SetText((val > 0 ? "+" : "") + S(val));
@@ -381,7 +402,7 @@ namespace IngameScript
             if (EditedClip.Strum)
                 lbl.SetText("Strum", 9, 14);
 
-            else if (ShowPianoView)
+            else if (ShowPiano)
                 lbl.SetText(
                     //█ █ ██ █ █ █
                     //█▄█▄██▄█▄█▄█

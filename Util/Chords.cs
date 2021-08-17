@@ -138,20 +138,10 @@ namespace IngameScript
             if (EditedClip.ChordEdit)
                 return;
 
-            //if (IsCurParam(strTune))
-            //{
-            //    var tune = SelSource    ?.Tune
-            //            ?? SelInstrument?.Tune;
+            EditedClip.ChordMode = !EditedClip.ChordMode;
 
-            //    tune.UseChord = !tune.UseChord;
-            //}
-            //else
-            //{
-                EditedClip.ChordMode = !EditedClip.ChordMode;
-
-                if (!EditedClip.ChordMode)
-                    EditedClip.Chord = -1;
-            //}
+            if (!EditedClip.ChordMode)
+                EditedClip.Chord = -1;
         }
 
 
@@ -231,21 +221,6 @@ namespace IngameScript
 
         void ToggleChordEdit()
         {
-            //if (IsCurParam(strTune))
-            //{
-            //    var inst = SelInstrument;
-            //    var src  = SelSource;
-
-            //    var tune = SelSource    ?.Tune
-            //            ?? SelInstrument?.Tune;
-
-            //    if (tune.UseChord)
-            //    { 
-            //        tune.AllOctaves = !tune.AllOctaves;
-            //        tune.FinalChord = UpdateFinalTuneChord(tune.Chord, tune.AllOctaves);
-            //    }
-            //}
-            //else
             if (!EditedClip.ChordMode)
             { 
                 EditedClip.ChordEdit = !EditedClip.ChordEdit;
@@ -289,7 +264,7 @@ namespace IngameScript
 
 
 
-        List<int> UpdateFinalTuneChord(List<int> _tuneChord, bool tuneAll)
+        static List<int> UpdateFinalTuneChord(List<int> _tuneChord, bool tuneAll)
         {
             List<int> finalTuneChord;
 

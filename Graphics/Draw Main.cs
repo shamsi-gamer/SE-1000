@@ -37,7 +37,7 @@ namespace IngameScript
                         var bias = EditedClip.CurOrParentBias;
                         bias.DrawSetting(sprites, x, y, w, h, CurChannel, this);
                     }
-                    else if (HasTagOrParent(CurSetting, strChord))
+                    else if (IsCurSetting(strChord))
                     {
                         var chord = EditedClip.CurOrParentChord;
                         chord.DrawSetting(sprites, x, y, w, h, CurChannel, this);

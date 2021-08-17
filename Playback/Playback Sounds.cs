@@ -7,7 +7,10 @@ namespace IngameScript
     {
         void AddSoundAndEchos(List<Sound> sounds, Sound snd, Delay del)
         {
-            if (!OK(del)) return;
+            if (   !OK(del)
+                || !del.On) 
+                return;
+
 
             var lTime = g_time - snd.Note.Time;
 

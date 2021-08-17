@@ -21,7 +21,7 @@ namespace IngameScript
 
 
             public Harmonics(Instrument inst, Source src) 
-                : base(strHrm, Setting_null, Setting_null, inst, src)
+                : base(strHrm, Setting_null, Setting_null, True, inst, src)
             {
                 for (int i = 0; i < Tones.Length; i++)
                     Tones[i] = NewHarmonicParam(i, this, inst, src);
@@ -33,7 +33,7 @@ namespace IngameScript
 
 
             public Harmonics(Harmonics hrm) 
-                : base(hrm.Tag, Setting_null, hrm, hrm.Instrument, hrm.Source)
+                : base(hrm.Tag, Setting_null, hrm, hrm.On, hrm.Instrument, hrm.Source)
             {
                 for (int i = 0; i < hrm.Tones.Length; i++)
                     Tones[i] = new Parameter(hrm.Tones[i], this);
@@ -282,34 +282,67 @@ namespace IngameScript
 
             public override string Save()
             {
-                var hrm = W(Tag);
+                var hrm = Tag;
+
+                hrm += PS(SaveToggles());
 
                 for (int i = 0; i < Tones.Length; i++)
-                    hrm += W(Tones[i].Save());
+                    hrm += P(Tones[i].Save());
 
-                hrm += WS((int)CurPreset);
-                hrm +=  S(CurTone);
+                hrm += PS((int)CurPreset);
+                hrm += PS(CurTone);
                 
                 return hrm;
             }
 
 
 
-            public static Harmonics Load(string[] data, ref int i, Instrument inst, int iSrc)
+            uint SaveToggles()
             {
-                var tag = data[i++];
+                uint f = 0;
+                var  d = 0;
+
+                WriteBit(ref f, On, d++);
+
+                return f;
+            }
+
+
+
+            public static Harmonics Load(string[] data, ref int d, Instrument inst, int iSrc)
+            {
+                var tag = data[d++];
+
 
                 var hrm = new Harmonics(
                     inst, 
                     OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
-                for (int j = 0; j < hrm.Tones.Length; j++)
-                    hrm.Tones[j] = Parameter.Load(data, ref i, inst, iSrc, hrm, hrm.Tones[j]);
+                hrm.LoadToggles(data[d++]);
+
+
+                for (int i = 0; i < hrm.Tones.Length; i++)
+                    hrm.Tones[i] = Parameter.Load(data, ref d, inst, iSrc, hrm, hrm.Tones[i]);
                 
-                hrm.CurPreset = (Preset)int_Parse(data[i++]);
-                hrm.CurTone   =         int_Parse(data[i++]);
+                hrm.CurPreset = (Preset)int_Parse(data[d++]);
+                hrm.CurTone   =         int_Parse(data[d++]);
+
 
                 return hrm;
+            }
+
+
+
+            bool LoadToggles(string toggles)
+            {
+                uint f;
+                if (!uint.TryParse(toggles, out f)) return False;
+
+                var d = 0;
+
+                On = ReadBit(f, d++);
+
+                return True;
             }
 
 

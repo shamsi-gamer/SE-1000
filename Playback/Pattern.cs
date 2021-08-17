@@ -67,19 +67,19 @@ namespace IngameScript
 
 
 
-            public static Pattern Load(string[] data, ref int i)
+            public static Pattern Load(string[] data, ref int d)
             {
                 var pat = new Pattern(Instruments[0]);
 
                 foreach (var chan in pat.Channels)
                     chan.Instrument = Instruments[0];
 
-                var nChans = int_Parse(data[i++]);
+                var nChans = int_Parse(data[d++]);
 
                 for (int ch = 0; ch < nChans; ch++)
                 { 
                     int iChan;
-                    var chan = Channel.Load(data, ref i, out iChan, pat);
+                    var chan = Channel.Load(data, ref d, out iChan, pat);
                     pat.Channels[iChan] = chan;
                 }
 

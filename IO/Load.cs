@@ -49,8 +49,8 @@ namespace IngameScript
             g_ioState    = 0; // instruments
             g_ioPos      = 0;
 
-            g_instLines  = instData .Split('\n');
-            g_trackLines = trackData.Split('\n');
+            g_instLines  = instData .Split(new char[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
+            g_trackLines = trackData.Split(new char[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
         }
 
 
@@ -259,10 +259,10 @@ namespace IngameScript
             uint f;
             if (!uint.TryParse(toggles, out f)) return False;
 
-            var i = 0;
+            var d = 0;
 
-            ShowClip  = ReadBit(f, i++);
-            Recording = ReadBit(f, i++);
+            ShowClip  = ReadBit(f, d++);
+            Recording = ReadBit(f, d++);
 
             return True;
         }

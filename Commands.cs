@@ -486,6 +486,8 @@ namespace IngameScript
                     else if (EditedClip.ParamAuto) 
                         EnableKeyMove(EditedClip);
                 }
+                else
+                    CurSetting.On = !CurSetting.On;
             }
             else if (IsCurSetting(typeof(Modulate)))
             {
@@ -504,7 +506,10 @@ namespace IngameScript
             }
             else
             {
-                if (OK(CurSrc))
+                if (OK(CurSet))
+                    CurSetting.On = !CurSetting.On;
+
+                else if (OK(CurSrc))
                 {
                     var src = SelSource;
                     src.On = !src.On;
@@ -593,9 +598,10 @@ namespace IngameScript
                       && ((TuneChord)CurSetting).Chords.Count > 1)
                 {
                     var chord = (TuneChord)CurSetting;
+                    var index = (int)Math.Round(chord.CurValue);
 
-                    chord.Chords    .RemoveLast();
-                    chord.AllOctaves.RemoveLast();
+                    chord.Chords    .RemoveAt(index);
+                    chord.AllOctaves.RemoveAt(index);
 
                     if (chord.Chords.Count == 0)
                         chord.AddFirstChord();

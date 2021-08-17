@@ -651,14 +651,11 @@ namespace IngameScript
 
         static void SetTranspose(int d)
         {
-            var tune = SelSource    ?.Tune
-                    ?? SelInstrument?.Tune;
-
             if (EditedClip.Strum)
                 EditedClip.ChordStrum = MinMax(0, EditedClip.ChordStrum + d, 16);
 
-            else if (ShowPianoView) SetTranspose(EditedClip, CurChan, d);
-            else                    SetShuffle(CurChan, d);
+            else if (ShowPiano) SetTranspose(EditedClip, CurChan, d);
+            else                SetShuffle(CurChan, d);
 
             if (d > 0) lblOctaveUp  .Mark();
             else       lblOctaveDown.Mark();

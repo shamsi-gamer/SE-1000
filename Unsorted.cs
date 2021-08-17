@@ -20,6 +20,13 @@ namespace IngameScript
 
 
 
+        static bool IsCurSetting(string tag)
+        {
+            return (EditedClip.CurSetting?.Tag ?? "") == tag;
+        }
+
+
+
         static bool IsCurSetting(Type type)
         {
             return EditedClip.CurSetting?.GetType() == type;

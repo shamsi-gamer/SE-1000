@@ -32,7 +32,7 @@ namespace IngameScript
 
 
             public LFO(Setting parent, Instrument inst, Source src) 
-                : base(strLfo, parent, Setting_null, inst, src) 
+                : base(strLfo, parent, Setting_null, True, inst, src) 
             {
                 Op          = ModOp  .Add;
                 Type        = LfoType.Sine;
@@ -58,7 +58,7 @@ namespace IngameScript
 
 
             public LFO(LFO lfo, Setting parent) 
-                : base(lfo.Tag, parent, lfo.Prototype, lfo.Instrument, lfo.Source)
+                : base(lfo.Tag, parent, lfo.Prototype, lfo.On, lfo.Instrument, lfo.Source)
             {
                 Op          = lfo.Op;
                 Type        = lfo.Type;
@@ -110,6 +110,9 @@ namespace IngameScript
             public float UpdateValue(TimeParams tp)
             {
                 if (tp.Program.TooComplex) 
+                    return 0;
+
+                if (!On)
                     return 0;
 
                 var trig = Trigger.UpdateValue(tp);
@@ -236,37 +239,66 @@ namespace IngameScript
             public override string Save()
             {
                 return
-                      W (Tag)
+                      Tag
 
-                    + WS((int)Op)
-                    + WS((int)Type)
+                    + PS(SaveToggles())
+                    + PS((int)Op)
+                    + PS((int)Type)
 
-                    + W (Amplitude.Save())
-                    + W (Frequency.Save())
-                    + W (Offset   .Save())
-                    +    Trigger  .Save();
+                    + P (Amplitude.Save())
+                    + P (Frequency.Save())
+                    + P (Offset   .Save())
+                    + P (Trigger  .Save());
             }
 
 
 
-            public static LFO Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent)
+            uint SaveToggles()
             {
-                var tag = data[i++];
+                uint f = 0;
+                var  d = 0;
+
+                WriteBit(ref f, On, d++);
+
+                return f;
+            }
+
+
+
+            public static LFO Load(string[] data, ref int d, Instrument inst, int iSrc, Setting parent)
+            {
+                var tag = data[d++];
  
                 var lfo = new LFO(
                     parent, 
                     inst, 
                     OK(iSrc) ? inst.Sources[iSrc] : Source_null);
 
-                lfo.Op   = (ModOp)  int_Parse(data[i++]);
-                lfo.Type = (LfoType)int_Parse(data[i++]);
+                lfo.LoadToggles(data[d++]);
 
-                lfo.Amplitude = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Amplitude);
-                lfo.Frequency = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Frequency);
-                lfo.Offset    = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Offset   );
-                lfo.Trigger   = Parameter.Load(data, ref i, inst, iSrc, lfo, lfo.Trigger  );
+                lfo.Op   = (ModOp)  int_Parse(data[d++]);
+                lfo.Type = (LfoType)int_Parse(data[d++]);
+
+                lfo.Amplitude = Parameter.Load(data, ref d, inst, iSrc, lfo, lfo.Amplitude);
+                lfo.Frequency = Parameter.Load(data, ref d, inst, iSrc, lfo, lfo.Frequency);
+                lfo.Offset    = Parameter.Load(data, ref d, inst, iSrc, lfo, lfo.Offset   );
+                lfo.Trigger   = Parameter.Load(data, ref d, inst, iSrc, lfo, lfo.Trigger  );
 
                 return lfo;
+            }
+
+
+
+            bool LoadToggles(string toggles)
+            {
+                uint f;
+                if (!uint.TryParse(toggles, out f)) return False;
+
+                var d = 0;
+
+                On = ReadBit(f, d++);
+
+                return True;
             }
 
 

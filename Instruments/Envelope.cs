@@ -27,7 +27,7 @@ namespace IngameScript
 
 
             public Envelope(Setting parent, Instrument inst, Source src) 
-                : base(strEnv, parent, Setting_null, inst, src)
+                : base(strEnv, parent, Setting_null, True, inst, src)
             {
                 Attack      = (Parameter)NewSettingFromTag(strAtt,  this, inst, src);
                 Decay       = (Parameter)NewSettingFromTag(strDec,  this, inst, src);
@@ -45,7 +45,7 @@ namespace IngameScript
 
 
             public Envelope(Envelope env, Setting parent) 
-                : base(env.Tag, parent, env, env.Instrument, env.Source)
+                : base(env.Tag, parent, env, env.On, env.Instrument, env.Source)
             {
                 Attack      = new Parameter(env.Attack,  this);
                 Decay       = new Parameter(env.Decay,   this);
@@ -75,6 +75,8 @@ namespace IngameScript
                     ||*/tp.Program.TooComplex) 
                     return 0;
 
+                if (!On)
+                    return 1;
 
                 if (OK(tp.Note))
                     tp.NoteLength = tp.Note.FrameLength;
@@ -220,30 +222,66 @@ namespace IngameScript
             public override string Save()
             {
                 return
-                      W (Tag)
+                      Tag
 
-                    + W (Trigger.Save())
-                    + W (Attack .Save())
-                    + W (Decay  .Save())
-                    + W (Sustain.Save())
-                    +    Release.Save();
+                    + PS(SaveToggles())
+
+                    + P (Trigger.Save())
+                    + P (Attack .Save())
+                    + P (Decay  .Save())
+                    + P (Sustain.Save())
+                    + P (Release.Save());
             }
 
 
 
-            public static Envelope Load(string[] data, ref int i, Instrument inst, int iSrc, Setting parent)
+            uint SaveToggles()
             {
-                var tag = data[i++];
+                uint f = 0;
+                var  d = 0;
 
-                var env = new Envelope(parent, inst, OK(iSrc) ? inst.Sources[iSrc] : Source_null);
+                WriteBit(ref f, On, d++);
 
-                env.Trigger = Parameter.Load(data, ref i, inst, iSrc, env, env.Trigger);
-                env.Attack  = Parameter.Load(data, ref i, inst, iSrc, env, env.Attack );
-                env.Decay   = Parameter.Load(data, ref i, inst, iSrc, env, env.Decay  );
-                env.Sustain = Parameter.Load(data, ref i, inst, iSrc, env, env.Sustain);
-                env.Release = Parameter.Load(data, ref i, inst, iSrc, env, env.Release);
+                return f;
+            }
+
+
+
+            public static Envelope Load(string[] data, ref int d, Instrument inst, int iSrc, Setting parent)
+            {
+                var tag = data[d++];
+
+
+                var env = new Envelope(
+                    parent, 
+                    inst, 
+                    OK(iSrc) ? inst.Sources[iSrc] : Source_null);
+
+                env.LoadToggles(data[d++]);
+                
+
+                env.Trigger = Parameter.Load(data, ref d, inst, iSrc, env, env.Trigger);
+                env.Attack  = Parameter.Load(data, ref d, inst, iSrc, env, env.Attack );
+                env.Decay   = Parameter.Load(data, ref d, inst, iSrc, env, env.Decay  );
+                env.Sustain = Parameter.Load(data, ref d, inst, iSrc, env, env.Sustain);
+                env.Release = Parameter.Load(data, ref d, inst, iSrc, env, env.Release);
+
 
                 return env;
+            }
+
+
+
+            bool LoadToggles(string toggles)
+            {
+                uint f;
+                if (!uint.TryParse(toggles, out f)) return False;
+
+                var d = 0;
+
+                On = ReadBit(f, d++);
+
+                return True;
             }
 
 

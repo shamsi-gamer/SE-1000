@@ -136,10 +136,10 @@ namespace IngameScript
         uint SaveStateToggles()
         {
             uint f = 0;
-            var  i = 0;
+            var  d = 0;
 
-            WriteBit(ref f, ShowClip,  i++);
-            WriteBit(ref f, Recording, i++);
+            WriteBit(ref f, ShowClip,  d++);
+            WriteBit(ref f, Recording, d++);
 
             return f;
         }

@@ -167,35 +167,35 @@ namespace IngameScript
 
 
 
-            public static Channel Load(string[] data, ref int i, out int index, Pattern pat)
+            public static Channel Load(string[] data, ref int d, out int index, Pattern pat)
             {
-                index           = int_Parse(data[i++]);
+                index           = int_Parse(data[d++]);
 
-                var instName    = data[i++];
+                var instName    = data[d++];
                 var inst        = Instruments.Find(_inst => _inst.Name == instName);
 
                 var chan = new Channel(pat, inst);
                 
-                chan.On         = int  .Parse(data[i++]) > 0;
-                chan.Volume     = float.Parse(data[i++]);
-                chan.Shuffle    = int  .Parse(data[i++]);
-                chan.Transpose  = int  .Parse(data[i++]);
+                chan.On         = int  .Parse(data[d++]) > 0;
+                chan.Volume     = float.Parse(data[d++]);
+                chan.Shuffle    = int  .Parse(data[d++]);
+                chan.Transpose  = int  .Parse(data[d++]);
 
-                chan.LoadNotes   (data, ref i, index);
-                chan.LoadAutoKeys(data, ref i);
+                chan.LoadNotes   (data, ref d, index);
+                chan.LoadAutoKeys(data, ref d);
 
                 return chan;
             }
 
 
 
-            void LoadNotes(string[] data, ref int i, int iChan)
+            void LoadNotes(string[] data, ref int d, int iChan)
             {
-                var nNotes = int_Parse(data[i++]);
+                var nNotes = int_Parse(data[d++]);
 
                 for (int n = 0; n < nNotes; n++)
                 {
-                    var note = Note.Load(data, ref i, Instrument);
+                    var note = Note.Load(data, ref d, Instrument);
 
                     note.Channel = this;
                     note.iChan   = iChan;
@@ -206,12 +206,12 @@ namespace IngameScript
 
 
 
-            void LoadAutoKeys(string[] data, ref int i)
+            void LoadAutoKeys(string[] data, ref int d)
             {
-                var nKeys = int_Parse(data[i++]);
+                var nKeys = int_Parse(data[d++]);
 
                 for (int k = 0; k < nKeys; k++)
-                    AutoKeys.Add(Key.Load(data, ref i));
+                    AutoKeys.Add(Key.Load(data, ref d));
             }
         }
     }

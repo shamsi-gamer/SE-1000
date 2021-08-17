@@ -44,7 +44,7 @@ namespace IngameScript
 
 
             public Modulate(Setting parent, Instrument inst, Source src) 
-                : base(strMod, parent, Setting_null, inst, src)
+                : base(strMod, parent, Setting_null, True, inst, src)
             {
                 Op             = ModOp.Add;
                                
@@ -64,7 +64,7 @@ namespace IngameScript
 
 
             public Modulate(Modulate mod, Setting parent, Instrument inst, Source src) 
-                : base(mod.Tag, parent, mod.Prototype, inst, src)
+                : base(mod.Tag, parent, mod.Prototype, mod.On, inst, src)
             {
                 Op       = mod.Op;
                         
@@ -117,6 +117,9 @@ namespace IngameScript
             public float UpdateValue(TimeParams tp)
             {
                 if (tp.Program.TooComplex) 
+                    return 0;
+
+                if (!On)
                     return 0;
 
                 //var param = (Parameter)Parent;
@@ -258,6 +261,9 @@ namespace IngameScript
             {
                 var save = 
                       Tag
+
+                    + PS(SaveToggles())
+                    
                     + PS((int)Op)
                     + PS(ModSettings.Count);
 
@@ -283,14 +289,29 @@ namespace IngameScript
 
 
 
+            uint SaveToggles()
+            {
+                uint f = 0;
+                var  d = 0;
+
+                WriteBit(ref f, On, d++);
+
+                return f;
+            }
+
+
+
             public static Modulate Load(string[] data, ref int d, Instrument inst, int iSrc, Setting parent)
             {
                 var tag = data[d++];
+
 
                 var mod = new Modulate(
                     parent, 
                     inst, 
                     OK(iSrc) ? inst.Sources[iSrc] : Source_null);
+
+                mod.LoadToggles(data[d++]);
 
 
                 int modOp;
@@ -318,6 +339,20 @@ namespace IngameScript
                 mod.Release = Parameter.Load(data, ref d, inst, iSrc, mod, mod.Release);
 
                 return mod;
+            }
+
+
+
+            bool LoadToggles(string toggles)
+            {
+                uint f;
+                if (!uint.TryParse(toggles, out f)) return False;
+
+                var d = 0;
+
+                On = ReadBit(f, d++);
+
+                return True;
             }
 
 
