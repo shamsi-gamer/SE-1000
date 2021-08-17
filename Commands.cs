@@ -459,22 +459,7 @@ namespace IngameScript
 
         void Command1()
         {
-            if (OK(ModDestConnecting))
-            {
-                if (ModDestConnecting != EditedClip.CurSetting)
-                { 
-                    ModDestConnecting.ModSettings   .Add(OK(CurSet) ? EditedClip.CurSetting : Setting_null);
-                    ModDestConnecting.ModSources    .Add(SelSource);
-                    ModDestConnecting.ModInstruments.Add(SelInstrument);
-
-                    SwitchToSetting(
-                        ModDestClip,
-                        ModDestConnecting);
-                }
-             
-                ResetModConnecting();
-            }
-            else if (IsCurParam())
+            if (IsCurParam())
             {
                 if (OK(EditedClip.EditPos))
                 {
@@ -488,21 +473,6 @@ namespace IngameScript
                 }
                 else
                     CurSetting.On = !CurSetting.On;
-            }
-            else if (IsCurSetting(typeof(Modulate)))
-            {
-                if (!OK(ModDestConnecting))
-                {
-                    ModDestConnecting = EditedClip.CurModulate;
-                    ModCurChan        = CurChan;
-                    ModSelChan        = SelChan;
-                    ModCurPat         = EditPat;
-                    ModDestSrcIndex   = CurSrc;
-                    ModDestChannel    = SelChannel;
-                    ModDestClip       = EditedClip;
-                }
-
-                lblCmd1.Mark();
             }
             else
             {
@@ -531,21 +501,52 @@ namespace IngameScript
 
         void Command2()
         {
-            if (OK(CurSrc))
+            if (OK(ModDestConnecting))
+            {
+                if (ModDestConnecting != EditedClip.CurSetting)
+                { 
+                    ModDestConnecting.ModSettings   .Add(OK(CurSet) ? EditedClip.CurSetting : Setting_null);
+                    ModDestConnecting.ModSources    .Add(SelSource);
+                    ModDestConnecting.ModInstruments.Add(SelInstrument);
+
+                    SwitchToSetting(
+                        ModDestClip,
+                        ModDestConnecting);
+                }
+             
+                ResetModConnecting();
+            }
+            else if (IsCurSetting(typeof(Modulate)))
+            {
+                if (!OK(ModDestConnecting))
+                {
+                    ModDestConnecting = EditedClip.CurModulate;
+                    ModCurChan        = CurChan;
+                    ModSelChan        = SelChan;
+                    ModCurPat         = EditPat;
+                    ModDestSrcIndex   = CurSrc;
+                    ModDestChannel    = SelChannel;
+                    ModDestClip       = EditedClip;
+                }
+
+                //lblCmd2.Mark();
+            }
+            else if (OK(CurSrc))
             {
                 var src = SelSource;
 
                 var newOsc = (int)src.Oscillator.Type + 1;
                 if (newOsc > (int)OscType.Pulse) newOsc = 0;
                 src.Oscillator = OscillatorFromType((OscType)newOsc);
+                lblCmd2.Mark();
             }
             else if (!OK(SelChan)
                    && EditedClip.RndInst
                    && OK(Array.Find(EditPattern.Channels, c => c.Instrument == CurChannel.Instrument)))
+            { 
                 CollapseChannels();
-
-
-            lblCmd2.Mark();
+                lblCmd2.Mark();
+            }
         }
 
 

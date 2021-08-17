@@ -33,6 +33,9 @@ namespace IngameScript
             public LFO       Lfo;
             public Modulate  Modulate;
 
+            public int       IntBias; // used for Parameters where the conceptual value is an int
+                                      // and a Mod or LFO distance (Max-Min) is needed
+
 
 
             public Parameter(string tag, float min, float max, float normalMin, float normalMax, float delta, float bigDelta, float defVal, bool canHaveEnvelope, Setting parent, Instrument inst, Source src) 
@@ -58,6 +61,8 @@ namespace IngameScript
                 Envelope        =  Envelope_null;
                 Lfo             =       LFO_null;
                 Modulate        =  Modulate_null;
+
+                IntBias         = 0;
             }
 
 
@@ -78,10 +83,12 @@ namespace IngameScript
 
                 CanHaveEnvelope = param.CanHaveEnvelope;
 
-                Bias            = copy ? param.Bias    ?.Copy(this) :      Bias_null;
-                Envelope        = copy ? param.Envelope?.Copy(this) :  Envelope_null;
-                Lfo             = copy ? param.Lfo     ?.Copy(this) :       LFO_null;
-                Modulate        = copy ? param.Modulate?.Copy(this) :  Modulate_null;
+                Bias            = copy ? param.Bias    ?.Copy(this) :     Bias_null;
+                Envelope        = copy ? param.Envelope?.Copy(this) : Envelope_null;
+                Lfo             = copy ? param.Lfo     ?.Copy(this) :      LFO_null;
+                Modulate        = copy ? param.Modulate?.Copy(this) : Modulate_null;
+
+                IntBias         = copy ? param.IntBias              : 0;
             }
 
 
@@ -148,7 +155,7 @@ namespace IngameScript
                     {
                         var lfo = Lfo.UpdateValue(tp);
 
-                        if (Lfo.Op == ModOp.Add) value += lfo * Math.Abs(Max - Min) / 2;
+                        if (Lfo.Op == ModOp.Add) value += lfo * Math.Abs(Max-Min+IntBias);
                         else                     value *= lfo;
 
                         if (ParentIsEnvelope)

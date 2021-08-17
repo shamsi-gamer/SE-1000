@@ -137,7 +137,7 @@ namespace IngameScript
 
                     if (OK(set))
                     {
-                             if (set.GetType() == typeof(Parameter)) val = Math.Max(val, ((Parameter)set).CurValue);
+                             if (set is Parameter)                   val = Math.Max(val, ((Parameter)set).CurValue);
                         else if (set.GetType() == typeof(LFO      )) val = Math.Max(val, ((LFO      )set).CurValue);
                         else if (set.GetType() == typeof(Envelope )) val = Math.Max(val, ((Envelope )set).CurValue);
                         else if (set.GetType() == typeof(Modulate )) val = Math.Max(val, ((Modulate )set).CurValue);

@@ -25,6 +25,8 @@ namespace IngameScript
             public TuneChord(Setting parent, Instrument inst, Source src) 
                 : base(strChord, 0, 0, 0, 0, -1, -1, 0, False, parent, inst, src)
             {
+                IntBias    = 1; // needed for Mod and LFO as CurValue is used as an int
+
                 Chords     = new List<List<int>>();
                 AllOctaves = new List<bool>();
 
@@ -172,6 +174,12 @@ namespace IngameScript
                 }
 
 
+                chord.Max       = 
+                chord.NormalMax = chord.Chords.Count-1;
+
+                chord.SetValue(Math.Min(chord.Value, chord.Max), Note_null);
+
+
                 return chord;
             }
 
@@ -212,7 +220,6 @@ namespace IngameScript
 
 
                 //var minNote   = 36;
-                var selOctave = (int)CurValue;
 
 
                 for (int c = 0; c < Chords.Count; c++)
@@ -229,8 +236,8 @@ namespace IngameScript
                             Chords[c].Select(_c => _c/NoteScale).ToArray(),
                             //minNote,
                             color0,
-                            selOctave == c ? color3 : color2,
-                            selOctave == c ? color6 : color3);
+                            SelectedIndex == c ? color3 : color2,
+                            SelectedIndex == c ? color6 : color3);
                     }
                 }
 

@@ -8,7 +8,7 @@ namespace IngameScript
         void InitAdjustLabels()
         {
             lblCmd1  = new Label(1, GetLabel("Command 1"), Cmd1IsBright,   CF_null,   UpdateCmd1);
-            lblCmd2  = new Label(1, GetLabel("Command 2"), CF_null,        CF_null,   UpdateCmd2);
+            lblCmd2  = new Label(1, GetLabel("Command 2"), Cmd2IsBright,   CF_null,   UpdateCmd2);
                                                                                    
             lblUp    = new Label(2, GetLabel("Up"),        AdjustIsBright, CF_null,   UpdateAdjustUp);
             lblDown  = new Label(2, GetLabel("Down"),      AdjustIsBright, CF_null,   UpdateAdjustDown);
@@ -22,8 +22,7 @@ namespace IngameScript
         bool Cmd1IsBright(Label lbl)
         {
             return
-                   OK(ModDestConnecting)
-                ||     OK(CurSrc)
+                      OK(CurSrc)
                    && !OK(CurSet)
                    && SelSource.On
                 ||    OK(CurSet)
@@ -37,12 +36,7 @@ namespace IngameScript
 
         void UpdateCmd1(Label lbl)
         {
-            if (OK(ModDestConnecting))
-            {
-                lbl.SetText("Conn");
-                return;
-            }
-            else if (OK(CurSet))
+            if (OK(CurSet))
             {
                 var path = CurSetting.Path;
 
@@ -63,7 +57,7 @@ namespace IngameScript
                     }
                 }
                 else
-                    lbl.SetText(HasTag(EditedClip.CurSetting, strMod) ? "Conn" : "On");
+                    lbl.SetText("On");
             }
             else
             {
@@ -74,16 +68,25 @@ namespace IngameScript
 
 
 
+        bool Cmd2IsBright(Label lbl)
+        {
+            return OK(ModDestConnecting);
+        }
+
+
+
         void UpdateCmd2(Label lbl)
         {
-            if (OK(CurSrc))
+            if (OK(ModDestConnecting))
+                lbl.SetText("Conn");
+            else if (OK(CurSrc))
                 lbl.SetText("Osc ↕");
             else if (!OK(SelChan)
                    && EditedClip.RndInst
                    && OK(Array.Find(EditPattern.Channels, c => c.Instrument == CurChannel.Instrument)))
                 lbl.SetText("Clps");
             else
-                lbl.SetText(strEmpty);
+                lbl.SetText(HasTag(EditedClip.CurSetting, strMod) ? "Conn" : strEmpty);
         }
 
 
