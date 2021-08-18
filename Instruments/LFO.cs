@@ -380,6 +380,10 @@ namespace IngameScript
                 DrawLine(sprites, x0, y0,      x0,    y0+h0,   isAmp  ? color6 : color3);
                 DrawLine(sprites, x0, y0+h0/2, x0+w0, y0+h0/2, isFreq ? color6 : color3);
 
+                // draw range
+                DrawLine(sprites, x0, y0+h0/2 - h0/2*amp, x0+w0, y0+h0/2 - h0/2*amp, color3);
+                DrawLine(sprites, x0, y0+h0/2 + h0/2*amp, x0+w0, y0+h0/2 + h0/2*amp, color3);
+
 
                 var time = (long)(Phase * FPS);
                 var _tp  = new TimeParams(time, time, Note_null, EditedClip.EditLength, -1, _triggerDummy, EditedClip, dp.Program);
@@ -391,7 +395,7 @@ namespace IngameScript
                     val = Math.Sign(val) * (float)Math.Pow(Math.Abs(val), 0.5f);
 
                 // draw current value
-                var blur = Type == LfoType.Noise ? Math.Pow(freq, 4) : 1;
+                var blur = Type == LfoType.Noise ? 1 : Math.Pow(freq, 4);
                           
                 var ty   = (float)Math.Max(y0,    y0 + h0/2 - val*h0/2 - blur  );
                 var by   = (float)Math.Min(y0+h0, y0 + h0/2 - val*h0/2 + blur*2);
@@ -406,7 +410,6 @@ namespace IngameScript
 
 
                 // draw the waveform
-
 
                 var f = 0;
                 foreach (var _v in ValueCache)
@@ -445,10 +448,15 @@ namespace IngameScript
                     isAmp ? color6 : color3,
                     TA_CENTER);
 
+                var freqDec = 2;
+
+                     if (freq < 0.015) freqDec = 4;
+                else if (freq < 0.04 ) freqDec = 3;
+
                 // frequency label
                 DrawString(
                     sprites, 
-                    S_000(Math.Pow(2, freq)-1) + (isFreq ? " Hz" : ""),
+                    PrintValue(Math.Pow(2, freq)-1, freqDec, False, 0) + (isFreq ? " Hz" : ""),
                     x0 + w0/2,
                     y0 + h0 + 3,
                     fs,

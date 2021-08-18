@@ -177,9 +177,13 @@ namespace IngameScript
                     {
                         var mod = Modulate.UpdateValue(tp);
 
+                        Log("mod = " + mod);
+
                         if (Modulate.Op == ModOp.Add)      value += mod * Math.Abs(Max-Min);
                         if (Modulate.Op == ModOp.Multiply) value *= mod;
                         else                               value  = mod;
+
+                        Log("value = " + value);
                     }
 
 
@@ -251,9 +255,9 @@ namespace IngameScript
 
                     if (Tag == strFreq)
                     { 
-                        dv *= (float)Math.Pow(Math.Sqrt(2), value);
-                        var _delta = 1f/FPS * (value + dv);
-                        ((LFO)Parent).Delta = _delta;
+                        dv *= (float)Math.Pow(value, 1.25f);
+                        //var _delta = 1f/FPS * (value + dv);
+                        //((LFO)Parent).Delta = _delta;
                     }
 
                     return value + dv;

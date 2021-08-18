@@ -98,13 +98,13 @@ namespace IngameScript
 
         void TogglePiano(Tune tune)
         { 
-            if (HasTagOrParent(CurSetting, strTune))
-            {
-                EditedClip.Settings.RemoveLast();
-                CurSet--;
-                EditedClip.Piano = False;
-            }
-            else
+            //if (IsCurSetting(strChord))
+            //{
+            //    EditedClip.Settings.RemoveLast();
+            //    CurSet--;
+            //    EditedClip.Piano = False;
+            //}
+            //else
                 EditedClip.Piano = !EditedClip.Piano;
 
             if (EditedClip.Piano)

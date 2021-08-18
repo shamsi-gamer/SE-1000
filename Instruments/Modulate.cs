@@ -176,7 +176,8 @@ namespace IngameScript
                     CurValue = Math.Sign(amt) * (r + (a - r) * val);
                 }
 
-                m_valid  = True;
+
+                m_valid = True;
                 return CurValue;
             }
 

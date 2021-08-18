@@ -32,12 +32,14 @@ namespace IngameScript
             public string       ShortName;
             public List<Sample> Samples;
 
+
             public Oscillator(OscType type, string shortName, string sampleName)
             {
                 Type      = type;
                 ShortName = shortName;
                 Samples   = MakeSamples(sampleName);
             }
+
 
             public Oscillator(OscType type, string shortName)
             {
@@ -107,7 +109,7 @@ namespace IngameScript
                 case OscType.FastSweepDown:   return OscFastSweepDown;
                 case OscType.SlowSweepUp:     return OscSlowSweepUp;
                 case OscType.FastSweepUp:     return OscFastSweepUp;
-                case OscType.Pulse:          return OscPulse;
+                case OscType.Pulse:           return OscPulse;
                 case OscType.Sample:          return OscSample;
             }
 
@@ -159,7 +161,7 @@ namespace IngameScript
                       || oscName == strSlowUp
                       || oscName == strFastDown
                       || oscName == strFastUp) smp.Length = 0.1f * 440/note2freq(smp.Note-12*NoteScale);
-                else if (oscName == strPulse)    smp.Length = 1;
+                else if (oscName == strPulse)  smp.Length = 1;
                 
                 return num;
             }).ToList();
