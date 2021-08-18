@@ -149,6 +149,7 @@ namespace IngameScript
                     var srcIndex = mod.LoadSrcIndex[i];
 
                     var inst = Instruments.Find(inst_ => inst_.Name == instName);
+                    if (!OK(inst)) continue;
 
                     mod.ModSettings.Add(
                         path != "" 
