@@ -268,7 +268,9 @@ namespace IngameScript
 
             void UpdateSpeakers(float vol)
             {
-                var v = (float)Math.Pow(vol, 2);
+                var pow = 4;
+
+                var v = (float)Math.Pow(vol, pow);
 
                 if (Speakers.Count == 0)
                 {
@@ -288,7 +290,7 @@ namespace IngameScript
                 }
 
 
-                v = (float)Math.Pow(vol, 2);
+                v = (float)Math.Pow(vol, pow);
 
                 foreach (var spk in Speakers)
                 {
