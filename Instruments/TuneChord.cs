@@ -341,13 +341,13 @@ namespace IngameScript
                 if (Chords.Count >= 8)
                     return;
 
-                Chords    .Add(new List<int>());
-                AllOctaves.Add(False);
+                Chords    .Insert(SelIndex+1, new List<int>(SelChord));
+                AllOctaves.Insert(SelIndex+1, SelAllOctaves);
 
                 Max       = 
                 NormalMax = Chords.Count-1;
 
-                SetValue(Chords.Count-1, Note_null);
+                SetValue(SelIndex+1, Note_null);
             }
 
 

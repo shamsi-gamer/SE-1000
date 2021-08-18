@@ -373,6 +373,8 @@ namespace IngameScript
                 var isFreq = IsCurParam(strFreq);
                 var isOff  = IsCurParam(strOff);
 
+                var parentIsTune = IsSettingType(Parent, typeof(Tune));
+
 
                 // draw axes
                 DrawLine(sprites, x0, y0,      x0,    y0+h0,   isAmp  ? color6 : color3);
@@ -383,6 +385,10 @@ namespace IngameScript
                 var _tp  = new TimeParams(time, time, Note_null, EditedClip.EditLength, -1, _triggerDummy, EditedClip, dp.Program);
 
                 var val  = UpdateValue(_tp);
+
+
+                if (parentIsTune) // this is only for display, as required Tune changes are typically tiny and impossible to see
+                    val = Math.Sign(val) * (float)Math.Pow(Math.Abs(val), 0.5f);
 
                 // draw current value
                 var blur = Type == LfoType.Noise ? Math.Pow(freq, 4) : 1;
@@ -401,9 +407,15 @@ namespace IngameScript
 
                 // draw the waveform
 
+
                 var f = 0;
-                foreach (var v in ValueCache)
+                foreach (var _v in ValueCache)
                 {
+                    var v = _v;
+
+                    if (parentIsTune)
+                        v = Math.Sign(v) * (float)Math.Pow(Math.Abs(v), 0.5f);
+
                     var p = new Vector2(
                         x0 + w0 * f/FPS,
                         y0 + h0/2 - v*h0/2);
