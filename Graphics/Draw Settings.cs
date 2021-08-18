@@ -55,8 +55,8 @@ namespace IngameScript
             
             var zy = y + h * (1 - (0-min)/(max-min));
 
-            FillRect(sprites, x     + ws, zy, wl - ws, -h/2 * v/64,     color4); // current value bar
-            FillRect(sprites, x + w - wb, zy, wb,      -h/2 * value/64, color6); // set value bar
+            FillRect(sprites, x     + ws, zy, wl - ws, -Math.Sign(v) * h/2 * Math.Min(Math.Abs(v)/64, 1), color4); // current value bar
+            FillRect(sprites, x + w - wb, zy, wb, -h/2 * value/64, color6); // set value bar
 
 
             // set value number
@@ -102,7 +102,7 @@ namespace IngameScript
                 sprites, 
                 x + w/2, 
                 y + hs,          
-                w/2 * v, 
+                Math.Sign(v) * Math.Min(w/2 * Math.Abs(v), w/2), 
                 hl - hs, 
                 color4);
 
