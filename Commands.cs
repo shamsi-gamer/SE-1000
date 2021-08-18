@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+
 
 
 namespace IngameScript
@@ -516,7 +518,12 @@ namespace IngameScript
              
                 ResetModConnecting();
             }
-            else if (IsCurSetting(typeof(Modulate)))
+            else if (IsCurSetting(strChord))
+            {
+                var tc = (TuneChord)CurSetting;
+                tc.Moving = !tc.Moving;
+            }
+            else if (IsCurSetting(strMod))
             {
                 if (!OK(ModDestConnecting))
                 {
@@ -702,10 +709,32 @@ namespace IngameScript
 
         public void Adjust(Clip clip, Setting setting, float delta)
         {
-            if (IsSettingType(setting, typeof(Harmonics)))
-            {
-                clip.CurHarmonics.Adjust(delta);
+            if (IsSettingType(setting, typeof(TuneChord)))
+            { 
+                var tc = (TuneChord)setting;
+
+                if (tc.Moving)
+                {
+                    if (   delta > 0
+                        && tc.SelIndex > 0)
+                    {
+                        tc.Chords    .Swap(tc.SelIndex, tc.SelIndex-1);
+                        tc.AllOctaves.Swap(tc.SelIndex, tc.SelIndex-1);
+                    }
+                    else if (delta < 0
+                          && tc.SelIndex < tc.Chords.Count-1)
+                    {
+                        tc.Chords    .Swap(tc.SelIndex, tc.SelIndex+1);
+                        tc.AllOctaves.Swap(tc.SelIndex, tc.SelIndex+1);
+                    }
+                }
+
+                AdjustParam(clip, tc, delta);
             }
+
+            else if (IsSettingType(setting, typeof(Harmonics)))
+                clip.CurHarmonics.Adjust(delta);
+            
             else if (IsParam(setting)
                   && (   clip.ParamKeys 
                       || clip.ParamAuto))

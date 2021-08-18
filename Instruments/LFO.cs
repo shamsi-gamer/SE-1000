@@ -145,6 +145,9 @@ namespace IngameScript
                     case LfoType.Noise:    value = g_random[(int)(Phase*2) % g_random.Length]*2 - 1; break;
                 }
 
+                //if (Op != ModOp.Add)
+                //    value = (value+1)/2; 
+
                 value *= amp;
 
                 return value;
@@ -458,7 +461,10 @@ namespace IngameScript
 
             public override void DrawFuncButtons(List<MySprite> sprites, float w, float y, Channel chan)
             {
-                var strOp = (Op == ModOp.Add ? "Add " : "Mult") + "↕";
+                var strOp = "Set ↕";
+
+                     if (Op == ModOp.Add     ) strOp = "Add ↕";
+                else if (Op == ModOp.Multiply) strOp = "Mult↕";
 
                 DrawFuncButton(sprites, strOff,  0, w, y, True, Offset   .HasDeepParams(chan, CurSrc));
                 DrawFuncButton(sprites, strFreq, 1, w, y, True, Frequency.HasDeepParams(chan, CurSrc));
@@ -480,7 +486,7 @@ namespace IngameScript
                     case 3:
                     {
                         var newOp = (int)Op + 1;
-                        if (newOp > (int)ModOp.Add) newOp = 0;
+                        if (newOp > (int)ModOp.Multiply) newOp = 0;
                         Op = (ModOp)newOp;
                         g_lcdPressed.Add(lcdMain+func);
                         break;

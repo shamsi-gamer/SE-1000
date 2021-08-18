@@ -22,7 +22,7 @@ namespace IngameScript
 
                 if (h == 10)
                 { 
-                    chord.AllOctaves[chord.SelectedIndex] = !chord.AllOctaves[chord.SelectedIndex];
+                    chord.AllOctaves[chord.SelIndex] = !chord.AllOctaves[chord.SelIndex];
                     chord.UpdateFinalChord();
                 }
                 else

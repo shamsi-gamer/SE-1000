@@ -7,14 +7,14 @@ namespace IngameScript
     {
         void InitAdjustLabels()
         {
-            lblCmd1  = new Label(1, GetLabel("Command 1"), Cmd1IsBright,   CF_null,   UpdateCmd1);
-            lblCmd2  = new Label(1, GetLabel("Command 2"), Cmd2IsBright,   CF_null,   UpdateCmd2);
-                                                                                   
-            lblUp    = new Label(2, GetLabel("Up"),        AdjustIsBright, CF_null,   UpdateAdjustUp);
-            lblDown  = new Label(2, GetLabel("Down"),      AdjustIsBright, CF_null,   UpdateAdjustDown);
-            lblShift = new Label(2, GetLabel("Shift"),     AdjustIsBright, CF_null,   UpdateAdjustShift);
+            lblCmd1  = new Label(1, GetLabel("Command 1"), Cmd1IsBright,        CF_null,   UpdateCmd1);
+            lblCmd2  = new Label(1, GetLabel("Command 2"), Cmd2IsBright,        CF_null,   UpdateCmd2);
+                                                                                        
+            lblUp    = new Label(2, GetLabel("Up"),        AdjustIsBright,      CF_null,   UpdateAdjustUp);
+            lblDown  = new Label(2, GetLabel("Down"),      AdjustIsBright,      CF_null,   UpdateAdjustDown);
+            lblShift = new Label(2, GetLabel("Shift"),     AdjustShiftIsBright, CF_null,   UpdateAdjustShift);
             
-            lblCmd3  = new Label(1, GetLabel("Command 3"), Cmd3IsBright,   Cmd3IsDim, UpdateCmd3);
+            lblCmd3  = new Label(1, GetLabel("Command 3"), Cmd3IsBright,        Cmd3IsDim, UpdateCmd3);
         }
 
 
@@ -70,7 +70,10 @@ namespace IngameScript
 
         bool Cmd2IsBright(Label lbl)
         {
-            return OK(ModDestConnecting);
+            return 
+                   OK(ModDestConnecting)
+                ||    IsCurSetting(strChord)
+                   && ((TuneChord)CurSetting).Moving;
         }
 
 
@@ -79,6 +82,8 @@ namespace IngameScript
         {
             if (OK(ModDestConnecting))
                 lbl.SetText("Conn");
+            else if (IsCurSetting(strChord))
+                lbl.SetText("▲\n▼", 7, 0);
             else if (OK(CurSrc))
                 lbl.SetText("Osc ↕");
             else if (!OK(SelChan)
@@ -94,8 +99,10 @@ namespace IngameScript
         bool AdjustIsBright(Label lbl)
         {
             return
-                   CanAdjust 
-                && EditedClip.Shift;
+                      IsCurSetting(strChord)
+                   && ((TuneChord)CurSetting).Moving
+                ||    CanAdjust 
+                   && EditedClip.Shift;
         }
 
 
@@ -112,6 +119,15 @@ namespace IngameScript
         {
             var str = AdjustArrowsAreVertical ? strDown : strLeft;
             lbl.SetText(CanAdjust ? str : strEmpty);
+        }
+
+
+
+        bool AdjustShiftIsBright(Label lbl)
+        {
+            return
+                   CanAdjust 
+                && EditedClip.Shift;
         }
 
 

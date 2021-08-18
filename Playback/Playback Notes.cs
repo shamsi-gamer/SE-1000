@@ -290,15 +290,15 @@ namespace IngameScript
                 && src.Tune.On
                 && OK(src.Tune.Chord)
                 && src.Tune.Chord.On
-                && src.Tune.Chord.FinalChord.Count > 0)
-                noteNum = LimitNoteToChord(noteNum, src.Tune.Chord.FinalChord);
+                && src.Tune.Chord.CurFinalChord.Count > 0)
+                noteNum = LimitNoteToChord(noteNum, src.Tune.Chord.CurFinalChord);
 
             if (   OK(inst.Tune)
                 && inst.Tune.On
                 && OK(inst.Tune.Chord)
                 && inst.Tune.Chord.On
-                && inst.Tune.Chord.FinalChord.Count > 0)
-                noteNum = LimitNoteToChord(noteNum, inst.Tune.Chord.FinalChord);
+                && inst.Tune.Chord.CurFinalChord.Count > 0)
+                noteNum = LimitNoteToChord(noteNum, inst.Tune.Chord.CurFinalChord);
 
             return noteNum;
         }

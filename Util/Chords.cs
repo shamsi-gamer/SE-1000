@@ -156,26 +156,23 @@ namespace IngameScript
 
         void Chord(int chord)
         {
-            if (HasTagOrParent(CurSetting, strChord))
+            if (IsCurSetting(strChord))
             {
-                var tune  = (TuneChord)CurSetting;
-                var index = (int)Math.Round(tune.CurValue);
+                var tc = (TuneChord)CurSetting;
 
                 var _chord = EditedClip.Chords[chord-1];
 
                 if (_chord.Count > 0)
                 {
-                    tune.Chords[index].Clear();
+                    tc.SelChord.Clear();
 
                     foreach (var n in _chord)
-                        tune.Chords[index].Add(n);
+                        tc.SelChord.Add(n);
 
                     var inst = SelInstrument;
                     var src  = OK(CurSrc) ? inst.Sources[CurSrc] : Source_null;
 
-                    tune.FinalChord = UpdateFinalTuneChord(
-                        tune.Chords    [index], 
-                        tune.AllOctaves[index]);
+                    tc.UpdateFinalChord();
                 }
 
                 MarkChordLabel(chord-1);
@@ -250,16 +247,14 @@ namespace IngameScript
 
 
 
-        void UpdateTuneChord(TuneChord tune, int noteNum)
+        void UpdateTuneChord(TuneChord tc, int noteNum)
         {
-            var index = (int)Math.Round(tune.CurValue);
-
-            var chord = tune.Chords[index];
+            var chord = tc.SelChord;
 
             if (chord.Contains(noteNum)) chord.Remove(noteNum);
             else                         chord.Add   (noteNum);
 
-            tune.FinalChord = UpdateFinalTuneChord(chord, tune.AllOctaves[index]);
+            tc.UpdateFinalChord();
         }
 
 

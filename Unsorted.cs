@@ -88,8 +88,8 @@ namespace IngameScript
 
         static bool CanAdjust =>
                    IsCurParam()
-                || IsCurSetting(typeof(Harmonics))
-                || IsCurSetting(typeof(TuneChord))
+                || IsCurSetting(strHrm)
+                || IsCurSetting(strChord)
                 ||    EditedClip.Transpose
                    && SelChan < 0;
 

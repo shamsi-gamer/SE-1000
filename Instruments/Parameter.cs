@@ -155,8 +155,12 @@ namespace IngameScript
                     {
                         var lfo = Lfo.UpdateValue(tp);
 
-                        if (Lfo.Op == ModOp.Add) value += lfo * Math.Abs(Max-Min+IntBias);
-                        else                     value *= lfo;
+                        if (IsSettingType(this, typeof(TuneChord)))
+                            lfo = (lfo+1)/2;
+
+                             if (Lfo.Op == ModOp.Add     ) value += lfo * Math.Abs(Max-Min+IntBias);
+                        else if (Lfo.Op == ModOp.Multiply) value *= lfo;
+                        else                               value  = lfo * Math.Abs(Max-Min+IntBias);
 
                         if (ParentIsEnvelope)
                             tp.TriggerValues.Add(new TriggerValue(Path, MinMax(Min, value, Max)));

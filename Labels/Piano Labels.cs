@@ -65,7 +65,7 @@ namespace IngameScript
              
                 else if (lbl.Data == 10
                     && IsCurSetting(strChord))
-                    return ((TuneChord)CurSetting).SelectedAllOctaves;
+                    return ((TuneChord)CurSetting).SelAllOctaves;
 
                 else return False;
             }
@@ -249,9 +249,7 @@ namespace IngameScript
 
             if (IsCurParam(strChord))
             {
-                var tune  = (TuneChord)CurSetting;
-                var chord = tune.Chords[(int)Math.Round(tune.CurValue)];
-
+                var chord = ((TuneChord)CurSetting).SelChord;
                 return chord.Contains(noteNum);
             }
 
@@ -284,10 +282,8 @@ namespace IngameScript
 
             if (IsCurParam(strChord))
             {
-                var tune  = (TuneChord)CurSetting;
-                var chord = tune.Chords[(int)Math.Round(tune.CurValue)];
-
-                return tune.FinalChord.Contains(noteNum);
+                var tc = (TuneChord)CurSetting;
+                return tc.SelFinalChord.Contains(noteNum);
             }
             else if (OK(g_notes.FindIndex(n => NoteIsTriggered(noteNum, n, out note))))
                 return True; // note is being played
