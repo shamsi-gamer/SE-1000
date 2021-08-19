@@ -464,7 +464,7 @@ namespace IngameScript
         void Move(Clip clip, bool right)
         {
             if (   OK(clip.EditPos)
-                || clip.EditNotes.Count > 0
+                //|| clip.EditNotes.Count > 0
                 || IsCurSetting(typeof(Harmonics))) 
                  MoveEdit(clip, right ? 1 : -1);
             else if (clip.Note)
@@ -557,13 +557,20 @@ namespace IngameScript
         {
             var notes = new List<Note>();
 
-            int first, last;
-            clip.GetPatterns(clip.EditPat, out first, out last);
 
+            if (   OK(clip.EditPos)
+                && clip.EditNotes.Count > 0)
+                notes.AddRange(clip.EditNotes);
 
-            for (int p = first; p <= last; p++)
-                foreach (var note in clip.Patterns[p].Channels[clip.CurChan].Notes)
-                    notes.Add(note);
+            else
+            { 
+                int first, last;
+                clip.GetPatterns(clip.EditPat, out first, out last);
+
+                for (int p = first; p <= last; p++)
+                    foreach (var note in clip.Patterns[p].Channels[clip.CurChan].Notes)
+                        notes.Add(note);
+            }
 
 
             foreach (var note in notes)
