@@ -103,33 +103,38 @@ namespace IngameScript
 
 
 
-            public static float UpdateValue(long lTime, int noteLen, float str, float a, float d, float s, float r, float t)
+            public static float UpdateValue(long lTime, int noteLen, float str, float a, float d, float s, float r, float trig)
             {
-                var lt = (lTime-str)    / FPS;
-                var nl = (float)noteLen / FPS;
+                var lt = lTime   / (float)FPS;
+                var nl = noteLen / (float)FPS;
 
                 if (nl < a + d)
                     nl = a + d;
 
-                if (lt >= nl + r)
+                
+                if (lt >= str + nl + r)
                     return 0;
                 
-                else if (lt >= nl) // release
+                else if (lt >= str + nl) // release
                 {
                          if (a   >= nl) s  = nl/a;
                     else if (a+d >= nl) s += (1 - (nl-a)/d) * (1-s);
 
-                    return t * s * (1 - MinMax(0, (float)Math.Pow((lt-nl)/r, 2), 1));
+                    return trig * s * (1 - MinMax(0, (float)Math.Pow((lt-str-nl)/r, 2), 1));
                 }
-                else if (lt >= a + d) // sustain
-                    return t * s;
+                else if (lt >= str + a + d) // sustain
+                    return trig * s;
                 
-                else if (lt >= a) // decay
-                    return t * (s + (1 - (float)Math.Pow((lt-a)/d, 2)) * (1-s));
+                else if (lt >= str + a) // decay
+                    return trig * (s + (1 - (float)Math.Pow((lt-str-a)/d, 2)) * (1-s));
                 
-                else if (   lt >= 0
+                else if (   lt >= str
                          && a  >  0) // attack 
-                    return t * lt/a;
+                    return trig * (lt-str)/a;
+
+                else if (lt < str)
+                    return 0;
+
 
                 return 0;
             }
@@ -359,7 +364,7 @@ namespace IngameScript
                 GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), False, out p_, out p0, out p1, out p2, out p3, out p4);
                 DrawEnvelopeSupportsAndInfo(sprites, p0, p1, p2, p3, p4, y0, h0, isStr, isTrig, isAtt, isDec, isSus, isRel);
 
-                FillRect(sprites, p0.X, y0 + h0, w0, -CurValue*h/2, color3);
+                FillRect(sprites, p_.X, y0 + h0, w0, -CurValue*h/2, color3);
 
                 GetEnvelopeCoords(x0, y0, w0, h0, Math.Min(dp.Volume, 1), True, out p_, out p0, out p1, out p2, out p3, out p4);
                 DrawEnvelope(sprites, p_, p0, p1, p2, p3, p4, color4, False, False, False, False, False, False, Decay.CurValue);

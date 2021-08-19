@@ -229,7 +229,8 @@ namespace IngameScript
 
             public float AdjustValue(float value, float delta, bool shift, bool scale = False)
             {
-                     if (Tag == strAtt
+                     if (Tag == strStr)          ((Envelope)Parent).TrigStart   = float_NaN;
+                else if (Tag == strAtt
                       && HasTag(Parent, strEnv)) ((Envelope)Parent).TrigAttack  = float_NaN;
                 else if (Tag == strDec)          ((Envelope)Parent).TrigDecay   = float_NaN;
                 else if (Tag == strSus)          ((Envelope)Parent).TrigSustain = float_NaN;
@@ -252,8 +253,8 @@ namespace IngameScript
                     if (Tag == strFreq)
                     { 
                         dv *= (float)Math.Pow(value, 1.25f);
-                        //var _delta = 1f/FPS * (value + dv);
-                        //((LFO)Parent).Delta = _delta;
+                        var _delta = 1f/FPS * (value + dv);
+                        ((LFO)Parent).Delta = _delta;
                     }
 
                     return value + dv;
@@ -565,6 +566,7 @@ namespace IngameScript
 
                 if (   Tag == strLow
                     || Tag == strHigh
+                    || Tag == strStr
                     || Tag == strAtt
                     || Tag == strDec
                     || Tag == strSus

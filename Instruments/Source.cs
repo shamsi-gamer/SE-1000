@@ -416,7 +416,7 @@ namespace IngameScript
 
                 if (Oscillator == OscSample)
                 {
-                    DrawString(sprites, Oscillator.ShortName, x + 100, y + sh/2 - 10, 0.6f, CurSrc == Index ? col_1 : col_0, TA_CENTER);
+                    DrawString(sprites, Oscillator.ShortName, x + 100, y + sh/2 - 10, 0.6f, active ? col_1 : col_0, TA_CENTER);
                 }
                 else
                 { 

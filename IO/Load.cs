@@ -124,10 +124,7 @@ namespace IngameScript
                 SetAnyEditedClip();
             
 
-            if (g_curPath != "")
-                SwitchToSetting(EditedClip, g_curPath);
-            else
-                UpdateInstDisplay(); // SwitchToSetting() already does this
+            SwitchToSetting(EditedClip, g_curPath);
 
 
             if (   OK(g_copyTrack) 

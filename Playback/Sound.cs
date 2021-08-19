@@ -268,13 +268,14 @@ namespace IngameScript
 
             void UpdateSpeakers(float vol)
             {
-                var pow = 4;
-
-                var v = (float)Math.Pow(vol, pow);
+                var v = PrepareVolume(vol);
 
                 if (Speakers.Count == 0)
                 {
-                    while (v-- > 0)
+                    var loopable = OscIsLoopable(Source.Oscillator);
+
+                    while ( loopable && v-- >  0
+                        || !loopable && v-- >= 0)
                     { 
                         var spk = g_sm.GetSpeaker();
 
@@ -290,7 +291,7 @@ namespace IngameScript
                 }
 
 
-                v = (float)Math.Pow(vol, pow);
+                v = PrepareVolume(vol);
 
                 foreach (var spk in Speakers)
                 {
@@ -299,17 +300,33 @@ namespace IngameScript
                     // if sample is ending, restart it 
                     if (   (  !OK(NoteSample) 
                             || ElapsedTime >= (NoteSample.Length - 0.1f) * FPS)
-                        && Source.Oscillator != OscSlowSweepDown
-                        && Source.Oscillator != OscSlowSweepUp
-                        && Source.Oscillator != OscFastSweepDown
-                        && Source.Oscillator != OscFastSweepUp
-                        && Source.Oscillator != OscSample)
+                        && OscIsLoopable(Source.Oscillator))
                     {
                         // TODO make this smooth
                         spk.Block.Stop();
                         spk.Block.Play();
                     }
                 }        
+            }
+
+
+
+            bool OscIsLoopable(Oscillator osc)
+            {
+                return 
+                       osc != OscSlowSweepDown
+                    && osc != OscSlowSweepUp
+                    && osc != OscFastSweepDown
+                    && osc != OscFastSweepUp
+                    && osc != OscSample;
+            }
+
+
+
+            float PrepareVolume(float vol)
+            {
+                return (float)Math.Pow(vol, 3);
+                //return (float)(1 - Math.Cos(Tau/4 * vol));
             }
         }
     }

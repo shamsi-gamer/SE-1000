@@ -29,8 +29,12 @@ namespace IngameScript
                 EditPattern.Channels, 
                 chan => chan.Instrument == inst);
 
+
             if (!OK(CurChan))
-                CurChan = 0;
+            { 
+                CurChan = 
+                SelChan = 0;
+            }
 
 
             UpdateInstDisplay();
