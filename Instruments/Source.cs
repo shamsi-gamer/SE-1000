@@ -68,7 +68,17 @@ namespace IngameScript
 
             public string GetSample(int note)
             {
-                return g_samples[Oscillator.Samples[note - 12*NoteScale].Index];
+                note -= 12*NoteScale;
+
+                if (Oscillator == OscSample)
+                    note -= 12*NoteScale;
+                
+                note = Math.Max(0, note);
+
+                if (Oscillator == OscSample)
+                    note /= NoteScale;
+
+                return g_samples[Oscillator.Samples[note].Index];
             }
 
 
@@ -173,8 +183,6 @@ namespace IngameScript
                 var _relLen = triggerValues.Find(v => v.Path == relPath);
                 var  relLen = (int)((_relLen?.Value ?? 0) * FPS);
 
-                var sample = GetSample(noteNum);
-
 
                 if (   OK(Harmonics)
                     && Harmonics.On)
@@ -187,7 +195,7 @@ namespace IngameScript
                         return;
 
                     _sounds.Add(new Sound(
-                        sample,
+                        GetSample(noteNum),
                         note.Channel,
                         note.iChan,
                         sndTime,
@@ -408,7 +416,7 @@ namespace IngameScript
 
                 if (Oscillator == OscSample)
                 {
-                    DrawString(sprites, Oscillator.ShortName, x + 10, y + sh/2 - 10, 0.7f, CurSrc == Index ? col_1 : col_0, TA_CENTER);
+                    DrawString(sprites, Oscillator.ShortName, x + 100, y + sh/2 - 10, 0.6f, CurSrc == Index ? col_1 : col_0, TA_CENTER);
                 }
                 else
                 { 

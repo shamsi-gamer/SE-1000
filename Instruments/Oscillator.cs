@@ -86,7 +86,7 @@ namespace IngameScript
             case   9: OscFastSweepDown   = new Oscillator(OscType.FastSweepDown,   "Sw▼▼",  strFastDown);        break;
             case  10: OscSlowSweepUp     = new Oscillator(OscType.SlowSweepUp,     "Sw ▲",  strSlowUp);          break;
             case  11: OscFastSweepUp     = new Oscillator(OscType.FastSweepUp,     "Sw▲▲",  strFastUp);          break;
-            case  12: OscPulse           = new Oscillator(OscType.Pulse,           "Pls",   strPulse);             break;
+            case  12: OscPulse           = new Oscillator(OscType.Pulse,           "Pls",   strPulse);           break;
             case  13: OscSample          = new Oscillator(OscType.Sample,          "Smpl");                      break;
             }
         }

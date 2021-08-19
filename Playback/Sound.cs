@@ -302,7 +302,8 @@ namespace IngameScript
                         && Source.Oscillator != OscSlowSweepDown
                         && Source.Oscillator != OscSlowSweepUp
                         && Source.Oscillator != OscFastSweepDown
-                        && Source.Oscillator != OscFastSweepUp)
+                        && Source.Oscillator != OscFastSweepUp
+                        && Source.Oscillator != OscSample)
                     {
                         // TODO make this smooth
                         spk.Block.Stop();
