@@ -139,6 +139,19 @@ namespace IngameScript
 
 
 
+        static bool ShowPianoForToggle { get 
+        {
+            return
+                      EditedClip.Piano
+                ||    EditedClip.ChordEdit 
+                   && OK(EditedClip.Chord)
+                ||    IsCurSetting(strChord)
+                   && !(   EditedClip.ParamKeys 
+                        || EditedClip.ParamAuto);
+        }}
+
+
+
         static bool ShowPianoView =>
                   EditedClip.Piano
                && LockView != 1

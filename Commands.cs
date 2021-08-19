@@ -486,15 +486,10 @@ namespace IngameScript
                     var src = SelSource;
                     src.On = !src.On;
                 }
-                else
+                else if (!OK(SelChan))
                 { 
-                    if (!OK(SelChan))
-                    { 
-                        if (LockView == 0)
-                            LockView = ShowPiano ? 2 : 1;
-                        else
-                            LockView = 0;
-                    }
+                    if (LockView == 0) LockView = ShowPianoForToggle ? 2 : 1;
+                    else               LockView = 0;
                 }
             }
         }

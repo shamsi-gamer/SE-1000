@@ -133,10 +133,10 @@ namespace IngameScript
 
             if (ci == 0) SetLabelColor(new Color(255,   0,   0), 0.35f);
             if (ci == 1) SetLabelColor(new Color(255,  92,   0), 0.35f);
-            if (ci == 2) SetLabelColor(new Color(255, 255,   0), 0.4f); 
+            if (ci == 2) SetLabelColor(new Color(255, 255,   0), 0.4f ); 
             if (ci == 3) SetLabelColor(new Color(0,   255,   0), 0.35f);
             if (ci == 4) SetLabelColor(new Color(0,    40, 255));       
-            if (ci == 5) SetLabelColor(new Color(128,   0, 255), 0.4f); 
+            if (ci == 5) SetLabelColor(new Color(128,   0, 255), 0.4f ); 
             if (ci == 6) SetLabelColor(new Color(255, 255, 255), 0.35f);
         }
 

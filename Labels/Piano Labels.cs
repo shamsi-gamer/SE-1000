@@ -51,7 +51,7 @@ namespace IngameScript
 
         bool PianoHighIsBright(Label lbl)
         {
-            if (ShowPiano)
+            if (ShowPianoForToggle)
             { 
                 if (lbl.Data < 10)
                 { 
@@ -64,7 +64,7 @@ namespace IngameScript
                 }
              
                 else if (lbl.Data == 10
-                    && IsCurSetting(strChord))
+                      && IsCurSetting(strChord))
                     return ((TuneChord)CurSetting).SelAllOctaves;
 
                 else return False;
@@ -79,9 +79,9 @@ namespace IngameScript
         bool PianoHighIsDim(Label lbl)
         {
             return
-                      ShowPiano
+                      ShowPianoForToggle
                    && (lbl.Data < 10 && NoteIsDim(HighToNote(lbl.Data, EditedClip.HalfSharp)))
-                ||   !ShowPiano
+                ||   !ShowPianoForToggle
                    && g_copyChans.Count > 0
                    && (lbl == lblHigh[0] || lbl == lblHigh[1]);
         }
@@ -90,7 +90,7 @@ namespace IngameScript
 
         void UpdatePianoHigh(Label lbl)
         {
-            if (ShowPiano)
+            if (ShowPianoForToggle)
             {
                 if (lbl.Data < 10)
                 { 
@@ -136,8 +136,8 @@ namespace IngameScript
 
         void UpdatePianoHighColor(Label lbl)
         {
-            lbl.BackColor = 
-                   ShowPiano 
+            lbl.BackColor =
+                   ShowPianoForToggle
                 && lbl.Data < 10
                 ? color1 
                 : color0;
@@ -172,7 +172,7 @@ namespace IngameScript
             var halfSharp = False;
 
             var bright =
-                ShowPiano
+                ShowPianoForToggle
                 ?    -lbl.Data == 15 && EditedClip.HalfSharp
                   || -lbl.Data <  15 && NoteIsBright(LowToNote(-lbl.Data, EditedClip.HalfSharp), out halfSharp)
                 : StepIsBright(lbl);
@@ -186,8 +186,8 @@ namespace IngameScript
 
         bool PianoLowIsDim(Label lbl)
         {
-            return 
-                   ShowPiano 
+            return
+                   ShowPianoForToggle
                 && -lbl.Data < 15
                 && NoteIsDim(LowToNote(-lbl.Data, EditedClip.HalfSharp));
         }
@@ -196,11 +196,11 @@ namespace IngameScript
 
         void UpdatePianoLow(Label lbl)
         {
-            if (    ShowPiano
+            if (    ShowPianoForToggle
                 && -lbl.Data == 15)
                 lbl.SetText("‡", 8, 17); 
 
-            else if (ShowPiano
+            else if (ShowPianoForToggle
                  && -lbl.Data < 15)
             {
                 var _halfSharp = lbl.Data2 != 0;
@@ -226,7 +226,7 @@ namespace IngameScript
 
         void UpdatePianoLowColor(Label lbl)
         {
-            if (ShowPiano)
+            if (ShowPianoForToggle)
                 lbl.BackColor = -lbl.Data < 15 ? color1 : color0;
 
             else

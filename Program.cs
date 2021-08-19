@@ -7,7 +7,7 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        const int                     OscCount           = 13,
+        const int                     OscCount           = 14,
                                       
                                       NoteScale          = 2;
         const float                   ControlSensitivity = 0.01f;

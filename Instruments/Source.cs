@@ -441,14 +441,7 @@ namespace IngameScript
                 {
                     float wf;
                 
-                    /*if (Oscillator == OscClick)
-                    { 
-                             if (f == 0   ) wf =  0;
-                        else if (f == df  ) wf =  1;
-                        else if (f == df*2) wf = -1;
-                        else                wf =  0;
-                    }
-                    else*/ if (Oscillator == OscPulse)
+                    if (Oscillator == OscPulse)
                     { 
                         var _f = f % (1/4f);
 

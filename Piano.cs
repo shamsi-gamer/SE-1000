@@ -9,11 +9,8 @@ namespace IngameScript
     {
         void High(int h)
         {
-            var tune = SelSource    ?.Tune
-                    ?? SelInstrument?.Tune;
-
-            if (h == 11) // here and not in BeatHigh() because TogglePiano() needs to know about tune
-                TogglePiano(tune);
+            if (h == 11)
+                TogglePiano();
 
             else if (IsCurSetting(strChord)
                   && !(EditedClip.ParamKeys || EditedClip.ParamAuto))
@@ -96,16 +93,9 @@ namespace IngameScript
 
 
 
-        void TogglePiano(Tune tune)
+        void TogglePiano()
         { 
-            //if (IsCurSetting(strChord))
-            //{
-            //    EditedClip.Settings.RemoveLast();
-            //    CurSet--;
-            //    EditedClip.Piano = False;
-            //}
-            //else
-                EditedClip.Piano = !EditedClip.Piano;
+            EditedClip.Piano = !EditedClip.Piano;
 
             if (EditedClip.Piano)
                 EditedClip.Pick = False;
