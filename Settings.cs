@@ -32,10 +32,8 @@ namespace IngameScript
             if (!OK(CurChan))
                 CurChan = 0;
 
-            UpdateInstOff(CurChan);
 
-            SetInstName(True);
-            g_inputValid = False;
+            UpdateInstDisplay();
 
 
             int iSrc = -1;

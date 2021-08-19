@@ -6,7 +6,7 @@ namespace IngameScript
     partial class Program
     {
         const  float            float_Inf = 65536f;
-        static float[]          g_steps   = { 0.25f, 0.5f, 1, 2, 4, 8, 16, float_Inf };
+        static float[]          g_steps   = { 0.25f, 0.5f, 1, 2, 3, 4, 6, 8, 12, 16, float_Inf };
                                 
                                 
         static long             g_time           = -1; // in ticks

@@ -47,6 +47,16 @@ namespace IngameScript
 
 
 
+        static void UpdateInstDisplay()
+        {
+            UpdateInstOff(CurChan);
+
+            SetInstName(True);
+            g_inputValid = False;
+        }
+
+
+
         static void UpdateInstOff(int ch)
         {
             var curInst = Instruments.IndexOf(EditPattern.Channels[ch].Instrument);

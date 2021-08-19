@@ -8,6 +8,7 @@ namespace IngameScript
         static bool g_inputValid = True;
 
 
+
         static void UpdateInstName()
         {
             if (   !g_inputValid
@@ -34,15 +35,17 @@ namespace IngameScript
         }
 
 
+
         static void SetInstName(bool add = True)
         {
             if (    OK(SelChan)
                 &&  OK(EditPat)
+                &&  OK(SelChan)
                 && !OK(CurSrc)
-                && !OK(CurSet)
-                &&  OK(SelChan))
+                && !OK(CurSet))
                 dspMain.Panel.WriteText(add ? SelChannel.Instrument.Name : "");
         }
+
 
 
         static void UpdateClipName()
@@ -52,6 +55,7 @@ namespace IngameScript
             if (ShowClip) EditedClip.Name = name;
             else          SessionName     = name;
         }
+
 
 
         static void UpdateClipDisplay(Clip clip)

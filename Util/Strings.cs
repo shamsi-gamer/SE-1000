@@ -12,11 +12,12 @@
                                         
                      strBias            = "Bias",
                      strEnv             = "Env",
-                     strTrig            = "Trig",
+                     strStr             = "Str",
                      strAtt             = "Att",
                      strDec             = "Dec",
                      strSus             = "Sus",
                      strRel             = "Rel",
+                     strTrig            = "Trig",
                                         
                      strLfo             = "LFO",
                      strAmp             = "Amp",

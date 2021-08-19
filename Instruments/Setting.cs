@@ -243,11 +243,12 @@ namespace IngameScript
             case strLow:  return "Low Note";
             case strHigh: return "High Note";
             case strEnv:  return "Envelope";
-            case strTrig: return "Trigger";
-            case strAtt:  return "Attack";
+            case strStr:  return "Start";
+            case strAtt:  return "Offset";
             case strDec:  return "Decay";
             case strSus:  return "Sustain";
             case strRel:  return "Release";
+            case strTrig: return "Trigger";
 
             case strLfo:  return strLfo;
             case strAmp:  return "Amplitude";
@@ -288,8 +289,9 @@ namespace IngameScript
             case strHigh:  return new Parameter(tag,    36,        119,   0,     1,    1,     12,   119,    False, parent, inst, src);
                            
             case strEnv:   return new Envelope(parent, inst, src);                                  
-            case strTrig:  return new Parameter(tag,    0,           1,   0,     1,    0.01f,  0.1f,  1,    False, parent, inst, src);
                            
+            case strStr:   return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, False, parent, inst, src);
+            case strTrig:  return new Parameter(tag,    0,           1,   0,     1,    0.01f,  0.1f,  1,    False, parent, inst, src);
             case strAtt:   return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0,    False, parent, inst, src);
             case strDec:   return new Parameter(tag,    0,          10,   0,     1,    0.01f,  0.1f,  0.2f, False, parent, inst, src);
             case strSus:   return new Parameter(tag,    0,           1,   0.01f, 1,    0.01f,  0.1f,  0.1f, False, parent, inst, src);
