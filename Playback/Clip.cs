@@ -34,7 +34,7 @@ namespace IngameScript
                                  AutoCue;
 
             public bool          AllChan,
-                                 RndInst,
+                                 UseInst,
                                  
                                  Accent,
                                  Pick,
@@ -149,7 +149,7 @@ namespace IngameScript
                 Out             = 
                                 
                 AllChan         = 
-                RndInst         = 
+                UseInst         = 
                                 
                 Accent          =
                 Piano           = 
@@ -254,7 +254,7 @@ namespace IngameScript
                 Out             = clip.Out;
                                 
                 AllChan         = clip.AllChan;
-                RndInst         = clip.RndInst;
+                UseInst         = clip.UseInst;
                                 
                 Accent          = clip.Accent;
                 Piano           = clip.Piano;
@@ -666,7 +666,7 @@ namespace IngameScript
                     foreach (var ch in pat.Channels)
                         chans.Add(ch);
                 }
-                else if (RndInst)
+                else if (UseInst)
                 {
                     foreach (var ch in pat.Channels)
                         if (ch.Instrument == refInst)

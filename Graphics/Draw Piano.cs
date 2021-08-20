@@ -124,7 +124,7 @@ namespace IngameScript
             for (int ch = 0; ch < g_nChans; ch++)
             {
                 if (   ch != CurChan
-                    && (  !clip.RndInst
+                    && (  !clip.UseInst
                         || clip.Patterns[p].Channels[ch].Instrument == clip.Patterns[p].Channels[CurChan].Instrument))
                     DrawChanNotes(sprites, x, y, w, h, clip, p, gs, ch, color3);
             }

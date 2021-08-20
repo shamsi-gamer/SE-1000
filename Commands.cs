@@ -543,7 +543,7 @@ namespace IngameScript
                 lblCmd2.Mark();
             }
             else if (!OK(SelChan)
-                   && EditedClip.RndInst
+                   && EditedClip.UseInst
                    && OK(Array.Find(EditPattern.Channels, c => c.Instrument == CurChannel.Instrument)))
             { 
                 CollapseChannels();
@@ -936,7 +936,7 @@ namespace IngameScript
 
         static void PasteChan(Channel srcChan, Channel dstChan)
         { 
-            if (EditedClip.RndInst)
+            if (EditedClip.UseInst)
                 dstChan.Instrument = srcChan.Instrument;
 
             foreach (var note in srcChan.Notes)

@@ -346,7 +346,7 @@ namespace IngameScript
             return
                    lbl.Data ==  2 && EditedClip.Accent
                 || lbl.Data ==  3 && EditedClip.AllChan
-                || lbl.Data ==  4 && EditedClip.RndInst
+                || lbl.Data ==  4 && EditedClip.UseInst
                 || lbl.Data == 10 && EditedClip.Pick;
         }
 

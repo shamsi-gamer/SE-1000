@@ -265,7 +265,7 @@ namespace IngameScript
 
         void RandomInstrument()
         {
-            EditedClip.RndInst = !EditedClip.RndInst;
+            EditedClip.UseInst = !EditedClip.UseInst;
         }
 
 
@@ -298,7 +298,7 @@ namespace IngameScript
 
         void ClearNotes()
         {
-            if (   EditedClip.RndInst
+            if (   EditedClip.UseInst
                 && OK(SelChan))
                 return;
 

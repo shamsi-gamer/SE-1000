@@ -50,7 +50,7 @@ namespace IngameScript
                 Out         = ReadBit(f, d++);
                             
                 AllChan     = ReadBit(f, d++);
-                RndInst     = ReadBit(f, d++);
+                UseInst     = ReadBit(f, d++);
                             
                 Accent      = ReadBit(f, d++);
                 Pick        = ReadBit(f, d++);

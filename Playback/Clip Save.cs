@@ -34,7 +34,7 @@
                 WriteBit(ref f, Out,         d++);
                                              
                 WriteBit(ref f, AllChan,     d++);
-                WriteBit(ref f, RndInst,     d++);
+                WriteBit(ref f, UseInst,     d++);
 
                 WriteBit(ref f, Accent,      d++);
                 WriteBit(ref f, Pick,        d++);

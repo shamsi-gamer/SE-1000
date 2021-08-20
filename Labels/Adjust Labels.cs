@@ -87,7 +87,7 @@ namespace IngameScript
             else if (OK(CurSrc))
                 lbl.SetText("Osc ↕");
             else if (!OK(SelChan)
-                   && EditedClip.RndInst
+                   && EditedClip.UseInst
                    && OK(Array.Find(EditPattern.Channels, c => c.Instrument == CurChannel.Instrument)))
                 lbl.SetText("Clps");
             else
