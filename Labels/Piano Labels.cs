@@ -383,19 +383,27 @@ namespace IngameScript
         void UpdateOctaveLabel(Label lbl)
         {
             int val;
+            var suf = "";
 
-                 if (EditedClip.Strum) val = EditedClip.ChordStrum;
-            else if (ShowPiano)        val = CurChannel.Transpose;
-            else                       val = CurChannel.Shuffle;
+                 if (EditedClip.Accent) { val = (int)Math.Round((CurChannel.AccentScale - 1) * 100); suf = "%"; }
+            else if (EditedClip.Strum)    val = EditedClip.ChordStrum;
+            else if (ShowPiano)           val = CurChannel.Transpose;
+            else                          val = CurChannel.Shuffle;
 
-            lbl.SetText((val > 0 ? "+" : "") + S(val));
+            lbl.SetText(
+                  (val > 0 ? "+" : "") 
+                + S(val) 
+                + suf);
         }
 
 
 
         void UpdateShuffleLabel(Label lbl)
         {
-            if (EditedClip.Strum)
+            if (EditedClip.Accent)
+                lbl.SetText("Acc");
+
+            else if (EditedClip.Strum)
                 lbl.SetText("Strum", 9, 14);
 
             else if (ShowPiano)

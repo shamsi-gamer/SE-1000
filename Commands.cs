@@ -857,6 +857,13 @@ namespace IngameScript
                 }
             }
 
+            
+            
+            if (   ch != CurChan
+                && EditedClip.Accent)
+                EditedClip.Accent = false;
+
+
             CurChan = ch;
 
             if (OK(CurSrc))

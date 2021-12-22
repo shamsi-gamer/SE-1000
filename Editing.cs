@@ -505,8 +505,8 @@ namespace IngameScript
         void Move(Clip clip, bool right)
         {
             if (   OK(clip.EditPos)
-                //|| clip.EditNotes.Count > 0
                 || IsCurSetting(typeof(Harmonics))) 
+                //|| clip.EditNotes.Count > 0)
                  MoveEdit(clip, right ? 1 : -1);
             else if (clip.Note)
             { 
@@ -699,11 +699,10 @@ namespace IngameScript
 
         static void SetTranspose(int d)
         {
-            if (EditedClip.Strum)
-                EditedClip.ChordStrum = MinMax(0, EditedClip.ChordStrum + d, 16);
-
-            else if (ShowPiano) SetTranspose(EditedClip, CurChan, d);
-            else                SetShuffle(CurChan, d);
+                 if (EditedClip.Accent) CurChannel.AccentScale = MinMax(1, CurChannel.AccentScale + d * AccentStep, 2);
+            else if (EditedClip.Strum)  EditedClip.ChordStrum  = MinMax(0, EditedClip.ChordStrum + d, 16);
+            else if (ShowPiano)         SetTranspose(EditedClip, CurChan, d);
+            else                        SetShuffle(CurChan, d);
 
             if (d > 0) lblOctaveUp  .Mark();
             else       lblOctaveDown.Mark();

@@ -11,6 +11,9 @@ namespace IngameScript
                                       
                                       NoteScale          = 2;
         const float                   ControlSensitivity = 0.01f;
+
+        const float                   AccentStep         = 0.05f;
+
                                          
                                          
         static  List<string>          g_samples = new List<string>();
