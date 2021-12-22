@@ -89,6 +89,7 @@
                                                                         
                 case "step":        Step(EditedClip, CurChan);          break;
                 case "hold":        Hold(EditedClip);                   break;
+                case "scale":       Scale(EditedClip);                  break;
                                                                         
                 case "left":        Move(EditedClip, False);            break;
                 case "right":       Move(EditedClip, True);             break;

@@ -38,47 +38,49 @@ namespace IngameScript
 
                 var d = 0;
 
-                Loop        = ReadBit(f, d++);
-                Block       = ReadBit(f, d++);
-                AllPats     = ReadBit(f, d++);
-                Follow      = ReadBit(f, d++);
-                AutoCue     = ReadBit(f, d++);
-                            
-                MovePat     = ReadBit(f, d++);
-                            
-                In          = ReadBit(f, d++);
-                Out         = ReadBit(f, d++);
-                            
-                AllChan     = ReadBit(f, d++);
-                UseInst     = ReadBit(f, d++);
-                            
-                Accent      = ReadBit(f, d++);
-                Pick        = ReadBit(f, d++);
-                Piano       = ReadBit(f, d++);
-                            
-                Transpose   = ReadBit(f, d++);
-                Strum       = ReadBit(f, d++);
-                            
-                Shift       = ReadBit(f, d++);
-                MixerShift  = ReadBit(f, d++);
-                            
-                Hold        = ReadBit(f, d++);
-                Note        = ReadBit(f, d++);
-                            
-                ChordMode   = ReadBit(f, d++);
-                ChordEdit   = ReadBit(f, d++);
-                ChordAll    = ReadBit(f, d++);
-                            
-                HalfSharp   = ReadBit(f, d++);
-                            
-                ParamKeys   = ReadBit(f, d++);
-                ParamAuto   = ReadBit(f, d++);
-                            
-                SetMemPat   = ReadBit(f, d++);
-                            
-                Move        = ReadBit(f, d++);
-                SetOrPat    = ReadBit(f, d++);
-                SetMemSet   = ReadBit(f, d++);
+                Loop       = ReadBit(f, d++);
+                Block      = ReadBit(f, d++);
+                AllPats    = ReadBit(f, d++);
+                Follow     = ReadBit(f, d++);
+                AutoCue    = ReadBit(f, d++);
+                           
+                MovePat    = ReadBit(f, d++);
+                           
+                In         = ReadBit(f, d++);
+                Out        = ReadBit(f, d++);
+                           
+                AllChan    = ReadBit(f, d++);
+                UseInst    = ReadBit(f, d++);
+                           
+                Accent     = ReadBit(f, d++);
+                Pick       = ReadBit(f, d++);
+                Piano      = ReadBit(f, d++);
+                           
+                Transpose  = ReadBit(f, d++);
+                Strum      = ReadBit(f, d++);
+                           
+                Shift      = ReadBit(f, d++);
+                MixerShift = ReadBit(f, d++);
+                           
+                Hold       = ReadBit(f, d++);
+                Note       = ReadBit(f, d++);
+                           
+                ChordMode  = ReadBit(f, d++);
+                ChordEdit  = ReadBit(f, d++);
+                ChordAll   = ReadBit(f, d++);
+                           
+                HalfSharp  = ReadBit(f, d++);
+                           
+                ParamKeys  = ReadBit(f, d++);
+                ParamAuto  = ReadBit(f, d++);
+                           
+                SetMemPat  = ReadBit(f, d++);
+                           
+                Move       = ReadBit(f, d++);
+                SetOrPat   = ReadBit(f, d++);
+                SetMemSet  = ReadBit(f, d++);
+
+                Scale      = ReadBit(f, d++);
 
                 return True;
             }

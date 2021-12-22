@@ -47,6 +47,8 @@ namespace IngameScript
                                  Move      = False,
                                  
                                  Hold,
+                                 Scale,
+
                                  Note,
                                  
                                  ChordMode,
@@ -162,6 +164,8 @@ namespace IngameScript
                 Move            =
 
                 Hold            = 
+                Scale           =
+
                 Pick            = 
                                 
                 ChordMode       =
@@ -264,6 +268,8 @@ namespace IngameScript
                 Move            = clip.Move;
 
                 Hold            = clip.Hold;
+                Scale           = clip.Scale;
+
                 Pick            = clip.Pick;
                                 
                 ChordMode       = clip.ChordMode;
@@ -391,6 +397,7 @@ namespace IngameScript
                 LastEditPos = float_NaN;
 
                 Inter       = Note_null;
+
                 EditNotes.Clear();
             }
 

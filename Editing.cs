@@ -97,6 +97,47 @@ namespace IngameScript
 
 
 
+        void Scale(Clip clip)
+        {
+            //if (OK(clip.EditPos))
+            //{
+            //    if (clip.EditNotes.Count > 0)
+            //    {
+            //        EditedClip.Hold = !EditedClip.Hold;
+            //    }
+            //    else
+            //    {
+            //        if (lastNotes.Count > 0)
+            //        {
+            //            for (int i = 0; i < lastNotes.Count; i++)
+            //            { 
+            //                var lastNote = lastNotes[i];
+
+            //                var pat = clip.Patterns.FindIndex(p => p.Channels.Contains(lastNote.Channel));
+            //                if (pat < 0) return;
+
+            //                lastNote.StepLength = Math.Min(
+            //                    clip.EditPos - (pat * g_patSteps + lastNote.Step) + EditedClip.EditStep + ChordStrum(i),
+            //                    10f * FPS / TicksPerStep);
+
+            //                TriggerNote(clip, lastNote.Number, lastNote.iChan, EditedClip.EditStep, ChordStrum(i));
+            //            }
+
+            //            MoveEdit(clip, 1);
+            //        }
+            //    }
+            //}
+            //else
+            //{
+                EditedClip.Scale = !EditedClip.Scale;
+
+                //if (!EditClip.Hold)
+                //    StopCurrentNotes(clip.CurChan);
+            //}
+        }
+
+
+
         static void Interpolate(Clip clip)
         {
             if (!OK(clip.EditPos))

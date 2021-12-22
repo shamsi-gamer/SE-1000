@@ -22,47 +22,49 @@
                 uint f = 0;
                 var  d = 0;
 
-                WriteBit(ref f, Loop,        d++);
-                WriteBit(ref f, Block,       d++);
-                WriteBit(ref f, AllPats,     d++);
-                WriteBit(ref f, Follow,      d++);
-                WriteBit(ref f, AutoCue,     d++);
-                                             
-                WriteBit(ref f, MovePat,     d++);
+                WriteBit(ref f, Loop,       d++);
+                WriteBit(ref f, Block,      d++);
+                WriteBit(ref f, AllPats,    d++);
+                WriteBit(ref f, Follow,     d++);
+                WriteBit(ref f, AutoCue,    d++);
+                                            
+                WriteBit(ref f, MovePat,    d++);
 
-                WriteBit(ref f, In,          d++);
-                WriteBit(ref f, Out,         d++);
-                                             
-                WriteBit(ref f, AllChan,     d++);
-                WriteBit(ref f, UseInst,     d++);
+                WriteBit(ref f, In,         d++);
+                WriteBit(ref f, Out,        d++);
+                                            
+                WriteBit(ref f, AllChan,    d++);
+                WriteBit(ref f, UseInst,    d++);
 
-                WriteBit(ref f, Accent,      d++);
-                WriteBit(ref f, Pick,        d++);
-                WriteBit(ref f, Piano,       d++);
-                                             
-                WriteBit(ref f, Transpose,   d++);
-                WriteBit(ref f, Strum,       d++);
-                                             
-                WriteBit(ref f, Shift,       d++);
-                WriteBit(ref f, MixerShift,  d++);
-                                             
-                WriteBit(ref f, Hold,        d++);
-                WriteBit(ref f, Note,        d++);
-                                             
-                WriteBit(ref f, ChordMode,   d++);
-                WriteBit(ref f, ChordEdit,   d++);
-                WriteBit(ref f, ChordAll,    d++);
-                                             
-                WriteBit(ref f, HalfSharp,   d++);
-                                             
-                WriteBit(ref f, ParamKeys,   d++);
-                WriteBit(ref f, ParamAuto,   d++);
-                                             
-                WriteBit(ref f, SetMemPat,   d++);
-                                             
-                WriteBit(ref f, Move,        d++);
-                WriteBit(ref f, SetOrPat,    d++);
-                WriteBit(ref f, SetMemSet,   d++);
+                WriteBit(ref f, Accent,     d++);
+                WriteBit(ref f, Pick,       d++);
+                WriteBit(ref f, Piano,      d++);
+                                            
+                WriteBit(ref f, Transpose,  d++);
+                WriteBit(ref f, Strum,      d++);
+                                            
+                WriteBit(ref f, Shift,      d++);
+                WriteBit(ref f, MixerShift, d++);
+                                            
+                WriteBit(ref f, Hold,       d++);
+                WriteBit(ref f, Note,       d++);
+                                            
+                WriteBit(ref f, ChordMode,  d++);
+                WriteBit(ref f, ChordEdit,  d++);
+                WriteBit(ref f, ChordAll,   d++);
+                                            
+                WriteBit(ref f, HalfSharp,  d++);
+                                            
+                WriteBit(ref f, ParamKeys,  d++);
+                WriteBit(ref f, ParamAuto,  d++);
+                                            
+                WriteBit(ref f, SetMemPat,  d++);
+                                            
+                WriteBit(ref f, Move,       d++);
+                WriteBit(ref f, SetOrPat,   d++);
+                WriteBit(ref f, SetMemSet,  d++);
+
+                WriteBit(ref f, Scale,      d++);
 
                 return f;
             }

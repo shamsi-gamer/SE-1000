@@ -129,7 +129,7 @@ namespace IngameScript
 
 
             g_warningLight.Enabled = 
-                   TooComplex 
+                   TooComplexForLight
                 || g_sm.UsedRatio > 0.9f;
         }
 

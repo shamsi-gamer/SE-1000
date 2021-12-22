@@ -13,7 +13,7 @@ namespace IngameScript
                             lblOctave, lblShuffle,
                             lblOctaveUp, lblOctaveDown,
                             lblLeft, lblRight,
-                            lblStep, lblHold, 
+                            lblStep, lblHold, lblScale,
                             lblEditStep, lblEditLength,
                             lblNote, lblCut, lblEdit, lblRec, 
                             lblLoop, lblBlock, lblAllPatterns, lblFollow, lblAutoCue,

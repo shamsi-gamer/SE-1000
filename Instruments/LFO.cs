@@ -137,11 +137,11 @@ namespace IngameScript
 
                 switch (Type)
                 {
-                    case LfoType.Sine:     value = (float)Math.Sin(Phase * Tau);                         break;
-                    case LfoType.Triangle: value = (1 - 2*Math.Abs((Phase % 1)*2 - 1));                    break;
-                    case LfoType.Saw:      value = (   Phase  % 1)*2 - 1;                                break;
-                    case LfoType.BackSaw:  value = ((1-Phase) % 1)*2 + 1;                                break;
-                    case LfoType.Square:   value = (float)(1 - 2*Math.Round(((Phase*2) % 2)/2));            break;
+                    case LfoType.Sine:     value = (float)Math.Sin(Phase * Tau);                     break;
+                    case LfoType.Triangle: value = (1 - 2*Math.Abs((Phase % 1)*2 - 1));              break;
+                    case LfoType.Saw:      value = (   Phase  % 1)*2 - 1;                            break;
+                    case LfoType.BackSaw:  value = ((1-Phase) % 1)*2 + 1;                            break;
+                    case LfoType.Square:   value = (float)(1 - 2*Math.Round(((Phase*2) % 2)/2));     break;
                     case LfoType.Noise:    value = g_random[(int)(Phase*2) % g_random.Length]*2 - 1; break;
                 }
 
@@ -416,8 +416,8 @@ namespace IngameScript
                 {
                     var v = _v;
 
-                    if (parentIsTune)
-                        v = Math.Sign(v) * (float)Math.Pow(Math.Abs(v), 0.5f);
+                    //if (parentIsTune)
+                    //    v = Math.Sign(v) * (float)Math.Pow(Math.Abs(v), 0.5f);
 
                     var p = new Vector2(
                         x0 + w0 * f/FPS,

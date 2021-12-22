@@ -16,6 +16,11 @@
                 CF_null,
                 lbl => lbl.SetText("Hold"));
 
+            lblScale = new Label(1, GetLabel("Scale"),
+                lbl => EditedClip.Scale,
+                CF_null,
+                lbl => lbl.SetText(!OK(EditedClip.EditPos) ? "Scl" : "Rpt"));
+
             lblEditStep   = new Label(1, GetLabel("Edit Step"),   CF_null, CF_null, UpdateEditStepLabel);
             lblEditLength = new Label(1, GetLabel("Edit Length"), CF_null, CF_null, UpdateEditLengthLabel);
 

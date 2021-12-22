@@ -280,6 +280,9 @@ namespace IngameScript
                Runtime.CurrentCallChainDepth   / (float)Runtime.MaxCallChainDepth   > 0.8f
             || Runtime.CurrentInstructionCount / (float)Runtime.MaxInstructionCount > 0.8f;
 
+        bool TooComplexForLight =>
+               Runtime.CurrentCallChainDepth   / (float)Runtime.MaxCallChainDepth   > 0.9f
+            || Runtime.CurrentInstructionCount / (float)Runtime.MaxInstructionCount > 0.9f;
 
 
         void             Get<T>(List<T> blocks)                          where T : class { GridTerminalSystem.GetBlocksOfType(blocks);            }

@@ -195,7 +195,7 @@ namespace IngameScript
                         * Note.Clip.Volume;
 
                     if (Note.Accent)
-                        vol *= 1.5f;
+                        vol *= 1.33f;
 
 
                     // this is for the fake "current volume"
