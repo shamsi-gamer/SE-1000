@@ -6,28 +6,6 @@ namespace IngameScript
 {
     partial class Program
     {
-        //void CopyChan(Clip clip, int p, int ch)
-        //{
-        //    copyChan = new Channel(clip.Patterns[p].Channels[ch]);
-        //}
-
-
-        //static void PasteChan(Clip clip, int p, int ch)
-        //{
-        //    if (g_copyChans.Count == 0)
-        //        return;
-
-        //    int f, l;
-        //    clip.GetPatterns(p, out f, out l);
-
-        //    for (int i = f; i <= l; i++)
-        //        clip.Patterns[i].Channels[ch] = new Channel(g_copyChan);
-
-        //    UpdateInstOff(clip.CurChan);
-        //}
-
-
-
         void Step(Clip clip, int ch)
         {
             if (OK(clip.EditPos))
@@ -43,7 +21,7 @@ namespace IngameScript
                             && clip.EditPat * g_patSteps + n.Step <  clip.EditPos + 1)))
                         chan.Notes.RemoveAt(found);
 
-                    lastNotes.Clear();
+                    g_lastNotes.Clear();
 
                     clip.EditNotes.Clear();
                 }
@@ -66,11 +44,11 @@ namespace IngameScript
                 }
                 else
                 {
-                    if (lastNotes.Count > 0)
+                    if (g_lastNotes.Count > 0)
                     {
-                        for (int i = 0; i < lastNotes.Count; i++)
+                        for (int i = 0; i < g_lastNotes.Count; i++)
                         { 
-                            var lastNote = lastNotes[i];
+                            var lastNote = g_lastNotes[i];
 
                             var pat = clip.Patterns.FindIndex(p => p.Channels.Contains(lastNote.Channel));
                             if (pat < 0) return;
@@ -88,7 +66,7 @@ namespace IngameScript
             }
             else
             {
-                EditedClip.Hold = !EditedClip.Hold;
+                clip.Hold = !clip.Hold;
 
                 //if (!EditClip.Hold)
                 //    StopCurrentNotes(clip.CurChan);
@@ -99,41 +77,23 @@ namespace IngameScript
 
         void Scale(Clip clip)
         {
-            //if (OK(clip.EditPos))
-            //{
-            //    if (clip.EditNotes.Count > 0)
-            //    {
-            //        EditedClip.Hold = !EditedClip.Hold;
-            //    }
-            //    else
-            //    {
-            //        if (lastNotes.Count > 0)
-            //        {
-            //            for (int i = 0; i < lastNotes.Count; i++)
-            //            { 
-            //                var lastNote = lastNotes[i];
+            clip.Scale = !clip.Scale;
+            clip.EditNotes.Clear();
 
-            //                var pat = clip.Patterns.FindIndex(p => p.Channels.Contains(lastNote.Channel));
-            //                if (pat < 0) return;
+            if (clip.Scale)
+            {
+                clip.Note = False;
 
-            //                lastNote.StepLength = Math.Min(
-            //                    clip.EditPos - (pat * g_patSteps + lastNote.Step) + EditedClip.EditStep + ChordStrum(i),
-            //                    10f * FPS / TicksPerStep);
+                clip.EditNotes.AddRange(GetEditNotes(clip));
 
-            //                TriggerNote(clip, lastNote.Number, lastNote.iChan, EditedClip.EditStep, ChordStrum(i));
-            //            }
+                foreach (var note in clip.EditNotes)
+                { 
+                    note.CachedStep       = note.Step;
+                    note.CachedStepLength = note.StepLength;
+                }
 
-            //            MoveEdit(clip, 1);
-            //        }
-            //    }
-            //}
-            //else
-            //{
-                EditedClip.Scale = !EditedClip.Scale;
-
-                //if (!EditClip.Hold)
-                //    StopCurrentNotes(clip.CurChan);
-            //}
+                g_noteScaleExp = 0;
+            }
         }
 
 
@@ -144,8 +104,8 @@ namespace IngameScript
                 return;
 
             if (   clip.CurSet < 0
-                || !(   EditedClip.ParamKeys 
-                     || EditedClip.ParamAuto))
+                || !(   clip.ParamKeys 
+                     || clip.ParamAuto))
                 return;
 
 
@@ -155,13 +115,13 @@ namespace IngameScript
 
                 clip.Inter = clip.CurChannel.Notes.Find(n =>
                        n.ClipStep >= clip.EditPos
-                    && n.ClipStep <  clip.EditPos + EditedClip.EditStepIndex);
+                    && n.ClipStep <  clip.EditPos + clip.EditStepIndex);
             }
             else
             {
                 var note = clip.CurChannel.Notes.Find(n =>
                        n.ClipStep >= clip.EditPos
-                    && n.ClipStep <  clip.EditPos + EditedClip.EditStepIndex);
+                    && n.ClipStep <  clip.EditPos + clip.EditStepIndex);
 
                 if (OK(note))
                 {
@@ -293,9 +253,6 @@ namespace IngameScript
 
         void ToggleNote(Clip clip)
         {
-            //if (OK(clip.SelChan))
-            //    return;
-
             clip.Note = !clip.Note;
 
             if (OK(clip.EditPos))
@@ -307,16 +264,6 @@ namespace IngameScript
                 if (clip.Note) 
                     clip.EditNotes.AddRange(GetEditNotes(clip));
             }
-            //else
-            //{
-            //    if (clip.EditNotes.Count > 0)
-            //        clip.EditNotes.Clear();
-            //    else 
-            //    { 
-            //        clip.EditNotes.Clear();
-            //        clip.EditNotes.AddRange(GetChannelNotes(clip));
-            //    }
-            //}
         }
 
 
@@ -354,7 +301,8 @@ namespace IngameScript
         {
             var chan = clip.CurChannel;
 
-            if (OK(clip.EditPos))
+            if (    OK(clip.EditPos)
+                && !clip.Scale)
             { 
                 var notes = new List<Note>();
                 
@@ -505,9 +453,9 @@ namespace IngameScript
         void Move(Clip clip, bool right)
         {
             if (   OK(clip.EditPos)
-                || IsCurSetting(typeof(Harmonics))) 
-                //|| clip.EditNotes.Count > 0)
-                 MoveEdit(clip, right ? 1 : -1);
+                || IsCurSetting(typeof(Harmonics))
+                || clip.Scale) 
+                MoveEdit(clip, right ? 1 : -1);
             else if (clip.Note)
             { 
                 if (clip.Hold) ResizeNotes(clip, right ? 1 : -1);
@@ -526,8 +474,9 @@ namespace IngameScript
 
             else if (clip.EditNotes.Count > 0)
             {
-                if (EditedClip.Hold) ResizeNotes(clip, move);
-                else                 MoveNotes(clip, move);
+                     if (clip.Scale) ScaleNotes (clip, move);
+                else if (clip.Hold)  ResizeNotes(clip, move);
+                else                 MoveNotes  (clip, move);
             }
 
             else if (OK(g_editKey))
@@ -588,6 +537,45 @@ namespace IngameScript
 
                     chan.Notes.Add(n);
                     n.Channel = chan;
+                }
+            }
+        }
+
+
+
+        static void ScaleNotes(Clip clip, int move)
+        {
+            g_noteScaleExp += move * (clip.Shift ? 0.1f : 0.01f);
+                
+
+            var scale = (float)Math.Pow(2, g_noteScaleExp);
+            var chan  = clip.CurChannel;
+
+            foreach (var n in clip.EditNotes)
+            {
+                n.Step = n.CachedStep * scale;
+
+                if (clip.Hold)
+                    n.StepLength = n.CachedStepLength * scale;
+
+                var _iPat  = n.PatIndex + (int)(n.Step / g_patSteps);
+                var _iChan = n.iChan;
+
+
+                n.Channel.Notes.Remove(n);
+                n.Channel = Channel_null;
+
+
+                if (_iPat < clip.Patterns.Count)
+                {
+                    var _pat  = clip.Patterns[_iPat];
+                    var _chan = _pat.Channels[_iChan];
+
+                    while (n.Step >= g_patSteps)
+                        n.Step -= g_patSteps;
+
+                    _chan.Notes.Add(n);
+                    n.Channel = _chan;
                 }
             }
         }

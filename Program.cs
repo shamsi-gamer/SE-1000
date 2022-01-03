@@ -52,12 +52,14 @@ namespace IngameScript
                                       g_hingeR;
 
 
-        static List<Note>             lastNotes = new List<Note>();
-
+        static List<Note>             g_lastNotes = new List<Note>();
         static List<Channel>          g_copyChans = new List<Channel>();
 
+        static float                  g_noteScaleExp; // scale = 2 ^ g_noteScaleExp
 
         static List<TriggerValue>    _triggerDummy = new List<TriggerValue>();
+
+
 
 
                                                    

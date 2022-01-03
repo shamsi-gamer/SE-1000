@@ -77,7 +77,7 @@ namespace IngameScript
                     }
                 }
 
-                lastNotes.Clear();
+                g_lastNotes.Clear();
             }
         }
 

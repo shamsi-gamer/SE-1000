@@ -329,9 +329,6 @@ namespace IngameScript
                         first.Clear();
                         Patterns.Add(first);
                     }
-
-                    if (EditPat >= Patterns.Count)
-                        SetEditPattern(Patterns.Count - 1);
                 }
                 else
                 {
@@ -345,10 +342,11 @@ namespace IngameScript
                         if (b.First == b.Last) Blocks.Remove(b);
                         else b.Last--;
                     }
-
-                    if (EditPat >= Patterns.Count)
-                        SetEditPattern(Patterns.Count-1);
                 }
+
+
+                if (EditPat >= Patterns.Count)
+                    SetEditPattern(Patterns.Count-1);
 
 
                 if (OK(EditPos))

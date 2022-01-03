@@ -4,8 +4,8 @@
     {
         void InitEditLabels()
         {
-            lblLeft  = new Label(1, GetLabel("Left"),  CF_null, lbl => EditedClip.EditNotes.Count > 0, lbl => lbl.SetText("◄"));
-            lblRight = new Label(1, GetLabel("Right"), CF_null, lbl => EditedClip.EditNotes.Count > 0, lbl => lbl.SetText("►"));
+            lblLeft  = new Label(1, GetLabel("Left"),  lbl => EditedClip.Scale && EditedClip.Shift, lbl => EditedClip.EditNotes.Count > 0, lbl => lbl.SetText("◄"));
+            lblRight = new Label(1, GetLabel("Right"), lbl => EditedClip.Scale && EditedClip.Shift, lbl => EditedClip.EditNotes.Count > 0, lbl => lbl.SetText("►"));
             lblStep  = new Label(1, GetLabel("Step"),  CF_null, CF_null,                               lbl => lbl.SetText("Step"));
 
             lblHold  = new Label(1, GetLabel("Hold"),

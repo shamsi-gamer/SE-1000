@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
+
 
 
 namespace IngameScript
@@ -57,6 +59,10 @@ namespace IngameScript
                 FillRect(sprites, x, y, w, h, color0);
 
 
+            if (EditedClip.Scale) 
+                DrawString(sprites, "Scale " + PrintValue(Math.Pow(2, g_noteScaleExp), 2, True, 0), x + w / 2, y + h - 70, 2, color5, TA_CENTER);
+            
+            
             if (!TooComplex)
                 dsp.Draw(sprites);
         }

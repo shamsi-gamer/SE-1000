@@ -20,6 +20,9 @@ namespace IngameScript
             public float       Step,
                                StepLength;
             
+            public float       CachedStep,
+                               CachedStepLength;
+
             public Clip        Clip        => Channel.Pattern.Clip;
             public int         PatIndex    => Clip.Patterns.IndexOf(Channel.Pattern);
 

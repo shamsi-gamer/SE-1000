@@ -126,7 +126,8 @@ namespace IngameScript
         bool AdjustShiftIsBright(Label lbl)
         {
             return
-                   CanAdjust 
+                   (   CanAdjust 
+                    || EditedClip.Scale)
                 && EditedClip.Shift;
         }
 
@@ -134,7 +135,7 @@ namespace IngameScript
 
         void UpdateAdjustShift(Label lbl)
         {
-            lbl.SetText(CanAdjust ? strShift : strEmpty, 9, 14);
+            lbl.SetText(CanAdjust || EditedClip.Scale ? strShift : strEmpty, 9, 14);
         }
 
 

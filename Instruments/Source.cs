@@ -165,6 +165,8 @@ namespace IngameScript
                 if (noteNum < 12*NoteScale)
                     return;
 
+                tp.Note.Number = noteNum;
+
 
                 var vol = note.Volume;
                 

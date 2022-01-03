@@ -51,7 +51,7 @@ namespace IngameScript
             if (TooComplex) return;
 
             clip.TrimCurrentNotes(ch);
-            lastNotes.Clear();
+            g_lastNotes.Clear();
 
 
             var notes = GetChordNotes(num);
@@ -156,7 +156,7 @@ namespace IngameScript
                     var noteStep = step % g_patSteps + ChordStrum(i);
                     var lastNote = new Note(chan, ch, 1, False, note, noteStep, EditedClip.EditStepLength);
                     
-                    lastNotes.Add(lastNote);
+                    g_lastNotes.Add(lastNote);
                     chan.AddNote(lastNote);
                 }
 

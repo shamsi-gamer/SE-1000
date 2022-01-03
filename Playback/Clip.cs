@@ -19,7 +19,7 @@ namespace IngameScript
 
             public float         EditPos,
                                  LastEditPos;
-            
+
             public List<Note>    EditNotes;
             public Note          Inter;
 
@@ -41,7 +41,7 @@ namespace IngameScript
                                  Piano,
                                  
                                  Transpose = False,
-                                 Strum    = False,
+                                 Strum     = False,
                                         
                                  Shift     = False,
                                  Move      = False,

@@ -266,7 +266,7 @@ namespace IngameScript
                 var sw = ow;
                 var sb = 5;
 
-                //var minNote   = 36;
+                var minNote   = 36;
 
 
                 if (Moving)
@@ -304,7 +304,7 @@ namespace IngameScript
                             ch - sb*2,
                             i + 5,
                             Chords[c].Select(_c => _c/NoteScale).ToArray(),
-                            //minNote,
+                            minNote,
                             color0,
                             CurIndex == c ? color3 : color2,
                             CurIndex == c ? color6 : color3);
