@@ -41,7 +41,11 @@ namespace IngameScript
                 if (OK(Chord))
                     Chord.UpdateValue(tp);
 
+                var noteNum = tp.Note.Number;
+
                 var val = base.UpdateValue(tp);
+
+                tp.Note.Number += noteNum;
 
                 return val;
             }
