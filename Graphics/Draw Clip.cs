@@ -65,7 +65,7 @@ namespace IngameScript
 
                     //FillRect(sprites, px, py, pw, ph, color1);
 
-                    DrawBeats(sprites, px, py, pw, ph, p);
+                    DrawBeats(sprites, px, py, pw, ph);
 
                     FillRect(sprites, px,      py, 1, ph, color4);
                     FillRect(sprites, px + pw, py, 1, ph, color4);

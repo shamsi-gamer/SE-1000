@@ -104,18 +104,17 @@ namespace IngameScript
 
         void DrawBeats(List<MySprite> sprites, float x, float y, float w, float h, int patSteps = g_patSteps)
         {
-            var wt = w / g_patSteps;
-            var ht = h / g_nChans;
+            var wt = w / patSteps;
 
-            for (int t = 4; t < patSteps; t += 8)
-                FillRect(sprites, x + t * wt, y, wt*4, h, color1);
+            for (int t = 0; t < patSteps; t += 8)
+                FillRect(sprites, x + t*wt, y, wt*4, h, color1);
         }
 
 
 
         void DrawGrid(List<MySprite> sprites, float x, float y, float w, float h, int pattern, int patSteps = g_patSteps)
         {
-            var wt = w / g_patSteps;
+            var wt = w / patSteps;
             var ht = h / g_nChans;
 
             for (int ch = 0; ch < g_nChans; ch += 2)

@@ -231,7 +231,7 @@ namespace IngameScript
 
             else
                 lbl.BackColor = 
-                    (-lbl.Data/4) % 2 == 1 
+                    (-lbl.Data/4) % 2 == 0 
                     ? color2 
                     : color0;
         }
