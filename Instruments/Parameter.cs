@@ -149,7 +149,7 @@ namespace IngameScript
                         value = GetKeyValue(tp.Note);
 
 
-                    if (    OK(Lfo)
+                    if (   OK(Lfo)
                         && Lfo.On
                         && !OK(tp.TriggerValues.Find(v => v.Path == Path)))
                     {

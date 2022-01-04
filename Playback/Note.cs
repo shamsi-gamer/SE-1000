@@ -10,9 +10,11 @@ namespace IngameScript
             public Channel     Channel;
             public int         iChan;
                                
-            public Instrument  Instrument  => Channel.Instrument;
+            public Instrument  Instrument => Channel.Instrument;
 
-            public int         Number;
+            public int         Number,
+                               FinalNumber;
+
             public float       Volume;
 
             public bool        Accent;
@@ -63,13 +65,14 @@ namespace IngameScript
 
             public Note(Note note, Channel chan = Channel_null, int chanIndex = -1)
             {
-                Channel    = chan ?? note.Channel;
-                iChan      = OK(chanIndex) ? chanIndex : note.iChan;
-                Number     = note.Number;
-                Volume     = note.Volume;
-                Accent     = note.Accent;
-                Step       = note.Step;
-                StepLength = note.StepLength;
+                Channel     = chan ?? note.Channel;
+                iChan       = OK(chanIndex) ? chanIndex : note.iChan;
+                Number      = note.Number;
+                FinalNumber = note.FinalNumber;
+                Volume      = note.Volume;
+                Accent      = note.Accent;
+                Step        = note.Step;
+                StepLength  = note.StepLength;
 
                 Sounds = new List<Sound>();
 
@@ -85,6 +88,7 @@ namespace IngameScript
                 Channel     = chan;
                 iChan       = ch;
                 Number      = num;
+                FinalNumber = num;
                 Volume      = vol;
                 Accent      = acc;
                 Step        = time;
@@ -101,6 +105,7 @@ namespace IngameScript
             public void Reset()
             {
                 Number      = 69;
+                FinalNumber = 69;
                 Volume      = 0;
                 Accent      = False;
                 StepLength  = 0;

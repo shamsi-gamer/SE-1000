@@ -258,7 +258,7 @@ namespace IngameScript
 
 
 
-        static void DrawOctave(List<MySprite> sprites, float x, float y, float w, float h, int octave, int firstNote, int lowNote, int highNote)
+        static void DrawOctave(List<MySprite> sprites, float x, float y, float w, float h, int octave, int firstNote, int lowNote, int highNote, int curNote)
         {
             DrawOctave(
                 sprites, 
@@ -266,7 +266,8 @@ namespace IngameScript
                 octave, 
                 new int[] {
                     lowNote, 
-                    highNote },
+                    highNote,
+                    curNote },
                 firstNote,
                 color1,
                 color4,

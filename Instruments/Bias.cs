@@ -15,7 +15,9 @@ namespace IngameScript
                              Amount,
                              Power;
 
+            int              m_curNote = 0;
             public float     CurValue;
+
 
 
             public Bias(Setting parent, Instrument inst, Source src) 
@@ -66,10 +68,14 @@ namespace IngameScript
                 var amt     = Amount  .UpdateValue(tp);
                 var pow     = Power   .UpdateValue(tp);
                 
-                var num  = tp.Note.Number / (float)NoteScale;
+                var num   = tp.Note.FinalNumber / (float)NoteScale;
+
+                m_curNote = (int)num;
+
                 var f    = Math.Min(Math.Max(0, (num - lowNum) / (highNum - lowNum)), 1);
                 CurValue = GetValue(f);
 
+ 
                 m_valid  = True;
                 return CurValue;
             }
@@ -324,7 +330,8 @@ namespace IngameScript
                         i,
                         minNote,
                         lowNote,
-                        highNote);
+                        highNote,
+                        m_curNote);
                 }
 
 

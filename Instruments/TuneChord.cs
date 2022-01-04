@@ -55,7 +55,7 @@ namespace IngameScript
                 Moving     = chord.Moving;
                 
                 SelFinalChord = new List<int>(chord.SelFinalChord);
-                 CurFinalChord = new List<int>(chord. CurFinalChord);
+                CurFinalChord = new List<int>(chord.CurFinalChord);
             }
 
 

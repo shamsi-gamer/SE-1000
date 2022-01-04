@@ -154,8 +154,9 @@ namespace IngameScript
                 if (OK(Offset))
                     sndTime += (int)Math.Round(Offset.UpdateValue(tp) * FPS);
 
+                note.FinalNumber = AdjustNoteNumber(note, this, note.FrameLength, prog);
 
-                var noteNum = AdjustNoteNumber(note, this, note.FrameLength, prog);
+                var noteNum = note.FinalNumber;
 
                 if (   Oscillator == OscSample
                     && (   noteNum % NoteScale > 0
@@ -165,7 +166,7 @@ namespace IngameScript
                 if (noteNum < 12*NoteScale)
                     return;
 
-                tp.Note.Number = noteNum;
+                //tp.Note.Number = noteNum;
 
 
                 var vol = note.Volume;

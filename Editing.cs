@@ -710,7 +710,7 @@ namespace IngameScript
                 var pat  = clip.Patterns[p];
                 var chan = pat.Channels[ch];
 
-                chan.Transpose = MinMax(-3, tr, 4);
+                chan.Transpose = MinMax(-3, tr, 5);
             }
         }
 
