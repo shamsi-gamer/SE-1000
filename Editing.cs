@@ -86,9 +86,11 @@ namespace IngameScript
 
                 clip.EditNotes.AddRange(GetEditNotes(clip));
 
+                g_noteScaleOrigin = clip.EditNotes[0].ClipStep;
+
                 foreach (var note in clip.EditNotes)
                 { 
-                    note.CachedStep       = note.Step;
+                    note.CachedStep       = note.ClipStep - g_noteScaleOrigin;
                     note.CachedStepLength = note.StepLength;
                 }
 
@@ -551,31 +553,36 @@ namespace IngameScript
             var scale = (float)Math.Pow(2, g_noteScaleExp);
             var chan  = clip.CurChannel;
 
+
             foreach (var n in clip.EditNotes)
             {
-                n.Step = n.CachedStep * scale;
+                var step = g_noteScaleOrigin + n.CachedStep * scale;
 
                 if (clip.Hold)
                     n.StepLength = n.CachedStepLength * scale;
 
-                var _iPat  = n.PatIndex + (int)(n.Step / g_patSteps);
+
+                var _iPat  = (int)(step / g_patSteps);
                 var _iChan = n.iChan;
 
 
-                n.Channel.Notes.Remove(n);
-                n.Channel = Channel_null;
+                if (OK(n.Channel)) // is in a pattern
+                { 
+                    n.Channel.Notes.Remove(n);
+                    n.Channel = Channel_null;
+                }
 
 
-                if (_iPat < clip.Patterns.Count)
+                if (   _iPat >= 0
+                    && _iPat <  clip.Patterns.Count)
                 {
                     var _pat  = clip.Patterns[_iPat];
                     var _chan = _pat.Channels[_iChan];
-
-                    while (n.Step >= g_patSteps)
-                        n.Step -= g_patSteps;
-
+                    
                     _chan.Notes.Add(n);
                     n.Channel = _chan;
+
+                    n.Step    = step % g_patSteps;
                 }
             }
         }
