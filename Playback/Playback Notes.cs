@@ -282,25 +282,28 @@ namespace IngameScript
                 prog);
 
             _noteNum += inst.Tune?.UpdateValue(tp) * NoteScale ?? 0;
-            _noteNum += src .Tune?.UpdateValue(tp) * NoteScale ?? 0;
 
-            var noteNum = MinMax(12*NoteScale, (int)Math.Round(_noteNum), 150*NoteScale);
-
-            if (   OK(src.Tune)
-                && src.Tune.On
-                && OK(src.Tune.Chord)
-                && src.Tune.Chord.On
-                && src.Tune.Chord.CurFinalChord.Count > 0)
-                noteNum = LimitNoteToChord(noteNum, src.Tune.Chord.CurFinalChord);
+            float noteNumInst = MinMax(12 * NoteScale, (int)Math.Round(_noteNum), 150 * NoteScale);
 
             if (   OK(inst.Tune)
                 && inst.Tune.On
                 && OK(inst.Tune.Chord)
                 && inst.Tune.Chord.On
                 && inst.Tune.Chord.CurFinalChord.Count > 0)
-                noteNum = LimitNoteToChord(noteNum, inst.Tune.Chord.CurFinalChord);
+                noteNumInst = LimitNoteToChord((int)Math.Round(noteNumInst), inst.Tune.Chord.CurFinalChord);
 
-            return noteNum;
+            noteNumInst += src .Tune?.UpdateValue(tp) * NoteScale ?? 0;
+
+            var noteNumSrc = MinMax(12*NoteScale, (int)Math.Round(noteNumInst), 150*NoteScale);
+
+            if (   OK(src.Tune)
+                && src.Tune.On
+                && OK(src.Tune.Chord)
+                && src.Tune.Chord.On
+                && src.Tune.Chord.CurFinalChord.Count > 0)
+                noteNumSrc = LimitNoteToChord(noteNumSrc, src.Tune.Chord.CurFinalChord);
+
+            return noteNumSrc;
         }
     }
 }
