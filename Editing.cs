@@ -75,16 +75,20 @@ namespace IngameScript
 
 
 
-        void Scale(Clip clip)
+        void ScaleNotes(Clip clip)
         {
             clip.Scale = !clip.Scale;
-            clip.EditNotes.Clear();
 
             if (clip.Scale)
             {
-                clip.Note = False;
+                if (!clip.Note) 
+                {
+                    clip.EditNotes.Clear();
+                    clip.EditNotes.AddRange(GetEditNotes(clip));
+                }
+                else
+                    clip.Note = False;
 
-                clip.EditNotes.AddRange(GetEditNotes(clip));
 
                 g_noteScaleOrigin = clip.EditNotes[0].ClipStep;
 
@@ -96,6 +100,8 @@ namespace IngameScript
 
                 g_noteScaleExp = 0;
             }
+            else
+                clip.EditNotes.Clear();
         }
 
 
@@ -257,14 +263,20 @@ namespace IngameScript
         {
             clip.Note = !clip.Note;
 
-            if (OK(clip.EditPos))
+            if (clip.Note)
             { 
-                clip.Inter = Note_null;
-
-                clip.EditNotes.Clear();
-                
-                if (clip.Note) 
+                if (!clip.Scale) 
+                {
+                    clip.EditNotes.Clear();
                     clip.EditNotes.AddRange(GetEditNotes(clip));
+                }
+                else
+                    clip.Scale = False;
+            }
+            else
+            {
+                clip.EditNotes.Clear();
+                clip.Inter = Note_null;
             }
         }
 
@@ -476,7 +488,7 @@ namespace IngameScript
 
             else if (clip.EditNotes.Count > 0)
             {
-                     if (clip.Scale) ScaleNotes (clip, move);
+                     if (clip.Scale) ScaleRepeatNotes (clip, move);
                 else if (clip.Hold)  ResizeNotes(clip, move);
                 else                 MoveNotes  (clip, move);
             }
@@ -545,44 +557,51 @@ namespace IngameScript
 
 
 
-        static void ScaleNotes(Clip clip, int move)
+        static void ScaleRepeatNotes(Clip clip, int move)
         {
-            g_noteScaleExp += move * (clip.Shift ? 0.1f : 0.01f);
+            if (OK(clip.EditPos)) // repeat
+            {
+
+            }
+            else // scale
+            { 
+                g_noteScaleExp += move * (clip.Shift ? 0.1f : 0.01f);
                 
 
-            var scale = (float)Math.Pow(2, g_noteScaleExp);
-            var chan  = clip.CurChannel;
+                var scale = (float)Math.Pow(2, g_noteScaleExp);
+                var chan  = clip.CurChannel;
 
 
-            foreach (var n in clip.EditNotes)
-            {
-                var step = g_noteScaleOrigin + n.CachedStep * scale;
-
-                if (clip.Hold)
-                    n.StepLength = n.CachedStepLength * scale;
-
-
-                var _iPat  = (int)(step / g_patSteps);
-                var _iChan = n.iChan;
-
-
-                if (OK(n.Channel)) // is in a pattern
-                { 
-                    n.Channel.Notes.Remove(n);
-                    n.Channel = Channel_null;
-                }
-
-
-                if (   _iPat >= 0
-                    && _iPat <  clip.Patterns.Count)
+                foreach (var n in clip.EditNotes)
                 {
-                    var _pat  = clip.Patterns[_iPat];
-                    var _chan = _pat.Channels[_iChan];
-                    
-                    _chan.Notes.Add(n);
-                    n.Channel = _chan;
+                    var step = g_noteScaleOrigin + n.CachedStep * scale;
 
-                    n.Step    = step % g_patSteps;
+                    if (clip.Hold)
+                        n.StepLength = n.CachedStepLength * scale;
+
+
+                    var _iPat  = (int)(step / g_patSteps);
+                    var _iChan = n.iChan;
+
+
+                    if (OK(n.Channel)) // is in a pattern
+                    { 
+                        n.Channel.Notes.Remove(n);
+                        n.Channel = Channel_null;
+                    }
+
+
+                    if (   _iPat >= 0
+                        && _iPat <  clip.Patterns.Count)
+                    {
+                        var _pat  = clip.Patterns[_iPat];
+                        var _chan = _pat.Channels[_iChan];
+                    
+                        _chan.Notes.Add(n);
+                        n.Channel = _chan;
+
+                        n.Step    = step % g_patSteps;
+                    }
                 }
             }
         }

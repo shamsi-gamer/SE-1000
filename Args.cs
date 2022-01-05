@@ -74,8 +74,6 @@
                 case "edit":        Edit();                             break;
                 case "rec":         Record();                           break;
 
-                case "note":        ToggleNote(EditedClip);             break;
-                case "cut":         CutNotes(EditedClip);               break;
                                                                         
                 case "chord":       ToggleChordMode();                  break;
                 case "chord 1":     Chord(1);                           break;
@@ -89,7 +87,10 @@
                                                                         
                 case "step":        Step(EditedClip, CurChan);          break;
                 case "hold":        Hold(EditedClip);                   break;
-                case "scale":       Scale(EditedClip);                  break;
+                case "cut":         CutNotes(EditedClip);               break;
+
+                case "note":        ToggleNote(EditedClip);             break;
+                case "scale":       ScaleNotes(EditedClip);                  break;
                                                                         
                 case "left":        Move(EditedClip, False);            break;
                 case "right":       Move(EditedClip, True);             break;

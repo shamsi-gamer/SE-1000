@@ -27,7 +27,7 @@
             lblNote = new Label(1, GetLabel(strNote),
                 lbl => EditedClip.Note, //EditedClip.EditNotes.Count > 0,
                 CF_null,
-                lbl => lbl.SetText("Note"));
+                lbl => lbl.SetText(OK(EditedClip.EditPos) ? "Note" : "Mov"));
 
             lblCut  = new Label(1, GetLabel(strCut), 
                 CF_null, 
