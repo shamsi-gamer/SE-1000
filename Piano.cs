@@ -7,7 +7,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        void High(int h)
+        void PianoHigh(int h)
         {
             if (h == 11)
                 TogglePiano();
@@ -103,7 +103,7 @@ namespace IngameScript
 
 
 
-        void Low(int l)
+        void PianoLow(int l)
         {
             if (IsCurSetting(strChord))
                 UpdateTuneChord(

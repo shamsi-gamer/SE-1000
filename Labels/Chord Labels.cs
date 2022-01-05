@@ -91,7 +91,10 @@
             //        ? strAll : strEmpty);
             //}
             //else
-                lbl.SetText(EditedClip.ChordMode ? strEmpty : strEdit);
+                lbl.SetText(
+                    EditedClip.ChordMode 
+                    ? (OK(EditedClip.EditPos) ? strPick : strEmpty) 
+                    : strEdit);
         }
 
 

@@ -154,13 +154,13 @@ namespace IngameScript
 
 
 
-        void Chord(int chord)
+        void Chord(int iChord)
         {
             if (IsCurSetting(strChord))
             {
                 var tc = (TuneChord)CurSetting;
 
-                var _chord = EditedClip.Chords[chord-1];
+                var _chord = EditedClip.Chords[iChord-1];
 
                 if (_chord.Count > 0)
                 {
@@ -175,22 +175,35 @@ namespace IngameScript
                     tc.UpdateFinalChord();
                 }
 
-                MarkChordLabel(chord-1);
+                MarkChordLabel(iChord-1);
             }
             else if (EditedClip.ChordEdit)
             {
-                EditedClip.Chord = 
-                    EditedClip.Chord != chord-1
-                    ? chord-1
-                    : -1;
+                if (OK(EditedClip.EditPos))
+                {
+                    var chord = EditedClip.Chords[iChord-1];
+                    var notes = GetEditNotes(EditedClip);
+
+                    chord.Clear();
+
+                    foreach (var note in notes)
+                        chord.Add(note.Number);
+                }
+                else
+                {
+                    EditedClip.Chord = 
+                        EditedClip.Chord != iChord-1
+                        ? iChord-1
+                        : -1;
+                }
             }
             else if (EditedClip.ChordMode)
             {
-                if (EditedClip.Chord != chord-1)
+                if (EditedClip.Chord != iChord-1)
                 {
-                    if (EditedClip.Chords[chord-1].Count > 0)
+                    if (EditedClip.Chords[iChord-1].Count > 0)
                     { 
-                        EditedClip.Chord    = chord-1;
+                        EditedClip.Chord    = iChord-1;
                         EditedClip.ChordAll = False;
                     }
                 }
@@ -199,7 +212,7 @@ namespace IngameScript
             }
             else
             {
-                EditedClip.Chord = chord-1;
+                EditedClip.Chord = iChord-1;
                 var _chord = EditedClip.Chords[EditedClip.Chord];
 
                 if (_chord.Count > 0)
@@ -208,7 +221,7 @@ namespace IngameScript
                     PlayNote(EditedClip, _chord[0], CurChan);
                 }
 
-                MarkChordLabel(chord-1);            
+                MarkChordLabel(iChord-1);            
 
                 EditedClip.Chord = -1;
             }
@@ -218,11 +231,10 @@ namespace IngameScript
 
         void ToggleChordEdit()
         {
-            if (!EditedClip.ChordMode)
-            { 
-                EditedClip.ChordEdit = !EditedClip.ChordEdit;
-                if (!EditedClip.ChordEdit) EditedClip.Chord = -1;
-            }
+            EditedClip.ChordEdit = !EditedClip.ChordEdit;
+
+            if (!EditedClip.ChordEdit) 
+                EditedClip.Chord = -1;
         }
 
 

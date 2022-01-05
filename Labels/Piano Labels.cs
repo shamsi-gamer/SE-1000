@@ -127,7 +127,7 @@ namespace IngameScript
                 case  8: lbl.SetText(ShowPianoView ? "Rev"    : "1/8"); break;
                 case  9: lbl.SetText("Flip");                           break;
                                                                         
-                case 10: lbl.SetText("Pick");                           break;
+                case 10: lbl.SetText(strPick);                          break;
                 }
             }
         }

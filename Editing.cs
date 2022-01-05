@@ -75,7 +75,7 @@ namespace IngameScript
 
 
 
-        void ScaleNotes(Clip clip)
+        void Scale(Clip clip)
         {
             clip.Scale = !clip.Scale;
 
@@ -99,6 +99,10 @@ namespace IngameScript
                 }
 
                 g_noteScaleExp = 0;
+
+
+                //if (OK(clip.EditPos))
+                //    clip.ClearEditNotes();
             }
             else
                 clip.EditNotes.Clear();
@@ -242,9 +246,13 @@ namespace IngameScript
 
             if (!OK(EditedClip.EditPos))
                 EditedClip.Inter = Note_null;
-
-            if (OK(EditedClip.EditPos))
+            else
+            { 
                 Recording = False;
+
+                //if (EditedClip.Scale)
+                //    EditedClip.ClearEditNotes();
+            }
         }
 
 
@@ -488,9 +496,9 @@ namespace IngameScript
 
             else if (clip.EditNotes.Count > 0)
             {
-                     if (clip.Scale) ScaleRepeatNotes (clip, move);
-                else if (clip.Hold)  ResizeNotes(clip, move);
-                else                 MoveNotes  (clip, move);
+                     if (clip.Scale) ScaleRepeatNotes(clip, move);
+                else if (clip.Hold)  ResizeNotes     (clip, move);
+                else                 MoveNotes       (clip, move);
             }
 
             else if (OK(g_editKey))
@@ -561,15 +569,59 @@ namespace IngameScript
         {
             if (OK(clip.EditPos)) // repeat
             {
+                //int first, last;
+                //clip.GetPatterns(clip.EditPat, out first, out last);
 
+
+                //clip.ClearEditNotes(first, last, clip.CurChan);
+
+
+                //var loopLength = clip.EditPat * g_patSteps + clip.EditPos - g_noteScaleOrigin;
+
+                //foreach (var n in clip.EditNotes)
+                //{
+                //    if (n.Step >= clip.EditPos)
+                //        continue;
+
+                //    var step = g_noteScaleOrigin + n.CachedStep;
+
+                //    //if (clip.Hold)
+                //    //    n.StepLength = n.CachedStepLength * scale;
+
+
+                //    var _iPat = (int)(step / g_patSteps);
+                //    var _iChan = n.iChan;
+
+
+                //    //if (OK(n.Channel)) // is in a pattern
+                //    //{
+                //    //    n.Channel.Notes.Remove(n);
+                //    //    n.Channel = Channel_null;
+                //    //}
+
+
+                //    if (   _iPat >= first
+                //        && _iPat <= last)
+                //    {
+                //        var _pat  = clip.Patterns[_iPat];
+                //        var _chan = _pat.Channels[_iChan];
+
+                //        _chan.Notes.Add(n);
+                //        n.Channel = _chan;
+
+                //        n.Step = step % g_patSteps;
+                //    }
+                //}
             }
             else // scale
             { 
                 g_noteScaleExp += move * (clip.Shift ? 0.1f : 0.01f);
                 
-
                 var scale = (float)Math.Pow(2, g_noteScaleExp);
-                var chan  = clip.CurChannel;
+
+
+                int first, last;
+                clip.GetPatterns(clip.EditPat, out first, out last);
 
 
                 foreach (var n in clip.EditNotes)
@@ -591,8 +643,8 @@ namespace IngameScript
                     }
 
 
-                    if (   _iPat >= 0
-                        && _iPat <  clip.Patterns.Count)
+                    if (   _iPat >= first
+                        && _iPat <= last)
                     {
                         var _pat  = clip.Patterns[_iPat];
                         var _chan = _pat.Channels[_iChan];

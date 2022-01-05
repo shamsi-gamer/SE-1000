@@ -21,6 +21,7 @@ namespace IngameScript
                                  LastEditPos;
 
             public List<Note>    EditNotes;
+
             public Note          Inter;
 
 
@@ -283,7 +284,7 @@ namespace IngameScript
                                 
                 SetMemPat       = clip.SetMemPat;
                                 
-                EditPat          = clip.EditPat;
+                EditPat         = clip.EditPat;
                 CurChan         = clip.CurChan;
                 SelChan         = clip.SelChan;
                 CurSrc          = clip.CurSrc;
@@ -321,6 +322,24 @@ namespace IngameScript
                 Program = prog;
 
                 ResetState();
+            }
+
+
+
+            public void ClearEditNotes(int first, int last, int iChan)
+            {
+                foreach (var note in EditNotes)
+                { 
+                    for (int i = first; i <= last; i++)
+                    {
+                        var chan = Patterns[i].Channels[iChan];
+
+                        int found;
+
+                        while (OK(found = chan.Notes.FindIndex(n => n.ID == note.ID)))
+                            chan.Notes.RemoveAt(found);
+                    }
+                }
             }
 
 

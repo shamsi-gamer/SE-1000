@@ -57,6 +57,8 @@
                                         
                      strShift           = "Shift",
                      strAll             = "All",
+
+                     strPick            = "Pick",
                                         
                      strSine            = "Sine",
                      strTri             = "Triangle",

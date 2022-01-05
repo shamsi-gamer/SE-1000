@@ -69,19 +69,18 @@
                 case "tr up":       SetTranspose( 1);                   break;
                 case "tr down":     SetTranspose(-1);                   break;
                                                                         
-                case "spread":      Strum();                            break;
 
                 case "edit":        Edit();                             break;
                 case "rec":         Record();                           break;
-
-                                                                        
+                                                                                            
                 case "chord":       ToggleChordMode();                  break;
                 case "chord 1":     Chord(1);                           break;
                 case "chord 2":     Chord(2);                           break;
                 case "chord 3":     Chord(3);                           break;
                 case "chord 4":     Chord(4);                           break;
                 case "chord edit":  ToggleChordEdit();                  break;
-                                                                        
+                case "strum":       Strum();                            break;
+                                                                                            
                 case "edit step":   ChangeEditStep();                   break;
                 case "edit len":    ChangeEditLength();                 break;
                                                                         
@@ -90,7 +89,7 @@
                 case "cut":         CutNotes(EditedClip);               break;
 
                 case "note":        ToggleNote(EditedClip);             break;
-                case "scale":       ScaleNotes(EditedClip);                  break;
+                case "scale":       Scale(EditedClip);                  break;
                                                                         
                 case "left":        Move(EditedClip, False);            break;
                 case "right":       Move(EditedClip, True);             break;
@@ -125,8 +124,8 @@
 
 
                 default:
-                         if (arg.Length > 5 && arg.Substring(0, 5) == "high ") { int h; if (int_TryParse(arg.Substring(5), out h)) High(h); }
-                    else if (arg.Length > 4 && arg.Substring(0, 4) == "low " ) { int l; if (int_TryParse(arg.Substring(4), out l)) Low (l); }
+                         if (arg.Length > 5 && arg.Substring(0, 5) == "high ") { int h; if (int_TryParse(arg.Substring(5), out h)) PianoHigh(h); }
+                    else if (arg.Length > 4 && arg.Substring(0, 4) == "low " ) { int l; if (int_TryParse(arg.Substring(4), out l)) PianoLow (l); }
 
                     else if (OK(val = GetInt(arg, "up "  ))) SetVolume(val,  1);
                     else if (OK(val = GetInt(arg, "down "))) SetVolume(val, -1);

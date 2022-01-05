@@ -7,6 +7,10 @@ namespace IngameScript
     {
         public class Note
         {
+            static    long     NextID = 0;
+            public    long     ID = NextID++;
+
+
             public Channel     Channel;
             public int         iChan;
                                
