@@ -247,7 +247,7 @@ namespace IngameScript
                 else            SelInstrument.DrawLabels(sprites, x+5, y+10, dp);
 
 
-                var ry = y +  30;
+                var ry = y +  80;
                 var rh = h - 110;
 
                 var instHeight = h - 80;
@@ -256,7 +256,7 @@ namespace IngameScript
                 var ch = rh/8;
 
 
-                var nOctaves = 2;
+                var nOctaves = 6;
 
                 var ow = 100;           // octave width
                 var pw = ow * nOctaves; // piano width
@@ -296,18 +296,25 @@ namespace IngameScript
                 {
                     for (int i = 0; i < nOctaves; i++)
                     {
+                        var isEdit = 
+                               i == 2 + CurChannel.Transpose
+                            || i == 3 + CurChannel.Transpose;
+
+                        var edit2 = isEdit ? color2 : color1;
+                        var edit3 = isEdit ? color3 : color2;
+                        
                         DrawOctave(
                             sprites,
                             sx + i*ow,
                             ry + c*ch,
                             sw,
                             ch - sb*2,
-                            i + 5,
+                            i,
                             Chords[c].Select(_c => _c/NoteScale).ToArray(),
                             minNote,
                             color0,
-                            CurIndex == c ? color3 : color2,
-                            CurIndex == c ? color6 : color3);
+                            CurIndex == c ? edit3  : edit2,
+                            CurIndex == c ? color6 : edit3);
                     }
                 }
 

@@ -93,8 +93,8 @@ namespace IngameScript
 
             public void SetClip(int index)
             { 
-                if (MixerShift)
-                    return;
+                //if (MixerShift)
+                //    return;
 
                 var clip = Clips[index];
 
@@ -531,27 +531,30 @@ namespace IngameScript
 
         void SetAllTrackClips(int index, int refTrack)
         {
-            if (MixerShift)
-                return;
-
-            var tracks = new List<Track>();
-
             foreach (var track in Tracks)
-                tracks.Add(track);
+                track.SetClip(index);
 
-            // make the ref track last so that double clicking works when Shift is enabled
-            if (refTrack < tracks.Count-1)
-            { 
-                var temp = tracks[refTrack];
-                tracks[refTrack] = tracks.Last();
-                tracks[tracks.Count-1] = temp;
-            }
+            ////if (MixerShift)
+            ////    return;
 
-            foreach (var track in tracks)
-            {
-                if (OK(track.Clips[index])) track.SetClip(index);
-                else                        track.NextClip = -1;
-            }
+            //var tracks = new List<Track>();
+
+            //foreach (var track in Tracks)
+            //    tracks.Add(track);
+
+            //// make the ref track last so that double clicking works when Shift is enabled
+            //if (refTrack < tracks.Count-1)
+            //{ 
+            //    var temp = tracks[refTrack];
+            //    tracks[refTrack] = tracks.Last();
+            //    tracks[tracks.Count-1] = temp;
+            //}
+
+            //foreach (var track in tracks)
+            //{
+            //    if (OK(track.Clips[index])) track.SetClip(index);
+            //    else                        track.NextClip = -1;
+            //}
         }
     }
 }
