@@ -8,13 +8,13 @@ namespace IngameScript
     {
         public void Main(string arg, UpdateType update)
         {
-            //pnlInfoLog.CustomData = "";
+            //ResetLog();
 
 
             if (!g_init) return;
             FinishStartup();
 
-            if (!ModIsPresent())
+            if (!SoundModIsPresent())
             {
                 DrawMissingMod();
                 return;
@@ -43,7 +43,7 @@ namespace IngameScript
             }
 
 
-            //pnlInfoLog.CustomData = "";
+            //ResetLog();
         }
 
 

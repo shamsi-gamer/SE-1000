@@ -101,32 +101,32 @@ namespace IngameScript
                     src.Randomize(used);
                 }
 
-                Volume.SetValue(1, Note_null);//.Randomize(Program prog);
+                //Volume.SetValue(1, Note_null);//.Randomize(Program prog);
 
-                if (RND > 0.9f)
-                {
-                    Tune = new Tune(this, Source_null);
-                    Tune.Randomize();
-                }
-                else
-                    Tune = Tune_null;
+                //if (RND > 0.9f)
+                //{
+                //    Tune = new Tune(this, Source_null);
+                //    Tune.Randomize();
+                //}
+                //else
+                //    Tune = Tune_null;
                 
-                if (   RND > 0.9f
-                    && OK(Sources.Find(s => OK(s.Harmonics))))
-                {
-                    Filter = new Filter(this, Source_null);
-                    Filter.Randomize();
-                }
-                else
-                    Filter = Filter_null;
+                //if (   RND > 0.9f
+                //    && OK(Sources.Find(s => OK(s.Harmonics))))
+                //{
+                //    Filter = new Filter(this, Source_null);
+                //    Filter.Randomize();
+                //}
+                //else
+                //    Filter = Filter_null;
 
-                if (RND > 0.9f)
-                {
-                    Delay = new Delay(this, Source_null);
-                    Delay.Randomize();
-                }
-                else
-                    Delay = Delay_null;
+                //if (RND > 0.9f)
+                //{
+                //    Delay = new Delay(this, Source_null);
+                //    Delay.Randomize();
+                //}
+                //else
+                //    Delay = Delay_null;
             }
 
 

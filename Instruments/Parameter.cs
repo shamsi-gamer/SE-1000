@@ -349,15 +349,15 @@ namespace IngameScript
                 m_value = NormalMin + RND * (NormalMax - NormalMin);
                 
 
-                if (   !prog.TooComplex
-                    && !AnyParentIsBias
-                    &&  RND > 0.9f)
-                {
-                    Bias = new Bias(this, Instrument, Source);
-                    Bias.Randomize();
-                }
-                else 
-                    Bias = Bias_null;
+                //if (   !prog.TooComplex
+                //    && !AnyParentIsBias
+                //    &&  RND > 0.9f)
+                //{
+                //    Bias = new Bias(this, Instrument, Source);
+                //    Bias.Randomize();
+                //}
+                //else 
+                //    Bias = Bias_null;
 
 
                 if (    CanHaveEnvelope

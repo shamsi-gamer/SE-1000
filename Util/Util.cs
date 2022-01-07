@@ -42,8 +42,29 @@ namespace IngameScript
 
 
 
-        bool ModIsPresent()
+        bool SoundModIsPresent()
         {
+            //Log("loading sound mod");
+            //Log("----------------------------------");
+            //Log(S(_loadStep));
+            //Log(S(OscCount));
+
+            //Log("OscSine           " + S(OscSine           ?.Samples.Count ?? 0));
+            //Log("OscTriangle       " + S(OscTriangle       ?.Samples.Count ?? 0));
+            //Log("OscSaw            " + S(OscSaw            ?.Samples.Count ?? 0));
+            //Log("OscSquare         " + S(OscSquare         ?.Samples.Count ?? 0));
+            //Log("OscLowNoise       " + S(OscLowNoise       ?.Samples.Count ?? 0));
+            //Log("OscHighNoise      " + S(OscHighNoise      ?.Samples.Count ?? 0));
+            //Log("OscNarrowBandNoise" + S(OscNarrowBandNoise?.Samples.Count ?? 0));
+            //Log("OscWideBandNoise  " + S(OscWideBandNoise  ?.Samples.Count ?? 0));
+            //Log("OscSlowSweepDown  " + S(OscSlowSweepDown  ?.Samples.Count ?? 0));
+            //Log("OscFastSweepDown  " + S(OscFastSweepDown  ?.Samples.Count ?? 0));
+            //Log("OscSlowSweepUp    " + S(OscSlowSweepUp    ?.Samples.Count ?? 0));
+            //Log("OscFastSweepUp    " + S(OscFastSweepUp    ?.Samples.Count ?? 0));
+            //Log("OscPulse          " + S(OscPulse          ?.Samples.Count ?? 0));
+
+            //Log("");
+
             return _loadStep < OscCount
                 ||    (OscSine           ?.Samples.Count ?? 0) > 0
                    && (OscTriangle       ?.Samples.Count ?? 0) > 0
@@ -57,7 +78,7 @@ namespace IngameScript
                    && (OscFastSweepDown  ?.Samples.Count ?? 0) > 0
                    && (OscSlowSweepUp    ?.Samples.Count ?? 0) > 0
                    && (OscFastSweepUp    ?.Samples.Count ?? 0) > 0
-                   && (OscPulse         ?.Samples.Count ?? 0) > 0;
+                   && (OscPulse          ?.Samples.Count ?? 0) > 0;
         }
 
 

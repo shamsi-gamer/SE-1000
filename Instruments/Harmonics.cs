@@ -161,6 +161,7 @@ namespace IngameScript
                     var hrmPos = i / (float)Tones.Length;
 
                     var snd = new Sound(
+                        note.Number,
                         sample, 
                         note.Channel,
                         note.iChan,

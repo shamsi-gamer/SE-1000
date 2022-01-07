@@ -198,6 +198,7 @@ namespace IngameScript
                         return;
 
                     _sounds.Add(new Sound(
+                        noteNum,
                         GetSample(noteNum),
                         note.Channel,
                         note.iChan,
@@ -237,14 +238,14 @@ namespace IngameScript
                 Oscillator = OscillatorFromType((OscType)(int)(Math.Pow(RND, 2) * (int)OscType.Sample));
 
 
-                if (    RND > 0.7f
-                    && !used.Contains(Oscillator))
-                {
-                    Offset = (Parameter)NewSettingFromTag(strOff, Setting_null, Instrument, this);
-                    Offset.Randomize();
-                }
-                else
-                    Offset = Parameter_null;
+                //if (    RND > 0.7f
+                //    && !used.Contains(Oscillator))
+                //{
+                //    Offset = (Parameter)NewSettingFromTag(strOff, Setting_null, Instrument, this);
+                //    Offset.Randomize();
+                //}
+                //else
+                //    Offset = Parameter_null;
 
 
                 if (Index == 0) Volume.SetValue(1, Note_null);
@@ -252,7 +253,7 @@ namespace IngameScript
 
 
                 if (   Index > 0
-                    && (   RND > 0.7f
+                    && (   RND > 0.8f
                         || used.Contains(Oscillator)))
                 {
                     Tune = new Tune(Instrument, this);
@@ -262,11 +263,7 @@ namespace IngameScript
                     Tune = Tune_null;
 
 
-                if (   (   Oscillator == OscSine
-                        || Oscillator == OscNarrowBandNoise
-                        || Oscillator == OscWideBandNoise)
-                    &&  RND > 0.7f
-                    && !used.Contains(Oscillator))
+                if (RND > 0.8f)
                 {
                     Harmonics = new Harmonics(Instrument, this);
                     Harmonics.Randomize();
@@ -276,7 +273,7 @@ namespace IngameScript
 
 
                 if (   OK(Harmonics)
-                    && RND > 0.7f)
+                    && RND > 0.8f)
                 {
                     Filter = new Filter(Instrument, this);
                     Filter.Randomize();
@@ -285,7 +282,7 @@ namespace IngameScript
                     Filter = Filter_null;
 
 
-                if (RND > 0.9f)
+                if (RND > 0.95f)
                 {
                     Delay = new Delay(Instrument, this);
                     Delay.Randomize();

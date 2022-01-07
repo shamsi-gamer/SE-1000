@@ -8,12 +8,21 @@ namespace IngameScript
         static  List<string> g_log     = new List<string>();
         static  List<long>   g_logTime = new List<long>();
 
+
+
         static void Log(string str)
         {
             g_log.Add(str);
             g_logTime.Add(g_time);
 
             pnlInfoLog.CustomData += N(S(g_time) + ": " + str);
+        }
+
+
+
+        static void ResetLog()
+        {
+            pnlInfoLog.CustomData = "";
         }
     }
 }

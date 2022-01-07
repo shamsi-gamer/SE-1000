@@ -74,7 +74,7 @@ namespace IngameScript
 
             pnlInfoLog = Get("Info Display") as IMyTextPanel;
             
-            //pnlInfoLog.CustomData = ""; // init log storage
+            //ResetLog();
 
 
             pnlStorageState       = GetLcd(strStorage + " State");

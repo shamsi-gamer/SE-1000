@@ -8,6 +8,7 @@ namespace IngameScript
     {
         public class Sound
         {
+            public int                NoteNumber;
             public string             Sample;
 
             public List<Speaker>      Speakers;
@@ -50,9 +51,11 @@ namespace IngameScript
 
 
 
-            public Sound(string sample, Channel chan, int ch, long frameTime, int frameLen, int releaseLen, float vol, Instrument inst, int iSrc, Note note, List<TriggerValue> triggerValues, bool isEcho, Sound echoSrc, float echoVol, Parameter harmonic = Parameter_null, Sound hrmSound = Sound_null, float hrmPos = float_NaN)
+            public Sound(int noteNum, string sample, Channel chan, int ch, long frameTime, int frameLen, int releaseLen, float vol, Instrument inst, int iSrc, Note note, List<TriggerValue> triggerValues, bool isEcho, Sound echoSrc, float echoVol, Parameter harmonic = Parameter_null, Sound hrmSound = Sound_null, float hrmPos = float_NaN)
             {
                 Speakers      = new List<Speaker>();
+
+                NoteNumber    = noteNum;
                 Sample        = sample;
                               
                 Channel       = chan;
@@ -95,6 +98,8 @@ namespace IngameScript
             public Sound(Sound snd, bool isEcho, Sound echoSrc, float echoVol)
             {
                 Speakers      = new List<Speaker>();
+
+                NoteNumber    = snd.NoteNumber;
                 Sample        = snd.Sample;
 
                 Channel       = snd.Channel;
@@ -148,6 +153,24 @@ namespace IngameScript
                     * Source    .Volume.UpdateValue(tpSrc);
 
                 return MinMax(0, vol, 2);
+            }
+
+
+
+            public float GetTune(long gTime, Program prog)
+            {
+                if (prog.TooComplex) return 0;
+
+                var lTime = gTime - Time; // local time
+
+                var tpInst = new TimeParams(gTime, lTime, Note, Length, -1, TriggerValues, Note.Clip, prog);
+                var tpSrc  = new TimeParams(gTime, lTime, Note, Length, Source.Index, TriggerValues, Note.Clip, prog);
+
+                var tune =
+                      Instrument.Tune.UpdateValue(tpInst)
+                    * Source    .Tune.UpdateValue(tpSrc);
+
+                return tune;
             }
 
 
@@ -251,13 +274,15 @@ namespace IngameScript
                         * EchoVolume;
                 }
 
-
+                
                 if (!prog.TooComplex)
                 {
                     if (!OK(vol))
                         vol = 0;
 
-                    UpdateSpeakers(vol);
+                    var noteNum = AdjustNoteNumber(Note, Source, Note.FrameLength, prog);
+    
+                    UpdateSpeakers(vol, noteNum);
                 }
 
 
@@ -266,7 +291,7 @@ namespace IngameScript
 
 
 
-            void UpdateSpeakers(float vol)
+            void UpdateSpeakers(float vol, int noteNum)
             {
                 var v = PrepareVolume(vol);
 
@@ -300,10 +325,19 @@ namespace IngameScript
                     // if sample is ending, restart it 
                     if (   (  !OK(NoteSample) 
                             || ElapsedTime >= (NoteSample.Length - 0.1f) * FPS)
-                        && OscIsLoopable(Source.Oscillator))
+                        && OscIsLoopable(Source.Oscillator)
+                        || NoteNumber != noteNum)
                     {
                         // TODO make this smooth
                         spk.Block.Stop();
+
+                        if (NoteNumber != noteNum)
+                        {
+                            NoteNumber              = noteNum;
+                            Sample                  = Source.GetSample(NoteNumber);
+                            spk.Block.SelectedSound = Sample;
+                        }
+
                         spk.Block.Play();
                     }
                 }        
