@@ -44,10 +44,11 @@ namespace IngameScript
         {
             switch (func)
             {
-            case 1: AddNextSetting(strVol,  inst, -1); break;
-            case 2: AddNextSetting(strTune, inst, -1); break;
-            case 4: AddNextSetting(strFlt,  inst, -1); break;
-            case 5: AddNextSetting(strDel,  inst, -1); break;
+            case 1: AddNextSetting(strVol,   inst, -1); break;
+            case 2: AddNextSetting(strTune,  inst, -1); break;
+            case 3: AddNextSetting(strGlide, inst, -1); break;
+            case 4: AddNextSetting(strFlt,   inst, -1); break;
+            case 5: AddNextSetting(strDel,   inst, -1); break;
             }
         }
 

@@ -235,42 +235,44 @@ namespace IngameScript
 
             switch (tag)
             { 
-            case strVol:  return "Volume";
+            case strVol:   return "Volume";
+                           
+            case strTune:  return strTune;
+            case strGlide: return "Glide";
 
-            case strTune: return strTune;
-            case strBias: return strBias;
-
-            case strLow:  return "Low Note";
-            case strHigh: return "High Note";
-            case strEnv:  return "Envelope";
-            case strStr:  return "Offset";
-            case strAtt:  return "Attack";
-            case strDec:  return "Decay";
-            case strSus:  return "Sustain";
-            case strRel:  return "Release";
-            case strTrig: return "Trigger";
-
-            case strLfo:  return strLfo;
-            case strAmp:  return "Amplitude";
-            case strFreq: return "Frequency";
-            case strOff:  return "Offset";
-            case strStep: return "Step";
-
-            case strFlt:  return "Filter";
-            case strCut:  return "Cutoff";
-            case strRes:  return "Resonance";
-
-            case strMod:  return "Modulate";
-            case strAmt:  return "Amount";
-
-            case strDel:  return "Delay";
-            case strCnt:  return "Count";
-            case strTime: return strTime;
-            case strLvl:  return "Level";
-            case strPow:  return "Power";
-                         
-            case strLen:  return "Length";
-            case strScl:  return "Scale";
+            case strBias:  return strBias;
+                           
+            case strLow:   return "Low Note";
+            case strHigh:  return "High Note";
+            case strEnv:   return "Envelope";
+            case strStr:   return "Offset";
+            case strAtt:   return "Attack";
+            case strDec:   return "Decay";
+            case strSus:   return "Sustain";
+            case strRel:   return "Release";
+            case strTrig:  return "Trigger";
+                           
+            case strLfo:   return strLfo;
+            case strAmp:   return "Amplitude";
+            case strFreq:  return "Frequency";
+            case strOff:   return "Offset";
+            case strStep:  return "Step";
+                           
+            case strFlt:   return "Filter";
+            case strCut:   return "Cutoff";
+            case strRes:   return "Resonance";
+                           
+            case strMod:   return "Modulate";
+            case strAmt:   return "Amount";
+                           
+            case strDel:   return "Delay";
+            case strCnt:   return "Count";
+            case strTime:  return strTime;
+            case strLvl:   return "Level";
+            case strPow:   return "Power";
+                           
+            case strLen:   return "Length";
+            case strScl:   return "Scale";
             }
 
             return "";
@@ -284,6 +286,8 @@ namespace IngameScript
             { 
             case strVol:   return new Parameter(tag,    0,           2,   0.5f,  1,    0.01f,  0.1f,  1,    True,  parent, inst, src);
                                                         
+            case strGlide: return new Parameter(tag,    0,          10,   0,     4,    0.01f,  0.1f,  0,    False, parent, inst, src);
+
             case strBias:  return new Bias     (parent, inst, src);                                  
             case strLow:   return new Parameter(tag,    36,        119,   0,     1,    1,     12,    36,    False, parent, inst, src);
             case strHigh:  return new Parameter(tag,    36,        119,   0,     1,    1,     12,   119,    False, parent, inst, src);

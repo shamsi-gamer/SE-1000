@@ -391,11 +391,11 @@ namespace IngameScript
                 var val  = UpdateValue(_tp);
 
 
-                if (parentIsTune) // this is only for display, as required Tune changes are typically tiny and impossible to see
-                    val = Math.Sign(val) * (float)Math.Pow(Math.Abs(val), 0.5f);
+                //if (parentIsTune) // this is only for display, as required Tune changes are typically tiny and impossible to see
+                //    val = Math.Sign(val) * (float)Math.Pow(Math.Abs(val), 0.5f);
 
                 // draw current value
-                var blur = Type == LfoType.Noise ? 1 : Math.Pow(freq, 4);
+                var blur = Math.Pow(freq, 4) / 2;//Type == LfoType.Noise ? 1 : Math.Pow(freq, 4);
                           
                 var ty   = (float)Math.Max(y0,    y0 + h0/2 - val*h0/2 - blur  );
                 var by   = (float)Math.Min(y0+h0, y0 + h0/2 - val*h0/2 + blur*2);

@@ -109,6 +109,7 @@ namespace IngameScript
                         CanAdjust
                     && (   IsCurParam(strVol)
                         || IsCurParam(strTune)
+                        || IsCurParam(strGlide)
                         || IsCurParam(strSus)
                         || IsCurParam(strAmp)
                         || IsCurParam(strLvl)

@@ -9,6 +9,7 @@
                      strVol             = "Vol",
                                         
                      strTune            = "Tune",
+                     strGlide           = "Gli",
                                         
                      strBias            = "Bias",
                      strEnv             = "Env",

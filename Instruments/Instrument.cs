@@ -13,6 +13,7 @@ namespace IngameScript
 
             public Parameter    Volume;
             public Tune         Tune;
+            public Parameter    Glide;
             public Filter       Filter;
             public Delay        Delay;
 
@@ -43,8 +44,8 @@ namespace IngameScript
                 Volume        = (Parameter)NewSettingFromTag(strVol, Setting_null, this, Source_null);
                               
                 Tune          = Tune_null;
+                Glide         = Parameter_null;
                 Filter        = Filter_null;
-                              
                 Delay         = Delay_null;
                               
                 Sources       = new List<Source>();
@@ -69,10 +70,10 @@ namespace IngameScript
                              
                 Volume        = new Parameter(inst.Volume, Setting_null);
                              
-                Tune          = inst.Tune    ?.Copy();
-                Filter        = inst.Filter  ?.Copy();
-                             
-                Delay         = inst.Delay   ?.Copy();
+                Tune          = inst.Tune  ?.Copy();
+                Glide         = new Parameter(inst.Glide, Setting_null);
+                Filter        = inst.Filter?.Copy();
+                Delay         = inst.Delay ?.Copy();
 
                 Sources = new List<Source>();
                 foreach (var src in inst.Sources)
@@ -137,6 +138,7 @@ namespace IngameScript
 
                 Volume .Reset();
                 Tune  ?.Reset();
+                Glide ?.Reset();
                 Filter?.Reset();
                 Delay ?.Reset();
 
@@ -150,10 +152,11 @@ namespace IngameScript
             {
                 switch (tag)
                 {
-                    case strVol:  return Volume;
-                    case strTune: return Tune   ?? (Tune   = new Tune  (this, Source_null));
-                    case strFlt:  return Filter ?? (Filter = new Filter(this, Source_null));
-                    case strDel:  return Delay  ?? (Delay  = new Delay (this, Source_null));
+                    case strVol:   return Volume;
+                    case strTune:  return Tune   ?? (Tune   = new Tune  (this, Source_null));
+                    case strGlide: return Glide  ?? (Glide  = (Parameter)NewSettingFromTag(strGlide, Setting_null, this, Source_null));
+                    case strFlt:   return Filter ?? (Filter = new Filter(this, Source_null));
+                    case strDel:   return Delay  ?? (Delay  = new Delay (this, Source_null));
                 }
 
                 return Setting_null;
@@ -167,6 +170,7 @@ namespace IngameScript
 
                 Volume .Delete(-1);
                 Tune  ?.Delete(-1);
+                Glide ?.Delete(-1);
                 Filter?.Delete(-1);
                 Delay ?.Delete(-1);
 
@@ -185,6 +189,7 @@ namespace IngameScript
                     + Volume.Save()
 
                     + SaveSetting(Tune)
+                    + SaveSetting(Glide)
                     + SaveSetting(Filter)
                     + SaveSetting(Delay));
 
@@ -214,9 +219,10 @@ namespace IngameScript
                 {
                     switch (data[d])
                     { 
-                        case strTune: inst.Tune   = Tune  .Load(data, ref d, inst, -1); break;
-                        case strFlt:  inst.Filter = Filter.Load(data, ref d, inst, -1); break;
-                        case strDel:  inst.Delay  = Delay .Load(data, ref d, inst, -1); break;
+                        case strTune:  inst.Tune   = Tune     .Load(data, ref d, inst, -1); break;
+                        case strGlide: inst.Glide  = Parameter.Load(data, ref d, inst, -1, Setting_null); break;
+                        case strFlt:   inst.Filter = Filter   .Load(data, ref d, inst, -1); break;
+                        case strDel:   inst.Delay  = Delay    .Load(data, ref d, inst, -1); break;
                     }
                 }
 
@@ -235,6 +241,7 @@ namespace IngameScript
 
                 Volume .DrawLabels(sprites, x, y, dp);
                 Tune  ?.DrawLabels(sprites, x, y, dp);
+                Glide ?.DrawLabels(sprites, x, y, dp);
                 Filter?.DrawLabels(sprites, x, y, dp);
                 Delay ?.DrawLabels(sprites, x, y, dp);
             }                                           
@@ -248,10 +255,11 @@ namespace IngameScript
                 
                 else
                 {
-                    DrawFuncButton(sprites, strVol,  1, w, h, True, Volume.HasDeepParams(chan, -1));
-                    DrawFuncButton(sprites, strTune, 2, w, h, True, OK(Tune  ));
-                    DrawFuncButton(sprites, strFlt,  4, w, h, True, OK(Filter));
-                    DrawFuncButton(sprites, strDel,  5, w, h, True, OK(Delay ));
+                    DrawFuncButton(sprites, strVol,   1, w, h, True, Volume.HasDeepParams(chan, -1));
+                    DrawFuncButton(sprites, strTune,  2, w, h, True, OK(Tune  ));
+                    DrawFuncButton(sprites, strGlide, 3, w, h, True, OK(Glide ));
+                    DrawFuncButton(sprites, strFlt,   4, w, h, True, OK(Filter));
+                    DrawFuncButton(sprites, strDel,   5, w, h, True, OK(Delay ));
                 }
             }
         }
