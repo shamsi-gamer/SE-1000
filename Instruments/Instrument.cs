@@ -13,7 +13,10 @@ namespace IngameScript
 
             public Parameter    Volume;
             public Tune         Tune;
+
             public Parameter    Glide;
+            public List<float>  GlideNotes;
+            
             public Filter       Filter;
             public Delay        Delay;
 
@@ -22,6 +25,7 @@ namespace IngameScript
             public float        DisplayVolume;
 
             public Program      Program;
+
 
 
 
@@ -44,7 +48,10 @@ namespace IngameScript
                 Volume        = (Parameter)NewSettingFromTag(strVol, Setting_null, this, Source_null);
                               
                 Tune          = Tune_null;
+
                 Glide         = Parameter_null;
+                GlideNotes    = new List<float>();
+                
                 Filter        = Filter_null;
                 Delay         = Delay_null;
                               
@@ -71,7 +78,10 @@ namespace IngameScript
                 Volume        = new Parameter(inst.Volume, Setting_null);
                              
                 Tune          = inst.Tune  ?.Copy();
-                Glide         = new Parameter(inst.Glide, Setting_null);
+
+                Glide         = OK(inst.Glide) ? new Parameter(inst.Glide, Setting_null) : null;
+                GlideNotes    = new List<float>();
+                
                 Filter        = inst.Filter?.Copy();
                 Delay         = inst.Delay ?.Copy();
 

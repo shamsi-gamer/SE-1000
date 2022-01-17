@@ -82,6 +82,8 @@ namespace IngameScript
         {
             if (OK(ModDestConnecting))
                 lbl.SetText("Conn");
+            else if (IsCurSetting(strTune))
+                lbl.SetText("Chrd");
             else if (IsCurSetting(strChord))
                 lbl.SetText("▲\n▼", 7, 0);
             else if (OK(CurSrc))

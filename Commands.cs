@@ -513,6 +513,10 @@ namespace IngameScript
              
                 ResetModConnecting();
             }
+            else if (IsCurSetting(strTune))
+            {
+                AddNextSetting(strChord);
+            }
             else if (IsCurSetting(strChord))
             {
                 var tc = (TuneChord)CurSetting;

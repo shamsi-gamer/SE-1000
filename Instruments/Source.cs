@@ -154,9 +154,11 @@ namespace IngameScript
                 if (OK(Offset))
                     sndTime += (int)Math.Round(Offset.UpdateValue(tp) * FPS);
 
+
                 note.FinalNumber = AdjustNoteNumber(note, this, note.FrameLength, prog);
 
                 var noteNum = note.FinalNumber;
+
 
                 if (   Oscillator == OscSample
                     && (   noteNum % NoteScale > 0

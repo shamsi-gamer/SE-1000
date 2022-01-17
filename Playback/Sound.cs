@@ -9,6 +9,7 @@ namespace IngameScript
         public class Sound
         {
             public int                NoteNumber;
+
             public string             Sample;
 
             public List<Speaker>      Speakers;
@@ -19,12 +20,10 @@ namespace IngameScript
                                       Length,
                                       ReleaseLength;
                                       
-            public long               Time, // in ticks
+            public long               Time,        // in ticks
                                       ElapsedTime; // in ticks
-
                                       
-                                      //DisplayVolume;
-            public float              TriggerVolume;//,
+            public float              TriggerVolume;
 
             public List<TriggerValue> TriggerValues;
 
@@ -53,88 +52,89 @@ namespace IngameScript
 
             public Sound(int noteNum, string sample, Channel chan, int ch, long frameTime, int frameLen, int releaseLen, float vol, Instrument inst, int iSrc, Note note, List<TriggerValue> triggerValues, bool isEcho, Sound echoSrc, float echoVol, Parameter harmonic = Parameter_null, Sound hrmSound = Sound_null, float hrmPos = float_NaN)
             {
-                Speakers      = new List<Speaker>();
+                Speakers         = new List<Speaker>();
+                                 
+                NoteNumber       = noteNum;
 
-                NoteNumber    = noteNum;
-                Sample        = sample;
-                              
-                Channel       = chan;
-                iChan         = ch;
-                              
-                Time          = frameTime;
-
-                Length        = frameLen;
-                ReleaseLength = releaseLen;
-
-                ElapsedTime   = 0;
-
-                TriggerVolume = vol;
-                //DisplayVolume = vol;
+                Sample           = sample;
+                                 
+                Channel          = chan;
+                iChan            = ch;
+                                 
+                Time             = frameTime;
+                                 
+                Length           = frameLen;
+                ReleaseLength    = releaseLen;
+                                 
+                ElapsedTime      = 0;
+                                 
+                TriggerVolume    = vol;
 
                 TriggerValues = new List<TriggerValue>();
                 foreach (var val in triggerValues)
                     TriggerValues.Add(new TriggerValue(val));
                     
-                Instrument    = inst;
-
-                SourceIndex   = iSrc;
-                Source        = Instrument.Sources[iSrc];
-                              
-                Note          = note;
-                              
-                Harmonic      = harmonic;
-                HrmSound      = hrmSound;
-                HrmPos        = hrmPos;
-
-                IsEcho        = isEcho;
-                EchoSource    = echoSrc;
-                EchoVolume    = echoVol;
-
-                Cache         = IsEcho ? null : new float[Length + ReleaseLength];
+                Instrument       = inst;
+                                 
+                SourceIndex      = iSrc;
+                Source           = Instrument.Sources[iSrc];
+                                 
+                Note             = note;
+                                 
+                Harmonic         = harmonic;
+                HrmSound         = hrmSound;
+                HrmPos           = hrmPos;
+                                 
+                IsEcho           = isEcho;
+                EchoSource       = echoSrc;
+                EchoVolume       = echoVol;
+                                 
+                Cache            = IsEcho ? null : new float[Length + ReleaseLength];
             }
 
 
 
             public Sound(Sound snd, bool isEcho, Sound echoSrc, float echoVol)
             {
-                Speakers      = new List<Speaker>();
+                Speakers         = new List<Speaker>();
+                                 
+                NoteNumber       = snd.NoteNumber;
 
-                NoteNumber    = snd.NoteNumber;
-                Sample        = snd.Sample;
-
-                Channel       = snd.Channel;
-                iChan         = snd.iChan;
-
-                Time          = snd.Time;
-                              
-                Length        = snd.Length;
-                ReleaseLength = snd.ReleaseLength;
-
-                ElapsedTime   = snd.ElapsedTime;
-
-                TriggerVolume = snd.TriggerVolume;
-                //DisplayVolume = snd.DisplayVolume;
-
+                Sample           = snd.Sample;
+                                 
+                Channel          = snd.Channel;
+                iChan            = snd.iChan;
+                                 
+                Time             = snd.Time;
+                                 
+                Length           = snd.Length;
+                ReleaseLength    = snd.ReleaseLength;
+                                 
+                ElapsedTime      = snd.ElapsedTime;
+                                 
+                TriggerVolume    = snd.TriggerVolume;
+                //DisplayVolume  = snd.DisplayVolume;
+                
                 TriggerValues = new List<TriggerValue>();
                 foreach (var val in snd.TriggerValues)
                     TriggerValues.Add(new TriggerValue(val));
                     
-                Instrument    = snd.Instrument;
-
-                SourceIndex   = snd.SourceIndex;
-                Source        = snd.Source;
-
-                Note          = snd.Note;
-
-                Harmonic      = snd.Harmonic;
-                HrmSound      = snd.HrmSound;
-                HrmPos        = snd.HrmPos;
-
-                IsEcho        = isEcho;
-                EchoSource    = echoSrc;
-                EchoVolume    = echoVol;
-
-                Cache         = IsEcho ? null : new float[Length + ReleaseLength];
+                Instrument       = snd.Instrument;
+                                 
+                SourceIndex      = snd.SourceIndex;
+                Source           = snd.Source;
+                                 
+                Note             = snd.Note;
+                                 
+                Harmonic         = snd.Harmonic;
+                HrmSound         = snd.HrmSound;
+                HrmPos           = snd.HrmPos;
+                                 
+                IsEcho           = isEcho;
+                EchoSource       = echoSrc;
+                EchoVolume       = echoVol;
+                                 
+                Cache            = IsEcho ? null : new float[Length + ReleaseLength];
             }
 
 
@@ -322,13 +322,16 @@ namespace IngameScript
                 {
                     spk.Block.Volume = Math.Min(v--, 1);
 
-                    // if sample is ending, restart it 
+                    // if sample is ending,
+                    // or tne note number is changing,
+                    // restart it 
                     if (   (  !OK(NoteSample) 
                             || ElapsedTime >= (NoteSample.Length - 0.1f) * FPS)
                         && OscIsLoopable(Source.Oscillator)
                         || NoteNumber != noteNum)
                     {
                         // TODO make this smooth
+                        //spk.Block.Volume = 0;
                         spk.Block.Stop();
 
                         if (NoteNumber != noteNum)

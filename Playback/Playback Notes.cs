@@ -267,7 +267,13 @@ namespace IngameScript
 
         static int AdjustNoteNumber(Note note, Source src, int sndLen, Program prog)
         {
+            //add glide notes when notes are actually added ("pressed"),
+            //then here check for them and move them to the target 
+            //    according to speed (find min and max on both sides, then adjust the middle accordingly)
+            //when a note is removed as it ends, remove also the glide note
+
             var inst = src.Instrument;
+
 
             float _noteNum = note.Number;
 
@@ -281,6 +287,7 @@ namespace IngameScript
                 note.Clip,
                 prog);
 
+
             _noteNum += inst.Tune?.UpdateValue(tp) * NoteScale ?? 0;
 
             float noteNumInst = MinMax(12 * NoteScale, (int)Math.Round(_noteNum), 150 * NoteScale);
@@ -292,7 +299,8 @@ namespace IngameScript
                 && inst.Tune.Chord.CurFinalChord.Count > 0)
                 noteNumInst = LimitNoteToChord((int)Math.Round(noteNumInst), inst.Tune.Chord.CurFinalChord);
 
-            noteNumInst += src .Tune?.UpdateValue(tp) * NoteScale ?? 0;
+
+            noteNumInst += src.Tune?.UpdateValue(tp) * NoteScale ?? 0;
 
             var noteNumSrc = MinMax(12*NoteScale, (int)Math.Round(noteNumInst), 150*NoteScale);
 
@@ -302,6 +310,7 @@ namespace IngameScript
                 && src.Tune.Chord.On
                 && src.Tune.Chord.CurFinalChord.Count > 0)
                 noteNumSrc = LimitNoteToChord(noteNumSrc, src.Tune.Chord.CurFinalChord);
+
 
             return noteNumSrc;
         }

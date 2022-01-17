@@ -14,7 +14,7 @@ namespace IngameScript
 
 
             public Tune(Instrument inst, Source src) 
-                : base(strTune, -240, 240, -12, 12, 0.5f, 12, 0, False, Setting_null, inst, src)
+                : base(strTune, -240, 240, -12, 12, 0.5f, 12, 0, True, Setting_null, inst, src)
             {
                 Chord = TuneChord_null;
             }
@@ -42,12 +42,6 @@ namespace IngameScript
                     Chord.UpdateValue(tp);
 
                 var val = base.UpdateValue(tp);
-
-                //tp.Note.Number = AdjustNoteNumber(
-                //    tp.Note, 
-                //    tp.Note.Instrument.Sources[tp.SourceIndex], 
-                //    tp.Note.FrameLength, 
-                //    tp.Program);
 
                 return val;
             }
@@ -178,23 +172,6 @@ namespace IngameScript
                 }
 
                 return tune;
-            }
-
-
-
-            public override void DrawFuncButtons(List<MySprite> sprites, float w, float h, Channel chan)
-            {
-                base.DrawFuncButtons(sprites, w, h, chan);
-
-                DrawFuncButton(sprites, strChord, 1, w, h, True, OK(Chord));
-            }
-
-
-
-            public override void Func(int func)
-            {
-                if (func == 1) AddNextSetting(strChord);
-                else           base.Func(func);
             }
 
 
