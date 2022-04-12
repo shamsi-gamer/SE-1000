@@ -44,7 +44,8 @@ namespace IngameScript
             public bool               IsEcho;
 
             public Sample             NoteSample =>
-                                          Note.Number >= 12*NoteScale
+                                             Note.Number >= 12*NoteScale
+                                          && Note.Number-12*NoteScale < Source.Oscillator.Samples.Count
                                           ? Source.Oscillator.Samples[Note.Number-12*NoteScale]
                                           : null;
 
@@ -281,7 +282,7 @@ namespace IngameScript
                         vol = 0;
 
                     var noteNum = AdjustNoteNumber(Note, Source, Note.FrameLength, prog);
-    
+
                     UpdateSpeakers(vol, noteNum);
                 }
 
@@ -301,7 +302,7 @@ namespace IngameScript
 
                     while ( loopable && v-- >  0
                         || !loopable && v-- >= 0)
-                    { 
+                    {
                         var spk = g_sm.GetSpeaker();
 
                         if (OK(spk))
@@ -324,10 +325,11 @@ namespace IngameScript
 
                     // if sample is ending,
                     // or tne note number is changing,
-                    // restart it 
-                    if (   (  !OK(NoteSample) 
-                            || ElapsedTime >= (NoteSample.Length - 0.1f) * FPS)
-                        && OscIsLoopable(Source.Oscillator)
+                    // restart it
+
+                    if (      (  !OK(NoteSample) 
+                               || ElapsedTime >= (NoteSample.Length - 0.1f) * FPS)
+                           && OscIsLoopable(Source.Oscillator)
                         || NoteNumber != noteNum)
                     {
                         // TODO make this smooth
@@ -336,7 +338,7 @@ namespace IngameScript
 
                         if (NoteNumber != noteNum)
                         {
-                            NoteNumber              = noteNum;
+                            NoteNumber = noteNum;
                             Sample                  = Source.GetSample(NoteNumber);
                             spk.Block.SelectedSound = Sample;
                         }

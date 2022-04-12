@@ -8,7 +8,7 @@ namespace IngameScript
     {
         public void Main(string arg, UpdateType update)
         {
-            //ResetLog();
+            ResetLog();
 
 
             if (!g_init) return;

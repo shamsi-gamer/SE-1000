@@ -47,6 +47,7 @@ namespace IngameScript
             }
 
 
+
             public override Setting GetOrAddSettingFromTag(string tag)
             {
                 if (tag == strChord) return Chord ?? (Chord = new TuneChord(this, Instrument, Source));

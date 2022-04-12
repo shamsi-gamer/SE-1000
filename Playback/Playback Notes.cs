@@ -99,7 +99,7 @@ namespace IngameScript
                 ? OK(clip.EditPos) ? clip.EditPat : clip.Track.PlayPat 
                 : clip.EditPat;
 
-            var chan = clip.Patterns[pat].Channels[ch]; 
+            var chan = clip.Patterns[pat].Channels[ch];
 
 
             for (int i = 0; i < notes.Count; i++)
