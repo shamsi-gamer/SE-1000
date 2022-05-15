@@ -77,6 +77,8 @@
                       Name.Replace("\n", "\u0085")
                     + PS(SaveToggles())
 
+                    + PS(TimeScale)
+
                     + PS(EditPat)         
                     + PS(CurChan)        
 

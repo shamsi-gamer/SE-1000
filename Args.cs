@@ -23,15 +23,15 @@
                 case "show clip":   ToggleShowClip();                   break;
                 case "cue clip":    ToggleCueClip();                    break;
                                                                         
-                case "bpm up":      SetStepLength(-1);                  break;
-                case "bpm down":    SetStepLength( 1);                  break;
+                case "bpm up":      SetSpeed(-1);                       break;
+                case "bpm down":    SetSpeed( 1);                       break;
 
                 case "del pat":     EditedClip?.DeletePattern();        break;
                 case "dup pat":     EditedClip?.DuplicatePattern();     break;
                 case "new pat":     EditedClip?.NewPattern();           break;
-                case "move pat":    EditedClip?.ToggleMovePattern();    break;
                 case "prev pat":    EditedClip?.PrevPattern();          break;
                 case "next pat":    EditedClip?.NextPattern();          break;
+                case "move pat":    EditedClip?.ToggleMovePattern();    break;
 
                 case "cue":         EditedClip.Cue();                   break;
 

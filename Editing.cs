@@ -418,6 +418,26 @@ namespace IngameScript
 
 
 
+        void SetSpeed(int d)
+        {
+            if (ShowClip)
+                SetEditedClipSpeed(d);
+            else
+                SetStepLength(d);
+        }
+
+
+
+        void SetEditedClipSpeed(int d)
+        {
+            EditedClip.TimeScale = Math.Min(Math.Max(
+                1, 
+                EditedClip.TimeScale * (d > 0 ? 2f : 1/2f)), 
+                g_patSteps);
+        }
+
+
+
         void SetStepLength(int d)
         {
             var newTicksPerStep = MinMax(4, TicksPerStep + d, 15);

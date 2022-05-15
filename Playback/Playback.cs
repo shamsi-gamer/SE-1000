@@ -25,6 +25,8 @@ namespace IngameScript
                 {
                     var track = EditedClip.Track;
 
+                    track.SkipTime = 0;
+
                     var saved = CueClip;
                     CueClip = 0;
 

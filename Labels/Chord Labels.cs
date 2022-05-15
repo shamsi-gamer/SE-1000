@@ -34,9 +34,9 @@
 
         void UpdateChord(Label lbl)
         {
-            if (   /*!IsCurParam(strTune) || */
-                   EditedClip.ParamKeys 
-                || EditedClip.ParamAuto)
+            //if (   /*!IsCurParam(strTune) || */
+            //       EditedClip.ParamKeys 
+            //    || EditedClip.ParamAuto)
                 lbl.SetText(EditedClip.ChordEdit ? strEmpty : "Chord", 9, 12);
         }
 

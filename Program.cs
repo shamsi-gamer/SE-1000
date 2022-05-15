@@ -36,7 +36,7 @@ namespace IngameScript
                                       
                                       pnlStorageState,
                                       pnlStorageInstruments,
-                                      pnlStorageTracks;
+                                      pnlStorageTracks; 
         
         static IMyRemoteControl       g_remote;
                                       
@@ -74,7 +74,7 @@ namespace IngameScript
 
             pnlInfoLog = Get("Info Display") as IMyTextPanel;
             
-            //ResetLog();
+            ResetLog();
 
 
             pnlStorageState       = GetLcd(strStorage + " State");

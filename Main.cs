@@ -8,7 +8,7 @@ namespace IngameScript
     {
         public void Main(string arg, UpdateType update)
         {
-            ResetLog();
+            //ResetLog();
 
 
             if (!g_init) return;
@@ -146,7 +146,16 @@ namespace IngameScript
             { 
                 if (   Playing
                     && OK(track.PlayTime))
-                    track.PlayTime++;
+                {
+                    if (track.PlayingClip.TimeScale == 1)
+                        track.PlayTime++;
+
+                    else if (++track.SkipTime >= (int)track.PlayingClip.TimeScale)
+                    {
+                        track.PlayTime++;
+                        track.SkipTime = 0;
+                    }
+                }
             }
         }
 

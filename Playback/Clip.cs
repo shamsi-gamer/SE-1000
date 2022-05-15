@@ -11,6 +11,9 @@ namespace IngameScript
             public string        Name;
             public Track         Track;
 
+            public float         TimeScale;
+
+
             public List<Pattern> Patterns;
             public List<Block>   Blocks;
 
@@ -128,8 +131,10 @@ namespace IngameScript
             {
                 Track       = track;
                 Name        = name;
-                            
-                Settings    = new List<Setting>();
+
+                TimeScale   = 1;
+
+                Settings = new List<Setting>();
                 Patterns    = new List<Pattern>();
                 Blocks      = new List<Block>();
 
@@ -227,6 +232,8 @@ namespace IngameScript
             {
                 Name     = clip.Name;
                 Track    = track;
+
+                TimeScale = clip.TimeScale;
 
                 Settings = new List<Setting>();
 

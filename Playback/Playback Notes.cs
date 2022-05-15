@@ -275,7 +275,7 @@ namespace IngameScript
             var inst = src.Instrument;
 
 
-            float _noteNum = note.Number;
+            float noteNum = note.Number;
 
             var tp = new TimeParams(
                 g_time, 
@@ -288,9 +288,9 @@ namespace IngameScript
                 prog);
 
 
-            _noteNum += inst.Tune?.UpdateValue(tp) * NoteScale ?? 0;
+            noteNum += inst.Tune?.UpdateValue(tp) * NoteScale ?? 0;
 
-            float noteNumInst = MinMax(12 * NoteScale, (int)Math.Round(_noteNum), 150 * NoteScale);
+            float noteNumInst = MinMax(12 * NoteScale, (int)Math.Round(noteNum), 150 * NoteScale);
 
             if (   OK(inst.Tune)
                 && inst.Tune.On

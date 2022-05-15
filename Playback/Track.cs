@@ -22,6 +22,9 @@ namespace IngameScript
                            NextPat;
 
 
+            public int     SkipTime; // used for keeping track of time in slower clips
+
+
             public bool    Playing     => OK(PlayClip);
             public Clip    PlayingClip => OK(PlayClip) ? Clips[PlayClip] : Clip_null;
 

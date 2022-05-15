@@ -59,9 +59,16 @@ namespace IngameScript
                 DrawButton(sprites, strPlay, 2, 3, w, h, Playing);
 
 
-                DrawString(sprites, S0(GetBPM()), x + 173, y + h - 122, 2.5f, color6, TA_CENTER);
-                DrawString(sprites, "BPM",        x + 142, y + h - 43, 1f, color6);
-
+                if (ShowClip)
+                {
+                    DrawString(sprites, "1:" + S0(EditedClip.TimeScale), x + 173, y + h - 122, 2.5f, color6, TA_CENTER);
+                    DrawString(sprites, "Scale",      x + 173, y + h - 43, 1f, color6, TA_CENTER);
+                }
+                else
+                { 
+                    DrawString(sprites, S0(GetBPM()), x + 173, y + h - 122, 2.5f, color6, TA_CENTER);
+                    DrawString(sprites, "BPM",        x + 173, y + h - 43, 1f, color6, TA_CENTER);
+                }
 
                 var name = ShowClip ? EditedClip.Name : SessionName;
                 var nameLines = name.Split('\n');
